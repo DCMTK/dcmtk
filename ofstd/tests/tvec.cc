@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Uli Schlachter
  *
- *  Purpose: test programm for class OFVec
+ *  Purpose: test program for class OFVector
  *
  */
 

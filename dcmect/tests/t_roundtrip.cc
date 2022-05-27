@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, OFFIS e.V.
+ *  Copyright (C) 2019-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ static OFLogger tRoundLogger = OFLog::getLogger("dcmtk.test.t_roundtrip");
 //    4 GB, otherwise the calls to writeDataset() will fail.
 // The test dcmect/tests/t_huge_concat.cc allows for exercising
 // "unlimited" pixel data size using writeConcatenation() on all
-// occassions.
+// occasions.
 
 static const Uint16 NUM_ROWS             = 2;
 static const Uint16 NUM_COLS             = 2;
@@ -662,7 +662,7 @@ static void prepareExpectedDump()
 {
     EXPECTED_DUMP += "\n";
     EXPECTED_DUMP += "# Dicom-Data-Set\n";
-    // DcmDataset.print() produces dumps in local endianess, so make sure the dump reflects the current machine
+    // DcmDataset.print() produces dumps in local endianness, so make sure the dump reflects the current machine
     if (gLocalByteOrder == EBO_LittleEndian)
         EXPECTED_DUMP += "# Used TransferSyntax: Little Endian Explicit\n";
     else

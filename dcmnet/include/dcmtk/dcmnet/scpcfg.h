@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2020, OFFIS e.V.
+ *  Copyright (C) 2012-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -413,7 +413,7 @@ protected:
   /// Progress notification mode (default: OFTrue)
   OFBool m_progressNotificationMode;
 
-  /// The transport layer in use for communication (e.g. for TLS). 
+  /// The transport layer in use for communication (e.g. for TLS).
   /// Default is NULL for the normal TCP layer.
   DcmTransportLayer *m_tLayer; /// Doesn't have ownership
 };
@@ -434,7 +434,7 @@ struct DCMTK_DCMNET_EXPORT DcmSharedSCPConfig : private OFshared_ptr<DcmSCPConfi
 
   /** Copy construct a DcmSharedSCPConfig object from a DcmSCPConfig object.
    *  This constructor enables sharing of an already existing DcmSCPConfig object
-   *  by copy constructing a sharable configuration object from it.
+   *  by copy constructing a shareable configuration object from it.
    *  @param config the DcmSCPConfig object to copy construct the DcmSharedSCPConfig
    *    object from.
    */

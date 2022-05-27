@@ -54,7 +54,7 @@ class DCMTK_DCMRT_EXPORT DRTGeneticModificationsCodeSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -374,7 +374,7 @@ class DCMTK_DCMRT_EXPORT DRTGeneticModificationsCodeSequence
      */
     virtual ~DRTGeneticModificationsCodeSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

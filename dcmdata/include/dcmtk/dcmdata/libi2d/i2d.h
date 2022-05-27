@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -175,7 +175,7 @@ protected:
 
   /** Cleans up template for future insertion of pixel data information, ie
     * generally removes attributes from image pixel module
-    * @param targetDset - [out] The dataset that should be cleand up
+    * @param targetDset - [out] The dataset that should be cleaned up
     * @return none
     */
   void cleanupTemplate(DcmDataset *targetDset);
@@ -322,7 +322,7 @@ private:
   /// File to read study and series from
   OFString m_studySeriesFile;
 
-  /// If true, Instance Number ist read from file and incremented by 1
+  /// If true, Instance Number is read from file and incremented by 1
   OFBool m_incInstNoFromFile;
 
   ///  If true, some simple attribute checks (missing type 2 attributes or

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2021, OFFIS e.V.
+ *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -188,7 +188,7 @@ public:
   virtual OFCondition cancelMoveRequest(DcmQueryRetrieveDatabaseStatus *status) = 0;
 
   /** Prune invalid records from the database.
-   *  Records referring to non-existant image files are invalid.
+   *  Records referring to non-existent image files are invalid.
    */
   virtual OFCondition pruneInvalidRecords() = 0;
 

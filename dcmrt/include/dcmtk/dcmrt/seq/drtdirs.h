@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTDICOMRetrievalSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -133,7 +133,7 @@ class DCMTK_DCMRT_EXPORT DRTDICOMRetrievalSequence
      */
     virtual ~DRTDICOMRetrievalSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

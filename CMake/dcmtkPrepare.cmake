@@ -760,7 +760,7 @@ endif()
 # with old CMake versions that do not understand $<CONFIG>
 #-----------------------------------------------------------------------------
 if(CMAKE_VERSION VERSION_LESS 3.0.0)
-  set(DCMTK_CONFIG_GENERATOR_EXPRESSION "$<CONFIGURATION>" CACHE INTERNAL "the generator expression to use for retriving the current config")
+  set(DCMTK_CONFIG_GENERATOR_EXPRESSION "$<CONFIGURATION>" CACHE INTERNAL "the generator expression to use for retrieving the current config")
 else()
-  set(DCMTK_CONFIG_GENERATOR_EXPRESSION "$<CONFIG>" CACHE INTERNAL "the generator expression to use for retriving the current config")
+  set(DCMTK_CONFIG_GENERATOR_EXPRESSION "$<CONFIG>" CACHE INTERNAL "the generator expression to use for retrieving the current config")
 endif()

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2014, OFFIS e.V.
+ *  Copyright (C) 2013-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -191,7 +191,7 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCP
      *  specifies which Presentation Contexts (i.e. combination of SOP Class and Transfer
      *  Syntaxes) are supported by this Storage SCP.  If no association negotiation
      *  profile is loaded, the SCP will only support the Verification SOP Class (with
-     *  Default Transfer Syntax, i.e. C-ECHO with Implicit VR Litte Endian), which is
+     *  Default Transfer Syntax, i.e. C-ECHO with Implicit VR Little Endian), which is
      *  required for all DICOM Service Class Providers.
      *  The format and semantics of this configuration file are described in
      *  \ref file_asconfig.

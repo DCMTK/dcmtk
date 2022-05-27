@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -29,7 +29,7 @@
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/ofvector.h"
 
-/** Class for managing sets of dicom attributes (e.g.\ macros and modules).
+/** Class for managing sets of DICOM attributes (e.g.\ macros and modules).
  *  The data is hold in a container (DcmItem) that can be shared with other
  *  components, i.e.\ different modules that hold their data in a common
  *  container. In order to know which attributes in the container should be
@@ -231,7 +231,7 @@ public:
      */
     IODModule& operator=(const IODModule& rhs);
 
-    /** Desctructor
+    /** Destructor
      */
     ~IODModule() {};
 };

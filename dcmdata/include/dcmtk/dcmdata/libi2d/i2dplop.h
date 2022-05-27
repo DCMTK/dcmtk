@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,7 +71,7 @@ public:
   virtual OFBool supportsMultiframe() const;
 
   /** Add multiframe specific attributes
-   *  @param datset pointer to DICOM dataset, must not be NULL
+   *  @param targetDataset pointer to DICOM dataset, must not be NULL
    *  @param numberOfFrames number of frames in this dataset
    *  @return EC_Normal if successful, an error code otherwise
    */
@@ -82,13 +82,13 @@ public:
 private:
 
   /** Handle 8-bit image dataset. Used internally in convert() method.
-   *  @param datset pointer to DICOM dataset, must not be NULL
+   *  @param dataset pointer to DICOM dataset, must not be NULL
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handle8BitImage(DcmDataset *dataset) const;
 
   /** Handle 16-bit image dataset. Used internally in convert() method.
-   *  @param datset pointer to DICOM dataset, must not be NULL
+   *  @param dataset pointer to DICOM dataset, must not be NULL
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition handle16BitImage(DcmDataset *dataset) const;

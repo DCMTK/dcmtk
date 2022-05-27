@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2021, OFFIS e.V.
+ *  Copyright (C) 1999-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -462,7 +462,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
         const unsigned long count = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
         DDLValue = new Uint16[ValueCount];
         LODValue = new double[ValueCount];
-        Sint32 *sort_tab = new Sint32[count];                                       // auxilliary array (temporary)
+        Sint32 *sort_tab = new Sint32[count];                                       // auxiliary array (temporary)
         if ((DDLValue != NULL) && (LODValue != NULL) && (sort_tab != NULL))
         {
             OFBitmanipTemplate<Sint32>::setMem(sort_tab, -1, count);                // initialize array

@@ -277,7 +277,7 @@ and semantics of this configuration file are documented in \e asconfig.txt.
 
 By default, that means if no association negotiation profile is loaded,
 \b dcmrecv only supports the Verification SOP Class as an SCP (with default
-transfer syntax, i.e. Implicit VR Litte Endian).
+transfer syntax, i.e. Implicit VR Little Endian).
 
 In the future, there might be additional options that allow for specifying the
 list of supported Presentation Contexts (i.e. combination of SOP Class and

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,7 +34,7 @@
  *  This timestamp client will write a timestamp query in DES encoding to file.
  *  The interaction with the time stamp authority must then take place separately
  *  (e.g. manually, using a command line tool like curl). This client then offers
- *  functionality to import a timestamp reponse (i.e. a timestamp) from file
+ *  functionality to import a timestamp response (i.e. a timestamp) from file
  *  and place it into the signed DICOM file for which the timestamp was requested.
  *  @remark this class is only available if DCMTK is compiled with OpenSSL support enabled.
  */

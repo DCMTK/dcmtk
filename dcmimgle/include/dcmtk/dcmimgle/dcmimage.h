@@ -634,7 +634,7 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  possibly active VOI LUT is implicitly disabled.
      *
      ** @param  thresh  threshold value specifying percentage of histogram border which
-     *                  shall be ignored (defaut: 5%).
+     *                  shall be ignored (default: 5%).
      *
      ** @return true if successful, false otherwise
      */

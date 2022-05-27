@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -138,7 +138,7 @@ public:
    *  on Paul Heckbert's paper "Color Image Quantization for Frame Buffer
    *  Display", SIGGRAPH '82 Proceedings, page 297.
    *  @param histogram image color histogram
-   *  @param sum number of pixels in image (colums * rows * frames)
+   *  @param sum number of pixels in image (columns * rows * frames)
    *  @param theMaxval maximum value to which pixels were
    *    downsampled for histogram computation
    *  @param numberOfColors desired number of colors in color LUT

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -345,13 +345,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--true-lossless"))
       {
-        // true lossless explicitely requested but selected TS denotes lossy process
+        // true lossless explicitly requested but selected TS denotes lossy process
         app.checkDependence("--true-lossless", "--encode-lossless-sv1 or --encode-lossless", lossless);
         opt_trueLossless = OFTrue;
       }
       if (cmd.findOption("--pseudo-lossless"))
       {
-        // pseudo lossless explicitely requested but selected TS denotes lossy process
+        // pseudo lossless explicitly requested but selected TS denotes lossy process
         app.checkDependence("--pseudo-lossless", "--encode-lossless-sv1 or --encode-lossless", lossless);
         opt_trueLossless = OFFalse;
       }

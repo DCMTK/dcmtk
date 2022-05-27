@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -405,7 +405,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                       /* written to the stream) */
                       len = OFstatic_cast(Uint32, outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes()));
 
-                      /* increase the amount of bytes which have been transfered correspondingly */
+                      /* increase the amount of bytes which have been transferred correspondingly */
                       incTransferredBytes(len);
 
                       /* see if there is something fishy with the stream */
@@ -426,7 +426,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                           // write as many bytes from cache buffer to stream as possible
                           len = wcache->writeBuffer(outStream);
 
-                          /* increase the amount of bytes which have been transfered correspondingly */
+                          /* increase the amount of bytes which have been transferred correspondingly */
                           incTransferredBytes(len);
 
                           /* see if there is something fishy with the stream */

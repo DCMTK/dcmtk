@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -338,7 +338,7 @@ public:
 
     /** Initialize references from set of DICOM files. If a file could not be
      *  used, it is skipped. All references found by this method are added on
-     *  top of existing ones, i.e. any existing data is not cleared by thi
+     *  top of existing ones, i.e. any existing data is not cleared by this
      *  method.
      *  @param  dcmFiles The DICOM file names to read
      *  @param  maxLevel The maximum level to extract

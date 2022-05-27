@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2012, OFFIS e.V.
+ *  Copyright (C) 1999-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -314,7 +314,7 @@ class DCMTK_DCMPSTAT_EXPORT DVPSStoredPrint
    */
   const char *getConfigurationInformation();
 
-  /** gets the (optional) requestes resolution ID
+  /** gets the (optional) requested resolution ID
    *  @return requested resolution ID, may be NULL.
    */
   const char *getResolutionID();
@@ -1091,7 +1091,7 @@ class DCMTK_DCMPSTAT_EXPORT DVPSStoredPrint
 
   /** the current presentation LUT instance. If used as Print SCU, the
    *  content of this string can differ from referencedPresentationLUTInstanceUID
-   *  which contains the UID from the Stored Print object wheras this
+   *  which contains the UID from the Stored Print object whereas this
    *  string contains the UID assigned by the remote Print SCP.
    *  If used as Print SCP, these strings should always be equal.
    */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -92,7 +92,7 @@ public:
     /** Read data of this module from given source item
      *  @param  source The item to read from
      *  @param  clearOldData If OFTrue, old data is cleared before reading, otherwise
-     *          it is overwriten/amended.
+     *          it is overwritten/amended.
      *  @result EC_Normal if successful, error otherwise
      */
     virtual OFCondition read(DcmItem& source, const OFBool clearOldData = OFTrue);

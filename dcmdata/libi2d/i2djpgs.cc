@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -527,7 +527,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData, Uint32& pixLen
 
 OFCondition I2DJpegSource::createJPEGFileMap()
 {
-    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examing JPEG file and creating map of JPEG markers");
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examining JPEG file and creating map of JPEG markers");
     // clear any old data
     clearMap();
     E_JPGMARKER marker;

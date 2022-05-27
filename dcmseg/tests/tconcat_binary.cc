@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,19 +67,19 @@ OFTEST(dcmseg_concat_binary)
                 } while (result.good());
                 if (result != FG_EC_ConcatenationComplete)
                 {
-                    DCMSEG_ERROR("Could not write concatentation instance: " << result.text());
+                    DCMSEG_ERROR("Could not write concatenation instance: " << result.text());
                     OFCHECK(result.good());
                 }
             }
             else
             {
-                DCMSEG_ERROR("Could not write concatentation: " << result.text());
+                DCMSEG_ERROR("Could not write concatenation: " << result.text());
                 OFCHECK(result.good());
             }
         }
         else
         {
-            DCMSEG_ERROR("Could not configure concatentation number of frames to " << NUM_FRAMES_PER_CONCAT << ": "
+            DCMSEG_ERROR("Could not configure concatenation number of frames to " << NUM_FRAMES_PER_CONCAT << ": "
                                                                                    << result.text());
             OFCHECK(result.good());
         }

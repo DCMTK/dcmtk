@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2020, OFFIS e.V.
+ *  Copyright (C) 1997-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -275,7 +275,7 @@ public:
    *  @param codingSchemeDesignator coding scheme designator for the sequence item
    *  @param codeValue code value for the sequence item
    *  @param codeMeaning code meaning for the sequence item
-   *  @return EC_Normal if successul, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition insertCodeSequence(
     DcmItem *dataset,

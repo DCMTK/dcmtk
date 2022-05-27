@@ -633,7 +633,7 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
 
   // So we have a multi-frame image with multiple fragments per frame and the
   // offset table is empty or wrong. Our last chance is to peek into the JPEG-LS
-  // bistream and identify the start of the next frame.
+  // bitstream and identify the start of the next frame.
   Uint32 nextItem = startItem;
   Uint8 *fragmentData = NULL;
   while (++nextItem < numItems)

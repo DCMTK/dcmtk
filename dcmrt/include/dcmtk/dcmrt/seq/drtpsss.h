@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTPredecessorStructureSetSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -149,7 +149,7 @@ class DCMTK_DCMRT_EXPORT DRTPredecessorStructureSetSequence
      */
     virtual ~DRTPredecessorStructureSetSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

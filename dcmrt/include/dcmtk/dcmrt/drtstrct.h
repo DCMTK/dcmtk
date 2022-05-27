@@ -102,7 +102,7 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetIOD
      */
     virtual ~DRTStructureSetIOD();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy IOD object to be copied
      *  @return reference to this object
      */

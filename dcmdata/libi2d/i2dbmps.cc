@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2021, OFFIS e.V.
+ *  Copyright (C) 2009-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -537,7 +537,7 @@ OFCondition I2DBmpSource::parseIndexedColorRow(
     // The right-most bpp bits in "index" now contain the data we want,
     // clear all the higher bits.
     // (1 << bpp) gives us in binary: 00001000 (with bpp zero bits) if we
-    // substract 1, only the right-most bpp bits will be 1.
+    // subtract 1, only the right-most bpp bits will be 1.
     index = OFstatic_cast(Uint8, index & ((1 << bpp) - 1));
     bitsLeft = OFstatic_cast(Uint8, bitsLeft - bpp);
 

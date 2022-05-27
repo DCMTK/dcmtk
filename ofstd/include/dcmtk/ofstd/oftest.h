@@ -73,7 +73,7 @@ public:
         EF_Slow = 0x1
     };
 
-    /** Contructor
+    /** Constructor
      *  @param testName the name of this test case
      */
     OFTestTest(const OFString& testName, int flag)

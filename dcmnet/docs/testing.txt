@@ -34,7 +34,7 @@ documentation for more information on the storescp application.
 
 Step 3:
 
-Start up a simple DICOM Verfication Service Class User application.
+Start up a simple DICOM Verification Service Class User application.
 e.g.
 	host2> echoscu -v host1 5678
 

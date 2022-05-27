@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,7 +74,7 @@ class DCMTK_DCMIMAGE_EXPORT DiColorOutputPixel
      */
     virtual const void *getData() const = 0;
 
-    /** get pointer to outpout pixel data (abstract)
+    /** get pointer to output pixel data (abstract)
      *
      ** @return pointer to pixel data
      */

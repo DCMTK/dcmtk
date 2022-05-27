@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1878,7 +1878,7 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     msg->CommandField = (T_DIMSE_Command)cmd;
 
     /* depending on the command, parse the rest of obj */
-    /* and insert corrsponding information into msg */
+    /* and insert corresponding information into msg */
     switch (cmd) {
     case DIMSE_C_ECHO_RQ:
         cond = parseCEchoRQ(&msg->msg.CEchoRQ, obj);

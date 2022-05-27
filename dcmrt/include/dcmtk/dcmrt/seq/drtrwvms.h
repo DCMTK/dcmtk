@@ -55,7 +55,7 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -293,7 +293,7 @@ class DCMTK_DCMRT_EXPORT DRTRealWorldValueMappingSequence
      */
     virtual ~DRTRealWorldValueMappingSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

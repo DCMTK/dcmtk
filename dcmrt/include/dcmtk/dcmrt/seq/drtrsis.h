@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedSetupImageSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -204,7 +204,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedSetupImageSequence
      */
     virtual ~DRTReferencedSetupImageSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

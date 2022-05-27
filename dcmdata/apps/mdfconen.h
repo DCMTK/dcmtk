@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2019, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,7 @@ protected:
      *  e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
      *  @param whole string to be split
      *  @param path returns part containing the path
-     *  @param value returns part containing the value(if theres one)
+     *  @param value returns part containing the value (if there is one)
      */
     static void splitPathAndValue(const OFString &whole,
                                   OFString &path,

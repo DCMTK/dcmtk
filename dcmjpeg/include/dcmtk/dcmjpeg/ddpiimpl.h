@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2011, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,7 +34,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Implementation of the plugable image support for the DICOMDIR class
+/** Implementation of the pluggable image support for the DICOMDIR class
  */
 class DCMTK_DCMJPEG_EXPORT DicomDirImageImplementation
   : public DicomDirImagePlugin

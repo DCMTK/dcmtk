@@ -110,7 +110,7 @@ class DCMTK_DCMRT_EXPORT DRTImageIOD
      */
     virtual ~DRTImageIOD();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy IOD object to be copied
      *  @return reference to this object
      */

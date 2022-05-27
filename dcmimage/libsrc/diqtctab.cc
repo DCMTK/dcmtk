@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -482,7 +482,7 @@ OFCondition DcmQuantColorTable::write(
             gLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getGreen()) * factor);
             bLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getBlue()) * factor);
           }
-          // we have written the byte array in little endian order, now swap to US/OW if neccessary
+          // we have written the byte array in little endian order, now swap to US/OW if necessary
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rLUT, numWords*sizeof(Uint16), sizeof(Uint16));
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, gLUT, numWords*sizeof(Uint16), sizeof(Uint16));
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, bLUT, numWords*sizeof(Uint16), sizeof(Uint16));

@@ -149,7 +149,7 @@ InternalLoggingEvent::setLoggingEvent (const log4cplus::tstring & logger,
     LogLevel loglevel, const log4cplus::tstring & msg, const char * filename,
     int fline)
 {
-    // This could be imlemented using the swap idiom:
+    // This could be implemented using the swap idiom:
     //
     // InternalLoggingEvent (logger, loglevel, msg, filename, fline).swap (*this);
     //

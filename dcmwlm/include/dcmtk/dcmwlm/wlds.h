@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,7 +118,7 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
        *  contains a sequence attribute which contains no item or a single empty item, all
        *  attributes from that particular sequence are in fact queried and shall be returned
        *  by the SCP. This implementation accounts for this specification by inserting a
-       *  corresponding single item with all required attributes into such emtpy sequences.
+       *  corresponding single item with all required attributes into such empty sequences.
        *  This function performs the insertion of the required item and attributes.
        *  @param element Pointer to the currently processed element.
        */

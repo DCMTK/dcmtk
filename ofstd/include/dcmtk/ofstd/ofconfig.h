@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,7 +31,7 @@
 /*
  *  Short description of configuration file structure:
  *    - The data in a configuration file have a tree structure.
- *      The tree has a depth defined at instantiation time (by default, OFConfigFile_MaxLevel), 
+ *      The tree has a depth defined at instantiation time (by default, OFConfigFile_MaxLevel),
  *      not including the (imaginary) root node.
  *    - A level 0 entry (a leaf) has the form: KEYWORD = VALUE,
  *      where the keyword starts on row one of a line.
@@ -48,7 +48,7 @@
  *      value string. Empty lines are discarded (and also their linefeed).
  *    - The data must have a "clean" tree structure. This means that there
  *      MUST be a level 2 keyword before any level 1 keyword etc.
- *    - lines starting with the comment char (default  is "#") are interpreted 
+ *    - lines starting with the comment char (default  is "#") are interpreted
  *      as comment lines.
  *
  */
@@ -186,11 +186,11 @@ class DCMTK_OFSTD_EXPORT OFConfigFileCursor
 public:
   /** default constructor
    */
-  OFConfigFileCursor(unsigned int maxLevel) 
+  OFConfigFileCursor(unsigned int maxLevel)
   : array_(NULL)
   , maxLevel_(maxLevel)
-  { 
-  	clear(); 
+  {
+  	clear();
   }
 
   /** copy constructor
@@ -199,7 +199,7 @@ public:
 
   /** destructor
    */
-  ~OFConfigFileCursor() 
+  ~OFConfigFileCursor()
   {
     delete[] array_;
   }
@@ -238,7 +238,7 @@ public:
 
   /** sets cursor to the entry with keyword "key" at the given level.
    *  Cursor must be valid at the level higher than the one specified.
-   *  If the keyword exists more than once, the first occurance is found.
+   *  If the keyword exists more than once, the first occurrence is found.
    *  If the keyword does not exist, the cursor becomes invalid at the
    *  specified level. The cursor always becomes invalid at all levels
    *  lower than specified.
@@ -247,10 +247,10 @@ public:
    *  @param anchor pointer to anchor node in config tree
    */
   void set_section(
-    unsigned int level, 
+    unsigned int level,
     const char *key,
     OFConfigFileNode *anchor);
-   
+
   /** sets cursor to the first entry at the given level (without
    *  changing the cursor position at higher levels).
    *  Cursor must be valid at the level higher than the one specified.
@@ -320,7 +320,7 @@ private:
   OFConfigFileNodePtr *array_;
 
   /// depth of tree, i.e. number of entries in array_
-  unsigned int maxLevel_;  
+  unsigned int maxLevel_;
 };
 
 
@@ -341,7 +341,7 @@ public:
    *    See documentation of member variable orderedMode_
    */
   OFConfigFile(
-    FILE *infile, 
+    FILE *infile,
     unsigned int maxLevel = OFConfigFile_MaxLevel,
     char commentChar = OFConfigFile_CommentChar,
     OFBool orderedMode = OFFalse);
@@ -354,22 +354,22 @@ public:
    *  @param infile configuration file, must already be open for reading.
    */
   void loadFile(FILE *infile);
-  
+
   /** gets the name of the keyword at the specified level
    *  in the cursor path. Cursor must be valid at the specified level.
    *  @param level cursor level
    *  @return keyword if valid, NULL otherwise.
    */
   const char *get_keyword(unsigned int level);
-  
+
   /** gets the value for the current entry (level 0 keyword).
    *  Cursor must point to a valid entry (i.e. be valid at level 0)
    *  @return value if valid, NULL otherwise.
    */
   const char *get_value();
-  
+
   /** gets the value for the current entry and interprets it as
-   *  a boolean value. The keywords "yes", "no", "on", "off", "1", "0", 
+   *  a boolean value. The keywords "yes", "no", "on", "off", "1", "0",
    *  "true" and false" are recognised in upper, lower and mixed case.
    *  If the value is different from any recognised keyword, the specified
    *  default is returned
@@ -379,7 +379,7 @@ public:
    *  @return boolean value.
    */
   OFBool get_bool_value(OFBool defaultvalue);
-  
+
   /** checks if the cursor points to a valid entry in the
    *  config data tree up to the the specified level.
    *  @param level tree level (0 for leaf)
@@ -389,10 +389,10 @@ public:
   {
     return cursor_.section_valid(level);
   }
-  
+
   /** sets cursor to the entry with keyword "key" at the given level.
    *  Cursor must be valid at the level higher than the one specified.
-   *  If the keyword exists more than once, the first occurance is found.
+   *  If the keyword exists more than once, the first occurrence is found.
    *  If the keyword does not exist, the cursor becomes invalid at the
    *  specified level. The cursor always becomes invalid at all levels
    *  lower than specified.
@@ -403,7 +403,7 @@ public:
   {
     cursor_.set_section(level, key, anchor_);
   }
-   
+
   /** sets cursor to the first entry at the given level (without
    *  changing the cursor position at higher levels).
    *  Cursor must be valid at the level higher than the one specified.
@@ -429,15 +429,15 @@ public:
   {
     cursor_.next_section(level);
   }
-  
+
   /** puts the current cursor position on a cursor stack.
    */
   void save_cursor();
-  
+
   /** restores a previously stored cursor position from the cursor stack.
    */
   void restore_cursor();
-  
+
   /** sets the cursor to a different section. This "shortcut" method allows
    *  to specify multiple section levels at the same time.
    *  The cursor becomes invalid when the section is not found or if parameters
@@ -450,7 +450,7 @@ public:
     const char *key1,
     const char *key2=NULL,
     const char *key3=NULL);
-  
+
   /** sets the cursor to the given level 0 keyword and returns
    *  the string value assigned to this keyword.
    *  @param key0 level 0 keyword
@@ -463,7 +463,7 @@ public:
    */
   void print(STD_NAMESPACE ostream& out);
 
-private:  
+private:
 
   /** reads the next character from the input file,
    *  maintains the current line number and filters out
@@ -479,7 +479,7 @@ private:
    *  @return next non-whitespace character
    */
   char read_keywordchar(FILE *infile);
-  
+
   /** reads a complete entry from the config file.
    *  An entry can either be a section heading or
    *  an entry of the form key=value. The entry is inserted
@@ -487,7 +487,7 @@ private:
    *  @param infile the file to be read
    */
   void read_entry(FILE *infile);
-  
+
   /** writes a character to the string buffer maintained in
    *  "buffer". Automatically resizes buffer if necessary.
    *  @param c character to be stored
@@ -497,7 +497,7 @@ private:
   /** private undefined copy constructor
    */
   OFConfigFile(const OFConfigFile&);
-  
+
   /** private undefined assignment operator
    */
   OFConfigFile& operator=(const OFConfigFile&);
@@ -528,11 +528,11 @@ private:
   long bufsize_;
 
   /// depth of tree, i.e. number of entries in array_
-  unsigned int maxLevel_;  
+  unsigned int maxLevel_;
 
-  /// character starting comment lines  
+  /// character starting comment lines
   char commentChar_;
-  
+
   /** mode flag for reading configuration file. If false, new entries to the
    *  tree containing the configuration file are just appended and not sorted.
    *  This allows multiple entries with the same keyword to be present, only the

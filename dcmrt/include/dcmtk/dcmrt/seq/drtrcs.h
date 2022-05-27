@@ -54,7 +54,7 @@ class DCMTK_DCMRT_EXPORT DRTROIContourSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -212,7 +212,7 @@ class DCMTK_DCMRT_EXPORT DRTROIContourSequence
      */
     virtual ~DRTROIContourSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

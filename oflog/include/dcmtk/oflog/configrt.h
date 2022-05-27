@@ -213,7 +213,7 @@ namespace log4cplus
          * # milliseconds, followed by the LogLevel of the log request,
          * # followed by the two rightmost components of the logger name,
          * # followed by the callers method name, followed by the line number,
-         * # the nested disgnostic context and finally the message itself.
+         * # the nested diagnostic context and finally the message itself.
          * # Refer to the documentation of {@link PatternLayout} for further information
          * # on the syntax of the ConversionPattern key.
          * log4cplus.appender.A1.layout=log4cplus::PatternLayout

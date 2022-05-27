@@ -186,7 +186,7 @@ public:
 
   /** returns profile identified by given name
    *  @param profileName the name of the profile to look for
-   *  @return the profile if existant, otherwise NULL
+   *  @return the profile if existent, otherwise NULL
    */
   const DcmProfileEntry* getProfileEntry(const OFString& profileName);
 

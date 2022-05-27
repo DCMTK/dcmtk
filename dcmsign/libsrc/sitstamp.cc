@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, OFFIS e.V.
+ *  Copyright (C) 2019-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -356,7 +356,7 @@ struct StatusMap
   const char *text;
 };
 
-/** status flags for timestamp resonse failures
+/** status flags for timestamp response failures
  *  Source: OpenSSL, ts_rsp_print.c
  */
 static StatusMap failure_map[] =
@@ -687,7 +687,7 @@ OFCondition SiTimeStamp::check_ts_response(
     }
   }
 
-  // check that the lenghts of both MACs are really the same
+  // check that the lengths of both MACs are really the same
   if (result.good())
   {
     // mac is now guaranteed to point to a valid SiMAC object

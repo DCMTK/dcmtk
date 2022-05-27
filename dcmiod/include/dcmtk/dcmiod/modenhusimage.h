@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2020, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -93,7 +93,7 @@ public:
     virtual OFString getName() const;
 
     /** Read attributes from given item into this class. Overwrites
-     *  fucntion of base class IODComponent.
+     *  function of base class IODComponent.
      *  @param source  The source to read from
      *  @param clearOldData If OFTrue, old data is cleared before reading. Otherwise
      *         old data is overwritten (or amended)
@@ -451,7 +451,7 @@ public:
      */
     virtual OFCondition setRecognizableVisibleFeatures(const OFString& value, const OFBool checkValue = OFTrue);
 
-    /** Set Processing Funcion
+    /** Set Processing Function
      *  @param  value Value to be set
      *  @param  checkValue Check 'value' for conformance if enabled, including VR (LO) and VM (1)
      *  @return EC_Normal if successful, an error code otherwise

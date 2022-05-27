@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,12 +68,12 @@ enum DB_LEVEL
   IMAGE_LEVEL
 };
 
-/** This enum describes the status of one entry in the database hierarchy. An 
- *  entry can describe a study, a series or an instance. A study or series is 
- *  new exactly if all subobjects (series and instances) are new. A study or 
- *  series contains new subobjecs as long as any subobject (series or instance) 
- *  has the status objectIsNew. Instances can never have the status 
- *  DVIF_objectContainsNewSubobjects. 
+/** This enum describes the status of one entry in the database hierarchy. An
+ *  entry can describe a study, a series or an instance. A study or series is
+ *  new exactly if all subobjects (series and instances) are new. A study or
+ *  series contains new subobjects as long as any subobject (series or instance)
+ *  has the status objectIsNew. Instances can never have the status
+ *  DVIF_objectContainsNewSubobjects.
  */
 enum DVIFhierarchyStatus
 {
@@ -107,7 +107,7 @@ private:
 
 public:
 
-  /** Constructor. Creates and initializes a index file handle for the given 
+  /** Constructor. Creates and initializes a index file handle for the given
    *  database storage area (storageArea).
    *  @param storageArea name of storage area, must not be NULL
    *  @param maxStudiesPerStorageArea maximum number of studies for this storage area,
@@ -121,26 +121,26 @@ public:
     long maxStudiesPerStorageArea,
     long maxBytesPerStudy,
     OFCondition& result);
-  
+
   /** Destructor. Destroys handle, cancels any ongoing
    *  request if necessary, deletes temporary files used for C-STORE and
    *  sub-operations of C-MOVE.
    */
    ~DcmQueryRetrieveIndexDatabaseHandle();
-  
+
   /** Configure the DB module to perform (or not perform) checking
    *  of FIND and MOVE request identifiers. Default is no checking.
    *  @param checkFind checking for C-FIND parameters
    *  @param checkMove checking for C-MOVE parameters
    */
   void setIdentifierChecking(OFBool checkFind, OFBool checkMove);
-  
+
   /** create a filename under which a DICOM object that is currently
    *  being received through a C-STORE operation can be stored.
    *  @param SOPClassUID SOP class UID of DICOM instance
    *  @param SOPInstanceUID SOP instance UID of DICOM instance
    *  @param newImageFileName file name is returned in this parameter.
-   *    Memory must be provided by the caller and should be at least MAXPATHLEN+1 
+   *    Memory must be provided by the caller and should be at least MAXPATHLEN+1
    *    characters. The file name generated should be an absolute file name.
    *  @param newImageFileNameLen length of buffer pointed to by newImageFileName
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
@@ -150,16 +150,16 @@ public:
       const char *SOPInstanceUID,
       char       *newImageFileName,
       size_t      newImageFileNameLen);
-  
-  /** register the given DICOM object, which has been received through a C-STORE 
+
+  /** register the given DICOM object, which has been received through a C-STORE
    *  operation and stored in a file, in the database.
    *  @param SOPClassUID SOP class UID of DICOM instance
    *  @param SOPInstanceUID SOP instance UID of DICOM instance
    *  @param imageFileName file name (full path) of DICOM instance
-   *  @param status pointer to DB status object in which a DIMSE status code 
+   *  @param status pointer to DB status object in which a DIMSE status code
         suitable for use with the C-STORE-RSP message is set.
    *  @param isNew if true, the instance is marked as "new" in the database,
-   *    if such a flag is maintained in the database.   
+   *    if such a flag is maintained in the database.
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   OFCondition storeRequest(
@@ -174,7 +174,7 @@ public:
   OFCondition startFindRequest(
       const char *SOPClassUID,
       DcmDataset *findRequestIdentifiers,
-      DcmQueryRetrieveDatabaseStatus *status);     
+      DcmQueryRetrieveDatabaseStatus *status);
 
   /** @copydoc DcmQueryRetrieveDatabaseHandle::nextFindResponse()
    */
@@ -185,52 +185,52 @@ public:
 
   /** cancel the ongoing FIND request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.
-   *  @param status pointer to DB status object in which a DIMSE status code 
-   *    suitable for use with the C-FIND-RSP message is set. 
+   *  @param status pointer to DB status object in which a DIMSE status code
+   *    suitable for use with the C-FIND-RSP message is set.
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   OFCondition cancelFindRequest(DcmQueryRetrieveDatabaseStatus *status);
-          
+
   /** initiate MOVE operation using the given SOP class UID (which identifies
-   *  the retrieve model) and DICOM dataset containing move request identifiers. 
+   *  the retrieve model) and DICOM dataset containing move request identifiers.
    *  @param SOPClassUID SOP class UID of retrieve service, identifies Q/R model
    *  @param moveRequestIdentifiers dataset containing request identifiers (i.e., the query)
-   *    The caller retains responsibility for destroying the 
+   *    The caller retains responsibility for destroying the
    *    moveRequestIdentifiers when no longer needed.
-   *  @param status pointer to DB status object in which a DIMSE status code 
+   *  @param status pointer to DB status object in which a DIMSE status code
    *    suitable for use with the C-MOVE-RSP message is set. Status will be
    *    PENDING if any MOVE responses will be generated or SUCCESS if no MOVE responses will
    *    be generated (SUCCESS indicates the completion of a operation), or
-   *    another status code upon failure. 
+   *    another status code upon failure.
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   OFCondition startMoveRequest(
       const char *SOPClassUID,
       DcmDataset *moveRequestIdentifiers,
       DcmQueryRetrieveDatabaseStatus *status);
-  
-  /** Constructs the information required for the next available C-MOVE 
+
+  /** Constructs the information required for the next available C-MOVE
    *  sub-operation (the image SOP class UID, SOP Instance UID and an
-   *  imageFileName containing the requested data). 
-   *  @param SOPClassUID pointer to string of at least 65 characters into 
+   *  imageFileName containing the requested data).
+   *  @param SOPClassUID pointer to string of at least 65 characters into
    *    which the SOP class UID for the next DICOM object to be transferred is copied.
    *  @param SOPClassUIDSize size of SOPClassUID element
-   *  @param SOPInstanceUID pointer to string of at least 65 characters into 
+   *  @param SOPInstanceUID pointer to string of at least 65 characters into
    *    which the SOP instance UID for the next DICOM object to be transferred is copied.
    *  @param SOPInstanceUIDSize size of SOPInstanceUID element
-   *  @param imageFileName pointer to string of at least MAXPATHLEN+1 characters into 
+   *  @param imageFileName pointer to string of at least MAXPATHLEN+1 characters into
    *    which the file path for the next DICOM object to be transferred is copied.
    *  @param imageFileNameSize size of imageFileName element
    *  @param numberOfRemainingSubOperations On return, this parameter will contain
    *     the number of suboperations still remaining for the request
    *     (this number is needed by move responses with PENDING status).
-   *  @param status pointer to DB status object in which a DIMSE status code 
+   *  @param status pointer to DB status object in which a DIMSE status code
    *    suitable for use with the C-MOVE-RSP message is set. Status will be
-   *    PENDING if more MOVE responses will be generated or SUCCESS if no more 
-   *    MOVE responses will be generated (SUCCESS indicates the completion of 
-   *    a operation), or another status code upon failure. 
+   *    PENDING if more MOVE responses will be generated or SUCCESS if no more
+   *    MOVE responses will be generated (SUCCESS indicates the completion of
+   *    a operation), or another status code upon failure.
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
-   */  
+   */
   OFCondition nextMoveResponse(
       char *SOPClassUID,
       size_t SOPClassUIDSize,
@@ -243,14 +243,14 @@ public:
 
   /** cancel the ongoing MOVE request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.
-   *  @param status pointer to DB status object in which a DIMSE status code 
-   *    suitable for use with the C-MOVE-RSP message is set. 
+   *  @param status pointer to DB status object in which a DIMSE status code
+   *    suitable for use with the C-MOVE-RSP message is set.
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   OFCondition cancelMoveRequest(DcmQueryRetrieveDatabaseStatus *status);
-  
+
   /** Prune invalid records from the database.
-   *  Records referring to non-existant image files are invalid.
+   *  Records referring to non-existent image files are invalid.
    */
   OFCondition pruneInvalidRecords();
 
@@ -266,15 +266,15 @@ public:
    *  @param storeArea name of storage area, must not be NULL
    */
   static void printIndexFile (char *storeArea);
-  
-  /** search for a SOP class and SOP instance UIDs in index file. 
+
+  /** search for a SOP class and SOP instance UIDs in index file.
   *  @param storeArea name of storage area, must not be NULL
   *  @param sopClassUID SOP Class UID to search for
   *  @param sopInstanceUID SOP Instance UID to search for
   *  @return OFTrue if SOP Class and SOP Instance UIDs are found. otherwise return OFFalse.
   */
   OFBool findSOPInstance(const char *storeArea, const OFString &sopClassUID,const OFString &sopInstanceUID);
-    
+
   /** deletes the given file only if the quota mechanism is enabled.
    *  The image is not de-registered from the database by this routine.
    *  @param imgFile file name (path) to the file to be deleted.
@@ -342,7 +342,7 @@ public:
   /// return path to index file
   const char *getIndexFilename() const;
 
-      
+
 private:
 
   /** a private helper class that performs character set conversions on the fly
@@ -447,7 +447,7 @@ public:
    *  @return pointer to database object, must not be NULL if result is EC_Normal.
    */
   virtual DcmQueryRetrieveDatabaseHandle *createDBHandle(
-    const char *callingAETitle, 
+    const char *callingAETitle,
     const char *calledAETitle,
     OFCondition& result) const;
 

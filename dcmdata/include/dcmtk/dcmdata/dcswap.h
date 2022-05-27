@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,7 +26,7 @@
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcxfer.h"     /* for E_ByteOrder */
 
-/** swap block of data from big-endian to little-endian or back if neccessary
+/** swap block of data from big-endian to little-endian or back if necessary
  *  @param newByteOrder desired byte order of data block
  *  @param oldByteOrder current byte order of data block
  *  @param value pointer to block of data
@@ -35,9 +35,9 @@
  *  @return EC_Normal if successful, an error code otherwise
  */
 DCMTK_DCMDATA_EXPORT OFCondition swapIfNecessary(
-  const E_ByteOrder newByteOrder, 
+  const E_ByteOrder newByteOrder,
   const E_ByteOrder oldByteOrder,
-  void * value, 
+  void * value,
   const Uint32 byteLength,
   const size_t valWidth);
 
@@ -47,8 +47,8 @@ DCMTK_DCMDATA_EXPORT OFCondition swapIfNecessary(
  *  @param valWidth size of each value in the data block, in bytes
  */
 DCMTK_DCMDATA_EXPORT void swapBytes(
-  void * value, 
-  const Uint32 byteLength, 
+  void * value,
+  const Uint32 byteLength,
   const size_t valWidth);
 
 /** swap an Uint16 number from big-endian to little-endian or back

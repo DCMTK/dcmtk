@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,7 +71,7 @@ public:
   virtual OFBool supportsMultiframe() const;
 
   /** Add multiframe specific attributes
-   *  @param datset pointer to DICOM dataset, must not be NULL
+   *  @param targetDataset pointer to DICOM dataset, must not be NULL
    *  @param numberOfFrames number of frames in this dataset
    *  @return EC_Normal if successful, an error code otherwise
    */
@@ -84,7 +84,7 @@ protected:
   /** Inserts attributes Rescale Slope/Intercept/Type, which have to be
    *  written (1C) if color model is MONOCHROME2 and BitsStored > 1.
    *  @param targetDataset - [out] The dataset to write to
-   *  @return EC_Normal if insertion was successfull, error code otherwise
+   *  @return EC_Normal if insertion was successful, error code otherwise
    */
   virtual OFCondition insertMonochromeAttribs(DcmDataset *targetDataset) const;
 

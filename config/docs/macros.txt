@@ -72,7 +72,7 @@ DCMTK_ENABLE_UNSAFE_VSNPRINTF
   Type of modification: Activates feature
   Explanation: DCMTK requires the snprintf(3)/vsnprintf(3) function, which was
     introduced with C99 and may not be supported by very old compilers.  As a
-    "last resort", an implementation interally using sprintf/vsprintf can be
+    "last resort", an implementation internally using sprintf/vsprintf can be
     enabled with this macro, which allows the user to compile DCMTK on platforms
     that do not have the new functions.
     The implementation allocates a buffer that is 1 kByte larger than the "size"

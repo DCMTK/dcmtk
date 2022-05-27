@@ -33,7 +33,7 @@
  *   If you add "#define STRICT_PARSING", on the first line of this file
  *   the parser will see the following XML-stream:
  *      <a><b>some text</b><b>other text    </a>
- *   as an error. Otherwise, this tring will be equivalent to:
+ *   as an error. Otherwise, this string will be equivalent to:
  *      <a><b>some text</b><b>other text</b></a>
  *
  * NOTE:
@@ -72,7 +72,7 @@
  * for enhancing "DCMTK  project". All other projects
  * (not related to "DCMTK  project") have to use this
  * code under the Aladdin Free Public License (AFPL)
- * See the file "AFPL-license.txt" for more informations about the AFPL license.
+ * See the file "AFPL-license.txt" for more information about the AFPL license.
  * (see http://www.artifex.com/downloads/doc/Public.htm for detailed AFPL terms)
  *
  * Redistribution and use in source and binary forms, with or without
@@ -245,7 +245,7 @@ char myIsTextWideChar(const void * /*b*/, int /*len*/) { return FALSE; }
     char myIsTextWideChar(const void *b, int len) // inspired by the Wine API: RtlIsTextUnicode
     {
 #ifdef sun
-        // for SPARC processors: wchar_t* buffers must always be alligned, otherwise it's a char* buffer.
+        // for SPARC processors: wchar_t* buffers must always be aligned, otherwise it's a char* buffer.
         if ((((unsigned long)b)%sizeof(wchar_t))!=0) return FALSE;
 #endif
         const wchar_t *s=(const wchar_t*)b;
@@ -1525,7 +1525,7 @@ int XMLNode::ParseXMLElement(void *pa)
                     token = GetNextToken(pXML, &cbToken, &xtype);
 
                     // Return an error if we couldn't obtain the next token or
-                    // it wasnt text
+                    // it wasn't text
                     if (xtype != eTokenText)
                     {
                         pXML->error = eXMLErrorMissingTagName;

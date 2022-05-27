@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -438,7 +438,7 @@ class DCMTK_DCMIMGLE_EXPORT DiMonoImage
      *  replaces old overlay plane if group number already exists.
      *
      ** @param  group        group number (0x60nn) of overlay plane
-     *  @param  left_pos     x coordinate of plane orgin (referring to image origin)
+     *  @param  left_pos     x coordinate of plane origin (referring to image origin)
      *  @param  top_pos      y coordinate of plane origin
      *  @param  columns      width of overlay plane (in pixels)
      *  @param  rows         height of overlay plane (in pixels)

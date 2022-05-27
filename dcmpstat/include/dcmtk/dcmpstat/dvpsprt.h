@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -97,7 +97,7 @@ private:
    */
   int errorCond(OFCondition cond, const char *message);
 
-  /** sends A-ASSOCIATION-RQ as the result of an unsuccesful association
+  /** sends A-ASSOCIATION-RQ as the result of an unsuccessful association
    *  negotiation.
    *  @param isBadContext defines the reason for the A-ASSOCIATE-RQ.
    *    true indicates an incorrect application context, false sends back

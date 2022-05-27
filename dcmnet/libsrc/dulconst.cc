@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -687,7 +687,7 @@ constructSubItem(char *name, unsigned char type,
 **  contextID               Unique value identifying this presentation
 **                          context
 **  reason                  Reason to be included in the result field
-**  abstractSyntax          Used to build teh abstract syntax list
+**  abstractSyntax          Used to build the abstract syntax list
 **  proposedTransferSyntax  Proposed transfer characteristics (to be
 **                          negotiated)
 **  acceptedTransferSyntax  Accepted transfer characteristics (after

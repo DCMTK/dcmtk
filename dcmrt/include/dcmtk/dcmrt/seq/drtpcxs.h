@@ -58,7 +58,7 @@ class DCMTK_DCMRT_EXPORT DRTProtocolContextSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -399,7 +399,7 @@ class DCMTK_DCMRT_EXPORT DRTProtocolContextSequence
      */
     virtual ~DRTProtocolContextSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

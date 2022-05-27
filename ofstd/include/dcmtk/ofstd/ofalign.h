@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,7 @@ OFalignas_size_helper_s<Size> OFalignof_or_identity_template() {}
  *  OFalign should support alignments as any power of two <= 8192 (examine your compiler's manual
  *  when in doubt).
  *  Other alignments may also be supported, but may not be available on every platform.
- *  OFalign may simply ignore your request if you specify an unsupported aligment
+ *  OFalign may simply ignore your request if you specify an unsupported alignment
  *  (won't output an error). You may want to check the alignment via <i>OFalignof</i> in case
  *  it is likely to fail. Using another type as alignment specifier should always work,
  *  as the required alignment is obviously supported in that case

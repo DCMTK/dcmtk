@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -280,7 +280,7 @@ private:
   GlobalDcmDataDictionary(const GlobalDcmDataDictionary &);
 
   /** create the data dictionary instance for this class. Used for first
-   * intialization.  The caller must not have dataDictLock locked.
+   * initialization.  The caller must not have dataDictLock locked.
    */
   void createDataDict();
 

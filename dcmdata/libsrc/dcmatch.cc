@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ public:
             }
         }
         // if the end of the query is reached, there was no '*' wildcard
-        // therefor it is either a match (if the end of the candidate was
+        // therefore it is either a match (if the end of the candidate was
         // also reached) or not
         if( queryData == queryDataEnd )
             return candidateData == candidateDataEnd;
@@ -72,7 +72,7 @@ public:
         if( *queryData != '*' )
             return OFFalse;
         // skip all '*' wildcard characters, because even a string like "****"
-        // equals the sematics of '*'. If the end of the query is reached
+        // equals the semantics of '*'. If the end of the query is reached
         // any remaining part of the candidate is a match, therefore return
         // OFTrue
         do if( ++queryData == queryDataEnd )

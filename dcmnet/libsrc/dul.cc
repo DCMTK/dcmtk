@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1368,7 +1368,7 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
         condition stack because this is no real error, but normal
         behaviour - A callback function registered in the condition stack
         would (unnecessarily) be called once for each PDV.
-        the #ifdef allows to mimick the old behaviour.
+        the #ifdef allows to mimic the old behaviour.
       */
     return DUL_NOPDVS;
 

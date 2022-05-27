@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -132,7 +132,7 @@ DIMSE_getUser(
          */
         switch (selectReadable(assoc, net, subAssoc, blockMode, timeout)) {
         case 0:
-            /* none are readble, timeout */
+            /* none are readable, timeout */
             if (blockMode == DIMSE_BLOCKING) {
                 continue;       /* continue with while loop */
             } else {

@@ -762,7 +762,7 @@ int main()
   endif()
 
   # checks if <math.h> must be included as a C++ include file (i.e. without extern "C").
-  # Some sytems (Win32, HP/UX 10) use C++ language features in <math.h>.
+  # Some systems (Win32, HP/UX 10) use C++ language features in <math.h>.
   DCMTK_TRY_COMPILE(INCLUDE_MATH_H_AS_EXTERN_C "<math.h> can be included as extern \"C\""
   "extern \"C\" {
 #include <math.h>
@@ -933,7 +933,7 @@ function(DCMTK_LFS_TRY_COMPILE VAR FILE FLAGS DEFINITIONS)
   set("${VAR}" "${RESULT}" PARENT_SCOPE)
   if(RESULT)
     set(LOGFILE "CMakeOutput.log")
-    set(LOG "succeded")
+    set(LOG "succeeded")
   else()
     set(LOGFILE "CMakeError.log")
     set(LOG "failed")
@@ -956,7 +956,7 @@ function(DCMTK_CHECK_ENABLE_LFS)
   elseif(DCMTK_ENABLE_LFS MATCHES "^(no|false|0)$")
     set(DCMTK_ENABLE_LFS "off")
   endif()
-  # determin whether lfs64 is available in case it wasn't detected yet it may be used
+  # determine whether lfs64 is available in case it wasn't detected yet it may be used
   if(NOT DEFINED DCMTK_LFS64_AVAILABLE AND DCMTK_ENABLE_LFS MATCHES "^(lfs64|auto)$")
     set(DCMTK_LFS64_DEFINITIONS)
     set(MESSAGE_RESULT "no")
@@ -979,7 +979,7 @@ function(DCMTK_CHECK_ENABLE_LFS)
     set(DCMTK_LFS64_AVAILABLE "${RESULT}" CACHE INTERNAL "whether LFS64 is available or not" FORCE)
     message(STATUS "${MESSAGE} -- ${MESSAGE_RESULT}")
   endif()
-  # determin whether lfs is available in case it wasn't detected yet it may be used
+  # determine whether lfs is available in case it wasn't detected yet it may be used
   if(NOT DEFINED DCMTK_LFS_AVAILABLE AND DCMTK_ENABLE_LFS MATCHES "^(lfs|auto)$")
     set(DCMTK_LFS_FLAGS)
     set(DCMTK_LFS_DEFINITIONS)
@@ -1105,7 +1105,7 @@ function(DCMTK_CHECK_ENABLE_LFS)
     message(STATUS "Info: Building DCMTK with large file support (LFS)")
   else()
     set(DCMTK_ENABLE_LFS)
-    message(STATUS "Info: Building DCMTK without large file support, files >4GB may be inaccesible!")
+    message(STATUS "Info: Building DCMTK without large file support, files >4GB may be inaccessible!")
   endif()
 endfunction()
 

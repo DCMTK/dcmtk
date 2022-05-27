@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2021, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Alexander Haderer
  *
- *  Purpose: Implements PNG interface for plugable image formats
+ *  Purpose: Implements PNG interface for pluggable image formats
  *
  */
 

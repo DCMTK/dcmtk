@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: Provides abstract interface to plugable image output formats
+ *  Purpose: Provides abstract interface to pluggable image output formats
  *
  */
 
@@ -37,9 +37,9 @@ class DiImage;
  *  class declaration  *
  *---------------------*/
 
-/** abstract interface to plugable image output formats.
+/** abstract interface to pluggable image output formats.
  *  This is an abstract base class used as an interface to support multiple
- *  plugable image output formats for the dcmimle/dcmimage library. An example
+ *  pluggable image output formats for the dcmimle/dcmimage library. An example
  *  implementation can be found in dcmjpeg/libsrc/dipijpeg.cc (JPEG plugin).
  */
 class DCMTK_DCMIMGLE_EXPORT DiPluginFormat

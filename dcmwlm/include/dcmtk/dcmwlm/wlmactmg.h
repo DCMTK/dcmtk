@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -154,7 +154,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        */
     OFCondition HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId );
 
-      /** This function processes a DIMSE C-FIND-RQ commmand that was
+      /** This function processes a DIMSE C-FIND-RQ command that was
        *  received over the network connection.
        *  @param assoc   The association (network connection to another DICOM application).
        *  @param request The DIMSE C-FIND-RQ message that was received.

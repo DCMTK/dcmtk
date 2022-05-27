@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  Copyright (C) 1998-2016, OFFIS e.V.
+#  Copyright (C) 1998-2022, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -263,7 +263,7 @@ crl		= \$dir/crl.pem 		# The current CRL
 private_key	= \$dir/private/cakey.pem	# The private key
 RANDFILE	= \$dir/private/randseed.bin	# private random number file
 
-x509_extensions	= usr_cert		# The extentions to add to the cert
+x509_extensions	= usr_cert		# The extensions to add to the cert
 
 # Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
 # so this is commented out by default to leave a V1 CRL.
@@ -307,7 +307,7 @@ default_bits		= 2048
 default_keyfile 	= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes
-x509_extensions 	= v3_ca	# The extentions to add to the self signed cert
+x509_extensions 	= v3_ca	# The extensions to add to the self signed cert
 
 # Passwords for private keys if not present they will be prompted for
 # input_password = secret

@@ -397,7 +397,7 @@ void IODMultiframeDimensionModule::createDimensionOrganizationData()
             DimensionOrganizationItem* uidItem = new DimensionOrganizationItem();
             if (!uidItem)
             {
-                DCMIOD_ERROR("Memory Exhausted while collecting Dimension Organziation UIDs");
+                DCMIOD_ERROR("Memory Exhausted while collecting Dimension Organization UIDs");
                 return;
             }
             result = uidItem->setDimensionOrganizationUID(newuid);

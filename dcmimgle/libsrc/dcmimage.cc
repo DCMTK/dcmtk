@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -356,7 +356,7 @@ DicomImage *DicomImage::createDicomImage(unsigned long fstart,
 
 
 // --- create scaled to given size ('width' and 'height') image, memory isn't handled internally !
-// --- if one dimension ist '0' the other is automatically adjusted (with respect to pixel aspect ratio)
+// --- if one dimension is '0' the other is automatically adjusted (with respect to pixel aspect ratio)
 
 DicomImage *DicomImage::createScaledImage(const unsigned long width,
                                           const unsigned long height,
@@ -757,7 +757,7 @@ int DicomImage::writeBMP(FILE *stream,
 }
 
 
-// --- write 'frame' of image data to 'filename' plugable image format
+// --- write 'frame' of image data to 'filename' pluggable image format
 
 int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
                                   const char *filename,
@@ -780,7 +780,7 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
 }
 
 
-// --- same for open C 'FILE' in plugable image format
+// --- same for open C 'FILE' in pluggable image format
 
 int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
                                   FILE *stream,

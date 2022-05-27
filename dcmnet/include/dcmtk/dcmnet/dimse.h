@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1199,7 +1199,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
                      void *callbackContext);
 
 /** create a DICOM file, populate the meta-header from the content of the given
- *  C-STORE request, and return an ouput stream that can be used to store the
+ *  C-STORE request, and return an output stream that can be used to store the
  *  dataset associated with the C-STORE request message. This function is used
  *  in conjunction with DIMSE_receiveDataSetInFile() to directly "stream" incoming
  *  DICOM datasets to file without storing them in memory and without passing

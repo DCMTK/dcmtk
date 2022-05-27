@@ -58,7 +58,7 @@ class DCMTK_DCMRT_EXPORT DRTPatientSetupSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -366,7 +366,7 @@ class DCMTK_DCMRT_EXPORT DRTPatientSetupSequence
      */
     virtual ~DRTPatientSetupSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

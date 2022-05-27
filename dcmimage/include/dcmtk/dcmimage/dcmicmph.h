@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2021, OFFIS e.V.
+ *  Copyright (C) 2018-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,7 @@ public:
     EF_VoiLutFunction voiFunction,
     ES_PresentationLut presShape);
 
-  /** compare both images and compute image comparion metrics.
+  /** compare both images and compute image comparison metrics.
    *  @param windowType VOI LUT transformation to apply
    *  @return EC_Normal if successful, an error code otherwise.
    */

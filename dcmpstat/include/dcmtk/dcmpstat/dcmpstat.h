@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -333,7 +333,7 @@ public:
    */
   Sint32 getRectShutterUH();
 
-  /** gets rectangular shutter lower horiztonal edge.
+  /** gets rectangular shutter lower horizontal edge.
    *  May only be called if a rectangular shutter is active.
    *  @return the rect shutter LH edge.
    */

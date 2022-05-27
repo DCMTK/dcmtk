@@ -859,7 +859,7 @@ public:
                     if (!findRequestConverter)
                         cond = findRequestConverter.selectCharacterSet(findRequestCharacterSet);
                     if (cond.good()) {
-                        // covert the string and cache the result, using the
+                        // convert the string and cache the result, using the
                         // specific delimitation characters for this VR
                         cond = findRequestConverter.convertString(
                             query->elem.PValueField,
@@ -964,7 +964,7 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::isConversionNecessary(const OFString
 
 /************
 **      Create the response list in specified handle,
-**      using informations found in an index record.
+**      using information found in an index record.
 **      Old response list is supposed freed
 **/
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -59,7 +59,7 @@ class DCMTK_DCMWLM_EXPORT WlmDataSourceFileSystem : public WlmDataSource
        */
     OFBool ReleaseReadlock();
 
-      /** This function takes care of handling a certain non-sequence element whithin
+      /** This function takes care of handling a certain non-sequence element within
        *  the structure of a certain result dataset. This function assumes that all
        *  elements in the result dataset are supported. In detail, a value for the
        *  current element with regard to the currently processed matching record will

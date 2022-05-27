@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2021, OFFIS e.V.
+ *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,7 +58,7 @@ DcmQueryRetrieveTelnetInitiator conf(config);
 /*
  * Handle interrupt signals.
  * We only really need to make sure that the display is clear
- * before quiting.
+ * before quitting.
  */
 #ifdef SIGNAL_HANDLER_WITH_ELLIPSE
 extern "C" void TI_signalHandler(...)

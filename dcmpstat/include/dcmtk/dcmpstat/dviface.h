@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -137,7 +137,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
 
     /** loads a structured reporting "template".
      *  This "template" is just a DICOM Structured Reporting file which resides in a
-     *  special sub-folder and is referenced by the configuration file.  This meachanism
+     *  special sub-folder and is referenced by the configuration file.  This mechanism
      *  should facilitate the creation of new reports since one does not have to start
      *  with a completely empty report.
      *  Please note that the current structured report is replaced by the specified
@@ -752,7 +752,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
      *  stored print objects and hardcopy grayscale images.
      *  The configuration file which is required for the query/retrieve process will be created
      *  automatically from the 'global' configuration file each time this method is called, unless
-     *  this automatical creation is disabled (entry: [QUERYRETIUEVE] AutoCreateConfigFile = false).
+     *  this automatic creation is disabled (entry: [QUERYRETIUEVE] AutoCreateConfigFile = false).
      *  Attention: Successful return of this method is no guarantee that the query/retrieve server
      *  has successfully started, because certain errors (i.e. incorrect settings in the config file)
      *  will only be noted in the query/retrieve process when running. On Unix platform, successful
@@ -1081,7 +1081,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
      *  Larger images are scaled down (according to the pixel aspect ratio) to fit into
      *  the specified rectangle.
      *  Attention: If the values differ from the the previous ones the currently loaded
-     *  hardcopy grayscale image (preview) is automatically detroyed and has to be re-loaded.
+     *  hardcopy grayscale image (preview) is automatically destroyed and has to be re-loaded.
      *  @param width maximum width of preview bitmap (in pixels)
      *  @param height maximum height of preview bitmap (in pixels)
      */
@@ -1327,7 +1327,7 @@ class DCMTK_DCMPSTAT_EXPORT DVInterface: public DVConfiguration
 
     /** starts the print server process (Basic Grayscale Print Management SCP).
      *  The print server process will wait for incoming DICOM associations, handle the
-     *  DICOM print protcol, store data in file and register stored print and grayscale
+     *  DICOM print protocol, store data in file and register stored print and grayscale
      *  image objects in the database index file.
      *  Attention: Successful return of this method is no guarantee that the print
      *  server has successfully started, because certain errors (i.e. incorrect settings
@@ -1554,7 +1554,7 @@ private:
      */
     OFCondition lockDatabase();
 
-    /** creates an exlusive lock on the database if none exists.
+    /** creates an exclusive lock on the database if none exists.
      *  The lock will remain until explicitly released with releaseDatabase()
      *  or unlockExclusive().
      *  This method also clears the index cache.
@@ -1562,7 +1562,7 @@ private:
      */
     OFCondition lockExclusive();
 
-    /** removes an exlusive lock on the database if any.
+    /** removes an exclusive lock on the database if any.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition unlockExclusive();

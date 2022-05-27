@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTRecordedRangeShifterSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -172,7 +172,7 @@ class DCMTK_DCMRT_EXPORT DRTRecordedRangeShifterSequence
      */
     virtual ~DRTRecordedRangeShifterSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

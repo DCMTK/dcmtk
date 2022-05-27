@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2020, OFFIS e.V.
+ *  Copyright (C) 1996-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -315,7 +315,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
 //                numOfSuperiorSequences - [in] The number of elements in the above array.
 //                idx                    - [in] Identifies the record from which the attribute value shall be retrieved.
 //                value                  - [out] Pointer to a newly created string that contains the requested value.
-//                                               If value was not found an emtpy string will be returned.
+//                                               If value was not found an empty string will be returned.
 // Return Value : none.
 {
   OFCondition cond;
@@ -460,7 +460,7 @@ OFBool WlmFileSystemInteractionManager::DatasetIsComplete( DcmDataset *dataset )
 {
   DcmElement *scheduledProcedureStepSequence = NULL;
 
-  // intialize returnValue
+  // initialize returnValue
   OFBool complete = OFTrue;
 
   DCMWLM_DEBUG("Checking whether dataset is complete ...");

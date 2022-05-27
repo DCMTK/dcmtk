@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -187,7 +187,7 @@ public:
 #ifdef OFalign
     // State and content are stored in the same data-array to
     // optimize alignment and so on. Mutable, since the content
-    // itself can be modified even if it cant be (re-)assigned.
+    // itself can be modified even if it can't be (re-)assigned.
     OFdefault_optional_traits() : m_State( OFFalse ) {}
     void destroy() { OFstatic_cast( T*, content() )->~T(); m_State = OFFalse; }
     OFBool state() const { return m_State; }
@@ -266,7 +266,7 @@ struct OFoptional_traits
      */
     <unspecified> is_default_constructible;
 
-    /// <b>Requried</b>: default constructor, must initialize the state to "disengaged".
+    /// <b>Required</b>: default constructor, must initialize the state to "disengaged".
     OFoptional_traits();
 
     /** <b>Required</b>: type constructors, construct the contained object.
@@ -280,7 +280,7 @@ struct OFoptional_traits
     /// <b>Required</b>: type destructor, destroys the underlying object and must set the state to "disengaged".
     void destroy();
 
-    /// <b>Required</b>: state query, must return <i>OFTrue</i> when "engaged" and <i>OFFalse</i> otherwhise.
+    /// <b>Required</b>: state query, must return <i>OFTrue</i> when "engaged" and <i>OFFalse</i> otherwise.
     OFBool state() const;
 
     /// <b>Required</b>: content access, must return a pointer to the contained object.

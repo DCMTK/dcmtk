@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2020, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -697,7 +697,7 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
       case 0xffc7: // SOF_7: differential (hierarchical) lossless, Huffman
         return data[offset+4];
         /* break; */
-      case 0xffc8: // Reserved for JPEG extentions
+      case 0xffc8: // Reserved for JPEG extensions
         offset += readUint16(data+offset+2)+2;
         break;
       case 0xffc9: // SOF_9: extended sequential, arithmetic

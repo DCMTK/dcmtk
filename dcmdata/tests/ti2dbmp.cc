@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,7 +44,7 @@ static Uint8 bmpHeader[] = {
     'B', 'M',
     // 2, File size, most likely wrong anyway
     42, 0x42, 13, 37,
-    // 6, Reservered
+    // 6, Reserved
     0x13, 0x37, 0xde, 0xad,
     // 10, Offset of the image data from start of data, this is IMPORTANT
     0, 0, 0, 0,

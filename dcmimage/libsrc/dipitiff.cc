@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2020, OFFIS e.V.
+ *  Copyright (C) 2001-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: Implements TIFF interface for plugable image formats
+ *  Purpose: Implements TIFF interface for pluggable image formats
  *
  */
 

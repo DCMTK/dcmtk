@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@ public:
    */
   virtual void write(const unsigned char *buf, size_t bufsize) =0;
 
-  /** Virtual Desctructor
+  /** Virtual Destructor
    */
   virtual ~DcmEncoderOutputStream() {}
 

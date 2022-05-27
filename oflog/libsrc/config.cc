@@ -75,7 +75,7 @@ namespace
      * Perform variable substitution in string <code>val</code> from
      * environment variables.
      *
-     * <p>The variable substitution delimeters are <b>${</b> and <b>}</b>.
+     * <p>The variable substitution delimiters are <b>${</b> and <b>}</b>.
      *
      * <p>For example, if the System properties contains "key=value", then
      * the call
@@ -165,7 +165,7 @@ namespace
                     i = var_start + replacement.size ();
             }
             else
-                // Nothing has been subtituted, just move beyond the
+                // Nothing has been substituted, just move beyond the
                 // unexpanded variable.
                 i = var_end + DELIM_STOP_LEN;
         } // end while loop

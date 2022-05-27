@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTBeamLimitingDeviceToleranceSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -156,7 +156,7 @@ class DCMTK_DCMRT_EXPORT DRTBeamLimitingDeviceToleranceSequence
      */
     virtual ~DRTBeamLimitingDeviceToleranceSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

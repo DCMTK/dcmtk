@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -90,7 +90,7 @@ OFCondition IODFloatingPointImagePixelModule::write(DcmItem& destination)
     {
         result = IODImagePixelBase::write(destination);
     }
-    // Write extra attributes of Floating Poing Image Pixel Module
+    // Write extra attributes of Floating Point Image Pixel Module
     if (result.good())
     {
         result = IODModule::write(destination);
@@ -195,7 +195,7 @@ OFCondition IODDoubleFloatingPointImagePixelModule::write(DcmItem& destination)
     {
         result = IODImagePixelBase::write(destination);
     }
-    // Write extra attributes of Floating Poing Image Pixel Module
+    // Write extra attributes of Floating Point Image Pixel Module
     if (result.good())
     {
         result = IODModule::write(destination);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -683,7 +683,7 @@ public:
     virtual OFCondition getReferencedSegmentNumber(OFVector<Uint16>& values);
 
     /** Set Referenced Frame Number
-     *  @param  values The frame numbers that shoule be referenced
+     *  @param  values The frame numbers that should be referenced
      *  @param  checkValue  If OFTrue (default) the given values will be checked
      *  @return EC_Normal if successful, error otherwise
      */

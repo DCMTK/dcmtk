@@ -1,6 +1,6 @@
     /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -65,7 +65,7 @@ public:
    *          one algorithm description. If you want to add more than one
    *          description macro, getTrackingAlgorithmIdentification() and add
    *          as many as needed to the returned vector.
-   *  @param  trackSet Returns the created Track Set, if successfull (NULL
+   *  @param  trackSet Returns the created Track Set, if successful (NULL
    *          otherwise)
    *  @return EC_Normal if creation was successful, error otherwise
    */

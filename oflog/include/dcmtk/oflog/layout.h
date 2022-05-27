@@ -136,7 +136,7 @@ namespace log4cplus {
      * 262 [main] DEBUG org.apache.log4j.examples.SortAlgo.OUTER i=1 - Outer loop.
      * 276 [main] DEBUG org.apache.log4j.examples.SortAlgo.SWAP i=1 j=0 - Swapping intArray[0] = 1 and intArray[1] = 0
      * 290 [main] DEBUG org.apache.log4j.examples.SortAlgo.OUTER i=0 - Outer loop.
-     * 304 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Dump of interger array:
+     * 304 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Dump of integer array:
      * 317 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Element [0] = 0
      * 331 [main] INFO  org.apache.log4j.examples.SortAlgo.DUMP - Element [1] = 1
      * 343 [main] INFO  org.apache.log4j.examples.Sort - The next log statement should be an error message.
@@ -416,7 +416,7 @@ namespace log4cplus {
      * <tr>
      *   <td align=center><b>r</b></td>
      *
-     *   <td>Used to output miliseconds since program start
+     *   <td>Used to output milliseconds since program start
      *   of the logging event.</td>
      * </tr>
      *

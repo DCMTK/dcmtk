@@ -504,7 +504,7 @@ LoggerPatternConverter::convert(tstring & result,
     else {
         size_t len = name.length();
 
-        // We substract 1 from 'len' when assigning to 'end' to avoid out of
+        // We subtract 1 from 'len' when assigning to 'end' to avoid out of
         // bounds exception in return r.substring(end+1, len). This can happen
         // if precision is 1 and the logger name ends with a dot.
         tstring::size_type end = len - 1;

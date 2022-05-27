@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2020, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -333,7 +333,7 @@ private:
    *  @param width The width of the image
    *  @param height The height of the image
    *  @param bitsAllocated The number of bits allocated in the image.
-   *  @return EC_Normal if succesful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition convertToUninterleaved(
     Uint8 *target,
@@ -350,7 +350,7 @@ private:
    *  @param width The width of the image.
    *  @param height The height of the image.
    *  @param bitsAllocated The number of bits allocated in the image.
-   *  @return EC_Normal if succesful, an error code otherwise
+   *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition convertToSampleInterleaved(
     Uint8 *target,

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -329,7 +329,7 @@ public:
     virtual OFCondition read(DcmItem& item);
 
     /** Writes the content of this class into CT Acquisition Details Sequence
-     *  (newly cerated) into given item
+     *  (newly created) into given item
      *  @param  item The item to write to
      *  @return EC_Normal if writing was successful, error otherwise
      */

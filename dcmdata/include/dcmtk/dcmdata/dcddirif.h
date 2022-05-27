@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@
  *  class declarations  *
  *----------------------*/
 
-/** Abstract interface to plugable image support for the DICOMDIR class.
+/** Abstract interface to pluggable image support for the DICOMDIR class.
  *  This is an abstract base class used as an interface to access DICOM
  *  images from the DicomDirInterface.  The implementation can be found
  *  in dcmjpeg/libsrc/ddpiimpl.cc (incl. JPEG support).

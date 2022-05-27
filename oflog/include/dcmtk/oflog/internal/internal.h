@@ -30,7 +30,7 @@
 
 /** @file 
  * This header contains declaration internal to log4cplus. They must never be
- * visible from user accesible headers or exported in DLL/shared libray.
+ * visible from user accessible headers or exported in DLL/shared library.
  */
 
 

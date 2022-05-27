@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2020, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -232,8 +232,8 @@ int SiCertificateVerifier::verifyCallback(int deflt, X509_STORE_CTX *ctx)
      // The signer certificate is on the revocation list. By default, this means that
      // the certificate verification will fail, independent from the timestamp of the signature
      // and the timestamp of the revocation. At this point we could add additional code that
-     // compares the time of revocation with the DICOM signature datetime or (preferrably) a
-     // certified timestamp that might also be present. If the revocation occured after the time of
+     // compares the time of revocation with the DICOM signature datetime or (preferably) a
+     // certified timestamp that might also be present. If the revocation occurred after the time of
      // signature, we could still accept the certificate and thus the signature.
      // For now, we retain the OpenSSL default behaviour.
   }

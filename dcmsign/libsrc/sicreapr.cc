@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,7 +37,7 @@ SiCreatorProfile::SiCreatorProfile()
 OFBool SiCreatorProfile::attributeRequiredIfPresent(const DcmTagKey& key) const
 {
   // This list of attribute tags was extracted from DICOM 2019c.
-  // Attribute tags occuring in multiple modules were commented out
+  // Attribute tags occurring in multiple modules were commented out
   // but remain in the source code to simplify a comparison with the
   // module tables in a later edition of the DICOM standard.
 

@@ -320,7 +320,7 @@ Hierarchy::updateParents(Logger const & logger)
     bool parentFound = false;
     tstring substr;
 
-    // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
+    // if name = "w.x.y.z", loop through "w.x.y", "w.x" and "w", but not "w.x.y.z"
     for(size_t i=name.find_last_of(DCMTK_LOG4CPLUS_TEXT('.'), length-1);
         i != OFString_npos && i > 0;
         i = name.find_last_of(DCMTK_LOG4CPLUS_TEXT('.'), i-1)) 

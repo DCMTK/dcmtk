@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -324,7 +324,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream &inStream)
             /* valid VR, we need to find out which of the two tags was valid */
             if (taglittle.error().bad())
             {
-                /* if the litte endian tag was invalid, the transfer syntax is big endian implicit */
+                /* if the little endian tag was invalid, the transfer syntax is big endian implicit */
                 transferSyntax = EXS_BigEndianImplicit;
             }
             else if (tagbig.error().bad())

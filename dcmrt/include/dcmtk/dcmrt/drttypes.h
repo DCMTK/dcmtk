@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTTypes
@@ -43,7 +43,7 @@
 
 
 /*-----------------------*
- *  contant definitions  *
+ *  constant definitions  *
  *-----------------------*/
 
 /** @name specific error conditions for module dcmrt.

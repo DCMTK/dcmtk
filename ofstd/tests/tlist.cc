@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -15,7 +15,7 @@
  *
  *  Author:  Andreas Barth
  *
- *  Purpose: test programm for classes OFList and OFListIterator
+ *  Purpose: test program for classes OFList and OFListIterator
  *
  */
 

@@ -36,7 +36,7 @@
  * for enhancing "DCMTK  project". All other projects
  * (not related to "DCMTK  project") have to use this
  * code under the Aladdin Free Public License (AFPL)
- * See the file "AFPL-license.txt" for more informations about the AFPL license.
+ * See the file "AFPL-license.txt" for more information about the AFPL license.
  * (see http://www.artifex.com/downloads/doc/Public.htm for detailed AFPL terms)
  *
  * Redistribution and use in source and binary forms, with or without
@@ -89,7 +89,7 @@
  * Some additional small examples are also inside the file <a href="../../xmlTest.cpp">xmlTest.cpp</a>
  * (for the "char*" version of the library) and inside the file
  * <a href="../../xmlTestUnicode.cpp">xmlTestUnicode.cpp</a> (for the "wchar_t*"
- * version of the library). If you have a question, please review these additionnal examples
+ * version of the library). If you have a question, please review these additional examples
  * before sending an e-mail to the author.
  *
  * To build the examples:
@@ -114,7 +114,7 @@
  * slow memory allocations in Debug mode). To solve this
  * problem, during all the debugging session, I am now using a very fast DLL version of the
  * XMLParser Library (the DLL is compiled in release mode). Using the DLL version of
- * the XMLParser Library allows me to have lightening XML parsing speed even in debug!
+ * the XMLParser Library allows me to have lightning XML parsing speed even in debug!
  * Other than that, the DLL version is useless: In the release version of my tool,
  * I always use the normal, ".cpp"-based, XMLParser Library (I simply include the
  * <a href="../../xmlParser.cpp">xmlParser.cpp</a> and

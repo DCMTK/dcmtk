@@ -524,7 +524,7 @@ are documented here.
 
 **** Changes from 2010.03.15 (schlachter)
 
-- Remove the second occurance of drttsmds.o from $(objs).
+- Remove the second occurrence of drttsmds.o from $(objs).
   Affects: dcmrt/libsrc/Makefile.in
 
 **** Changes from 2009.12.17 (riesmeier)

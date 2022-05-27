@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -728,7 +728,7 @@ public:
     *  execution of this method may change the number of overlays reported in the attached image.
     *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
     *  @param newGroup new repeating group number 0x6000-0x601F (even). If this optional parameter is omitted,
-    *    the method attemps to automatically determine a new group number so that no overlay in the
+    *    the method attempts to automatically determine a new group number so that no overlay in the
     *    attached image is shadowed any more. If this is impossible, the method fails and leaves
     *    the overlay repeating group unchanged.
     *  @return EC_Normal upon success, an error code otherwise.
@@ -745,7 +745,7 @@ public:
     *  @param groupInItem the repeating group 0x6000..0x61F (even) of the overlay to be read
     *  @param newGroup repeating group number 0x6000-0x601F (even) to be used for
     *    the overlay in the presentation state. If this optional parameter is omitted,
-    *    the method attemps to automatically determine a new group number so that no overlay in the
+    *    the method attempts to automatically determine a new group number so that no overlay in the
     *    attached image is shadowed any more. If this is impossible, a group number so far unused
     *    in the presentation state is taken.
     *  @return EC_Normal upon success, an error code otherwise.
@@ -755,7 +755,7 @@ public:
    /** checks if an overlay from the presentation state is suitable
     *  for use as a bitmap shutter. An overlay is suitable if it is a graphic overlay
     *  with the same size as the attached image and with the origin 1\1.
-    *  This method does not check wether the overlay is already activated as overlay
+    *  This method does not check whether the overlay is already activated as overlay
     *  or bitmap shutter.
     *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
     *  @return OFTrue if overlay can be used as display shutter.
@@ -1061,7 +1061,7 @@ public:
      */
     OFCondition getImageMinMaxPixelRange(double &minValue, double& maxValue);
 
-    /** gets smallest and biggest occuring pixel value in the attached image.
+    /** gets smallest and biggest occurring pixel value in the attached image.
      *  These values are defined as the smallest and biggest number that
      *  are actually contained in the image after application of the Modality transform,
      *  but before any VOI, Presentation or display transform.

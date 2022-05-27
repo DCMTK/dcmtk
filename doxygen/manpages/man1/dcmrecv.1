@@ -265,7 +265,7 @@ The received datasets are always stored as DICOM files with the same Transfer Sy
 .SS "DICOM Conformance"
 Basically, the \fBdcmrecv\fP application supports all Storage SOP Classes as an SCP, including private ones\&. This requires, however, that a corresponding association negotiation profile is loaded from a configuration file\&. The format and semantics of this configuration file are documented in \fIasconfig\&.txt\fP\&.
 .PP
-By default, that means if no association negotiation profile is loaded, \fBdcmrecv\fP only supports the Verification SOP Class as an SCP (with default transfer syntax, i\&.e\&. Implicit VR Litte Endian)\&.
+By default, that means if no association negotiation profile is loaded, \fBdcmrecv\fP only supports the Verification SOP Class as an SCP (with default transfer syntax, i\&.e\&. Implicit VR Little Endian)\&.
 .PP
 In the future, there might be additional options that allow for specifying the list of supported Presentation Contexts (i\&.e\&. combination of SOP Class and Transfer Syntaxes) directly, i\&.e\&. without loading a configuration file\&.
 .SS "Subdirectory Generation"

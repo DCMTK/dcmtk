@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseReferenceSequence
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -532,7 +532,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseReferenceSequence
      */
     virtual ~DRTDoseReferenceSequence();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

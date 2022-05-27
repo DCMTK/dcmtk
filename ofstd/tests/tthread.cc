@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -395,7 +395,7 @@ public:
       rw_cond6=1;
       mutex2->unlock();
       OFStandard::milliSleep(wait_timeout);
-      // Explicite unlock(), check if this causes one unlock() too much
+      // Explicit unlock(), check if this causes one unlock() too much
       if (0==locker.unlock()) rw_cond7=1;
     }
     return;

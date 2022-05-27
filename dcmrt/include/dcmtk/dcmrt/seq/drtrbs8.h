@@ -53,7 +53,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
          */
         virtual ~Item();
 
-        /** assigment operator
+        /** assignment operator
          *  @param copy item object to be copied
          *  @return reference to this object
          */
@@ -302,7 +302,7 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBeamSequenceInRTFractionSchemeModule
      */
     virtual ~DRTReferencedBeamSequenceInRTFractionSchemeModule();
 
-    /** assigment operator
+    /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */

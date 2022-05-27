@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -382,10 +382,10 @@ static int checkelem(
        }
 
       /*
-      **  check, wether the value of the element is suitable to the data type.
+      **  check, whether the value of the element is suitable to the data type.
       */
 
-      /*** differenciate all value representations */
+      /*** differentiate all value representations */
        if (isaStringVR(vr))
        {
          char* value = NULL;

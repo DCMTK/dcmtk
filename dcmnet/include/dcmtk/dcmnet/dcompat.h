@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -67,7 +67,7 @@
 ** Module: dcompat.h
 **
 ** Purpose:
-**      This is the place to declare compatability routines
+**      This is the place to declare compatibility routines
 **      which can be missing on some systems.
 **
 **      This include file is automatically included by dicom.h

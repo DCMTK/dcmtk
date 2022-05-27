@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, Open Connections GmbH
+ *  Copyright (C) 2019-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -260,8 +260,8 @@ size_t ConcatenationCreator::getNumInstances()
 OFBool ConcatenationCreator::checkSOPClass(DcmItem& srcDataset)
 {
     // Check whether the SOP Class is not one of the following:
-    // - Opthalmic Tomography Image Storage
-    // - Opthalmic Optical Coherence Tomography B-Scan Volume Analysis
+    // - Ophthalmic Tomography Image Storage
+    // - Ophthalmic Optical Coherence Tomography B-Scan Volume Analysis
     // since the standard forbids to make Concatenations of these.
     OFString sopClass;
     srcDataset.findAndGetOFStringArray(DCM_SOPClassUID, sopClass);
