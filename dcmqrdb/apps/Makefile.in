@@ -17,6 +17,11 @@ ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
+oficonvdir = $(top_srcdir)/../oficonv
+oficonvinc = -I$(oficonvdir)/include
+oficonvlibdir = -L$(oficonvdir)/libsrc
+oficonvlib = -loficonv
+
 oflogdir = $(top_srcdir)/../oflog
 ofloginc = -I$(oflogdir)/include
 ofloglibdir = -L$(oflogdir)/libsrc
@@ -34,8 +39,8 @@ dcmnetlib = -ldcmnet
 
 LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofstdinc) $(ofloginc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
-	$(ofstdlibdir) $(ofloglibdir)
-LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(ofloglib) \
+	$(ofstdlibdir) $(ofloglibdir) $(oficonvlibdir)
+LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(oficonvlib) $(ofloglib) \
 	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmqrscp.o dcmqrti.o dcmqridx.o

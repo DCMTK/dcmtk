@@ -11,10 +11,12 @@ top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
+oficonvdir = $(top_srcdir)/../oficonv
+oficonvtest = $(oficonvdir)/tests
 
 LOCALINCLUDES = -I$(top_srcdir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc
-LOCALLIBS = -lofstd $(CHARCONVLIBS) $(MATHLIBS)
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(oficonvdir)/libsrc 
+LOCALLIBS = -lofstd -loficonv $(CHARCONVLIBS) $(MATHLIBS)
 LOCALTRASH = *.out testfile.\$$\$$\$$
 
 test_objs = tests.o tatof.o tmap.o tvec.o tfilsys.o tftoa.o tthread.o \
@@ -22,14 +24,26 @@ test_objs = tests.o tatof.o tmap.o tvec.o tfilsys.o tftoa.o tthread.o \
             tmarkup.o tchrenc.o txml.o tuuid.o toffile.o tmem.o toption.o \
             ttuple.o tlimits.o tvariant.o terror.o
 objs = $(test_objs)
-progs = tests
-
+progs = tests oficonv_tests
 
 all: $(progs)
 
 tests: $(test_objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
+# in order to avoid a cyclic dependency between ofstd and oficonv, we only compile
+# the binaries for the unit test in module oficonv, but perform the linking step here
+# since both libofstd.a and liboficonv.a are available now
+
+oficonv_objs = $(oficonvtest)/tests.o $(oficonvtest)/oficonv_tests.o \
+    $(oficonvtest)/ticonv.o $(oficonvtest)/ticonv_iso8859.o \
+    $(oficonvtest)/ticonv_chinese.o $(oficonvtest)/ticonv_japanese.o \
+    $(oficonvtest)/ticonv_korean.o
+
+.PHONY: oficonv_tests
+
+oficonv_tests:
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $(oficonvtest)/tests $(oficonv_objs) $(LOCALLIBS) $(LIBS)
 
 check: tests
 	./tests

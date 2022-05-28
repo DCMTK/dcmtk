@@ -16,6 +16,7 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmtlsdir = $(top_srcdir)/../dcmtls
+oficonvdir = $(top_srcdir)/../oficonv
 
 # these defines are used when compression support is needed for one of the tools
 compr_includes = -I$(top_srcdir)/../dcmimgle/include -I$(top_srcdir)/../dcmimage/include \
@@ -28,8 +29,8 @@ compr_libdirs = -L$(top_srcdir)/../dcmimgle/libsrc -L$(top_srcdir)/../dcmimage/l
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmtlsdir)/include $(compr_includes)
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
-	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc $(compr_libdirs)
-LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
+	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc -L$(oficonvdir)/libsrc $(compr_libdirs)
+LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
 	$(CHARCONVLIBS) $(MATHLIBS)
 DCMTLSLIBS = -ldcmtls
 COMPR_LIBS = -ldcmjpls -ldcmtkcharls -ldcmjpeg -lijg8 -lijg12 -lijg16 -ldcmimage -ldcmimgle

@@ -1,0 +1,24 @@
+mkcsmapper_bison.o: mkcsmapper_bison.cc \
+ ../../config/include/dcmtk/config/osconfig.h mkcsmapper_ldef.h \
+ ../libsrc/citrus_types.h ../libsrc/citrus_mapper_std_file.h \
+ ../libsrc/citrus_bcs.h ../libsrc/citrus_region.h \
+ ../libsrc/citrus_db_factory.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h ../libsrc/citrus_db_hash.h \
+ ../libsrc/citrus_lookup_factory.h ../libsrc/citrus_pivot_factory.h \
+ mkcsmapper_bison.h
+mkcsmapper_flex.o: mkcsmapper_flex.cc \
+ ../../config/include/dcmtk/config/osconfig.h mkcsmapper_ldef.h \
+ ../libsrc/citrus_bcs.h ../libsrc/oficonv_strlcpy.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h mkcsmapper_bison.h
+mkesdb_bison.o: mkesdb_bison.cc \
+ ../../config/include/dcmtk/config/osconfig.h ../libsrc/citrus_types.h \
+ ../libsrc/citrus_region.h ../libsrc/citrus_esdb_file.h \
+ ../libsrc/citrus_db_hash.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h ../libsrc/citrus_db_factory.h \
+ ../libsrc/citrus_lookup_factory.h mkesdb_ldef.h mkesdb_bison.h
+mkesdb_flex.o: mkesdb_flex.cc \
+ ../../config/include/dcmtk/config/osconfig.h mkesdb_ldef.h \
+ mkesdb_bison.h ../libsrc/oficonv_strlcpy.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h

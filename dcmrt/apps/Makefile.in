@@ -16,11 +16,12 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
+oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(dcmdatadir)/include -I$(oflogdir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmdatadir)/libsrc \
-	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc
-LOCALLIBS = -ldcmrt -ldcmimgle -ldcmdata -loflog -lofstd \
+	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc -L$(oficonvdir)/libsrc
+LOCALLIBS = -ldcmrt -ldcmimgle -ldcmdata -loflog -lofstd -loficonv \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = drtdump.o

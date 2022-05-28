@@ -9,39 +9,39 @@ include $(configdir)/Makefile.def
 
 .NOTPARALLEL:
 
-all:  config-all ofstd-all oflog-all dcmdata-all dcmiod-all dcmfg-all dcmseg-all dcmimgle-all dcmimage-all dcmjpeg-all dcmjpls-all dcmtls-all dcmnet-all dcmsr-all dcmsign-all dcmwlm-all dcmqrdb-all dcmpstat-all dcmrt-all dcmtract-all dcmpmap-all dcmect-all
+all:  config-all oficonv-all ofstd-all oflog-all dcmdata-all dcmiod-all dcmfg-all dcmseg-all dcmimgle-all dcmimage-all dcmjpeg-all dcmjpls-all dcmtls-all dcmnet-all dcmsr-all dcmsign-all dcmwlm-all dcmqrdb-all dcmpstat-all dcmrt-all dcmtract-all dcmpmap-all dcmect-all
 
-libsrc-all:  ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmiod-libsrc-all dcmfg-libsrc-all dcmseg-libsrc-all dcmimgle-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmwlm-libsrc-all dcmqrdb-libsrc-all dcmpstat-libsrc-all dcmrt-libsrc-all dcmtract-libsrc-all dcmpmap-libsrc-all dcmect-libsrc-all
+libsrc-all:  oficonv-libsrc-all ofstd-libsrc-all oflog-libsrc-all dcmdata-libsrc-all dcmiod-libsrc-all dcmfg-libsrc-all dcmseg-libsrc-all dcmimgle-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all dcmjpls-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmwlm-libsrc-all dcmqrdb-libsrc-all dcmpstat-libsrc-all dcmrt-libsrc-all dcmtract-libsrc-all dcmpmap-libsrc-all dcmect-libsrc-all
 
-tests-all:  config-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmiod-tests-all dcmfg-tests-all dcmseg-tests-all dcmimgle-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all dcmtls-tests-all dcmnet-tests-all dcmsr-tests-all dcmsign-tests-all dcmwlm-tests-all dcmqrdb-tests-all dcmpstat-tests-all dcmrt-tests-all dcmtract-tests-all dcmpmap-tests-all dcmect-tests-all
+tests-all:  config-tests-all oficonv-tests-all ofstd-tests-all oflog-tests-all dcmdata-tests-all dcmiod-tests-all dcmfg-tests-all dcmseg-tests-all dcmimgle-tests-all dcmimage-tests-all dcmjpeg-tests-all dcmjpls-tests-all dcmtls-tests-all dcmnet-tests-all dcmsr-tests-all dcmsign-tests-all dcmwlm-tests-all dcmqrdb-tests-all dcmpstat-tests-all dcmrt-tests-all dcmtract-tests-all dcmpmap-tests-all dcmect-tests-all
 
-install:  config-install ofstd-install oflog-install dcmdata-install dcmiod-install dcmfg-install dcmseg-install dcmimgle-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtls-install dcmnet-install dcmsr-install dcmsign-install dcmwlm-install dcmqrdb-install dcmpstat-install dcmrt-install dcmtract-install dcmpmap-install dcmect-install dcmtk-install-doc install-man
+install:  config-install oficonv-install ofstd-install oflog-install dcmdata-install dcmiod-install dcmfg-install dcmseg-install dcmimgle-install dcmimage-install dcmjpeg-install dcmjpls-install dcmtls-install dcmnet-install dcmsr-install dcmsign-install dcmwlm-install dcmqrdb-install dcmpstat-install dcmrt-install dcmtract-install dcmpmap-install dcmect-install dcmtk-install-doc install-man
 
 install-all: install install-lib install-html
 
-install-bin:  config-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmiod-install-bin dcmfg-install-bin dcmseg-install-bin dcmimgle-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin dcmtls-install-bin dcmnet-install-bin dcmsr-install-bin dcmsign-install-bin dcmwlm-install-bin dcmqrdb-install-bin dcmpstat-install-bin dcmrt-install-bin dcmtract-install-bin dcmpmap-install-bin dcmect-install-bin
+install-bin:  config-install-bin oficonv-install-bin ofstd-install-bin oflog-install-bin dcmdata-install-bin dcmiod-install-bin dcmfg-install-bin dcmseg-install-bin dcmimgle-install-bin dcmimage-install-bin dcmjpeg-install-bin dcmjpls-install-bin dcmtls-install-bin dcmnet-install-bin dcmsr-install-bin dcmsign-install-bin dcmwlm-install-bin dcmqrdb-install-bin dcmpstat-install-bin dcmrt-install-bin dcmtract-install-bin dcmpmap-install-bin dcmect-install-bin
 
-install-doc:  config-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmiod-install-doc dcmfg-install-doc dcmseg-install-doc dcmimgle-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc dcmtls-install-doc dcmnet-install-doc dcmsr-install-doc dcmsign-install-doc dcmwlm-install-doc dcmqrdb-install-doc dcmpstat-install-doc dcmrt-install-doc dcmtract-install-doc dcmpmap-install-doc dcmect-install-doc
+install-doc:  config-install-doc oficonv-install-doc ofstd-install-doc oflog-install-doc dcmdata-install-doc dcmiod-install-doc dcmfg-install-doc dcmseg-install-doc dcmimgle-install-doc dcmimage-install-doc dcmjpeg-install-doc dcmjpls-install-doc dcmtls-install-doc dcmnet-install-doc dcmsr-install-doc dcmsign-install-doc dcmwlm-install-doc dcmqrdb-install-doc dcmpstat-install-doc dcmrt-install-doc dcmtract-install-doc dcmpmap-install-doc dcmect-install-doc
 
-install-data:  config-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmiod-install-data dcmfg-install-data dcmseg-install-data dcmimgle-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data dcmtls-install-data dcmnet-install-data dcmsr-install-data dcmsign-install-data dcmwlm-install-data dcmqrdb-install-data dcmpstat-install-data dcmrt-install-data dcmtract-install-data dcmpmap-install-data dcmect-install-data
+install-data:  config-install-data oficonv-install-data ofstd-install-data oflog-install-data dcmdata-install-data dcmiod-install-data dcmfg-install-data dcmseg-install-data dcmimgle-install-data dcmimage-install-data dcmjpeg-install-data dcmjpls-install-data dcmtls-install-data dcmnet-install-data dcmsr-install-data dcmsign-install-data dcmwlm-install-data dcmqrdb-install-data dcmpstat-install-data dcmrt-install-data dcmtract-install-data dcmpmap-install-data dcmect-install-data
 
-install-etc:  config-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmiod-install-etc dcmfg-install-etc dcmseg-install-etc dcmimgle-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc dcmtls-install-etc dcmnet-install-etc dcmsr-install-etc dcmsign-install-etc dcmwlm-install-etc dcmqrdb-install-etc dcmpstat-install-etc dcmrt-install-etc dcmtract-install-etc dcmpmap-install-etc dcmect-install-etc
+install-etc:  config-install-etc oficonv-install-etc ofstd-install-etc oflog-install-etc dcmdata-install-etc dcmiod-install-etc dcmfg-install-etc dcmseg-install-etc dcmimgle-install-etc dcmimage-install-etc dcmjpeg-install-etc dcmjpls-install-etc dcmtls-install-etc dcmnet-install-etc dcmsr-install-etc dcmsign-install-etc dcmwlm-install-etc dcmqrdb-install-etc dcmpstat-install-etc dcmrt-install-etc dcmtract-install-etc dcmpmap-install-etc dcmect-install-etc
 
-install-lib:  config-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmiod-install-lib dcmfg-install-lib dcmseg-install-lib dcmimgle-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib dcmtls-install-lib dcmnet-install-lib dcmsr-install-lib dcmsign-install-lib dcmwlm-install-lib dcmqrdb-install-lib dcmpstat-install-lib dcmrt-install-lib dcmtract-install-lib dcmpmap-install-lib dcmect-install-lib
+install-lib:  config-install-lib oficonv-install-lib ofstd-install-lib oflog-install-lib dcmdata-install-lib dcmiod-install-lib dcmfg-install-lib dcmseg-install-lib dcmimgle-install-lib dcmimage-install-lib dcmjpeg-install-lib dcmjpls-install-lib dcmtls-install-lib dcmnet-install-lib dcmsr-install-lib dcmsign-install-lib dcmwlm-install-lib dcmqrdb-install-lib dcmpstat-install-lib dcmrt-install-lib dcmtract-install-lib dcmpmap-install-lib dcmect-install-lib
 
-install-include:  config-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmiod-install-include dcmfg-install-include dcmseg-install-include dcmimgle-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include dcmtls-install-include dcmnet-install-include dcmsr-install-include dcmsign-install-include dcmwlm-install-include dcmqrdb-install-include dcmpstat-install-include dcmrt-install-include dcmtract-install-include dcmpmap-install-include dcmect-install-include
+install-include:  config-install-include oficonv-install-include ofstd-install-include oflog-install-include dcmdata-install-include dcmiod-install-include dcmfg-install-include dcmseg-install-include dcmimgle-install-include dcmimage-install-include dcmjpeg-install-include dcmjpls-install-include dcmtls-install-include dcmnet-install-include dcmsr-install-include dcmsign-install-include dcmwlm-install-include dcmqrdb-install-include dcmpstat-install-include dcmrt-install-include dcmtract-install-include dcmpmap-install-include dcmect-install-include
 
-install-support:  config-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmiod-install-support dcmfg-install-support dcmseg-install-support dcmimgle-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support dcmtls-install-support dcmnet-install-support dcmsr-install-support dcmsign-install-support dcmwlm-install-support dcmqrdb-install-support dcmpstat-install-support dcmrt-install-support dcmtract-install-support dcmpmap-install-support dcmect-install-support
+install-support:  config-install-support oficonv-install-support ofstd-install-support oflog-install-support dcmdata-install-support dcmiod-install-support dcmfg-install-support dcmseg-install-support dcmimgle-install-support dcmimage-install-support dcmjpeg-install-support dcmjpls-install-support dcmtls-install-support dcmnet-install-support dcmsr-install-support dcmsign-install-support dcmwlm-install-support dcmqrdb-install-support dcmpstat-install-support dcmrt-install-support dcmtract-install-support dcmpmap-install-support dcmect-install-support
 
 check: tests-all
 	$(MAKE) -s check-nosilent
 
-check-nosilent:  config-check ofstd-check oflog-check dcmdata-check dcmiod-check dcmfg-check dcmseg-check dcmimgle-check dcmimage-check dcmjpeg-check dcmjpls-check dcmtls-check dcmnet-check dcmsr-check dcmsign-check dcmwlm-check dcmqrdb-check dcmpstat-check dcmrt-check dcmtract-check dcmpmap-check dcmect-check
+check-nosilent:  config-check oficonv-check ofstd-check oflog-check dcmdata-check dcmiod-check dcmfg-check dcmseg-check dcmimgle-check dcmimage-check dcmjpeg-check dcmjpls-check dcmtls-check dcmnet-check dcmsr-check dcmsign-check dcmwlm-check dcmqrdb-check dcmpstat-check dcmrt-check dcmtract-check dcmpmap-check dcmect-check
 
 check-exhaustive: tests-all
 	$(MAKE) -s check-nosilent-exhaustive
 
-check-nosilent-exhaustive:  config-check-exhaustive ofstd-check-exhaustive oflog-check-exhaustive dcmdata-check-exhaustive dcmiod-check-exhaustive dcmfg-check-exhaustive dcmseg-check-exhaustive dcmimgle-check-exhaustive dcmimage-check-exhaustive dcmjpeg-check-exhaustive dcmjpls-check-exhaustive dcmtls-check-exhaustive dcmnet-check-exhaustive dcmsr-check-exhaustive dcmsign-check-exhaustive dcmwlm-check-exhaustive dcmqrdb-check-exhaustive dcmpstat-check-exhaustive dcmrt-check-exhaustive dcmtract-check-exhaustive dcmpmap-check-exhaustive dcmect-check-exhaustive
+check-nosilent-exhaustive:  config-check-exhaustive oficonv-check-exhaustive ofstd-check-exhaustive oflog-check-exhaustive dcmdata-check-exhaustive dcmiod-check-exhaustive dcmfg-check-exhaustive dcmseg-check-exhaustive dcmimgle-check-exhaustive dcmimage-check-exhaustive dcmjpeg-check-exhaustive dcmjpls-check-exhaustive dcmtls-check-exhaustive dcmnet-check-exhaustive dcmsr-check-exhaustive dcmsign-check-exhaustive dcmwlm-check-exhaustive dcmqrdb-check-exhaustive dcmpstat-check-exhaustive dcmrt-check-exhaustive dcmtract-check-exhaustive dcmpmap-check-exhaustive dcmect-check-exhaustive
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
@@ -91,7 +91,7 @@ help:
 	@echo ""
 	@echo "The following modules are available:"
 	@echo ""
-	@echo "ofstd oflog dcmdata dcmiod dcmfg dcmseg dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmtract dcmpmap dcmect"
+	@echo "oficonv ofstd oflog dcmdata dcmiod dcmfg dcmseg dcmimgle dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmtract dcmpmap dcmect"
 
 config-all:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -131,6 +131,45 @@ config-check:
 
 config-check-exhaustive:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check-exhaustive)
+
+oficonv-all:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+
+oficonv-libsrc-all:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+
+oficonv-tests-all:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" tests-all)
+
+oficonv-install:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+
+oficonv-install-bin:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+
+oficonv-install-doc:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+oficonv-install-data:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
+oficonv-install-etc:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+
+oficonv-install-lib:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+
+oficonv-install-include:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+
+oficonv-install-support:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+
+oficonv-check:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check)
+
+oficonv-check-exhaustive:
+	(cd oficonv && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" check-exhaustive)
 
 ofstd-all:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -953,6 +992,7 @@ dcmect-check-exhaustive:
 
 dependencies:
 	-(cd config && $(MAKE) dependencies)
+	(cd oficonv && $(MAKE) dependencies)
 	(cd ofstd && $(MAKE) dependencies)
 	(cd oflog && $(MAKE) dependencies)
 	(cd dcmdata && $(MAKE) dependencies)
@@ -976,6 +1016,7 @@ dependencies:
 	(cd dcmect && $(MAKE) dependencies)
 
 clean:
+	(cd oficonv && $(MAKE) clean)
 	(cd ofstd && $(MAKE) clean)
 	(cd oflog && $(MAKE) clean)
 	(cd dcmdata && $(MAKE) clean)
@@ -1002,6 +1043,7 @@ clean:
 	rm -f $(TRASH)
 
 distclean:
+	(cd oficonv && $(MAKE) distclean)
 	(cd ofstd && $(MAKE) distclean)
 	(cd oflog && $(MAKE) distclean)
 	(cd dcmdata && $(MAKE) distclean)

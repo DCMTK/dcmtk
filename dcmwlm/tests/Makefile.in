@@ -16,12 +16,13 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
+oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
 	-I$(oflogdir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(dcmdatadir)/libsrc \
-	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc
-LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) \
+	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc -L$(oficonvdir)/libsrc
+LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) \
 	$(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = wltest.o

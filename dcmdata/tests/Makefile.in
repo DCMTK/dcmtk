@@ -14,11 +14,12 @@ include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
+oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/libi2d -L$(ofstddir)/libsrc \
-	-L$(oflogdir)/libsrc -L$(top_srcdir)/libdcxml
-LOCALLIBS = -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(XMLLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+	-L$(oflogdir)/libsrc -L$(top_srcdir)/libdcxml -L$(oficonvdir)/libsrc 
+LOCALLIBS = -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) $(XMLLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 I2DLIBS = -li2d
 LIBDCMXML = -ldcmxml
 

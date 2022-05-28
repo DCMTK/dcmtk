@@ -17,6 +17,11 @@ ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
+oficonvdir = $(top_srcdir)/../oficonv
+oficonvinc = -I$(oficonvdir)/include
+oficonvlibdir = -L$(oficonvdir)/libsrc
+oficonvlib = -loficonv
+
 oflogdir = $(top_srcdir)/../oflog
 ofloginc = -I$(oflogdir)/include
 ofloglibdir = -L$(oflogdir)/libsrc
@@ -48,8 +53,8 @@ libcharlslib = -ldcmtkcharls
 
 LOCALINCLUDES = $(dcmjplsinc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjplslibdir) $(libcharlslibdir) $(dcmimagelibdir) \
-	$(dcmimglelibdir) $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
-LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
+	$(dcmimglelibdir) $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir) $(oficonvlibdir)
+LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) \
 	$(libcharlslib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmdjpls.o dcmcjpls.o dcml2pnm.o

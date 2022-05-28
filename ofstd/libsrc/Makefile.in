@@ -11,8 +11,9 @@ top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
+oficonvdir = $(top_srcdir)/../oficonv
 
-LOCALINCLUDES =
+LOCALINCLUDES = -I$(oficonvdir)/include
 LOCALDEFS =
 
 objs = oflist.o ofstring.o ofcmdln.o ofconapp.o offname.o ofconsol.o ofthread.o \

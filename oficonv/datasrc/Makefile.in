@@ -1,0 +1,153 @@
+#
+#	Makefile for oficonv/datasrc
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+include $(configdir)/@common_makefile@
+
+# special make target "oficonv_data_files".
+# This compiles the binary oficonv data files from the source files
+# in the datasrc directory.
+
+oficonv_data_files:
+	mkcsmapper -o "../data/csmapper/CP/CP936EXT%UCS.mps"                 "csmapper/CP/CP936EXT%UCS.src"
+	mkcsmapper -o "../data/csmapper/CP/UCS%CP936EXT.mps"                 "csmapper/CP/UCS%CP936EXT.src"
+	mkcsmapper -o "../data/csmapper/GB/GB18030%UCS@BMP.mps"              "csmapper/GB/GB18030%UCS@BMP.src"
+	mkcsmapper -o "../data/csmapper/GB/GB2312%UCS.mps"                   "csmapper/GB/GB2312%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/GB2312EXT%UCS.mps"                "csmapper/GB/GB2312EXT%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/GB2312GBK%UCS.mps"                "csmapper/GB/GB2312GBK%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/GB2312UDA1%UCS.mps"               "csmapper/GB/GB2312UDA1%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/GB2312UDA2%UCS.mps"               "csmapper/GB/GB2312UDA2%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/GBKEXT%UCS.mps"                   "csmapper/GB/GBKEXT%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/GBKUDA%UCS.mps"                   "csmapper/GB/GBKUDA%UCS.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS%GB2312.mps"                   "csmapper/GB/UCS%GB2312.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS%GB2312EXT.mps"                "csmapper/GB/UCS%GB2312EXT.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS%GB2312UDA1.mps"               "csmapper/GB/UCS%GB2312UDA1.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS%GB2312UDA2.mps"               "csmapper/GB/UCS%GB2312UDA2.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS%GBKEXT.mps"                   "csmapper/GB/UCS%GBKEXT.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS%GBKUDA.mps"                   "csmapper/GB/UCS%GBKUDA.src"
+	mkcsmapper -o "../data/csmapper/GB/UCS@BMP%GB18030.mps"              "csmapper/GB/UCS@BMP%GB18030.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-2%UCS.mps"         "csmapper/ISO-8859/ISO-8859-2%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-3%UCS.mps"         "csmapper/ISO-8859/ISO-8859-3%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-4%UCS.mps"         "csmapper/ISO-8859/ISO-8859-4%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-5%UCS.mps"         "csmapper/ISO-8859/ISO-8859-5%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-6%UCS.mps"         "csmapper/ISO-8859/ISO-8859-6%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-7%UCS.mps"         "csmapper/ISO-8859/ISO-8859-7%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-8%UCS.mps"         "csmapper/ISO-8859/ISO-8859-8%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-9%UCS.mps"         "csmapper/ISO-8859/ISO-8859-9%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-11%UCS.mps"        "csmapper/ISO-8859/ISO-8859-11%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/ISO-8859-15%UCS.mps"        "csmapper/ISO-8859/ISO-8859-15%UCS.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-2.mps"         "csmapper/ISO-8859/UCS%ISO-8859-2.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-3.mps"         "csmapper/ISO-8859/UCS%ISO-8859-3.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-4.mps"         "csmapper/ISO-8859/UCS%ISO-8859-4.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-5.mps"         "csmapper/ISO-8859/UCS%ISO-8859-5.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-6.mps"         "csmapper/ISO-8859/UCS%ISO-8859-6.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-7.mps"         "csmapper/ISO-8859/UCS%ISO-8859-7.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-8.mps"         "csmapper/ISO-8859/UCS%ISO-8859-8.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-9.mps"         "csmapper/ISO-8859/UCS%ISO-8859-9.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-11.mps"        "csmapper/ISO-8859/UCS%ISO-8859-11.src"
+	mkcsmapper -o "../data/csmapper/ISO-8859/UCS%ISO-8859-15.mps"        "csmapper/ISO-8859/UCS%ISO-8859-15.src"
+	mkcsmapper -o "../data/csmapper/JIS/JISX0201-KANA%UCS.mps"           "csmapper/JIS/JISX0201-KANA%UCS.src"
+	mkcsmapper -o "../data/csmapper/JIS/JISX0208@1990%UCS.mps"           "csmapper/JIS/JISX0208@1990%UCS.src"
+	mkcsmapper -o "../data/csmapper/JIS/JISX0212%UCS.mps"                "csmapper/JIS/JISX0212%UCS.src"
+	mkcsmapper -o "../data/csmapper/JIS/UCS%JISX0201-KANA.mps"           "csmapper/JIS/UCS%JISX0201-KANA.src"
+	mkcsmapper -o "../data/csmapper/JIS/UCS%JISX0208@1990.mps"           "csmapper/JIS/UCS%JISX0208@1990.src"
+	mkcsmapper -o "../data/csmapper/JIS/UCS%JISX0212.mps"                "csmapper/JIS/UCS%JISX0212.src"
+	mkcsmapper -o "../data/csmapper/KS/KSC5601HANGUL%UCS.mps"            "csmapper/KS/KSC5601HANGUL%UCS.src"
+	mkcsmapper -o "../data/csmapper/KS/KSC5601HANJA%UCS.mps"             "csmapper/KS/KSC5601HANJA%UCS.src"
+	mkcsmapper -o "../data/csmapper/KS/UCS%KSC5601HANGUL.mps"            "csmapper/KS/UCS%KSC5601HANGUL.src"
+	mkcsmapper -o "../data/csmapper/KS/UCS%KSC5601HANJA.mps"             "csmapper/KS/UCS%KSC5601HANJA.src"
+	cp "csmapper/ISO646/ISO646-JP%UCS.646"         "../data/csmapper/ISO646/ISO646-JP%UCS.646"
+	cp "csmapper/ISO646/ISO646-US%UCS.646"         "../data/csmapper/ISO646/ISO646-US%UCS.646"
+	cp "csmapper/mapper.dir"                       "../data/csmapper/mapper.dir"
+	mkcsmapper -m -o "../data/csmapper/mapper.dir.db"                    "../data/csmapper/mapper.dir"
+	mkcsmapper -p -o "../data/csmapper/charset.pivot.pvdb"               "csmapper/charset.pivot"
+	mkesdb -o "../data/esdb/EUC/EUC-CN.esdb"       "esdb/EUC/EUC-CN.src"
+	mkesdb -o "../data/esdb/EUC/EUC-KR.esdb"       "esdb/EUC/EUC-KR.src"
+	mkesdb -o "../data/esdb/GB/GB18030.esdb"       "esdb/GB/GB18030.src"
+	mkesdb -o "../data/esdb/GB/GBK.esdb"           "esdb/GB/GBK.src"
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-1.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-1   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-2.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-2   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-3.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-3   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-4.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-4   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-5.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-5   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-6.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-6   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-7.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-7   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-8.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-8   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-9.src"   -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-9   -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-11.src"  -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-11  -P replace.cmake
+	cmake -DINFILE="esdb/ISO-8859/ISO-8859.src" -DOUTFILE="ISO-8859-15.src"  -DREGEX=ISO-8859-x -DREPLACE=ISO-8859-15  -P replace.cmake
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-1.esdb"      "ISO-8859-1.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-2.esdb"      "ISO-8859-2.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-3.esdb"      "ISO-8859-3.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-4.esdb"      "ISO-8859-4.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-5.esdb"      "ISO-8859-5.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-6.esdb"      "ISO-8859-6.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-7.esdb"      "ISO-8859-7.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-8.esdb"      "ISO-8859-8.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-9.esdb"      "ISO-8859-9.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-11.esdb"     "ISO-8859-11.src"
+	mkesdb -o "../data/esdb/ISO-8859/ISO-8859-15.esdb"     "ISO-8859-15.src"
+	cmake -DINFILE="esdb/ISO646/ISO646.src" -DOUTFILE="ISO646-US.src" -DREGEX=ISO646-x -DREPLACE=ISO646-US -P replace.cmake
+	mkesdb -o "../data/esdb/ISO646/ISO646-US.esdb"          "ISO646-US.src"
+	mkesdb -o "../data/esdb/MISC/JISX0201-KANA.esdb"  "esdb/MISC/JISX0201-KANA.src"
+	mkesdb -o "../data/esdb/MISC/JISX0208@1990.esdb"  "esdb/MISC/JISX0208@1990.src"
+	mkesdb -o "../data/esdb/MISC/Shift_JIS.esdb"      "esdb/MISC/Shift_JIS.src"
+	mkesdb -o "../data/esdb/MISC/JISX0212.esdb"       "esdb/MISC/JISX0212.src"
+	cmake -DINFILE="esdb/UTF/UTF.src" -DOUTFILE="temp01.src"          -DREGEX=UTF-mod -DREPLACE=UTF1632              -P replace.cmake
+	cmake -DINFILE="esdb/UTF/UTF.src" -DOUTFILE="temp03.src"          -DREGEX=UTF-mod -DREPLACE=UTF8                 -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp04.src"          -DREGEX=UTF-x   -DREPLACE=UTF-16-INTERNAL      -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp05.src"          -DREGEX=UTF-x   -DREPLACE=UTF-16-SWAPPED       -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp06.src"          -DREGEX=UTF-x   -DREPLACE=UTF-16               -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp07.src"          -DREGEX=UTF-x   -DREPLACE=UTF-16BE             -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp08.src"          -DREGEX=UTF-x   -DREPLACE=UTF-16LE             -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp09.src"          -DREGEX=UTF-x   -DREPLACE=UTF-32-INTERNAL      -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp10.src"          -DREGEX=UTF-x   -DREPLACE=UTF-32-SWAPPED       -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp11.src"          -DREGEX=UTF-x   -DREPLACE=UTF-32               -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp12.src"          -DREGEX=UTF-x   -DREPLACE=UTF-32BE             -P replace.cmake
+	cmake -DINFILE="temp01.src"       -DOUTFILE="temp13.src"          -DREGEX=UTF-x   -DREPLACE=UTF-32LE             -P replace.cmake
+	cmake -DINFILE="temp03.src"       -DOUTFILE="temp15.src"          -DREGEX=UTF-x   -DREPLACE=UTF-8                -P replace.cmake
+	cmake -DINFILE="temp04.src"       -DOUTFILE="UTF-16-INTERNAL.src" -DREGEX=UTF-var -DREPLACE=utf16,internal,force -P replace.cmake
+	cmake -DINFILE="temp05.src"       -DOUTFILE="UTF-16-SWAPPED.src"  -DREGEX=UTF-var -DREPLACE=utf16,swapped,force  -P replace.cmake
+	cmake -DINFILE="temp06.src"       -DOUTFILE="UTF-16.src"          -DREGEX=UTF-var -DREPLACE=utf16                -P replace.cmake
+	cmake -DINFILE="temp07.src"       -DOUTFILE="UTF-16BE.src"        -DREGEX=UTF-var -DREPLACE=utf16,big,force      -P replace.cmake
+	cmake -DINFILE="temp08.src"       -DOUTFILE="UTF-16LE.src"        -DREGEX=UTF-var -DREPLACE=utf16,little,force   -P replace.cmake
+	cmake -DINFILE="temp09.src"       -DOUTFILE="UTF-32-INTERNAL.src" -DREGEX=UTF-var -DREPLACE=utf32,internal,force -P replace.cmake
+	cmake -DINFILE="temp10.src"       -DOUTFILE="UTF-32-SWAPPED.src"  -DREGEX=UTF-var -DREPLACE=utf32,swapped,force  -P replace.cmake
+	cmake -DINFILE="temp11.src"       -DOUTFILE="UTF-32.src"          -DREGEX=UTF-var -DREPLACE=utf32                -P replace.cmake
+	cmake -DINFILE="temp12.src"       -DOUTFILE="UTF-32BE.src"        -DREGEX=UTF-var -DREPLACE=utf32,big,force      -P replace.cmake
+	cmake -DINFILE="temp13.src"       -DOUTFILE="UTF-32LE.src"        -DREGEX=UTF-var -DREPLACE=utf32,little,force   -P replace.cmake
+	cmake -DINFILE="temp15.src"       -DOUTFILE="UTF-8.src"           -DREGEX=UTF-var -DREPLACE=utf8                 -P replace.cmake
+	mkesdb -o "../data/esdb/UTF/UTF-16-INTERNAL.esdb"  "UTF-16-INTERNAL.src"
+	mkesdb -o "../data/esdb/UTF/UTF-16-SWAPPED.esdb"   "UTF-16-SWAPPED.src"
+	mkesdb -o "../data/esdb/UTF/UTF-16.esdb"           "UTF-16.src"
+	mkesdb -o "../data/esdb/UTF/UTF-16BE.esdb"         "UTF-16BE.src"
+	mkesdb -o "../data/esdb/UTF/UTF-16LE.esdb"         "UTF-16LE.src"
+	mkesdb -o "../data/esdb/UTF/UTF-32-INTERNAL.esdb"  "UTF-32-INTERNAL.src"
+	mkesdb -o "../data/esdb/UTF/UTF-32-SWAPPED.esdb"   "UTF-32-SWAPPED.src"
+	mkesdb -o "../data/esdb/UTF/UTF-32.esdb"           "UTF-32.src"
+	mkesdb -o "../data/esdb/UTF/UTF-32BE.esdb"         "UTF-32BE.src"
+	mkesdb -o "../data/esdb/UTF/UTF-32LE.esdb"         "UTF-32LE.src"
+	mkesdb -o "../data/esdb/UTF/UTF-8.esdb"            "UTF-8.src"
+	mkesdb -m -o "../data/esdb/esdb.dir.db"            "esdb/esdb.dir"
+	mkesdb -m -o "../data/esdb/esdb.alias.db"          "esdb/esdb.alias"
+
+
+install: install-bin
+
+install-bin:
+
+clean:
+	rm ISO-8859-1.src ISO-8859-2.src ISO-8859-3.src ISO-8859-4.src ISO-8859-5.src ISO-8859-6.src ISO-8859-7.src ISO-8859-8.src ISO-8859-9.src ISO-8859-11.src ISO-8859-15.src ISO646-US.src
+	rm temp01.src temp03.src temp04.src temp05.src temp06.src temp07.src temp08.src temp09.src temp10.src temp11.src temp12.src temp13.src temp15.src 
+	rm UTF-16-INTERNAL.src UTF-16-SWAPPED.src UTF-16.src UTF-16BE.src UTF-16LE.src UTF-32-INTERNAL.src UTF-32-SWAPPED.src UTF-32.src UTF-32BE.src UTF-32LE.src UTF-8.src
+
+distclean: clean
+
+dependencies:

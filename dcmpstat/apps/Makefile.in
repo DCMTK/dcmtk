@@ -17,6 +17,11 @@ ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
+oficonvdir = $(top_srcdir)/../oficonv
+oficonvinc = -I$(oficonvdir)/include
+oficonvlibdir = -L$(oficonvdir)/libsrc
+oficonvlib = -loficonv
+
 oflogdir = $(top_srcdir)/../oflog
 ofloginc = -I$(oflogdir)/include
 ofloglibdir = -L$(oflogdir)/libsrc
@@ -76,14 +81,14 @@ LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(ofloginc) $(dcmnetinc) $(dcmdatainc
 	$(dcmiodinc) $(dcmimgleinc) $(dcmqrdbinc) $(dcmtlsinc) $(dcmsigninc) $(dcmsrinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
 	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
-	$(ofloglibdir) $(dcmiodlibdir) $(dcmimglelibdir) $(dcmimagelibdir)
+	$(ofloglibdir) $(dcmiodlibdir) $(dcmimglelibdir) $(dcmimagelibdir) $(oficonvlibdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmsrlib) $(dcmimagelib) $(dcmimglelib) \
-	$(dcmqrdblib) $(dcmnetlib) $(dcmtlslib) $(dcmiodlib) $(dcmdatalib) $(ofloglib) \
-	$(ofstdlib) $(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
-	$(OPENSSLLIBS) $(CHARCONVLIBS) $(MATHLIBS)
-DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) \
+	$(dcmqrdblib) $(dcmnetlib) $(dcmtlslib) $(dcmiodlib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
+    $(oficonvlib) $(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS) \
+	$(CHARCONVLIBS) $(MATHLIBS)
+DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) $(XMLLIBS) \
 	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
-DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) \
+DCMMKCRV_LIBS = $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) $(XMLLIBS) $(ZLIBLIBS) \
 	$(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dcmprscu.o \

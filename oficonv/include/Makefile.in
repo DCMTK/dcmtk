@@ -1,0 +1,32 @@
+#
+#	Makefile for dcmdata/include
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+
+all:
+
+install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmdata
+	for file in dcmtk/dcmdata/*.h ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmdata ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmdata/libi2d
+	for file in dcmtk/dcmdata/libi2d/*.h ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmdata/libi2d ;\
+	done
+
+
+clean:
+	rm -f $(TRASH)
+
+distclean:
+	rm -f $(DISTTRASH)

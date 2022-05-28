@@ -16,12 +16,13 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
+oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmimgledir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
-	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc
-LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) \
+	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(oficonvdir)/libsrc
+LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd -loficonv $(TIFFLIBS) $(PNGLIBS) \
 	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcm2pnm.o dcmquant.o dcmscale.o dcmicmp.o

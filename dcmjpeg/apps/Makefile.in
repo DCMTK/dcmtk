@@ -18,6 +18,11 @@ ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
+oficonvdir = $(top_srcdir)/../oficonv
+oficonvinc = -I$(oficonvdir)/include
+oficonvlibdir = -L$(oficonvdir)/libsrc
+oficonvlib = -loficonv
+
 oflogdir = $(top_srcdir)/../oflog
 ofloginc = -I$(oflogdir)/include
 ofloglibdir = -L$(oflogdir)/libsrc
@@ -47,9 +52,9 @@ dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
 LOCALINCLUDES = $(dcmjpeginc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) \
 	$(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjpeglibdir) $(dcmimagelibdir) $(dcmimglelibdir) \
-	$(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
+	$(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir) $(oficonvlibdir)
 LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) \
-	$(ofstdlib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+	$(ofstdlib) $(oficonvlib) $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmdjpeg.o dcmcjpeg.o dcmj2pnm.o dcmmkdir.o
 progs = dcmdjpeg dcmcjpeg dcmj2pnm dcmmkdir

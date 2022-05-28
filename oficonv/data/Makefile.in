@@ -1,0 +1,169 @@
+#
+#	Makefile for oficonv/data
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+all:
+
+install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper
+	for file in csmapper/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper/CP
+	for file in csmapper/CP/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper/CP ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper/GB
+	for file in csmapper/GB/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper/GB ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper/ISO646
+	for file in csmapper/ISO646/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper/ISO646 ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper/ISO-8859
+	for file in csmapper/ISO-8859/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper/ISO-8859 ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper/JIS
+	for file in csmapper/JIS/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper/JIS ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/csmapper/KS
+	for file in csmapper/KS/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/csmapper/KS ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb
+	for file in esdb/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb/EUC
+	for file in esdb/EUC/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb/EUC ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb/GB
+	for file in esdb/GB/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb/GB ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb/ISO646
+	for file in esdb/ISO646/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb/ISO646 ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb/ISO-8859
+	for file in esdb/ISO-8859/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb/ISO-8859 ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb/MISC
+	for file in esdb/MISC/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb/MISC ;\
+	done
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/esdb/UTF
+	for file in esdb/UTF/*.* ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir)/esdb/UTF ;\
+	done
+
+# special make target "oficonv_data_library".
+# Rebuild the header files for the built-in oficonv data library from the binary
+# mps and esdb files.
+
+oficonv_data_library:
+	xxd -i "csmapper/mapper.dir.db" "${oficonv_SOURCE_DIR}/libsrc/csmapper_mapper_dir_db.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-9.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_9_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-8%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_8_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-3.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_3_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-5%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_5_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-5.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_5_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-11%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_11_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-9%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_9_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-4%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_4_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-7%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_7_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-6.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_6_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-6%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_6_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-15.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_15_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-3%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_3_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-11.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_11_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-15%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_15_ucs_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-2.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_2_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-8.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_8_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-4.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_4_mps.h"
+	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-7.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_7_mps.h"
+	xxd -i "csmapper/ISO-8859/ISO-8859-2%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_2_ucs_mps.h"
+	xxd -i "csmapper/CP/UCS%CP936EXT.mps" "../libsrc/csmapper_cp_ucs_cp936ext_mps.h"
+	xxd -i "csmapper/CP/CP936EXT%UCS.mps" "../libsrc/csmapper_cp_cp936ext_ucs_mps.h"
+	xxd -i "csmapper/mapper.dir" "../libsrc/csmapper_mapper_dir.h"
+	xxd -i "csmapper/ISO646/ISO646-JP%UCS.646" "../libsrc/csmapper_iso646_iso646_jp_ucs_646.h"
+	xxd -i "csmapper/ISO646/ISO646-US%UCS.646" "../libsrc/csmapper_iso646_iso646_us_ucs_646.h"
+	xxd -i "csmapper/JIS/JISX0212%UCS.mps" "../libsrc/csmapper_jis_jisx0212_ucs_mps.h"
+	xxd -i "csmapper/JIS/UCS%JISX0208@1990.mps" "../libsrc/csmapper_jis_ucs_jisx0208@1990_mps.h"
+	xxd -i "csmapper/JIS/UCS%JISX0201-KANA.mps" "../libsrc/csmapper_jis_ucs_jisx0201_kana_mps.h"
+	xxd -i "csmapper/JIS/JISX0208@1990%UCS.mps" "../libsrc/csmapper_jis_jisx0208@1990_ucs_mps.h"
+	xxd -i "csmapper/JIS/JISX0201-KANA%UCS.mps" "../libsrc/csmapper_jis_jisx0201_kana_ucs_mps.h"
+	xxd -i "csmapper/JIS/UCS%JISX0212.mps" "../libsrc/csmapper_jis_ucs_jisx0212_mps.h"
+	xxd -i "csmapper/charset.pivot.pvdb" "../libsrc/csmapper_charset_pivot_pvdb.h"
+	xxd -i "csmapper/GB/GBKUDA%UCS.mps" "../libsrc/csmapper_gb_gbkuda_ucs_mps.h"
+	xxd -i "csmapper/GB/GB2312EXT%UCS.mps" "../libsrc/csmapper_gb_gb2312ext_ucs_mps.h"
+	xxd -i "csmapper/GB/UCS%GB2312.mps" "../libsrc/csmapper_gb_ucs_gb2312_mps.h"
+	xxd -i "csmapper/GB/GB2312%UCS.mps" "../libsrc/csmapper_gb_gb2312_ucs_mps.h"
+	xxd -i "csmapper/GB/GB2312UDA1%UCS.mps" "../libsrc/csmapper_gb_gb2312uda1_ucs_mps.h"
+	xxd -i "csmapper/GB/UCS@BMP%GB18030.mps" "../libsrc/csmapper_gb_ucs@bmp_gb18030_mps.h"
+	xxd -i "csmapper/GB/UCS%GBKEXT.mps" "../libsrc/csmapper_gb_ucs_gbkext_mps.h"
+	xxd -i "csmapper/GB/UCS%GB2312UDA1.mps" "../libsrc/csmapper_gb_ucs_gb2312uda1_mps.h"
+	xxd -i "csmapper/GB/GB2312UDA2%UCS.mps" "../libsrc/csmapper_gb_gb2312uda2_ucs_mps.h"
+	xxd -i "csmapper/GB/UCS%GB2312EXT.mps" "../libsrc/csmapper_gb_ucs_gb2312ext_mps.h"
+	xxd -i "csmapper/GB/GB2312GBK%UCS.mps" "../libsrc/csmapper_gb_gb2312gbk_ucs_mps.h"
+	xxd -i "csmapper/GB/UCS%GBKUDA.mps" "../libsrc/csmapper_gb_ucs_gbkuda_mps.h"
+	xxd -i "csmapper/GB/GB18030%UCS@BMP.mps" "../libsrc/csmapper_gb_gb18030_ucs@bmp_mps.h"
+	xxd -i "csmapper/GB/GBKEXT%UCS.mps" "../libsrc/csmapper_gb_gbkext_ucs_mps.h"
+	xxd -i "csmapper/GB/UCS%GB2312UDA2.mps" "../libsrc/csmapper_gb_ucs_gb2312uda2_mps.h"
+	xxd -i "csmapper/KS/KSC5601HANGUL%UCS.mps" "../libsrc/csmapper_ks_ksc5601hangul_ucs_mps.h"
+	xxd -i "csmapper/KS/UCS%KSC5601HANJA.mps" "../libsrc/csmapper_ks_ucs_ksc5601hanja_mps.h"
+	xxd -i "csmapper/KS/KSC5601HANJA%UCS.mps" "../libsrc/csmapper_ks_ksc5601hanja_ucs_mps.h"
+	xxd -i "csmapper/KS/UCS%KSC5601HANGUL.mps" "../libsrc/csmapper_ks_ucs_ksc5601hangul_mps.h"
+	xxd -i "esdb/EUC/EUC-KR.esdb" "../libsrc/esdb_euc_euc_kr_esdb.h"
+	xxd -i "esdb/EUC/EUC-CN.esdb" "../libsrc/esdb_euc_euc_cn_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-8.esdb" "../libsrc/esdb_iso_8859_iso_8859_8_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-4.esdb" "../libsrc/esdb_iso_8859_iso_8859_4_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-11.esdb" "../libsrc/esdb_iso_8859_iso_8859_11_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-3.esdb" "../libsrc/esdb_iso_8859_iso_8859_3_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-15.esdb" "../libsrc/esdb_iso_8859_iso_8859_15_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-5.esdb" "../libsrc/esdb_iso_8859_iso_8859_5_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-6.esdb" "../libsrc/esdb_iso_8859_iso_8859_6_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-2.esdb" "../libsrc/esdb_iso_8859_iso_8859_2_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-9.esdb" "../libsrc/esdb_iso_8859_iso_8859_9_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-1.esdb" "../libsrc/esdb_iso_8859_iso_8859_1_esdb.h"
+	xxd -i "esdb/ISO-8859/ISO-8859-7.esdb" "../libsrc/esdb_iso_8859_iso_8859_7_esdb.h"
+	xxd -i "esdb/MISC/JISX0208@1990.esdb" "../libsrc/esdb_misc_jisx0208@1990_esdb.h"
+	xxd -i "esdb/MISC/JISX0212.esdb" "../libsrc/esdb_misc_jisx0212_esdb.h"
+	xxd -i "esdb/MISC/Shift_JIS.esdb" "../libsrc/esdb_misc_shift_jis_esdb.h"
+	xxd -i "esdb/MISC/JISX0201-KANA.esdb" "../libsrc/esdb_misc_jisx0201_kana_esdb.h"
+	xxd -i "esdb/esdb.alias.db" "../libsrc/esdb_esdb_alias_db.h"
+	xxd -i "esdb/UTF/UTF-16-INTERNAL.esdb" "../libsrc/esdb_utf_utf_16_internal_esdb.h"
+	xxd -i "esdb/UTF/UTF-16BE.esdb" "../libsrc/esdb_utf_utf_16be_esdb.h"
+	xxd -i "esdb/UTF/UTF-16.esdb" "../libsrc/esdb_utf_utf_16_esdb.h"
+	xxd -i "esdb/UTF/UTF-32-SWAPPED.esdb" "../libsrc/esdb_utf_utf_32_swapped_esdb.h"
+	xxd -i "esdb/UTF/UTF-32-INTERNAL.esdb" "../libsrc/esdb_utf_utf_32_internal_esdb.h"
+	xxd -i "esdb/UTF/UTF-32LE.esdb" "../libsrc/esdb_utf_utf_32le_esdb.h"
+	xxd -i "esdb/UTF/UTF-16-SWAPPED.esdb" "../libsrc/esdb_utf_utf_16_swapped_esdb.h"
+	xxd -i "esdb/UTF/UTF-8.esdb" "../libsrc/esdb_utf_utf_8_esdb.h"
+	xxd -i "esdb/UTF/UTF-32BE.esdb" "../libsrc/esdb_utf_utf_32be_esdb.h"
+	xxd -i "esdb/UTF/UTF-16LE.esdb" "../libsrc/esdb_utf_utf_16le_esdb.h"
+	xxd -i "esdb/UTF/UTF-32.esdb" "../libsrc/esdb_utf_utf_32_esdb.h"
+	xxd -i "esdb/ISO646/ISO646-US.esdb" "../libsrc/esdb_iso646_iso646_us_esdb.h"
+	xxd -i "esdb/esdb.dir.db" "../libsrc/esdb_esdb_dir_db.h"
+	xxd -i "esdb/GB/GB18030.esdb" "../libsrc/esdb_gb_gb18030_esdb.h"
+	xxd -i "esdb/GB/GBK.esdb" "../libsrc/esdb_gb_gbk_esdb.h"
+
+clean:
+	rm -f $(TRASH)
+
+distclean:
+	rm -f $(DISTTRASH)

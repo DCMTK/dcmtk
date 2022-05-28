@@ -12,37 +12,40 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES = -I$(top_srcdir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc
-LOCALLIBS = -lofstd $(CHARCONVLIBS) $(MATHLIBS)
-LOCALTRASH = 
+ofstddir = $(top_srcdir)/../ofstd
 
-test_objs = tests.o ticonv.o
-objs = $(test_objs)
+LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(configdir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc
+LOCALLIBS = -loficonv -lofstd $(CHARCONVLIBS) $(MATHLIBS)
+
+objs = tests.o oficonv_tests.o ticonv.o ticonv_iso8859.o ticonv_chinese.o \
+       ticonv_japanese.o ticonv_korean.o
+
 progs = tests
 
+# in order to avoid a cyclic dependency between ofstd and oficonv, we only compile
+# the binaries for the unit test here, but perform the linking step in ofstd/tests
+# when both libofstd.a and liboficonv.a are available
 
-all: $(progs)
+all: $(objs)
 
-tests: $(test_objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
-
+tests: $(objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(I2DLIBS) $(LOCALLIBS) $(LIBS)
 
 check: tests
-	./tests
+	DCMDICTPATH=../data/dicom.dic ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMDICTPATH=../data/dicom.dic ./tests -x
 
 
 install: all
 
-
 clean:
-	rm -f $(objs) $(progs) $(LOCALTRASH) $(TRASH)
+	rm -f $(objs) $(progs) $(TRASH)
 
 distclean:
-	rm -f $(objs) $(progs) $(LOCALTRASH) $(DISTTRASH)
+	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
