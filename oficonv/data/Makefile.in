@@ -76,7 +76,7 @@ install:
 # mps and esdb files.
 
 oficonv_data_library:
-	xxd -i "csmapper/mapper.dir.db" "${oficonv_SOURCE_DIR}/libsrc/csmapper_mapper_dir_db.h"
+	xxd -i "csmapper/mapper.dir.db" "../libsrc/csmapper_mapper_dir_db.h"
 	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-9.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_9_mps.h"
 	xxd -i "csmapper/ISO-8859/ISO-8859-8%UCS.mps" "../libsrc/csmapper_iso_8859_iso_8859_8_ucs_mps.h"
 	xxd -i "csmapper/ISO-8859/UCS%ISO-8859-3.mps" "../libsrc/csmapper_iso_8859_ucs_iso_8859_3_mps.h"
