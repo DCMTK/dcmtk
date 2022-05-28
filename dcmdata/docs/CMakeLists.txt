@@ -1,2 +1,2 @@
 # declare installation files
-install(FILES datadict.txt DESTINATION "${DCMTK_DEFAULT_DOC_DIR}" COMPONENT doc)
+install(FILES datadict.txt DESTINATION "${CMAKE_INSTALL_FULL_DOCDIR}" COMPONENT doc)

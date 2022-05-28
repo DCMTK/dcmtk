@@ -139,22 +139,22 @@ if(WIN32 AND NOT CYGWIN)
   # Set path and multiple path separator being used in dictionary code etc.
   set(PATH_SEPARATOR "\\\\")
   set(ENVIRONMENT_PATH_SEPARATOR ";")
+
   # Set default directory for configuration and support data.
-  if (NOT DEFINED DCMTK_DEFAULT_CONFIGURATION_DIR)
-    set(DCMTK_DEFAULT_CONFIGURATION_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\etc\\\\")
-  endif()
-  if (NOT DEFINED DCMTK_DEFAULT_SUPPORT_DATA_DIR)
-    set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\share\\\\")
-  endif()
-  if (NOT DEFINED DCMTK_DEFAULT_DOC_DIR)
-    set(DCMTK_DEFAULT_DOC_DIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\doc\\\\")
-  endif()
+  set(CMAKE_INSTALL_FULL_SYSCONFDIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\etc")
+  set(CMAKE_INSTALL_FULL_DATADIR    "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\share")
+  set(CMAKE_INSTALL_FULL_DOCDIR     "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\doc")
+
+  # These variables are defined as macros in osconfig.h and must end with a path separator
+  set(DCMTK_DEFAULT_CONFIGURATION_DIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}${PATH_SEPARATOR}")
+  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${CMAKE_INSTALL_FULL_DATADIR}${PATH_SEPARATOR}")
+
   # Set dictionary path to the data dir inside install main dir (prefix)
   if(DCMTK_DEFAULT_DICT STREQUAL "external")
-    set(DCM_DICT_DEFAULT_PATH "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}dicom.dic")
+    set(DCM_DICT_DEFAULT_PATH "${CMAKE_INSTALL_FULL_DATADIR}\\\\dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     if(ENABLE_PRIVATE_TAGS)
-      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${DCMTK_DEFAULT_SUPPORT_DATA_DIR}private.dic")
+      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH};${CMAKE_INSTALL_FULL_DATADIR}\\\\private.dic")
     endif()
      # Again, for Windows strip all / from path and replace it with \\.
     string(REGEX REPLACE "/" "\\\\\\\\" DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}")
@@ -168,16 +168,15 @@ else()
   set(PATH_SEPARATOR "/")
   set(ENVIRONMENT_PATH_SEPARATOR ":")
 
-  # Set default directory for configuration and support data.
-  if (NOT DEFINED DCMTK_DEFAULT_CONFIGURATION_DIR)
-    set(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/")
-  endif()
-  if (NOT DEFINED DCMTK_DEFAULT_SUPPORT_DATA_DIR)
-    set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}/")
-  endif()
-  if (NOT DEFINED DCMTK_DEFAULT_DOC_DIR)
-    set(DCMTK_DEFAULT_DOC_DIR "${DCMTK_PREFIX}/${CMAKE_INSTALL_DOCDIR}-${DCMTK_PACKAGE_VERSION}/")
-  endif()
+  # Modify the installation paths for configuration files, data files and documents
+  # by adding a subdirectory with the DCMTK name and version number
+  set(CMAKE_INSTALL_FULL_SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/dcmtk-${DCMTK_PACKAGE_VERSION}")
+  set(CMAKE_INSTALL_FULL_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}")
+  set(CMAKE_INSTALL_FULL_DOCDIR "${CMAKE_INSTALL_FULL_DOCDIR}-${DCMTK_PACKAGE_VERSION}")
+
+  # These variables are defined as macros in osconfig.h and must end with a path separator
+  set(DCMTK_DEFAULT_CONFIGURATION_DIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/")
+  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${CMAKE_INSTALL_FULL_DATADIR}/")
 
   # Set dictionary path to the data dir inside install main dir (prefix).
   if(DCMTK_DEFAULT_DICT STREQUAL "external")

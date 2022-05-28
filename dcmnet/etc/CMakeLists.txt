@@ -1,2 +1,2 @@
 # declare installation files
-install(FILES storescp.cfg storescu.cfg DESTINATION "${DCMTK_DEFAULT_CONFIGURATION_DIR}" COMPONENT etc)
+install(FILES storescp.cfg storescu.cfg DESTINATION "${CMAKE_INSTALL_FULL_SYSCONFDIR}" COMPONENT etc)

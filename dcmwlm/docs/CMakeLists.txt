@@ -1,2 +1,2 @@
 # declare installation files
-install(FILES wlmsetup.txt DESTINATION "${DCMTK_DEFAULT_DOC_DIR}" COMPONENT doc)
+install(FILES wlmsetup.txt DESTINATION "${CMAKE_INSTALL_FULL_DOCDIR}" COMPONENT doc)
