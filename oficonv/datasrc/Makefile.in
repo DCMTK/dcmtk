@@ -9,7 +9,9 @@ VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
+
 include $(configdir)/@common_makefile@
+
 
 all:
 
@@ -102,30 +104,30 @@ oficonv_data_files:
 	../apps/mkesdb -o "../data/esdb/MISC/JISX0208@1990.esdb"  "esdb/MISC/JISX0208@1990.src"
 	../apps/mkesdb -o "../data/esdb/MISC/Shift_JIS.esdb"      "esdb/MISC/Shift_JIS.src"
 	../apps/mkesdb -o "../data/esdb/MISC/JISX0212.esdb"       "esdb/MISC/JISX0212.src"
-	sed 's/UTF-mod/UTF1632/' "esdb/UTF/UTF.src"           > "temp01.src"         
-	sed 's/UTF-mod/UTF8/' "esdb/UTF/UTF.src"              > "temp03.src"         
-	sed 's/UTF-x/UTF-16-INTERNAL/' "temp01.src"           > "temp04.src"         
-	sed 's/UTF-x/UTF-16-SWAPPED/' "temp01.src"            > "temp05.src"         
-	sed 's/UTF-x/UTF-16/' "temp01.src"                    > "temp06.src"         
-	sed 's/UTF-x/UTF-16BE/' "temp01.src"                  > "temp07.src"         
-	sed 's/UTF-x/UTF-16LE/' "temp01.src"                  > "temp08.src"         
-	sed 's/UTF-x/UTF-32-INTERNAL/' "temp01.src"           > "temp09.src"         
-	sed 's/UTF-x/UTF-32-SWAPPED/' "temp01.src"            > "temp10.src"         
-	sed 's/UTF-x/UTF-32/' "temp01.src"                    > "temp11.src"         
-	sed 's/UTF-x/UTF-32BE/' "temp01.src"                  > "temp12.src"         
-	sed 's/UTF-x/UTF-32LE/' "temp01.src"                  > "temp13.src"         
-	sed 's/UTF-x/UTF-8/' "temp03.src"                     > "temp15.src"         
+	sed 's/UTF-mod/UTF1632/' "esdb/UTF/UTF.src"           > "temp01.src"
+	sed 's/UTF-mod/UTF8/' "esdb/UTF/UTF.src"              > "temp03.src"
+	sed 's/UTF-x/UTF-16-INTERNAL/' "temp01.src"           > "temp04.src"
+	sed 's/UTF-x/UTF-16-SWAPPED/' "temp01.src"            > "temp05.src"
+	sed 's/UTF-x/UTF-16/' "temp01.src"                    > "temp06.src"
+	sed 's/UTF-x/UTF-16BE/' "temp01.src"                  > "temp07.src"
+	sed 's/UTF-x/UTF-16LE/' "temp01.src"                  > "temp08.src"
+	sed 's/UTF-x/UTF-32-INTERNAL/' "temp01.src"           > "temp09.src"
+	sed 's/UTF-x/UTF-32-SWAPPED/' "temp01.src"            > "temp10.src"
+	sed 's/UTF-x/UTF-32/' "temp01.src"                    > "temp11.src"
+	sed 's/UTF-x/UTF-32BE/' "temp01.src"                  > "temp12.src"
+	sed 's/UTF-x/UTF-32LE/' "temp01.src"                  > "temp13.src"
+	sed 's/UTF-x/UTF-8/' "temp03.src"                     > "temp15.src"
 	sed 's/UTF-var/utf16,internal,force/' "temp04.src"    > "UTF-16-INTERNAL.src"
-	sed 's/UTF-var/utf16,swapped,force/' "temp05.src"     > "UTF-16-SWAPPED.src" 
-	sed 's/UTF-var/utf16/' "temp06.src"                   > "UTF-16.src"         
-	sed 's/UTF-var/utf16,big,force/' "temp07.src"         > "UTF-16BE.src"       
-	sed 's/UTF-var/utf16,little,force/' "temp08.src"      > "UTF-16LE.src"       
+	sed 's/UTF-var/utf16,swapped,force/' "temp05.src"     > "UTF-16-SWAPPED.src"
+	sed 's/UTF-var/utf16/' "temp06.src"                   > "UTF-16.src"
+	sed 's/UTF-var/utf16,big,force/' "temp07.src"         > "UTF-16BE.src"
+	sed 's/UTF-var/utf16,little,force/' "temp08.src"      > "UTF-16LE.src"
 	sed 's/UTF-var/utf32,internal,force/' "temp09.src"    > "UTF-32-INTERNAL.src"
-	sed 's/UTF-var/utf32,swapped,force/' "temp10.src"     > "UTF-32-SWAPPED.src" 
-	sed 's/UTF-var/utf32/' "temp11.src"                   > "UTF-32.src"         
-	sed 's/UTF-var/utf32,big,force/' "temp12.src"         > "UTF-32BE.src"       
-	sed 's/UTF-var/utf32,little,force/' "temp13.src"      > "UTF-32LE.src"       
-	sed 's/UTF-var/utf8/' "temp15.src"                    > "UTF-8.src"          
+	sed 's/UTF-var/utf32,swapped,force/' "temp10.src"     > "UTF-32-SWAPPED.src"
+	sed 's/UTF-var/utf32/' "temp11.src"                   > "UTF-32.src"
+	sed 's/UTF-var/utf32,big,force/' "temp12.src"         > "UTF-32BE.src"
+	sed 's/UTF-var/utf32,little,force/' "temp13.src"      > "UTF-32LE.src"
+	sed 's/UTF-var/utf8/' "temp15.src"                    > "UTF-8.src"
 	../apps/mkesdb -o "../data/esdb/UTF/UTF-16-INTERNAL.esdb"  "UTF-16-INTERNAL.src"
 	../apps/mkesdb -o "../data/esdb/UTF/UTF-16-SWAPPED.esdb"   "UTF-16-SWAPPED.src"
 	../apps/mkesdb -o "../data/esdb/UTF/UTF-16.esdb"           "UTF-16.src"
@@ -141,13 +143,12 @@ oficonv_data_files:
 	../apps/mkesdb -m -o "../data/esdb/esdb.alias.db"          "esdb/esdb.alias"
 
 
-install: install-bin
+install:
 
-install-bin:
 
 clean:
 	rm ISO-8859-1.src ISO-8859-2.src ISO-8859-3.src ISO-8859-4.src ISO-8859-5.src ISO-8859-6.src ISO-8859-7.src ISO-8859-8.src ISO-8859-9.src ISO-8859-11.src ISO-8859-15.src ISO646-US.src
-	rm temp01.src temp03.src temp04.src temp05.src temp06.src temp07.src temp08.src temp09.src temp10.src temp11.src temp12.src temp13.src temp15.src 
+	rm temp01.src temp03.src temp04.src temp05.src temp06.src temp07.src temp08.src temp09.src temp10.src temp11.src temp12.src temp13.src temp15.src
 	rm UTF-16-INTERNAL.src UTF-16-SWAPPED.src UTF-16.src UTF-16BE.src UTF-16LE.src UTF-32-INTERNAL.src UTF-32-SWAPPED.src UTF-32.src UTF-32BE.src UTF-32LE.src UTF-8.src
 
 distclean: clean

@@ -19,28 +19,27 @@ dcmioddir = $(top_srcdir)/../dcmiod
 dcmfgdir = $(top_srcdir)/../dcmfg
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
-	-I$(dcmdatadir)/include -I$(dcmioddir)/include \
-	-I$(dcmfgdir)/include
+	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include
 
 LOCALDEFS =
 
-objs = dpmtypes.o dpmmodparametricmapseries.o dpmmodparametricmapimage.o dpmparametricmapbase.o dpmparametricmapiod.o
-
+objs = dpmtypes.o dpmmodparametricmapseries.o dpmmodparametricmapimage.o \
+	dpmparametricmapbase.o dpmparametricmapiod.o
 
 library = libdcmpmap.$(LIBEXT)
 
 
 all: $(library)
 
+$(library): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
 install: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-
-
-$(library): $(objs)
-	$(AR) $(ARFLAGS) $@ $(objs)
-	$(RANLIB) $@
 
 
 clean:

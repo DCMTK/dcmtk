@@ -12,11 +12,11 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
-oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
 	-I$(oflogdir)/include -I$(ofstddir)/include
@@ -38,6 +38,7 @@ wltest: $(objs)
 check:
 
 check-exhaustive:
+
 
 install: all
 

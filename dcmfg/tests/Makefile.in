@@ -12,11 +12,11 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmioddir = $(top_srcdir)/../dcmiod
-oficonvdir = $(top_srcdir)/../oficonv
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmioddir)/libsrc -L$(oficonvdir)/libsrc
@@ -36,7 +36,6 @@ test_objs = t_concatenation_creator.o \
 	t_frame_content.o \
 	t_irradiation_event_identification.o \
 	tests.o
-
 
 objs = $(test_objs)
 progs = tests

@@ -14,13 +14,14 @@ include $(configdir)/@common_makefile@
 files = dcmqrscp.cfg
 
 
-all: 
+all:
 
-install: 
+install:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(etcdir)
 	for file in $(files); do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(etcdir) ;\
 	done
+
 
 clean:
 	rm -f $(TRASH)

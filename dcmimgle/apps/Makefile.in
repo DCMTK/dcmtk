@@ -12,14 +12,16 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
-oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(oficonvdir)/libsrc
-LOCALLIBS = -ldcmimgle -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
+	-L$(dcmdatadir)/libsrc -L$(oficonvdir)/libsrc
+LOCALLIBS = -ldcmimgle -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) \
+	$(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dconvlum.o dcmdspfn.o dcod2lum.o
 progs = dconvlum dcmdspfn dcod2lum

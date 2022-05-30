@@ -35,20 +35,21 @@ objs = dsrdoc.o dsrposcn.o dsrdncsr.o dsritcsr.o dsrdnflt.o dsrtree.o \
 	dsrchecc.o dsrcolcc.o dsrprocc.o dsrxrdcc.o dsrspecc.o dsrmaccc.o \
 	dsrimpcc.o dsrc3dcc.o dsrrrdcc.o dsracqcc.o dsrsaecc.o dsrprdcc.o \
 	dsrpficc.o dsrplicc.o dsrrsdcc.o
+
 library = libdcmsr.$(LIBEXT)
 
 
 all: $(library)
 
+$(library): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
 install: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-
-
-$(library): $(objs)
-	$(AR) $(ARFLAGS) $@ $(objs)
-	$(RANLIB) $@
 
 
 clean:

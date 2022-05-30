@@ -12,9 +12,9 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
-oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(oficonvdir)/include -I$(ofstddir)/include -I$(oflogdir)/include
 LIBDIRS = -L$(top_srcdir)/libi2d -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
@@ -82,9 +82,8 @@ img2dcm: img2dcm.o
 dcm2json: dcm2json.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-install: install-bin
 
-install-bin: all
+install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && $(STRIP) $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\

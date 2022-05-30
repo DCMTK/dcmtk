@@ -12,13 +12,14 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-all: 
+all:
 
-install: 
+install:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmjpeg
 	for file in dcmtk/dcmjpeg/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmjpeg ;\
 	done
+
 
 clean:
 	rm -f $(TRASH)

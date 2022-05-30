@@ -12,10 +12,10 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-dcmdatadir = $(top_srcdir)/../dcmdata
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmioddir = $(top_srcdir)/../dcmiod
+dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
 dcmsrdir = $(top_srcdir)/../dcmsr
 dcmqrdbdir = $(top_srcdir)/../dcmqrdb
@@ -37,20 +37,21 @@ objs = dvpsal.o dvpsgal.o dvpsgr.o dvpsovl.o dvpsrs.o dvpstx.o \
 	dvpsib.o dvpsibl.o dvpssp.o dvpspr.o dvpscf.o dvpshlp.o \
 	dvpspll.o dvpsab.o dvpsabl.o dvpsspl.o dvpsprt.o dvpsfs.o \
 	dvpsmsg.o dvsighdl.o dcmpstat.o dvpspl2.o
+
 library = libdcmpstat.$(LIBEXT)
 
 
 all: $(library)
 
+$(library): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
 install: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-
-
-$(library): $(objs)
-	$(AR) $(ARFLAGS) $@ $(objs)
-	$(RANLIB) $@
 
 
 clean:

@@ -28,6 +28,7 @@ install:
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/ofstd/diag ;\
 	done
 
+
 clean:
 	rm -f $(TRASH)
 

@@ -20,8 +20,8 @@ LOCALLIBS = -loficonv -lofstd $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = tests.o oficonv_tests.o ticonv.o ticonv_iso8859.o ticonv_chinese.o \
        ticonv_japanese.o ticonv_korean.o
-
 progs = tests
+
 
 # in order to avoid a cyclic dependency between ofstd and oficonv, we only compile
 # the binaries for the unit test here, but perform the linking step in ofstd/tests
@@ -32,14 +32,16 @@ all: $(objs)
 tests: $(objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(I2DLIBS) $(LOCALLIBS) $(LIBS)
 
+
 check: tests
-	DCMDICTPATH=../data/dicom.dic ./tests
+	DCMICONVPATH=../data ./tests
 
 check-exhaustive: tests
-	DCMDICTPATH=../data/dicom.dic ./tests -x
+	DCMICONVPATH=../data ./tests -x
 
 
 install: all
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

@@ -22,7 +22,8 @@ dcmimgledir = $(top_srcdir)/../dcmimgle
 #   swap order of overlay origin coordinates
 # LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include
+LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include \
+	-I$(dcmimgledir)/include
 
 objs = dicoimg.o dicopx.o dicoopx.o diregist.o dilogger.o \
 	diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \
@@ -32,17 +33,18 @@ objs = dicoimg.o dicopx.o dicoopx.o diregist.o dilogger.o \
 
 library = libdcmimage.$(LIBEXT)
 
+
 all: $(library)
+
+$(library): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
 
 install: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-
-
-$(library): $(objs)
-	$(AR) $(ARFLAGS) $@ $(objs)
-	$(RANLIB) $@
 
 
 clean:

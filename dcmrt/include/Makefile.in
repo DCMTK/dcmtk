@@ -14,7 +14,7 @@ include $(configdir)/@common_makefile@
 
 all:
 
-install: 
+install:
 	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmrt
 	for file in dcmtk/dcmrt/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmrt ;\
@@ -23,6 +23,7 @@ install:
 	for file in dcmtk/dcmrt/seq/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmrt/seq ;\
 	done
+
 
 clean:
 	rm -f $(TRASH)

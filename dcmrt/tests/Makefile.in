@@ -12,11 +12,11 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
-oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(dcmdatadir)/include -I$(oflogdir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmdatadir)/libsrc \
@@ -37,14 +37,15 @@ drttest: drttest.o
 tests: $(test_objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
-install: all
-
 
 check: tests
 	DCMDICTPATH=../data/dicom.dic ./tests
 
 check-exhaustive: tests
 	DCMDICTPATH=../data/dicom.dic ./tests -x
+
+
+install: all
 
 
 clean:

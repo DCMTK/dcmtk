@@ -20,6 +20,7 @@ install:
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmpmap ;\
 	done
 
+
 clean:
 	rm -f $(TRASH)
 

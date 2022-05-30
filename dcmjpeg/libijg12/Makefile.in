@@ -30,20 +30,21 @@ objs = jcomapi.o  jcodec.o  jutils.o  jerror.o  jmemmgr.o  \
 	jdpostct.o jddctmgr.o jidctfst.o jidctflt.o jidctint.o \
 	jidctred.o jdsample.o jdcolor.o  jquant1.o  jquant2.o  \
 	jdmerge.o  jcarith.o  jdarith.o  jaricom.o
+
 library = libijg12.$(LIBEXT)
 
 
 all: $(library)
 
+$(library): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
 install: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-
-
-$(library): $(objs)
-	$(AR) $(ARFLAGS) $@ $(objs)
-	$(RANLIB) $@
 
 
 clean:

@@ -20,6 +20,7 @@ install:
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmnet ;\
 	done
 
+
 clean:
 	rm -f $(TRASH)
 

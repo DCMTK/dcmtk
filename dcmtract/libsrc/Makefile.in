@@ -21,26 +21,25 @@ dcmfgdir = $(top_srcdir)/../dcmfg
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include \
 	-I$(dcmfgdir)/include
-
 LOCALDEFS =
 
-objs = trcmeasurement.o trcmodtractresults.o trcstatistic.o trctrack.o trctrackset.o trctractographyresults.o trctypes.o
-
+objs = trcmeasurement.o trcmodtractresults.o trcstatistic.o trctrack.o trctrackset.o \
+	trctractographyresults.o trctypes.o
 
 library = libdcmtract.$(LIBEXT)
 
 
 all: $(library)
 
+$(library): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
 install: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-
-
-$(library): $(objs)
-	$(AR) $(ARFLAGS) $@ $(objs)
-	$(RANLIB) $@
 
 
 clean:

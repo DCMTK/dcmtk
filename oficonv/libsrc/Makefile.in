@@ -1,5 +1,5 @@
 #
-#   Makefile for oficonv/libsrc
+#	Makefile for oficonv/libsrc
 #
 
 @SET_MAKE@
@@ -15,8 +15,8 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 
 LOCALINCLUDES = -I$(ofstddir)/include
-LIBDIRS = 
-LOCALLIBS = 
+LIBDIRS =
+LOCALLIBS =
 LOCALDEFS =
 
 objs = \
@@ -33,21 +33,20 @@ objs = \
 
 library = liboficonv.$(LIBEXT)
 
+
 all: $(library)
 
-install: install-lib install-support
-
-install-lib: $(library)
-	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
-	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
-	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
 
 $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
 
-# Clean-up
+install: $(library)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
+	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
+
 
 clean:
 	rm -f $(support_progs) $(support_objs) $(objs) $(library) $(TRASH)
@@ -56,9 +55,7 @@ distclean: clean
 	rm -f $(DISTTRASH)
 
 
-# Dependencies
-
 dependencies:
-	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.c  > $(DEP)
 
 include $(DEP)

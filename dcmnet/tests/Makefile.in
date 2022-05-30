@@ -11,19 +11,19 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmtlsdir = $(top_srcdir)/../dcmtls
-oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmtlsdir)/include $(compr_includes)
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc -L$(oficonvdir)/libsrc \
-    $(compr_libdirs)
-LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) $(TCPWRAPPERLIBS) \
-	$(CHARCONVLIBS) $(MATHLIBS)
+	$(compr_libdirs)
+LOCALLIBS = -ldcmnet -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) \
+	$(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = tests.o tdump.o tdimse.o tpool.o tscuscp.o tscusession.o
 progs = tests
@@ -34,19 +34,23 @@ all: tests
 tests: $(objs)
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(I2DLIBS) $(LOCALLIBS) $(LIBS)
 
+
 check: tests
 	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
 
 check-exhaustive: tests
 	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
+
 install:
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
 distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
+
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)

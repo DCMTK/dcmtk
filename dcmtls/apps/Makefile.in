@@ -13,17 +13,14 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-all: 
-
+all:
 
 install:
-
 
 clean:
 	rm -f $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(DISTTRASH)
-
 
 dependencies:

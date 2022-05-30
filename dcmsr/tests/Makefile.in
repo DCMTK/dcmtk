@@ -12,23 +12,23 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
 ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
 dcmimagedir = $(top_srcdir)/../dcmimage
-oficonvdir = $(top_srcdir)/../oficonv
 
 LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include \
 	-I$(dcmimgledir)/include -I$(dcmimagedir)/include
 LIBDIRS = -L$(top_srcdir)/libcmr -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc \
 	-L$(dcmimagedir)/libsrc -L$(oficonvdir)/libsrc
-LOCALLIBS = -lcmr -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd -loficonv $(TIFFLIBS) \
-	$(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+LOCALLIBS = -lcmr -ldcmsr -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd -loficonv \
+	$(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrcodvl.o tsrnumvl.o tsrtpl.o tsrcmr.o \
-	tsrlist.o
+tstobjs = tests.o tsrtree.o tsrdoctr.o tsrdoc.o tsrcodvl.o tsrnumvl.o tsrtpl.o \
+	tsrcmr.o tsrlist.o
 objs = mkreport.o $(tstobjs)
 progs = mkreport tests
 
@@ -47,6 +47,7 @@ check: tests
 
 check-exhaustive: tests
 	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
+
 
 install: all
 

@@ -23,6 +23,7 @@ install:
 		find $$folder -maxdepth 1 -type f -exec $(INSTALL_DATA) {} $(DESTDIR)$(datadir)/$$folder \; ;\
 	done
 
+
 clean:
 	rm -f $(TRASH)
 

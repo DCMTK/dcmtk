@@ -11,11 +11,12 @@ top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
+
 oficonvdir = $(top_srcdir)/../oficonv
 oficonvtest = $(oficonvdir)/tests
 
 LOCALINCLUDES = -I$(top_srcdir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(oficonvdir)/libsrc 
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(oficonvdir)/libsrc
 LOCALLIBS = -lofstd -loficonv $(CHARCONVLIBS) $(MATHLIBS)
 LOCALTRASH = *.out testfile.\$$\$$\$$
 
@@ -25,6 +26,7 @@ test_objs = tests.o tatof.o tmap.o tvec.o tfilsys.o tftoa.o tthread.o \
             ttuple.o tlimits.o tvariant.o terror.o
 objs = $(test_objs)
 progs = tests oficonv_tests
+
 
 all: $(progs)
 
@@ -42,14 +44,16 @@ oficonv_objs = $(oficonvtest)/tests.o $(oficonvtest)/oficonv_tests.o \
 
 .PHONY: oficonv_tests
 
+
 oficonv_tests:
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $(oficonvtest)/tests $(oficonv_objs) $(LOCALLIBS) $(LIBS)
 
+
 check: tests
-	./tests
+	DCMICONVPATH=../../oficonv/data ./tests
 
 check-exhaustive: tests
-	./tests -x
+	DCMICONVPATH=../../oficonv/data ./tests -x
 
 
 install: all

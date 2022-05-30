@@ -71,6 +71,7 @@ dcmsend: dcmsend.o
 dcmrecv: dcmrecv.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)
 
+
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \

@@ -19,8 +19,8 @@ LIBDIRS = -L$(top_srcdir)/libsrc
 LOCALLIBS = -loficonv
 
 objs = mkcsmapper_bison.o mkcsmapper_flex.o mkesdb_bison.o mkesdb_flex.o
-
 progs = mkcsmapper mkesdb
+
 
 all: $(progs)
 
@@ -39,13 +39,13 @@ run_flex_and_bison:
 	bison --defines=$(top_srcdir)/apps/mkcsmapper_bison.h --output=$(top_srcdir)/apps/mkcsmapper_bison.cc mkcsmapper.y
 	bison --defines=$(top_srcdir)/apps/mkesdb_bison.h --output=$(top_srcdir)/apps/mkesdb_bison.cc mkesdb.y
 
-install: install-bin
 
-install-bin: all
+install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && $(STRIP) $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
 	done
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

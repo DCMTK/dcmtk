@@ -11,6 +11,7 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+
 all:
 
 install:
@@ -161,6 +162,7 @@ oficonv_data_library:
 	xxd -i "esdb/esdb.dir.db" "../libsrc/esdb_esdb_dir_db.h"
 	xxd -i "esdb/GB/GB18030.esdb" "../libsrc/esdb_gb_gb18030_esdb.h"
 	xxd -i "esdb/GB/GBK.esdb" "../libsrc/esdb_gb_gbk_esdb.h"
+
 
 clean:
 	rm -f $(TRASH)

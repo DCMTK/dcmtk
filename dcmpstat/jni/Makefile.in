@@ -1,6 +1,10 @@
 #
 #	Makefile for dcmpstat/jni
 #
+# WARNING: This file is outdated and needs to be updated for the
+#          latest changes of the DCMTK, e.g. support for new modules
+#          such as oflog and oficonv has to be added.
+#
 # This makefile requires changes specific for the operating system
 # and compiler that are not automatically adjusted by "configure".
 #
@@ -93,6 +97,7 @@ objs = DVInterface.o DVPSGraphicObject.o DVPresentationState.o DVPSCurve.o \
 	DVPSTextObject.o DVPSStoredPrint.o DSRCodeValue.o DSRCompositeValue.o \
 	DSRDocument.o DSRDocumentTree.o DSRImageValue.o DSRNumericValue.o \
 	DSRSCoordValue.o DSRTCoordValue.o DSRWaveformValue.o
+
 library = libjInterface.so
 
 
@@ -105,6 +110,7 @@ $(library): $(objs)
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
+
 
 clean:
 	rm -f $(objs) $(library) $(TRASH)
