@@ -1,0 +1,255 @@
+citrus_bcs.o: citrus_bcs.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_bcs.h
+citrus_bcs_strtol.o: citrus_bcs_strtol.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_bcs.h \
+ citrus_strtol.h
+citrus_bcs_strtoul.o: citrus_bcs_strtoul.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_bcs.h \
+ citrus_strtoul.h
+citrus_big5.o: citrus_big5.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_big5.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_prop.h citrus_stdenc.h \
+ citrus_stdenc_template.h
+citrus_csmapper.o: citrus_csmapper.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_csmapper.h \
+ citrus_bcs.h citrus_types.h citrus_region.h citrus_lock.h \
+ citrus_memstream.h citrus_mmap.h citrus_module.h citrus_hash.h \
+ citrus_mapper.h citrus_mapper_local.h citrus_pivot_file.h citrus_db.h \
+ citrus_db_factory.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_db_hash.h \
+ citrus_lookup.h oficonv_strlcpy.h
+citrus_db.o: citrus_db.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_db.h citrus_db_factory.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h citrus_region.h \
+ citrus_memstream.h citrus_mmap.h citrus_db_file.h
+citrus_db_factory.o: citrus_db_factory.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_db_factory.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h citrus_region.h \
+ citrus_db_file.h
+citrus_db_hash.o: citrus_db_hash.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_db_hash.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h citrus_types.h \
+ citrus_region.h
+citrus_dechanyu.o: citrus_dechanyu.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_dechanyu.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_esdb.o: citrus_esdb.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_esdb.h citrus_types.h citrus_bcs.h citrus_region.h \
+ citrus_memstream.h citrus_mmap.h citrus_lookup.h citrus_db.h \
+ citrus_db_factory.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_db_hash.h \
+ citrus_esdb_file.h
+citrus_euc.o: citrus_euc.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_euc.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_euctw.o: citrus_euctw.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_euctw.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_gbk2k.o: citrus_gbk2k.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_gbk2k.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_hash.o: citrus_hash.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_hash.h citrus_bcs.h citrus_types.h citrus_region.h \
+ citrus_db_hash.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h
+citrus_hz.o: citrus_hz.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_hz.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_prop.h \
+ citrus_stdenc_template.h
+citrus_iconv.o: citrus_iconv.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_iconv.h citrus_bcs.h \
+ citrus_iconv_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_hash.h citrus_types.h \
+ citrus_module.h citrus_esdb.h citrus_region.h citrus_memstream.h \
+ citrus_mmap.h citrus_lock.h citrus_lookup.h oficonv_strlcpy.h
+citrus_iconv_none.o: citrus_iconv_none.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_iconv_none.h \
+ citrus_iconv_std_local.h citrus_types.h citrus_csmapper.h \
+ citrus_iconv_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_hash.h citrus_module.h \
+ citrus_bcs.h citrus_iconv.h
+citrus_iconv_std.o: citrus_iconv_std.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_iconv_std.h \
+ citrus_iconv_std_local.h citrus_types.h citrus_csmapper.h \
+ citrus_iconv_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_hash.h citrus_module.h \
+ citrus_bcs.h citrus_mapper_local.h citrus_region.h citrus_mmap.h \
+ citrus_iconv.h citrus_stdenc.h citrus_stdenc_local.h citrus_mapper.h \
+ citrus_memstream.h citrus_esdb.h
+citrus_iso2022.o: citrus_iso2022.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_iso2022.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_jisx0208.o: citrus_jisx0208.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_euc.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_johab.o: citrus_johab.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_johab.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_lookup.o: citrus_lookup.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_lookup.h \
+ citrus_bcs.h citrus_region.h citrus_memstream.h citrus_mmap.h \
+ citrus_db.h citrus_db_factory.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_db_hash.h \
+ citrus_lookup_file.h
+citrus_lookup_factory.o: citrus_lookup_factory.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_lookup_factory.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h citrus_region.h \
+ citrus_db_factory.h citrus_db_hash.h citrus_lookup_file.h
+citrus_mapper.o: citrus_mapper.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mapper.h \
+ citrus_bcs.h citrus_mapper_local.h citrus_types.h citrus_module.h \
+ citrus_hash.h citrus_region.h citrus_lock.h citrus_memstream.h \
+ citrus_mmap.h oficonv_strlcpy.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h
+citrus_mapper_646.o: citrus_mapper_646.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mapper_646.h \
+ citrus_mapper_local.h citrus_types.h citrus_module.h citrus_bcs.h \
+ citrus_hash.h citrus_region.h citrus_memstream.h citrus_mmap.h \
+ citrus_mapper.h
+citrus_mapper_none.o: citrus_mapper_none.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mapper_none.h \
+ citrus_mapper_local.h citrus_types.h citrus_module.h citrus_bcs.h \
+ citrus_hash.h citrus_mapper.h
+citrus_mapper_serial.o: citrus_mapper_serial.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mapper_serial.h \
+ citrus_mapper_local.h citrus_types.h citrus_module.h citrus_bcs.h \
+ citrus_hash.h citrus_region.h citrus_memstream.h citrus_mmap.h \
+ citrus_mapper.h
+citrus_mapper_std.o: citrus_mapper_std.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mapper_std.h \
+ citrus_mapper_std_local.h citrus_types.h citrus_region.h citrus_bcs.h \
+ citrus_mapper_local.h citrus_module.h citrus_hash.h citrus_mmap.h \
+ citrus_mapper.h citrus_db.h citrus_db_factory.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_db_hash.h \
+ citrus_mapper_std_file.h
+citrus_mapper_zone.o: citrus_mapper_zone.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mapper_zone.h \
+ citrus_mapper_local.h citrus_types.h citrus_module.h citrus_bcs.h \
+ citrus_hash.h citrus_region.h citrus_memstream.h citrus_mmap.h \
+ citrus_mapper.h
+citrus_memstream.o: citrus_memstream.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_memstream.h \
+ citrus_region.h citrus_bcs.h
+citrus_mmap.o: citrus_mmap.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_mmap.h oficonv_logger.h citrus_bcs.h citrus_region.h \
+ windows_mmap.h data_esdb.h data_csmapper.h
+citrus_module.o: citrus_module.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_module.h \
+ citrus_bcs.h citrus_iconv_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_hash.h citrus_types.h \
+ citrus_iconv_std.h citrus_iconv_std_local.h citrus_csmapper.h \
+ citrus_mapper_local.h citrus_iconv_none.h citrus_stdenc_local.h \
+ citrus_big5.h citrus_dechanyu.h citrus_euc.h citrus_euctw.h \
+ citrus_gbk2k.h citrus_hz.h citrus_iso2022.h citrus_johab.h \
+ citrus_mskanji.h citrus_ues.h citrus_utf1632.h citrus_utf7.h \
+ citrus_utf8.h citrus_viqr.h citrus_zw.h citrus_jisx0208.h \
+ citrus_mapper_none.h citrus_mapper_646.h citrus_mapper_serial.h \
+ citrus_mapper_zone.h citrus_mapper_std.h citrus_mapper_std_local.h \
+ citrus_region.h
+citrus_mskanji.o: citrus_mskanji.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_mskanji.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_none.o: citrus_none.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_none.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h citrus_types.h \
+ citrus_module.h citrus_stdenc.h citrus_stdenc_local.h
+citrus_pivot_factory.o: citrus_pivot_factory.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_pivot_factory.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h citrus_region.h \
+ citrus_db_factory.h citrus_db_hash.h citrus_pivot_file.h
+citrus_prop.o: citrus_prop.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_prop.h citrus_bcs.h citrus_region.h citrus_memstream.h
+citrus_stdenc.o: citrus_stdenc.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_stdenc.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_none.h
+citrus_ues.o: citrus_ues.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_ues.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_utf1632.o: citrus_utf1632.c \
+ ../../config/include/dcmtk/config/osconfig.h citrus_utf1632.h \
+ citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_utf7.o: citrus_utf7.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_utf7.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_utf8.o: citrus_utf8.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_utf8.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_viqr.o: citrus_viqr.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_viqr.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+citrus_zw.o: citrus_zw.c ../../config/include/dcmtk/config/osconfig.h \
+ citrus_zw.h citrus_stdenc_local.h ../include/dcmtk/oficonv/iconv.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_stdenc.h citrus_stdenc_template.h
+data_csmapper.o: data_csmapper.c \
+ ../../config/include/dcmtk/config/osconfig.h data_csmapper.h
+data_esdb.o: data_esdb.c ../../config/include/dcmtk/config/osconfig.h \
+ data_esdb.h
+oficonv_iconv.o: oficonv_iconv.c \
+ ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/oficonv/iconv.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_types.h \
+ citrus_module.h citrus_bcs.h citrus_esdb.h citrus_hash.h citrus_iconv.h \
+ citrus_iconv_local.h oficonv_strlcpy.h oficonv_strcasestr.h
+oficonv_logger.o: oficonv_logger.c \
+ ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/oficonv/iconv.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h
+oficonv_strcasestr.o: oficonv_strcasestr.c \
+ ../../config/include/dcmtk/config/osconfig.h oficonv_strcasestr.h
+oficonv_strlcpy.o: oficonv_strlcpy.c \
+ ../../config/include/dcmtk/config/osconfig.h oficonv_strlcpy.h \
+ ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h

@@ -2421,7 +2421,9 @@ dcspchrs.o: dcspchrs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dclist.h \
  ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcbytstr.h \
- ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcdeftag.h
+ ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcdeftag.h \
+ ../../oficonv/include/dcmtk/oficonv/iconv.h \
+ ../../oficonv/include/dcmtk/oficonv/oidefine.h
 dcstack.o: dcstack.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \

@@ -11,6 +11,8 @@ ofchrenc.o: ofchrenc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../config/include/dcmtk/config/arith.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofdiag.h \
  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+ ../../oficonv/include/dcmtk/oficonv/iconv.h \
+ ../../oficonv/include/dcmtk/oficonv/oidefine.h \
  ../include/dcmtk/ofstd/diag/push.def \
  ../include/dcmtk/ofstd/diag/shadow.def \
  ../include/dcmtk/ofstd/diag/pop.def
