@@ -746,6 +746,7 @@ with_libiconv
 with_libicuinc
 with_libicu
 enable_charconv
+enable_builtin_oficonv
 enable_cxx11
 enable_stl
 enable_stl_vector
@@ -1415,6 +1416,10 @@ Optional Features:
   --enable-charconv=TYPE  enable character set conversion support
                           (libiconv/libicu/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support
+  --enable-builtin-oficonv
+                          enable builtin oficonv data files
+  --disable-builtin-oficonv
+                          disable builtin oficonv data files (default)
   --enable-cxx11          use C++11
   --disable-cxx11         do not use C++11 (default)
   --enable-stl            use C++ STL
@@ -12900,7 +12905,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12903 "configure"
+#line 12908 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13151,7 +13156,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13154 "configure"
+#line 13159 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13401,7 +13406,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13404 "configure"
+#line 13409 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13470,7 +13475,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13473 "configure"
+#line 13478 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13539,7 +13544,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13542 "configure"
+#line 13547 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -17134,6 +17139,30 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to embed oficonv data files into oficonv library" >&5
+$as_echo_n "checking whether to embed oficonv data files into oficonv library... " >&6; }
+# Check whether --enable-builtin-oficonv was given.
+if test "${enable_builtin_oficonv+set}" = set; then :
+  enableval=$enable_builtin_oficonv;  case "$enableval" in
+  yes)
+
+$as_echo "#define DCMTK_ENABLE_BUILTIN_OFICONV_DATA 1" >>confdefs.h
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+    ;;
+  *)
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    ;;
+  esac
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+fi
+
 
 
 

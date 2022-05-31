@@ -49,6 +49,9 @@
 #define DCMTK_LFS 1
 #define DCMTK_LFS64 2
 
+/* Define to embed oficonv data files into oficonv library. */
+#undef DCMTK_ENABLE_BUILTIN_OFICONV_DATA
+
 /* Define to select character set conversion implementation. */
 #undef DCMTK_ENABLE_CHARSET_CONVERSION
 

@@ -355,7 +355,11 @@ class OFCharacterEncoding::Implementation
     static OFString getVersionString()
     {
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
-        return "DCMTK " PACKAGE_VERSION " oficonv";
+        return "DCMTK " PACKAGE_VERSION " oficonv"
+#ifdef DCMTK_ENABLE_BUILTIN_OFICONV_DATA
+            " (with builtin data files)"
+#endif
+            ;
 #elif defined(WITH_LIBICONV)
         OFString versionStr = "LIBICONV, Version ";
         char buf[10];
