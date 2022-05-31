@@ -1,0 +1,47 @@
+/*!
+
+\page mod_oficonv oficonv: a character set conversion library
+
+This module contains the Citrus iconv implementation in a
+modified version adapted for use in DCMTK and with the
+character set encodings used in the DICOM standard.
+
+The most important functions are:
+\li \b OFiconv_open()
+\li \b OFiconv()
+\li \b OFiconv_close()
+
+\section oficonv_examples Example
+
+The following example shows a very simple character set conversion.
+Most error handling code has been omitted for brevity.
+
+\code
+// we want to convert from ISO 8859-1 to UTF-8
+iconv_t id = OFiconv_open("UTF-8", "ISO-8859-1");
+if (id != OFreinterpret_cast(iconv_t, -1))
+{
+    // set up input and output buffer
+    char output[20];
+    char input[20];
+    strcpy(input, "J\xF6rg");
+
+    // set up the parameters for OFiconv
+    char *src_ptr = input; // Following the Posix spec, this pointer is not const
+    size_t src_len = std::strlen(src_ptr);
+    char *dst_ptr = output;
+    size_t dst_len = 20;
+
+    // perform the conversion
+    size_t result = OFiconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len);
+    if (result != OFstatic_cast(size_t, -1))
+    {
+        std::cout << "UTF-8 string: " << output << std::endl;
+    }
+
+    // close the conversion descriptor
+    OFiconv_close(id);
+}
+\endcode
+
+*/
