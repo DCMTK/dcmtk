@@ -355,9 +355,9 @@ class OFCharacterEncoding::Implementation
     static OFString getVersionString()
     {
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
-        return "DCMTK " PACKAGE_VERSION " oficonv"
+        return "Citrus iconv, Version FreeBSD 13.1 (modified)"
 #ifdef DCMTK_ENABLE_BUILTIN_OFICONV_DATA
-            " (with builtin data files)"
+            ", with built-in data files"
 #endif
             ;
 #elif defined(WITH_LIBICONV)
