@@ -297,12 +297,16 @@ class OFCharacterEncoding::Implementation
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
 
 #include "dcmtk/oficonv/iconv.h"
+
 #undef LIBICONV_SECOND_ARGUMENT_CONST
 #define iconv_open OFiconv_open
 #define iconv_close OFiconv_close
 #define iconv OFiconv
 #define iconvctl OFiconvctl
+
+#ifndef WITH_LIBICONV
 #define WITH_LIBICONV
+#endif
 
 #else /* DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV */
 
@@ -312,7 +316,6 @@ class OFCharacterEncoding::Implementation
 #endif
 
 #endif /* DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV */
-
 
 
 #define ILLEGAL_DESCRIPTOR     OFreinterpret_cast(iconv_t, -1)
