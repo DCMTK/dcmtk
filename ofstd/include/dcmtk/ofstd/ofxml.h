@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -20,8 +20,8 @@
  */
 
 /****************************************************************************/
-/*! \mainpage XMLParser library
- * \section intro_sec Introduction
+/*! \page xmlparser XMLParser library
+ * \section xmlparser_intro Introduction
  *
  * This is a basic XML parser written in ANSI C++ for portability.
  * It works by using recursion and a node tree for breaking
@@ -64,10 +64,10 @@
  * @version     V2.44
  * @author      Frank Vanden Berghen
  *
- * \section tutorial First Tutorial
+ * \section xmlparser_tutorial First Tutorial
  * You can follow a simple <a href="../../xmlParser.html">Tutorial</a> to know the basics...
  *
- * \section usage General usage: How to include the XMLParser library inside your project.
+ * \section xmlparser_usage General usage: How to include the XMLParser library inside your project.
  *
  * The library is composed of two files: <a href="../../xmlParser.cpp">xmlParser.cpp</a> and
  * <a href="../../xmlParser.h">xmlParser.h</a>. These are the ONLY 2 files that you need when
@@ -81,7 +81,7 @@
  * version of the library, you need to define the "WIDE_CHAR_XML_PARSER" preprocessor definition variable
  * (this is usually done inside your project definition file)
  *
- * \section example Advanced Tutorial and Many Examples of usage.
+ * \section xmlparser_example Advanced Tutorial and Many Examples of usage.
  *
  * Some very small introductory examples are described inside the Tutorial file
  * <a href="../../xmlParser.html">xmlParser.html</a>
@@ -103,9 +103,9 @@
  * - solaris: makefile.solaris
  * - windows: Visual Studio: *.dsp, xmlParser.dsw and also xmlParser.lib and xmlParser.dll
  *
- * \section debugging Debugging with the XMLParser library
+ * \section xmlparser_debugging Debugging with the XMLParser library
  *
- * \subsection debugwin Debugging under WINDOWS
+ * \subsection xmlparser_debugwin Debugging under WINDOWS
  *
  * Inside Visual C++, the "debug versions" of the memory allocation functions are
  * very slow: Do not forget to compile in "release mode" to get maximum speed.
@@ -125,7 +125,7 @@
  * inside the Visual Studio Debugger. Believe me, once you have seen inside the debugger
  * the "smooth" display of the XMLNode objects, you cannot live without it anymore!
  *
- * \subsection debuglinux Debugging under LINUX/UNIX
+ * \subsection xmlparser_debuglinux Debugging under LINUX/UNIX
  *
  * The speed of the debug version of the XMLParser library is tolerable so no extra
  * work.has been done.
