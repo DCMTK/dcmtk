@@ -38,6 +38,14 @@
 #include <wchar.h>
 #include <stdint.h>
 
+
+// include this file in doxygen documentation
+
+/** @file iconv.h
+ *  @brief Type definitions, constants and functions for the oficonv module
+ */
+
+
 #ifdef __cplusplus
 typedef bool __iconv_bool;
 #elif __STDC_VERSION__ >= 199901L

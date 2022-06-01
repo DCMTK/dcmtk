@@ -178,17 +178,17 @@ The DCMDICTPATH environment variable can even refer to several data
 dictionaries separated by colons (":") on Unix systems, or semicolons (";")
 on Windows systems.  Thus the Unix csh command
 
-  setenv DCMDICTPATH /usr/local/share/dcmtk/dicom.dic:$HOME/dicom.dic
+  setenv DCMDICTPATH /usr/local/share/dcmtk-<VERSION>/dicom.dic:$HOME/dicom.dic
 
 would cause all applications using the dcmdata library to first load the
 default data dictionary and subsequently load the data dictionary dicom.dic
 from the user's home directory.  When using the bash, the command would be:
 
-  export DCMDICTPATH=/usr/local/share/dcmtk/dicom.dic:$HOME/dicom.dic
+  export DCMDICTPATH=/usr/local/share/dcmtk-<VERSION>/dicom.dic:$HOME/dicom.dic
 
 On Windows systems, the command would be:
 
-  set DCMDICTPATH=c:\dcmtk-install\share\dcmtk\dicom.dic;c:\dicom.dic
+  set DCMDICTPATH=c:\dcmtk-install\share\dcmtk-<VERSION>\dicom.dic;c:\dicom.dic
 
 Also here, data dictionary entries loaded later in the load sequence override
 entries loaded earlier.

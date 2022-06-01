@@ -157,7 +157,7 @@ DCMTK-specific format (not with --native-format):
 
   +Xf   --use-dtd-file  [f]ilename: string
           use specified DTD file (only with +Xe)
-          (default: /usr/local/share/dcmtk/dcm2xml.dtd)
+          (default: /usr/local/share/dcmtk-<VERSION>/dcm2xml.dtd)
 
   +Wn   --write-element-name
           write name of the DICOM data elements (default)

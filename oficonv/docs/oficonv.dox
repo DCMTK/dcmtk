@@ -2,16 +2,16 @@
 
 \page mod_oficonv oficonv: a character set conversion library
 
-This module contains the Citrus iconv implementation in a
-modified version adapted for use in DCMTK and with the
-character set encodings used in the DICOM standard.
+This module contains the Citrus iconv implementation in a modified version
+adapted for use in DCMTK and with the character set encodings used in the
+DICOM standard.
 
 The most important functions are:
 \li \b OFiconv_open()
 \li \b OFiconv()
 \li \b OFiconv_close()
 
-\section oficonv_examples Example
+\section oficonv_examples Examples
 
 The following example shows a very simple character set conversion.
 Most error handling code has been omitted for brevity.

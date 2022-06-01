@@ -9,7 +9,7 @@ Step 1:
 
 Create a directory where the image databases will be located.
 e.g.
-	mkdir /home/dicom/db
+    mkdir /home/dicom/db
 
 Step 2:
 
@@ -17,15 +17,15 @@ Create subdirectories for each individual image database storage areas to be
 managed by dcmqrscp.  Each database storage area corresponds to an Application
 Entity (AE) title of dcmqrscp.
 e.g.
-	cd /home/dicom/db
-	mkdir COMMON ACME_STORE UNITED_STORE
+    cd /home/dicom/db
+    mkdir COMMON ACME_STORE UNITED_STORE
 
 Step 3:
 
 Copy the example configuration file (dcmqrscp.cfg) to the main image database
 directory.
 e.g.
-	cp /usr/local/etc/dcmtk/dcmqrscp.cfg /home/dicom/db
+    cp /usr/local/etc/dcmtk-<VERSION>/dcmqrscp.cfg /home/dicom/db
 
 Step 4:
 
@@ -61,19 +61,19 @@ performed on a read-only database storage area since sending images to such a
 storage area (AE title) might cause your original images to be deleted if the
 quota specifications (4th column of the AETable in dcmqrscp.cfg) are exceeded.
 e.g.
-	dcmqridx -v /home/dicom/db/COMMON /home/dicom/images/rsna95/*/*/*
+    dcmqridx -v /home/dicom/db/COMMON /home/dicom/images/rsna95/*/*/*
 
 would register the "rsna95" images in the COMMON storage area (which is defined
 as read-only in dcmqrscp.cfg).  The "rsna95" images are available via ftp from
 the Mallinckrodt Institute of Radiology, St. Louis, USA :
 
-	ftp://wuerlim.wustl.edu/pub/dicom/images/version3/RSNA95
+    ftp://wuerlim.wustl.edu/pub/dicom/images/version3/RSNA95
 
 Step 9:
 
 You can now start the dcmqrscp application.
 e.g.
-	dcmqrscp -v -c /home/dicom/db/dcmqrscp.cfg 5678
+    dcmqrscp -v -c /home/dicom/db/dcmqrscp.cfg 5678
 
 will start dcmqrscp in verbose mode, using the configuration file you created
 and edited in steps 3 to 8, and listening on TCP/IP port 5678.  The dcmqrscp
@@ -84,7 +84,7 @@ Step 10:
 You can try sending a DICOM image to dcmqrscp from one of the remote machines
 which may access dcmqrscp's storage areas.
 e.g.
-	storescu -v --aetitle ACME1 --call ACME_STORE dbhost 5678 ctimage.dcm
+    storescu -v --aetitle ACME1 --call ACME_STORE dbhost 5678 ctimage.dcm
 
 will start the storescu application in verbose mode, giving it the DICOM AE
 title ACME1, and requesting that it transmit the DICOM image ctimage.dcm to
@@ -99,7 +99,7 @@ Step 11:
 On the remote machine used in step 10 you can start a DICOM Storage SCP which
 is capable of receiving images.
 e.g.
-	storescp -v 3456
+    storescp -v 3456
 
 will start storescp in verbose mode listening on port 3456 for incoming
 associations.  See the storescp man page for more information on the storescp
@@ -111,7 +111,7 @@ You can try using the dcmqrti application to examine the database storage
 areas and send images to the storescp application started in step 11.
 dcmqrti should be run on the same host as dcmqrscp.
 e.g.
-	dcmqrti -c /home/dicom/db/dcmqrscp.cfg acmeCTcompany
+    dcmqrti -c /home/dicom/db/dcmqrscp.cfg acmeCTcompany
 
 will start the dcmqrti application using the configuration file you created
 and edited in steps 3 to 8, with the capability to communicate to the

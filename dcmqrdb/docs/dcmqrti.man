@@ -67,7 +67,7 @@ peer  peer host name or symbolic name from cfg file
 
   -c    --config  [f]ilename: string
           use specific configuration file
-          (default: /usr/local/etc/dcmqrscp.cfg)
+          (default: /usr/local/etc/dcmtk-<VERSION>/dcmqrscp.cfg)
 \endverbatim
 
 \subsection dcmqrti_network_options network options

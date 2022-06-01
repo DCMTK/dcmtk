@@ -152,7 +152,7 @@ DISABLE_NAGLE_ALGORITHM
     not seem to be appropriate anymore for most modern operating systems.
     The default behavior can be changed by setting the environment variable
     TCP_NODELAY accordingly (see config/docs/envvars.txt or
-    /usr/local/share/doc/dcmtk/envvars.txt).
+    /usr/local/share/doc/dcmtk-<VERSION>/envvars.txt).
 
 DISABLE_OFSTD_ATOF
   Affected: all modules

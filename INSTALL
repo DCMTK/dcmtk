@@ -240,8 +240,8 @@ LIBTIFF SUPPORT
 
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images to
 TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this purpose.
-This release of DCMTK is known to compile with libtiff release 4.3.0,
-although other releases may work as well.
+This release of DCMTK is known to compile with libtiff release 4.3.0, although
+other releases may work as well.
 
 When using CMake, a compiled version of the libtiff libraries and include files
 must be available during compilation of DCMTK.  See discussion on CMake below.
@@ -255,9 +255,8 @@ PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.
 This release of DCMTK is known to compile with libpng release 1.6.37,
 although other releases may work as well.
 
-When using CMake, a compiled version of the libpng libraries and include
-files must be available during compilation of DCMTK.  See discussion on CMake
-below.
+When using CMake, a compiled version of the libpng libraries and include files
+must be available during compilation of DCMTK.  See discussion on CMake below.
 
 
 LIBXML2 SUPPORT
@@ -298,15 +297,15 @@ Character Set Conversion Support
 ================================
 
 Starting with release 3.6.2, DCMTK supports the conversion between different
-character encodings, e.g. UTF-8 and ISO Latin 1. In DCMTK 3.6.8 and newer,
+character encodings, e.g. UTF-8 and ISO Latin-1.  In DCMTK 3.6.8 and newer,
 four implementations of character set conversion can be used:
 
-- oficonv, a DCMTK module based on the Citrus iconv code in FreeBSD 13.1.
+- oficonv, a DCMTK module based on the Citrus iconv code in FreeBSD 13.1
 - GNU libiconv
 - International Components for Unicode (ICU)
 - iconv support provided by the C standard library
 
-DCMTK selects the built-in module oficonv by default. Other implementations
+DCMTK selects the built-in module oficonv by default.  Other implementations
 can be activated by the user via the "--enable-charconv" argument (Autoconf)
 or "DCMTK_ENABLE_CHARSET_CONVERSION" (CMake).  Selecting an implementation
 that is not available will be ignored, i.e. the user choice will be overridden.
@@ -314,10 +313,10 @@ that is not available will be ignored, i.e. the user choice will be overridden.
 LIBICONV SUPPORT
 ----------------
 
-The libiconv toolkit (www.gnu.org/s/libiconv/) may be used as DCMTK's underlying
-character set conversion implementation.  This release of DCMTK is known to
-compile with the libiconv release 1.16, although other releases may work as
-well.
+The libiconv toolkit (www.gnu.org/software/libiconv/) may be used as DCMTK's
+underlying character set conversion implementation.  This release of DCMTK is
+known to compile with the libiconv release 1.16, although other releases may
+work as well.
 
 When using CMake, a compiled version of the libiconv and libcharset libraries
 and include files must be available during compilation of DCMTK.  See discussion
@@ -785,12 +784,12 @@ OFICONV DATA FILES
 ==================
 
 When oficonv is used to implement character set conversion (which is the
-default, starting with DCMTK 3.6.8), then a set of binary data files
-containing mapping tables are used during the conversion process. By
-default, these are installed and expected in DCMTK's data path
-(/usr/local/share/dcmtk-<VERSION>/) in the subdirectories "esdb" and
-"csmapper". The data path can be overridden at runtime by setting the
-environment variable DCMICONVPATH to point to a different directory.
+default, starting with DCMTK 3.6.8), then a set of binary data files containing
+mapping tables are used during the conversion process.  By default, these are
+installed and expected in DCMTK's data path (/usr/local/share/dcmtk-<VERSION>/
+data) in the subdirectories "esdb" and "csmapper".  The data path can
+be overridden at runtime by setting the environment variable DCMICONVPATH to
+point to a different directory.
 
 
 COMPILE-TIME FLAGS AND ENVIRONMENT VARIABLES
@@ -950,13 +949,13 @@ path):
 
     ./configure --ignore-deprecation
                 --with-libzlibinc=/usr/local/apps/zlib-1.2.11
-                --with-libtiffinc=/usr/local/apps/libtiff-4.0.10
+                --with-libtiffinc=/usr/local/apps/libtiff-4.3.0
                 --with-libpnginc=/usr/local/apps/libpng-1.6.37
-                --with-libxmlinc=/usr/local/apps/libxml2-2.9.9
+                --with-libxmlinc=/usr/local/apps/libxml2-2.9.13
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
-                --with-libiconvinc=/usr/local/apps/libiconv-1.15
+                --with-libiconvinc=/usr/local/apps/libiconv-1.16
            <or>
-                --with-libicuinc=/usr/local/apps/icu-65.1
+                --with-libicuinc=/usr/local/apps/icu-71.1
 
 Different configure options can be combined in any order.  configure --help
 will print a list of all existing configure options.  configure --help=short
@@ -976,7 +975,7 @@ options are:
   --disable-private-tags  don't enable private tag dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
   --enable-charconv=TYPE  enable character set conversion support
-                          (libiconv/libicu/stdlibc/auto=default)
+                          (libiconv/libicu/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support
   --enable-cxx11          use C++11
   --disable-cxx11         do not use C++11 (default)
@@ -1053,4 +1052,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2022-05-31 (Eichelberg)
+Last revised: 2022-06-01 (Riesmeier)

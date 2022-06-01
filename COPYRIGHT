@@ -273,8 +273,8 @@ copyright notice:
  *
  */
 
-The code for OFStandard::ftoa has been derived
-from an implementation which carries the following copyright notice:
+The code for OFStandard::ftoa has been derived from an implementation
+which carries the following copyright notice:
 
 /*
  *
@@ -610,7 +610,7 @@ FreeBSD, which was developed by the Citrus Project. The code is
 under a number of copyright statements that are all varieties
 of the BSD license:
 
-/*-
+/*
  * Copyright (c)2002, 2003, 2004, 2006, 2007, 2008 Citrus Project,
  * All rights reserved.
  *
@@ -636,7 +636,7 @@ of the BSD license:
  * SUCH DAMAGE.
  */
 
-/*-
+/*
  * Copyright (c) 2002 Citrus Project,
  * Copyright (c) 2010 Gabor Kovesdan <gabor@FreeBSD.org>,
  * All rights reserved.
@@ -696,7 +696,7 @@ of the BSD license:
  * SUCH DAMAGE.
  */
 
-/*-
+/*
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
  * All rights reserved.
  *
@@ -725,7 +725,7 @@ of the BSD license:
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*-
+/*
  * Copyright (c) 1993
  *  The Regents of the University of California.  All rights reserved.
  *
@@ -757,7 +757,7 @@ of the BSD license:
  * SUCH DAMAGE.
  */
 
-/*-
+/*
  * Copyright (c) 2005 The DragonFly Project.  All rights reserved.
  * Copyright (c) 2003, 2008 Citrus Project,
  * All rights reserved.
@@ -784,7 +784,7 @@ of the BSD license:
  * SUCH DAMAGE.
  */
 
-/*-
+/*
  * Copyright (c) 1990, 1993
  *  The Regents of the University of California.  All rights reserved.
  *
