@@ -134,6 +134,8 @@ static OFCondition checkCharacterSet(const char *ifname,
                         csetString = "ISO_IR 126";
                     else if (csetString == "hebrew")
                         csetString = "ISO_IR 138";
+                    else if (csetString == "latin-9")
+                        csetString = "ISO_IR 203";
                     /* then map the DICOM defined term to XML character encoding */
                     if (csetString == "ISO_IR 192")
                         encString = "UTF-8";
@@ -589,7 +591,7 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* write content in XML format to file */
-                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
+                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename.c_str(), encString, opt_writeFlags);
                         if (status.bad())
                         {
                             OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
@@ -599,7 +601,7 @@ int main(int argc, char *argv[])
                         result = 1;
                 } else {
                     /* write content in XML format to standard output */
-                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
+                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename.c_str(), encString, opt_writeFlags);
                     if (status.bad())
                     {
                         OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");
