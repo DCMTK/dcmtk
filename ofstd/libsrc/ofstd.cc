@@ -2838,6 +2838,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   // a DNS name must be shorter than 256 characters, so this should be enough
   char hostname[512];
   hostname[0] = '\0';
+  socklen_t nameinfo_len;
 
   if (type == AF_INET)
   {
@@ -2845,6 +2846,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
     struct sockaddr_in *sa4 = sas.getSockaddr_in();
     sa4->sin_family = AF_INET;
     memcpy(&sa4->sin_addr, addr, len);
+    nameinfo_len = sizeof(struct sockaddr_in);
   }
   else if (type == AF_INET6)
   {
@@ -2852,6 +2854,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
     struct sockaddr_in6 *sa6 = sas.getSockaddr_in6();
     sa6->sin6_family = AF_INET6;
     memcpy(&sa6->sin6_addr, addr, len);
+    nameinfo_len = sizeof(struct sockaddr_in6);
   }
   else return result; // unknown network type, not supported by getnameinfo()
 
@@ -2860,7 +2863,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   struct sockaddr *sa = sas.getSockaddr();
 
   // perform reverse DNS lookup. Repeat while we receive temporary failures.
-  while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, sizeof(struct sockaddr_storage), hostname, 512, NULL, 0, 0);
+  while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, nameinfo_len, hostname, 512, NULL, 0, 0);
   if ((err == 0) && (hostname[0] != '\0')) result = hostname;
 
 #elif defined(HAVE_GETHOSTBYADDR_R)

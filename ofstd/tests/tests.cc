@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2019, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -86,5 +86,6 @@ OFTEST_REGISTER(ofstd_error);
 OFTEST_REGISTER(ofstd_filesystem);
 OFTEST_REGISTER(ofstd_snprintf);
 OFTEST_REGISTER(ofstd_OFStringUtil_replace_all);
+OFTEST_REGISTER(ofstd_gethostnamebyaddress);
 
 OFTEST_MAIN("ofstd")

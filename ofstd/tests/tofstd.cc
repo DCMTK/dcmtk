@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,15 @@
 
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#endif
+END_EXTERN_C
 
 #define OFFILENAME_TO_OFSTRING(filename) \
     OFString(OFSTRING_GUARD(filename.getCharPointer()))
@@ -457,4 +466,11 @@ OFTEST(ofstd_snprintf)
   memcpy(buf, s, 10);
   count = OFStandard::snprintf(buf, 10, "%i", i);
   OFCHECK((count == 5) && (five ==  buf));
+}
+
+OFTEST(ofstd_gethostnamebyaddress)
+{
+  char buf[] = { 127, 0 , 0, 1 };
+  OFString hostname = OFStandard::getHostnameByAddress(buf, 4, AF_INET);
+  OFCHECK(hostname == "localhost");
 }
