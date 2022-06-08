@@ -36,6 +36,12 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#ifdef HAVE_WINDOWS_H
+#include <winsock2.h>
+#elif defined(HAVE_WINSOCK_H)
+#include <winsock.h>
+#endif
+
 #define OFFILENAME_TO_OFSTRING(filename) \
     OFString(OFSTRING_GUARD(filename.getCharPointer()))
 
