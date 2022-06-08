@@ -478,5 +478,6 @@ OFTEST(ofstd_gethostnamebyaddress)
 {
   char buf[] = { 127, 0 , 0, 1 };
   OFString hostname = OFStandard::getHostnameByAddress(buf, 4, AF_INET);
-  OFCHECK(hostname == "localhost");
+  // most platforms will return "localhost", Cygwin will return the real hostname
+  OFCHECK(hostname != "127.0.0.1");
 }
