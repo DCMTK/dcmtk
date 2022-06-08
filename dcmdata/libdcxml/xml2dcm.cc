@@ -788,4 +788,14 @@ OFCondition DcmXMLParseHelper::readXmlFile(
     return result;
 }
 
+#else  /* WITH_LIBXML */
+
+/* make sure that the object file is not completely empty if compiled
+ * without libxml2 because some linkers might fail otherwise.
+ */
+void xml2dcm_lib_dummy_function()
+{
+  return;
+}
+
 #endif /* WITH_LIBXML */
