@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2021, OFFIS e.V.
+ *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1126,21 +1126,17 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #endif
     }
 
-    // cleanup code
+    // clean-up association
     OFCondition oldcond = cond;    /* store condition flag for later use */
-    if (!options_.singleProcess_ && (cond != ASC_SHUTDOWNAPPLICATION))
+    cond = ASC_dropAssociation(assoc);
+    if (cond.bad())
     {
-        /* the child will handle the association, we can drop it */
-        cond = ASC_dropAssociation(assoc);
-        if (cond.bad())
-        {
-            DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
-        }
-        cond = ASC_destroyAssociation(&assoc);
-        if (cond.bad())
-        {
-            DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
-        }
+        DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
+    }
+    cond = ASC_destroyAssociation(&assoc);
+    if (cond.bad())
+    {
+        DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
     }
 
     if (oldcond == ASC_SHUTDOWNAPPLICATION) cond = oldcond; /* abort flag is reported to top-level wait loop */
