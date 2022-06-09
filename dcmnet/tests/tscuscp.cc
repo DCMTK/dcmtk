@@ -25,6 +25,7 @@
 
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/oftimer.h"
+#include "dcmtk/ofstd/ofrand.h"
 #include "dcmtk/dcmnet/scp.h"
 #include "dcmtk/dcmnet/scu.h"
 
@@ -632,7 +633,9 @@ struct TestSCPWithNCreateSupport : TestSCP
         config.setConnectionBlockingMode(DUL_NOBLOCK);
         config.setConnectionTimeout(10);
         config.setHostLookupEnabled(OFFalse);
-        config.setPort(11112);
+        OFRandom rnd;
+        m_portNum = 65535 - rnd.getRND16() % 5535; // 60000-65535
+        config.setPort(m_portNum);
         configure_scp_for_echo(config);
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
@@ -757,6 +760,7 @@ struct TestSCPWithNCreateSupport : TestSCP
     }
 
     OFMap<OFString, DcmDataset> m_managedSopInstances;
+    Uint16 m_portNum;
 };
 
 /// Holds basic SCU and SCP data for performing N-CREATE/N-SET tests
@@ -773,12 +777,13 @@ struct NCREATEFixture
         presIDMpps(0)
     {
         scp.start();
+        OFCHECK_MSG(scp.m_listen_result == EC_NotYetImplemented, OFString("SCP does not seem to listen and returns: ") + scp.m_listen_result.text());
         OFStandard::forceSleep(2);
         reqDataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, "3.3.3.3");
         mppsSCU.setPeerAETitle("NCREATE_SCP");
         mppsSCU.setAETitle("NCREATE_SCU");
         mppsSCU.setPeerHostName("localhost");
-        mppsSCU.setPeerPort(11112);
+        mppsSCU.setPeerPort(scp.m_portNum);
         mppsSCU.setConnectionTimeout(10);
 
         OFList<OFString> xfers;
