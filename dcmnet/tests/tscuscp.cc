@@ -182,9 +182,9 @@ struct TestSCP: DcmSCP, OFThread
 /** Manually configure Verification SOP class on server
  *  @param cfg The SCP configuration to modify
  */
-void configure_scp_for_echo(DcmSCPConfig& cfg, T_ASC_SC_ROLE roleOfRequestor = ASC_SC_ROLE_DEFAULT)
+void configure_scp_for_echo(DcmSCPConfig& cfg, Uint16 listenPort, T_ASC_SC_ROLE roleOfRequestor = ASC_SC_ROLE_DEFAULT)
 {
-    cfg.setPort(11112);
+    cfg.setPort(listenPort);
     OFList<OFString> xfers;
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
     OFCHECK(cfg.addPresentationContext(UID_VerificationSOPClass, xfers, roleOfRequestor).good());
@@ -243,7 +243,7 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_current_association, EF_Slow)
     // accordingly
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config);
+    configure_scp_for_echo(config, 11112);
     config.setAETitle("STOP_AFTER_ASSOC");
     config.setConnectionBlockingMode(DUL_BLOCK);
     scp.start();
@@ -311,7 +311,7 @@ OFTEST_FLAGS(dcmnet_scp_fail_on_disallowed_host, EF_Slow)
     // Configure SCP for Verification
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config);
+    configure_scp_for_echo(config, 11112);
     config.setAETitle("REJECT_HOST");
     config.setConnectionBlockingMode(DUL_BLOCK);
     // Make sure SCP always returns
@@ -372,7 +372,7 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_timeout, EF_Slow)
     // is performed, i.e. timeout occurs after that connection.
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config);
+    configure_scp_for_echo(config, 11112);
     config.setAETitle("STOP_ON_TIMEOUT");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(5);
@@ -401,7 +401,7 @@ OFTEST_FLAGS(dcmnet_scp_no_stop_wo_request_noblock, EF_Slow)
     // SCP to stop after timeout occurs, and start SCP
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config);
+    configure_scp_for_echo(config, 11112);
 
     config.setAETitle("NO_STOP_NOBLOCK");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
@@ -431,7 +431,7 @@ OFTEST_FLAGS(dcmnet_scp_no_stop_wo_request_block, EF_Slow)
     // Configure SCP for Verification and to do not ask to exit for any reason
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config);
+    configure_scp_for_echo(config, 11112);
     config.setAETitle("NO_STOP_BLOCK");
     config.setConnectionBlockingMode(DUL_BLOCK);
     scp.start();
@@ -462,7 +462,7 @@ OFTEST_FLAGS(dcmnet_scp_no_term_notify_without_association, EF_Slow)
     // Configure SCP for Verification and tell it stop after 3 seconds.
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config);
+    configure_scp_for_echo(config, 11112);
     config.setAETitle("NO_TERM_WO_ASSOC");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(3);
@@ -507,7 +507,7 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     // Configure SCP for Verification with the desired role, and start it
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, r_acc);
+    configure_scp_for_echo(config, 11112, r_acc);
     config.setAETitle("ACCEPTOR");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(4);
@@ -635,8 +635,7 @@ struct TestSCPWithNCreateSupport : TestSCP
         config.setHostLookupEnabled(OFFalse);
         OFRandom rnd;
         m_portNum = 65535 - rnd.getRND16() % 5535; // 60000-65535
-        config.setPort(m_portNum);
-        configure_scp_for_echo(config);
+        configure_scp_for_echo(config, m_portNum);
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(getConfig().addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
