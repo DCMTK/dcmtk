@@ -2158,7 +2158,7 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
         }
         else
         {
-            DCMNET_INFO("Received N-CREATE Response (" << DU_cstoreStatusString(rspStatusCode) << ")");
+            DCMNET_INFO("Received N-CREATE Response (" << DU_ncreateStatusString(rspStatusCode) << ")");
         }
     }
     else

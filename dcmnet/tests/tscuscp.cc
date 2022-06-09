@@ -282,7 +282,7 @@ OFTEST_FLAGS(dcmnet_scp_fail_on_invalid_association_configuration, EF_Slow)
     // Configure SCP but do not add any presentation contexts
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    config.setPort(11112);;
+    config.setPort(11112);
     config.setAETitle("TEST_INVALID_CFG");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     // Ensure that if the server starts listen loop (it should not), the
@@ -632,6 +632,7 @@ struct TestSCPWithNCreateSupport : TestSCP
         config.setConnectionBlockingMode(DUL_NOBLOCK);
         config.setConnectionTimeout(10);
         config.setHostLookupEnabled(OFFalse);
+        config.setPort(11112);
         configure_scp_for_echo(config);
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
@@ -808,7 +809,7 @@ struct NCREATEFixture
     DcmDataset reqDataset;
     DcmDataset* createdInstance;
     T_ASC_PresentationContextID presIDVerification;
-    T_ASC_PresentationContextID presIDMpps;
+    T_ASC_PresentationContextID presIDMpps;;
 };
 
 OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null)
@@ -817,6 +818,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_n
 
     Uint16 rspStatusCode = 0;
     OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFStandard::forceSleep(2);
     OFCHECK_MSG(result.good(), result.text());
     OFCHECK_MSG(rspStatusCode == STATUS_N_Success, OFString("Status code is: ") + DU_ncreateStatusString(rspStatusCode));
     fixture.scp.m_set_stop_after_assoc = OFTrue;
@@ -830,6 +832,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty)
 
     Uint16 rspStatusCode = 0;
     OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, "", &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFStandard::forceSleep(2);
     OFCHECK(result.bad());
     fixture.scp.m_set_stop_after_assoc = OFTrue;
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
@@ -841,6 +844,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accep
 
     Uint16 rspStatusCode = 0;
     OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFStandard::forceSleep(2);
     OFCHECK_MSG(result.good(), result.text());
     OFCHECK_MSG(rspStatusCode == STATUS_N_Success, OFString("Status code is: ") + DU_ncreateStatusString(rspStatusCode));
 
@@ -859,12 +863,14 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_s
     NCREATEFixture fixture;
     Uint16 rspStatusCode = 0;
     OFCondition result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode);
+    OFStandard::forceSleep(2);
     OFCHECK_MSG(result.good(), result.text());
 
     // Provoke duplicate SOP instance error
     delete fixture.createdInstance; // clean up old data
     fixture.createdInstance = NULL;
     OFCHECK_MSG((result = fixture.mppsSCU.sendNCREATERequest(fixture.presIDMpps, fixture.affectedSopInstanceUid, &fixture.reqDataset, fixture.createdInstance, rspStatusCode)).good(), result.text());
+    OFStandard::forceSleep(2);
     OFCHECK(rspStatusCode == STATUS_N_DuplicateSOPInstance);
     fixture.scp.m_set_stop_after_assoc = OFTrue;
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
