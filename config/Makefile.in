@@ -11,7 +11,7 @@ include @common_makefile@
 
 all: include/dcmtk/config/arith.h
 
-install: install-doc
+install: all install-doc
 
 install-bin:
 
