@@ -245,7 +245,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              DcmFileFormat *dfile,
                              const E_FileReadMode readMode,
                              const OFBool loadIntoMemory,
-                             const char *dtdFilename,
+                             const OFString &dtdFilename,
                              const OFString &encString,
                              const size_t writeFlags)
 {
@@ -274,7 +274,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
             {
                 out << " [" << OFendl;
                 /* copy content from DTD file */
-                STD_NAMESPACE ifstream dtdFile(dtdFilename, OFopenmode_in_nocreate);
+                STD_NAMESPACE ifstream dtdFile(dtdFilename.c_str(), OFopenmode_in_nocreate);
                 if (dtdFile)
                 {
                     char c;
@@ -591,7 +591,7 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* write content in XML format to file */
-                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename.c_str(), encString, opt_writeFlags);
+                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
                         if (status.bad())
                         {
                             OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
@@ -601,7 +601,7 @@ int main(int argc, char *argv[])
                         result = 1;
                 } else {
                     /* write content in XML format to standard output */
-                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename.c_str(), encString, opt_writeFlags);
+                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
                     if (status.bad())
                     {
                         OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");
