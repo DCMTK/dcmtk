@@ -140,6 +140,11 @@
 #include "citrus_mapper_zone.h"
 #include "citrus_mapper_std.h"
 
+#ifdef _MSC_VER
+/* disable warning about typecasts from void * to function pointer in older MSVC versions */
+#pragma warning(disable: 4055)
+#endif
+
 void *
 _citrus_find_getops(_citrus_module_t handle, const char *modname,
     const char *ifname)

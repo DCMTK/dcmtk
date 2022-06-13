@@ -56,7 +56,11 @@ typedef int __iconv_bool;
 
 struct __tag_iconv_t;
 typedef struct __tag_iconv_t *iconv_t;
+
+#ifndef OFICONV_CITRUS_WC_T_DEFINED
+#define OFICONV_CITRUS_WC_T_DEFINED
 typedef uint32_t _citrus_wc_t;
+#endif
 
 BEGIN_EXTERN_C
 

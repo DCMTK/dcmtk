@@ -88,6 +88,11 @@ static pthread_rwlock_t ci_lock = PTHREAD_RWLOCK_INITIALIZER;
 #endif
 #endif
 
+#ifdef _MSC_VER
+/* disable warning about typecasts from void * to function pointer in older MSVC versions */
+#pragma warning(disable: 4055)
+#endif
+
 static __inline void
 init_cache(void)
 {

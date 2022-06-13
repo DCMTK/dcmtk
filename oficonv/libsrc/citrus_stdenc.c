@@ -36,6 +36,11 @@
 #include "citrus_module.h"
 #include "citrus_none.h"
 
+#ifdef _MSC_VER
+/* disable warning about typecasts from void * to function pointer in older MSVC versions */
+#pragma warning(disable: 4055)
+#endif
+
 struct _citrus_stdenc _citrus_stdenc_default = {
     &_citrus_NONE_stdenc_ops,   /* ce_ops */
     NULL,               /* ce_closure */

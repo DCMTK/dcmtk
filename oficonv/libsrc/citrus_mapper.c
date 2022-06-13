@@ -70,6 +70,11 @@ static pthread_rwlock_t cm_lock = PTHREAD_RWLOCK_INITIALIZER;
 #endif
 #endif
 
+#ifdef _MSC_VER
+/* disable warning about typecasts from void * to function pointer in older MSVC versions */
+#pragma warning(disable: 4055)
+#endif
+
 struct _citrus_mapper_area {
     _CITRUS_HASH_HEAD(, _citrus_csmapper, CM_HASH_SIZE)    ma_cache;
     char                            *ma_dir;

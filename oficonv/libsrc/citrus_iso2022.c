@@ -290,10 +290,20 @@ get_initg(_ISO2022EncodingInfo * ei,
     if (getcs(&token[6], &cs) != 0)
         return (_PARSEFAIL);
 
+/* suppress spurious GCC warnings */
+#if ( defined(__GNUC__) && (__GNUC__ >= 10) )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+
     ei->initg[token[4] - '0'].type = cs.type;
     ei->initg[token[4] - '0'].final = cs.final;
     ei->initg[token[4] - '0'].interm = cs.interm;
     ei->initg[token[4] - '0'].vers = cs.vers;
+
+#if ( defined(__GNUC__) && (__GNUC__ >= 10) )
+#pragma GCC diagnostic pop
+#endif
 
     return (_MATCH);
 }

@@ -350,6 +350,8 @@ mnemonic_found:
             while (*p != '\0') {
                 if (n-- < 1)
                     goto e2big;
+                if (psenc->chlen >= MB_LEN_MAX)
+                    goto e2big;
                 psenc->ch[psenc->chlen++] = *p++;
             }
         }

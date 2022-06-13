@@ -233,8 +233,8 @@ _citrus_esdb_open(struct _citrus_esdb *db, const char *esname)
 void
 _citrus_esdb_close(struct _citrus_esdb *db)
 {
-
-    for (int i = 0; i < db->db_num_charsets; i++)
+    int i;
+    for (i = 0; i < db->db_num_charsets; i++)
         free(db->db_charsets[i].ec_csname);
     db->db_num_charsets = 0;
     free(db->db_charsets); db->db_charsets = NULL;
@@ -250,8 +250,8 @@ _citrus_esdb_close(struct _citrus_esdb *db)
 void
 _citrus_esdb_free_list(char **list, size_t num)
 {
-
-    for (size_t i = 0; i < num; i++)
+    size_t i;
+    for (i = 0; i < num; i++)
         free(list[i]);
     free(list);
 }

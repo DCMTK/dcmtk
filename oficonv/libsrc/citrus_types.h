@@ -34,7 +34,11 @@
 #endif
 #include <stdint.h>
 
+#ifndef OFICONV_CITRUS_WC_T_DEFINED
+#define OFICONV_CITRUS_WC_T_DEFINED
 typedef uint32_t        _citrus_wc_t;
+#endif
+
 typedef uint32_t        _citrus_index_t;
 typedef uint32_t        _citrus_csid_t;
 
