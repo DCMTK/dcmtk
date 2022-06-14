@@ -24,7 +24,7 @@
 */
 
 // Memory mapped file - Implementation of mmap() for Windows
-// Dan Jackson, 2014 
+// Dan Jackson, 2014
 // - changes to clean up otherwise leaked handles from CreateFileMapping()
 // - 'sysconf(_SC_PAGE_SIZE)' implementation
 // Original author: Mike Frysinger <vapier@gentoo.org>, placed into the public domain.
@@ -156,6 +156,11 @@ static void munmap(void *addr, size_t length)
 	}
 }
 
+/* The following code is currently not used by DCMTK.
+ * We disable it to prevent warnings about unused functions.
+ */
+#if 0
+
 #define _SC_PAGE_SIZE			1
 #define _SC_NPROCESSORS_CONF	2
 #define _SC_NPROCESSORS_ONLN	3
@@ -183,6 +188,7 @@ static long sysconf(int name)
 		return -1;
 	}
 }
+#endif  // #if 0
 
 #endif	// WINDOWS_MMAP_H
 #endif	// _WIN32

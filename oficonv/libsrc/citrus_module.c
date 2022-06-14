@@ -141,7 +141,9 @@
 #include "citrus_mapper_std.h"
 
 #ifdef _MSC_VER
-/* disable warning about typecasts from void * to function pointer in older MSVC versions */
+/* disable warning about typecasts from void * to function pointer
+ * and vice versa in older MSVC versions (VS 2015 and older) */
+#pragma warning(disable: 4054)
 #pragma warning(disable: 4055)
 #endif
 

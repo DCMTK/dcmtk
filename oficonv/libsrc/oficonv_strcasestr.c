@@ -38,7 +38,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "oficonv_strcasestr.h"
 
-#ifndef HAVE_PROTOTYPE_STRCASESTR
+#ifndef HAVE_C_PROTOTYPE_STRCASESTR
 
 #include <ctype.h>
 #include <string.h>
