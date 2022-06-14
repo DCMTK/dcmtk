@@ -322,12 +322,17 @@ struct _citrus_iconv *cv = NULL;
     if ((strcmp(src, "") == 0) || (strcmp(src, "char") == 0))
 #ifdef HAVE_WINDOWS_H
         src = current_codepage;
+#elif defined(__ANDROID__)
+        /* Android does not provide an implementation of nl_langinfo() and internally always uses UTF-8 */
+        src = "UTF-8";
 #else
         src = nl_langinfo(CODESET);
 #endif
     if ((strcmp(dst, "") == 0) || (strcmp(dst, "char") == 0))
 #ifdef HAVE_WINDOWS_H
         dst = current_codepage;
+#elif defined(__ANDROID__)
+        dst = "UTF-8";
 #else
         dst = nl_langinfo(CODESET);
 #endif

@@ -370,6 +370,10 @@ const char *OFlocale_charset(iconv_locale_allocation_t *buf)
 #ifdef HAVE_WINDOWS_H
   snprintf((char *)buf, sizeof(iconv_locale_allocation_t), "%lu", (unsigned long) GetConsoleOutputCP());
   return (const char *)buf;
+#elif defined(__ANDROID__)
+  /* Android does not provide an implementation of nl_langinfo() and internally always uses UTF-8 */
+  (void) buf;
+  return "UTF-8";
 #else
   (void) buf;
   return nl_langinfo(CODESET);
