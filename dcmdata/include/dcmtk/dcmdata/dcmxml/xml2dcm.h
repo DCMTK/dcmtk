@@ -23,13 +23,13 @@
 #define XML2DCM_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcmxml/dcxmldf.h"
 
 #ifdef WITH_LIBXML
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/dcmdata/dcxfer.h"
-#include "dcmtk/dcmdata/dcmxml/dcxmldf.h"
 
 #ifdef __ibmxl__
 // IBM xlC defines __GNUC__ but does not support the GNUC extension
@@ -222,6 +222,10 @@ private:
   xmlCharEncodingHandlerPtr EncodingHandler;
 
 };
+
+#else  /* WITH_LIBXML */
+
+DCMTK_DCMXML_EXPORT void xml2dcm_lib_dummy_function();
 
 #endif /* WITH_LIBXML */
 #endif /* XML2DCM_H */
