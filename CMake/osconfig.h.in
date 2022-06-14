@@ -524,12 +524,8 @@
 #cmakedefine HAVE_PROTOTYPE_STRCASECMP @HAVE_PROTOTYPE_STRCASECMP@
 
 /* Define if your system has a prototype for strcasestr in string.h
-   that is visible in C++ */
-#cmakedefine HAVE_PROTOTYPE_STRCASESTR @HAVE_PROTOTYPE_STRCASESTR@
-
-/* Define if your system has a prototype for strcasestr in string.h
    that is visible in C */
-#cmakedefine HAVE_C_PROTOTYPE_STRCASESTR @HAVE_C_PROTOTYPE_STRCASESTR@
+#cmakedefine HAVE_PROTOTYPE_STRCASESTR @HAVE_PROTOTYPE_STRCASESTR@
 
 /* Define if your system has a prototype for strncasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRNCASECMP @HAVE_PROTOTYPE_STRNCASECMP@
