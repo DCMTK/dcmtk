@@ -207,6 +207,12 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_ATTRIBUTE_REDECLARATION <unspecified>
 
+/*! @brief A macro to disable warnings about an unreferenced formal parameter
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -229,6 +235,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_OBJECT_DESTRUCTION_WARNING "dcmtk/ofstd/diag/vsobjdes.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREACHABLE_CODE_WARNING "dcmtk/ofstd/diag/unreachb.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_ATTRIBUTE_REDECLARATION "dcmtk/ofstd/diag/ignrattr.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER "dcmtk/ofstd/diag/unrefprm.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

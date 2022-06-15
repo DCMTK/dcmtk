@@ -1,0 +1,4 @@
+// For now we only need this with MSVC
+#ifdef _MSC_VER
+#pragma warning(disable: 4100)
+#endif
