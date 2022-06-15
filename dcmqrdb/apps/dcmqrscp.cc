@@ -181,7 +181,7 @@ main(int argc, char *argv[])
   cmd.addGroup("network options:");
     cmd.addSubGroup("association negotiation profiles from configuration file:");
       cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-profile, [o]ut-profile: string",
-                                                           "use profile i from f for incoming associations\nuse profile o from f for outgoing associations");
+                                                           "use profile i from f for incoming associations,\nuse profile o from f for outgoing associations");
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",         "+x=",     "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",     "prefer explicit VR little endian TS");

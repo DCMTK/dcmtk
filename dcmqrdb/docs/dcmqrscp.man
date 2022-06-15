@@ -147,7 +147,6 @@ checking identifier validity:
   -XM   --check-move
           check C-MOVE identifier validity
 
-
   # This option causes dcmqrscp database back-end to perform checks
   # on the Query Identifiers for a C-MOVE command.  With this option,
   # dcmqrscp will reject any queries which do not conform to the very
@@ -188,7 +187,7 @@ association negotiation profiles from configuration file:
 
   -xf   --assoc-config-file
           [f]ilename, [i]n-profile, [o]ut-profile: string
-          use profile i from f for incoming associations
+          use profile i from f for incoming associations,
           use profile o from f for outgoing associations
 
 preferred network transfer syntaxes (incoming associations):
@@ -1090,7 +1089,8 @@ It is an error if no data dictionary can be loaded.
 <em>\<docdir\>/dcmqrcnf.txt</em> - configuration information
 \n<em>\<docdir\>/dcmqrset.txt</em> - setup information
 \n<em>\<etcdir\>/dcmqrscp.cfg</em> - example configuration file
-\n<em>\<etcdir\>/dcmqrprf.cfg</em> - example configuration file for association profiles
+\n<em>\<etcdir\>/dcmqrprf.cfg</em> - example configuration file for association
+profiles
 
 \section dcmqrscp_see_also SEE ALSO
 
