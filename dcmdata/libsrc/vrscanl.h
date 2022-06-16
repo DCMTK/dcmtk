@@ -2,9 +2,9 @@
 #define yyHEADER_H 1
 #define yyIN_HEADER 1
 
-#line 5 "vrscanl.h"
+#line 6 "vrscanl.h"
 
-#line 7 "vrscanl.h"
+#line 8 "vrscanl.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -484,9 +484,9 @@ extern int yylex (yyscan_t yyscanner);
 #undef yyTABLES_NAME
 #endif
 
-#line 125 "vrscanl.l"
+#line 126 "vrscanl.l"
 
 
-#line 490 "vrscanl.h"
+#line 491 "vrscanl.h"
 #undef yyIN_HEADER
 #endif /* yyHEADER_H */

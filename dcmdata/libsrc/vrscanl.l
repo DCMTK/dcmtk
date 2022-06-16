@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2015, OFFIS e.V.
+ *  Copyright (C) 1997-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,6 +43,7 @@ default_charset_without_control_chars [\041-\133\135-\176][\040-\133\135-\176]*
 charset_without_control_chars         [\040-\133\135-\176\240-\377\033]+
 charset_with_control_chars            [\040-\176\240-\377\011\012\014\015\033]+
 spaces                                [ ]*
+zero_byte_padding                     \000?
 dt_offset                             (\-1200)|(\+1400)|(((\-((0[1-9])|(1[0-1])))|(\+((0[1-9])|(1[0-3])))){tm_minute})
 da_year                               (18[5-9][0-9])|(19[0-9]{2})|(20[0-4][0-9])
 da_year_dub                           [0-9]{4}
@@ -87,7 +88,7 @@ ds       {spaces}{normalized-ds}{spaces}
 dt       {normalized-dt}{spaces}
 dt-dub   {normalized-dt-dub}{spaces}
 is       {spaces}{normalized-is}{spaces}
-ui       {normalized-ui}
+ui       {normalized-ui}{zero_byte_padding}
 cs       {spaces}{normalized-cs}{spaces}
 pn       {normalized-pn}{spaces}
 pn-old   {normalized-pn-old}{spaces}

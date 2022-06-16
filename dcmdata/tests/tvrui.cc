@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,12 +44,19 @@ OFTEST(dcmdata_uniqueIdentifier_1)
   OFCHECK_EQUAL(sopInstanceUID.getNumberOfValues(), 2);
   OFCHECK(sopInstanceUID.checkValue("2").good());
   OFCHECK(sopInstanceUID.putString("1.2.3.4\\5.6.7.8\0", 16).good());
-  // the trailing 0-byte is still there, which leads to an error
-  OFCHECK(sopInstanceUID.checkValue("2").bad());
+  // the trailing 0-byte is still there, but this is not an error
+  OFCHECK(sopInstanceUID.checkValue("2").good());
   OFCHECK(sopInstanceUID.getOFString(value, 1 /*, normalize = OFTrue */).good());
   OFCHECK_EQUAL(value, "5.6.7.8");
   OFCHECK(sopInstanceUID.getOFString(value, 1, OFFalse /*normalize*/).good());
   OFCHECK_EQUAL(value, OFString("5.6.7.8\0", 8));
+  // check UI value with two trailing 0-bytes, which is not allowed
+  OFCHECK(sopInstanceUID.putString("7.8.9.10\0\0", 10).good());
+  OFCHECK(sopInstanceUID.checkValue("1").bad());
+  OFCHECK(sopInstanceUID.getOFString(value, 0 /*, normalize = OFTrue */).good());
+  OFCHECK_EQUAL(value, "7.8.9.10");
+  OFCHECK(sopInstanceUID.getOFString(value, 0, OFFalse /*normalize*/).good());
+  OFCHECK_EQUAL(value, OFString("7.8.9.10\0\0", 10));
 }
 
 
