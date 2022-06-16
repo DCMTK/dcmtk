@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2021, OFFIS e.V.
+ *  Copyright (C) 2014-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,11 +20,6 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#define OFTEST_OFSTD_ONLY
-#include "dcmtk/ofstd/oftest.h"
-#include "dcmtk/ofstd/oftuple.h"
-#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
 // Disable some warnings.
@@ -33,6 +28,11 @@
 // on some compilers / at some settings and we don't want to see these warnings.
 #include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 #include DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION
+
+#define OFTEST_OFSTD_ONLY
+#include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/oftuple.h"
 
 OFTEST(ofstd_tuple)
 {
