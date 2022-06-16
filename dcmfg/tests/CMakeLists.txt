@@ -9,6 +9,7 @@ DCMTK_ADD_EXECUTABLE(dcmfg_tests
   t_ct_position.cc
   t_ct_table_dynamics.cc
   t_deriv_image.cc
+  t_fg_base.cc
   t_frame_content.cc
   t_irradiation_event_identification.cc
 )

@@ -33,6 +33,7 @@ test_objs = t_concatenation_creator.o \
 	t_ct_position.o \
 	t_ct_table_dynamics.o \
 	t_deriv_image.o \
+	t_fg_base.o \
 	t_frame_content.o \
 	t_irradiation_event_identification.o \
 	tests.o

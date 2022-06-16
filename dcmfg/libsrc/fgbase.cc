@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -144,9 +144,13 @@ FGUnknown::FGUnknown(const DcmTagKey& seqStartTag, const DcmFGTypes::E_FGSharedT
 FGUnknown::FGUnknown(const FGUnknown& rhs)
     : FGBase(DcmFGTypes::EFG_UNKNOWN)
     , m_seqStartTag(rhs.m_seqStartTag)
-    , m_fgSequence(OFstatic_cast(DcmSequenceOfItems*, rhs.m_fgSequence->clone()))
+    , m_fgSequence(NULL)
     , m_sharedType(rhs.m_sharedType)
 {
+    if (rhs.m_fgSequence)
+    {
+        this->m_fgSequence = OFstatic_cast(DcmSequenceOfItems*, rhs.m_fgSequence->clone());
+    }
 }
 
 FGUnknown& FGUnknown::operator=(const FGUnknown& rhs)
@@ -234,11 +238,12 @@ FGUnknown::~FGUnknown()
 
 FGBase* FGUnknown::clone() const
 {
-    FGUnknown* copy = new FGUnknown(this->m_seqStartTag);
-    if (copy)
-    {
-        if (this->m_fgSequence != NULL)
-            *(copy->m_fgSequence) = *(this->m_fgSequence);
-    }
-    return copy;
+    //     FGUnknown* copy = new FGUnknown(this->m_seqStartTag);
+    //     if (copy)
+    //     {
+    //         if (this->m_fgSequence != NULL)
+    //             *(copy->m_fgSequence) = *(this->m_fgSequence);
+    //     }
+    //     return copy;
+    return new FGUnknown(*this);
 }

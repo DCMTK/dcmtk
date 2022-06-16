@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, OFFIS e.V.
+ *  Copyright (C) 2015-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,6 +33,7 @@ OFTEST_REGISTER(dcmfg_ct_acquisition_details);
 OFTEST_REGISTER(dcmfg_ct_table_dynamics);
 OFTEST_REGISTER(dcmfg_ct_position);
 OFTEST_REGISTER(dcmfg_derivation_image);
+OFTEST_REGISTER(dcmfg_fgbase_fgunknown);
 OFTEST_REGISTER(dcmfg_frame_content);
 OFTEST_REGISTER(dcmfg_irradiation_event_identification);
 
