@@ -583,7 +583,7 @@ PACKAGE_TARNAME='dcmtk-3.6.7'
 PACKAGE_VERSION='3.6.7'
 PACKAGE_STRING='dcmtk 3.6.7'
 PACKAGE_BUGREPORT='bugs@dcmtk.org'
-PACKAGE_URL='http://www.dcmtk.org/'
+PACKAGE_URL='https://www.dcmtk.org/'
 
 ac_unique_file="Makefile.in"
 ac_default_prefix=/usr/local
@@ -808,14 +808,14 @@ bindir='${exec_prefix}/bin'
 sbindir='${exec_prefix}/sbin'
 libexecdir='${exec_prefix}/libexec'
 datarootdir='${prefix}/share'
-datadir='${datarootdir}/dcmtk-3.6.7'
-sysconfdir='${prefix}/etc/dcmtk-3.6.7'
+datadir='${datarootdir}/dcmtk-3.6.7-DEV'
+sysconfdir='${prefix}/etc/dcmtk-3.6.7-DEV'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
 runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
-docdir='${datarootdir}/doc/dcmtk-3.6.7'
+docdir='${datarootdir}/doc/dcmtk-3.6.7-DEV'
 infodir='${datarootdir}/info'
 htmldir='${docdir}/html'
 dvidir='${docdir}'
@@ -1361,7 +1361,7 @@ Fine tuning of the installation directories:
   --bindir=DIR            user executables [EPREFIX/bin]
   --sbindir=DIR           system admin executables [EPREFIX/sbin]
   --libexecdir=DIR        program executables [EPREFIX/libexec]
-  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk-3.6.7]
+  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc/dcmtk-3.6.7-DEV]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
   --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
@@ -1369,11 +1369,11 @@ Fine tuning of the installation directories:
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
   --datarootdir=DIR       read-only arch.-independent data root [PREFIX/share]
-  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk-3.6.7]
+  --datadir=DIR           read-only arch.-independent data [DATAROOTDIR/dcmtk-3.6.7-DEV]
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk-3.6.7]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/dcmtk-3.6.7-DEV]
   --htmldir=DIR           html documentation [DOCDIR/html]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -1504,7 +1504,7 @@ Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <bugs@dcmtk.org>.
-dcmtk home page: <http://www.dcmtk.org/>.
+dcmtk home page: <https://www.dcmtk.org/>.
 _ACEOF
 ac_status=$?
 fi
@@ -6597,6 +6597,7 @@ fi
 done
 
 LIBS="$SAVELIBS"
+
 
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -12905,7 +12906,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12908 "configure"
+#line 12909 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13156,7 +13157,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13159 "configure"
+#line 13160 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13406,7 +13407,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13409 "configure"
+#line 13410 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13475,7 +13476,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13478 "configure"
+#line 13479 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13544,7 +13545,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13547 "configure"
+#line 13548 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -19402,7 +19403,7 @@ Configuration headers:
 $config_headers
 
 Report bugs to <bugs@dcmtk.org>.
-dcmtk home page: <http://www.dcmtk.org/>."
+dcmtk home page: <https://www.dcmtk.org/>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1

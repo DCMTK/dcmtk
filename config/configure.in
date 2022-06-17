@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(dcmtk, 3.6.7, [bugs@dcmtk.org], [dcmtk-3.6.7], [http://www.dcmtk.org/])
+AC_INIT(dcmtk, 3.6.7, [bugs@dcmtk.org], [dcmtk-3.6.7], [https://www.dcmtk.org/])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADERS(include/dcmtk/config/osconfig.h)
@@ -324,6 +324,7 @@ LIBS="$SAVELIBS"
 dnl -------------------------------------------------------
 dnl Perform remaining tests with C++ compiler
 dnl -------------------------------------------------------
+
 AC_LANG(C++)
 
 AC_CXX_CONST_CAST

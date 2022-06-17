@@ -4,10 +4,10 @@ autoheader
 autoconf
 autoconf confmod.in > confmod
 
-# read version number from VERSION file
-version=$(cat ../VERSION)
+# read version number from VERSION file, replace "+" with "-"
+version=$(cat ../VERSION | sed -e "s/\+/\-/g")
 
-echo "patching configure files for DCMTK $version"
+echo "patching configure files for 'dcmtk-$version'"
 
 sed -e "s|^datadir=.*|datadir='\${datarootdir}/dcmtk-$version'|" \
     -e "s|^sysconfdir=.*|sysconfdir='\${prefix}/etc/dcmtk-$version'|" \
