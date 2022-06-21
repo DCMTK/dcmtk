@@ -650,28 +650,35 @@ include(${DCMTK_CMAKE_INCLUDE}CMake/GenerateDCMTKConfigure.cmake)
 # Thread support
 #-----------------------------------------------------------------------------
 
-# See dcmtk/config/configure.in
+# Compile reentrant code when WITH_THREADS is active
 if(WITH_THREADS)
   add_definitions(-D_REENTRANT)
-  if(HAVE_PTHREAD_RWLOCK)
-    if(APPLE)
-      add_definitions(-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE)
-    endif()
-    if(CMAKE_SYSTEM_NAME MATCHES "^IRIX")
-      add_definitions(-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT)
-    endif()
-  endif()
+endif()
 
-  if(HAVE_PTHREAD_H)
-    CHECK_LIBRARY_EXISTS(pthread pthread_key_create "" HAVE_LIBPTHREAD)
-    if(HAVE_LIBPTHREAD)
-      set(THREAD_LIBS pthread)
-    endif()
-    CHECK_LIBRARY_EXISTS(rt sem_init "" HAVE_LIBRT)
-    if(HAVE_LIBRT)
-      set(THREAD_LIBS ${THREAD_LIBS} rt)
-    endif()
+# add feature macros needed for libpthread
+if(HAVE_PTHREAD_RWLOCK)
+  if(APPLE)
+    add_definitions(-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE)
   endif()
+  if(CMAKE_SYSTEM_NAME MATCHES "^IRIX")
+    add_definitions(-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT)
+  endif()
+endif()
+
+# add libpthread to THREAD_LIBS. This is needed in WITH_THREADS mode,
+# but also when linking against OpenSSL
+if(HAVE_PTHREAD_H)
+  CHECK_LIBRARY_EXISTS(pthread pthread_key_create "" HAVE_LIBPTHREAD)
+  if(HAVE_LIBPTHREAD)
+    set(THREAD_LIBS pthread)
+  endif()
+endif()
+
+# Add librt to THREAD_LIBS even if we are not compiling WITH_THREADS,
+# since OFIPCMessageQueueServer also needs it
+CHECK_LIBRARY_EXISTS(rt mq_open "" HAVE_LIBRT)
+if(HAVE_LIBRT)
+  set(THREAD_LIBS ${THREAD_LIBS} rt)
 endif()
 
 #-----------------------------------------------------------------------------

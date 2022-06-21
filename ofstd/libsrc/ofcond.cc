@@ -41,6 +41,13 @@ makeOFConditionConst(EC_CouldNotGenerateDirectoryName, 0, 15, OF_error,   "Could
 makeOFConditionConst(EC_setuidFailed,                  0, 16, OF_error,   "Call to setuid() failed");
 makeOFConditionConst(EC_NotYetImplemented,             0, 17, OF_error,   "Not yet implemented");
 
+makeOFConditionConst(EC_IPCMessageQueueExists,         0, 18, OF_error,   "IPC message queue exists");
+makeOFConditionConst(EC_IPCMessageNoQueue,             0, 19, OF_error,   "IPC message no queue");
+makeOFConditionConst(EC_IPCMessageQueueFailure,        0, 20, OF_error,   "IPC message queue failure");
+makeOFConditionConst(EC_IPCMessageQueueEmpty,          0, 21, OF_error,   "IPC message queue empty");
+makeOFConditionConst(EC_IPCEmptyMessage,               0, 22, OF_error,   "IPC empty message");
+
+
 // NOTE:
 // error codes 1024..2047 are reserved for inter-process communication
 // errors defined elsewhere in module ofstd

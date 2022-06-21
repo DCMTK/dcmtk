@@ -140,9 +140,20 @@ extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCloseEncoding;
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotConvertEncoding;
 /// status code constant: error, cannot control character encoding converter
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
-
 /// status code constant: error, cannot create directory
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCreateDirectory;
+
+/// condition constant: error, IPC message queue already initialized
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_IPCMessageQueueExists;
+/// condition constant: error, IPC message queue not initialized
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_IPCMessageNoQueue;
+/// condition constant: error, IPC message queue operation failed
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_IPCMessageQueueFailure;
+/// condition constant: error, IPC message queue empty
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_IPCMessageQueueEmpty;
+/// condition constant: error, IPC message empty (zero length)
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_IPCEmptyMessage;
+
 //@}
 
 
