@@ -227,7 +227,7 @@ OFBool DSRCodedEntryValue::operator!=(const DSRBasicCodedEntry &basicCodedEntry)
 
 void DSRCodedEntryValue::clear()
 {
-    CodeValueType = DSRTypes::CVT_auto;
+    CodeValueType = DSRTypes::CVT_Short /* should not be "auto" */;
     CodeValue.clear();
     CodingSchemeDesignator.clear();
     CodingSchemeVersion.clear();
