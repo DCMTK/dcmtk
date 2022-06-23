@@ -22,6 +22,11 @@
 #include "dcmtk/config/osconfig.h"
 
 #define OFTEST_OFSTD_ONLY
+
+#ifdef _WIN32
+#define OFTEST_INCLUDE_IPC_OPTION
+#endif
+
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofxml.h"
 
@@ -87,5 +92,6 @@ OFTEST_REGISTER(ofstd_filesystem);
 OFTEST_REGISTER(ofstd_snprintf);
 OFTEST_REGISTER(ofstd_OFStringUtil_replace_all);
 OFTEST_REGISTER(ofstd_gethostnamebyaddress);
+OFTEST_REGISTER(ofstd_ipc);
 
 OFTEST_MAIN("ofstd")

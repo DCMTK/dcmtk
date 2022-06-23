@@ -25,6 +25,7 @@ DCMTK_ADD_EXECUTABLE(ofstd_tests
   ttuple.cc
   tlimits.cc
   tvariant.cc
+  tipc.cc
 )
 
 # make sure executables are linked to the corresponding libraries

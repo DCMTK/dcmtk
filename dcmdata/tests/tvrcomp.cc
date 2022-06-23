@@ -22,7 +22,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmdata/dcvras.h"
 #include "dcmtk/dcmdata/dcvrae.h"
