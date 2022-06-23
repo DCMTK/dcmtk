@@ -824,7 +824,7 @@ static void terminateAllReceivers(DVConfiguration& dvi)
     }
     if (prepared && recAETitle && (recPort > 0))
     {
-      if ((ASC_createAssociationParameters(&params, DEFAULT_MAXPDU)).good())
+      if ((ASC_createAssociationParameters(&params, DEFAULT_MAXPDU, dcmConnectionTimeout.get())).good())
       {
         ASC_setTransportLayerType(params, recUseTLS);
         ASC_setAPTitles(params, dvi.getNetworkAETitle(), recAETitle, NULL);

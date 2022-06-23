@@ -2474,7 +2474,7 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
   OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
   if (cond.good())
   {
-    cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
+    cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU, dcmConnectionTimeout.get());
     if (cond.good())
     {
       ASC_setAPTitles(params, getNetworkAETitle(), getQueryRetrieveAETitle(), NULL);
@@ -3632,7 +3632,7 @@ OFCondition DVInterface::terminatePrintServer()
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
     if (cond.good())
     {
-      cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
+      cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU, dcmConnectionTimeout.get());
       if (cond.good())
       {
         if (useTLS)

@@ -624,7 +624,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         OFStandard::strlcpy(currentAETitle, dbEntries[currentdb]->title, sizeof(currentAETitle));
     }
 
-    cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
+    cond = ASC_createAssociationParameters(&params, maxReceivePDULength, dcmConnectionTimeout.get());
     if (cond.bad()) {
         DCMQRDB_ERROR("Help, cannot create association parameters: " << DimseCondition::dump(temp_str, cond));
         return OFFalse;
