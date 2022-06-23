@@ -131,6 +131,16 @@ endif()
 set(CANONICAL_HOST_TYPE "${SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
 DCMTK_UNSET(SYSTEM_PROCESSOR)
 
+# Define the complete package version name that will be used as a subdirectory
+# name for the installation of configuration files, data files and documents.
+if (DCMTK_PACKAGE_VERSION_SUFFIX STREQUAL "+")
+  # development version
+  set(DCMTK_COMPLETE_PACKAGE_VERSION "${DCMTK_PACKAGE_VERSION}-${DCMTK_PACKAGE_DATE}")
+else()
+  # release version
+  set(DCMTK_COMPLETE_PACKAGE_VERSION "${DCMTK_PACKAGE_VERSION}${DCMTK_PACKAGE_VERSION_SUFFIX}")
+endif()
+
 # Configure dictionary path and install prefix
 if(WIN32 AND NOT CYGWIN)
   # Set DCMTK_PREFIX needed within some code. Be sure that all / are replaced by \\.
@@ -141,9 +151,9 @@ if(WIN32 AND NOT CYGWIN)
   set(ENVIRONMENT_PATH_SEPARATOR ";")
 
   # Set default directory for configuration and support data.
-  set(CMAKE_INSTALL_FULL_SYSCONFDIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\etc")
-  set(CMAKE_INSTALL_FULL_DATADIR    "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\share")
-  set(CMAKE_INSTALL_FULL_DOCDIR     "%PROGRAMDATA%\\\\dcmtk-${DCMTK_PACKAGE_VERSION}\\\\doc")
+  set(CMAKE_INSTALL_FULL_SYSCONFDIR "%PROGRAMDATA%\\\\dcmtk-${DCMTK_COMPLETE_PACKAGE_VERSION}\\\\etc")
+  set(CMAKE_INSTALL_FULL_DATADIR    "%PROGRAMDATA%\\\\dcmtk-${DCMTK_COMPLETE_PACKAGE_VERSION}\\\\share")
+  set(CMAKE_INSTALL_FULL_DOCDIR     "%PROGRAMDATA%\\\\dcmtk-${DCMTK_COMPLETE_PACKAGE_VERSION}\\\\doc")
 
   # These variables are defined as macros in osconfig.h and must end with a path separator
   set(DCMTK_DEFAULT_CONFIGURATION_DIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}${PATH_SEPARATOR}")
@@ -170,9 +180,9 @@ else()
 
   # Modify the installation paths for configuration files, data files and documents
   # by adding a subdirectory with the DCMTK name and version number
-  set(CMAKE_INSTALL_FULL_SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/dcmtk-${DCMTK_PACKAGE_VERSION}")
-  set(CMAKE_INSTALL_FULL_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/dcmtk-${DCMTK_PACKAGE_VERSION}")
-  set(CMAKE_INSTALL_FULL_DOCDIR "${CMAKE_INSTALL_FULL_DOCDIR}-${DCMTK_PACKAGE_VERSION}")
+  set(CMAKE_INSTALL_FULL_SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/dcmtk-${DCMTK_COMPLETE_PACKAGE_VERSION}")
+  set(CMAKE_INSTALL_FULL_DATADIR "${CMAKE_INSTALL_FULL_DATADIR}/dcmtk-${DCMTK_COMPLETE_PACKAGE_VERSION}")
+  set(CMAKE_INSTALL_FULL_DOCDIR "${CMAKE_INSTALL_FULL_DOCDIR}-${DCMTK_COMPLETE_PACKAGE_VERSION}")
 
   # These variables are defined as macros in osconfig.h and must end with a path separator
   set(DCMTK_DEFAULT_CONFIGURATION_DIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/")
