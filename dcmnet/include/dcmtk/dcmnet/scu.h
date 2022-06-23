@@ -654,12 +654,10 @@ public:
      */
     void setACSETimeout(const Uint32 acseTimeout);
 
-    /** Set global timeout for connecting to the SCP. Note that this is a global
-     *  DCMTK setting i.e. it affects all code that uses dcmnet to start a DICOM
-     *  association to another host. Setting the timeout to -1 sets an infinite timeout,
-     *  i.e. any association request will wait forever (blocking) until the SCP accepts
-     *  the connection request. A value of 0 lets the SCU return immediately if the SCP
-     *  is not reachable at the first attempt.
+    /** Set timeout for connecting to the SCP. Setting the timeout to -1 sets an infinite
+     *  timeout, i.e. any association request will wait forever (blocking) until the SCP
+     *  accepts the connection request. A value of 0 lets the SCU return immediately if the SCP
+     *  is not reachable at the first attempt. By default, the global dcmConnectionTimeout is used.
      *  @param connectionTimeout [in] Connection Timeout in seconds when connecting
      *                                to SCPs. -1 will wait forever (blocking mode).
      */
@@ -1065,6 +1063,9 @@ private:
 
     /// ACSE timeout (default: 30 seconds)
     Uint32 m_acseTimeout;
+
+    /// TCP Connection timeout (default: global dcmConnectionTimeout
+    Uint32 m_tcpConnectTimeout;
 
     /// Storage directory for objects received with C-STORE due to a running
     /// C-GET session. By default, the received objects are stored in the current

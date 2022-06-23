@@ -304,7 +304,7 @@ main(int argc, char *argv[])
     }
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
+    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength, -1 /* Use global dcmConnectionTimeout */);
     if (cond.bad()) {
         OFLOG_FATAL(echoscuLogger, DimseCondition::dump(temp_str, cond));
         exit(1);

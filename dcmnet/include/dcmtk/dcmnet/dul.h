@@ -199,6 +199,7 @@ typedef struct {
     UserIdentityNegotiationSubItemAC *ackUserIdentNeg;
 
     OFBool useSecureLayer;
+    Sint32 tcpConnectTimeout;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 /** Enum describing the possible role settings for role negotiation sub items.

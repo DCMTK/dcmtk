@@ -273,7 +273,7 @@ ASC_dropNetwork(T_ASC_Network ** network)
 
 OFCondition
 ASC_createAssociationParameters(T_ASC_Parameters ** params,
-        long maxReceivePDUSize)
+        long maxReceivePDUSize, Sint32 tcpConnectTimeout)
 {
 
     *params = (T_ASC_Parameters *) malloc(sizeof(**params));
@@ -334,6 +334,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     (*params)->DULparams.acceptedPresentationContext = NULL;
 
     (*params)->DULparams.useSecureLayer = OFFalse;
+    (*params)->DULparams.tcpConnectTimeout = tcpConnectTimeout;
     return EC_Normal;
 }
 
@@ -1754,7 +1755,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
     int retrieveRawPDU = 0;
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
-    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDUSize);
+    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDUSize, -1 /* Use global dcmConnectionTimeout */);
     if (cond.bad()) return cond;
 
     cond = ASC_setTransportLayerType(params, useSecureLayer);
