@@ -312,7 +312,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         return QR_EC_InvalidPeer;
     }
     if (cond.good()) {
-        cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
+        cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU, dcmConnectionTimeout.get());
         if (cond.bad()) {
             DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops: " << DimseCondition::dump(temp_str, cond));
         }

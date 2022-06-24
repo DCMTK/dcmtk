@@ -697,7 +697,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    cond = ASC_createAssociationParameters(&params, targetMaxPDU);
+    cond = ASC_createAssociationParameters(&params, targetMaxPDU, dcmConnectionTimeout.get());
     if (cond.bad())
     {
       OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));

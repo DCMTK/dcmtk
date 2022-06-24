@@ -487,7 +487,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   DIC_NODENAME dnpeerHost;
 
   OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
-  if (cond.good()) cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+  if (cond.good()) cond = ASC_createAssociationParameters(&params, peerMaxPDU, dcmConnectionTimeout.get());
 
   if (tlayer && cond.good())
   {
