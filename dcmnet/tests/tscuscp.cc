@@ -873,5 +873,38 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_s
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
+// Verifies that DcmSCU setConnectionTimeout no longer changes the global dcmConnectionTimeout parameter
+OFTEST(dcmnet_scu_setConectionTimeout_does_not_change_global_dcmConnectionTimeout_parameter)
+{
+    const Sint32 globalTimeout = dcmConnectionTimeout.get();
+
+    DcmSCU scu;
+    scu.setConnectionTimeout(globalTimeout + 1);
+
+    OFCHECK(dcmConnectionTimeout.get() == globalTimeout);
+}
+
+// Verifies that SCU uses timeout set through setConnectionTimeout
+OFTEST(dcmnet_scu_setConectionTimeout_changes_scu_TCP_connection_timeout)
+{
+    const Sint32 defaultTimeout = dcmConnectionTimeout.get();
+    dcmConnectionTimeout.set(-1); // Infinite
+
+    DcmSCU scu;
+    scu.setConnectionTimeout(1);
+    scu.setAETitle("TEST_SCU");
+    scu.setPeerHostName("localhost");
+    scu.setPeerPort(11113); // Assumes that no server listens to thies port
+    OFList<OFString> ts;
+    ts.push_back(UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(scu.addPresentationContext(UID_VerificationSOPClass, ts, ASC_SC_ROLE_DEFAULT).good());
+    OFCHECK(scu.initNetwork().good());
+
+    // Would hang 'forever' if global dcmConnectionTimeout was used
+    const OFCondition status = scu.negotiateAssociation();
+    OFCHECK(status.code() == DULC_TCPINITERROR);
+
+    dcmConnectionTimeout.set(defaultTimeout);
+}
 
 #endif // WITH_THREADS
