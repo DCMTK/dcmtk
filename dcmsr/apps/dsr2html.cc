@@ -48,115 +48,146 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static OFCondition renderFile(STD_NAMESPACE ostream &out,
-                              const char *ifname,
-                              const char *cssName,
-                              const char *defaultCharset,
-                              const E_FileReadMode readMode,
-                              const E_TransferSyntax xfer,
-                              const size_t readFlags,
-                              const size_t renderFlags,
-                              const OFBool checkAllStrings,
-                              const OFBool convertToUTF8)
+static OFCondition checkCharacterSet(const char *ifname,
+                                     DcmFileFormat &dfile,
+                                     const char *defaultCharset,
+                                     const OFBool checkAllStrings)
 {
-    OFCondition result = EC_Normal;
-
-    if ((ifname == NULL) || (strlen(ifname) == 0))
+    OFCondition result = EC_IllegalParameter;
+    if (ifname != NULL)
     {
-        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
-        return EC_IllegalParameter;
-    }
-
-    DcmFileFormat *dfile = new DcmFileFormat();
-    if (dfile != NULL)
-    {
-        if (readMode == ERM_dataset)
-            result = dfile->getDataset()->loadFile(ifname, xfer);
-        else
-            result = dfile->loadFile(ifname, xfer);
-        if (result.bad())
+        DcmDataset *dset = dfile.getDataset();
+        /* determine character set encoding of the dataset */
+        OFString csetString;
+        if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
         {
-            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                << ") reading file: " << ifname);
-        }
-    } else
-        result = EC_MemoryExhausted;
-
-#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-    /* convert all DICOM strings to UTF-8 (if requested) */
-    if (result.good() && convertToUTF8)
-    {
-        DcmDataset *dset = dfile->getDataset();
-        OFLOG_INFO(dsr2htmlLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
-        // check whether SpecificCharacterSet is absent but needed
-        if ((defaultCharset != NULL) && !dset->tagExistsWithValue(DCM_SpecificCharacterSet) &&
-            dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
-        {
-            // use the manually specified source character set
-            result = dset->convertCharacterSet(defaultCharset, OFString("ISO_IR 192"));
-        } else {
-            // expect that SpecificCharacterSet contains the correct value
-            result = dset->convertToUTF8();
-        }
-        if (result.bad())
-        {
-            OFLOG_FATAL(dsr2htmlLogger, result.text() << ": converting file to UTF-8: " << ifname);
-        }
-    }
-#else
-    // avoid compiler warning on unused variable
-    (void)convertToUTF8;
-#endif
-    if (result.good())
-    {
-        result = EC_CorruptedData;
-        DcmDataset *dset = dfile->getDataset();
-        DSRDocument *dsrdoc = new DSRDocument();
-        if (dsrdoc != NULL)
-        {
-            result = dsrdoc->read(*dset, readFlags);
-            if (result.good())
+            /* check whether character set is supported */
+            if (DSRTypes::definedTermToCharacterSet(csetString) == DSRTypes::CS_invalid)
             {
-                // check extended character set
-                OFString charset;
-                if ((dsrdoc->getSpecificCharacterSet(charset).bad() || charset.empty()) &&
-                    dset->containsExtendedCharacters(checkAllStrings))
+                if (!csetString.empty())
                 {
-                    // we have an unspecified extended character set
-                    if (defaultCharset == NULL)
+                    OFLOG_WARN(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
+                        << "value '" << csetString << "' not supported ... quoting non-ASCII characters");
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+                    OFLOG_DEBUG(dsr2htmlLogger, "using option --convert-to-utf8 to convert the DICOM file to "
+                        "UTF-8 encoding might also help to solve this problem more appropriately");
+#endif
+                }
+            }
+            /* no error */
+            result = EC_Normal;
+        } else {
+            /* SpecificCharacterSet is not present in the dataset */
+            if (dset->containsExtendedCharacters(checkAllStrings))
+            {
+                if (defaultCharset == NULL)
+                {
+                    /* the dataset contains non-ASCII characters that really should not be there */
+                    OFLOG_ERROR(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
+                        << "element absent (on the main data set level) but extended characters used in file: " << ifname);
+                    OFLOG_DEBUG(dsr2htmlLogger, "use option --charset-assume to manually specify an appropriate character set");
+                    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");;
+                } else {
+                    result = EC_Normal;
+                    csetString = defaultCharset;
+                    /* first, map "old" character set names to DICOM defined terms */
+                    if (csetString == "latin-1")
+                        csetString = "ISO_IR 100";
+                    else if (csetString == "latin-2")
+                        csetString = "ISO_IR 101";
+                    else if (csetString == "latin-3")
+                        csetString = "ISO_IR 109";
+                    else if (csetString == "latin-4")
+                        csetString = "ISO_IR 110";
+                    else if (csetString == "latin-5")
+                        csetString = "ISO_IR 148";
+                    else if (csetString == "cyrillic")
+                        csetString = "ISO_IR 144";
+                    else if (csetString == "arabic")
+                        csetString = "ISO_IR 127";
+                    else if (csetString == "greek")
+                        csetString = "ISO_IR 126";
+                    else if (csetString == "hebrew")
+                        csetString = "ISO_IR 138";
+                    else if (csetString == "latin-9")
+                        csetString = "ISO_IR 203";
+                    /* then, check whether the character set is actually supported */
+                    if (DSRTypes::definedTermToCharacterSet(csetString) == DSRTypes::CS_invalid)
                     {
-                        // the dataset contains non-ASCII characters that really should not be there
-                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
-                            << "element absent but extended characters used in file: " << ifname);
-                        OFLOG_DEBUG(dsr2htmlLogger, "use option --charset-assume to manually specify an appropriate character set");
-                        result = EC_IllegalCall;
+                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Character set '"
+                            << defaultCharset << "' specified with option --charset-assume not supported");
+                        result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Cannot select character set");
                     } else {
-                        // use the default character set specified by the user
-                        result = dsrdoc->setSpecificCharacterSet(defaultCharset);
-                        if (dsrdoc->getSpecificCharacterSetType() == DSRTypes::CS_unknown)
-                        {
-                            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Character set '"
-                                << defaultCharset << "' specified with option --charset-assume not supported");
-                            result = EC_IllegalCall;
-                        }
-                        else if (result.bad())
-                        {
-                            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": Cannot use character set '"
-                                << defaultCharset << "' specified with option --charset-assume: " << result.text());
-                        }
+                        OFLOG_INFO(dsr2htmlLogger, "inserting SpecificCharacterSet (0008,0005) element with value '" << csetString << "'");
+                        /* insert the SpecificCharacterSet (0008,0005) element with new value */
+                        result = dset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, csetString);
                     }
                 }
-                if (result.good())
-                    result = dsrdoc->renderHTML(out, renderFlags, cssName);
             } else {
-                OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                    << ") parsing file: " << ifname);
+                if (defaultCharset != NULL)
+                {
+                    /* use "debug" instead of "warn" in order to avoid too much output in default mode */
+                    OFLOG_DEBUG(dsr2htmlLogger, "ignoring character set '" << defaultCharset
+                        << "' specified with option --charset-assume since it is not needed for this data set");
+                }
+                /* no error */
+                result = EC_Normal;
             }
         }
-        delete dsrdoc;
     }
-    delete dfile;
+    return result;
+}
 
+
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+static OFCondition convertCharacterSet(const char *ifname,
+                                       DcmFileFormat &dfile,
+                                       const OFBool convertToUTF8)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (ifname != NULL)
+    {
+        /* convert all DICOM strings to UTF-8 (if requested) */
+        if (convertToUTF8)
+        {
+            OFLOG_INFO(dsr2htmlLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
+            /* expect that SpecificCharacterSet contains the correct value (defined term) */
+            result = dfile.convertToUTF8();
+            if (result.bad())
+                OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") converting file to UTF-8: " << ifname);
+        } else {
+            /* no error */
+            result = EC_Normal;
+        }
+    }
+    return result;
+}
+#endif
+
+
+static OFCondition renderFile(STD_NAMESPACE ostream &out,
+                              const char *ifname,
+                              DcmFileFormat &dfile,
+                              const char *cssName,
+                              const size_t readFlags,
+                              const size_t renderFlags)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (ifname != NULL)
+    {
+        DSRDocument dsrdoc;
+        /* read SR data structures */
+        result = dsrdoc.read(*dfile.getDataset(), readFlags);
+        if (result.good())
+        {
+            /* render document in HTML format and write it to the output stream */
+            result = dsrdoc.renderHTML(out, renderFlags, cssName);
+        } else {
+            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") parsing file: " << ifname);
+            /* make sure that the caller does not report this error, too */
+            result =  EC_InternalError;
+        }
+    }
     return result;
 }
 
@@ -435,58 +466,64 @@ int main(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    // map "old" charset names to DICOM defined terms
-    if (opt_defaultCharset != NULL)
-    {
-        OFString charset(opt_defaultCharset);
-        if (charset == "latin-1")
-            opt_defaultCharset = "ISO_IR 100";
-        else if (charset == "latin-2")
-            opt_defaultCharset = "ISO_IR 101";
-        else if (charset == "latin-3")
-            opt_defaultCharset = "ISO_IR 109";
-        else if (charset == "latin-4")
-            opt_defaultCharset = "ISO_IR 110";
-        else if (charset == "latin-5")
-            opt_defaultCharset = "ISO_IR 148";
-        else if (charset == "latin-9")
-            opt_defaultCharset = "ISO_IR 203";
-        else if (charset == "cyrillic")
-            opt_defaultCharset = "ISO_IR 144";
-        else if (charset == "arabic")
-            opt_defaultCharset = "ISO_IR 127";
-        else if (charset == "greek")
-            opt_defaultCharset = "ISO_IR 126";
-        else if (charset == "hebrew")
-            opt_defaultCharset = "ISO_IR 138";
-    }
-
     int result = 0;
     const char *ifname = NULL;
     /* first parameter is treated as the input filename */
     cmd.getParam(1, ifname);
-    if (cmd.getParamCount() == 2)
+    /* check input file */
+    if ((ifname != NULL) && (strlen(ifname) > 0))
     {
-        /* second parameter specifies the output filename */
-        const char *ofname = NULL;
-        cmd.getParam(2, ofname);
-        STD_NAMESPACE ofstream stream(ofname);
-        if (stream.good())
+        /* read DICOM file or data set */
+        DcmFileFormat dfile;
+        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength /* default */, opt_readMode);
+        if (status.good())
         {
-            if (renderFile(stream, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags,
-                opt_renderFlags, opt_checkAllStrings, opt_convertToUTF8).bad())
+            /* check specific character set (and possibly fix it) */
+            if (checkCharacterSet(ifname, dfile, opt_defaultCharset, opt_checkAllStrings).good())
             {
-                result = 2;
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
+                /* convert character set of dataset, e.g. to UTF-8 */
+                if (convertCharacterSet(ifname, dfile, opt_convertToUTF8).bad())
+                    result = 4;
+#endif
+            } else
+                result = 7;
+            if (result == 0)
+            {
+                /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
+                if (cmd.getParamCount() == 2)
+                {
+                    const char *ofname = NULL;
+                    cmd.getParam(2, ofname);
+                    STD_NAMESPACE ofstream stream(ofname);
+                    if (stream.good())
+                    {
+                        /* render to output file */
+                        status = renderFile(stream, ifname, dfile, opt_cssName, opt_readFlags, opt_renderFlags);
+                        if (status.bad() && (status != EC_InternalError))
+                        {
+                            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
+                            result = 2;
+                        }
+                    } else
+                        result = 1;
+                } else {
+                    /* use standard output */
+                    status = renderFile(COUT, ifname, dfile, opt_cssName, opt_readFlags, opt_renderFlags);
+                    if (status.bad() && (status != EC_InternalError))
+                    {
+                        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");
+                        result = 3;
+                    }
+                }
             }
-        } else
-            result = 1;
-    } else {
-        /* use standard output */
-        if (renderFile(COUT, ifname, opt_cssName, opt_defaultCharset, opt_readMode, opt_ixfer, opt_readFlags,
-            opt_renderFlags, opt_checkAllStrings, opt_convertToUTF8).bad())
-        {
-            result = 3;
+        } else {
+            OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: " << ifname);
+            result = 5;
         }
+    } else {
+        OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
+        result = 6;
     }
 
     return result;
