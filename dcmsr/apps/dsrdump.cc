@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,68 +60,41 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
                             const size_t printFlags,
                             const OFBool convertToUTF8)
 {
-    OFCondition result = EC_Normal;
-
-    if ((ifname == NULL) || (strlen(ifname) == 0))
+    OFCondition result = EC_IllegalParameter;
+    if ((ifname != NULL) && (strlen(ifname) > 0))
     {
-        OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
-        return EC_IllegalParameter;
-    }
-
-    DcmFileFormat *dfile = new DcmFileFormat();
-    if (dfile != NULL)
-    {
-        if (readMode == ERM_dataset)
-            result = dfile->getDataset()->loadFile(ifname, xfer);
-        else
-            result = dfile->loadFile(ifname, xfer);
+        DcmFileFormat dfile;
+        result = dfile.loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength /* default */, readMode);
         if (result.bad())
-        {
-            OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                << ") reading file: " << ifname);
-        }
-    } else
-        result = EC_MemoryExhausted;
-
+            OFLOG_ERROR(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") reading file: " << ifname);
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-    if (result.good())
-    {
-        if (convertToUTF8)
+        if (result.good())
         {
-            OFLOG_INFO(dsrdumpLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
-            result = dfile->convertToUTF8();
-            if (result.bad())
+            if (convertToUTF8)
             {
-                OFLOG_FATAL(dsrdumpLogger, result.text() << ": converting file to UTF-8: " << ifname);
+                OFLOG_INFO(dsrdumpLogger, "converting all element values that are affected by Specific Character Set (0008,0005) to UTF-8");
+                result = dfile.convertToUTF8();
+                if (result.bad())
+                    OFLOG_ERROR(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") converting file to UTF-8: " << ifname);
             }
         }
-    }
 #else
-    // avoid compiler warning on unused variable
-    (void)convertToUTF8;
+        // avoid compiler warning on unused variable
+        (void)convertToUTF8;
 #endif
-    if (result.good())
-    {
-        result = EC_CorruptedData;
-        DSRDocument *dsrdoc = new DSRDocument();
-        if (dsrdoc != NULL)
+        if (result.good())
         {
-            result = dsrdoc->read(*dfile->getDataset(), readFlags);
+            DSRDocument dsrdoc;
+            result = dsrdoc.read(*dfile.getDataset(), readFlags);
             if (result.good())
             {
-                result = dsrdoc->print(out, printFlags);
+                result = dsrdoc.print(out, printFlags);
                 out << OFendl;
-            }
-            else
-            {
-                OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                    << ") parsing file: " << ifname);
-            }
+            } else
+                OFLOG_ERROR(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") parsing file: " << ifname);
         }
-        delete dsrdoc;
-    }
-    delete dfile;
-
+    } else
+        OFLOG_ERROR(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
     return result;
 }
 
