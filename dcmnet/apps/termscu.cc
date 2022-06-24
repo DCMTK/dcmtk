@@ -159,7 +159,7 @@ int main( int argc, char *argv[] )
   }
 
   // initialize asscociation parameters
-  cond = ASC_createAssociationParameters( &params, opt_maxReceivePDULength, -1 /* Use global dcmConnectionTimeout */);
+  cond = ASC_createAssociationParameters( &params, opt_maxReceivePDULength, dcmConnectionTimeout.get());
   if( cond.bad() )
   {
     OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));

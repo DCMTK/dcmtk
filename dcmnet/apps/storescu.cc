@@ -701,7 +701,7 @@ int main(int argc, char *argv[])
     }
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength, -1 /* Use global dcmConnectionTimeout */);
+    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength, dcmConnectionTimeout.get());
     if (cond.bad()) {
       OFLOG_FATAL(storescuLogger, DimseCondition::dump(temp_str, cond));
       return 1;

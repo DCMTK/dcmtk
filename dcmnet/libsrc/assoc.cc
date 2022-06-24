@@ -1755,7 +1755,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
     int retrieveRawPDU = 0;
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
-    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDUSize, -1 /* Use global dcmConnectionTimeout */);
+    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDUSize, dcmConnectionTimeout.get());
     if (cond.bad()) return cond;
 
     cond = ASC_setTransportLayerType(params, useSecureLayer);

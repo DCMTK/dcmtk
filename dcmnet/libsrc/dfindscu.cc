@@ -270,7 +270,7 @@ OFCondition DcmFindSCU::performQuery(
     }
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDULength, -1 /* Use global dcmConnectionTimeout */);
+    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDULength, dcmConnectionTimeout.get());
     if (cond.bad())
     {
         DCMNET_ERROR("Creating Association Parameters Failed: " << DimseCondition::dump(temp_str, cond));

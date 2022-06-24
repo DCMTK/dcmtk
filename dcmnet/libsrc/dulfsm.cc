@@ -2260,9 +2260,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
     server.setPort(OFstatic_cast(unsigned short, htons(OFstatic_cast(unsigned short, port))));
 
-    Sint32 connectTimeout = params->tcpConnectTimeout;
-    if (connectTimeout == -1)
-        connectTimeout = dcmConnectionTimeout.get(); // Fall back to global connection timeout
+    const Sint32 connectTimeout = params->tcpConnectTimeout;
 
     s = socket(server.getFamily(), SOCK_STREAM, 0);
 #ifdef _WIN32

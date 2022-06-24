@@ -779,7 +779,7 @@ main(int argc, char *argv[])
     }
 
     /* set up main association */
-    cond = ASC_createAssociationParameters(&params, opt_maxPDU, -1 /* Use global dcmConnectionTimeout */);
+    cond = ASC_createAssociationParameters(&params, opt_maxPDU, dcmConnectionTimeout.get());
     if (cond.bad()) {
         OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
         exit(EXITCODE_CANNOT_CREATE_ASSOC_PARAMETERS);
