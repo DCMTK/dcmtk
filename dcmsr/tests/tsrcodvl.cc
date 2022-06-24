@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -95,7 +95,7 @@ OFTEST(dcmsr_determineCodeValueType)
     /* also check an empty code */
     codedEntry.clear();
     OFCHECK(!codedEntry.isValid());
-    OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_auto);
+    OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_Short);
     /* and a very short code value */
     OFCHECK(codedEntry.setCode("0", "99TEST", "-").good());
     OFCHECK_EQUAL(codedEntry.getCodeValueType(), DSRTypes::CVT_Short);
