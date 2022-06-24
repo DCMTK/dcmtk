@@ -1065,7 +1065,7 @@ private:
     Uint32 m_acseTimeout;
 
     /// TCP Connection timeout (default: global dcmConnectionTimeout
-    Uint32 m_tcpConnectTimeout;
+    Sint32 m_tcpConnectTimeout;
 
     /// Storage directory for objects received with C-STORE due to a running
     /// C-GET session. By default, the received objects are stored in the current
