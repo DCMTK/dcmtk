@@ -48,16 +48,16 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 static OFCondition checkCharacterSet(const char *ifname,
-                                     DcmFileFormat *dfile,
+                                     DcmFileFormat &dfile,
                                      const char *defaultCharset,
                                      OFString &encString,
                                      size_t &writeFlags,
                                      const OFBool checkAllStrings)
 {
     OFCondition result = EC_IllegalParameter;
-    if ((ifname != NULL) && (dfile != NULL))
+    if (ifname != NULL)
     {
-        DcmDataset *dset = dfile->getDataset();
+        DcmDataset *dset = dfile.getDataset();
         /* determine character set encoding of the dataset */
         OFString csetString;
         if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
@@ -168,11 +168,10 @@ static OFCondition checkCharacterSet(const char *ifname,
                     {
                         OFString sopClass;
                         /* check whether this file is a DICOMDIR */
-                        if (dfile->getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).bad() ||
+                        if (dfile.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).bad() ||
                             (sopClass != UID_MediaStorageDirectoryStorage))
                         {
-                            OFLOG_INFO(dcm2xmlLogger, "inserting SpecificCharacterSet (0008,0005) element with value '"
-                                << csetString << "'");
+                            OFLOG_INFO(dcm2xmlLogger, "inserting SpecificCharacterSet (0008,0005) element with value '" << csetString << "'");
                             /* insert the SpecificCharacterSet (0008,0005) element with new value */
                             result = dset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, csetString);
                         }
@@ -198,14 +197,14 @@ static OFCondition checkCharacterSet(const char *ifname,
 
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 static OFCondition convertCharacterSet(const char *ifname,
-                                       DcmFileFormat *dfile,
+                                       DcmFileFormat &dfile,
                                        OFString &encString,
                                        const OFBool convertToUTF8)
 {
     OFCondition result = EC_IllegalParameter;
-    if ((ifname != NULL) && (dfile != NULL))
+    if (ifname != NULL)
     {
-        DcmDataset *dset = dfile->getDataset();
+        DcmDataset *dset = dfile.getDataset();
         /* convert all DICOM strings to UTF-8 (if requested) */
         if (convertToUTF8)
         {
@@ -217,11 +216,11 @@ static OFCondition convertCharacterSet(const char *ifname,
                 /* if conversion was successful, set XML character encoding accordingly */
                 encString = "UTF-8";
             } else
-                OFLOG_FATAL(dcm2xmlLogger, result.text() << ": converting file to UTF-8: " << ifname);
+                OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") converting file to UTF-8: " << ifname);
         } else {
             OFString sopClass;
             /* check whether the file is a DICOMDIR ... */
-            if (dfile->getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good() &&
+            if (dfile.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good() &&
                 (sopClass == UID_MediaStorageDirectoryStorage))
             {
                 /* ... with one or more SpecificCharacterSet elements */
@@ -242,7 +241,7 @@ static OFCondition convertCharacterSet(const char *ifname,
 
 static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const char *ifname,
-                             DcmFileFormat *dfile,
+                             DcmFileFormat &dfile,
                              const E_FileReadMode readMode,
                              const OFBool loadIntoMemory,
                              const OFString &dtdFilename,
@@ -250,9 +249,9 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const size_t writeFlags)
 {
     OFCondition result = EC_IllegalParameter;
-    if ((ifname != NULL) && (dfile != NULL))
+    if (ifname != NULL)
     {
-        DcmDataset *dset = dfile->getDataset();
+        DcmDataset *dset = dfile.getDataset();
         if (loadIntoMemory)
             dset->loadAllDataIntoMemory();
         /* write XML document header */
@@ -294,7 +293,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         if (readMode == ERM_dataset)
             result = dset->writeXML(out, writeFlags);
         else
-            result = dfile->writeXML(out, writeFlags);
+            result = dfile.writeXML(out, writeFlags);
     }
     return result;
 }
@@ -566,11 +565,11 @@ int main(int argc, char *argv[])
         {
             OFString encString;
             /* check specific character set (and possibly fix it) */
-            if (checkCharacterSet(ifname, &dfile, opt_defaultCharset, encString, opt_writeFlags, opt_checkAllStrings).good())
+            if (checkCharacterSet(ifname, dfile, opt_defaultCharset, encString, opt_writeFlags, opt_checkAllStrings).good())
             {
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
                 /* convert character set of dataset, e.g. to UTF-8 */
-                if (convertCharacterSet(ifname, &dfile, encString, opt_convertToUTF8).bad())
+                if (convertCharacterSet(ifname, dfile, encString, opt_convertToUTF8).bad())
                     result = 4;
 #endif
             } else
@@ -578,43 +577,40 @@ int main(int argc, char *argv[])
             if (result == 0)
             {
                 /* if second parameter is present, it is treated as the output filename,
-                 * unless it is "-". If the name is absent or equal to "-", write to stdout */
+                 * unless it is "-". If the name is absent or equal to "-", write to stdout. */
                 const char *ofname = NULL;
                 if (cmd.getParamCount() == 2)
-                {
                     cmd.getParam(2, ofname);
-                }
-
                 if (ofname && (strcmp(ofname, "-") != 0))
                 {
                     STD_NAMESPACE ofstream stream(ofname);
                     if (stream.good())
                     {
                         /* write content in XML format to file */
-                        status = writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
+                        status = writeFile(stream, ifname, dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
                         if (status.bad())
                         {
-                            OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
+                            OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
                             result = 2;
                         }
                     } else
                         result = 1;
                 } else {
                     /* write content in XML format to standard output */
-                    status = writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
+                    status = writeFile(COUT, ifname, dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename, encString, opt_writeFlags);
                     if (status.bad())
                     {
-                        OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");
+                        OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");
                         result = 3;
                     }
                 }
             }
         } else {
-            OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname);
+            OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname);
             result = 5;
         }
     } else {
-        OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
+        OFLOG_FATAL(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
         result = 6;
     }
 
