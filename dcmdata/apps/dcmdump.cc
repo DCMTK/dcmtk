@@ -789,8 +789,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     }
     if (cond.bad())
     {
-        OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text()
-            << ": reading file: "<< ifname);
+        OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text() << ": reading file: "<< ifname);
         result = 1;
         if (stopOnErrors) return result;
     }
@@ -804,7 +803,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
         cond = dfile.convertToUTF8();
         if (cond.bad())
         {
-            OFLOG_FATAL(dcmdumpLogger, cond.text() << ": converting file to UTF-8: " << ifname);
+            OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text() << ": converting file to UTF-8: " << ifname);
             result = 1;
             if (stopOnErrors) return result;
         }
