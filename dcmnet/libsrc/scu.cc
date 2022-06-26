@@ -27,6 +27,9 @@
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/ofstd/ofmem.h" /* for OFunique_ptr */
 
+#ifdef HAVE_WINSOCK_H
+#include <WinSock2.h>
+#endif
 
 #ifdef WITH_ZLIB
 #include <zlib.h> /* for zlibVersion() */
@@ -50,6 +53,7 @@ DcmSCU::DcmSCU()
     , m_dimseTimeout(0)
     , m_acseTimeout(30)
     , m_tcpConnectTimeout(dcmConnectionTimeout.get())
+    , m_cancelSocket(DCMNET_INVALID_SOCKET)
     , m_storageDir()
     , m_storageMode(DCMSCU_STORAGE_DISK)
     , m_verbosePCMode(OFFalse)
@@ -127,6 +131,9 @@ OFCondition DcmSCU::initNetwork()
         DCMNET_ERROR(DimseCondition::dump(tempStr, cond));
         return cond;
     }
+
+    /** Update parameters with the cancel socket (only used if valid) */
+    m_params->DULparams.cancelSocket = m_cancelSocket;
 
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values are "ANY-SCU" and "ANY-SCP". */
@@ -2583,4 +2590,9 @@ void RetrieveResponse::print()
     DCMNET_INFO("  Number of Completed Suboperations : " << m_numberOfCompletedSubops);
     DCMNET_INFO("  Number of Failed Suboperations    : " << m_numberOfFailedSubops);
     DCMNET_INFO("  Number of Warning Suboperations   : " << m_numberOfWarningSubops);
+}
+
+  void DcmSCU::setCancelSocket(DcmNativeSocketType socket)
+{
+    m_cancelSocket = socket;
 }

@@ -802,6 +802,13 @@ public:
     /** Deletes internal networking structures from memory */
     void freeNetwork();
 
+    /** Sets socket that can be used to cancel an ongoing TCP connect attempt. While
+     * a TCP connection is being established during negotiateAssociation, the association
+     * attempt can be cancelled before the connectionTimeout by writing to this socket.
+     * This is useful for example to ensure quick shutdown while an SCU is attempting
+     * to establish an association.  */
+    void setCancelSocket(DcmNativeSocketType socket);
+
 protected:
     /** Sends a DIMSE command and possibly also a dataset from a data object via network to
      *  another DICOM application
@@ -1066,6 +1073,8 @@ private:
 
     /// TCP Connection timeout (default: global dcmConnectionTimeout
     Sint32 m_tcpConnectTimeout;
+
+    DcmNativeSocketType m_cancelSocket;
 
     /// Storage directory for objects received with C-STORE due to a running
     /// C-GET session. By default, the received objects are stored in the current

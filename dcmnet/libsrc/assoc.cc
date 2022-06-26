@@ -335,6 +335,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 
     (*params)->DULparams.useSecureLayer = OFFalse;
     (*params)->DULparams.tcpConnectTimeout = tcpConnectTimeout;
+    (*params)->DULparams.cancelSocket = DCMNET_INVALID_SOCKET;
     return EC_Normal;
 }
 

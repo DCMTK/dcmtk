@@ -2315,6 +2315,12 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif /* __MINGW32__ */
 #endif /* DCMTK_HAVE_POLL */
 
+        fd_set fdRead;
+        FD_ZERO(&fdRead);
+        if(params->cancelSocket != DCMNET_INVALID_SOCKET)
+        {
+            FD_SET(params->cancelSocket, &fdRead);
+        }
         struct timeval timeout;
         timeout.tv_sec = connectTimeout;
         timeout.tv_usec = 0;
@@ -2328,10 +2334,15 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             rc = poll(pfd, 1, timeout.tv_sec*1000+(timeout.tv_usec/1000));
 #else
             // the typecast is safe because Windows ignores the first select() parameter anyway
-            rc = select(OFstatic_cast(int, s + 1), NULL, &fdSet, NULL, &timeout);
+            rc = select(OFstatic_cast(int, s + 1), &fdRead, &fdSet, NULL, &timeout);
 #endif
         } while (rc == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
 
+        if (FD_ISSET(params->cancelSocket, &fdRead ))
+        {
+            std::cout << "Cancelled" << std::endl;
+            rc = 0;
+        }
         if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         {
             DU_logSelectResult(rc);
