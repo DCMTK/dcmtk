@@ -46,6 +46,7 @@ OFTEST_REGISTER(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatusco
 
 OFTEST_REGISTER(dcmnet_scu_setConectionTimeout_does_not_change_global_dcmConnectionTimeout_parameter);
 OFTEST_REGISTER(dcmnet_scu_setConectionTimeout_changes_scu_TCP_connection_timeout);
+OFTEST_REGISTER(dcmnet_scu_getConectionTimeout_returns_scu_TCP_connection_timeout);
 #endif // WITH_THREADS
 
 OFTEST_MAIN("dcmnet")

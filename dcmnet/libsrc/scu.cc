@@ -2501,7 +2501,7 @@ Uint32 DcmSCU::getACSETimeout() const
 
 Sint32 DcmSCU::getConnectionTimeout() const
 {
-    return dcmConnectionTimeout.get();
+    return m_tcpConnectTimeout;
 }
 
 OFString DcmSCU::getStorageDir() const

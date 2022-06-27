@@ -907,4 +907,13 @@ OFTEST(dcmnet_scu_setConectionTimeout_changes_scu_TCP_connection_timeout)
     dcmConnectionTimeout.set(defaultTimeout);
 }
 
+// Verifies that DcmSCU getConnectionTimeout returns SCU connection timeout, not global timeout
+OFTEST(dcmnet_scu_getConectionTimeout_returns_scu_TCP_connection_timeout)
+{
+    DcmSCU scu;
+    scu.setConnectionTimeout(42);
+
+    OFCHECK(scu.getConnectionTimeout() == 42);
+}
+
 #endif // WITH_THREADS
