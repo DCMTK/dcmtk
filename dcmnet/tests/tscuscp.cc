@@ -216,7 +216,7 @@ void scu_sends_echo(
     OFCondition result;
     OFCHECK_MSG((result = scu.addPresentationContext(UID_VerificationSOPClass, xfers)).good(), result.text());
     OFCHECK_MSG((result = scu.initNetwork()).good(), result.text());
-    OFCHECK_MSG((result = scu.negotiateAssociation()).good(), result.text());
+    OFCHECK_MSG((result = scu.negotiateAssociation()).good() || expect_assoc_reject, result.text());
     if (!expect_assoc_reject)
     {
         OFCHECK_MSG((result = scu.sendECHORequest(1)).good(), result.text());
