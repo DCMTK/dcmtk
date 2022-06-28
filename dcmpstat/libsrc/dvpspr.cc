@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
 
     T_DIMSE_DataSetType datasetType = DIMSE_DATASET_NULL;
     if (rqDataSet && (rqDataSet->card() > 0)) datasetType = DIMSE_DATASET_PRESENT;
-    
+
     switch(request.CommandField)
     {
       case DIMSE_N_GET_RQ:
@@ -127,7 +127,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
           {
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &thisPresId, &rspDataset, NULL, NULL);
             if (cond.bad()) return cond;
-          }  
+          }
           dumpNMessage(response, rspDataset, OFFalse);
           // call event handler if registered
           eventReportStatus = STATUS_Success;
@@ -136,7 +136,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
           rspDataset = NULL;
           if (statusDetail) delete statusDetail;
           statusDetail = NULL;
-          
+
           // send back N-EVENT-REPORT-RSP */
           eventReportRsp.CommandField = DIMSE_N_EVENT_REPORT_RSP;
           eventReportRsp.msg.NEventReportRSP.MessageIDBeingRespondedTo = response.msg.NEventReportRQ.MessageID;
@@ -159,7 +159,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
           }
           T_DIMSE_DataSetType responseDataset = DIMSE_DATASET_NULL;
           DIC_US responseMessageID = 0;
-          /** change request to response */     
+          /* change request to response */
           switch(expectedResponse)
           {
             case DIMSE_N_GET_RSP:
@@ -206,13 +206,13 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
         }
     } while (response.CommandField == DIMSE_N_EVENT_REPORT_RQ);
     return EC_Normal;
-}    
+}
 
 OFCondition DVPSPrintMessageHandler::createRQ(
-    const char *sopclassUID, 
-    OFString& sopinstanceUID, 
-    DcmDataset *attributeListIn, 
-    Uint16& status, 
+    const char *sopclassUID,
+    OFString& sopinstanceUID,
+    DcmDataset *attributeListIn,
+    Uint16& status,
     DcmDataset* &attributeListOut)
 {
   if (assoc == NULL)
@@ -228,7 +228,7 @@ OFCondition DVPSPrintMessageHandler::createRQ(
   if (presCtx == 0)
   {
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  }  
+  }
 
   T_DIMSE_Message request;
   T_DIMSE_Message response;
@@ -246,9 +246,9 @@ OFCondition DVPSPrintMessageHandler::createRQ(
     request.msg.NCreateRQ.AffectedSOPInstanceUID[0] = 0;
     request.msg.NCreateRQ.opts = 0;
   }
-  
+
   OFCondition cond = sendNRequest(presCtx, request, attributeListIn, response, statusDetail, attributeListOut);
-  if (cond.good()) 
+  if (cond.good())
   {
     status = response.msg.NCreateRSP.DimseStatus;
     // if response contains SOP Instance UID, copy it.
@@ -262,10 +262,10 @@ OFCondition DVPSPrintMessageHandler::createRQ(
 }
 
 OFCondition DVPSPrintMessageHandler::setRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
-    DcmDataset *modificationList, 
-    Uint16& status, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
+    DcmDataset *modificationList,
+    Uint16& status,
     DcmDataset* &attributeListOut)
 {
   if (assoc == NULL)
@@ -281,7 +281,7 @@ OFCondition DVPSPrintMessageHandler::setRQ(
   if (presCtx == 0)
   {
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  }  
+  }
 
   T_DIMSE_Message request;
   T_DIMSE_Message response;
@@ -292,19 +292,19 @@ OFCondition DVPSPrintMessageHandler::setRQ(
   request.msg.NSetRQ.MessageID = assoc->nextMsgID++;
   OFStandard::strlcpy(request.msg.NSetRQ.RequestedSOPClassUID, sopclassUID, sizeof(request.msg.NSetRQ.RequestedSOPClassUID));
   OFStandard::strlcpy(request.msg.NSetRQ.RequestedSOPInstanceUID, sopinstanceUID, sizeof(request.msg.NSetRQ.RequestedSOPInstanceUID));
-   
+
   OFCondition cond = sendNRequest(presCtx, request, modificationList, response, statusDetail, attributeListOut);
   if (cond.good()) status = response.msg.NSetRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
-  return cond;   
+  return cond;
 }
 
 OFCondition DVPSPrintMessageHandler::getRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
     const Uint16 *attributeIdentifierList,
     size_t numShorts,
-    Uint16& status, 
+    Uint16& status,
     DcmDataset* &attributeListOut)
 {
   if (assoc == NULL)
@@ -320,7 +320,7 @@ OFCondition DVPSPrintMessageHandler::getRQ(
   if (presCtx == 0)
   {
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  }  
+  }
 
   T_DIMSE_Message request;
   T_DIMSE_Message response;
@@ -334,20 +334,20 @@ OFCondition DVPSPrintMessageHandler::getRQ(
   request.msg.NGetRQ.ListCount = 0;
   if (attributeIdentifierList) request.msg.NGetRQ.ListCount = (int)numShorts;
   request.msg.NGetRQ.AttributeIdentifierList = (DIC_US *)attributeIdentifierList;
-   
+
   OFCondition cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
   if (cond.good()) status = response.msg.NGetRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
-  return cond;   
+  return cond;
 }
 
 
 OFCondition DVPSPrintMessageHandler::actionRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
-    Uint16 actionTypeID, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
+    Uint16 actionTypeID,
     DcmDataset *actionInformation,
-    Uint16& status, 
+    Uint16& status,
     DcmDataset* &actionReply)
 {
   if (assoc == NULL)
@@ -363,7 +363,7 @@ OFCondition DVPSPrintMessageHandler::actionRQ(
   if (presCtx == 0)
   {
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  }  
+  }
 
   T_DIMSE_Message request;
   T_DIMSE_Message response;
@@ -375,16 +375,16 @@ OFCondition DVPSPrintMessageHandler::actionRQ(
   OFStandard::strlcpy(request.msg.NActionRQ.RequestedSOPClassUID, sopclassUID, sizeof(request.msg.NActionRQ.RequestedSOPClassUID));
   OFStandard::strlcpy(request.msg.NActionRQ.RequestedSOPInstanceUID, sopinstanceUID, sizeof(request.msg.NActionRQ.RequestedSOPInstanceUID));
   request.msg.NActionRQ.ActionTypeID = (DIC_US)actionTypeID;
-   
+
   OFCondition cond = sendNRequest(presCtx, request, actionInformation, response, statusDetail, actionReply);
   if (cond.good()) status = response.msg.NActionRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
-  return cond;   
+  return cond;
 }
 
 OFCondition DVPSPrintMessageHandler::deleteRQ(
-    const char *sopclassUID, 
-    const char *sopinstanceUID, 
+    const char *sopclassUID,
+    const char *sopinstanceUID,
     Uint16& status)
 {
   if (assoc == NULL)
@@ -400,7 +400,7 @@ OFCondition DVPSPrintMessageHandler::deleteRQ(
   if (presCtx == 0)
   {
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-  }  
+  }
 
   T_DIMSE_Message request;
   T_DIMSE_Message response;
@@ -412,12 +412,12 @@ OFCondition DVPSPrintMessageHandler::deleteRQ(
   request.msg.NDeleteRQ.MessageID = assoc->nextMsgID++;
   OFStandard::strlcpy(request.msg.NDeleteRQ.RequestedSOPClassUID, sopclassUID, sizeof(request.msg.NDeleteRQ.RequestedSOPClassUID));
   OFStandard::strlcpy(request.msg.NDeleteRQ.RequestedSOPInstanceUID, sopinstanceUID, sizeof(request.msg.NDeleteRQ.RequestedSOPInstanceUID));
-   
+
   OFCondition cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
   if (cond.good()) status = response.msg.NDeleteRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
   if (attributeListOut) delete attributeListOut;  // should never happen
-  return cond;   
+  return cond;
 }
 
 OFCondition DVPSPrintMessageHandler::releaseAssociation()
@@ -482,12 +482,12 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   {
     return DIMSE_NULLKEY;
   }
-  
+
   T_ASC_Parameters *params=NULL;
   DIC_NODENAME dnpeerHost;
 
   OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net);
-  if (cond.good()) cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+  if (cond.good()) cond = ASC_createAssociationParameters(&params, peerMaxPDU, dcmConnectionTimeout.get());
 
   if (tlayer && cond.good())
   {
@@ -535,11 +535,11 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   {
     if (cond.good()) cond = ASC_addPresentationContext(params, 5, UID_BasicAnnotationBoxSOPClass, transferSyntaxes, transferSyntaxCount);
   }
-  
+
   /* create association */
   DCMPSTAT_INFO("Requesting Association");
-    
-  if (cond.good()) 
+
+  if (cond.good())
   {
     cond = ASC_requestAssociation(net, params, &assoc);
 
@@ -550,7 +550,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
       ASC_getRejectParameters(params, &rej);
       DCMPSTAT_WARN("Association Rejected" << OFendl << ASC_printRejectParameters(temp_str, &rej));
     } else {
-      if (cond.bad()) 
+      if (cond.bad())
       {
         // if assoc is non-NULL, then params has already been moved into the
         // assoc structure. Make sure we only delete once!
@@ -562,16 +562,16 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
         net = NULL;
         return cond;
       }
-    }       
-  }                     
-                        
+    }
+  }
+
   if ((cond.good()) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
-  {                     
+  {
     DCMPSTAT_WARN("Peer does not support Basic Grayscale Print Management, aborting association.");
     abortAssociation();
     cond = DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
-  
+
   if (cond.good())
   {
     DCMPSTAT_INFO("Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")");

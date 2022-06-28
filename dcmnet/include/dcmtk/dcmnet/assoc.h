@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -291,7 +291,8 @@ DCMTK_DCMNET_EXPORT OFCondition ASC_dropNetwork(T_ASC_Network ** network);
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
-    long maxReceivePDUSize);
+    long maxReceivePDUSize,
+    Sint32 tcpConnectTimeout);
 
  /*
   * Free an association parameters structure and embedded information.

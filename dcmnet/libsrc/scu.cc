@@ -49,6 +49,7 @@ DcmSCU::DcmSCU()
     , m_peerPort(104)
     , m_dimseTimeout(0)
     , m_acseTimeout(30)
+    , m_tcpConnectTimeout(dcmConnectionTimeout.get())
     , m_storageDir()
     , m_storageMode(DCMSCU_STORAGE_DISK)
     , m_verbosePCMode(OFFalse)
@@ -120,7 +121,7 @@ OFCondition DcmSCU::initNetwork()
     }
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&m_params, m_maxReceivePDULength);
+    cond = ASC_createAssociationParameters(&m_params, m_maxReceivePDULength, m_tcpConnectTimeout);
     if (cond.bad())
     {
         DCMNET_ERROR(DimseCondition::dump(tempStr, cond));
@@ -2412,7 +2413,7 @@ void DcmSCU::setACSETimeout(const Uint32 acseTimeout)
 
 void DcmSCU::setConnectionTimeout(const Sint32 connectionTimeout)
 {
-    dcmConnectionTimeout.set(connectionTimeout);
+    m_tcpConnectTimeout = connectionTimeout;
 }
 
 void DcmSCU::setAssocConfigFileAndProfile(const OFString& filename, const OFString& profile)
@@ -2500,7 +2501,7 @@ Uint32 DcmSCU::getACSETimeout() const
 
 Sint32 DcmSCU::getConnectionTimeout() const
 {
-    return dcmConnectionTimeout.get();
+    return m_tcpConnectTimeout;
 }
 
 OFString DcmSCU::getStorageDir() const

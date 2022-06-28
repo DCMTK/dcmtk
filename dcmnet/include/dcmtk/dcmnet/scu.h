@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2019, OFFIS e.V.
+ *  Copyright (C) 2008-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -555,8 +555,8 @@ public:
 
     /** This function sends N-CREATE request and receives the corresponding response.
      *  If successful, ownership of the created instance is handed over to the caller.
-     *  @param presID                   [in]  The ID of the presentation context to be used for sending
-     *                                        the request message. Should not be 0.
+     *  @param presID                   [in]  The ID of the presentation context to be used for
+     *                                        sending the request message. Should not be 0.
      *  @param affectedSopInstanceUID   [in]  The affected SOP Instance UID
      *  @param reqDataset               [in]  The request dataset to be sent
      *  @param createdInstance          [out] Optional pointer to the instance that was created
@@ -654,13 +654,12 @@ public:
      */
     void setACSETimeout(const Uint32 acseTimeout);
 
-    /** Set global timeout for connecting to the SCP. Note that this is a global
-     *  DCMTK setting i.e. it affects all code that uses dcmnet to start a DICOM
-     *  association to another host. Setting the timeout to -1 sets an infinite timeout,
-     *  i.e. any association request will wait forever (blocking) until the SCP accepts
-     *  the connection request. A value of 0 lets the SCU return immediately if the SCP
-     *  is not reachable at the first attempt.
-     *  @param connectionTimeout [in] Connection Timeout in seconds when connecting
+    /** Set timeout for connecting to the SCP. Setting the timeout to -1 sets an infinite
+     *  timeout, i.e. any association request will wait forever (blocking) until the SCP
+     *  accepts the connection request. A value of 0 lets the SCU return immediately if
+     *  the SCP is not reachable at the first attempt. By default, the value of the global
+     *  dcmConnectionTimeout is used.
+     *  @param connectionTimeout [in] connection timeout in seconds when connecting
      *                                to SCPs. -1 will wait forever (blocking mode).
      */
     void setConnectionTimeout(const Sint32 connectionTimeout);
@@ -754,9 +753,9 @@ public:
      */
     Uint32 getACSETimeout() const;
 
-    /** Returns the timeout configured defining how long SCU will wait for the
-     *  SCP when requesting an association. -1 means infinite waiting (blocking),
-     *  0 means no waiting at all. Note that this is currently a global DCMTK setting.
+    /** Returns the timeout configured defining how long SCU will wait for the SCP when
+     *  requesting an association. -1 means infinite waiting (blocking), 0 means no waiting
+     *  at all.
      *  @return The connection timeout (in seconds)
      */
     Sint32 getConnectionTimeout() const;
@@ -1065,6 +1064,9 @@ private:
 
     /// ACSE timeout (default: 30 seconds)
     Uint32 m_acseTimeout;
+
+    /// TCP connection timeout (default: value of global dcmConnectionTimeout)
+    Sint32 m_tcpConnectTimeout;
 
     /// Storage directory for objects received with C-STORE due to a running
     /// C-GET session. By default, the received objects are stored in the current

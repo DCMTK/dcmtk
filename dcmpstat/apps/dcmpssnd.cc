@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2021, OFFIS e.V.
+ *  Copyright (C) 1999-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -697,7 +697,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    cond = ASC_createAssociationParameters(&params, targetMaxPDU);
+    cond = ASC_createAssociationParameters(&params, targetMaxPDU, dcmConnectionTimeout.get());
     if (cond.bad())
     {
       OFLOG_FATAL(dcmpssndLogger, DimseCondition::dump(temp_str, cond));

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2021, OFFIS e.V.
+ *  Copyright (C) 1999-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -824,7 +824,7 @@ static void terminateAllReceivers(DVConfiguration& dvi)
     }
     if (prepared && recAETitle && (recPort > 0))
     {
-      if ((ASC_createAssociationParameters(&params, DEFAULT_MAXPDU)).good())
+      if ((ASC_createAssociationParameters(&params, DEFAULT_MAXPDU, dcmConnectionTimeout.get())).good())
       {
         ASC_setTransportLayerType(params, recUseTLS);
         ASC_setAPTitles(params, dvi.getNetworkAETitle(), recAETitle, NULL);

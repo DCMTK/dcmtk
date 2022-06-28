@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -2260,8 +2260,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
     server.setPort(OFstatic_cast(unsigned short, htons(OFstatic_cast(unsigned short, port))));
 
-    // get global connection timeout
-    Sint32 connectTimeout = dcmConnectionTimeout.get();
+    const Sint32 connectTimeout = params->tcpConnectTimeout;
 
     s = socket(server.getFamily(), SOCK_STREAM, 0);
 #ifdef _WIN32

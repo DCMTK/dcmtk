@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2021, OFFIS e.V.
+ *  Copyright (C) 2005-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -159,7 +159,7 @@ int main( int argc, char *argv[] )
   }
 
   // initialize asscociation parameters
-  cond = ASC_createAssociationParameters( &params, opt_maxReceivePDULength );
+  cond = ASC_createAssociationParameters( &params, opt_maxReceivePDULength, dcmConnectionTimeout.get());
   if( cond.bad() )
   {
     OFLOG_FATAL(termscuLogger, DimseCondition::dump(temp_str, cond));
