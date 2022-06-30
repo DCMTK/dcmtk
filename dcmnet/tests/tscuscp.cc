@@ -216,9 +216,10 @@ void scu_sends_echo(
     OFCondition result;
     OFCHECK_MSG((result = scu.addPresentationContext(UID_VerificationSOPClass, xfers)).good(), result.text());
     OFCHECK_MSG((result = scu.initNetwork()).good(), result.text());
-    OFCHECK_MSG((result = scu.negotiateAssociation()).good(), result.text());
+    result = scu.negotiateAssociation();
     if (!expect_assoc_reject)
     {
+        OFCHECK_MSG(result.good(), result.text());
         OFCHECK_MSG((result = scu.sendECHORequest(1)).good(), result.text());
         OFStandard::forceSleep(secs_after_echo);
         if (do_release)
@@ -228,7 +229,7 @@ void scu_sends_echo(
     }
     else
     {
-        OFCHECK(result == DUL_ASSOCIATIONREJECTED);
+        OFCHECK_MSG(result == DUL_ASSOCIATIONREJECTED, "Association should have been rejected due to disallowed bhost but was accepted instead");
     }
     return;
 }
