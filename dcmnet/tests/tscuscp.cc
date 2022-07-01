@@ -365,6 +365,7 @@ OFTEST_FLAGS(dcmnet_scp_builtin_verification_support, EF_Slow)
     scp.join();
 }
 
+
 // Check whether SCP stops after provided timeout
 OFTEST_FLAGS(dcmnet_scp_stop_after_timeout, EF_Slow)
 {
@@ -476,6 +477,28 @@ OFTEST_FLAGS(dcmnet_scp_no_term_notify_without_association, EF_Slow)
     OFCHECK(scp.m_notify_connection_timeout_result == OFTrue);
     OFCHECK(scp.m_notify_assoc_termination_result == OFFalse); // no notification
     OFCHECK(scp.m_listen_result == NET_EC_StopAfterConnectionTimeout); // SCP ran into timeout
+}
+
+
+// Verifies that DcmSCU setConnectionTimeout no longer changes the global dcmConnectionTimeout parameter
+OFTEST(dcmnet_scu_setConectionTimeout_does_not_change_global_dcmConnectionTimeout_parameter)
+{
+    const Sint32 globalTimeout = dcmConnectionTimeout.get();
+
+    DcmSCU scu;
+    scu.setConnectionTimeout(globalTimeout + 1);
+
+    OFCHECK(dcmConnectionTimeout.get() == globalTimeout);
+}
+
+
+// Verifies that DcmSCU getConnectionTimeout returns SCU connection timeout, not global timeout
+OFTEST(dcmnet_scu_getConectionTimeout_returns_scu_tcp_connection_timeout)
+{
+    DcmSCU scu;
+    scu.setConnectionTimeout(42);
+
+    OFCHECK(scu.getConnectionTimeout() == 42);
 }
 
 
