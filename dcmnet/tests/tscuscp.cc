@@ -229,7 +229,7 @@ void scu_sends_echo(
     }
     else
     {
-        OFCHECK_MSG(result == DUL_ASSOCIATIONREJECTED, "Association should have been rejected due to disallowed bhost but was accepted instead");
+        OFCHECK_MSG(result == DUL_ASSOCIATIONREJECTED, "Association should have been rejected but was accepted instead");
     }
     return;
 }
@@ -929,7 +929,7 @@ struct NCREATEFixture
     DcmDataset reqDataset;
     DcmDataset* createdInstance;
     T_ASC_PresentationContextID presIDVerification;
-    T_ASC_PresentationContextID presIDMpps;;
+    T_ASC_PresentationContextID presIDMpps;
 };
 
 OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null)
