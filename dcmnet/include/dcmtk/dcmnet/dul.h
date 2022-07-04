@@ -68,6 +68,7 @@
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdeprec.h"
 #include "dcmtk/dcmnet/extneg.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/dcuserid.h"
@@ -567,10 +568,10 @@ DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, c
 
 
 /// @deprecated Use OFString& DUL_DumpParams(OFString&, DUL_ASSOCIATESERVICEPARAMETERS) instead.
-DCMTK_DCMNET_EXPORT void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
+DCMTK_DCMNET_EXPORT OFdeprecated void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 /// @deprecated Use OFString& DUL_DumpConnectionParameters(OFString&, DUL_ASSOCIATIONKEY*) instead.
-DCMTK_DCMNET_EXPORT void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
+DCMTK_DCMNET_EXPORT OFdeprecated void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
 /// @deprecated Use OFString& dumpExtNegList(OFString&, SOPClassExtendedNegotiationSubItemList&) instead.
-DCMTK_DCMNET_EXPORT void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
+DCMTK_DCMNET_EXPORT OFdeprecated void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 
 #endif
