@@ -117,6 +117,12 @@
 /* Define if __attribute__((aligned)) is available. */
 #undef HAVE_ATTRIBUTE_ALIGNED
 
+/* Define if the compiler supports __attribute__((deprecated)). */
+#undef HAVE_ATTRIBUTE_DEPRECATED
+
+/* Define if the compiler supports __attribute__((deprecated("message"))). */
+#undef HAVE_ATTRIBUTE_DEPRECATED_MSG
+
 /* Define to 1 if you have the `bcmp' function. */
 #undef HAVE_BCMP
 
@@ -175,6 +181,12 @@
 /* Define if the compiler supports basic C++11 syntax. */
 #undef HAVE_CXX11
 
+/* Define if the compiler supports [[deprecated]]. */
+#undef HAVE_CXX14_DEPRECATED_ATTRIBUTE
+
+/* Define if the compiler supports [[deprecated("message")]]. */
+#undef HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG
+
 /* Define if volatile is a known keyword. */
 #undef HAVE_CXX_VOLATILE
 
@@ -192,6 +204,12 @@
 /* Define if your system has a declaration for struct utimbuf in sys/types.h
    utime.h sys/utime.h . */
 #undef HAVE_DECLARATION_STRUCT_UTIMBUF
+
+/* Define if the compiler supports __declspec(deprecated). */
+#undef HAVE_DECLSPEC_DEPRECATED
+
+/* Define if the compiler supports __declspec(deprecated("message")). */
+#undef HAVE_DECLSPEC_DEPRECATED_MSG
 
 /* Define if the compiler supports default constructor detection via SFINAE.
    */

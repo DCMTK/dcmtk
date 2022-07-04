@@ -1416,9 +1416,9 @@ dnl -------------------------------------------------------
 dnl Check for iconv inside C standard library
 dnl -------------------------------------------------------
 
-AH_TEMPLATE(WITH_STDLIBC_ICONV, [Define if the C standard library has iconv builtin.])dnl
+AH_TEMPLATE(WITH_STDLIBC_ICONV, [Define if the C standard library has iconv builtin.])
 WITH_STDLIBC_ICONV=no
-AC_MSG_CHECKING([whether the C standard library provides iconv functionality])
+AC_MSG_CHECKING(whether the C standard library provides iconv functionality)
 SAVELIBS="$LIBS"
 LIBS=""
 AC_TRY_LINK([#include <iconv.h>], [iconv_t cd=iconv_open("","");iconv(cd,0,0,0,0);iconv_close(cd);],
@@ -1931,6 +1931,19 @@ AC_CHECK_ATTRIBUTE_ALIGNED([HAVE_ATTRIBUTE_ALIGNED])
 AC_CHECK_ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES([ATTRIBUTE_ALIGNED_SUPPORTS_TEMPLATES])
 AC_CHECK_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE([HAVE_DEFAULT_CONSTRUCTOR_DETECTION_VIA_SFINAE])
 
+
+dnl -------------------------------------------------------
+dnl Test for some specific function declarations
+dnl -------------------------------------------------------
+
+AC_CHECK_TRY_COMPILE([[[deprecated]]], HAVE_CXX14_DEPRECATED_ATTRIBUTE, [[[deprecated]] void some_function();])
+AC_CHECK_TRY_COMPILE([[[deprecated("message")]]], HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG, [[[deprecated("message")]] void some_function();])
+AC_CHECK_TRY_COMPILE(__attribute__((deprecated)), HAVE_ATTRIBUTE_DEPRECATED, [__attribute__((deprecated)) void some_function();])
+AC_CHECK_TRY_COMPILE(__attribute__((deprecated("message"))), HAVE_ATTRIBUTE_DEPRECATED_MSG, [__attribute__((deprecated("message"))) void some_function();])
+AC_CHECK_TRY_COMPILE(__declspec(deprecated), HAVE_DECLSPEC_DEPRECATED, [__declspec(deprecated) void some_function();])
+AC_CHECK_TRY_COMPILE(__declspec(deprecated("message")), HAVE_DECLSPEC_DEPRECATED_MSG, [__declspec(deprecated("message")) void some_function();])
+
+
 dnl -------------------------------------------------------
 dnl Test if passwd has the pw_gecos field
 dnl -------------------------------------------------------
@@ -1942,6 +1955,7 @@ AC_TRY_COMPILE([#include <pwd.h>],
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_PASSWD_GECOS) ],
   [AC_MSG_RESULT(no)])
+
 
 dnl -------------------------------------------------------
 dnl Test if SYS_gettid is available
@@ -1971,12 +1985,15 @@ AC_CHECK_ITERATOR_CATEGORY([contiguous],[HAVE_CONTIGUOUS_ITERATOR_CATEGORY])
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
+
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
+
 
 dnl -------------------------------------------------------
 dnl Special definitions for output
 dnl -------------------------------------------------------
+
 AC_SUBST(CXXFLAGS)
 AC_SUBST(OPENSSLLIBS)
 AC_SUBST(TIFFLIBS)

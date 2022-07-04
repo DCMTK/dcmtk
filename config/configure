@@ -16834,6 +16834,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 LIBS="$SAVELIBS"
 
 
+
 WITH_STDLIBC_ICONV=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the C standard library provides iconv functionality" >&5
 $as_echo_n "checking whether the C standard library provides iconv functionality... " >&6; }
@@ -18587,6 +18588,160 @@ $as_echo "no" >&6; }
 
 
 
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports [[deprecated]]" >&5
+$as_echo_n "checking whether the compiler supports [[deprecated]]... " >&6; }
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+[[deprecated]] void some_function();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     $as_echo "#define HAVE_CXX14_DEPRECATED_ATTRIBUTE 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports [[deprecated(\"message\")]]" >&5
+$as_echo_n "checking whether the compiler supports [[deprecated(\"message\")]]... " >&6; }
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+[[deprecated("message")]] void some_function();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     $as_echo "#define HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports __attribute__((deprecated))" >&5
+$as_echo_n "checking whether the compiler supports __attribute__((deprecated))... " >&6; }
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+__attribute__((deprecated)) void some_function();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     $as_echo "#define HAVE_ATTRIBUTE_DEPRECATED 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports __attribute__((deprecated(\"message\")))" >&5
+$as_echo_n "checking whether the compiler supports __attribute__((deprecated(\"message\")))... " >&6; }
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+__attribute__((deprecated("message"))) void some_function();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     $as_echo "#define HAVE_ATTRIBUTE_DEPRECATED_MSG 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports __declspec(deprecated)" >&5
+$as_echo_n "checking whether the compiler supports __declspec(deprecated)... " >&6; }
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+__declspec(deprecated) void some_function();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     $as_echo "#define HAVE_DECLSPEC_DEPRECATED 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports __declspec(deprecated(\"message\"))" >&5
+$as_echo_n "checking whether the compiler supports __declspec(deprecated(\"message\"))... " >&6; }
+
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+__declspec(deprecated("message")) void some_function();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+     $as_echo "#define HAVE_DECLSPEC_DEPRECATED_MSG 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether struct pwd contains the field pw_gecos" >&5
 $as_echo_n "checking whether struct pwd contains the field pw_gecos... " >&6; }
 
@@ -18611,6 +18766,7 @@ else
 $as_echo "no" >&6; }
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SYS_gettid in sys/syscall.h" >&5
@@ -18822,8 +18978,11 @@ $as_echo "no" >&6; }
 
 
 
+
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
 CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
+
+
 
 
 

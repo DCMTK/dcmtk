@@ -354,6 +354,21 @@ fi
 ])
 
 
+dnl AC_CHECK_TRY_COMPILE Try to compile the given source and set define
+dnl   depending on the result. No additional header files are included.
+dnl
+dnl AC_CHECK_TRY_COMPILE(NAME, DEFINE, SOURCE)
+AC_DEFUN(AC_CHECK_TRY_COMPILE,
+ [AC_MSG_CHECKING([whether the compiler supports [$1]])
+ AH_TEMPLATE($2, [Define if the compiler supports $1.])
+ AC_TRY_COMPILE(,
+   [$3],
+   [ AC_MSG_RESULT(yes)
+     AC_DEFINE($2) ],
+   [AC_MSG_RESULT(no)])
+])
+
+
 dnl AC_TRY_COMPILE_AND_LINK compiles a Source file into an object file
 dnl  and links the object file. This can create a different behaviour
 dnl  than compiling and linking the object file directly (e.g.
