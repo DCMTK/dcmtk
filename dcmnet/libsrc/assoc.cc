@@ -273,7 +273,8 @@ ASC_dropNetwork(T_ASC_Network ** network)
 
 OFCondition
 ASC_createAssociationParameters(T_ASC_Parameters ** params,
-        long maxReceivePDUSize, Sint32 tcpConnectTimeout)
+                                long maxReceivePDUSize,
+                                Sint32 tcpConnectTimeout)
 {
 
     *params = (T_ASC_Parameters *) malloc(sizeof(**params));
@@ -339,6 +340,16 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 }
 
 
+
+OFCondition
+ASC_createAssociationParameters(T_ASC_Parameters ** params,
+                                long maxReceivePDUSize)
+{
+    /* pass global TCP connection timeout to the real function */
+    return ASC_createAssociationParameters(params, maxReceivePDUSize, dcmConnectionTimeout.get());
+}
+
+
 OFCondition
 ASC_destroyAssociationParameters(T_ASC_Parameters ** params)
 {
@@ -381,12 +392,12 @@ ASC_setAPTitles(T_ASC_Parameters * params,
 
 OFCondition
 ASC_getAPTitles(T_ASC_Parameters * params,
-    char* callingAPTitle,
-    size_t callingAPTitleSize,
-    char* calledAPTitle,
-    size_t calledAPTitleSize,
-    char* respondingAPTitle,
-    size_t respondingAPTitleSize)
+                char* callingAPTitle,
+                size_t callingAPTitleSize,
+                char* calledAPTitle,
+                size_t calledAPTitleSize,
+                char* respondingAPTitle,
+                size_t respondingAPTitleSize)
 {
     if (callingAPTitle)
         OFStandard::strlcpy(callingAPTitle, params->DULparams.callingAPTitle, callingAPTitleSize);

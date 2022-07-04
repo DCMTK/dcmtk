@@ -94,6 +94,7 @@
 /*
 ** Required Include Files
 */
+#include "dcmtk/ofstd/ofdeprec.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/lst.h"
 #include "dcmtk/dcmnet/dul.h"
@@ -294,7 +295,17 @@ ASC_createAssociationParameters(
     long maxReceivePDUSize,
     Sint32 tcpConnectTimeout);
 
- /*
+/*
+ * same as before, but uses value of the global dcmConnectionTimeout variable.
+ * Please note that this function is deprecated and will be removed in a future
+ * release.  Use the previous function with the timeout parameter instead.
+ */
+DCMTK_DCMNET_EXPORT OFdeprecated OFCondition
+ASC_createAssociationParameters(
+    T_ASC_Parameters ** params,
+    long maxReceivePDUSize);
+
+/*
   * Free an association parameters structure and embedded information.
   * You do not usually need to do this since the parameters structure will
   * be noted in the association structure and automatically freed when an

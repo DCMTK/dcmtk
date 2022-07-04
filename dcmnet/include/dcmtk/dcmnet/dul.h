@@ -93,6 +93,8 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmDisableGethostbyaddr;   /* defaul
 
 /** Global timeout in seconds for connecting to remote hosts.
  *  Default value is -1, which selects infinite timeout, i.e. blocking connect().
+ *  @deprecated The use of this global variable is deprecated. Please pass the TCP
+ *    connection timeout to ASC_createAssociationParameters() as a parameter.
  */
 extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmConnectionTimeout;   /* default: -1 */
 
