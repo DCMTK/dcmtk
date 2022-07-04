@@ -18594,11 +18594,11 @@ $as_echo_n "checking whether the compiler supports [[deprecated]]... " >&6; }
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
+[[deprecated]] void some_function();
 int
 main ()
 {
-[[deprecated]] void some_function();
+
   ;
   return 0;
 }
@@ -18619,11 +18619,11 @@ $as_echo_n "checking whether the compiler supports [[deprecated(\"message\")]]..
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
+[[deprecated("message")]] void some_function();
 int
 main ()
 {
-[[deprecated("message")]] void some_function();
+
   ;
   return 0;
 }
@@ -18644,11 +18644,11 @@ $as_echo_n "checking whether the compiler supports __attribute__((deprecated))..
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
+__attribute__((deprecated)) void some_function();
 int
 main ()
 {
-__attribute__((deprecated)) void some_function();
+
   ;
   return 0;
 }
@@ -18669,11 +18669,11 @@ $as_echo_n "checking whether the compiler supports __attribute__((deprecated(\"m
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
+__attribute__((deprecated("message"))) void some_function();
 int
 main ()
 {
-__attribute__((deprecated("message"))) void some_function();
+
   ;
   return 0;
 }
@@ -18694,11 +18694,11 @@ $as_echo_n "checking whether the compiler supports __declspec(deprecated)... " >
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
+__declspec(deprecated) void some_function();
 int
 main ()
 {
-__declspec(deprecated) void some_function();
+
   ;
   return 0;
 }
@@ -18719,11 +18719,11 @@ $as_echo_n "checking whether the compiler supports __declspec(deprecated(\"messa
 
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
+__declspec(deprecated("message")) void some_function();
 int
 main ()
 {
-__declspec(deprecated("message")) void some_function();
+
   ;
   return 0;
 }

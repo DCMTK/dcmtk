@@ -355,14 +355,14 @@ fi
 
 
 dnl AC_CHECK_TRY_COMPILE Try to compile the given source and set define
-dnl   depending on the result. No additional header files are included.
+dnl   depending on the result. Additional includes are used if specified.
 dnl
-dnl AC_CHECK_TRY_COMPILE(NAME, DEFINE, SOURCE)
+dnl AC_CHECK_TRY_COMPILE(NAME, DEFINE, INCLUDES, SOURCE)
 AC_DEFUN(AC_CHECK_TRY_COMPILE,
  [AC_MSG_CHECKING([whether the compiler supports [$1]])
  AH_TEMPLATE($2, [Define if the compiler supports $1.])
- AC_TRY_COMPILE(,
-   [$3],
+ AC_TRY_COMPILE([$3],
+   [$4],
    [ AC_MSG_RESULT(yes)
      AC_DEFINE($2) ],
    [AC_MSG_RESULT(no)])
