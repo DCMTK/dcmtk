@@ -568,10 +568,10 @@ DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, c
 
 
 /// @deprecated Use OFString& DUL_DumpParams(OFString&, DUL_ASSOCIATESERVICEPARAMETERS) instead.
-DCMTK_DCMNET_EXPORT OFdeprecated void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
+OFdeprecated DCMTK_DCMNET_EXPORT void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 /// @deprecated Use OFString& DUL_DumpConnectionParameters(OFString&, DUL_ASSOCIATIONKEY*) instead.
-DCMTK_DCMNET_EXPORT OFdeprecated void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
+OFdeprecated DCMTK_DCMNET_EXPORT void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
 /// @deprecated Use OFString& dumpExtNegList(OFString&, SOPClassExtendedNegotiationSubItemList&) instead.
-DCMTK_DCMNET_EXPORT OFdeprecated void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
+OFdeprecated DCMTK_DCMNET_EXPORT void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 
 #endif

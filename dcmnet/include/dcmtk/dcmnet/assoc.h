@@ -300,7 +300,7 @@ ASC_createAssociationParameters(
  * Please note that this function is deprecated and will be removed in a future
  * release.  Use the previous function with the timeout parameter instead.
  */
-DCMTK_DCMNET_EXPORT OFdeprecated OFCondition
+OFdeprecated DCMTK_DCMNET_EXPORT OFCondition
 ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
     long maxReceivePDUSize);
@@ -726,13 +726,13 @@ DCMTK_DCMNET_EXPORT OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association);
 
 /// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.
-DCMTK_DCMNET_EXPORT OFdeprecated void
+OFdeprecated DCMTK_DCMNET_EXPORT void
 ASC_printRejectParameters(
     FILE *f,
     const T_ASC_RejectParameters *rej);
 
 /// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.
-DCMTK_DCMNET_EXPORT OFdeprecated void
+OFdeprecated DCMTK_DCMNET_EXPORT void
 ASC_printRejectParameters(
     STD_NAMESPACE ostream& out,
     const T_ASC_RejectParameters *rej);
@@ -744,7 +744,7 @@ ASC_printRejectParameters(
  * @deprecated Please use OFString& ASC_dumpParameters(OFString&, T_ASC_Parameters *,
  *             ASC_associateType) instead.
  */
-DCMTK_DCMNET_EXPORT OFdeprecated void
+OFdeprecated DCMTK_DCMNET_EXPORT void
 ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
 
  /*
@@ -752,14 +752,14 @@ ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
   * (debugging aid)
   */
 /// @deprecated You should dump the complete T_ASC_Parameters with ASC_dumpParameters() instead.
-DCMTK_DCMNET_EXPORT OFdeprecated void
+OFdeprecated DCMTK_DCMNET_EXPORT void
 ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream);
 
 /**
  * @deprecated Please use OFString& ASC_dumpParameters(OFString&, T_ASC_Parameters*,
  *             ASC_associateType) instead.
  */
-DCMTK_DCMNET_EXPORT OFdeprecated void
+OFdeprecated DCMTK_DCMNET_EXPORT void
 ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream);
 
 /** Converts given ASC role to string (e.g. for printing)
