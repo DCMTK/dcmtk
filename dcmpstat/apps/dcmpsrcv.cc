@@ -1332,7 +1332,7 @@ int main(int argc, char *argv[])
               finished2=OFTrue;
               finished1=OFTrue;
             }
-#else
+#else  /* HAVE_FORK */
             // Windows version - call CreateProcess()
             finished2=OFTrue;
             cond = ASC_dropNetwork(&net);
@@ -1378,12 +1378,13 @@ int main(int argc, char *argv[])
               {
                 // notify about rejected association
                 OFOStringStream out;
+                OFString temp_str;
                 out << "DIMSE Association Rejected:" << OFendl
                     << "  reason: cannot execute command line: " << commandline << OFendl
                     << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << OFendl
                     << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
                     << "  called AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
-                ASC_dumpConnectionParameters(assoc, out);
+                out << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl;
                 out << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(out, theString)
                 if (useTLS)
@@ -1394,7 +1395,7 @@ int main(int argc, char *argv[])
 
               dropAssociation(&assoc);
             }
-#endif
+#endif  /* HAVE_FORK */
             break;
         }
       } // finished2
