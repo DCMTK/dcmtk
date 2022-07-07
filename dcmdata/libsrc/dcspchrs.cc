@@ -257,6 +257,8 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
 #endif
     else if (DestinationCharacterSet == "ISO_IR 192")   // Unicode in UTF-8 (multi-byte)
         DestinationEncoding = "UTF-8";
+	else if (DestinationCharacterSet == "ISO_IR 149")   // Korean (multi-byte)
+		DestinationEncoding = "EUC-KR";    
     else if (DestinationCharacterSet == "GB18030")      // Chinese (multi-byte)
         DestinationEncoding = "GB18030";
     else if (DestinationCharacterSet == "GBK")          // Chinese (multi-byte, subset of "GB 18030")
@@ -320,6 +322,8 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
 #endif
     else if (SourceCharacterSet == "ISO_IR 192")    // Unicode in UTF-8 (multi-byte)
         fromEncoding = "UTF-8";
+	else if (SourceCharacterSet == "ISO_IR 149")    // Korean (multi-byte)
+		fromEncoding = "EUC-KR";    
     else if (SourceCharacterSet == "GB18030")       // Chinese (multi-byte)
         fromEncoding = "GB18030";
     else if (SourceCharacterSet == "GBK")           // Chinese (multi-byte, subset of "GB 18030")
