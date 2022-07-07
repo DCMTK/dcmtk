@@ -541,8 +541,6 @@ static void prepareTS(E_TransferSyntax ts,
   ** transmission.
   */
 
-  // Always propose Little Endian Implicit
-  syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
   switch (ts)
   {
     case EXS_LittleEndianImplicit:
@@ -588,4 +586,6 @@ static void prepareTS(E_TransferSyntax ts,
 
       break;
   }
+  // Always propose Little Endian Implicit
+  syntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
 }
