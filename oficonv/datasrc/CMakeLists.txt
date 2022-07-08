@@ -1,7 +1,8 @@
 # Locate the path to the xxd tool
 find_program(XXD_EXECUTABLE NAMES "xxd" "xxd.exe")
 
-ADD_CUSTOM_TARGET(
+if (TARGET mkcsmapper AND TARGET mkesdb)
+  ADD_CUSTOM_TARGET(
     oficonv_data_files
       # convert the ASCII ".src" files into binary ".mps" files
       COMMAND $<TARGET_FILE:mkcsmapper> -o \"${oficonv_SOURCE_DIR}/data/csmapper/CP/CP936EXT%UCS.mps\"                 \"${oficonv_SOURCE_DIR}/datasrc/csmapper/CP/CP936EXT%UCS.src\"
@@ -156,9 +157,11 @@ ADD_CUSTOM_TARGET(
       COMMAND $<TARGET_FILE:mkesdb> -m -o \"${oficonv_SOURCE_DIR}/data/esdb/esdb.alias.db\"               \"${oficonv_SOURCE_DIR}/datasrc/esdb/esdb.alias\"
 
       COMMENT "Creating oficonv data files from source"
-)
+  )
+endif()
 
-ADD_CUSTOM_TARGET(
+if (XXD_EXECUTABLE)
+  ADD_CUSTOM_TARGET(
     oficonv_data_library
       # convert the binary csmapper and esdb files into C++ header files
       COMMAND ${XXD_EXECUTABLE} -i \"csmapper/mapper.dir.db\" \"${oficonv_SOURCE_DIR}/libsrc/csmapper_mapper_dir_db.h\" WORKING_DIRECTORY "${oficonv_SOURCE_DIR}/data/"
@@ -247,3 +250,4 @@ ADD_CUSTOM_TARGET(
       COMMAND ${XXD_EXECUTABLE} -i \"esdb/GB/GB18030.esdb\" \"${oficonv_SOURCE_DIR}/libsrc/esdb_gb_gb18030_esdb.h\" WORKING_DIRECTORY "${oficonv_SOURCE_DIR}/data/"
       COMMAND ${XXD_EXECUTABLE} -i \"esdb/GB/GBK.esdb\" \"${oficonv_SOURCE_DIR}/libsrc/esdb_gb_gbk_esdb.h\" WORKING_DIRECTORY "${oficonv_SOURCE_DIR}/data/"
 )
+endif()
