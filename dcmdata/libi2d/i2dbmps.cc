@@ -373,6 +373,12 @@ OFCondition I2DBmpSource::readBitmapData(
     max = 0;
   }
 
+  Uint32 dims = width*height;
+  if (!OFStandard::safeMult(dims, OFstatic_cast(Uint32, samplesPerPixel), length))
+  {
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "BMP dimensions too large, width*height*samplesPerPixel exceeds 32 bit length field");
+  }
+
   length = width * height * samplesPerPixel;
 
   DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Starting to read bitmap data");
