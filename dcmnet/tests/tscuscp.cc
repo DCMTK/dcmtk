@@ -30,8 +30,6 @@
 #include "dcmtk/dcmnet/scu.h"
 
 
-#include <cmath>
-
 static OFLogger t_scuscp_logger= OFLog::getLogger("dcmtk.test.tscuscp");
 
 /** SCP derived from DcmSCP in order to test two types of virtual methods:
@@ -167,11 +165,11 @@ struct TestSCP: DcmSCP, OFThread
     /// Indicator whether related virtual notifier function was called
     OFBool m_notify_assoc_termination_result;
 
-    /** Method called by OFThread to start SCP operation. Starts listen() loop of DcmSCP.
+    /** Method called by OFThread to start SCP operation. Starts acceptAssociations() loop of DcmSCP.
     */
     virtual void run()
     {
-        m_listen_result = listen();
+        m_listen_result = acceptAssociations();
     }
 
 };
@@ -199,6 +197,7 @@ void configure_scp_for_echo(DcmSCPConfig& cfg, Uint16 listenPort, T_ASC_SC_ROLE 
  */
 void scu_sends_echo(
   const OFString& called_ae_title,
+  const Uint16 port,
   const OFBool expect_assoc_reject = OFFalse,
   const OFBool do_release = OFTrue,
   const int secs_after_echo = 0,
@@ -210,7 +209,7 @@ void scu_sends_echo(
     scu.setAETitle("TEST_SCU");
     scu.setPeerAETitle(called_ae_title);
     scu.setPeerHostName("localhost");
-    scu.setPeerPort(11112);
+    scu.setPeerPort(port);
     OFList<OFString> xfers;
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
     OFCondition result;
@@ -244,13 +243,15 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_current_association, EF_Slow)
     // accordingly
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112);
+    configure_scp_for_echo(config, 0);
     config.setAETitle("STOP_AFTER_ASSOC");
     config.setConnectionBlockingMode(DUL_BLOCK);
+    OFCHECK(scp.openListenPort().good());
+    const Uint16 port = config.getPort();
     scp.start();
 
     // Send ECHO, and wait to be sure SCP has time to exit
-    scu_sends_echo("STOP_AFTER_ASSOC");
+    scu_sends_echo("STOP_AFTER_ASSOC", port);
     // Make sure server would have time to return
     OFStandard::forceSleep(2);
 
@@ -264,7 +265,7 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_current_association, EF_Slow)
     // Tell SCP to stop after association and run SCU again
     scp.clear();
     scp.m_set_stop_after_assoc = OFTrue;
-    scu_sends_echo("STOP_AFTER_ASSOC");
+    scu_sends_echo("STOP_AFTER_ASSOC", port);
     OFStandard::forceSleep(2);
 
     // Check whether all test variables have the correct values
@@ -284,23 +285,15 @@ OFTEST_FLAGS(dcmnet_scp_fail_on_invalid_association_configuration, EF_Slow)
     // Configure SCP but do not add any presentation contexts
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    config.setPort(11112);
+    config.setPort(0);
     config.setAETitle("TEST_INVALID_CFG");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     // Ensure that if the server starts listen loop (it should not), the
     // related thread returns anyway.
     config.setConnectionTimeout(3);
     scp.m_set_stop_after_timeout = OFTrue;
-    // Start server and check that it returns with the expected return value.
-    // In this case we did not configure any presentation contexts, so we
-    // expect the related error code.
-    scp.start();
-    scp.join();
-    OFCHECK(scp.m_listen_result == NET_EC_InvalidSCPAssociationProfile);
-    OFCHECK(scp.m_stop_after_assoc_result == OFFalse);
-    OFCHECK(scp.m_stop_after_timeout_result == OFFalse);
-    OFCHECK(scp.m_notify_connection_timeout_result == OFFalse);
-    OFCHECK(scp.m_notify_assoc_termination_result == OFFalse);
+
+    OFCHECK(scp.openListenPort() == NET_EC_InvalidSCPAssociationProfile);
 }
 
 
@@ -312,16 +305,18 @@ OFTEST_FLAGS(dcmnet_scp_fail_on_disallowed_host, EF_Slow)
     // Configure SCP for Verification
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112);
+    configure_scp_for_echo(config, 0);
     config.setAETitle("REJECT_HOST");
     config.setConnectionBlockingMode(DUL_BLOCK);
     // Make sure SCP always returns
     scp.m_set_stop_after_assoc = OFTrue;
     // Tell SCP to reject calling host
     scp.m_set_reject_calling_host = OFTrue;
+    OFCHECK(scp.openListenPort().good());
+    const Uint16 port = config.getPort();
     scp.start();
 
-    scu_sends_echo("REJECT_HOST", OFTrue /* expect that association is being refused */);
+    scu_sends_echo("REJECT_HOST", port, OFTrue /* expect that association is being refused */);
     OFStandard::forceSleep(2);  // make sure server would have time to return
 
     // Check whether all test variables have the correct values
@@ -349,10 +344,12 @@ OFTEST_FLAGS(dcmnet_scp_builtin_verification_support, EF_Slow)
     config.setConnectionBlockingMode(DUL_BLOCK);
     // Make sure server stops after the SCU connection
     scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK(scp.openListenPort().good());
+    const Uint16 port = config.getPort();
     scp.start();
 
     // Send echo and receive response
-    scu_sends_echo("TEST_BUILTIN_VER");
+    scu_sends_echo("TEST_BUILTIN_VER", port);
     // make sure server would have time to return
     OFStandard::forceSleep(1);
 
@@ -374,14 +371,16 @@ OFTEST_FLAGS(dcmnet_scp_stop_after_timeout, EF_Slow)
     // is performed, i.e. timeout occurs after that connection.
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112);
+    configure_scp_for_echo(config, 0);
     config.setAETitle("STOP_ON_TIMEOUT");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(5);
     scp.m_set_stop_after_timeout = OFTrue;
+    OFCHECK(scp.openListenPort().good());
+    const Uint16 port = config.getPort();
     scp.start();
     OFStandard::forceSleep(1);
-    scu_sends_echo("STOP_ON_TIMEOUT");
+    scu_sends_echo("STOP_ON_TIMEOUT", port);
     // Wait for server to return after connection has been served and timeout
     // has been reached
     scp.join();
@@ -403,12 +402,14 @@ OFTEST_FLAGS(dcmnet_scp_no_stop_wo_request_noblock, EF_Slow)
     // SCP to stop after timeout occurs, and start SCP
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112);
+    configure_scp_for_echo(config, 0);
 
     config.setAETitle("NO_STOP_NOBLOCK");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(1);
     scp.m_set_stop_after_timeout = OFFalse;
+
+    OFCHECK(scp.openListenPort().good());
     scp.start();
 
     // Check whether all test variables have the correct values, especially that
@@ -433,11 +434,13 @@ OFTEST_FLAGS(dcmnet_scp_no_stop_wo_request_block, EF_Slow)
     // Configure SCP for Verification and to do not ask to exit for any reason
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112);
+    configure_scp_for_echo(config, 0);
     config.setAETitle("NO_STOP_BLOCK");
     config.setConnectionBlockingMode(DUL_BLOCK);
+    OFCHECK(scp.openListenPort().good());
+    const Uint16 port = config.getPort();
     scp.start();
-    scu_sends_echo("NO_STOP_BLOCK");
+    scu_sends_echo("NO_STOP_BLOCK", port);
 
     // Give some time to SCP so it could return
     OFStandard::forceSleep(3);
@@ -452,7 +455,7 @@ OFTEST_FLAGS(dcmnet_scp_no_stop_wo_request_block, EF_Slow)
 
     // Stop (already tested in former test cases), therefore, send another ECHO
     scp.m_set_stop_after_assoc = OFTrue;
-    scu_sends_echo("NO_STOP_BLOCK");
+    scu_sends_echo("NO_STOP_BLOCK", port);
     scp.join();
 }
 
@@ -464,11 +467,12 @@ OFTEST_FLAGS(dcmnet_scp_no_term_notify_without_association, EF_Slow)
     // Configure SCP for Verification and tell it stop after 3 seconds.
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112);
+    configure_scp_for_echo(config, 0);
     config.setAETitle("NO_TERM_WO_ASSOC");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(3);
     scp.m_set_stop_after_timeout = OFTrue;
+    OFCHECK(scp.openListenPort().good());
     scp.start();
     scp.join();
     // Check whether all test variables have the correct values.
@@ -531,11 +535,12 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     // Configure SCP for Verification with the desired role, and start it
     TestSCP scp;
     DcmSCPConfig& config = scp.getConfig();
-    configure_scp_for_echo(config, 11112, r_acc);
+    configure_scp_for_echo(config, 0, r_acc);
     config.setAETitle("ACCEPTOR");
     config.setConnectionBlockingMode(DUL_NOBLOCK);
     config.setConnectionTimeout(4);
     config.setAlwaysAcceptDefaultRole(acceptDefaultInsteadOfSCP);
+    OFCHECK(scp.openListenPort().good());
     scp.start();
 
     // Ensure server is up and listening
@@ -546,7 +551,7 @@ void test_role_selection(const T_ASC_SC_ROLE r_req,
     scu.setPeerAETitle("ACCEPTOR");
     scu.setAETitle("REQUESTOR");
     scu.setPeerHostName("localhost");
-    scu.setPeerPort(11112);
+    scu.setPeerPort(config.getPort());
     OFList<OFString> ts;
     ts.push_back(UID_LittleEndianImplicitTransferSyntax);
     OFCHECK(scu.addPresentationContext(UID_VerificationSOPClass, ts, r_req).good());
@@ -657,9 +662,9 @@ struct TestSCPWithNCreateSupport : TestSCP
         config.setConnectionBlockingMode(DUL_NOBLOCK);
         config.setConnectionTimeout(10);
         config.setHostLookupEnabled(OFFalse);
-        OFRandom rnd;
-        m_portNum = 65535 - rnd.getRND16() % 5535; // 60000-65535
-        configure_scp_for_echo(config, m_portNum);
+        configure_scp_for_echo(config, 0);
+        OFCHECK(openListenPort().good());
+        m_portNum = config.getPort();
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(getConfig().addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
@@ -1108,5 +1113,6 @@ OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_from_scp_
     fixture.scp.m_set_stop_after_assoc = OFTrue;
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
+
 
 #endif // WITH_THREADS

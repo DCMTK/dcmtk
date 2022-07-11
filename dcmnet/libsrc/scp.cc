@@ -98,7 +98,7 @@ OFCondition DcmSCP::openListenPort()
 #ifndef DISABLE_PORT_PERMISSION_CHECK
 #ifdef HAVE_GETEUID
     // If port is privileged we must be as well.
-    if (m_cfg->getPort() < 1024 && geteuid() != 0)
+    if ( ( (m_cfg->getPort() < 1024) && m_cfg->getPort() !=0) && geteuid() != 0)
     {
         DCMNET_ERROR("No privileges to open this network port (" << m_cfg->getPort() << ")");
         return NET_EC_InsufficientPortPrivileges;
@@ -113,11 +113,18 @@ OFCondition DcmSCP::openListenPort()
         return result;
 
     // Initialize network, i.e. create an instance of T_ASC_Network*.
-    cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, m_cfg->getPort()), m_cfg->getACSETimeout(), &m_network);
+    const int port = OFstatic_cast(int, m_cfg->getPort());
+    cond = ASC_initializeNetwork(NET_ACCEPTOR, port, m_cfg->getACSETimeout(), &m_network);
     if (cond.bad())
     {
         m_network = NULL;
         return cond;
+    }
+
+    // Update config with assigned port if client requested it
+    if (port == 0)
+    {
+      m_cfg->setPort(OFstatic_cast(Uint16, m_network->acceptorPort));
     }
 
     if (m_cfg->transportLayerEnabled())

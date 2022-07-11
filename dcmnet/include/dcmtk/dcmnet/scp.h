@@ -238,7 +238,10 @@ public:
 
     /** Set SCP's TCP/IP listening port
      *  @param port [in] The port number to listen on. Note that usually on Unix-like systems
-     *                   only root user is permitted to open ports below 1024.
+     *                   only root user is permitted to open ports below 1024. If port number 0
+     *                   is provided, the OS will assign a free port once openListenPort()
+     *                   is being called. The port number actually used is then available via
+     *                   getPort().
      */
     void setPort(const Uint16 port);
 

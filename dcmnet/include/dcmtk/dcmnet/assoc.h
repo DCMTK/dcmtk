@@ -264,6 +264,8 @@ struct DCMTK_DCMNET_EXPORT T_ASC_Association
 /** network instance creation function (constructor)
  *  @param role association acceptor, requestor or both
  *  @param acceptorPort acceptor port for incoming connections.
+ *    If for an acceptor 0 is provided, the OS will assign
+ *    an unused ports on its own.
  *    For association requestors, zero should be passed here.
  *  @param timeout timeout for network operations, in seconds
  *  @param network T_ASC_Network will be allocated and returned in this parameter

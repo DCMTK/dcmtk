@@ -2240,6 +2240,14 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         msg += OFStandard::getLastNetworkErrorCode().message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
+
+      /* If port 0 was specified by the client, the OS has assigned an unused port. */
+      if ((*key)->networkSpecific.TCP.port == 0) {
+        const u_short assignedPort = ntohs(server.sin_port);
+        (*key)->networkSpecific.TCP.port = assignedPort;
+        *(int *) parameter = assignedPort;
+      }
+
       sockarg.l_onoff = 0;
       if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
       {

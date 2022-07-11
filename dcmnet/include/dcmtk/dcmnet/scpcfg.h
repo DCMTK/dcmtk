@@ -89,7 +89,10 @@ public:
 
   /** Set SCP's TCP/IP listening port
    *  @param port [in] The port number to listen on. Note that usually on Unix-like systems
-   *                   only root user is permitted to open ports below 1024.
+   *                   only root user is permitted to open ports below 1024. Port number 0
+   *                   can be used to let the OS assign an available free port. In that case,
+   *                   the class using this SCP configuration should update the actual port
+   *                   using setPort() once it is known.
    */
   void setPort(const Uint16 port);
 
@@ -225,7 +228,7 @@ public:
 
   /* Get methods for SCP settings */
 
-  /** Returns TCP/IP port number SCP listens for new connection requests
+  /** Returns TCP/IP port number SCP listens for new connection requests.
    *  @return The port number
    */
   Uint16 getPort() const;
