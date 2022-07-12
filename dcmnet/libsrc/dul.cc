@@ -2225,7 +2225,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
       /* Name socket using wildcards */
       server.sin_family = AF_INET;
       server.sin_addr.s_addr = INADDR_ANY;
-      server.sin_port = (unsigned short) htons(OFstatic_cast(u_short, ((*key)->networkSpecific.TCP.port)));
+      server.sin_port = htons(OFstatic_cast(Uint16, ((*key)->networkSpecific.TCP.port)));
       if (bind(sock, (struct sockaddr *) & server, sizeof(server)))
       {
         OFString msg = "TCP Initialization Error: ";
