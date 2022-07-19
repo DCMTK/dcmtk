@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2021, OFFIS e.V.
+ *  Copyright (C) 2021-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,6 +60,14 @@
 #define OFdeprecated_msg(MESSAGE) <unspecified>
 
 #else // DOXYGEN
+
+// Old GCC versions print warnings about [[deprecated]] attributes being
+// ignored when running in C++11 mode. Fall back to the GCC specific solution
+// for these compilers.
+#if ( defined(__GNUC__) && (__GNUC__ < 7 ) )
+#undef HAVE_CXX14_DEPRECATED_ATTRIBUTE
+#undef HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG
+#endif
 
 #ifdef HAVE_CXX14_DEPRECATED_ATTRIBUTE
 #define OFdeprecated [[deprecated]]
