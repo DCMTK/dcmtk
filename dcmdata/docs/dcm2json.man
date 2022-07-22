@@ -98,11 +98,23 @@ input transfer syntax:
 \subsection dcm2json_processing_options processing options
 \verbatim
 encoding of infinity and not-a-number:
+
   -es  --encode-strict
          report error for 'inf' and 'nan' (default)
 
   -ee  --encode-extended
          permit 'inf' and 'nan' in JSON numbers
+
+encoding of IS and DS (integer/decimal string) elements:
+
+  -ia  --is-ds-auto
+         encode as number if valid, as string otherwise (default)
+
+  -in  --is-ds-num
+         always encode as number, fail if invalid
+
+  -is  --is-ds-string
+         always encode as string
 \endverbatim
 
 \subsection dcm2json_output_options output options

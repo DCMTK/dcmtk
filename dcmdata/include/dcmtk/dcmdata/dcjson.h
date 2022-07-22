@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2017-2020, OFFIS e.V.
+*  Copyright (C) 2017-2022, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -73,6 +73,20 @@
 class DCMTK_DCMDATA_EXPORT DcmJsonFormat
 {
 public:
+
+   /// an enumeration defining how to convert IS/DS elements to JSON
+   enum NumStringPolicy
+   {
+     /// write as number if possible (i.e. the value is a valid JSON number),
+     /// as string otherwise.
+     NSP_auto,
+     /// always write as JSON number, fail with an error code if the value
+     /// is not a valid JSON number
+     NSP_always_number,
+     /// always write as JSON string
+     NSP_always_string
+   };
+
     /** A class to create small proxy objects that ease indention handling.
      *  Each Indention object only contains a reference to the DcmJsonFormat object
      *  that created it and its only purpose is to call the respective methods
@@ -205,6 +219,7 @@ public:
     inline DcmJsonFormat(const OFBool printMetaInfo)
     : printMetaheaderInformation(printMetaInfo)
     , enableJsonExtension(OFFalse)
+    , numStringPolicy(NSP_auto)
     {
 
     }
@@ -333,6 +348,21 @@ public:
       enableJsonExtension = enabled;
     }
 
+    /** return the flag defining how IS/DS elements should be converted to JSON.
+     */
+    virtual NumStringPolicy getJsonNumStringPolicy() const
+    {
+      return numStringPolicy;
+    }
+
+    /** set the flag defining how IS/DS elements should be converted to JSON.
+     *  @param policy new value of the flag
+     */
+    virtual void setJsonNumStringPolicy(NumStringPolicy policy)
+    {
+      numStringPolicy = policy;
+    }
+
     /** Option that defines if metaheader information should be printed.
      */
     const OFBool printMetaheaderInformation;
@@ -360,6 +390,10 @@ private:
      */
     OFBool enableJsonExtension;
 
+    /** Option that defines how IS/DS elements will be converted to JSON,
+     *  as number or string. Default is NSP_auto.
+     */
+    NumStringPolicy numStringPolicy;
 };
 
 

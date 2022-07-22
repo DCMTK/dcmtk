@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -282,6 +282,7 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
 {
     /* always write JSON Opener */
     writeJsonOpener(out, format);
+    OFBool isValid;
 
     if (!isEmpty())
     {
@@ -303,22 +304,45 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                 if (status.bad())
                     return status;
                 format.printValuePrefix(out);
-                // if the value is a proper number, write as JSON number,
-                // otherwise write as JSON string.
-                if (checkStringValue(value, vmstring).good())
-                    DcmJsonFormat::printNumberDecimal(out, value);
+
+                isValid = checkStringValue(value, vmstring).good();
+                switch (format.getJsonNumStringPolicy())
+                {
+                  case DcmJsonFormat::NSP_auto:
+                    if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
                     else DcmJsonFormat::printValueString(out, value);
+                    break;
+                  case DcmJsonFormat::NSP_always_number:
+                    if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
+                    else return EC_CannotWriteStringAsJsonNumber;
+                    break;
+                  case DcmJsonFormat::NSP_always_string:
+                    DcmJsonFormat::printValueString(out, value);
+                    break;
+                }
+
                 for (unsigned long valNo = 1; valNo < vm; ++valNo)
                 {
                     status = getOFString(value, valNo);
                     if (status.bad())
                         return status;
                     format.printNextArrayElementPrefix(out);
-                    // if the value is a proper number, write as JSON number,
-                    // otherwise write as JSON string.
-                    if (checkStringValue(value, vmstring).good())
-                        DcmJsonFormat::printNumberDecimal(out, value);
+
+                    isValid = checkStringValue(value, vmstring).good();
+                    switch (format.getJsonNumStringPolicy())
+                    {
+                      case DcmJsonFormat::NSP_auto:
+                        if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
                         else DcmJsonFormat::printValueString(out, value);
+                        break;
+                      case DcmJsonFormat::NSP_always_number:
+                        if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
+                        else return EC_CannotWriteStringAsJsonNumber;
+                        break;
+                      case DcmJsonFormat::NSP_always_string:
+                        DcmJsonFormat::printValueString(out, value);
+                        break;
+                    }
                 }
                 format.printValueSuffix(out);
             }

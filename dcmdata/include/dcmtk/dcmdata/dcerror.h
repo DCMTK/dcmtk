@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -183,6 +183,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLValidationFailure;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SOPClassMismatch;
 /// Unknown UID name: No mapping to UID value defined
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownUIDName;
+/// Cannot write IS/DS string as JSON number
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteStringAsJsonNumber;
 
 //@}
 
