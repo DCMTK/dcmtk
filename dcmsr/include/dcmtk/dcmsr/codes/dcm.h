@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-11 09:59:28 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:34:29 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4632
+// total number of codes: 4657
 // - retired: 201
 // - no name: 27
 // - not unique: 17
@@ -4680,5 +4680,30 @@
 #define CODE_DCM_RadiotherapyDoseRegion                                    DSRBasicCodedEntry("130748", "DCM", "Radiotherapy Dose Region")
 #define CODE_DCM_QualityControlMaterialImage                               DSRBasicCodedEntry("130750", "DCM", "Quality control material image")
 #define CODE_DCM_TissueNotOfInterest                                       DSRBasicCodedEntry("130751", "DCM", "Tissue not of interest")
+#define CODE_DCM_DataNotAccessibleFromStorage                              DSRBasicCodedEntry("130752", "DCM", "Data Not Accessible from Storage")
+#define CODE_DCM_ProcessedKeyObjectSelection                               DSRBasicCodedEntry("130753", "DCM", "Processed Key Object Selection")
+#define CODE_DCM_ReplacedByAlternateRepresentation                         DSRBasicCodedEntry("130754", "DCM", "Replaced by Alternate Representation")
+#define CODE_DCM_ReferenceMeasurementGroup                                 DSRBasicCodedEntry("130755", "DCM", "Reference Measurement Group")
+#define CODE_DCM_ParticleDisplacementMethod                                DSRBasicCodedEntry("130756", "DCM", "Particle Displacement Method")
+#define CODE_DCM_ParticleVelocityMethod                                    DSRBasicCodedEntry("130757", "DCM", "Particle Velocity Method")
+#define CODE_DCM_ShearWaveDispersionSlopeCenterFrequency                   DSRBasicCodedEntry("130758", "DCM", "Shear Wave Dispersion Slope Center Frequency")
+#define CODE_DCM_ShearWaveDetectionMethod                                  DSRBasicCodedEntry("130759", "DCM", "Shear Wave Detection Method")
+#define CODE_DCM_ButterworthFilter                                         DSRBasicCodedEntry("130760", "DCM", "Butterworth filter")
+#define CODE_DCM_ChebyshevFilter                                           DSRBasicCodedEntry("130761", "DCM", "Chebyshev filter")
+#define CODE_DCM_EllipticFilter                                            DSRBasicCodedEntry("130762", "DCM", "Elliptic filter")
+#define CODE_DCM_BesselFilter                                              DSRBasicCodedEntry("130763", "DCM", "Bessel filter")
+#define CODE_DCM_GaussianFilter                                            DSRBasicCodedEntry("130764", "DCM", "Gaussian filter")
+#define CODE_DCM_KTypeFilter                                               DSRBasicCodedEntry("130765", "DCM", "K-type filter")
+#define CODE_DCM_MDerivedFilter                                            DSRBasicCodedEntry("130766", "DCM", "M-derived filter")
+#define CODE_DCM_DoubleMDerivedFilter                                      DSRBasicCodedEntry("130767", "DCM", "Double-m-derived filter")
+#define CODE_DCM_BodeFilter                                                DSRBasicCodedEntry("130768", "DCM", "Bode filter")
+#define CODE_DCM_ZobelFilter                                               DSRBasicCodedEntry("130769", "DCM", "Zobel filter")
+#define CODE_DCM_FIRFilter                                                 DSRBasicCodedEntry("130770", "DCM", "FIR filter")
+#define CODE_DCM_CICFilter                                                 DSRBasicCodedEntry("130771", "DCM", "CIC filter")
+#define CODE_DCM_IIRFilter                                                 DSRBasicCodedEntry("130772", "DCM", "IIR filter")
+#define CODE_DCM_BiquadFilter                                              DSRBasicCodedEntry("130773", "DCM", "Biquad filter")
+#define CODE_DCM_HzNormalized                                              DSRBasicCodedEntry("130774", "DCM", "Hz normalized")
+#define CODE_DCM_HzAngular                                                 DSRBasicCodedEntry("130775", "DCM", "Hz angular")
+#define CODE_DCM_MagnitudeNormalized                                       DSRBasicCodedEntry("130776", "DCM", "Magnitude normalized")
 
 #endif
