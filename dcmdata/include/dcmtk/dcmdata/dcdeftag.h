@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2022-04-12 12:43:36
+**   Date: 2022-07-25 09:10:37
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2022-04-12 12:43:36"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2022-07-25 09:10:37"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4919
+** Number of entries: 4989
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -218,6 +218,47 @@
 #define DCM_PrivateDataElementDescription        DcmTagKey(0x0008, 0x030e)
 #define DCM_PrivateDataElementEncoding           DcmTagKey(0x0008, 0x030f)
 #define DCM_PrivateDataElementDefinitionSequence DcmTagKey(0x0008, 0x0310)
+#define DCM_ScopeOfInventorySequence             DcmTagKey(0x0008, 0x0400)
+#define DCM_InventoryPurpose                     DcmTagKey(0x0008, 0x0401)
+#define DCM_InventoryInstanceDescription         DcmTagKey(0x0008, 0x0402)
+#define DCM_InventoryContentLevel                DcmTagKey(0x0008, 0x0403)
+#define DCM_ItemInventoryDateTime                DcmTagKey(0x0008, 0x0404)
+#define DCM_RemovedFromOperationalUse            DcmTagKey(0x0008, 0x0405)
+#define DCM_ReasonForRemovalCodeSequence         DcmTagKey(0x0008, 0x0406)
+#define DCM_StoredInstanceBaseURI                DcmTagKey(0x0008, 0x0407)
+#define DCM_FolderAccessURI                      DcmTagKey(0x0008, 0x0408)
+#define DCM_FileAccessURI                        DcmTagKey(0x0008, 0x0409)
+#define DCM_ContainerFileType                    DcmTagKey(0x0008, 0x040a)
+#define DCM_FilenameInContainer                  DcmTagKey(0x0008, 0x040b)
+#define DCM_FileOffsetInContainer                DcmTagKey(0x0008, 0x040c)
+#define DCM_FileLengthInContainer                DcmTagKey(0x0008, 0x040d)
+#define DCM_StoredInstanceTransferSyntaxUID      DcmTagKey(0x0008, 0x040e)
+#define DCM_ExtendedMatchingMechanisms           DcmTagKey(0x0008, 0x040f)
+#define DCM_RangeMatchingSequence                DcmTagKey(0x0008, 0x0410)
+#define DCM_UIDListMatchingSequence              DcmTagKey(0x0008, 0x0411)
+#define DCM_EmptyValueMatchingSequence           DcmTagKey(0x0008, 0x0412)
+#define DCM_GeneralMatchingSequence              DcmTagKey(0x0008, 0x0413)
+#define DCM_RequestedStatusInterval              DcmTagKey(0x0008, 0x0414)
+#define DCM_RetainInstances                      DcmTagKey(0x0008, 0x0415)
+#define DCM_ExpirationDateTime                   DcmTagKey(0x0008, 0x0416)
+#define DCM_TransactionStatus                    DcmTagKey(0x0008, 0x0417)
+#define DCM_TransactionStatusComment             DcmTagKey(0x0008, 0x0418)
+#define DCM_FileSetAccessSequence                DcmTagKey(0x0008, 0x0419)
+#define DCM_FileAccessSequence                   DcmTagKey(0x0008, 0x041a)
+#define DCM_RecordKey                            DcmTagKey(0x0008, 0x041b)
+#define DCM_PriorRecordKey                       DcmTagKey(0x0008, 0x041c)
+#define DCM_MetadataSequence                     DcmTagKey(0x0008, 0x041d)
+#define DCM_UpdatedMetadataSequence              DcmTagKey(0x0008, 0x041e)
+#define DCM_StudyUpdateDateTime                  DcmTagKey(0x0008, 0x041f)
+#define DCM_InventoryAccessEndPointsSequence     DcmTagKey(0x0008, 0x0420)
+#define DCM_StudyAccessEndPointsSequence         DcmTagKey(0x0008, 0x0421)
+#define DCM_IncorporatedInventoryInstanceSequence DcmTagKey(0x0008, 0x0422)
+#define DCM_InventoriedStudiesSequence           DcmTagKey(0x0008, 0x0423)
+#define DCM_InventoriedSeriesSequence            DcmTagKey(0x0008, 0x0424)
+#define DCM_InventoriedInstancesSequence         DcmTagKey(0x0008, 0x0425)
+#define DCM_InventoryCompletionStatus            DcmTagKey(0x0008, 0x0426)
+#define DCM_NumberOfStudyRecordsInInstance       DcmTagKey(0x0008, 0x0427)
+#define DCM_TotalNumberOfStudyRecords            DcmTagKey(0x0008, 0x0428)
 #define DCM_RETIRED_NetworkID                    DcmTagKey(0x0008, 0x1000)
 #define DCM_StationName                          DcmTagKey(0x0008, 0x1010)
 #define DCM_StudyDescription                     DcmTagKey(0x0008, 0x1030)
@@ -456,6 +497,14 @@
 #define DCM_MultipleComponentApprovalSequence    DcmTagKey(0x0014, 0x0106)
 #define DCM_OtherApprovalStatus                  DcmTagKey(0x0014, 0x0107)
 #define DCM_OtherSecondaryApprovalStatus         DcmTagKey(0x0014, 0x0108)
+#define DCM_DataElementLabelSequence             DcmTagKey(0x0014, 0x0200)
+#define DCM_DataElementLabelItemSequence         DcmTagKey(0x0014, 0x0201)
+#define DCM_DataElement                          DcmTagKey(0x0014, 0x0202)
+#define DCM_DataElementName                      DcmTagKey(0x0014, 0x0203)
+#define DCM_DataElementDescription               DcmTagKey(0x0014, 0x0204)
+#define DCM_DataElementConditionality            DcmTagKey(0x0014, 0x0205)
+#define DCM_DataElementMinimumCharacters         DcmTagKey(0x0014, 0x0206)
+#define DCM_DataElementMaximumCharacters         DcmTagKey(0x0014, 0x0207)
 #define DCM_ActualEnvironmentalConditions        DcmTagKey(0x0014, 0x1010)
 #define DCM_ExpiryDate                           DcmTagKey(0x0014, 0x1020)
 #define DCM_EnvironmentalConditions              DcmTagKey(0x0014, 0x1040)
@@ -2368,6 +2417,24 @@
 #define DCM_ImpedanceMeasurementDateTime         DcmTagKey(0x003a, 0x0314)
 #define DCM_ImpedanceMeasurementFrequency        DcmTagKey(0x003a, 0x0315)
 #define DCM_ImpedanceMeasurementCurrentType      DcmTagKey(0x003a, 0x0316)
+#define DCM_WaveformAmplifierType                DcmTagKey(0x003a, 0x0317)
+#define DCM_FilterLowFrequencyCharacteristicsSequence DcmTagKey(0x003a, 0x0318)
+#define DCM_FilterHighFrequencyCharacteristicsSequence DcmTagKey(0x003a, 0x0319)
+#define DCM_SummarizedFilterLookupTable          DcmTagKey(0x003a, 0x0320)
+#define DCM_NotchFilterCharacteristicsSequence   DcmTagKey(0x003a, 0x0321)
+#define DCM_WaveformFilterType                   DcmTagKey(0x003a, 0x0322)
+#define DCM_AnalogFilterCharacteristicsSequence  DcmTagKey(0x003a, 0x0323)
+#define DCM_AnalogFilterRollOff                  DcmTagKey(0x003a, 0x0324)
+#define DCM_AnalogFilterType                     DcmTagKey(0x003a, 0x0325)
+#define DCM_DigitalFilterCharacteristicsSequence DcmTagKey(0x003a, 0x0326)
+#define DCM_DigitalFilterOrder                   DcmTagKey(0x003a, 0x0327)
+#define DCM_DigitalFilterTypeCodeSequence        DcmTagKey(0x003a, 0x0328)
+#define DCM_WaveformFilterDescription            DcmTagKey(0x003a, 0x0329)
+#define DCM_FilterLookupTableSequence            DcmTagKey(0x003a, 0x032a)
+#define DCM_FilterLookupTableDescription         DcmTagKey(0x003a, 0x032b)
+#define DCM_FrequencyEncodingCodeSequence        DcmTagKey(0x003a, 0x032c)
+#define DCM_MagnitudeEncodingCodeSequence        DcmTagKey(0x003a, 0x032d)
+#define DCM_FilterLookupTableData                DcmTagKey(0x003a, 0x032e)
 #define DCM_ScheduledStationAETitle              DcmTagKey(0x0040, 0x0001)
 #define DCM_ScheduledProcedureStepStartDate      DcmTagKey(0x0040, 0x0002)
 #define DCM_ScheduledProcedureStepStartTime      DcmTagKey(0x0040, 0x0003)
@@ -3266,6 +3333,7 @@
 #define DCM_FiducialIdentifierCodeSequence       DcmTagKey(0x0070, 0x0311)
 #define DCM_ContourUncertaintyRadius             DcmTagKey(0x0070, 0x0312)
 #define DCM_UsedFiducialsSequence                DcmTagKey(0x0070, 0x0314)
+#define DCM_UsedRTStructureSetROISequence        DcmTagKey(0x0070, 0x0315)
 #define DCM_GraphicCoordinatesDataSequence       DcmTagKey(0x0070, 0x0318)
 #define DCM_FiducialUID                          DcmTagKey(0x0070, 0x031a)
 #define DCM_ReferencedFiducialUID                DcmTagKey(0x0070, 0x031b)
@@ -3877,9 +3945,9 @@
 #define DCM_RTROIObservationsSequence            DcmTagKey(0x3006, 0x0080)
 #define DCM_ObservationNumber                    DcmTagKey(0x3006, 0x0082)
 #define DCM_ReferencedROINumber                  DcmTagKey(0x3006, 0x0084)
-#define DCM_ROIObservationLabel                  DcmTagKey(0x3006, 0x0085)
+#define DCM_RETIRED_ROIObservationLabel          DcmTagKey(0x3006, 0x0085)
 #define DCM_RTROIIdentificationCodeSequence      DcmTagKey(0x3006, 0x0086)
-#define DCM_ROIObservationDescription            DcmTagKey(0x3006, 0x0088)
+#define DCM_RETIRED_ROIObservationDescription    DcmTagKey(0x3006, 0x0088)
 #define DCM_RelatedRTROIObservationsSequence     DcmTagKey(0x3006, 0x00a0)
 #define DCM_RTROIInterpretedType                 DcmTagKey(0x3006, 0x00a4)
 #define DCM_ROIInterpreter                       DcmTagKey(0x3006, 0x00a6)
@@ -4803,6 +4871,7 @@
 #define DCM_TomotherapeuticControlPointSequence  DcmTagKey(0x3010, 0x0098)
 #define DCM_TomotherapeuticLeafOpenDurations     DcmTagKey(0x3010, 0x0099)
 #define DCM_TomotherapeuticLeafInitialClosedDurations DcmTagKey(0x3010, 0x009a)
+#define DCM_ConceptualVolumeIdentificationSequence DcmTagKey(0x3010, 0x00a0)
 #define DCM_RETIRED_Arbitrary                    DcmTagKey(0x4000, 0x0010)
 #define DCM_RETIRED_TextComments                 DcmTagKey(0x4000, 0x4000)
 #define DCM_RETIRED_ResultsID                    DcmTagKey(0x4008, 0x0040)
@@ -4933,6 +5002,7 @@
 #define DCM_SpectroscopyData                     DcmTagKey(0x5600, 0x0020)
 #define DCM_ExtendedOffsetTable                  DcmTagKey(0x7fe0, 0x0001)
 #define DCM_ExtendedOffsetTableLengths           DcmTagKey(0x7fe0, 0x0002)
+#define DCM_EncapsulatedPixelDataValueTotalLength DcmTagKey(0x7fe0, 0x0003)
 #define DCM_FloatPixelData                       DcmTagKey(0x7fe0, 0x0008)
 #define DCM_DoubleFloatPixelData                 DcmTagKey(0x7fe0, 0x0009)
 #define DCM_PixelData                            DcmTagKey(0x7fe0, 0x0010)

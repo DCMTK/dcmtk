@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2022b and PS 3.7-2022b.
-# File created on 2022-04-11 09:58:24 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2022c and PS 3.7-2022c.
+# File created on 2022-07-25 09:08:29 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -205,6 +205,47 @@
 (0008,030E)	UT	PrivateDataElementDescription	1	DICOM
 (0008,030F)	UT	PrivateDataElementEncoding	1	DICOM
 (0008,0310)	SQ	PrivateDataElementDefinitionSequence	1	DICOM
+(0008,0400)	SQ	ScopeOfInventorySequence	1	DICOM
+(0008,0401)	LT	InventoryPurpose	1	DICOM
+(0008,0402)	LT	InventoryInstanceDescription	1	DICOM
+(0008,0403)	CS	InventoryContentLevel	1	DICOM
+(0008,0404)	DT	ItemInventoryDateTime	1	DICOM
+(0008,0405)	CS	RemovedFromOperationalUse	1	DICOM
+(0008,0406)	SQ	ReasonForRemovalCodeSequence	1	DICOM
+(0008,0407)	UR	StoredInstanceBaseURI	1	DICOM
+(0008,0408)	UR	FolderAccessURI	1	DICOM
+(0008,0409)	UR	FileAccessURI	1	DICOM
+(0008,040A)	CS	ContainerFileType	1	DICOM
+(0008,040B)	UR	FilenameInContainer	1	DICOM
+(0008,040C)	UV	FileOffsetInContainer	1	DICOM
+(0008,040D)	UV	FileLengthInContainer	1	DICOM
+(0008,040E)	UI	StoredInstanceTransferSyntaxUID	1	DICOM
+(0008,040F)	CS	ExtendedMatchingMechanisms	1-n	DICOM
+(0008,0410)	SQ	RangeMatchingSequence	1	DICOM
+(0008,0411)	SQ	UIDListMatchingSequence	1	DICOM
+(0008,0412)	SQ	EmptyValueMatchingSequence	1	DICOM
+(0008,0413)	SQ	GeneralMatchingSequence	1	DICOM
+(0008,0414)	US	RequestedStatusInterval	1	DICOM
+(0008,0415)	CS	RetainInstances	1	DICOM
+(0008,0416)	DT	ExpirationDateTime	1	DICOM
+(0008,0417)	CS	TransactionStatus	1	DICOM
+(0008,0418)	LT	TransactionStatusComment	1	DICOM
+(0008,0419)	SQ	FileSetAccessSequence	1	DICOM
+(0008,041A)	SQ	FileAccessSequence	1	DICOM
+(0008,041B)	OB	RecordKey	1	DICOM
+(0008,041C)	OB	PriorRecordKey	1	DICOM
+(0008,041D)	SQ	MetadataSequence	1	DICOM
+(0008,041E)	SQ	UpdatedMetadataSequence	1	DICOM
+(0008,041F)	DT	StudyUpdateDateTime	1	DICOM
+(0008,0420)	SQ	InventoryAccessEndPointsSequence	1	DICOM
+(0008,0421)	SQ	StudyAccessEndPointsSequence	1	DICOM
+(0008,0422)	SQ	IncorporatedInventoryInstanceSequence	1	DICOM
+(0008,0423)	SQ	InventoriedStudiesSequence	1	DICOM
+(0008,0424)	SQ	InventoriedSeriesSequence	1	DICOM
+(0008,0425)	SQ	InventoriedInstancesSequence	1	DICOM
+(0008,0426)	CS	InventoryCompletionStatus	1	DICOM
+(0008,0427)	UL	NumberOfStudyRecordsInInstance	1	DICOM
+(0008,0428)	UV	TotalNumberOfStudyRecords	1	DICOM
 (0008,1010)	SH	StationName	1	DICOM
 (0008,1030)	LO	StudyDescription	1	DICOM
 (0008,1032)	SQ	ProcedureCodeSequence	1	DICOM
@@ -414,6 +455,14 @@
 (0014,0106)	SQ	MultipleComponentApprovalSequence	1	DICOM/DICONDE
 (0014,0107)	CS	OtherApprovalStatus	1-n	DICOM/DICONDE
 (0014,0108)	CS	OtherSecondaryApprovalStatus	1-n	DICOM/DICONDE
+(0014,0200)	SQ	DataElementLabelSequence	1	DICOM/DICONDE
+(0014,0201)	SQ	DataElementLabelItemSequence	1	DICOM/DICONDE
+(0014,0202)	AT	DataElement	1	DICOM/DICONDE
+(0014,0203)	LO	DataElementName	1	DICOM/DICONDE
+(0014,0204)	LO	DataElementDescription	1	DICOM/DICONDE
+(0014,0205)	CS	DataElementConditionality	1	DICOM/DICONDE
+(0014,0206)	IS	DataElementMinimumCharacters	1	DICOM/DICONDE
+(0014,0207)	IS	DataElementMaximumCharacters	1	DICOM/DICONDE
 (0014,1010)	ST	ActualEnvironmentalConditions	1	DICOM/DICONDE
 (0014,1020)	DA	ExpiryDate	1	DICOM/DICONDE
 (0014,1040)	ST	EnvironmentalConditions	1	DICOM/DICONDE
@@ -2168,6 +2217,24 @@
 (003A,0314)	DT	ImpedanceMeasurementDateTime	1	DICOM
 (003A,0315)	DS	ImpedanceMeasurementFrequency	1	DICOM
 (003A,0316)	CS	ImpedanceMeasurementCurrentType	1	DICOM
+(003A,0317)	CS	WaveformAmplifierType	1	DICOM
+(003A,0318)	SQ	FilterLowFrequencyCharacteristicsSequence	1	DICOM
+(003A,0319)	SQ	FilterHighFrequencyCharacteristicsSequence	1	DICOM
+(003A,0320)	SQ	SummarizedFilterLookupTable	1	DICOM
+(003A,0321)	SQ	NotchFilterCharacteristicsSequence	1	DICOM
+(003A,0322)	CS	WaveformFilterType	1	DICOM
+(003A,0323)	SQ	AnalogFilterCharacteristicsSequence	1	DICOM
+(003A,0324)	DS	AnalogFilterRollOff	1	DICOM
+(003A,0325)	SQ	AnalogFilterType	1	DICOM
+(003A,0326)	SQ	DigitalFilterCharacteristicsSequence	1	DICOM
+(003A,0327)	IS	DigitalFilterOrder	1	DICOM
+(003A,0328)	SQ	DigitalFilterTypeCodeSequence	1	DICOM
+(003A,0329)	ST	WaveformFilterDescription	1	DICOM
+(003A,032A)	SQ	FilterLookupTableSequence	1	DICOM
+(003A,032B)	ST	FilterLookupTableDescription	1	DICOM
+(003A,032C)	SQ	FrequencyEncodingCodeSequence	1	DICOM
+(003A,032D)	SQ	MagnitudeEncodingCodeSequence	1	DICOM
+(003A,032E)	OD	FilterLookupTableData	1	DICOM
 (0040,0001)	AE	ScheduledStationAETitle	1-n	DICOM
 (0040,0002)	DA	ScheduledProcedureStepStartDate	1	DICOM
 (0040,0003)	TM	ScheduledProcedureStepStartTime	1	DICOM
@@ -2960,6 +3027,7 @@
 (0070,0311)	SQ	FiducialIdentifierCodeSequence	1	DICOM
 (0070,0312)	FD	ContourUncertaintyRadius	1	DICOM
 (0070,0314)	SQ	UsedFiducialsSequence	1	DICOM
+(0070,0315)	SQ	UsedRTStructureSetROISequence	1	DICOM
 (0070,0318)	SQ	GraphicCoordinatesDataSequence	1	DICOM
 (0070,031A)	UI	FiducialUID	1	DICOM
 (0070,031B)	UI	ReferencedFiducialUID	1	DICOM
@@ -3517,9 +3585,7 @@
 (3006,0080)	SQ	RTROIObservationsSequence	1	DICOM
 (3006,0082)	IS	ObservationNumber	1	DICOM
 (3006,0084)	IS	ReferencedROINumber	1	DICOM
-(3006,0085)	SH	ROIObservationLabel	1	DICOM
 (3006,0086)	SQ	RTROIIdentificationCodeSequence	1	DICOM
-(3006,0088)	ST	ROIObservationDescription	1	DICOM
 (3006,00A0)	SQ	RelatedRTROIObservationsSequence	1	DICOM
 (3006,00A4)	CS	RTROIInterpretedType	1	DICOM
 (3006,00A6)	PN	ROIInterpreter	1	DICOM
@@ -4432,6 +4498,7 @@
 (3010,0098)	SQ	TomotherapeuticControlPointSequence	1	DICOM
 (3010,0099)	FD	TomotherapeuticLeafOpenDurations	1-n	DICOM
 (3010,009A)	FD	TomotherapeuticLeafInitialClosedDurations	1-n	DICOM
+(3010,00A0)	SQ	ConceptualVolumeIdentificationSequence	1	DICOM
 (4010,0001)	CS	LowEnergyDetectors	1	DICOM/DICOS
 (4010,0002)	CS	HighEnergyDetectors	1	DICOM/DICOS
 (4010,0004)	SQ	DetectorGeometrySequence	1	DICOM/DICOS
@@ -4548,6 +4615,7 @@
 (6000-60FF,3000)	ox	OverlayData	1	DICOM
 (7FE0,0001)	OV	ExtendedOffsetTable	1	DICOM
 (7FE0,0002)	OV	ExtendedOffsetTableLengths	1	DICOM
+(7FE0,0003)	UV	EncapsulatedPixelDataValueTotalLength	1	DICOM
 (7FE0,0008)	OF	FloatPixelData	1	DICOM
 (7FE0,0009)	OD	DoubleFloatPixelData	1	DICOM
 (7FE0,0010)	px	PixelData	1	DICOM
@@ -4940,6 +5008,8 @@
 (3006,0044)	DS	RETIRED_ContourSlabThickness	1	DICOM/retired
 (3006,0045)	DS	RETIRED_ContourOffsetVector	3	DICOM/retired
 (3006,0049)	IS	RETIRED_AttachedContours	1-n	DICOM/retired
+(3006,0085)	SH	RETIRED_ROIObservationLabel	1	DICOM/retired
+(3006,0088)	ST	RETIRED_ROIObservationDescription	1	DICOM/retired
 (3006,00B9)	SQ	RETIRED_AdditionalRTROIIdentificationCodeSequence	1	DICOM/retired
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired

@@ -8,6 +8,7 @@
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
+ *  Last modified on 2022-07-25 by Riesmeier
  *
  */
 
@@ -24,8 +25,8 @@ DRTRTROIObservationsSequence::Item::Item(const OFBool emptyDefaultItem)
     MaterialID(DCM_MaterialID),
     ObservationNumber(DCM_ObservationNumber),
     ROIInterpreter(DCM_ROIInterpreter),
-    ROIObservationDescription(DCM_ROIObservationDescription),
-    ROIObservationLabel(DCM_ROIObservationLabel),
+    ROIObservationDescription(DCM_RETIRED_ROIObservationDescription),
+    ROIObservationLabel(DCM_RETIRED_ROIObservationLabel),
     ROIPhysicalPropertiesSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RTROIIdentificationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RTROIInterpretedType(DCM_RTROIInterpretedType),
