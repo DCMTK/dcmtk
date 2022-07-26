@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:12 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:35 by J. Riesmeier
  *
  */
 

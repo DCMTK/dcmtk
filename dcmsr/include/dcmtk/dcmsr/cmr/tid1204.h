@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1204_LanguageOfContentItemAndDescendants
@@ -49,8 +49,8 @@ class DCMTK_CMR_EXPORT TID1204_LanguageOfContentItemAndDescendants
      *  @param  check     if enabled, check values for validity before setting them
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setLanguage(const CID5000_Languages &language,
-                            const CID5001_Countries &country = CID5001_Countries(),
+    OFCondition setLanguage(const CID5000_Language &language,
+                            const CID5001_Country &country = CID5001_Country(),
                             const OFBool check = OFTrue);
 };
 

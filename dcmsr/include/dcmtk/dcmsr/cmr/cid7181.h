@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
+ *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnit
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:16 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:39 by J. Riesmeier
  *
  */
 
@@ -27,16 +27,16 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 7181 - Abstract Multi-dimensional Image Model Component Units.
+ *  CID 7181 - Abstract Multi-dimensional Image Model Component Unit.
  *  (type: extensible, version: 20180605)
  */
-class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
+class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnit
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of abstract multi-dimensional image model component units
+    /** types of abstract multi-dimensional image model component unit
      */
     enum EnumType
     {
@@ -178,15 +178,15 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID7181_AbstractMultiDimensionalImageModelComponentUnits(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID7181_AbstractMultiDimensionalImageModelComponentUnit(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID7181_AbstractMultiDimensionalImageModelComponentUnits(const EnumType selectedValue,
-                                                             const OFBool enhancedEncodingMode = OFFalse);
+    CID7181_AbstractMultiDimensionalImageModelComponentUnit(const EnumType selectedValue,
+                                                            const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
@@ -280,7 +280,7 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnits
  *-------------------*/
 
 // define short name for the context group class
-typedef CID7181_AbstractMultiDimensionalImageModelComponentUnits CMR_CID7181;
+typedef CID7181_AbstractMultiDimensionalImageModelComponentUnit CMR_CID7181;
 
 
 #endif

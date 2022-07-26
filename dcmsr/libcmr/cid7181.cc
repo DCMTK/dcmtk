@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnits
+ *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnit
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:16 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:39 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7181.h"
 
 
-// general information on CID 7181 (Abstract Multi-dimensional Image Model Component Units)
+// general information on CID 7181 (Abstract Multi-dimensional Image Model Component Unit)
 #define CONTEXT_GROUP_NUMBER  "7181"
 #define CONTEXT_GROUP_VERSION "20180605"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.918"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList *CID7181_AbstractMultiDimensionalImageModelComponentUnits::Codes = NULL;
+CID7181_AbstractMultiDimensionalImageModelComponentUnit::CodeList *CID7181_AbstractMultiDimensionalImageModelComponentUnit::Codes = NULL;
 
 
-CID7181_AbstractMultiDimensionalImageModelComponentUnits::CID7181_AbstractMultiDimensionalImageModelComponentUnits(const DSRCodedEntryValue &selectedValue)
+CID7181_AbstractMultiDimensionalImageModelComponentUnit::CID7181_AbstractMultiDimensionalImageModelComponentUnit(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7181_AbstractMultiDimensionalImageModelComponentUnits::CID7181_AbstractMultiDimensionalImageModelComponentUnits(const EnumType selectedValue,
-                                                                                                                   const OFBool enhancedEncodingMode)
+CID7181_AbstractMultiDimensionalImageModelComponentUnit::CID7181_AbstractMultiDimensionalImageModelComponentUnit(const EnumType selectedValue,
+                                                                                                                 const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnits::selectValue(const EnumType selectedValue,
-                                                                                  const OFBool enhancedEncodingMode)
+OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnit::selectValue(const EnumType selectedValue,
+                                                                                 const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnits::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                                                     DSRCodedEntryValue *foundCodedEntry,
-                                                                                     const OFBool enhancedEncodingMode) const
+OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnit::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                                                    DSRCodedEntryValue *foundCodedEntry,
+                                                                                    const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnits::findCodedE
 }
 
 
-void CID7181_AbstractMultiDimensionalImageModelComponentUnits::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7181_AbstractMultiDimensionalImageModelComponentUnit::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7181_AbstractMultiDimensionalImageModelComponentUnits::printCodes(STD_NA
 
 // static functions
 
-void CID7181_AbstractMultiDimensionalImageModelComponentUnits::initialize()
+void CID7181_AbstractMultiDimensionalImageModelComponentUnit::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7181_AbstractMultiDimensionalImageModelComponentUnits::cleanup()
+void CID7181_AbstractMultiDimensionalImageModelComponentUnit::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7181_AbstractMultiDimensionalImageModelComponentUnits::cleanup()
 }
 
 
-DSRCodedEntryValue CID7181_AbstractMultiDimensionalImageModelComponentUnits::getCodedEntry(const EnumType value,
-                                                                                           const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7181_AbstractMultiDimensionalImageModelComponentUnit::getCodedEntry(const EnumType value,
+                                                                                          const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7181_AbstractMultiDimensionalImageModelComponentUnits::get
 }
 
 
-CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_AbstractMultiDimensionalImageModelComponentUnits::getCodes()
+CID7181_AbstractMultiDimensionalImageModelComponentUnit::CodeList &CID7181_AbstractMultiDimensionalImageModelComponentUnit::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -220,7 +220,7 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnits::CodeList &CID7181_Abst
 }
 
 
-OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnits::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7181_AbstractMultiDimensionalImageModelComponentUnit::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

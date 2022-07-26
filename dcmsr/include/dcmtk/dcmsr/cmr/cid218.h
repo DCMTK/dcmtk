@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID218_QuantitativeImageFeatures
+ *  Header file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-05-24 17:19:49 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:33 by J. Riesmeier
  *
  */
 
@@ -27,16 +27,16 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 218 - Quantitative Image Features.
+ *  CID 218 - Quantitative Image Feature.
  *  (type: extensible, version: 20200920)
  */
-class DCMTK_CMR_EXPORT CID218_QuantitativeImageFeatures
+class DCMTK_CMR_EXPORT CID218_QuantitativeImageFeature
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of quantitative image features
+    /** types of quantitative image feature
      */
     enum EnumType
     {
@@ -718,15 +718,15 @@ class DCMTK_CMR_EXPORT CID218_QuantitativeImageFeatures
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID218_QuantitativeImageFeatures(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID218_QuantitativeImageFeature(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID218_QuantitativeImageFeatures(const EnumType selectedValue,
-                                     const OFBool enhancedEncodingMode = OFFalse);
+    CID218_QuantitativeImageFeature(const EnumType selectedValue,
+                                    const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
@@ -820,7 +820,7 @@ class DCMTK_CMR_EXPORT CID218_QuantitativeImageFeatures
  *-------------------*/
 
 // define short name for the context group class
-typedef CID218_QuantitativeImageFeatures CMR_CID218;
+typedef CID218_QuantitativeImageFeature CMR_CID218;
 
 
 #endif

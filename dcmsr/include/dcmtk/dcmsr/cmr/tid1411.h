@@ -62,10 +62,10 @@ class DCMTK_CMR_EXPORT TID1411_VolumetricROIMeasurements
     typedef CMR_SRNumericMeasurementValueWithUnits<T_Units> MeasurementValue;
 
 
-    typedef TID1419_ROIMeasurements_Measurement<CID218e_QuantitativeImageFeatures,
-                                                CID7181_AbstractMultiDimensionalImageModelComponentUnits,
+    typedef TID1419_ROIMeasurements_Measurement<CID218e_QuantitativeImageFeature,
+                                                CID7181_AbstractMultiDimensionalImageModelComponentUnit,
                                                 CID6147_ResponseCriteria,
-                                                CID7464_GeneralRegionOfInterestMeasurementModifiers>
+                                                CID7464_GeneralRegionOfInterestMeasurementModifier>
             TID1419_Measurement;
 
     /** (default) constructor

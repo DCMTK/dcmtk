@@ -476,7 +476,7 @@ OFCondition TID1419_ROIMeasurements_Measurement<T1, T2, T3, T4>::addOrReplaceCon
 
 
 // explicit template instantiation (needed for use in TID 1411)
-template class TID1419_ROIMeasurements_Measurement<CID218e_QuantitativeImageFeatures,
-                                                   CID7181_AbstractMultiDimensionalImageModelComponentUnits,
+template class TID1419_ROIMeasurements_Measurement<CID218e_QuantitativeImageFeature,
+                                                   CID7181_AbstractMultiDimensionalImageModelComponentUnit,
                                                    CID6147_ResponseCriteria,
-                                                   CID7464_GeneralRegionOfInterestMeasurementModifiers>;
+                                                   CID7464_GeneralRegionOfInterestMeasurementModifier>;

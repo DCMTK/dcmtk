@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1600_ImageLibrary
@@ -553,7 +553,7 @@ OFCondition TID1600_ImageLibrary::addImageEntryDescriptors(DSRDocumentSubTree &t
             if (getStringValueFromDataset(dataset, DCM_BodyPartExamined, bodyPartExamined).good() && !bodyPartExamined.empty())
             {
                 /* alternatively, determine target region code from CID 4031 (using PS 3.16 Annex L) */
-                if (CID4031e_CommonAnatomicRegions::mapBodyPartExamined(bodyPartExamined, regionCode).bad())
+                if (CID4031e_CommonAnatomicRegion::mapBodyPartExamined(bodyPartExamined, regionCode).bad())
                 {
                     /* report this as a debug message (avoid too many warnings) */
                     DCMSR_CMR_DEBUG("Cannot map Body Part Examined '" << bodyPartExamined << "' to a coded entry (no mapping to CID 4031 defined)");

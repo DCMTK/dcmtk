@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID5001_Countries
+ *  Source file for class CID5001_Country
  *
  *  Author: Joerg Riesmeier
  *
@@ -15,42 +15,42 @@
 #include "dcmtk/dcmsr/cmr/cid5001.h"
 
 
-// general information on CID 5001 (Countries)
+// general information on CID 5001 (Country)
 #define CONTEXT_GROUP_NUMBER  "5001"
 #define CONTEXT_GROUP_VERSION ""      /* unknown */
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.329"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
 
 // initialize global/static variable
-CID5001_Countries::CodeList *CID5001_Countries::Codes = NULL;
+CID5001_Country::CodeList *CID5001_Country::Codes = NULL;
 
 
-CID5001_Countries::CID5001_Countries(const DSRCodedEntryValue &selectedValue)
+CID5001_Country::CID5001_Country(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID5001_Countries::CID5001_Countries(const EnumType selectedValue,
-                                     const OFBool enhancedEncodingMode)
+CID5001_Country::CID5001_Country(const EnumType selectedValue,
+                                 const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID5001_Countries::selectValue(const EnumType selectedValue,
-                                           const OFBool enhancedEncodingMode)
+OFCondition CID5001_Country::selectValue(const EnumType selectedValue,
+                                         const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                              DSRCodedEntryValue *foundCodedEntry,
-                                              const OFBool enhancedEncodingMode) const
+OFCondition CID5001_Country::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                            DSRCodedEntryValue *foundCodedEntry,
+                                            const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -85,7 +85,7 @@ OFCondition CID5001_Countries::findCodedEntry(const DSRCodedEntryValue &searchFo
 }
 
 
-void CID5001_Countries::printCodes(STD_NAMESPACE ostream &stream) const
+void CID5001_Country::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -107,14 +107,14 @@ void CID5001_Countries::printCodes(STD_NAMESPACE ostream &stream) const
 
 // static functions
 
-void CID5001_Countries::initialize()
+void CID5001_Country::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID5001_Countries::cleanup()
+void CID5001_Country::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -122,7 +122,7 @@ void CID5001_Countries::cleanup()
 }
 
 
-DSRCodedEntryValue CID5001_Countries::getCodedEntry(const EnumType value,
+DSRCodedEntryValue CID5001_Country::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
@@ -140,7 +140,7 @@ DSRCodedEntryValue CID5001_Countries::getCodedEntry(const EnumType value,
 }
 
 
-CID5001_Countries::CodeList &CID5001_Countries::getCodes()
+CID5001_Country::CodeList &CID5001_Country::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -161,7 +161,7 @@ CID5001_Countries::CodeList &CID5001_Countries::getCodes()
 }
 
 
-OFCondition CID5001_Countries::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID5001_Country::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

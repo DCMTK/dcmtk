@@ -144,7 +144,7 @@
       <element tag="0008,0104" vr="LO" vm="1" name="CodeMeaning">Fluorescein</element>
       <element tag="0018,9337" vr="US" vm="1" name="ContrastBolusAgentNumber">1</element>
       <sequence tag="0018,0014" vr="SQ" name="ContrastBolusAdministrationRouteSequence">
-        <item> <!-- values to be taken from CID 11 "Route of Administration" -->
+        <item> <!-- values to be taken from CID 11 "Administration Route" -->
           <element tag="0008,0100" vr="SH" vm="1" name="CodeValue">47625008</element>
           <element tag="0008,0102" vr="SH" vm="1" name="CodingSchemeDesignator">SCT</element>
           <element tag="0008,0104" vr="LO" vm="1" name="CodeMeaning">Intravenous route</element>
@@ -231,7 +231,7 @@
       </sequence>
       <element tag="0022,004E" vr="DS" vm="1" name="MydriaticAgentConcentration">0.01</element>
       <sequence tag="0022,0042" vr="SQ" name="MydriaticAgentConcentrationUnitsSequence">
-        <item> <!-- values to be taken from CID 82 "Units of Measurement", i.e. UCUM -->
+        <item> <!-- values to be taken from CID 82 "Measurement Unit", i.e. UCUM -->
           <element tag="0008,0100" vr="SH" vm="1" name="CodeValue">%</element>
           <element tag="0008,0102" vr="SH" vm="1" name="CodingSchemeDesignator">UCUM</element>
           <element tag="0008,0104" vr="LO" vm="1" name="CodeMeaning">Percent</element>

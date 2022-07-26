@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID7445_DeviceParticipatingRoles
+ *  Header file for class CID7445_DeviceParticipatingRole
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:16 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:40 by J. Riesmeier
  *
  */
 
@@ -27,16 +27,16 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 7445 - Device Participating Roles.
+ *  CID 7445 - Device Participating Role.
  *  (type: extensible, version: 20120406)
  */
-class DCMTK_CMR_EXPORT CID7445_DeviceParticipatingRoles
+class DCMTK_CMR_EXPORT CID7445_DeviceParticipatingRole
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of device participating roles
+    /** types of device participating role
      */
     enum EnumType
     {
@@ -54,15 +54,15 @@ class DCMTK_CMR_EXPORT CID7445_DeviceParticipatingRoles
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID7445_DeviceParticipatingRoles(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID7445_DeviceParticipatingRole(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID7445_DeviceParticipatingRoles(const EnumType selectedValue,
-                                     const OFBool enhancedEncodingMode = OFFalse);
+    CID7445_DeviceParticipatingRole(const EnumType selectedValue,
+                                    const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
@@ -156,7 +156,7 @@ class DCMTK_CMR_EXPORT CID7445_DeviceParticipatingRoles
  *-------------------*/
 
 // define short name for the context group class
-typedef CID7445_DeviceParticipatingRoles CMR_CID7445;
+typedef CID7445_DeviceParticipatingRole CMR_CID7445;
 
 
 #endif

@@ -62,11 +62,11 @@ class DCMTK_CMR_EXPORT TID1501_MeasurementGroup
     // type definitions
     typedef CMR_SRNumericMeasurementValueWithUnits<T_Units> MeasurementValue;
 
-    typedef ::TID300_Measurement<CID218e_QuantitativeImageFeatures,
-                                 CID7181_AbstractMultiDimensionalImageModelComponentUnits,
+    typedef ::TID300_Measurement<CID218e_QuantitativeImageFeature,
+                                 CID7181_AbstractMultiDimensionalImageModelComponentUnit,
                                  CID6147_ResponseCriteria,
-                                 CID7464_GeneralRegionOfInterestMeasurementModifiers,
-                                 CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements>
+                                 CID7464_GeneralRegionOfInterestMeasurementModifier,
+                                 CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement>
             TID300_Measurement;
 
     /** (default) constructor

@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID5001_Countries
+ *  Header file for class CID5001_Country
  *
  *  Author: Joerg Riesmeier
  *
@@ -26,9 +26,9 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 5001 - Countries.
+ *  CID 5001 - Country.
  */
-class DCMTK_CMR_EXPORT CID5001_Countries
+class DCMTK_CMR_EXPORT CID5001_Country
   : public DSRContextGroup
 {
 
@@ -60,15 +60,15 @@ class DCMTK_CMR_EXPORT CID5001_Countries
      *                         Should be a valid code according to the DICOM definitions
      *                         for this context group, i.e. should be based on ISO 3166.
      */
-    CID5001_Countries(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID5001_Country(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         country mapped to a coded entry that is selected as the
      *                                current value
      *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID5001_Countries(const EnumType selectedValue,
-                      const OFBool enhancedEncodingMode = OFFalse);
+    CID5001_Country(const EnumType selectedValue,
+                    const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         country mapped to a coded entry that is selected as

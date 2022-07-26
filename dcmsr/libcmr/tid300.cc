@@ -549,8 +549,8 @@ OFCondition TID300_Measurement<T1, T2, T3, T4, T5>::addOrReplaceContentItem(cons
 
 
 // explicit template instantiation (needed for use in TID 1501)
-template class TID300_Measurement<CID218e_QuantitativeImageFeatures,
-                                  CID7181_AbstractMultiDimensionalImageModelComponentUnits,
+template class TID300_Measurement<CID218e_QuantitativeImageFeature,
+                                  CID7181_AbstractMultiDimensionalImageModelComponentUnit,
                                   CID6147_ResponseCriteria,
-                                  CID7464_GeneralRegionOfInterestMeasurementModifiers,
-                                  CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements>;
+                                  CID7464_GeneralRegionOfInterestMeasurementModifier,
+                                  CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement>;

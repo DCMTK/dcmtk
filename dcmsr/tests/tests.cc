@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2021, OFFIS e.V.
+ *  Copyright (C) 2012-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -90,8 +90,8 @@ OFTEST_REGISTER(dcmsr_setAndGetRationalRepresentation);
 OFTEST_REGISTER(dcmsr_CID29e_AcquisitionModality);
 OFTEST_REGISTER(dcmsr_CID42_NumericValueQualifier);
 OFTEST_REGISTER(dcmsr_CID244e_Laterality);
-OFTEST_REGISTER(dcmsr_CID4031e_CommonAnatomicRegions);
-OFTEST_REGISTER(dcmsr_CID7445_DeviceParticipatingRoles);
+OFTEST_REGISTER(dcmsr_CID4031e_CommonAnatomicRegion);
+OFTEST_REGISTER(dcmsr_CID7445_DeviceParticipatingRole);
 OFTEST_REGISTER(dcmsr_CID10013e_CTAcquisitionType);
 OFTEST_REGISTER(dcmsr_CID10033e_CTReconstructionAlgorithm);
 OFTEST_REGISTER(dcmsr_TID1001_ObservationContext);

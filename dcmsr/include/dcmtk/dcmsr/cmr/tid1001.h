@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1001_ObservationContext
@@ -39,7 +39,7 @@ class DCMTK_CMR_EXPORT TID1001_ObservationContext
   public:
 
     /// type used for storing and managing a list of device participating roles
-    typedef OFList<CID7445_DeviceParticipatingRoles> DeviceParticipatingRolesList;
+    typedef OFList<CID7445_DeviceParticipatingRole> DeviceParticipatingRolesList;
 
     /** default constructor
      */
@@ -62,8 +62,8 @@ class DCMTK_CMR_EXPORT TID1001_ObservationContext
      */
     OFCondition addPersonObserver(const OFString &personName,
                                   const OFString &organizationName = "",
-                                  const CID7452_OrganizationalRoles &organizationRole = CID7452_OrganizationalRoles(),
-                                  const CID7453_PerformingRoles &procedureRole = CID7453_PerformingRoles(),
+                                  const CID7452_OrganizationalRole &organizationRole = CID7452_OrganizationalRole(),
+                                  const CID7453_PerformingRole &procedureRole = CID7453_PerformingRole(),
                                   const OFBool check = OFTrue);
 
     /** add content items for TID 1002 (Observer Context) with Observer Type being "Device".

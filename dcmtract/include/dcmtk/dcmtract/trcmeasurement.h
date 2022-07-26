@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -118,7 +118,7 @@ public:
    *  @param  measurementCode Code describing what is measured. Code must be
    *          taken from CID 7263 "Diffusion Tractography Measurement Types"
    *  @param  measurementUnitCodes Code describing the physical unit measured.
-   *          Code must taken from CID 82 "Units of Measurement" (based on UCUM)
+   *          Code must taken from CID 82 "Measurement Unit" (based on UCUM)
    *  @param  measurement The measurement, if it could be created, NULL otherwise
    *  @return EC_Normal if measurement could be created, error otherwise
    */

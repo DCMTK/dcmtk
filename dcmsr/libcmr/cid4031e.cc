@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015-2020, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID4031e_CommonAnatomicRegions
+ *  Source file for class CID4031e_CommonAnatomicRegion
  *
  *  Author: Joerg Riesmeier
  *
@@ -22,7 +22,7 @@
 struct DefinedTermTypeMapStruct
 {
     const char *DefinedTerm;
-    CID4031_CommonAnatomicRegions::EnumType Type;
+    CID4031_CommonAnatomicRegion::EnumType Type;
 };
 
 
@@ -34,97 +34,97 @@ struct DefinedTermTypeMapStruct
 
 static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
 {
-    {"ABDOMEN",          CID4031_CommonAnatomicRegions::Abdomen},
-    {"ABDOMENPELVIS",    CID4031_CommonAnatomicRegions::AbdomenAndPelvis},
-    {"ACJOINT",          CID4031_CommonAnatomicRegions::AcromioclavicularJoint},
-    {"ANKLE",            CID4031_CommonAnatomicRegions::AnkleJoint},
-    {"BILEDUCT",         CID4031_CommonAnatomicRegions::BileDuct},
-    {"BLADDER",          CID4031_CommonAnatomicRegions::Bladder},
-    {"BREAST",           CID4031_CommonAnatomicRegions::Breast},
-    {"BRONCHUS",         CID4031_CommonAnatomicRegions::Bronchus},
-    {"CALCANEUS",        CID4031_CommonAnatomicRegions::Calcaneus},
-    {"CSPINE",           CID4031_CommonAnatomicRegions::CervicalSpine},
-    {"CTSPINE",          CID4031_CommonAnatomicRegions::CervicoThoracicSpine},
-    {"CHEST",            CID4031_CommonAnatomicRegions::Chest},
-    {"CHESTABDOMEN",     CID4031_CommonAnatomicRegions::ChestAndAbdomen},
-    {"CHESTABDPELVIS",   CID4031_CommonAnatomicRegions::ChestAbdomenAndPelvis},
-    {"CLAVICLE",         CID4031_CommonAnatomicRegions::Clavicle},
-    {"COCCYX",           CID4031_CommonAnatomicRegions::Coccyx},
-    {"COMMONBILEDUCT",   CID4031_CommonAnatomicRegions::CommonBileDuct},
-    {"COLON",            CID4031_CommonAnatomicRegions::Colon},
-    {"DUODENUM",         CID4031_CommonAnatomicRegions::Duodenum},
-    {"ELBOW",            CID4031_CommonAnatomicRegions::ElbowJoint},
-    {"WHOLEBODY",        CID4031_CommonAnatomicRegions::EntireBody},
-    {"ESOPHAGUS",        CID4031_CommonAnatomicRegions::Esophagus},
-    {"EXTREMITY",        CID4031_CommonAnatomicRegions::Extremity},
-    {"EYE",              CID4031_CommonAnatomicRegions::Eye},
-    {"FEMUR",            CID4031_CommonAnatomicRegions::Femur},
-    {"FIBULA",           CID4031_CommonAnatomicRegions::Fibula},
-    {"FINGER",           CID4031_CommonAnatomicRegions::Finger},
-    {"FOOT",             CID4031_CommonAnatomicRegions::Foot},
-    {"FOREARM",          CID4031_CommonAnatomicRegions::Forearm},
-    {"GALLBLADDER",      CID4031_CommonAnatomicRegions::Gallbladder},
-    {"HAND",             CID4031_CommonAnatomicRegions::Hand},
-    {"HEAD",             CID4031_CommonAnatomicRegions::Head},
-    {"HEADNECK",         CID4031_CommonAnatomicRegions::HeadAndNeck},
-    {"HEART",            CID4031_CommonAnatomicRegions::Heart},
-    {"HIP",              CID4031_CommonAnatomicRegions::HipJoint},
-    {"HUMERUS",          CID4031_CommonAnatomicRegions::Humerus},
-    {"ILEUM",            CID4031_CommonAnatomicRegions::Ileum},
-    {"ILIUM",            CID4031_CommonAnatomicRegions::Ilium},
-    {"IAC",              CID4031_CommonAnatomicRegions::InternalAuditoryCanal},
-    {"JAW",              CID4031_CommonAnatomicRegions::JawRegion},
-    {"JEJUNUM",          CID4031_CommonAnatomicRegions::Jejunum},
-    {"KNEE",             CID4031_CommonAnatomicRegions::Knee},
-    {"LARGEINTESTINE",   CID4031_CommonAnatomicRegions::LargeIntestine},
-    {"LARYNX",           CID4031_CommonAnatomicRegions::Larynx},
-    {"LEG",              CID4031_CommonAnatomicRegions::LowerLeg},
-    {"LSPINE",           CID4031_CommonAnatomicRegions::LumbarSpine},
-    {"LSSPINE",          CID4031_CommonAnatomicRegions::LumboSacralSpine},
-    {"JAW",              CID4031_CommonAnatomicRegions::Mandible},              // same Defined Term as for (T-D1213,SRT,"Jaw region")
-    {"MASTOID",          CID4031_CommonAnatomicRegions::MastoidBone},
-    {"MAXILLA",          CID4031_CommonAnatomicRegions::Maxilla},
-    {"MEDIASTINUM",      CID4031_CommonAnatomicRegions::Mediastinum},
-    {"NECK",             CID4031_CommonAnatomicRegions::Neck},
-    {"NECKCHEST",        CID4031_CommonAnatomicRegions::NeckAndChest},
-    {"NECKCHESTABDOMEN", CID4031_CommonAnatomicRegions::NeckChestAndAbdomen},
-    {"NECKCHESTABDPELV", CID4031_CommonAnatomicRegions::NeckChestAbdomenAndPelvis},
-    {"OPTICCANAL",       CID4031_CommonAnatomicRegions::OpticCanal},
-    {"ORBIT",            CID4031_CommonAnatomicRegions::OrbitalStructure},
-    {"PANCREAS",         CID4031_CommonAnatomicRegions::Pancreas},
-    {"PANCREATICDUCT",   CID4031_CommonAnatomicRegions::PancreaticDuct},
-    {"PAROTID",          CID4031_CommonAnatomicRegions::ParotidGland},
-    {"PATELLA",          CID4031_CommonAnatomicRegions::Patella},
-    {"PELVIS",           CID4031_CommonAnatomicRegions::Pelvis},
-    {"PROSTATE",         CID4031_CommonAnatomicRegions::Prostate},
-    {"RECTUM",           CID4031_CommonAnatomicRegions::Rectum},
-    {"RIB",              CID4031_CommonAnatomicRegions::Rib},
-    {"SIJOINT",          CID4031_CommonAnatomicRegions::SacroiliacJoint},
-    {"SSPINE",           CID4031_CommonAnatomicRegions::Sacrum},
-    {"SCAPULA",          CID4031_CommonAnatomicRegions::Scapula},
-    {"SELLA",            CID4031_CommonAnatomicRegions::SellaTurcica},
-    {"SESAMOID",         CID4031_CommonAnatomicRegions::SesamoidBonesOfFoot},
-    {"SHOULDER",         CID4031_CommonAnatomicRegions::Shoulder},
-    {"SKULL",            CID4031_CommonAnatomicRegions::Skull},
-    {"SMALLINTESTINE",   CID4031_CommonAnatomicRegions::SmallIntestine},
-    {"SPINE",            CID4031_CommonAnatomicRegions::Spine},
-    {"SCJOINT",          CID4031_CommonAnatomicRegions::SternoclavicularJoint},
-    {"STERNUM",          CID4031_CommonAnatomicRegions::Sternum},
-    {"STOMACH",          CID4031_CommonAnatomicRegions::Stomach},
-    {"SUBMANDIBULAR",    CID4031_CommonAnatomicRegions::SubmandibularGland},
-    {"TMJ",              CID4031_CommonAnatomicRegions::TemporomandibularJoint},
-    {"THIGH",            CID4031_CommonAnatomicRegions::Thigh},
-    {"TSPINE",           CID4031_CommonAnatomicRegions::ThoracicSpine},
-    {"TLSPINE",          CID4031_CommonAnatomicRegions::ThoracoLumbarSpine},
-    {"THUMB",            CID4031_CommonAnatomicRegions::Thumb},
-    {"TOE",              CID4031_CommonAnatomicRegions::Toe},
-    {"TRACHEA",          CID4031_CommonAnatomicRegions::Trachea},
-    {"ARM",              CID4031_CommonAnatomicRegions::UpperArm},
-    {"UPRURINARYTRACT",  CID4031_CommonAnatomicRegions::UpperUrinaryTract},
-    {"URETER",           CID4031_CommonAnatomicRegions::Ureter},
-    {"URETHRA",          CID4031_CommonAnatomicRegions::Urethra},
-    {"WRIST",            CID4031_CommonAnatomicRegions::WristJoint},
-    {"ZYGOMA",           CID4031_CommonAnatomicRegions::Zygoma}
+    {"ABDOMEN",          CID4031_CommonAnatomicRegion::Abdomen},
+    {"ABDOMENPELVIS",    CID4031_CommonAnatomicRegion::AbdomenAndPelvis},
+    {"ACJOINT",          CID4031_CommonAnatomicRegion::AcromioclavicularJoint},
+    {"ANKLE",            CID4031_CommonAnatomicRegion::AnkleJoint},
+    {"BILEDUCT",         CID4031_CommonAnatomicRegion::BileDuct},
+    {"BLADDER",          CID4031_CommonAnatomicRegion::Bladder},
+    {"BREAST",           CID4031_CommonAnatomicRegion::Breast},
+    {"BRONCHUS",         CID4031_CommonAnatomicRegion::Bronchus},
+    {"CALCANEUS",        CID4031_CommonAnatomicRegion::Calcaneus},
+    {"CSPINE",           CID4031_CommonAnatomicRegion::CervicalSpine},
+    {"CTSPINE",          CID4031_CommonAnatomicRegion::CervicoThoracicSpine},
+    {"CHEST",            CID4031_CommonAnatomicRegion::Chest},
+    {"CHESTABDOMEN",     CID4031_CommonAnatomicRegion::ChestAndAbdomen},
+    {"CHESTABDPELVIS",   CID4031_CommonAnatomicRegion::ChestAbdomenAndPelvis},
+    {"CLAVICLE",         CID4031_CommonAnatomicRegion::Clavicle},
+    {"COCCYX",           CID4031_CommonAnatomicRegion::Coccyx},
+    {"COMMONBILEDUCT",   CID4031_CommonAnatomicRegion::CommonBileDuct},
+    {"COLON",            CID4031_CommonAnatomicRegion::Colon},
+    {"DUODENUM",         CID4031_CommonAnatomicRegion::Duodenum},
+    {"ELBOW",            CID4031_CommonAnatomicRegion::ElbowJoint},
+    {"WHOLEBODY",        CID4031_CommonAnatomicRegion::EntireBody},
+    {"ESOPHAGUS",        CID4031_CommonAnatomicRegion::Esophagus},
+    {"EXTREMITY",        CID4031_CommonAnatomicRegion::Extremity},
+    {"EYE",              CID4031_CommonAnatomicRegion::Eye},
+    {"FEMUR",            CID4031_CommonAnatomicRegion::Femur},
+    {"FIBULA",           CID4031_CommonAnatomicRegion::Fibula},
+    {"FINGER",           CID4031_CommonAnatomicRegion::Finger},
+    {"FOOT",             CID4031_CommonAnatomicRegion::Foot},
+    {"FOREARM",          CID4031_CommonAnatomicRegion::Forearm},
+    {"GALLBLADDER",      CID4031_CommonAnatomicRegion::Gallbladder},
+    {"HAND",             CID4031_CommonAnatomicRegion::Hand},
+    {"HEAD",             CID4031_CommonAnatomicRegion::Head},
+    {"HEADNECK",         CID4031_CommonAnatomicRegion::HeadAndNeck},
+    {"HEART",            CID4031_CommonAnatomicRegion::Heart},
+    {"HIP",              CID4031_CommonAnatomicRegion::HipJoint},
+    {"HUMERUS",          CID4031_CommonAnatomicRegion::Humerus},
+    {"ILEUM",            CID4031_CommonAnatomicRegion::Ileum},
+    {"ILIUM",            CID4031_CommonAnatomicRegion::Ilium},
+    {"IAC",              CID4031_CommonAnatomicRegion::InternalAuditoryCanal},
+    {"JAW",              CID4031_CommonAnatomicRegion::JawRegion},
+    {"JEJUNUM",          CID4031_CommonAnatomicRegion::Jejunum},
+    {"KNEE",             CID4031_CommonAnatomicRegion::Knee},
+    {"LARGEINTESTINE",   CID4031_CommonAnatomicRegion::LargeIntestine},
+    {"LARYNX",           CID4031_CommonAnatomicRegion::Larynx},
+    {"LEG",              CID4031_CommonAnatomicRegion::LowerLeg},
+    {"LSPINE",           CID4031_CommonAnatomicRegion::LumbarSpine},
+    {"LSSPINE",          CID4031_CommonAnatomicRegion::LumboSacralSpine},
+    {"JAW",              CID4031_CommonAnatomicRegion::Mandible},              // same Defined Term as for (T-D1213,SRT,"Jaw region")
+    {"MASTOID",          CID4031_CommonAnatomicRegion::MastoidBone},
+    {"MAXILLA",          CID4031_CommonAnatomicRegion::Maxilla},
+    {"MEDIASTINUM",      CID4031_CommonAnatomicRegion::Mediastinum},
+    {"NECK",             CID4031_CommonAnatomicRegion::Neck},
+    {"NECKCHEST",        CID4031_CommonAnatomicRegion::NeckAndChest},
+    {"NECKCHESTABDOMEN", CID4031_CommonAnatomicRegion::NeckChestAndAbdomen},
+    {"NECKCHESTABDPELV", CID4031_CommonAnatomicRegion::NeckChestAbdomenAndPelvis},
+    {"OPTICCANAL",       CID4031_CommonAnatomicRegion::OpticCanal},
+    {"ORBIT",            CID4031_CommonAnatomicRegion::OrbitalStructure},
+    {"PANCREAS",         CID4031_CommonAnatomicRegion::Pancreas},
+    {"PANCREATICDUCT",   CID4031_CommonAnatomicRegion::PancreaticDuct},
+    {"PAROTID",          CID4031_CommonAnatomicRegion::ParotidGland},
+    {"PATELLA",          CID4031_CommonAnatomicRegion::Patella},
+    {"PELVIS",           CID4031_CommonAnatomicRegion::Pelvis},
+    {"PROSTATE",         CID4031_CommonAnatomicRegion::Prostate},
+    {"RECTUM",           CID4031_CommonAnatomicRegion::Rectum},
+    {"RIB",              CID4031_CommonAnatomicRegion::Rib},
+    {"SIJOINT",          CID4031_CommonAnatomicRegion::SacroiliacJoint},
+    {"SSPINE",           CID4031_CommonAnatomicRegion::Sacrum},
+    {"SCAPULA",          CID4031_CommonAnatomicRegion::Scapula},
+    {"SELLA",            CID4031_CommonAnatomicRegion::SellaTurcica},
+    {"SESAMOID",         CID4031_CommonAnatomicRegion::SesamoidBonesOfFoot},
+    {"SHOULDER",         CID4031_CommonAnatomicRegion::Shoulder},
+    {"SKULL",            CID4031_CommonAnatomicRegion::Skull},
+    {"SMALLINTESTINE",   CID4031_CommonAnatomicRegion::SmallIntestine},
+    {"SPINE",            CID4031_CommonAnatomicRegion::Spine},
+    {"SCJOINT",          CID4031_CommonAnatomicRegion::SternoclavicularJoint},
+    {"STERNUM",          CID4031_CommonAnatomicRegion::Sternum},
+    {"STOMACH",          CID4031_CommonAnatomicRegion::Stomach},
+    {"SUBMANDIBULAR",    CID4031_CommonAnatomicRegion::SubmandibularGland},
+    {"TMJ",              CID4031_CommonAnatomicRegion::TemporomandibularJoint},
+    {"THIGH",            CID4031_CommonAnatomicRegion::Thigh},
+    {"TSPINE",           CID4031_CommonAnatomicRegion::ThoracicSpine},
+    {"TLSPINE",          CID4031_CommonAnatomicRegion::ThoracoLumbarSpine},
+    {"THUMB",            CID4031_CommonAnatomicRegion::Thumb},
+    {"TOE",              CID4031_CommonAnatomicRegion::Toe},
+    {"TRACHEA",          CID4031_CommonAnatomicRegion::Trachea},
+    {"ARM",              CID4031_CommonAnatomicRegion::UpperArm},
+    {"UPRURINARYTRACT",  CID4031_CommonAnatomicRegion::UpperUrinaryTract},
+    {"URETER",           CID4031_CommonAnatomicRegion::Ureter},
+    {"URETHRA",          CID4031_CommonAnatomicRegion::Urethra},
+    {"WRIST",            CID4031_CommonAnatomicRegion::WristJoint},
+    {"ZYGOMA",           CID4031_CommonAnatomicRegion::Zygoma}
 };
 
 static const size_t NumberOfDefinedTerms = sizeof(DefinedTermTypeMap) / sizeof(DefinedTermTypeMapStruct);
@@ -134,28 +134,28 @@ static const size_t NumberOfDefinedTerms = sizeof(DefinedTermTypeMap) / sizeof(D
  *  implementation  *
  *------------------*/
 
-CID4031e_CommonAnatomicRegions::CID4031e_CommonAnatomicRegions(const DSRCodedEntryValue &selectedValue)
-  : CID4031_CommonAnatomicRegions(selectedValue)
+CID4031e_CommonAnatomicRegion::CID4031e_CommonAnatomicRegion(const DSRCodedEntryValue &selectedValue)
+  : CID4031_CommonAnatomicRegion(selectedValue)
 {
 }
 
 
-CID4031e_CommonAnatomicRegions::CID4031e_CommonAnatomicRegions(const EnumType selectedValue,
-                                                               const OFBool enhancedEncodingMode)
-  : CID4031_CommonAnatomicRegions(selectedValue, enhancedEncodingMode)
+CID4031e_CommonAnatomicRegion::CID4031e_CommonAnatomicRegion(const EnumType selectedValue,
+                                                             const OFBool enhancedEncodingMode)
+  : CID4031_CommonAnatomicRegion(selectedValue, enhancedEncodingMode)
 {
 }
 
 
-CID4031e_CommonAnatomicRegions::CID4031e_CommonAnatomicRegions(const OFString &selectedValue,
-                                                               const OFBool enhancedEncodingMode)
-  : CID4031_CommonAnatomicRegions(mapBodyPartExamined(selectedValue, enhancedEncodingMode))
+CID4031e_CommonAnatomicRegion::CID4031e_CommonAnatomicRegion(const OFString &selectedValue,
+                                                             const OFBool enhancedEncodingMode)
+  : CID4031_CommonAnatomicRegion(mapBodyPartExamined(selectedValue, enhancedEncodingMode))
 {
 }
 
 
-OFCondition CID4031e_CommonAnatomicRegions::selectValue(const OFString &selectedValue,
-                                                        const OFBool enhancedEncodingMode)
+OFCondition CID4031e_CommonAnatomicRegion::selectValue(const OFString &selectedValue,
+                                                       const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* map defined term to coded entry */
@@ -171,8 +171,8 @@ OFCondition CID4031e_CommonAnatomicRegions::selectValue(const OFString &selected
 
 // static functions
 
-DSRCodedEntryValue CID4031e_CommonAnatomicRegions::mapBodyPartExamined(const OFString &definedTerm,
-                                                                       const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID4031e_CommonAnatomicRegion::mapBodyPartExamined(const OFString &definedTerm,
+                                                                      const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* call the real function (no need to check the returned status) */
@@ -182,9 +182,9 @@ DSRCodedEntryValue CID4031e_CommonAnatomicRegions::mapBodyPartExamined(const OFS
 }
 
 
-OFCondition CID4031e_CommonAnatomicRegions::mapBodyPartExamined(const OFString &definedTerm,
-                                                                DSRCodedEntryValue &codedEntryValue,
-                                                                const OFBool enhancedEncodingMode)
+OFCondition CID4031e_CommonAnatomicRegion::mapBodyPartExamined(const OFString &definedTerm,
+                                                               DSRCodedEntryValue &codedEntryValue,
+                                                               const OFBool enhancedEncodingMode)
 {
     OFCondition result = SR_EC_UnsupportedValue;
     /* determine region code from CID 4031 (based on the mapping in PS 3.16 Annex L) */

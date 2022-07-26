@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID5000_Languages
+ *  Source file for class CID5000_Language
  *
  *  Author: Joerg Riesmeier
  *
@@ -15,42 +15,42 @@
 #include "dcmtk/dcmsr/cmr/cid5000.h"
 
 
-// general information on CID 5000 (Languages)
+// general information on CID 5000 (Language)
 #define CONTEXT_GROUP_NUMBER  "5000"
 #define CONTEXT_GROUP_VERSION ""      /* unknown */
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.328"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
 
 // initialize global/static variable
-CID5000_Languages::CodeList *CID5000_Languages::Codes = NULL;
+CID5000_Language::CodeList *CID5000_Language::Codes = NULL;
 
 
-CID5000_Languages::CID5000_Languages(const DSRCodedEntryValue &selectedValue)
+CID5000_Language::CID5000_Language(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID5000_Languages::CID5000_Languages(const EnumType selectedValue,
-                                     const OFBool enhancedEncodingMode)
+CID5000_Language::CID5000_Language(const EnumType selectedValue,
+                                  const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID5000_Languages::selectValue(const EnumType selectedValue,
-                                           const OFBool enhancedEncodingMode)
+OFCondition CID5000_Language::selectValue(const EnumType selectedValue,
+                                          const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID5000_Languages::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                              DSRCodedEntryValue *foundCodedEntry,
-                                              const OFBool enhancedEncodingMode) const
+OFCondition CID5000_Language::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                             DSRCodedEntryValue *foundCodedEntry,
+                                             const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -85,7 +85,7 @@ OFCondition CID5000_Languages::findCodedEntry(const DSRCodedEntryValue &searchFo
 }
 
 
-void CID5000_Languages::printCodes(STD_NAMESPACE ostream &stream) const
+void CID5000_Language::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -107,14 +107,14 @@ void CID5000_Languages::printCodes(STD_NAMESPACE ostream &stream) const
 
 // static functions
 
-void CID5000_Languages::initialize()
+void CID5000_Language::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID5000_Languages::cleanup()
+void CID5000_Language::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -122,7 +122,7 @@ void CID5000_Languages::cleanup()
 }
 
 
-DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
+DSRCodedEntryValue CID5000_Language::getCodedEntry(const EnumType value,
                                                     const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
@@ -140,7 +140,7 @@ DSRCodedEntryValue CID5000_Languages::getCodedEntry(const EnumType value,
 }
 
 
-CID5000_Languages::CodeList &CID5000_Languages::getCodes()
+CID5000_Language::CodeList &CID5000_Language::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -166,7 +166,7 @@ CID5000_Languages::CodeList &CID5000_Languages::getCodes()
 }
 
 
-OFCondition CID5000_Languages::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID5000_Language::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

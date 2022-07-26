@@ -735,7 +735,7 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::addOrReplaceConte
 
 
 // explicit template instantiation (needed for use in TID 1500)
-template class TID1411_VolumetricROIMeasurements<CID218e_QuantitativeImageFeatures,
-                                                 CID7181_AbstractMultiDimensionalImageModelComponentUnits,
+template class TID1411_VolumetricROIMeasurements<CID218e_QuantitativeImageFeature,
+                                                 CID7181_AbstractMultiDimensionalImageModelComponentUnit,
                                                  CID6147_ResponseCriteria,
-                                                 CID7464_GeneralRegionOfInterestMeasurementModifiers>;
+                                                 CID7464_GeneralRegionOfInterestMeasurementModifier>;

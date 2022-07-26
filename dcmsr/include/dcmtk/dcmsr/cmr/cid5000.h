@@ -1,9 +1,9 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID5000_Languages
+ *  Header file for class CID5000_Language
  *
  *  Author: Joerg Riesmeier
  *
@@ -26,9 +26,9 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 5000 - Languages.
+ *  CID 5000 - Language.
  */
-class DCMTK_CMR_EXPORT CID5000_Languages
+class DCMTK_CMR_EXPORT CID5000_Language
   : public DSRContextGroup
 {
 
@@ -71,15 +71,15 @@ class DCMTK_CMR_EXPORT CID5000_Languages
      *                         Should be a valid code according to the DICOM definitions
      *                         for this context group, i.e. should be based on RFC 4646.
      */
-    CID5000_Languages(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID5000_Language(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         language mapped to a coded entry that is selected as
      *                                the current value
      *  @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID5000_Languages(const EnumType selectedValue,
-                      const OFBool enhancedEncodingMode = OFFalse);
+    CID5000_Language(const EnumType selectedValue,
+                     const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         language mapped to a coded entry that is selected as

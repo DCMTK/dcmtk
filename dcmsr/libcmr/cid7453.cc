@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7453_PerformingRoles
+ *  Source file for class CID7453_PerformingRole
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:41 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7453.h"
 
 
-// general information on CID 7453 (Performing Roles)
+// general information on CID 7453 (Performing Role)
 #define CONTEXT_GROUP_NUMBER  "7453"
 #define CONTEXT_GROUP_VERSION "20180326"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.517"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7453_PerformingRoles::CodeList *CID7453_PerformingRoles::Codes = NULL;
+CID7453_PerformingRole::CodeList *CID7453_PerformingRole::Codes = NULL;
 
 
-CID7453_PerformingRoles::CID7453_PerformingRoles(const DSRCodedEntryValue &selectedValue)
+CID7453_PerformingRole::CID7453_PerformingRole(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7453_PerformingRoles::CID7453_PerformingRoles(const EnumType selectedValue,
-                                                 const OFBool enhancedEncodingMode)
+CID7453_PerformingRole::CID7453_PerformingRole(const EnumType selectedValue,
+                                               const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7453_PerformingRoles::selectValue(const EnumType selectedValue,
-                                                 const OFBool enhancedEncodingMode)
+OFCondition CID7453_PerformingRole::selectValue(const EnumType selectedValue,
+                                                const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7453_PerformingRoles::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                    DSRCodedEntryValue *foundCodedEntry,
-                                                    const OFBool enhancedEncodingMode) const
+OFCondition CID7453_PerformingRole::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                   DSRCodedEntryValue *foundCodedEntry,
+                                                   const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7453_PerformingRoles::findCodedEntry(const DSRCodedEntryValue &se
 }
 
 
-void CID7453_PerformingRoles::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7453_PerformingRole::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7453_PerformingRoles::printCodes(STD_NAMESPACE ostream &stream) const
 
 // static functions
 
-void CID7453_PerformingRoles::initialize()
+void CID7453_PerformingRole::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7453_PerformingRoles::cleanup()
+void CID7453_PerformingRole::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7453_PerformingRoles::cleanup()
 }
 
 
-DSRCodedEntryValue CID7453_PerformingRoles::getCodedEntry(const EnumType value,
-                                                          const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7453_PerformingRole::getCodedEntry(const EnumType value,
+                                                         const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7453_PerformingRoles::getCodedEntry(const EnumType value,
 }
 
 
-CID7453_PerformingRoles::CodeList &CID7453_PerformingRoles::getCodes()
+CID7453_PerformingRole::CodeList &CID7453_PerformingRole::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -172,7 +172,7 @@ CID7453_PerformingRoles::CodeList &CID7453_PerformingRoles::getCodes()
 }
 
 
-OFCondition CID7453_PerformingRoles::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7453_PerformingRole::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

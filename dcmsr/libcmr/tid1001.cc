@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1001_ObservationContext
@@ -49,8 +49,8 @@ TID1001_ObservationContext::TID1001_ObservationContext()
 
 OFCondition TID1001_ObservationContext::addPersonObserver(const OFString &personName,
                                                           const OFString &organizationName,
-                                                          const CID7452_OrganizationalRoles &organizationRole,
-                                                          const CID7453_PerformingRoles &procedureRole,
+                                                          const CID7452_OrganizationalRole &organizationRole,
+                                                          const CID7453_PerformingRole &procedureRole,
                                                           const OFBool check)
 {
     OFCondition result = EC_MemoryExhausted;
@@ -173,8 +173,8 @@ OFCondition TID1001_ObservationContext::addDeviceObserver(const OFString &device
         /* TID 1004 (Device Observer Identifying Attributes) Row 7 */
         if (!procedureRoles.empty())
         {
-            OFListConstIterator(CID7445_DeviceParticipatingRoles) iter = procedureRoles.begin();
-            const OFListConstIterator(CID7445_DeviceParticipatingRoles) last = procedureRoles.end();
+            OFListConstIterator(CID7445_DeviceParticipatingRole) iter = procedureRoles.begin();
+            const OFListConstIterator(CID7445_DeviceParticipatingRole) last = procedureRoles.end();
             /* iterate over all list entries */
             while ((iter != last) && result.good())
             {

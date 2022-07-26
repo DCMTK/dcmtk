@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7469_GenericIntensityAndSizeMeasurements
+ *  Source file for class CID7469_GenericIntensityAndSizeMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:20 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:43 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7469.h"
 
 
-// general information on CID 7469 (Generic Intensity and Size Measurements)
+// general information on CID 7469 (Generic Intensity and Size Measurement)
 #define CONTEXT_GROUP_NUMBER  "7469"
 #define CONTEXT_GROUP_VERSION "20141110"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1003"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7469_GenericIntensityAndSizeMeasurements::CodeList *CID7469_GenericIntensityAndSizeMeasurements::Codes = NULL;
+CID7469_GenericIntensityAndSizeMeasurement::CodeList *CID7469_GenericIntensityAndSizeMeasurement::Codes = NULL;
 
 
-CID7469_GenericIntensityAndSizeMeasurements::CID7469_GenericIntensityAndSizeMeasurements(const DSRCodedEntryValue &selectedValue)
+CID7469_GenericIntensityAndSizeMeasurement::CID7469_GenericIntensityAndSizeMeasurement(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7469_GenericIntensityAndSizeMeasurements::CID7469_GenericIntensityAndSizeMeasurements(const EnumType selectedValue,
-                                                                                         const OFBool enhancedEncodingMode)
+CID7469_GenericIntensityAndSizeMeasurement::CID7469_GenericIntensityAndSizeMeasurement(const EnumType selectedValue,
+                                                                                       const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7469_GenericIntensityAndSizeMeasurements::selectValue(const EnumType selectedValue,
-                                                                     const OFBool enhancedEncodingMode)
+OFCondition CID7469_GenericIntensityAndSizeMeasurement::selectValue(const EnumType selectedValue,
+                                                                    const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7469_GenericIntensityAndSizeMeasurements::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                                        DSRCodedEntryValue *foundCodedEntry,
-                                                                        const OFBool enhancedEncodingMode) const
+OFCondition CID7469_GenericIntensityAndSizeMeasurement::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                                       DSRCodedEntryValue *foundCodedEntry,
+                                                                       const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7469_GenericIntensityAndSizeMeasurements::findCodedEntry(const DS
 }
 
 
-void CID7469_GenericIntensityAndSizeMeasurements::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7469_GenericIntensityAndSizeMeasurement::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7469_GenericIntensityAndSizeMeasurements::printCodes(STD_NAMESPACE ostre
 
 // static functions
 
-void CID7469_GenericIntensityAndSizeMeasurements::initialize()
+void CID7469_GenericIntensityAndSizeMeasurement::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7469_GenericIntensityAndSizeMeasurements::cleanup()
+void CID7469_GenericIntensityAndSizeMeasurement::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7469_GenericIntensityAndSizeMeasurements::cleanup()
 }
 
 
-DSRCodedEntryValue CID7469_GenericIntensityAndSizeMeasurements::getCodedEntry(const EnumType value,
-                                                                              const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7469_GenericIntensityAndSizeMeasurement::getCodedEntry(const EnumType value,
+                                                                             const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7469_GenericIntensityAndSizeMeasurements::getCodedEntry(co
 }
 
 
-CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityAndSizeMeasurements::getCodes()
+CID7469_GenericIntensityAndSizeMeasurement::CodeList &CID7469_GenericIntensityAndSizeMeasurement::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -346,7 +346,7 @@ CID7469_GenericIntensityAndSizeMeasurements::CodeList &CID7469_GenericIntensityA
 }
 
 
-OFCondition CID7469_GenericIntensityAndSizeMeasurements::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7469_GenericIntensityAndSizeMeasurement::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

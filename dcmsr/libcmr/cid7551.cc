@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements
+ *  Source file for class CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-05-24 17:20:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:44 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7551.h"
 
 
-// general information on CID 7551 (Generic Purpose of Reference to Images and Coordinates in Measurements)
+// general information on CID 7551 (Generic Purpose of Reference to Images and Coordinates in Measurement)
 #define CONTEXT_GROUP_NUMBER  "7551"
 #define CONTEXT_GROUP_VERSION "20200920"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1343"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::CodeList *CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::Codes = NULL;
+CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::CodeList *CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::Codes = NULL;
 
 
-CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements(const DSRCodedEntryValue &selectedValue)
+CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements(const EnumType selectedValue,
-                                                                                                                                             const OFBool enhancedEncodingMode)
+CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement(const EnumType selectedValue,
+                                                                                                                                           const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::selectValue(const EnumType selectedValue,
-                                                                                               const OFBool enhancedEncodingMode)
+OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::selectValue(const EnumType selectedValue,
+                                                                                              const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                                                                  DSRCodedEntryValue *foundCodedEntry,
-                                                                                                  const OFBool enhancedEncodingMode) const
+OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                                                                 DSRCodedEntryValue *foundCodedEntry,
+                                                                                                 const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement
 }
 
 
-void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::prin
 
 // static functions
 
-void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::initialize()
+void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::cleanup()
+void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::clea
 }
 
 
-DSRCodedEntryValue CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::getCodedEntry(const EnumType value,
-                                                                                                        const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::getCodedEntry(const EnumType value,
+                                                                                                       const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeas
 }
 
 
-CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::CodeList &CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::getCodes()
+CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::CodeList &CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -159,7 +159,7 @@ CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::CodeList 
 }
 
 
-OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

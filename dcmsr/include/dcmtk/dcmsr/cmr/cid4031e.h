@@ -3,7 +3,7 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID4031e_CommonAnatomicRegions
+ *  Header file for class CID4031e_CommonAnatomicRegion
  *
  *  Author: Joerg Riesmeier
  *
@@ -23,10 +23,10 @@
  *---------------------*/
 
 /** DCMR Context Group with enhanced functionality:
- *  CID 4031 - Common Anatomic Regions.
+ *  CID 4031 - Common Anatomic Region.
  */
-class DCMTK_CMR_EXPORT CID4031e_CommonAnatomicRegions
-  : public CID4031_CommonAnatomicRegions
+class DCMTK_CMR_EXPORT CID4031e_CommonAnatomicRegion
+  : public CID4031_CommonAnatomicRegion
 {
 
   public:
@@ -37,23 +37,23 @@ class DCMTK_CMR_EXPORT CID4031e_CommonAnatomicRegions
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID4031e_CommonAnatomicRegions(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID4031e_CommonAnatomicRegion(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID4031e_CommonAnatomicRegions(const EnumType selectedValue,
-                                   const OFBool enhancedEncodingMode = OFFalse);
+    CID4031e_CommonAnatomicRegion(const EnumType selectedValue,
+                                  const OFBool enhancedEncodingMode = OFFalse);
 
     /** constructor
      ** @param  selectedValue         defined term for Body Part Examined (0018,0015) mapped
      *                                to a coded entry that is selected as the current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID4031e_CommonAnatomicRegions(const OFString &selectedValue,
-                                   const OFBool enhancedEncodingMode = OFFalse);
+    CID4031e_CommonAnatomicRegion(const OFString &selectedValue,
+                                  const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its associated defined term as the current value
      ** @param  selectedValue         defined term for Body Part Examined (0018,0015) mapped
@@ -92,7 +92,7 @@ class DCMTK_CMR_EXPORT CID4031e_CommonAnatomicRegions
 
   // --- reintroduce method from base class
 
-    using CID4031_CommonAnatomicRegions::selectValue;
+    using CID4031_CommonAnatomicRegion::selectValue;
 };
 
 
@@ -101,7 +101,7 @@ class DCMTK_CMR_EXPORT CID4031e_CommonAnatomicRegions
  *-------------------*/
 
 // define short name for the context group class
-typedef CID4031e_CommonAnatomicRegions CMR_CID4031e;
+typedef CID4031e_CommonAnatomicRegion CMR_CID4031e;
 
 
 #endif

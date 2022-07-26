@@ -1,4 +1,4 @@
-    /*
+/*
  *
  *  Copyright (C) 2016-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
@@ -271,7 +271,7 @@ public:
    *  @param  measurementCode The type of measurement. DICOM prescribes a code
    *          from  CID 7263 "Diffusion Tractography Measurement Types"
    *  @param  measurementUnitCodes The physical units of the measured value.
-   *          DICOM prescribes a code from CID 82 "Units of Measurement".
+   *          DICOM prescribes a code from CID 82 "Measurement Unit".
    *  @param  measurement The created measurement, if successful, NULL otherwise
    *  @return EC_Normal if successful, error otherwise
    */
@@ -287,7 +287,7 @@ public:
    *          prescribes code from CID 7464 "General Region of Interest
    *          Measurement Modifiers"
    *  @param  unitsCode The physical units of the measured value. DICOM
-   *          prescribes a code from CID 82 "Units of Measurement".
+   *          prescribes a code from CID 82 "Measurement Unit".
    *  @param  values The statistical values, one for each track
    *  @param  numValues The number of values in statisticValues (must be equal to
    *          number of tracks in this Track Set)
@@ -310,7 +310,7 @@ public:
    *          prescribes code from CID 7464 "General Region of Interest
    *          Measurement Modifiers"
    *  @param  unitsCode The physical units of the measured value. DICOM
-   *          prescribes a code from CID 82 "Units of Measurement".
+   *          prescribes a code from CID 82 "Measurement Unit".
    *  @param  value The statistical value
    *  @param  statistic Returns the created statistic, if successful. NULL
    *          otherwise

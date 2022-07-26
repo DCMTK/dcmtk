@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID4031_CommonAnatomicRegions
+ *  Header file for class CID4031_CommonAnatomicRegion
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:37 by J. Riesmeier
  *
  */
 
@@ -27,16 +27,16 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 4031 - Common Anatomic Regions.
+ *  CID 4031 - Common Anatomic Region.
  *  (type: extensible, version: 20210120)
  */
-class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
+class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of common anatomic regions
+    /** types of common anatomic region
      */
     enum EnumType
     {
@@ -276,15 +276,15 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID4031_CommonAnatomicRegions(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID4031_CommonAnatomicRegion(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID4031_CommonAnatomicRegions(const EnumType selectedValue,
-                                  const OFBool enhancedEncodingMode = OFFalse);
+    CID4031_CommonAnatomicRegion(const EnumType selectedValue,
+                                 const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
@@ -378,7 +378,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegions
  *-------------------*/
 
 // define short name for the context group class
-typedef CID4031_CommonAnatomicRegions CMR_CID4031;
+typedef CID4031_CommonAnatomicRegion CMR_CID4031;
 
 
 #endif

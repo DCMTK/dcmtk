@@ -3,7 +3,7 @@
  *  Copyright (C) 2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID218e_QuantitativeImageFeatures
+ *  Header file for class CID218e_QuantitativeImageFeature
  *
  *  Author: Joerg Riesmeier
  *
@@ -24,10 +24,10 @@
  *---------------------*/
 
 /** DCMR Context Group with enhanced functionality:
- *  CID 218 - Quantitative Image Features.
+ *  CID 218 - Quantitative Image Feature.
  */
-class DCMTK_CMR_EXPORT CID218e_QuantitativeImageFeatures
-  : public CID218_QuantitativeImageFeatures
+class DCMTK_CMR_EXPORT CID218e_QuantitativeImageFeature
+  : public CID218_QuantitativeImageFeature
 {
 
   public:
@@ -38,15 +38,15 @@ class DCMTK_CMR_EXPORT CID218e_QuantitativeImageFeatures
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID218e_QuantitativeImageFeatures(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID218e_QuantitativeImageFeature(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID218e_QuantitativeImageFeatures(const EnumType selectedValue,
-                                      const OFBool enhancedEncodingMode = OFFalse);
+    CID218e_QuantitativeImageFeature(const EnumType selectedValue,
+                                     const OFBool enhancedEncodingMode = OFFalse);
 
     /** constructor.
      *  The type that is passed to this constructor is from CID 7469 - Generic Intensity and
@@ -56,11 +56,11 @@ class DCMTK_CMR_EXPORT CID218e_QuantitativeImageFeatures
      *                                selected as the current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID218e_QuantitativeImageFeatures(const CMR_CID7469::EnumType selectedValue,
-                                      const OFBool enhancedEncodingMode = OFFalse);
+    CID218e_QuantitativeImageFeature(const CMR_CID7469::EnumType selectedValue,
+                                     const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value.
-     *  The type from CID 7469 - Generic Intensity and Size Measurements, which is included
+     *  The type from CID 7469 - Generic Intensity and Size Measurement, which is included
      *  in this context group.
      *  @note This method is provided for reasons of backward compatibility.
      ** @param  selectedValue         type (from CID 7469) mapped to a coded entry that is
@@ -73,7 +73,7 @@ class DCMTK_CMR_EXPORT CID218e_QuantitativeImageFeatures
 
   // --- reintroduce method from base class
 
-    using CID218_QuantitativeImageFeatures::selectValue;
+    using CID218_QuantitativeImageFeature::selectValue;
 };
 
 
@@ -82,7 +82,7 @@ class DCMTK_CMR_EXPORT CID218e_QuantitativeImageFeatures
  *-------------------*/
 
 // define short name for the context group class
-typedef CID218e_QuantitativeImageFeatures CMR_CID218e;
+typedef CID218e_QuantitativeImageFeature CMR_CID218e;
 
 
 #endif

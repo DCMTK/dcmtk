@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID11_RouteOfAdministration
+ *  Source file for class CID11_AdministrationRoute
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:08 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:30 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid11.h"
 
 
-// general information on CID 11 (Route of Administration)
+// general information on CID 11 (Administration Route)
 #define CONTEXT_GROUP_NUMBER  "11"
 #define CONTEXT_GROUP_VERSION "20200117"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.9"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID11_RouteOfAdministration::CodeList *CID11_RouteOfAdministration::Codes = NULL;
+CID11_AdministrationRoute::CodeList *CID11_AdministrationRoute::Codes = NULL;
 
 
-CID11_RouteOfAdministration::CID11_RouteOfAdministration(const DSRCodedEntryValue &selectedValue)
+CID11_AdministrationRoute::CID11_AdministrationRoute(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID11_RouteOfAdministration::CID11_RouteOfAdministration(const EnumType selectedValue,
-                                                         const OFBool enhancedEncodingMode)
+CID11_AdministrationRoute::CID11_AdministrationRoute(const EnumType selectedValue,
+                                                     const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID11_RouteOfAdministration::selectValue(const EnumType selectedValue,
-                                                     const OFBool enhancedEncodingMode)
+OFCondition CID11_AdministrationRoute::selectValue(const EnumType selectedValue,
+                                                   const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID11_RouteOfAdministration::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                        DSRCodedEntryValue *foundCodedEntry,
-                                                        const OFBool enhancedEncodingMode) const
+OFCondition CID11_AdministrationRoute::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                      DSRCodedEntryValue *foundCodedEntry,
+                                                      const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID11_RouteOfAdministration::findCodedEntry(const DSRCodedEntryValue
 }
 
 
-void CID11_RouteOfAdministration::printCodes(STD_NAMESPACE ostream &stream) const
+void CID11_AdministrationRoute::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID11_RouteOfAdministration::printCodes(STD_NAMESPACE ostream &stream) cons
 
 // static functions
 
-void CID11_RouteOfAdministration::initialize()
+void CID11_AdministrationRoute::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID11_RouteOfAdministration::cleanup()
+void CID11_AdministrationRoute::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID11_RouteOfAdministration::cleanup()
 }
 
 
-DSRCodedEntryValue CID11_RouteOfAdministration::getCodedEntry(const EnumType value,
-                                                              const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID11_AdministrationRoute::getCodedEntry(const EnumType value,
+                                                            const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID11_RouteOfAdministration::getCodedEntry(const EnumType val
 }
 
 
-CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
+CID11_AdministrationRoute::CodeList &CID11_AdministrationRoute::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -181,7 +181,7 @@ CID11_RouteOfAdministration::CodeList &CID11_RouteOfAdministration::getCodes()
 }
 
 
-OFCondition CID11_RouteOfAdministration::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID11_AdministrationRoute::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

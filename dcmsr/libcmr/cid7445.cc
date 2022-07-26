@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7445_DeviceParticipatingRoles
+ *  Source file for class CID7445_DeviceParticipatingRole
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:16 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:40 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7445.h"
 
 
-// general information on CID 7445 (Device Participating Roles)
+// general information on CID 7445 (Device Participating Role)
 #define CONTEXT_GROUP_NUMBER  "7445"
 #define CONTEXT_GROUP_VERSION "20120406"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1042"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7445_DeviceParticipatingRoles::CodeList *CID7445_DeviceParticipatingRoles::Codes = NULL;
+CID7445_DeviceParticipatingRole::CodeList *CID7445_DeviceParticipatingRole::Codes = NULL;
 
 
-CID7445_DeviceParticipatingRoles::CID7445_DeviceParticipatingRoles(const DSRCodedEntryValue &selectedValue)
+CID7445_DeviceParticipatingRole::CID7445_DeviceParticipatingRole(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7445_DeviceParticipatingRoles::CID7445_DeviceParticipatingRoles(const EnumType selectedValue,
-                                                                   const OFBool enhancedEncodingMode)
+CID7445_DeviceParticipatingRole::CID7445_DeviceParticipatingRole(const EnumType selectedValue,
+                                                                 const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7445_DeviceParticipatingRoles::selectValue(const EnumType selectedValue,
-                                                          const OFBool enhancedEncodingMode)
+OFCondition CID7445_DeviceParticipatingRole::selectValue(const EnumType selectedValue,
+                                                         const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7445_DeviceParticipatingRoles::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                             DSRCodedEntryValue *foundCodedEntry,
-                                                             const OFBool enhancedEncodingMode) const
+OFCondition CID7445_DeviceParticipatingRole::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                            DSRCodedEntryValue *foundCodedEntry,
+                                                            const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7445_DeviceParticipatingRoles::findCodedEntry(const DSRCodedEntry
 }
 
 
-void CID7445_DeviceParticipatingRoles::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7445_DeviceParticipatingRole::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7445_DeviceParticipatingRoles::printCodes(STD_NAMESPACE ostream &stream)
 
 // static functions
 
-void CID7445_DeviceParticipatingRoles::initialize()
+void CID7445_DeviceParticipatingRole::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7445_DeviceParticipatingRoles::cleanup()
+void CID7445_DeviceParticipatingRole::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7445_DeviceParticipatingRoles::cleanup()
 }
 
 
-DSRCodedEntryValue CID7445_DeviceParticipatingRoles::getCodedEntry(const EnumType value,
-                                                                   const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7445_DeviceParticipatingRole::getCodedEntry(const EnumType value,
+                                                                  const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7445_DeviceParticipatingRoles::getCodedEntry(const EnumTyp
 }
 
 
-CID7445_DeviceParticipatingRoles::CodeList &CID7445_DeviceParticipatingRoles::getCodes()
+CID7445_DeviceParticipatingRole::CodeList &CID7445_DeviceParticipatingRole::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -158,7 +158,7 @@ CID7445_DeviceParticipatingRoles::CodeList &CID7445_DeviceParticipatingRoles::ge
 }
 
 
-OFCondition CID7445_DeviceParticipatingRoles::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7445_DeviceParticipatingRole::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

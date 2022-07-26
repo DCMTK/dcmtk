@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7021_MeasurementReportDocumentTitles
+ *  Source file for class CID7021_MeasurementReportDocumentTitle
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:15 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:38 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7021.h"
 
 
-// general information on CID 7021 (Measurement Report Document Titles)
+// general information on CID 7021 (Measurement Report Document Title)
 #define CONTEXT_GROUP_NUMBER  "7021"
 #define CONTEXT_GROUP_VERSION "20141110"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.997"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7021_MeasurementReportDocumentTitles::CodeList *CID7021_MeasurementReportDocumentTitles::Codes = NULL;
+CID7021_MeasurementReportDocumentTitle::CodeList *CID7021_MeasurementReportDocumentTitle::Codes = NULL;
 
 
-CID7021_MeasurementReportDocumentTitles::CID7021_MeasurementReportDocumentTitles(const DSRCodedEntryValue &selectedValue)
+CID7021_MeasurementReportDocumentTitle::CID7021_MeasurementReportDocumentTitle(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7021_MeasurementReportDocumentTitles::CID7021_MeasurementReportDocumentTitles(const EnumType selectedValue,
-                                                                                 const OFBool enhancedEncodingMode)
+CID7021_MeasurementReportDocumentTitle::CID7021_MeasurementReportDocumentTitle(const EnumType selectedValue,
+                                                                               const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7021_MeasurementReportDocumentTitles::selectValue(const EnumType selectedValue,
-                                                                 const OFBool enhancedEncodingMode)
+OFCondition CID7021_MeasurementReportDocumentTitle::selectValue(const EnumType selectedValue,
+                                                                const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7021_MeasurementReportDocumentTitles::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                                    DSRCodedEntryValue *foundCodedEntry,
-                                                                    const OFBool enhancedEncodingMode) const
+OFCondition CID7021_MeasurementReportDocumentTitle::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                                   DSRCodedEntryValue *foundCodedEntry,
+                                                                   const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7021_MeasurementReportDocumentTitles::findCodedEntry(const DSRCod
 }
 
 
-void CID7021_MeasurementReportDocumentTitles::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7021_MeasurementReportDocumentTitle::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7021_MeasurementReportDocumentTitles::printCodes(STD_NAMESPACE ostream &
 
 // static functions
 
-void CID7021_MeasurementReportDocumentTitles::initialize()
+void CID7021_MeasurementReportDocumentTitle::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7021_MeasurementReportDocumentTitles::cleanup()
+void CID7021_MeasurementReportDocumentTitle::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7021_MeasurementReportDocumentTitles::cleanup()
 }
 
 
-DSRCodedEntryValue CID7021_MeasurementReportDocumentTitles::getCodedEntry(const EnumType value,
-                                                                          const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7021_MeasurementReportDocumentTitle::getCodedEntry(const EnumType value,
+                                                                         const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7021_MeasurementReportDocumentTitles::getCodedEntry(const 
 }
 
 
-CID7021_MeasurementReportDocumentTitles::CodeList &CID7021_MeasurementReportDocumentTitles::getCodes()
+CID7021_MeasurementReportDocumentTitle::CodeList &CID7021_MeasurementReportDocumentTitle::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -159,7 +159,7 @@ CID7021_MeasurementReportDocumentTitles::CodeList &CID7021_MeasurementReportDocu
 }
 
 
-OFCondition CID7021_MeasurementReportDocumentTitles::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7021_MeasurementReportDocumentTitle::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

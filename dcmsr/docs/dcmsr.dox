@@ -150,7 +150,7 @@ DICOM Structured Report that is based on TID 1500 (Measurement Report):
 
 \code
 TID1500_MeasurementReport report(CMR_CID7021::ImagingMeasurementReport);
-report.setLanguage(CID5000_Languages::English);
+report.setLanguage(CID5000_Language::English);
 report.getObservationContext().addPersonObserver("Doe^Jane", "Some Organization");
 /* ... */
 CMR_TID1411_in_TID1500 &volumetric = report.getVolumetricROIMeasurements();

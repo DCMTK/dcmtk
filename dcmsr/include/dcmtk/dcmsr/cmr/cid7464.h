@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID7464_GeneralRegionOfInterestMeasurementModifiers
+ *  Header file for class CID7464_GeneralRegionOfInterestMeasurementModifier
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:19 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:42 by J. Riesmeier
  *
  */
 
@@ -27,16 +27,16 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 7464 - General Region of Interest Measurement Modifiers.
+ *  CID 7464 - General Region of Interest Measurement Modifier.
  *  (type: extensible, version: 20121101)
  */
-class DCMTK_CMR_EXPORT CID7464_GeneralRegionOfInterestMeasurementModifiers
+class DCMTK_CMR_EXPORT CID7464_GeneralRegionOfInterestMeasurementModifier
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of general region of interest measurement modifiers
+    /** types of general region of interest measurement modifier
      */
     enum EnumType
     {
@@ -74,15 +74,15 @@ class DCMTK_CMR_EXPORT CID7464_GeneralRegionOfInterestMeasurementModifiers
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID7464_GeneralRegionOfInterestMeasurementModifiers(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID7464_GeneralRegionOfInterestMeasurementModifier(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID7464_GeneralRegionOfInterestMeasurementModifiers(const EnumType selectedValue,
-                                                        const OFBool enhancedEncodingMode = OFFalse);
+    CID7464_GeneralRegionOfInterestMeasurementModifier(const EnumType selectedValue,
+                                                       const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
@@ -176,7 +176,7 @@ class DCMTK_CMR_EXPORT CID7464_GeneralRegionOfInterestMeasurementModifiers
  *-------------------*/
 
 // define short name for the context group class
-typedef CID7464_GeneralRegionOfInterestMeasurementModifiers CMR_CID7464;
+typedef CID7464_GeneralRegionOfInterestMeasurementModifier CMR_CID7464;
 
 
 #endif

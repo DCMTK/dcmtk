@@ -46,27 +46,27 @@
 void CMR_ContentMappingResource::initializeAllContextGroups()
 {
     /* initialize all context groups, one after the other */
-    CID11_RouteOfAdministration::initialize();
+    CID11_AdministrationRoute::initialize();
     CID29_AcquisitionModality::initialize();
     CID42_NumericValueQualifier::initialize();
-    CID100_QuantitativeDiagnosticImagingProcedures::initialize();
-    CID218_QuantitativeImageFeatures::initialize();
+    CID100_QuantitativeDiagnosticImagingProcedure::initialize();
+    CID218_QuantitativeImageFeature::initialize();
     CID244_Laterality::initialize();
     CID247_LateralityLeftRightOnly::initialize();
     CID4020_PETRadionuclide::initialize();
     CID4021_PETRadiopharmaceutical::initialize();
-    CID4031_CommonAnatomicRegions::initialize();
-    CID5000_Languages::initialize();
-    CID5001_Countries::initialize();
+    CID4031_CommonAnatomicRegion::initialize();
+    CID5000_Language::initialize();
+    CID5001_Country::initialize();
     CID6147_ResponseCriteria::initialize();
-    CID7021_MeasurementReportDocumentTitles::initialize();
-    CID7181_AbstractMultiDimensionalImageModelComponentUnits::initialize();
-    CID7445_DeviceParticipatingRoles::initialize();
-    CID7452_OrganizationalRoles::initialize();
-    CID7453_PerformingRoles::initialize();
-    CID7464_GeneralRegionOfInterestMeasurementModifiers::initialize();
-    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::initialize();
-    CID7469_GenericIntensityAndSizeMeasurements::initialize();
+    CID7021_MeasurementReportDocumentTitle::initialize();
+    CID7181_AbstractMultiDimensionalImageModelComponentUnit::initialize();
+    CID7445_DeviceParticipatingRole::initialize();
+    CID7452_OrganizationalRole::initialize();
+    CID7453_PerformingRole::initialize();
+    CID7464_GeneralRegionOfInterestMeasurementModifier::initialize();
+    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::initialize();
+    CID7469_GenericIntensityAndSizeMeasurement::initialize();
     CID10013_CTAcquisitionType::initialize();
     CID10033_CTReconstructionAlgorithm::initialize();
 }
@@ -75,27 +75,27 @@ void CMR_ContentMappingResource::initializeAllContextGroups()
 void CMR_ContentMappingResource::cleanupAllContextGroups()
 {
     /* cleanup all context groups, one after the other */
-    CID11_RouteOfAdministration::cleanup();
+    CID11_AdministrationRoute::cleanup();
     CID29_AcquisitionModality::cleanup();
     CID42_NumericValueQualifier::cleanup();
-    CID100_QuantitativeDiagnosticImagingProcedures::cleanup();
-    CID218_QuantitativeImageFeatures::cleanup();
+    CID100_QuantitativeDiagnosticImagingProcedure::cleanup();
+    CID218_QuantitativeImageFeature::cleanup();
     CID244_Laterality::cleanup();
     CID247_LateralityLeftRightOnly::cleanup();
     CID4020_PETRadionuclide::cleanup();
     CID4021_PETRadiopharmaceutical::cleanup();
-    CID4031_CommonAnatomicRegions::cleanup();
-    CID5000_Languages::cleanup();
-    CID5001_Countries::cleanup();
+    CID4031_CommonAnatomicRegion::cleanup();
+    CID5000_Language::cleanup();
+    CID5001_Country::cleanup();
     CID6147_ResponseCriteria::cleanup();
-    CID7021_MeasurementReportDocumentTitles::cleanup();
-    CID7181_AbstractMultiDimensionalImageModelComponentUnits::cleanup();
-    CID7445_DeviceParticipatingRoles::cleanup();
-    CID7452_OrganizationalRoles::cleanup();
-    CID7453_PerformingRoles::cleanup();
-    CID7464_GeneralRegionOfInterestMeasurementModifiers::cleanup();
-    CID7469_GenericIntensityAndSizeMeasurements::cleanup();
-    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements::cleanup();
+    CID7021_MeasurementReportDocumentTitle::cleanup();
+    CID7181_AbstractMultiDimensionalImageModelComponentUnit::cleanup();
+    CID7445_DeviceParticipatingRole::cleanup();
+    CID7452_OrganizationalRole::cleanup();
+    CID7453_PerformingRole::cleanup();
+    CID7464_GeneralRegionOfInterestMeasurementModifier::cleanup();
+    CID7469_GenericIntensityAndSizeMeasurement::cleanup();
+    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement::cleanup();
     CID10013_CTAcquisitionType::cleanup();
     CID10033_CTReconstructionAlgorithm::cleanup();
 }

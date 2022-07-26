@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1500_MeasurementReport
@@ -47,7 +47,7 @@
 #define TEMPLATE_ORDER       OFFalse  /* non-significant */
 
 
-TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+TID1500_MeasurementReport::TID1500_MeasurementReport(const CID7021_MeasurementReportDocumentTitle &title,
                                                      const OFBool check)
   : DSRRootTemplate(DT_EnhancedSR, TEMPLATE_NUMBER, MAPPING_RESOURCE, MAPPING_RESOURCE_UID),
     Language(new TID1204_LanguageOfContentItemAndDescendants()),
@@ -274,7 +274,7 @@ OFCondition TID1500_MeasurementReport::getDocumentTitle(DSRCodedEntryValue &titl
 }
 
 
-OFCondition TID1500_MeasurementReport::createNewMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+OFCondition TID1500_MeasurementReport::createNewMeasurementReport(const CID7021_MeasurementReportDocumentTitle &title,
                                                                   const OFBool check)
 {
     clear();
@@ -283,8 +283,8 @@ OFCondition TID1500_MeasurementReport::createNewMeasurementReport(const CID7021_
 }
 
 
-OFCondition TID1500_MeasurementReport::setLanguage(const CID5000_Languages &language,
-                                                   const CID5001_Countries &country,
+OFCondition TID1500_MeasurementReport::setLanguage(const CID5000_Language &language,
+                                                   const CID5001_Country &country,
                                                    const OFBool check)
 {
     /* TID 1500 (Measurement Report) Row 2 */
@@ -292,7 +292,7 @@ OFCondition TID1500_MeasurementReport::setLanguage(const CID5000_Languages &lang
 }
 
 
-OFCondition TID1500_MeasurementReport::addProcedureReported(const CID100_QuantitativeDiagnosticImagingProcedures &procedure,
+OFCondition TID1500_MeasurementReport::addProcedureReported(const CID100_QuantitativeDiagnosticImagingProcedure &procedure,
                                                             const OFBool check)
 {
     OFCondition result = EC_IllegalParameter;
@@ -423,7 +423,7 @@ OFCondition TID1500_MeasurementReport::addQualitativeEvaluation(const DSRCodedEn
 
 // protected methods
 
-OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_MeasurementReportDocumentTitles &title,
+OFCondition TID1500_MeasurementReport::createMeasurementReport(const CID7021_MeasurementReportDocumentTitle &title,
                                                                const OFBool check)
 {
     OFCondition result = EC_IllegalParameter;

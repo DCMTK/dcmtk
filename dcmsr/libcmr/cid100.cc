@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID100_QuantitativeDiagnosticImagingProcedures
+ *  Source file for class CID100_QuantitativeDiagnosticImagingProcedure
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:10 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:32 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid100.h"
 
 
-// general information on CID 100 (Quantitative Diagnostic Imaging Procedures)
+// general information on CID 100 (Quantitative Diagnostic Imaging Procedure)
 #define CONTEXT_GROUP_NUMBER  "100"
 #define CONTEXT_GROUP_VERSION "20210905"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.998"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID100_QuantitativeDiagnosticImagingProcedures::CodeList *CID100_QuantitativeDiagnosticImagingProcedures::Codes = NULL;
+CID100_QuantitativeDiagnosticImagingProcedure::CodeList *CID100_QuantitativeDiagnosticImagingProcedure::Codes = NULL;
 
 
-CID100_QuantitativeDiagnosticImagingProcedures::CID100_QuantitativeDiagnosticImagingProcedures(const DSRCodedEntryValue &selectedValue)
+CID100_QuantitativeDiagnosticImagingProcedure::CID100_QuantitativeDiagnosticImagingProcedure(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID100_QuantitativeDiagnosticImagingProcedures::CID100_QuantitativeDiagnosticImagingProcedures(const EnumType selectedValue,
-                                                                                               const OFBool enhancedEncodingMode)
+CID100_QuantitativeDiagnosticImagingProcedure::CID100_QuantitativeDiagnosticImagingProcedure(const EnumType selectedValue,
+                                                                                             const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID100_QuantitativeDiagnosticImagingProcedures::selectValue(const EnumType selectedValue,
-                                                                        const OFBool enhancedEncodingMode)
+OFCondition CID100_QuantitativeDiagnosticImagingProcedure::selectValue(const EnumType selectedValue,
+                                                                       const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID100_QuantitativeDiagnosticImagingProcedures::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                                           DSRCodedEntryValue *foundCodedEntry,
-                                                                           const OFBool enhancedEncodingMode) const
+OFCondition CID100_QuantitativeDiagnosticImagingProcedure::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                                          DSRCodedEntryValue *foundCodedEntry,
+                                                                          const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID100_QuantitativeDiagnosticImagingProcedures::findCodedEntry(const
 }
 
 
-void CID100_QuantitativeDiagnosticImagingProcedures::printCodes(STD_NAMESPACE ostream &stream) const
+void CID100_QuantitativeDiagnosticImagingProcedure::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID100_QuantitativeDiagnosticImagingProcedures::printCodes(STD_NAMESPACE os
 
 // static functions
 
-void CID100_QuantitativeDiagnosticImagingProcedures::initialize()
+void CID100_QuantitativeDiagnosticImagingProcedure::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID100_QuantitativeDiagnosticImagingProcedures::cleanup()
+void CID100_QuantitativeDiagnosticImagingProcedure::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID100_QuantitativeDiagnosticImagingProcedures::cleanup()
 }
 
 
-DSRCodedEntryValue CID100_QuantitativeDiagnosticImagingProcedures::getCodedEntry(const EnumType value,
-                                                                                 const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID100_QuantitativeDiagnosticImagingProcedure::getCodedEntry(const EnumType value,
+                                                                                const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID100_QuantitativeDiagnosticImagingProcedures::getCodedEntry
 }
 
 
-CID100_QuantitativeDiagnosticImagingProcedures::CodeList &CID100_QuantitativeDiagnosticImagingProcedures::getCodes()
+CID100_QuantitativeDiagnosticImagingProcedure::CodeList &CID100_QuantitativeDiagnosticImagingProcedure::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -172,7 +172,7 @@ CID100_QuantitativeDiagnosticImagingProcedures::CodeList &CID100_QuantitativeDia
 }
 
 
-OFCondition CID100_QuantitativeDiagnosticImagingProcedures::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID100_QuantitativeDiagnosticImagingProcedure::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

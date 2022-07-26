@@ -5,8 +5,8 @@
  *
  *  Source file for class CID42_NumericValueQualifier
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:09 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:31 by J. Riesmeier
  *
  */
 

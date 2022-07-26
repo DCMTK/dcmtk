@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID218_QuantitativeImageFeatures
+ *  Source file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-05-24 17:19:49 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:33 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid218.h"
 
 
-// general information on CID 218 (Quantitative Image Features)
+// general information on CID 218 (Quantitative Image Feature)
 #define CONTEXT_GROUP_NUMBER  "218"
 #define CONTEXT_GROUP_VERSION "20200920"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1269"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID218_QuantitativeImageFeatures::CodeList *CID218_QuantitativeImageFeatures::Codes = NULL;
+CID218_QuantitativeImageFeature::CodeList *CID218_QuantitativeImageFeature::Codes = NULL;
 
 
-CID218_QuantitativeImageFeatures::CID218_QuantitativeImageFeatures(const DSRCodedEntryValue &selectedValue)
+CID218_QuantitativeImageFeature::CID218_QuantitativeImageFeature(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID218_QuantitativeImageFeatures::CID218_QuantitativeImageFeatures(const EnumType selectedValue,
-                                                                   const OFBool enhancedEncodingMode)
+CID218_QuantitativeImageFeature::CID218_QuantitativeImageFeature(const EnumType selectedValue,
+                                                                 const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID218_QuantitativeImageFeatures::selectValue(const EnumType selectedValue,
-                                                          const OFBool enhancedEncodingMode)
+OFCondition CID218_QuantitativeImageFeature::selectValue(const EnumType selectedValue,
+                                                         const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID218_QuantitativeImageFeatures::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                             DSRCodedEntryValue *foundCodedEntry,
-                                                             const OFBool enhancedEncodingMode) const
+OFCondition CID218_QuantitativeImageFeature::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                            DSRCodedEntryValue *foundCodedEntry,
+                                                            const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID218_QuantitativeImageFeatures::findCodedEntry(const DSRCodedEntry
 }
 
 
-void CID218_QuantitativeImageFeatures::printCodes(STD_NAMESPACE ostream &stream) const
+void CID218_QuantitativeImageFeature::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID218_QuantitativeImageFeatures::printCodes(STD_NAMESPACE ostream &stream)
 
 // static functions
 
-void CID218_QuantitativeImageFeatures::initialize()
+void CID218_QuantitativeImageFeature::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID218_QuantitativeImageFeatures::cleanup()
+void CID218_QuantitativeImageFeature::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID218_QuantitativeImageFeatures::cleanup()
 }
 
 
-DSRCodedEntryValue CID218_QuantitativeImageFeatures::getCodedEntry(const EnumType value,
-                                                                   const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID218_QuantitativeImageFeature::getCodedEntry(const EnumType value,
+                                                                  const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID218_QuantitativeImageFeatures::getCodedEntry(const EnumTyp
 }
 
 
-CID218_QuantitativeImageFeatures::CodeList &CID218_QuantitativeImageFeatures::getCodes()
+CID218_QuantitativeImageFeature::CodeList &CID218_QuantitativeImageFeature::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -490,7 +490,7 @@ CID218_QuantitativeImageFeatures::CodeList &CID218_QuantitativeImageFeatures::ge
 }
 
 
-OFCondition CID218_QuantitativeImageFeatures::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID218_QuantitativeImageFeature::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

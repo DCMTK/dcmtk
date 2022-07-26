@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements
+ *  Header file for class CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-05-24 17:20:00 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:44 by J. Riesmeier
  *
  */
 
@@ -27,16 +27,16 @@
  *---------------------*/
 
 /** Implementation of DCMR Context Group:
- *  CID 7551 - Generic Purpose of Reference to Images and Coordinates in Measurements.
+ *  CID 7551 - Generic Purpose of Reference to Images and Coordinates in Measurement.
  *  (type: extensible, version: 20200920)
  */
-class DCMTK_CMR_EXPORT CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements
+class DCMTK_CMR_EXPORT CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement
   : public DSRContextGroup
 {
 
   public:
 
-    /** types of generic purpose of reference to images and coordinates in measurements
+    /** types of generic purpose of reference to images and coordinates in measurement
      */
     enum EnumType
     {
@@ -56,15 +56,15 @@ class DCMTK_CMR_EXPORT CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesIn
      *                         for this context group, i.e. no checks are performed.
      *                         Call DSRContextGroup::checkSelectedValue() if needed.
      */
-    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
+    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement(const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
 
     /** constructor
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
      *                                current value
      ** @param  enhancedEncodingMode  set enhanced encoding mode for coded entry (if enabled)
      */
-    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements(const EnumType selectedValue,
-                                                                          const OFBool enhancedEncodingMode = OFFalse);
+    CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement(const EnumType selectedValue,
+                                                                         const OFBool enhancedEncodingMode = OFFalse);
 
     /** select a coded entry given by its type as the current value
      ** @param  selectedValue         type mapped to a coded entry that is selected as the
@@ -158,7 +158,7 @@ class DCMTK_CMR_EXPORT CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesIn
  *-------------------*/
 
 // define short name for the context group class
-typedef CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements CMR_CID7551;
+typedef CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement CMR_CID7551;
 
 
 #endif

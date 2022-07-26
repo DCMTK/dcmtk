@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID7464_GeneralRegionOfInterestMeasurementModifiers
+ *  Source file for class CID7464_GeneralRegionOfInterestMeasurementModifier
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:19 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:42 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid7464.h"
 
 
-// general information on CID 7464 (General Region of Interest Measurement Modifiers)
+// general information on CID 7464 (General Region of Interest Measurement Modifier)
 #define CONTEXT_GROUP_NUMBER  "7464"
 #define CONTEXT_GROUP_VERSION "20121101"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.951"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID7464_GeneralRegionOfInterestMeasurementModifiers::CodeList *CID7464_GeneralRegionOfInterestMeasurementModifiers::Codes = NULL;
+CID7464_GeneralRegionOfInterestMeasurementModifier::CodeList *CID7464_GeneralRegionOfInterestMeasurementModifier::Codes = NULL;
 
 
-CID7464_GeneralRegionOfInterestMeasurementModifiers::CID7464_GeneralRegionOfInterestMeasurementModifiers(const DSRCodedEntryValue &selectedValue)
+CID7464_GeneralRegionOfInterestMeasurementModifier::CID7464_GeneralRegionOfInterestMeasurementModifier(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID7464_GeneralRegionOfInterestMeasurementModifiers::CID7464_GeneralRegionOfInterestMeasurementModifiers(const EnumType selectedValue,
-                                                                                                         const OFBool enhancedEncodingMode)
+CID7464_GeneralRegionOfInterestMeasurementModifier::CID7464_GeneralRegionOfInterestMeasurementModifier(const EnumType selectedValue,
+                                                                                                       const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID7464_GeneralRegionOfInterestMeasurementModifiers::selectValue(const EnumType selectedValue,
-                                                                             const OFBool enhancedEncodingMode)
+OFCondition CID7464_GeneralRegionOfInterestMeasurementModifier::selectValue(const EnumType selectedValue,
+                                                                            const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID7464_GeneralRegionOfInterestMeasurementModifiers::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                                                DSRCodedEntryValue *foundCodedEntry,
-                                                                                const OFBool enhancedEncodingMode) const
+OFCondition CID7464_GeneralRegionOfInterestMeasurementModifier::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                                               DSRCodedEntryValue *foundCodedEntry,
+                                                                               const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID7464_GeneralRegionOfInterestMeasurementModifiers::findCodedEntry(
 }
 
 
-void CID7464_GeneralRegionOfInterestMeasurementModifiers::printCodes(STD_NAMESPACE ostream &stream) const
+void CID7464_GeneralRegionOfInterestMeasurementModifier::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID7464_GeneralRegionOfInterestMeasurementModifiers::printCodes(STD_NAMESPA
 
 // static functions
 
-void CID7464_GeneralRegionOfInterestMeasurementModifiers::initialize()
+void CID7464_GeneralRegionOfInterestMeasurementModifier::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID7464_GeneralRegionOfInterestMeasurementModifiers::cleanup()
+void CID7464_GeneralRegionOfInterestMeasurementModifier::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID7464_GeneralRegionOfInterestMeasurementModifiers::cleanup()
 }
 
 
-DSRCodedEntryValue CID7464_GeneralRegionOfInterestMeasurementModifiers::getCodedEntry(const EnumType value,
-                                                                                      const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID7464_GeneralRegionOfInterestMeasurementModifier::getCodedEntry(const EnumType value,
+                                                                                     const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID7464_GeneralRegionOfInterestMeasurementModifiers::getCoded
 }
 
 
-CID7464_GeneralRegionOfInterestMeasurementModifiers::CodeList &CID7464_GeneralRegionOfInterestMeasurementModifiers::getCodes()
+CID7464_GeneralRegionOfInterestMeasurementModifier::CodeList &CID7464_GeneralRegionOfInterestMeasurementModifier::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -168,7 +168,7 @@ CID7464_GeneralRegionOfInterestMeasurementModifiers::CodeList &CID7464_GeneralRe
 }
 
 
-OFCondition CID7464_GeneralRegionOfInterestMeasurementModifiers::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID7464_GeneralRegionOfInterestMeasurementModifier::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

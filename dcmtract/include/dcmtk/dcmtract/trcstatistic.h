@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2022, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -98,7 +98,7 @@ protected:
    *          code from CID 7464 "General Region of Interest Measurement
    *          Modifiers"
    *  @param  unitsCode The physical units of the statistic value, DICOM
-   *          prescribes code from CID 82 "Units of Measurement" (UCUM).
+   *          prescribes code from CID 82 "Measurement Unit" (UCUM).
    *  @return EC_Normal if setting was successful, error otherwise.
    */
   virtual OFCondition setCommon(const CodeSequenceMacro& typeCode,
@@ -146,7 +146,7 @@ public:
    *          prescribes code from CID 7464 "General Region of Interest
    *          Measurement Modifiers"
    *  @param  unitsCode The physical units of the statistic value. DICOM
-   *          prescribes code from CID 82 "Units of Measurement".
+   *          prescribes code from CID 82 "Measurement Unit".
    *  @param  statisticValues The statistic values
    *  @param  numValues The number of statistic values in statisticValues, must
    *          be equal to number of Tracks in the Track Set that this statistic
@@ -194,7 +194,7 @@ public:
    *          prescribes code from CID 7464 "General Region of Interest
    *          Measurement Modifiers"
    *  @param  unitsCode The physical units of the statistic value. DICOM
-   *          prescribes code from CID 82 "Units of Measurement".
+   *          prescribes code from CID 82 "Measurement Unit".
    *  @param  statisticValues The statistic values
    *  @param  numValues The number of statistic values in statisticValues, must
    *          equal the number of tracks in containing Track Set
@@ -251,7 +251,7 @@ public:
    *          prescribes code from CID 7464 "General Region of Interest
    *          Measurement Modifiers"
    *  @param  unitsCode The physical units of the statistic value. DICOM
-   *          prescribes code from CID 82 "Units of Measurement".
+   *          prescribes code from CID 82 "Measurement Unit".
    *  @param  statisticValue The statistic value
    *  @param  statistic Returns the resulting TrcTrackSetStatistic object (NULL
    *          in case of any error)
@@ -295,7 +295,7 @@ public:
    *          prescribes code from CID 7464 "General Region of Interest
    *          Measurement Modifiers"
    *  @param  unitsCode The physical units of the statistic value. DICOM
-   *          prescribes code from CID 82 "Units of Measurement".
+   *          prescribes code from CID 82 "Measurement Unit".
    *  @param  statisticValue The statistic value
    *  @return EC_Normal if setting was successful, error otherwise
    */

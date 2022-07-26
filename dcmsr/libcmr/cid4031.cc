@@ -3,10 +3,10 @@
  *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class CID4031_CommonAnatomicRegions
+ *  Source file for class CID4031_CommonAnatomicRegion
  *
- *  Generated automatically from DICOM PS 3.16-2022b
- *  File created on 2022-04-12 13:01:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022c
+ *  File created on 2022-07-25 09:55:37 by J. Riesmeier
  *
  */
 
@@ -16,42 +16,42 @@
 #include "dcmtk/dcmsr/cmr/cid4031.h"
 
 
-// general information on CID 4031 (Common Anatomic Regions)
+// general information on CID 4031 (Common Anatomic Region)
 #define CONTEXT_GROUP_NUMBER  "4031"
 #define CONTEXT_GROUP_VERSION "20210120"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.308"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
 // initialize global/static variable
-CID4031_CommonAnatomicRegions::CodeList *CID4031_CommonAnatomicRegions::Codes = NULL;
+CID4031_CommonAnatomicRegion::CodeList *CID4031_CommonAnatomicRegion::Codes = NULL;
 
 
-CID4031_CommonAnatomicRegions::CID4031_CommonAnatomicRegions(const DSRCodedEntryValue &selectedValue)
+CID4031_CommonAnatomicRegion::CID4031_CommonAnatomicRegion(const DSRCodedEntryValue &selectedValue)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-CID4031_CommonAnatomicRegions::CID4031_CommonAnatomicRegions(const EnumType selectedValue,
-                                                             const OFBool enhancedEncodingMode)
+CID4031_CommonAnatomicRegion::CID4031_CommonAnatomicRegion(const EnumType selectedValue,
+                                                           const OFBool enhancedEncodingMode)
   : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
 
 
-OFCondition CID4031_CommonAnatomicRegions::selectValue(const EnumType selectedValue,
-                                                       const OFBool enhancedEncodingMode)
+OFCondition CID4031_CommonAnatomicRegion::selectValue(const EnumType selectedValue,
+                                                      const OFBool enhancedEncodingMode)
 {
     /* never check the coded entry */
     return DSRContextGroup::selectValue(getCodedEntry(selectedValue, enhancedEncodingMode), OFFalse /*check*/, OFFalse /*definedContextGroup*/);
 }
 
 
-OFCondition CID4031_CommonAnatomicRegions::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
-                                                          DSRCodedEntryValue *foundCodedEntry,
-                                                          const OFBool enhancedEncodingMode) const
+OFCondition CID4031_CommonAnatomicRegion::findCodedEntry(const DSRCodedEntryValue &searchForCodedEntry,
+                                                         DSRCodedEntryValue *foundCodedEntry,
+                                                         const OFBool enhancedEncodingMode) const
 {
     OFCondition result = SR_EC_CodedEntryNotInContextGroup;
     /* first, search for standard codes */
@@ -86,7 +86,7 @@ OFCondition CID4031_CommonAnatomicRegions::findCodedEntry(const DSRCodedEntryVal
 }
 
 
-void CID4031_CommonAnatomicRegions::printCodes(STD_NAMESPACE ostream &stream) const
+void CID4031_CommonAnatomicRegion::printCodes(STD_NAMESPACE ostream &stream) const
 {
     /* print standard codes */
     stream << "Standard codes:" << OFendl;
@@ -108,14 +108,14 @@ void CID4031_CommonAnatomicRegions::printCodes(STD_NAMESPACE ostream &stream) co
 
 // static functions
 
-void CID4031_CommonAnatomicRegions::initialize()
+void CID4031_CommonAnatomicRegion::initialize()
 {
     /* create and initialize code list */
     getCodes();
 }
 
 
-void CID4031_CommonAnatomicRegions::cleanup()
+void CID4031_CommonAnatomicRegion::cleanup()
 {
     /* delete code list, it will be recreated automatically when needed */
     delete Codes;
@@ -123,8 +123,8 @@ void CID4031_CommonAnatomicRegions::cleanup()
 }
 
 
-DSRCodedEntryValue CID4031_CommonAnatomicRegions::getCodedEntry(const EnumType value,
-                                                                const OFBool enhancedEncodingMode)
+DSRCodedEntryValue CID4031_CommonAnatomicRegion::getCodedEntry(const EnumType value,
+                                                               const OFBool enhancedEncodingMode)
 {
     DSRCodedEntryValue codedEntry;
     /* search for given enumerated value */
@@ -141,7 +141,7 @@ DSRCodedEntryValue CID4031_CommonAnatomicRegions::getCodedEntry(const EnumType v
 }
 
 
-CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes()
+CID4031_CommonAnatomicRegion::CodeList &CID4031_CommonAnatomicRegion::getCodes()
 {
     /* check whether code list has already been created and initialized */
     if (Codes == NULL)
@@ -269,7 +269,7 @@ CID4031_CommonAnatomicRegions::CodeList &CID4031_CommonAnatomicRegions::getCodes
 }
 
 
-OFCondition CID4031_CommonAnatomicRegions::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
+OFCondition CID4031_CommonAnatomicRegion::setEnhancedEncodingMode(DSRCodedEntryValue &codedEntryValue)
 {
     return codedEntryValue.setEnhancedEncodingMode(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID);
 }

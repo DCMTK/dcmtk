@@ -34,27 +34,27 @@ class DCMTK_CMR_EXPORT CMR_ContentMappingResource
 
     /** initialize \e all supported context groups of the "Content Mapping Resource"
      *  explicitly.  Currently, the following context group classes are supported:
-     *  - CID11_RouteOfAdministration
+     *  - CID11_AdministrationRoute
      *  - CID29_AcquisitionModality
      *  - CID42_NumericValueQualifier
-     *  - CID100_QuantitativeDiagnosticImagingProcedures
-     *  - CID218_QuantitativeImageFeatures
+     *  - CID100_QuantitativeDiagnosticImagingProcedure
+     *  - CID218_QuantitativeImageFeature
      *  - CID244_Laterality
      *  - CID247_LateralityLeftRightOnly
      *  - CID4020_PETRadionuclide
      *  - CID4021_PETRadiopharmaceutical
-     *  - CID4031_CommonAnatomicRegions
-     *  - CID5000_Languages
-     *  - CID5001_Countries
+     *  - CID4031_CommonAnatomicRegion
+     *  - CID5000_Language
+     *  - CID5001_Country
      *  - CID6147_ResponseCriteria
-     *  - CID7021_MeasurementReportDocumentTitles
-     *  - CID7181_AbstractMultiDimensionalImageModelComponentUnits
-     *  - CID7445_DeviceParticipatingRoles
-     *  - CID7452_OrganizationalRoles
-     *  - CID7453_PerformingRoles
-     *  - CID7464_GeneralRegionOfInterestMeasurementModifiers
-     *  - CID7469_GenericIntensityAndSizeMeasurements
-     *  - CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurements
+     *  - CID7021_MeasurementReportDocumentTitle
+     *  - CID7181_AbstractMultiDimensionalImageModelComponentUnit
+     *  - CID7445_DeviceParticipatingRole
+     *  - CID7452_OrganizationalRole
+     *  - CID7453_PerformingRole
+     *  - CID7464_GeneralRegionOfInterestMeasurementModifier
+     *  - CID7469_GenericIntensityAndSizeMeasurement
+     *  - CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement
      *  - CID10013_CTAcquisitionType
      *  - CID10033_CTReconstructionAlgorithm
      *

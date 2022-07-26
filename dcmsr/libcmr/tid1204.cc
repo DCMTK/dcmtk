@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1204_LanguageOfContentItemAndDescendants
@@ -40,8 +40,8 @@ TID1204_LanguageOfContentItemAndDescendants::TID1204_LanguageOfContentItemAndDes
 }
 
 
-OFCondition TID1204_LanguageOfContentItemAndDescendants::setLanguage(const CID5000_Languages &language,
-                                                                     const CID5001_Countries &country,
+OFCondition TID1204_LanguageOfContentItemAndDescendants::setLanguage(const CID5000_Language &language,
+                                                                     const CID5001_Country &country,
                                                                      const OFBool check)
 {
     OFCondition result = EC_Normal;
