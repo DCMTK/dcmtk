@@ -1087,7 +1087,9 @@ typedef unsigned long ulong;
                                        /* http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html */
     #pragma warning( disable : 4099 )  /* disable warning about mismatched class and struct keywords */
                                        /* http://alfps.wordpress.com/2010/06/22/cppx-is-c4099-really-a-sillywarning-disabling-msvc-sillywarnings */
-    #pragma warning( disable : 4521 )  /* disable warnings about multiple copy constructors and assignment operators,*/
+    #if _MSC_VER < 1900 /* Warning only available before Visual Studio 2015 */
+        #pragma warning( disable : 4351 )  // disable warnings about "new behavior" when initializing the elements of an array
+    #endif /* _MSC_VER < 1900 */
     #pragma warning( disable : 4522 )  /* since these are sometimes necessary for correct overload resolution*/
 
 #if _MSC_VER >= 1400                   /* Additional settings for Visual Studio 2005 and newer */
