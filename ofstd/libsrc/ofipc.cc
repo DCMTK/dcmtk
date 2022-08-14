@@ -201,6 +201,18 @@ OFCondition OFIPCMessageQueueServer::deleteQueue()
 #endif
 }
 
+void OFIPCMessageQueueServer::detachQueue()
+{
+#ifdef _WIN32
+  queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
+#elif HAVE_MQUEUE_H
+  queue_ = OFstatic_cast(mqd_t, -1);
+  name_.clear();
+#else
+  queue_ = -1;
+#endif
+}
+
 OFBool OFIPCMessageQueueServer::messageWaiting() const
 {
   return (numMessagesWaiting() > 0);
@@ -484,6 +496,17 @@ OFCondition OFIPCMessageQueueClient::closeQueue()
   queue_ = -1;
   return EC_Normal;
 
+#endif
+}
+
+void OFIPCMessageQueueClient::detachQueue()
+{
+#ifdef _WIN32
+  queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
+#elif HAVE_MQUEUE_H
+  queue_ = OFstatic_cast(mqd_t, -1);
+#else
+  queue_ = -1;
 #endif
 }
 

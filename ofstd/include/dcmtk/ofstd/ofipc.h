@@ -84,6 +84,13 @@ public:
    */
   OFCondition deleteQueue();
 
+  /** resets this object to default constructed state without closing
+   *  the message queue. This method may be called by forked child
+   *  processes to make sure that the destructor executed in the child
+   *  process will not close the message queue for the parent process as well.
+   */
+  void detachQueue();
+
   /** check if an incoming message is waiting in the queue.
    *  @return true if a message is waiting, false otherwise
    */
@@ -160,6 +167,13 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   OFCondition closeQueue();
+
+  /** resets this object to default constructed state without closing
+   *  the message queue. This method may be called by forked child
+   *  processes to make sure that the destructor executed in the child
+   *  process will not close the message queue for the parent process as well.
+   */
+  void detachQueue();
 
   /** send a message by placing it into the message queue.
    *  @param msg the message to be sent. Note that there are platform specific
