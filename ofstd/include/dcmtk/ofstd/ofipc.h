@@ -135,7 +135,7 @@ private:
  *  maximum message size. For portable usage, messages should be text-based
  *  and short (e.g. a DICOM UID), and message queues should be kept short.
  */
-class OFIPCMessageQueueClient
+class DCMTK_OFSTD_EXPORT OFIPCMessageQueueClient
 {
 public:
   /// default constructor
