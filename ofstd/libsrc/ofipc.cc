@@ -24,6 +24,8 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/ofstd.h"
 
+#include <climits>
+
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -50,7 +52,7 @@ OFIPCMessageQueueServer::OFIPCMessageQueueServer()
 #ifdef _WIN32
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
 #elif HAVE_MQUEUE_H
-: queue_(OFstatic_cast(mqd_t, -1))
+: queue_((mqd_t) -1)
 , name_()
 #else
 : queue_(-1)
@@ -114,7 +116,7 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   queue_ = mq_open(name_.c_str(), O_RDONLY|O_CREAT|O_EXCL|O_NONBLOCK, 0666, NULL);
 
   // return an error if creating the queue failed
-  if (queue_ == OFstatic_cast(mqd_t, -1)) return EC_IPCMessageQueueFailure;
+  if (queue_ == (mqd_t) -1) return EC_IPCMessageQueueFailure;
   return EC_Normal;
 
 #else
@@ -153,7 +155,7 @@ OFBool OFIPCMessageQueueServer::hasQueue() const
 #ifdef _WIN32
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
 #elif HAVE_MQUEUE_H
-  return (queue_ != OFstatic_cast(mqd_t, -1));
+  return (queue_ != (mqd_t) -1);
 #else
   return (queue_ != -1);
 #endif
@@ -183,7 +185,7 @@ OFCondition OFIPCMessageQueueServer::deleteQueue()
   result =  mq_unlink(name_.c_str());
 
   // reset queue descriptor
-  queue_ = OFstatic_cast(mqd_t, -1);
+  queue_ = (mqd_t) -1;
 
   if (result) return EC_IPCMessageQueueFailure;
   return EC_Normal;
@@ -206,7 +208,7 @@ void OFIPCMessageQueueServer::detachQueue()
 #ifdef _WIN32
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
 #elif HAVE_MQUEUE_H
-  queue_ = OFstatic_cast(mqd_t, -1);
+  queue_ = (mqd_t) -1;
   name_.clear();
 #else
   queue_ = -1;
@@ -366,7 +368,7 @@ OFIPCMessageQueueClient::OFIPCMessageQueueClient()
 #ifdef _WIN32
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
 #elif HAVE_MQUEUE_H
-: queue_(OFstatic_cast(mqd_t, -1))
+: queue_((mqd_t) -1)
 #else
 : queue_(-1)
 #endif
@@ -380,7 +382,7 @@ OFIPCMessageQueueClient::~OFIPCMessageQueueClient()
 #ifdef _WIN32
   if (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE)) (void) closeQueue();
 #elif HAVE_MQUEUE_H
-  if (queue_ != OFstatic_cast(mqd_t, -1)) (void) closeQueue();
+  if (queue_ != (mqd_t) -1) (void) closeQueue();
 #else
   if (queue_ != -1) (void) closeQueue();
 #endif
@@ -430,7 +432,7 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   queue_ = mq_open(queuename.c_str(), O_WRONLY|O_NONBLOCK);
 
   // return an error if opening the queue failed
-  if (queue_ == OFstatic_cast(mqd_t, -1)) return EC_IPCMessageQueueFailure;
+  if (queue_ == (mqd_t) -1) return EC_IPCMessageQueueFailure;
   return EC_Normal;
 
 #else
@@ -460,7 +462,7 @@ OFBool OFIPCMessageQueueClient::hasQueue() const
 #ifdef _WIN32
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
 #elif HAVE_MQUEUE_H
-  return (queue_ != OFstatic_cast(mqd_t, -1));
+  return (queue_ != (mqd_t) -1);
 #else
   return (queue_ != OFstatic_cast(key_t, -1));
 #endif
@@ -486,7 +488,7 @@ OFCondition OFIPCMessageQueueClient::closeQueue()
   int result = mq_close(queue_);
 
   // reset queue descriptor
-  queue_ = OFstatic_cast(mqd_t, -1);
+  queue_ = (mqd_t) -1;
 
   if (result) return EC_IPCMessageQueueFailure;
   return EC_Normal;
@@ -504,7 +506,7 @@ void OFIPCMessageQueueClient::detachQueue()
 #ifdef _WIN32
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
 #elif HAVE_MQUEUE_H
-  queue_ = OFstatic_cast(mqd_t, -1);
+  queue_ = (mqd_t) -1;
 #else
   queue_ = -1;
 #endif
