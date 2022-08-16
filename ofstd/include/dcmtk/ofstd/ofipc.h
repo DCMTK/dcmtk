@@ -33,7 +33,13 @@
 // uncomment the following line:
 // #undef HAVE_MQUEUE_H
 
-#ifdef HAVE_MQUEUE_H
+// Note: On FreeBSD, Posix message queues are available since FreeBSD 7,
+// but must be explicitly enabled by loading the "mqueuefs" kernel module
+// (i.e. by calling "kldload mqueuefs" as root user).
+// System V message queues, however, are always available. Therefore,
+// we prefer these when compiling on FreeBSD.
+
+#if defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 BEGIN_EXTERN_C
 #include <mqueue.h>                   /* for mqd_t */
 END_EXTERN_C
@@ -113,10 +119,10 @@ private:
 
 #ifdef _WIN32
   OFuintptr_t queue_; // Windows mailslot handle
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   mqd_t queue_;       // Posix message queue ID
   OFString name_;     // name of the message queue
-#elif HAVE_SYS_MSG_H
+#elif defined(HAVE_SYS_MSG_H)
   int queue_;         // System V message queue ID
 #else
 #error Platform has neither WIN32, Posix nor System V IPC message queues.
@@ -188,9 +194,9 @@ private:
 
 #ifdef _WIN32
   OFuintptr_t queue_; // Windows mailslot handle
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   mqd_t queue_;       // Posix message queue ID
-#elif HAVE_SYS_MSG_H
+#elif defined(HAVE_SYS_MSG_H)
   int queue_;         // System V message queue ID
 #endif
 

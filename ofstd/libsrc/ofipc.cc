@@ -84,8 +84,8 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
 
   // create mailslot
   HANDLE hSlot = CreateMailslot(slotname.c_str(), 0, 0, NULL);
-  if (hSlot == INVALID_HANDLE_VALUE) 
-  { 
+  if (hSlot == INVALID_HANDLE_VALUE)
+  {
     // report an error if the mailslot creation failed
     return EC_IPCMessageQueueFailure;
   }
@@ -225,7 +225,7 @@ size_t OFIPCMessageQueueServer::numMessagesWaiting() const
   if (! hasQueue()) return 0;
 
 #ifdef _WIN32
-  DWORD cMessage = 0; 
+  DWORD cMessage = 0;
   if (GetMailslotInfo( OFreinterpret_cast(HANDLE, queue_), NULL, NULL, &cMessage, NULL))
   {
     return OFstatic_cast(size_t, cMessage);
@@ -404,11 +404,11 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   slotname += port_str;
 
   // open mailslot
-  HANDLE hFile = CreateFile(slotname.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, 
-   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); 
- 
-  if (hFile == INVALID_HANDLE_VALUE) 
-  { 
+  HANDLE hFile = CreateFile(slotname.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL,
+   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+  if (hFile == INVALID_HANDLE_VALUE)
+  {
     // report an error if opening of the mailslot creation
     return EC_IPCMessageQueueFailure;
   }
@@ -545,7 +545,6 @@ OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
   // send the message
   int result = msgsnd(queue_, buf, msg.length(), IPC_NOWAIT);
   delete[] buf;
-  perror("sendMessage");
 
   if (result) return EC_IPCMessageQueueFailure;
   return EC_Normal;
