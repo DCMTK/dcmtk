@@ -518,7 +518,8 @@ OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
   if (msg.length() == 0) return EC_IPCEmptyMessage;
 
 #ifdef _WIN32
-  if (WriteFile(OFreinterpret_cast(HANDLE, queue_), msg.c_str(), OFstatic_cast(DWORD, msg.length()), NULL, NULL))
+  DWORD written = 0;
+  if (WriteFile(OFreinterpret_cast(HANDLE, queue_), msg.c_str(), OFstatic_cast(DWORD, msg.length()), &written, NULL))
     return EC_Normal;
     else return EC_IPCMessageQueueFailure;
 
