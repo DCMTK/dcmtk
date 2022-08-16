@@ -121,10 +121,16 @@ void ipc_server(Uint32 port)
   // try to read messages from the queue until success or timeout
   do
   {
-    while (! server.messageWaiting())
+    while (! server.messageWaiting() && elapsed < IPC_CLIENT_TIMEOUT)
     {
       OFStandard::milliSleep(100);
       elapsed += 100;
+    }
+
+    if (! server.messageWaiting())
+    {
+      OFCHECK_FAIL("ofstd_ipc: ipc_server experienced timeout after receiving " << numMessages << " of 3 messages");
+      return;
     }
 
     OFString msg;
@@ -147,7 +153,7 @@ void ipc_server(Uint32 port)
         OFCHECK(msg == "1.2.276.0.7230010.3.1.4.1787205428.2023426.1655632595.148700");
         break;
       default:
-        OFCHECK_FAIL("too many messages received");
+        OFCHECK_FAIL("ofstd_ipc: ipc_server received too many messages");
         return;
         break;
     }
@@ -166,8 +172,6 @@ OFTEST(ofstd_ipc)
 {
 #ifdef _WIN32
   // prepare the command line
-  COUT << "appName in ofstd_ipc: " << ( appName ? appName : "NULL") << OFendl;
-
   OFString cmdLine = appName;
   long pid = OFStandard::getProcessID() + 65536;
   cmdLine += " --ipc ";
@@ -185,8 +189,6 @@ OFTEST(ofstd_ipc)
   si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
   si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
-
-  COUT << "command line: " << cmdLine.c_str() << OFendl;
 
   // create child process.
   if (!CreateProcessA(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
