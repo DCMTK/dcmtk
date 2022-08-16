@@ -32,7 +32,7 @@
 #endif
 
 BEGIN_EXTERN_C
-#ifdef HAVE_MQUEUE_H
+#if defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 #include <mqueue.h>
 #endif
 #ifdef HAVE_FCNTL_H
@@ -51,7 +51,7 @@ END_EXTERN_C
 OFIPCMessageQueueServer::OFIPCMessageQueueServer()
 #ifdef _WIN32
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 : queue_((mqd_t) -1)
 , name_()
 #else
@@ -84,8 +84,8 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
 
   // create mailslot
   HANDLE hSlot = CreateMailslot(slotname.c_str(), 0, 0, NULL);
-  if (hSlot == INVALID_HANDLE_VALUE)
-  {
+  if (hSlot == INVALID_HANDLE_VALUE) 
+  { 
     // report an error if the mailslot creation failed
     return EC_IPCMessageQueueFailure;
   }
@@ -94,7 +94,7 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   queue_ = OFreinterpret_cast(OFuintptr_t, hSlot);
   return EC_Normal;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // construct name of queue
   char port_str[12];
   OFStandard::snprintf(port_str, sizeof(port_str), "%lu", OFstatic_cast(unsigned long, port));
@@ -154,7 +154,7 @@ OFBool OFIPCMessageQueueServer::hasQueue() const
 {
 #ifdef _WIN32
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   return (queue_ != (mqd_t) -1);
 #else
   return (queue_ != -1);
@@ -176,7 +176,7 @@ OFCondition OFIPCMessageQueueServer::deleteQueue()
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
   return result;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // close the message queue
   int result = mq_close(queue_);
   if (result) return EC_IPCMessageQueueFailure;
@@ -207,7 +207,7 @@ void OFIPCMessageQueueServer::detachQueue()
 {
 #ifdef _WIN32
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   queue_ = (mqd_t) -1;
   name_.clear();
 #else
@@ -225,14 +225,14 @@ size_t OFIPCMessageQueueServer::numMessagesWaiting() const
   if (! hasQueue()) return 0;
 
 #ifdef _WIN32
-  DWORD cMessage = 0;
+  DWORD cMessage = 0; 
   if (GetMailslotInfo( OFreinterpret_cast(HANDLE, queue_), NULL, NULL, &cMessage, NULL))
   {
     return OFstatic_cast(size_t, cMessage);
   }
   return 0;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // retrieve message queue status
   struct mq_attr attr;
   memset(&attr, 0, sizeof(attr));
@@ -293,7 +293,7 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
   delete[] buf;
   return result;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // retrieve message queue status
   struct mq_attr attr;
   memset(&attr, 0, sizeof(attr));
@@ -367,7 +367,7 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
 OFIPCMessageQueueClient::OFIPCMessageQueueClient()
 #ifdef _WIN32
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 : queue_((mqd_t) -1)
 #else
 : queue_(-1)
@@ -381,7 +381,7 @@ OFIPCMessageQueueClient::~OFIPCMessageQueueClient()
   // close the queue if the user has not already done so
 #ifdef _WIN32
   if (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE)) (void) closeQueue();
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   if (queue_ != (mqd_t) -1) (void) closeQueue();
 #else
   if (queue_ != -1) (void) closeQueue();
@@ -404,11 +404,11 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   slotname += port_str;
 
   // open mailslot
-  HANDLE hFile = CreateFile(slotname.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL,
-   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-  if (hFile == INVALID_HANDLE_VALUE)
-  {
+  HANDLE hFile = CreateFile(slotname.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, 
+   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); 
+ 
+  if (hFile == INVALID_HANDLE_VALUE) 
+  { 
     // report an error if opening of the mailslot creation
     return EC_IPCMessageQueueFailure;
   }
@@ -417,7 +417,7 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   queue_ = OFreinterpret_cast(OFuintptr_t, hFile);
   return EC_Normal;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // construct name of queue
   char port_str[12];
   OFStandard::snprintf(port_str, sizeof(port_str), "%lu", OFstatic_cast(unsigned long, port));
@@ -461,7 +461,7 @@ OFBool OFIPCMessageQueueClient::hasQueue() const
 {
 #ifdef _WIN32
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   return (queue_ != (mqd_t) -1);
 #else
   return (queue_ != OFstatic_cast(key_t, -1));
@@ -483,7 +483,7 @@ OFCondition OFIPCMessageQueueClient::closeQueue()
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
   return result;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // close the message queue
   int result = mq_close(queue_);
 
@@ -505,7 +505,7 @@ void OFIPCMessageQueueClient::detachQueue()
 {
 #ifdef _WIN32
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   queue_ = (mqd_t) -1;
 #else
   queue_ = -1;
@@ -522,7 +522,7 @@ OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
     return EC_Normal;
     else return EC_IPCMessageQueueFailure;
 
-#elif HAVE_MQUEUE_H
+#elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // send the message and report an error if this fails
   if (mq_send(queue_, msg.c_str(), msg.length(), 0)) return EC_IPCMessageQueueFailure;
   return EC_Normal;
