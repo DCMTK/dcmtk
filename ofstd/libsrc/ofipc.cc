@@ -51,6 +51,8 @@ END_EXTERN_C
 OFIPCMessageQueueServer::OFIPCMessageQueueServer()
 #ifdef _WIN32
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 : queue_((mqd_t) -1)
 , name_()
@@ -93,6 +95,9 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   // store the handle
   queue_ = OFreinterpret_cast(OFuintptr_t, hSlot);
   return EC_Normal;
+
+#elif defined(__ANDROID__)
+  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // construct name of queue
@@ -154,6 +159,8 @@ OFBool OFIPCMessageQueueServer::hasQueue() const
 {
 #ifdef _WIN32
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
+#elif defined(__ANDROID__)
+  return OFFalse;
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   return (queue_ != (mqd_t) -1);
 #else
@@ -175,6 +182,8 @@ OFCondition OFIPCMessageQueueServer::deleteQueue()
 
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
   return result;
+#elif defined(__ANDROID__)
+  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // close the message queue
@@ -207,6 +216,8 @@ void OFIPCMessageQueueServer::detachQueue()
 {
 #ifdef _WIN32
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   queue_ = (mqd_t) -1;
   name_.clear();
@@ -230,6 +241,9 @@ size_t OFIPCMessageQueueServer::numMessagesWaiting() const
   {
     return OFstatic_cast(size_t, cMessage);
   }
+  return 0;
+
+#elif defined(__ANDROID__)
   return 0;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
@@ -292,6 +306,8 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
   (void) CloseHandle(hEvent);
   delete[] buf;
   return result;
+#elif defined(__ANDROID__)
+  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // retrieve message queue status
@@ -367,6 +383,8 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
 OFIPCMessageQueueClient::OFIPCMessageQueueClient()
 #ifdef _WIN32
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 : queue_((mqd_t) -1)
 #else
@@ -381,6 +399,8 @@ OFIPCMessageQueueClient::~OFIPCMessageQueueClient()
   // close the queue if the user has not already done so
 #ifdef _WIN32
   if (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE)) (void) closeQueue();
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   if (queue_ != (mqd_t) -1) (void) closeQueue();
 #else
@@ -416,6 +436,9 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   // store the handle
   queue_ = OFreinterpret_cast(OFuintptr_t, hFile);
   return EC_Normal;
+
+#elif defined(__ANDROID__)
+  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // construct name of queue
@@ -461,6 +484,8 @@ OFBool OFIPCMessageQueueClient::hasQueue() const
 {
 #ifdef _WIN32
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
+#elif defined(__ANDROID__)
+  return OFFalse;
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   return (queue_ != (mqd_t) -1);
 #else
@@ -482,6 +507,8 @@ OFCondition OFIPCMessageQueueClient::closeQueue()
 
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
   return result;
+#elif defined(__ANDROID__)
+  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // close the message queue
@@ -505,6 +532,8 @@ void OFIPCMessageQueueClient::detachQueue()
 {
 #ifdef _WIN32
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   queue_ = (mqd_t) -1;
 #else
@@ -522,6 +551,9 @@ OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
   if (WriteFile(OFreinterpret_cast(HANDLE, queue_), msg.c_str(), OFstatic_cast(DWORD, msg.length()), &written, NULL))
     return EC_Normal;
     else return EC_IPCMessageQueueFailure;
+
+#elif defined(__ANDROID__)
+  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // send the message and report an error if this fails

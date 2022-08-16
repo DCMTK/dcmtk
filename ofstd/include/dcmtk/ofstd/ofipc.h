@@ -119,6 +119,8 @@ private:
 
 #ifdef _WIN32
   OFuintptr_t queue_; // Windows mailslot handle
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   mqd_t queue_;       // Posix message queue ID
   OFString name_;     // name of the message queue
@@ -194,6 +196,8 @@ private:
 
 #ifdef _WIN32
   OFuintptr_t queue_; // Windows mailslot handle
+#elif defined(__ANDROID__)
+
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   mqd_t queue_;       // Posix message queue ID
 #elif defined(HAVE_SYS_MSG_H)
