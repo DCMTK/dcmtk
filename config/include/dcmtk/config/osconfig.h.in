@@ -14,7 +14,7 @@
 #define END_EXTERN_C
 #endif
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
+/* MinGW needs some special handling because it is a mixture of WIN32 and POSIX.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
@@ -501,6 +501,9 @@
 
 /* Define to 1 if you have the `mktemp' function. */
 #undef HAVE_MKTEMP
+
+/* Define to 1 if you have the <mqueue.h> header file. */
+#undef HAVE_MQUEUE_H
 
 /* Define to 1 if you have the `nanosleep' function. */
 #undef HAVE_NANOSLEEP
@@ -1096,6 +1099,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #undef HAVE_SYS_MMAN_H
+
+/* Define to 1 if you have the <sys/msg.h> header file. */
+#undef HAVE_SYS_MSG_H
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */

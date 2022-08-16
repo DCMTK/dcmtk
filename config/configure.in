@@ -93,7 +93,7 @@ AH_TOP([#ifndef OSCONFIG_H
 #define END_EXTERN_C
 #endif
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
+/* MinGW needs some special handling because it is a mixture of WIN32 and POSIX.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
@@ -517,6 +517,7 @@ AC_CHECK_HEADERS(locale.h)
 AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(math.h)
 AC_CHECK_HEADERS(cmath)
+AC_CHECK_HEADERS(mqueue.h)
 AC_CHECK_HEADERS(new)
 AC_CHECK_HEADERS(new.h)
 AC_CHECK_HEADERS(netdb.h)
@@ -545,6 +546,7 @@ AC_CHECK_HEADERS(strstream.h)
 AC_CHECK_HEADERS(synch.h)
 AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
+AC_CHECK_HEADERS(sys/msg.h)
 AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_HEADERS(sys/select.h)
@@ -621,7 +623,7 @@ fi
 
 if test $THREADSUPPORT = posix ; then
   dnl
-  dnl check Posix MT libraries -lrt and -lpthread
+  dnl check POSIX MT libraries -lrt and -lpthread.
   dnl OSF/1 re-#defines most of the pthread function names.
   dnl This is why we use pthread_key_create for the test.
   dnl
@@ -740,6 +742,16 @@ if test $THREADSUPPORT = posix ; then
     ], AC_MSG_RESULT(no))
   ]
   )
+else
+  dnl
+  dnl Even if support for POSIX threads is not enabled, check for library -lrt,
+  dnl since it is also required for IPC (inter-process communication).
+  dnl
+  AC_CHECK_LIB(rt, mq_open, [
+  ac_tr_lib=HAVE_LIBRT
+  AC_DEFINE_UNQUOTED($ac_tr_lib)
+  LIBS="-lrt $LIBS"
+  ], , $LIBS )
 fi
 
 AC_MSG_CHECKING(multi-thread support)

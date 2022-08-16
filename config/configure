@@ -8341,6 +8341,18 @@ fi
 
 done
 
+for ac_header in mqueue.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "mqueue.h" "ac_cv_header_mqueue_h" "$ac_includes_default"
+if test "x$ac_cv_header_mqueue_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_MQUEUE_H 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in new
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "new" "ac_cv_header_new" "$ac_includes_default"
@@ -8671,6 +8683,18 @@ do :
 if test "x$ac_cv_header_sys_file_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_SYS_FILE_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in sys/msg.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "sys/msg.h" "ac_cv_header_sys_msg_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_msg_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_MSG_H 1
 _ACEOF
 
 fi
@@ -9464,6 +9488,54 @@ fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 
+
+fi
+
+else
+          { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mq_open in -lrt" >&5
+$as_echo_n "checking for mq_open in -lrt... " >&6; }
+if ${ac_cv_lib_rt_mq_open+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lrt $LIBS  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char mq_open ();
+int
+main ()
+{
+return mq_open ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_rt_mq_open=yes
+else
+  ac_cv_lib_rt_mq_open=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_rt_mq_open" >&5
+$as_echo "$ac_cv_lib_rt_mq_open" >&6; }
+if test "x$ac_cv_lib_rt_mq_open" = xyes; then :
+
+  ac_tr_lib=HAVE_LIBRT
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_lib 1
+_ACEOF
+
+  LIBS="-lrt $LIBS"
 
 fi
 
@@ -12906,7 +12978,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12909 "configure"
+#line 12981 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13157,7 +13229,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13160 "configure"
+#line 13232 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13407,7 +13479,7 @@ if ${ac_cv_check_class_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13410 "configure"
+#line 13482 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -13476,7 +13548,7 @@ if ${ac_cv_check_static_template_method+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13479 "configure"
+#line 13551 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -13545,7 +13617,7 @@ if ${ac_cv_check_function_template+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 13548 "configure"
+#line 13620 "configure"
 #include "confdefs.h"
 
 template <class T>

@@ -21,9 +21,9 @@ LOCALLIBS = -lofstd -loficonv $(CHARCONVLIBS) $(MATHLIBS)
 LOCALTRASH = *.out testfile.\$$\$$\$$
 
 test_objs = tests.o tatof.o tmap.o tvec.o tfilsys.o tftoa.o tthread.o \
-            tbase64.o tstring.o tstrutl.o tlist.o tstack.o tofdatim.o tofstd.o \
-            tmarkup.o tchrenc.o txml.o tuuid.o toffile.o tmem.o toption.o \
-            ttuple.o tlimits.o tvariant.o terror.o
+	tbase64.o tstring.o tstrutl.o tlist.o tstack.o tofdatim.o tofstd.o \
+	tmarkup.o tchrenc.o txml.o tuuid.o toffile.o tmem.o toption.o \
+	ttuple.o tlimits.o tvariant.o terror.o tipc.o
 objs = $(test_objs)
 progs = tests oficonv_tests
 
@@ -38,9 +38,9 @@ tests: $(test_objs)
 # since both libofstd.a and liboficonv.a are available now
 
 oficonv_objs = $(oficonvtest)/tests.o $(oficonvtest)/oficonv_tests.o \
-    $(oficonvtest)/ticonv.o $(oficonvtest)/ticonv_iso8859.o \
-    $(oficonvtest)/ticonv_chinese.o $(oficonvtest)/ticonv_japanese.o \
-    $(oficonvtest)/ticonv_korean.o
+	$(oficonvtest)/ticonv.o $(oficonvtest)/ticonv_iso8859.o \
+	$(oficonvtest)/ticonv_chinese.o $(oficonvtest)/ticonv_japanese.o \
+	$(oficonvtest)/ticonv_korean.o
 
 .PHONY: oficonv_tests
 
