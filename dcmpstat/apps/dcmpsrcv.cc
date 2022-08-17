@@ -1161,6 +1161,7 @@ int main(int argc, char *argv[])
     cond = mqserver.createQueue("dcmpsrcv", networkPort);
     if (errorCond(cond, "Error initialising message queue:"))
     {
+      OFLOG_ERROR(dcmpsrcvLogger, OFStandard::getLastSystemErrorCode().message());
       return 1;
     }
 #endif
