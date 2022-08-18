@@ -96,7 +96,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   vrscanl.c
 )
 
-DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog)
+DCMTK_TARGET_LINK_MODULES(dcmdata ofstd oflog ${ZLIB_MODULES})
 DCMTK_TARGET_LINK_LIBRARIES(dcmdata ${ZLIB_LIBS})
 
 # Various dictionary-related commands
