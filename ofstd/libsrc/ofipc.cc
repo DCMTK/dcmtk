@@ -23,8 +23,11 @@
 #include "dcmtk/ofstd/ofipc.h"
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofthread.h"
 
 #include <climits>
+#include <csignal>
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
@@ -47,6 +50,81 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 /* ---------------------- OFIPCMessageQueueServer ---------------------- */
+
+#ifndef _WIN32
+
+#ifdef WITH_THREADS
+static OFMutex OFIPCMessageQueueServerSignalMutex;
+#endif
+
+static OFList< OFIPCMessageQueueServer * > OFIPCMessageQueueServerList;
+
+static void addMessageQueueServer(OFIPCMessageQueueServer *s)
+{
+#ifdef WITH_THREADS
+  OFIPCMessageQueueServerSignalMutex.lock();
+#endif
+  OFIPCMessageQueueServerList.push_back(s);
+#ifdef WITH_THREADS
+  OFIPCMessageQueueServerSignalMutex.unlock();
+#endif
+}
+
+static void removeMessageQueueServer(OFIPCMessageQueueServer *s)
+{
+#ifdef WITH_THREADS
+  OFIPCMessageQueueServerSignalMutex.lock();
+#endif
+  OFIPCMessageQueueServerList.remove(s);
+#ifdef WITH_THREADS
+  OFIPCMessageQueueServerSignalMutex.unlock();
+#endif
+}
+
+extern void closeAllMessageQueues()
+{
+  // this function is only called when the process has received
+  // SIGINT or SIGTERM, i.e. is in the process of shutdown.
+  // Here, we deliberately ignore the mutex and just close all queues
+  // to make sure they don't remain after the end of the application.
+  OFListIterator(OFIPCMessageQueueServer *) first = OFIPCMessageQueueServerList.begin();
+  OFListIterator(OFIPCMessageQueueServer *) last = OFIPCMessageQueueServerList.end();
+  while (first != last)
+  {
+    (*first)->deleteQueueInternal();
+    first = OFIPCMessageQueueServerList.erase(first);
+  }
+}
+
+#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
+extern "C" void OFIPCMessageQueueServerSIGINTHandler(...)
+#else
+extern "C" void OFIPCMessageQueueServerSIGINTHandler(int)
+#endif
+{
+  // globally close all message queues
+  closeAllMessageQueues();
+
+  // re-install the default handler for SIGINT and execute it
+  signal(SIGINT, SIG_DFL);
+  raise(SIGINT);
+}
+
+#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
+extern "C" void OFIPCMessageQueueServerSIGTERMHandler(...)
+#else
+extern "C" void OFIPCMessageQueueServerSIGTERMHandler(int)
+#endif
+{
+  // globally close all message queues
+  closeAllMessageQueues();
+
+  // re-install the default handler for SIGTERM and execute it
+  signal(SIGTERM, SIG_DFL);
+  raise(SIGTERM);
+}
+
+#endif /* #ifndef _WIN32 */
 
 OFIPCMessageQueueServer::OFIPCMessageQueueServer()
 #ifdef _WIN32
@@ -86,8 +164,8 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
 
   // create mailslot
   HANDLE hSlot = CreateMailslot(slotname.c_str(), 0, 0, NULL);
-  if (hSlot == INVALID_HANDLE_VALUE) 
-  { 
+  if (hSlot == INVALID_HANDLE_VALUE)
+  {
     // report an error if the mailslot creation failed
     return EC_IPCMessageQueueFailure;
   }
@@ -122,6 +200,8 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
 
   // return an error if creating the queue failed
   if (queue_ == (mqd_t) -1) return EC_IPCMessageQueueFailure;
+
+  addMessageQueueServer(this);
   return EC_Normal;
 
 #else
@@ -150,6 +230,8 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   // create a new System V IPC message queue, fail if queue already exists.
   queue_ = msgget(key, IPC_CREAT | IPC_EXCL | 0666 );
   if (queue_ < 0) return EC_IPCMessageQueueFailure;
+
+  addMessageQueueServer(this);
   return EC_Normal;
 
 #endif
@@ -168,7 +250,7 @@ OFBool OFIPCMessageQueueServer::hasQueue() const
 #endif
 }
 
-OFCondition OFIPCMessageQueueServer::deleteQueue()
+OFCondition OFIPCMessageQueueServer::deleteQueueInternal()
 {
   if (!hasQueue()) return EC_IPCMessageNoQueue;
 
@@ -212,6 +294,16 @@ OFCondition OFIPCMessageQueueServer::deleteQueue()
 #endif
 }
 
+
+OFCondition OFIPCMessageQueueServer::deleteQueue()
+{
+#ifndef _WIN32
+  removeMessageQueueServer(this);
+#endif
+  return deleteQueueInternal();
+}
+
+
 void OFIPCMessageQueueServer::detachQueue()
 {
 #ifdef _WIN32
@@ -236,7 +328,7 @@ size_t OFIPCMessageQueueServer::numMessagesWaiting() const
   if (! hasQueue()) return 0;
 
 #ifdef _WIN32
-  DWORD cMessage = 0; 
+  DWORD cMessage = 0;
   if (GetMailslotInfo( OFreinterpret_cast(HANDLE, queue_), NULL, NULL, &cMessage, NULL))
   {
     return OFstatic_cast(size_t, cMessage);
@@ -376,6 +468,14 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
 #endif
 }
 
+void OFIPCMessageQueueServer::registerSignalHandler()
+{
+#ifndef _WIN32
+  signal(SIGINT, OFIPCMessageQueueServerSIGINTHandler);
+  signal(SIGTERM, OFIPCMessageQueueServerSIGTERMHandler);
+#endif
+}
+
 
 /* ---------------------- OFIPCMessageQueueClient ---------------------- */
 
@@ -424,11 +524,11 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   slotname += port_str;
 
   // open mailslot
-  HANDLE hFile = CreateFile(slotname.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, 
-   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL); 
- 
-  if (hFile == INVALID_HANDLE_VALUE) 
-  { 
+  HANDLE hFile = CreateFile(slotname.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL,
+   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+  if (hFile == INVALID_HANDLE_VALUE)
+  {
     // report an error if opening of the mailslot creation
     return EC_IPCMessageQueueFailure;
   }

@@ -1138,6 +1138,10 @@ int main(int argc, char *argv[])
     OFCondition cond = EC_Normal;
     OFIPCMessageQueueServer mqserver;
 
+    // make sure that the message queue is deleted if this application
+    // is terminated through SIGINT (CTRL-C) or SIGTERM (kill).
+    mqserver.registerSignalHandler();
+
 #ifdef _WIN32
   if (opt_forkedChild)
   {

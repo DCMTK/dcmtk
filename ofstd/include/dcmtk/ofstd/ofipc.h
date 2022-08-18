@@ -45,6 +45,16 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 #endif
 
+/** A function that can be executed in a signal handler for an abnormal
+ *  termination of the application through SIGINT (CTRL-C) or SIGTERM
+ *  (kill) in order to globally delete all message queues created
+ *  by this process through calls to OFIPCMessageQueueServer::createQueue(),
+ *  if the queues would otherwise persist past the termination of the
+ *  process, as Posix and System V queues would. Not to be called by
+ *  normal user code, not thread safe!
+ */
+extern void closeAllMessageQueues();
+
 /** a server class for one-directional IPC messaging. It enables the user to create
  *  an IPC message queue and to receive incoming messages.
  *  @note Note that there are platform specific limits to the message queue
@@ -115,7 +125,24 @@ public:
    */
   OFCondition receiveMessage(OFString& msg);
 
+  /** register signal handlers for SIGINT and SIGTERM that
+   *  call closeAllMessageQueues() upon receiving the signal,
+   *  thus globally closing all message queues created by the
+   *  process, if these message queues would persist after the
+   *  end of the process otherwise. Does nothing on Windows.
+   */
+  static void registerSignalHandler();
+
 private:
+
+  /// friend function that will call deleteQueueInternal().
+  friend void closeAllMessageQueues();
+
+  /** delete the message queue without touching the internally
+   *  managed global list of message queues.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  OFCondition deleteQueueInternal();
 
 #ifdef _WIN32
   OFuintptr_t queue_; // Windows mailslot handle
