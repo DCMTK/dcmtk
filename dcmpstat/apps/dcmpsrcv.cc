@@ -1241,9 +1241,6 @@ int main(int argc, char *argv[])
 
       if (! finished)
       {
-        // if running in multi-process mode, always terminate child after one association
-        if (DUL_processIsForkedChild()) finished = OFTrue;
-
         if (negotiateAssociation(net, &assoc, networkAETitle, networkMaxPDU, networkImplicitVROnly, useTLS, mqserver))
         {
 #ifdef WITH_OPENSSL
@@ -1255,6 +1252,9 @@ int main(int argc, char *argv[])
           if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
           handleClient(&assoc, dbfolder, networkBitPreserving, useTLS, opt_correctUIDPadding);
+
+          // if running in multi-process mode, always terminate child after one association
+          if (DUL_processIsForkedChild()) finished = OFTrue;
         }
       }
     } // while (!finished)
