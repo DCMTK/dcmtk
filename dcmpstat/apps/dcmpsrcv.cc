@@ -1253,9 +1253,10 @@ int main(int argc, char *argv[])
 #endif
           handleClient(&assoc, dbfolder, networkBitPreserving, useTLS, opt_correctUIDPadding);
 
-          // if running in multi-process mode, always terminate child after one association
-          if (DUL_processIsForkedChild()) finished = OFTrue;
         }
+
+        // if running in multi-process mode, always terminate child after one association
+        if (DUL_processIsForkedChild()) finished = OFTrue;
       }
     } // while (!finished)
 
