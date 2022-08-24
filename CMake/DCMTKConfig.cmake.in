@@ -110,6 +110,19 @@ SET_AND_CHECK(DCMTK_TARGETS "@PACKAGE_DCMTK_CMKDIR_CONFIG@/DCMTKTargets.cmake")
 # Compatibility: This variable is deprecated
 set(DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIRS})
 
+# Depend packages
+if(DCMTK_WITH_ZLIB)
+  if(NOT ZLIB_FOUND)
+    find_package(ZLIB)
+  endif()
+endif()
+
+if(DCMTK_WITH_OPENSSL)
+  if(NOT OPENSSL_FOUND)
+    find_package(OpenSSL)
+  endif()
+endif()
+
 if(NOT DCMTK_TARGETS_IMPORTED)
   set(DCMTK_TARGETS_IMPORTED 1)
   include(${DCMTK_TARGETS})
