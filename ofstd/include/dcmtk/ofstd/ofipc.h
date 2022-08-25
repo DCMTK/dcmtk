@@ -27,11 +27,32 @@
 #include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
 #include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 #include "dcmtk/ofstd/ofstring.h"     /* for OFString */
+#include "dcmtk/ofstd/ofthread.h"     /* for OFMutex */
+#include "dcmtk/ofstd/oflist.h"       /* for OFList */
 
 // in order to test or use the System V message queue implementation
 // on platforms such as Linux that support both Posix and System V,
 // uncomment the following line:
 // #undef HAVE_MQUEUE_H
+
+// in order to test or use the message queue implementation based
+// on unix domain sockets and a separate queue handler thread,
+// uncomment the following line:
+// #define DCMTK_USE_UNIX_SOCKET_QUEUE
+
+// Android has <mqueue.h> and <sys/msg.h> but no implementation
+// of Posix or System V message queues
+#ifdef __ANDROID__
+#define DCMTK_USE_UNIX_SOCKET_QUEUE
+#endif
+
+// There may be other platforms where we have threads and
+// Unix domain sockets but neither Posix nor System V
+// message queues. Use the Unix domain socket based implementation
+// in this case.
+#if defined(WITH_THREADS) && defined(HAVE_SYS_UN_H)  && !defined(_WIN32) && !defined(HAVE_MQUEUE_H) && !defined(HAVE_SYS_MSG_H)
+#define DCMTK_USE_UNIX_SOCKET_QUEUE
+#endif
 
 // Note: On FreeBSD, Posix message queues are available since FreeBSD 7,
 // but must be explicitly enabled by loading the "mqueuefs" kernel module
@@ -56,7 +77,12 @@ END_EXTERN_C
 extern void closeAllMessageQueues();
 
 /** a server class for one-directional IPC messaging. It enables the user to create
- *  an IPC message queue and to receive incoming messages.
+ *  an IPC message queue and to receive incoming messages. Depending on the
+ *  platform, the implementation is based on Windows mailslots, Posix message
+ *  queues, System V message queues or, on Android, on Unix domain sockets
+ *  and a separate handler thread that handles incoming connections. The latter
+ *  implementation is preferred over the alternatives if the macro
+ *  DCMTK_USE_UNIX_SOCKET_QUEUE is defined.
  *  @note Note that there are platform specific limits to the message queue
  *  implementation depending on the underlying operating system API used.
  *  For example, Posix message queues on Linux only permit a maximum of 10 messages
@@ -110,12 +136,12 @@ public:
   /** check if an incoming message is waiting in the queue.
    *  @return true if a message is waiting, false otherwise
    */
-  OFBool messageWaiting() const;
+  OFBool messageWaiting();
 
   /** return the number of incoming messages waiting in the queue
    *  @return number of incoming messages waiting in the queue
    */
-  size_t numMessagesWaiting() const;
+  size_t numMessagesWaiting();
 
   /** receive a message from the message queue and remove it from
    *  the queue. If no message is available, the method will
@@ -144,17 +170,25 @@ private:
    */
   OFCondition deleteQueueInternal();
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+#ifndef WITH_THREADS
+#error Cannot use Unix Domain Sockets based message queues without threads
+#endif
+  OFList< OFString > queue_; // locally stored list of string
+  OFString queue_name_; // name of the unix domain socket
+  OFMutex mutex_; // mutex for accessing queue_ and shutdownRequested_
+  OFThread *handler_; // thread that handles the unix domain socket
+  OFBool shutdownRequested_; // true of shutdown of handler thread is requested
+  int queue_socket_; // unix domain socket
+#elif defined(_WIN32)
   OFuintptr_t queue_; // Windows mailslot handle
-#elif defined(__ANDROID__)
-
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   mqd_t queue_;       // Posix message queue ID
   OFString name_;     // name of the message queue
 #elif defined(HAVE_SYS_MSG_H)
   int queue_;         // System V message queue ID
 #else
-#error Platform has neither WIN32, Posix nor System V IPC message queues.
+#error Platform has neither WIN32, Posix nor System V IPC message queues. Try #define DCMTK_USE_UNIX_SOCKET_QUEUE.
 #endif
 
 };
@@ -221,10 +255,10 @@ public:
 
 private:
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  OFString queue_name_;
+#elif defined(_WIN32)
   OFuintptr_t queue_; // Windows mailslot handle
-#elif defined(__ANDROID__)
-
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   mqd_t queue_;       // Posix message queue ID
 #elif defined(HAVE_SYS_MSG_H)

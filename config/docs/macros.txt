@@ -117,6 +117,20 @@ DCMTK_MERGE_STDERR_TO_STDOUT
     compiling with this macro.  In this case, DICOM files should never be
     written to stdout as this will be unreliable.
 
+DCMTK_USE_UNIX_SOCKET_QUEUE
+  Affected: ofstd
+  Type of modification: Selects implementation variant
+  Explanation: The implementation of message queues for inter-process
+    communication in DCMTK can either use Windows mailslots, Posix message
+    queues, System V message queues, or a solution based on Unix Domain
+    sockets and a separate thread that handles incoming connections
+    in the message queue server. When this macro is defined, the implementation
+    based on Unix Domain sockets is preferred when possible
+    (i.e. Unix Domain sockets and threads are available). This macro can
+    be used on platforms where the use of the other IPC mechanisms causes
+    problems, e.g. because of platform specific limitations to the number
+    of queues permitted system-wide.
+
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
   Type of modification: Disables feature

@@ -47,9 +47,151 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_MSG_H
 #include <sys/msg.h>
 #endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#ifdef DCMTK_HAVE_POLL
+#include <poll.h>
+#endif
+
+#ifdef HAVE_SYS_SOCKET_H
+#ifndef DCOMPAT_SYS_SOCKET_H_
+#define DCOMPAT_SYS_SOCKET_H_
+/* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
+#include <sys/socket.h>
+#endif
+#endif
+
+#ifdef HAVE_SYS_UN_H
+#include <sys/un.h>
+#endif
 END_EXTERN_C
 
-/* ---------------------- OFIPCMessageQueueServer ---------------------- */
+
+/* --------- Handler code for the Unix Domain Socket implementation -------- */
+
+
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+
+/* The handler thread will wait for incoming connections for a certain
+ * period of time, and then check whether a shutdown of the handler thread
+ * has been requested by the main thread. This constant defines the timeout
+ * while waiting for incoming connections, in microseconds. 50000 means
+ * that the handler tasks checks for shutdown requests 20 times per second.
+ */
+#define OFIPC_POLL_INTERVAL_USEC 50000
+
+/* Handler thread for the Unix domain socket implementation. This thread
+ * will alternatingly check for incoming connections (with a timeout of 50 msec)
+ * and a shutdown request from the main thread, and handle incoming
+ * messages until requested to terminate.
+ */
+class OFUnixDomainSocketQueueHandler: public OFThread
+{
+public:
+
+  OFUnixDomainSocketQueueHandler(OFMutex& mtx, OFList< OFString > & q, int& queue_socket, OFBool& shutdownRequested)
+  : queue_(q)
+  , mutex_(mtx)
+  , shutdownRequested_(shutdownRequested)
+  , queue_socket_(queue_socket)
+  {
+  }
+
+
+  virtual void run()
+  {
+#ifdef DCMTK_HAVE_POLL
+    struct pollfd pfd[] =
+    {
+        { queue_socket_, POLLIN, 0 }
+    };
+#else
+    struct timeval t;
+    t.tv_sec = 0;
+    t.tv_usec = OFIPC_POLL_INTERVAL_USEC;
+
+    fd_set fdset;
+    FD_ZERO(&fdset);
+#ifdef __MINGW32__
+    // on MinGW, FD_SET expects an unsigned first argument
+    FD_SET((unsigned int) queue_socket_, &fdset);
+#else
+    FD_SET(queue_socket_, &fdset);
+#endif /* __MINGW32__ */
+#endif /* DCMTK_HAVE_POLL */
+
+    // main thread worker loop
+    OFBool finished = OFFalse;
+    int nfound;
+    int msgsock;
+    size_t msglen;
+
+    while (! finished)
+    {
+#ifdef DCMTK_HAVE_POLL
+      nfound = poll(pfd, 1, OFIPC_POLL_INTERVAL_USEC/1000);
+#else
+#ifdef HAVE_INTP_SELECT
+      nfound = select(queue_socket_+1, (int *)(&fdset), NULL, NULL, &t);
+#else
+      nfound = select(queue_socket_+1, &fdset, NULL, NULL, &t);
+#endif /* HAVE_INTP_SELECT */
+#endif /* DCMTK_HAVE_POLL */
+
+      if (nfound > 0)
+      {
+        // a client is trying to connect, let's handle it
+        msgsock = accept(queue_socket_, NULL, NULL);
+        if (msgsock > 0)
+        {
+          if ((read(msgsock, &msglen, sizeof(msglen)) == sizeof(msglen)) && (msglen > 0))
+          {
+            // message has non-zero length, let's receive it
+            char *buf = new char[msglen];
+            if (OFstatic_cast(ssize_t, msglen )== read(msgsock, buf, msglen))
+            {
+              // we have received the message, now let's store it
+              mutex_.lock();
+              queue_.push_back(OFString(buf, msglen));
+              finished = shutdownRequested_;
+              mutex_.unlock();
+            }
+            else
+            {
+              // message was incomplete. We ignore it, but still check for a shutdown request
+              mutex_.lock();
+              finished = shutdownRequested_;
+              mutex_.unlock();
+            }
+            delete[] buf;
+          }
+          (void) close(msgsock);
+        }
+      }
+      else
+      {
+        // No client. Check if we have been asked to terminate
+        mutex_.lock();
+        finished = shutdownRequested_;
+        mutex_.unlock();
+      }
+    }
+  }
+
+private:
+  OFList< OFString > & queue_; // locally stored list of string
+  OFMutex& mutex_; // mutex for accessing queue_ and shutdownRequested_
+  OFBool& shutdownRequested_; // true of shutdown of handler thread is requested
+  int& queue_socket_; // unix domain socket
+};
+
+#endif
+
+
+/* ---------------- Signal handling code for Posix platforms --------------- */
+
 
 #ifndef _WIN32
 
@@ -126,11 +268,20 @@ extern "C" void OFIPCMessageQueueServerSIGTERMHandler(int)
 
 #endif /* #ifndef _WIN32 */
 
-OFIPCMessageQueueServer::OFIPCMessageQueueServer()
-#ifdef _WIN32
-: queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
-#elif defined(__ANDROID__)
 
+/* ---------------------- OFIPCMessageQueueServer ---------------------- */
+
+
+OFIPCMessageQueueServer::OFIPCMessageQueueServer()
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+: queue_()
+, queue_name_()
+, mutex_()
+, handler_(NULL)
+, shutdownRequested_(OFFalse)
+, queue_socket_(-1)
+#elif defined(_WIN32)
+: queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 : queue_((mqd_t) -1)
 , name_()
@@ -153,7 +304,56 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   if (name == NULL) return EC_IllegalParameter;
   if (hasQueue()) return EC_IPCMessageQueueExists;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  // construct name of unix domain socket
+  char port_str[12];
+  OFStandard::snprintf(port_str, sizeof(port_str), "%lu", OFstatic_cast(unsigned long, port));
+  queue_name_ = "/tmp/";
+  queue_name_ += name;
+  queue_name_ += "_";
+  queue_name_ += port_str;
+
+  // create socket
+  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (sock < 0)
+  {
+    (void) unlink(queue_name_.c_str());
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // fill-in socket address
+  struct sockaddr_un server;
+  memset(&server, 0, sizeof(server));
+  server.sun_family = AF_UNIX;
+  OFStandard::strlcpy(server.sun_path, queue_name_.c_str(), sizeof(server.sun_path));
+
+  // bind socket to socket address
+  if (bind(sock, (struct sockaddr *) &server, sizeof(struct sockaddr_un)))
+  {
+    (void) close(sock);
+    (void) unlink(queue_name_.c_str());
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // start listening, with up to 10 clients on the backlog
+  if (listen(sock, 10))
+  {
+    (void) close(sock);
+    (void) unlink(queue_name_.c_str());
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // start socket handler thread
+  queue_socket_ = sock;
+  handler_ = new OFUnixDomainSocketQueueHandler(mutex_, queue_, queue_socket_, shutdownRequested_);
+  handler_->start();
+
+  // make sure that the socket gets closed in case of abnormal
+  // termination of the application
+  addMessageQueueServer(this);
+  return EC_Normal;
+
+#elif defined(_WIN32)
   // construct name of mailslot
   char port_str[12];
   OFStandard::snprintf(port_str, sizeof(port_str), "%lu", OFstatic_cast(unsigned long, port));
@@ -173,9 +373,6 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   // store the handle
   queue_ = OFreinterpret_cast(OFuintptr_t, hSlot);
   return EC_Normal;
-
-#elif defined(__ANDROID__)
-  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // construct name of queue
@@ -237,12 +434,13 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
 #endif
 }
 
+
 OFBool OFIPCMessageQueueServer::hasQueue() const
 {
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  return (handler_ != NULL);
+#elif defined(_WIN32)
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
-#elif defined(__ANDROID__)
-  return OFFalse;
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   return (queue_ != (mqd_t) -1);
 #else
@@ -250,11 +448,20 @@ OFBool OFIPCMessageQueueServer::hasQueue() const
 #endif
 }
 
+
 OFCondition OFIPCMessageQueueServer::deleteQueueInternal()
 {
   if (!hasQueue()) return EC_IPCMessageNoQueue;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  // this code will only be called when we have received
+  // SIGINT or SIGTERM. We don't interact with the handler
+  // thread, but just close the socket.
+  (void) close(queue_socket_);
+  (void) unlink(queue_name_.c_str());
+  return EC_Normal;
+
+#elif defined(_WIN32)
   OFCondition result = EC_Normal;
   if (0 == CloseHandle(OFreinterpret_cast(HANDLE, queue_)))
   {
@@ -264,8 +471,6 @@ OFCondition OFIPCMessageQueueServer::deleteQueueInternal()
 
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
   return result;
-#elif defined(__ANDROID__)
-  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // close the message queue
@@ -300,16 +505,75 @@ OFCondition OFIPCMessageQueueServer::deleteQueue()
 #ifndef _WIN32
   removeMessageQueueServer(this);
 #endif
+
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  // request the handler thread to shutdown
+  mutex_.lock();
+  shutdownRequested_ = OFTrue;
+  mutex_.unlock();
+
+  // wait for handler thread to terminate
+  int result1 = handler_->join();
+
+  // delete thread object
+  delete handler_;
+
+  // close socket
+  int result2 = close(queue_socket_);
+
+  // delete socket from filesystem
+  int result3 = unlink(queue_name_.c_str());
+
+  // reset object status to default constructed state
+  queue_.clear();
+  queue_name_.clear();
+  handler_ = NULL;
+  shutdownRequested_ = OFFalse;
+  queue_socket_ = -1;
+
+  // return error message if something went wrong with terminating the thread
+  if (result1 || result2 || result3) return EC_IPCMessageQueueFailure;
+    else return EC_Normal;
+
+#elif defined(_WIN32)
+  OFCondition result = EC_Normal;
+  if (0 == CloseHandle(OFreinterpret_cast(HANDLE, queue_)))
+  {
+    // closing the handle failed.
+    result = EC_IPCMessageQueueFailure;
+  }
+
+  queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
+  return result;
+#else
   return deleteQueueInternal();
+#endif
 }
 
 
 void OFIPCMessageQueueServer::detachQueue()
 {
-#ifdef _WIN32
-  queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
-#elif defined(__ANDROID__)
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  // request the handler thread to shutdown
+  mutex_.lock();
+  shutdownRequested_ = OFTrue;
+  mutex_.unlock();
 
+  // wait for handler thread to terminate
+  (void) handler_->join();
+
+  // delete thread object
+  delete handler_;
+
+  // reset object status to default constructed state
+  // without closing the queue socket
+  queue_.clear();
+  handler_ = NULL;
+  shutdownRequested_ = OFFalse;
+  queue_socket_ = -1;
+
+#elif defined(_WIN32)
+  queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   queue_ = (mqd_t) -1;
   name_.clear();
@@ -318,24 +582,29 @@ void OFIPCMessageQueueServer::detachQueue()
 #endif
 }
 
-OFBool OFIPCMessageQueueServer::messageWaiting() const
+
+OFBool OFIPCMessageQueueServer::messageWaiting()
 {
   return (numMessagesWaiting() > 0);
 }
 
-size_t OFIPCMessageQueueServer::numMessagesWaiting() const
+
+size_t OFIPCMessageQueueServer::numMessagesWaiting()
 {
   if (! hasQueue()) return 0;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  mutex_.lock();
+  size_t result = queue_.size();
+  mutex_.unlock();
+  return result;
+
+#elif defined(_WIN32)
   DWORD cMessage = 0;
   if (GetMailslotInfo( OFreinterpret_cast(HANDLE, queue_), NULL, NULL, &cMessage, NULL))
   {
     return OFstatic_cast(size_t, cMessage);
   }
-  return 0;
-
-#elif defined(__ANDROID__)
   return 0;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
@@ -355,11 +624,24 @@ size_t OFIPCMessageQueueServer::numMessagesWaiting() const
 #endif
 }
 
+
 OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
 {
   if (!hasQueue()) return EC_IPCMessageNoQueue;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  OFCondition result = EC_Normal;
+  mutex_.lock();
+  if (queue_.size() > 0)
+  {
+    msg = queue_.front();
+    queue_.pop_front();
+  }
+  else result = EC_IPCMessageQueueEmpty;
+  mutex_.unlock();
+  return result;
+
+#elif defined(_WIN32)
   HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   if (NULL == hEvent) return EC_IPCMessageQueueFailure;
 
@@ -398,8 +680,6 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
   (void) CloseHandle(hEvent);
   delete[] buf;
   return result;
-#elif defined(__ANDROID__)
-  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // retrieve message queue status
@@ -468,6 +748,7 @@ OFCondition OFIPCMessageQueueServer::receiveMessage(OFString& msg)
 #endif
 }
 
+
 void OFIPCMessageQueueServer::registerSignalHandler()
 {
 #ifndef _WIN32
@@ -481,10 +762,10 @@ void OFIPCMessageQueueServer::registerSignalHandler()
 
 
 OFIPCMessageQueueClient::OFIPCMessageQueueClient()
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+: queue_name_()
+#elif defined(_WIN32)
 : queue_(OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE))
-#elif defined(__ANDROID__)
-
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 : queue_((mqd_t) -1)
 #else
@@ -497,10 +778,10 @@ OFIPCMessageQueueClient::OFIPCMessageQueueClient()
 OFIPCMessageQueueClient::~OFIPCMessageQueueClient()
 {
   // close the queue if the user has not already done so
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  if (queue_name_.length() > 0) (void) closeQueue();
+#elif defined(_WIN32)
   if (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE)) (void) closeQueue();
-#elif defined(__ANDROID__)
-
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   if (queue_ != (mqd_t) -1) (void) closeQueue();
 #else
@@ -514,7 +795,48 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   if (name == NULL) return EC_IllegalParameter;
   if (hasQueue()) return EC_IPCMessageQueueExists;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  // construct name of unix domain socket
+  char port_str[12];
+  OFStandard::snprintf(port_str, sizeof(port_str), "%lu", OFstatic_cast(unsigned long, port));
+  OFString socketname = "/tmp/";
+  socketname += name;
+  socketname += "_";
+  socketname += port_str;
+
+  // create socket
+  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (sock < 0) return EC_IPCMessageQueueFailure;
+
+  // fill-in socket address
+  struct sockaddr_un server;
+  memset(&server, 0, sizeof(server));
+  server.sun_family = AF_UNIX;
+  OFStandard::strlcpy(server.sun_path, socketname.c_str(), sizeof(server.sun_path));
+
+  // connect to server
+  if (connect(sock, (struct sockaddr *) &server, sizeof(struct sockaddr_un)) < 0)
+  {
+    close(sock);
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // write zero-length message
+  size_t msglen = 0;
+  if (write(sock, &msglen, sizeof(msglen)) < 0)
+  {
+    close(sock);
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // disconnect from server
+  close(sock);
+
+  // everything worked as expected, store queue name
+  queue_name_ = socketname;
+  return EC_Normal;
+
+#elif defined(_WIN32)
   // construct name of mailslot
   char port_str[12];
   OFStandard::snprintf(port_str, sizeof(port_str), "%lu", OFstatic_cast(unsigned long, port));
@@ -536,9 +858,6 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
   // store the handle
   queue_ = OFreinterpret_cast(OFuintptr_t, hFile);
   return EC_Normal;
-
-#elif defined(__ANDROID__)
-  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // construct name of queue
@@ -580,12 +899,13 @@ OFCondition OFIPCMessageQueueClient::openQueue(const char *name, Uint32 port)
 #endif
 }
 
+
 OFBool OFIPCMessageQueueClient::hasQueue() const
 {
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  return queue_name_.length() > 0;
+#elif defined(_WIN32)
   return (queue_ != OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE));
-#elif defined(__ANDROID__)
-  return OFFalse;
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   return (queue_ != (mqd_t) -1);
 #else
@@ -593,11 +913,16 @@ OFBool OFIPCMessageQueueClient::hasQueue() const
 #endif
 }
 
+
 OFCondition OFIPCMessageQueueClient::closeQueue()
 {
   if (!hasQueue()) return EC_IPCMessageNoQueue;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  queue_name_.clear();
+  return EC_Normal;
+
+#elif defined(_WIN32)
   OFCondition result = EC_Normal;
   if (0 == CloseHandle(OFreinterpret_cast(HANDLE, queue_)))
   {
@@ -607,9 +932,6 @@ OFCondition OFIPCMessageQueueClient::closeQueue()
 
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
   return result;
-#elif defined(__ANDROID__)
-  return EC_NotYetImplemented;
-
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // close the message queue
   int result = mq_close(queue_);
@@ -628,12 +950,13 @@ OFCondition OFIPCMessageQueueClient::closeQueue()
 #endif
 }
 
+
 void OFIPCMessageQueueClient::detachQueue()
 {
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  queue_name_.clear();
+#elif defined(_WIN32)
   queue_ = OFreinterpret_cast(OFuintptr_t, INVALID_HANDLE_VALUE);
-#elif defined(__ANDROID__)
-
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   queue_ = (mqd_t) -1;
 #else
@@ -641,19 +964,54 @@ void OFIPCMessageQueueClient::detachQueue()
 #endif
 }
 
+
 OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
 {
   if (!hasQueue()) return EC_IPCMessageNoQueue;
   if (msg.length() == 0) return EC_IPCEmptyMessage;
 
-#ifdef _WIN32
+#ifdef DCMTK_USE_UNIX_SOCKET_QUEUE
+  // create socket
+  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (sock < 0) return EC_IPCMessageQueueFailure;
+
+  // fill-in socket address
+  struct sockaddr_un server;
+  memset(&server, 0, sizeof(server));
+  server.sun_family = AF_UNIX;
+  OFStandard::strlcpy(server.sun_path, queue_name_.c_str(), sizeof(server.sun_path));
+
+  // connect to server
+  if (connect(sock, (struct sockaddr *) &server, sizeof(struct sockaddr_un)) < 0)
+  {
+    close(sock);
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // write message length
+  size_t msglen = msg.length();
+  if (write(sock, &msglen, sizeof(msglen)) < 0)
+  {
+    close(sock);
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // write message content
+  if (write(sock, msg.c_str(), msglen) < 0)
+  {
+    close(sock);
+    return EC_IPCMessageQueueFailure;
+  }
+
+  // disconnect from server
+  close(sock);
+  return EC_Normal;
+
+#elif defined(_WIN32)
   DWORD written = 0;
   if (WriteFile(OFreinterpret_cast(HANDLE, queue_), msg.c_str(), OFstatic_cast(DWORD, msg.length()), &written, NULL))
     return EC_Normal;
     else return EC_IPCMessageQueueFailure;
-
-#elif defined(__ANDROID__)
-  return EC_NotYetImplemented;
 
 #elif defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
   // send the message and report an error if this fails
@@ -661,7 +1019,6 @@ OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
   return EC_Normal;
 
 #else
-
   // define message buffer struct
   struct msgbuf {
     long mtype;       /* message type, must be > 0 */
@@ -683,4 +1040,3 @@ OFCondition OFIPCMessageQueueClient::sendMessage(const OFString& msg)
   return EC_Normal;
 #endif
 }
-
