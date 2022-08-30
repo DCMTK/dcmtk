@@ -600,8 +600,8 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
       CNF_Config.AEEntries[noOfAEEntries - 1].Peers = parsePeers(&lineptr, &CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers);
 
       // check the validity of the storage quota and peers values before continuing
-      if (CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxStudies == 0 ||
-         CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxBytesPerStudy == 0 || 
+      if (CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxStudies <= 0 ||
+         CNF_Config.AEEntries[noOfAEEntries - 1].StorageQuota->maxBytesPerStudy <= 0 ||
          CNF_Config.AEEntries[noOfAEEntries - 1].noOfPeers == 0) {
           error = 1;
       }
@@ -618,22 +618,25 @@ int DcmQueryRetrieveConfig::readAETable(FILE *cnffp, int *lineno)
 
 DcmQueryRetrieveConfigQuota *DcmQueryRetrieveConfig::parseQuota(char **valuehandle)
 {
-   int  studies;
+   int  studies = 0;
    char *helpvalue,
         helpval[512];
    DcmQueryRetrieveConfigQuota *helpquota;
 
    if ((helpquota = (DcmQueryRetrieveConfigQuota *)malloc(sizeof(DcmQueryRetrieveConfigQuota))) == NULL)
       panic("Memory allocation 4");
+
+   helpquota->maxStudies = 0;
+   helpquota->maxBytesPerStudy = 0;
+
    helpvalue = parsevalues(valuehandle);
    if (helpvalue)
    {
-     sscanf(helpvalue, "%d , %s", &studies, helpval);
-     helpquota->maxStudies = studies;
-     helpquota->maxBytesPerStudy = quota(helpval);
-   } else {
-     helpquota->maxStudies = 0;
-     helpquota->maxBytesPerStudy = 0;
+     if (2 == sscanf(helpvalue, "%d , %s", &studies, helpval))
+     {
+       helpquota->maxStudies = studies;
+       helpquota->maxBytesPerStudy = quota(helpval);
+     }
    }
    free(helpvalue);
 
@@ -848,7 +851,7 @@ char *DcmQueryRetrieveConfig::parsevalues (char **valuehandle)
 }
 
 
-long DcmQueryRetrieveConfig::quota (const char *value)
+long DcmQueryRetrieveConfig::quota(const char *value)
 {
    int  number;
    long factor;
@@ -864,6 +867,9 @@ long DcmQueryRetrieveConfig::quota (const char *value)
    else return(-1L);
 
    number = atoi(value);
+
+   // check for underflow
+   if (number < 0) return (-1L);
 
    // check for overflow
    if (number > 0 && factor > LONG_MAX / number)
