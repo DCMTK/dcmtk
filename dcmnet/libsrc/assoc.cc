@@ -282,15 +282,15 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     memset((char*)*params, 0, sizeof(**params));
 
     OFStandard::strlcpy((*params)->ourImplementationClassUID,
-            OFFIS_IMPLEMENTATION_CLASS_UID,
+            dcmImplementationClassUID.get(),
             sizeof((*params)->ourImplementationClassUID));
     OFStandard::strlcpy((*params)->ourImplementationVersionName,
-            OFFIS_DTK_IMPLEMENTATION_VERSION_NAME,
+            dcmImplementationVersionName.get(),
             sizeof((*params)->ourImplementationVersionName));
 
-    if (strlen(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME) > 16)
+    if (strlen(dcmImplementationVersionName.get()) > 16)
     {
-      DCMNET_WARN("DICOM implementation version name too long: " << OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+      DCMNET_WARN("DICOM implementation version name too long: " << dcmImplementationVersionName.get());
     }
 
     OFStandard::strlcpy((*params)->DULparams.callingImplementationClassUID,

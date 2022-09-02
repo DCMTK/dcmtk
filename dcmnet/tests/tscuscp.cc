@@ -1114,5 +1114,33 @@ OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_from_scp_
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
+OFTEST(dcmnet_ASC_createAssociationParameters_succeeds_and_sets_OFFIS_implementation_identification_by_default)
+{
+    T_ASC_Parameters* params;
+    const OFCondition result = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
+    OFCHECK(result.good());
+
+    OFCHECK_EQUAL(OFString(params->ourImplementationClassUID), OFFIS_IMPLEMENTATION_CLASS_UID);
+    OFCHECK_EQUAL(OFString(params->ourImplementationVersionName), OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+}
+
+OFTEST(dcmnet_ASC_createAssociationParameters_succeeds_and_sets_defined_implementation_identification_when_appropriate_globals_are_set)
+{
+    const OFString implClassUId = "1.1.111.1.1111111.1.1.1.1.1";
+    const OFString implVerName = "version_name";
+
+    dcmImplementationClassUID.set(implClassUId.c_str());
+    dcmImplementationVersionName.set(implVerName.c_str());
+
+    T_ASC_Parameters* params;
+    const OFCondition result = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
+    OFCHECK(result.good());
+
+    OFCHECK_EQUAL(params->ourImplementationClassUID, implClassUId);
+    OFCHECK_EQUAL(params->ourImplementationVersionName, implVerName);
+
+    dcmImplementationClassUID.set(OFFIS_IMPLEMENTATION_CLASS_UID);
+    dcmImplementationVersionName.set(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+}
 
 #endif // WITH_THREADS
