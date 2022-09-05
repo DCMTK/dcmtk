@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 #include "dcmtk/ofstd/ofglobal.h"     /* for OFGlobal */
 #include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
+#include "dcmtk/ofstd/ofdeprec.h"     /* for OFdeprecated */
 #include "dcmtk/ofstd/ofstream.h"     /* for ostream */
 #include "dcmtk/dcmnet/dndefine.h"    /* for DCMTK_DCMNET_EXPORT */
 #include "dcmtk/dcmnet/dntypes.h"     /* for DcmNativeSocketType */
@@ -166,7 +167,7 @@ public:
    *  @param out output stream
    *  @deprecated Please use the other dumpConnectionParameters() function instead!
    */
-  void dumpConnectionParameters(STD_NAMESPACE ostream& out);
+  OFdeprecated void dumpConnectionParameters(STD_NAMESPACE ostream& out);
 
   /** indicates which of the specified transport connections is ready for
    *  reading. If none of the specified transport connections is ready

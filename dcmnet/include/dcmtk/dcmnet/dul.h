@@ -97,7 +97,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<OFBool> dcmDisableGethostbyaddr;   /* defaul
  *  @deprecated The use of this global variable is deprecated. Please pass the TCP
  *    connection timeout to ASC_createAssociationParameters() as a parameter.
  */
-extern DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmConnectionTimeout;   /* default: -1 */
+extern /* TODO: OFdeprecated */ DCMTK_DCMNET_EXPORT OFGlobal<Sint32> dcmConnectionTimeout;   /* default: -1 */
 
 /** This global flag allows to set an already opened socket file descriptor which
  *  will be used by dcmnet the next time receiveTransportConnectionTCP() is called.

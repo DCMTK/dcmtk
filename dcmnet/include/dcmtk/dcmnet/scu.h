@@ -28,7 +28,7 @@
 #include "dcmtk/dcmnet/dcasccff.h" /* for reading a association config file */
 #include "dcmtk/dcmnet/dcasccfg.h" /* for holding association config file infos */
 #include "dcmtk/dcmnet/dcompat.h"
-#include "dcmtk/dcmnet/dimse.h" /* DIMSE network layer */
+#include "dcmtk/dcmnet/dimse.h"    /* DIMSE network layer */
 #include "dcmtk/ofstd/oflist.h"
 
 // include this file in doxygen documentation
@@ -610,8 +610,8 @@ public:
     handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& message, OFBool& waitForNextResponse);
 
     /** Closes the association created by this SCU. Also resets the current association.
-     *  @deprecated The use of this method is deprecated. Please use releaseAssociation()
-     *    or abortAssociation() instead.
+     *  @note The direct call of this method by user code should be avoided.
+     *    Please use releaseAssociation() or abortAssociation() instead.
      *  @param closeType [in] Define whether to release or abort the association
      */
     virtual void closeAssociation(const DcmCloseAssociationType closeType);

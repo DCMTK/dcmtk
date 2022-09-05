@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2021, OFFIS e.V.
+ *  Copyright (C) 2010-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,10 +33,9 @@
 /** Base class for implementing DICOM TLS-enabled Service Class User functionality. This
  *  class is derived from the general DcmSCU class and just adds the corresponding TLS
  *  capabilities.
- *  @remark This class is only available if DCMTK is compiled with
- *  OpenSSL support enabled.
+ *  @remark This class is only available if DCMTK is compiled with OpenSSL support enabled.
  *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
- *  API changes in the future are possible and likely to happen.
+ *    API changes in the future are possible and likely to happen.
  */
 class DCMTK_DCMTLS_EXPORT DcmTLSSCU : public DcmSCU
 {
@@ -72,8 +71,8 @@ public:
   virtual OFCondition negotiateAssociation();
 
   /** Closes the association of this SCU
-   *  @deprecated The use of this method is deprecated. Please use
-   *    DcmSCU::releaseAssociation() or DcmSCU::abortAssociation() instead.
+   *  @note The direct call of this method by user code should be avoided. Please
+   *    use DcmSCU::releaseAssociation() or DcmSCU::abortAssociation() instead.
    *  @param closeType Define whether to release or abort the association
    */
   virtual void closeAssociation(const DcmCloseAssociationType closeType);
