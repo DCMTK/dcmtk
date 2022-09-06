@@ -27,6 +27,7 @@
 
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 
 // forward declarations
@@ -390,6 +391,22 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
         FileReadMode = readMode;
     }
 
+    /** Method sets Implementation Class UID meta header tag
+     *  @param implementationClassUID tag value
+     */
+    void setImplementationClassUID(const OFString& implementationClassUID)
+    {
+        m_implementationClassUID = implementationClassUID;
+    };
+
+    /** Method sets Implementation Version Name meta header tag
+     *  @param implementationVersionName tag value
+     */
+    void setImplementationVersionName(const OFString& implementationVersionName)
+    {
+        m_implementationVersionName = implementationVersionName;
+    }
+
     /** method inherited from base class that shall not be used for instances of this class.
      *  Method immediately returns with error code.
      *  @param item item
@@ -479,6 +496,8 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *                   Equals NULL if this data element is not existent in the meta header information.
      *  @param oxfer     The transfer syntax which shall be used.
      *  @param writeMode flag indicating whether to update the file meta information or not
+     *  @param implClassUID meta header tag for Implementation Class UID
+     *  @param implVersionName meta header tag for Implementation Version Name
      *  @return EC_Normal if successful, an error code otherwise
      */
     static OFCondition checkMetaHeaderValue(DcmMetaInfo *metainfo,
@@ -486,7 +505,9 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
                                             const DcmTagKey &atagkey,
                                             DcmObject *obj,
                                             const E_TransferSyntax oxfer,
-                                            const E_FileWriteMode writeMode);
+                                            const E_FileWriteMode writeMode,
+                                            const OFString& implClassUID = OFFIS_IMPLEMENTATION_CLASS_UID,
+                                            const OFString& implVersionName = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
 
     /** read DCM_TransferSyntaxUID from meta header dataset and return as E_TransferSyntax value
      *  @param metainfo meta-header dataset
@@ -496,6 +517,10 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
 
     /// file read mode, specifies whether to read the meta header or not
     E_FileReadMode FileReadMode;
+
+    /// Meta header tags:
+    OFString m_implementationClassUID;
+    OFString m_implementationVersionName;
 };
 
 

@@ -52,7 +52,9 @@
 
 DcmFileFormat::DcmFileFormat()
   : DcmSequenceOfItems(DCM_InternalUseTag),
-    FileReadMode(ERM_autoDetect)
+    FileReadMode(ERM_autoDetect),
+    m_implementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
+    m_implementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -67,7 +69,9 @@ DcmFileFormat::DcmFileFormat()
 DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
                              OFBool deepCopy)
   : DcmSequenceOfItems(DCM_InternalUseTag),
-    FileReadMode(ERM_autoDetect)
+    FileReadMode(ERM_autoDetect),
+    m_implementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
+    m_implementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -93,7 +97,9 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
 
 DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
   : DcmSequenceOfItems(old),
-    FileReadMode(old.FileReadMode)
+    FileReadMode(old.FileReadMode),
+    m_implementationClassUID(old.m_implementationClassUID),
+    m_implementationVersionName(old.m_implementationVersionName)
 {
 }
 
@@ -120,6 +126,8 @@ DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
   {
     DcmSequenceOfItems::operator=(obj);
     FileReadMode = obj.FileReadMode;
+    m_implementationClassUID = obj.m_implementationClassUID;
+    m_implementationVersionName = obj.m_implementationVersionName;
   }
 
   return *this;
@@ -270,7 +278,9 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                                                 const DcmTagKey &atagkey,
                                                 DcmObject *obj,
                                                 const E_TransferSyntax oxfer,
-                                                const E_FileWriteMode writeMode)
+                                                const E_FileWriteMode writeMode,
+                                                const OFString& implClassUID,
+                                                const OFString& implVersionName)
     /*
      * This function checks if a particular data element of the file meta information header is
      * existent.  If the element is not existent, it will be inserted.  Additionally, this function
@@ -469,8 +479,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
-                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
+                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(implClassUID.c_str());
             }
         }
         else if (xtag == DCM_ImplementationVersionName)     // (0002,0013)
@@ -482,8 +491,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_SH)
             {
-                const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
-                OFstatic_cast(DcmShortString *, elem)->putString(uid);
+                OFstatic_cast(DcmShortString *, elem)->putString(implVersionName.c_str());
             }
         }
         else if ((xtag == DCM_SourceApplicationEntityTitle) ||  // (0002,0016)
@@ -597,11 +605,12 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
 
             /* DCM_ImplementationClassUID */
             metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
-            checkMetaHeaderValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode, m_implementationClassUID);
 
             /* DCM_ImplementationVersionName */
             metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
-            checkMetaHeaderValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
+            checkMetaHeaderValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode,
+                m_implementationClassUID, m_implementationVersionName);
 
             /* dump some information if required */
             DCMDATA_DEBUG("DcmFileFormat::validateMetaInfo() found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
