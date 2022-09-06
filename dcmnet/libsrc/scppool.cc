@@ -84,8 +84,15 @@ OFCondition DcmBaseSCPPool::listen()
     OFBool useSecureLayer = m_cfg.transportLayerEnabled();
 
     // Listen to a socket for timeout seconds for an association request, accepts TCP connection.
-    cond = ASC_receiveAssociation( network, &assoc, m_cfg.getMaxReceivePDULength(), NULL, NULL, useSecureLayer,
-        m_cfg.getConnectionBlockingMode(), OFstatic_cast(int, m_cfg.getConnectionTimeout()), m_cfg.getImplementationIdentification());
+    cond = ASC_receiveAssociation(network,
+                                  &assoc,
+                                  m_cfg.getMaxReceivePDULength(),
+                                  NULL,
+                                  NULL,
+                                  useSecureLayer,
+                                  m_cfg.getConnectionBlockingMode(),
+                                  OFstatic_cast(int, m_cfg.getConnectionTimeout()),
+                                  m_cfg.getImplementationIdentification());
 
     /* If we have a connection request, try to find/create a worker to handle it */
     if (cond.good())
