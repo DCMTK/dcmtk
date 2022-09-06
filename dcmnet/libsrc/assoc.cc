@@ -209,6 +209,22 @@ typedef struct {
 } T_ASC_ExtendedNegotiationItem;
 
 
+T_ASC_ImplementationIdentification::T_ASC_ImplementationIdentification()
+{
+    OFStandard::strlcpy(ourImplementationClassUID,
+        OFFIS_IMPLEMENTATION_CLASS_UID,
+        sizeof(ourImplementationClassUID));
+    OFStandard::strlcpy(ourImplementationVersionName,
+        OFFIS_DTK_IMPLEMENTATION_VERSION_NAME,
+        sizeof(ourImplementationVersionName));
+
+    if (strlen(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME) > 16)
+    {
+        DCMNET_WARN("DICOM implementation version name too long: " << OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+    }
+}
+
+
 /*
 ** Function Bodies
 */
@@ -274,24 +290,19 @@ ASC_dropNetwork(T_ASC_Network ** network)
 OFCondition
 ASC_createAssociationParameters(T_ASC_Parameters ** params,
                                 long maxReceivePDUSize,
-                                Sint32 tcpConnectTimeout)
+                                Sint32 tcpConnectTimeout,
+                                const T_ASC_ImplementationIdentification& implIdentification)
 {
-
     *params = (T_ASC_Parameters *) malloc(sizeof(**params));
     if (*params == NULL) return EC_MemoryExhausted;
     memset((char*)*params, 0, sizeof(**params));
 
     OFStandard::strlcpy((*params)->ourImplementationClassUID,
-            OFFIS_IMPLEMENTATION_CLASS_UID,
+            implIdentification.ourImplementationClassUID,
             sizeof((*params)->ourImplementationClassUID));
     OFStandard::strlcpy((*params)->ourImplementationVersionName,
-            OFFIS_DTK_IMPLEMENTATION_VERSION_NAME,
+            implIdentification.ourImplementationVersionName,
             sizeof((*params)->ourImplementationVersionName));
-
-    if (strlen(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME) > 16)
-    {
-      DCMNET_WARN("DICOM implementation version name too long: " << OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
-    }
 
     OFStandard::strlcpy((*params)->DULparams.callingImplementationClassUID,
         (*params)->ourImplementationClassUID, DICOM_UI_LENGTH + 1);
