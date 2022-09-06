@@ -700,7 +700,8 @@ ASC_receiveAssociation(
     unsigned long *associatePDUlength=NULL,
     OFBool useSecureLayer=OFFalse,
     DUL_BLOCKOPTIONS block=DUL_BLOCK,
-    int timeout=0);
+    int timeout=0, 
+    const T_ASC_ImplementationIdentification& implIdentification = T_ASC_ImplementationIdentification());
 
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_acknowledgeAssociation(

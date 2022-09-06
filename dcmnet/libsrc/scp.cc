@@ -393,7 +393,8 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network* network)
                                               NULL,
                                               useSecureLayer,
                                               m_cfg->getConnectionBlockingMode(),
-                                              OFstatic_cast(int, timeout));
+                                              OFstatic_cast(int, timeout),
+                                              m_cfg->getImplementationIdentification());
 
     // In case of a timeout in non-blocking mode, call notifier (and return
     // to main event loop later)

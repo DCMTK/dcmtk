@@ -1767,7 +1767,8 @@ ASC_receiveAssociation(T_ASC_Network * network,
                        unsigned long *associatePDUlength,
                        OFBool useSecureLayer,
                        DUL_BLOCKOPTIONS block,
-                       int timeout)
+                       int timeout,
+                       const T_ASC_ImplementationIdentification& implIdentification)
 {
     T_ASC_Parameters *params;
     DUL_ASSOCIATIONKEY *DULassociation;
@@ -1777,7 +1778,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
     int retrieveRawPDU = 0;
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
-    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDUSize, dcmConnectionTimeout.get());
+    OFCondition cond = ASC_createAssociationParameters(&params, maxReceivePDUSize, dcmConnectionTimeout.get(), implIdentification);
     if (cond.bad()) return cond;
 
     cond = ASC_setTransportLayerType(params, useSecureLayer);
