@@ -81,9 +81,16 @@ OFCondition MdfDatasetManager::loadFile(const char* file_name,
          * that's saved after modifying, because original filename was renamed
          * meanwhile
          */
-        dset->loadAllDataIntoMemory();
-        // save filename to member variable
-        current_file = file_name;
+        cond = dset->loadAllDataIntoMemory();
+        if (cond.good())
+        {
+            // save filename to member variable
+            current_file = file_name;
+        }
+        if (cond.bad())
+        {
+            OFLOG_ERROR(mdfdsmanLogger, "Unable to load all data into memory for file: " << file_name << ". Error: " << cond.text());
+        }
     }
     return cond;
 }
