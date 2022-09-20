@@ -107,7 +107,7 @@
 #include <unistd.h>
 #endif
 
-#define I18NMODULE_MAJOR    4
+#define I18NMODULE_MAJOR    5
 
 #include "citrus_bcs.h"
 
