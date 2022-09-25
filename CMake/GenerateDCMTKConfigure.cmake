@@ -190,10 +190,10 @@ else()
 
   # Set dictionary path to the data dir inside install main dir (prefix).
   if(DCMTK_DEFAULT_DICT STREQUAL "external")
-    set(DCM_DICT_DEFAULT_PATH "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/dicom.dic")
+    set(DCM_DICT_DEFAULT_PATH "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}dicom.dic")
     # If private dictionary should be utilized, add it to default dictionary path.
     if(ENABLE_PRIVATE_TAGS)
-      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/private.dic")
+      set(DCM_DICT_DEFAULT_PATH "${DCM_DICT_DEFAULT_PATH}:${DCMTK_DEFAULT_SUPPORT_DATA_DIR}private.dic")
     endif()
   else()
     set(DCM_DICT_DEFAULT_PATH "")
