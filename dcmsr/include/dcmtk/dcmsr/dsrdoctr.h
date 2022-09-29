@@ -141,6 +141,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
+                                   const std::string& urlPrefixToCompositeObjects,
                                    const size_t flags = 0);
 
     /** get document type

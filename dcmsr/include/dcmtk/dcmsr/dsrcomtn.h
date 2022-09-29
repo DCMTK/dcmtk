@@ -157,6 +157,7 @@ class DCMTK_DCMSR_EXPORT DSRCompositeTreeNode
                                               STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
+                                              const std::string& urlPrefixToCompositeObjects,
                                               const size_t flags) const;
 
 

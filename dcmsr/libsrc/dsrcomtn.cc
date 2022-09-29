@@ -158,6 +158,7 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
                                                         STD_NAMESPACE ostream &annexStream,
                                                         const size_t /* nestingLevel */,
                                                         size_t &annexNumber,
+                                                        const std::string& urlPrefixToCompositeObjects,
                                                         const size_t flags) const
 {
     /* render ConceptName */
@@ -165,7 +166,7 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
     /* render Reference */
     if (result.good())
     {
-        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags);
+        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, urlPrefixToCompositeObjects, flags);
         docStream << OFendl;
     }
     return result;

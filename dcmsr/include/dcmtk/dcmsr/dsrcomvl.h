@@ -176,6 +176,7 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
+                                   const std::string& urlPrefixToCompositeObjects,
                                    const size_t flags) const;
 
     /** get SOP class UID

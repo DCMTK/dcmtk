@@ -223,6 +223,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
                                    STD_NAMESPACE ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
+                                   const std::string& urlPrefixToCompositeObjects,
                                    const size_t flags) const;
 
     /** check whether content item is digitally signed.
@@ -593,6 +594,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
                                               STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
+                                              const std::string& urlPrefixToCompositeObjects,
                                               const size_t flags) const;
 
     /** write common item start (XML tag)
@@ -711,6 +713,7 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
                                      STD_NAMESPACE ostream &annexStream,
                                      const size_t nestingLevel,
                                      size_t &annexNumber,
+                                     const std::string& urlPrefixToCompositeObjects,
                                      const size_t flags) const;
 
   // --- static function ---

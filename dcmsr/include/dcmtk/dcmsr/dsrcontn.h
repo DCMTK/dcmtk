@@ -143,6 +143,7 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
                                    STD_NAMESPACE ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
+                                   const std::string& urlPrefixToCompositeObjects,
                                    const size_t flags) const;
 
     /** get continuity of content flag.

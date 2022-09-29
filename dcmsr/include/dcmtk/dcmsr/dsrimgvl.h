@@ -198,6 +198,7 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
+                                   const std::string& urlPrefixToCompositeObjects,
                                    const size_t flags) const;
 
     /** create an icon image from the given DICOM image and associate it with this image

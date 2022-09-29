@@ -163,6 +163,7 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
                                                     STD_NAMESPACE ostream &annexStream,
                                                     const size_t /*nestingLevel*/,
                                                     size_t &annexNumber,
+                                                    const std::string& urlPrefixToCompositeObjects,
                                                     const size_t flags) const
 {
     /* render ConceptName */
@@ -170,7 +171,7 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
     /* render Reference */
     if (result.good())
     {
-        result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags);
+        result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, urlPrefixToCompositeObjects, flags);
         docStream << OFendl;
     }
     return result;

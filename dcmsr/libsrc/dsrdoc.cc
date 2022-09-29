@@ -1569,6 +1569,7 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
 
 void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                           DSRSOPInstanceReferenceList &refList,
+                                          const std::string& urlPrefixToCompositeObjects,
                                           const size_t flags)
 {
     /* goto first list item (if not empty) */
@@ -1589,7 +1590,7 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
             OFString sopClass, sopInstance;
             if (!refList.getSOPClassUID(sopClass).empty() && !refList.getSOPInstanceUID(sopInstance).empty())
             {
-                stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+                stream << "<td><a href=\"" << urlPrefixToCompositeObjects;
                 stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
                 /* check whether referenced object has a well-known SOP class */
                 stream << dcmFindNameOfUID(sopClass.c_str(), "unknown composite object");
@@ -1608,6 +1609,7 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
 
 void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                           DSRReferencedInstanceList &refList,
+                                          const std::string& urlPrefixToCompositeObjects,
                                           const size_t flags)
 {
     /* goto first list item (if not empty) */
@@ -1628,7 +1630,7 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
             OFString sopClass, sopInstance;
             if (!refList.getSOPClassUID(sopClass).empty() && !refList.getSOPInstanceUID(sopInstance).empty())
             {
-                stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+                stream << "<td><a href=\"" << urlPrefixToCompositeObjects;
                 stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
                 /* retrieve name of SOP class (if known) */
                 stream << dcmFindNameOfUID(sopClass.c_str(), "unknown composite object");
@@ -1647,9 +1649,12 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                                     const size_t flags,
-                                    const char *styleSheet)
+                                    const char *styleSheet,
+                                    const std::string& urlPrefixToCompositeObjects
+    )
 {
     OFCondition result = SR_EC_InvalidDocument;
+
     /* only render valid documents */
     if (isValid())
     {
@@ -1874,7 +1879,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 {
                     stream << "<tr>" << OFendl;
                     stream << "<td><b>Predecessor Docs:</b></td>" << OFendl;
-                    renderHTMLReferenceList(stream, PredecessorDocuments, flags);
+                    renderHTMLReferenceList(stream, PredecessorDocuments, urlPrefixToCompositeObjects, flags);
                     stream << "</tr>" << OFendl;
                 }
             }
@@ -1883,7 +1888,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Identical Docs:</b></td>" << OFendl;
-                renderHTMLReferenceList(stream, IdenticalDocuments, flags);
+                renderHTMLReferenceList(stream, IdenticalDocuments, urlPrefixToCompositeObjects, flags);
                 stream << "</tr>" << OFendl;
             }
             /* referenced instances */
@@ -1891,7 +1896,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Referenced Objects:</b></td>" << OFendl;
-                renderHTMLReferenceList(stream, ReferencedInstances, flags);
+                renderHTMLReferenceList(stream, ReferencedInstances, urlPrefixToCompositeObjects, flags);
                 stream << "</tr>" << OFendl;
             }
             if (usesGeneralSRModules)
@@ -1972,7 +1977,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
         /* create memory output stream for the annex */
         OFOStringStream annexStream;
         /* render document tree two the streams */
-        result = DocumentTree.renderHTML(stream, annexStream, newFlags);
+        result = DocumentTree.renderHTML(stream, annexStream, urlPrefixToCompositeObjects, newFlags);
         /* append annex (with heading) to main document */
         if (result.good())
             result = appendStream(stream, annexStream, "<h1>Annex</h1>");

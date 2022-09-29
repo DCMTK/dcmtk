@@ -26,6 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
+#include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrdoctr.h"
 #include "dcmtk/dcmsr/dsrrtpl.h"
 #include "dcmtk/dcmsr/dsrsoprf.h"
@@ -200,7 +201,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &stream,
                                    const size_t flags = 0,
-                                   const char *styleSheet = NULL);
+                                   const char* styleSheet = NULL,
+                                   const std::string& urlPrefixToCompositeObjects = HTML_HYPERLINK_PREFIX_FOR_CGI
+        );
 
 
   // --- get/set misc attributes ---
@@ -1281,6 +1284,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRSOPInstanceReferenceList &refList,
+                                 const std::string& urlPrefixToCompositeObjects,
                                  const size_t flags);
 
     /** render list of referenced SOP instances in HTML/XHTML format
@@ -1290,6 +1294,7 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      */
     void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRReferencedInstanceList &refList,
+                                 const std::string& urlPrefixToCompositeObjects,
                                  const size_t flags);
 
     /** check the given dataset before reading.

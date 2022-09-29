@@ -244,6 +244,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
 
 OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
                                         STD_NAMESPACE ostream &annexStream,
+                                        const std::string& urlPrefixToCompositeObjects,
                                         const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocumentTree;
@@ -262,7 +263,7 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
                 /* update the document tree for output (if needed) */
                 updateTreeForOutput();
                 /* start rendering from root node */
-                result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly);
+                result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, urlPrefixToCompositeObjects, flags & ~HF_internalUseOnly);
             }
         } else {
             /* tbd: cannot render document with included templates */
