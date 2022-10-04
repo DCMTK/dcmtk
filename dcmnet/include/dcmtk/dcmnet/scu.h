@@ -1007,6 +1007,11 @@ protected:
      */
     static void callbackRECEIVEProgress(void* callbackContext, unsigned long byteCount);
 
+    /** Returns next available message ID free to be used by SCU
+     *  @return Next free message ID
+     */
+    Uint16 nextMessageID();
+
 private:
     /** Private undefined copy-constructor. Shall never be called.
      *  @param src Source object
@@ -1111,11 +1116,6 @@ private:
 
     /// Progress notification mode (default: enabled)
     OFBool m_progressNotificationMode;
-
-    /** Returns next available message ID free to be used by SCU
-     *  @return Next free message ID
-     */
-    Uint16 nextMessageID();
 };
 
 #endif // SCU_H
