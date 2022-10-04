@@ -309,7 +309,7 @@ public:
      *  come (i.e. response status is PENDING). In the end, after receiving all responses, the
      *  full list of responses is returned to the caller. If he is not interested, he just sets
      *  responses=NULL when calling the function.
-     *  This function can be overwritten by actual SCU implementations but just should work fine
+     *  This function can be overwritten by actual SCU implementations but should work just fine
      *  for most people.
      *  @param presID                 [in]  The presentation context ID that should be used.
      *                                      Must be an odd number.
