@@ -309,7 +309,7 @@ public:
      *  come (i.e. response status is PENDING). In the end, after receiving all responses, the
      *  full list of responses is returned to the caller. If he is not interested, he just sets
      *  responses=NULL when calling the function.
-     *  This function can be overwritten by actual SCU implementations but just should work fine
+     *  This function can be overwritten by actual SCU implementations but should work just fine
      *  for most people.
      *  @param presID                 [in]  The presentation context ID that should be used.
      *                                      Must be an odd number.
@@ -1007,6 +1007,11 @@ protected:
      */
     static void callbackRECEIVEProgress(void* callbackContext, unsigned long byteCount);
 
+    /** Returns next available message ID free to be used by SCU
+     *  @return Next free message ID
+     */
+    Uint16 nextMessageID();
+
 private:
     /** Private undefined copy-constructor. Shall never be called.
      *  @param src Source object
@@ -1111,11 +1116,6 @@ private:
 
     /// Progress notification mode (default: enabled)
     OFBool m_progressNotificationMode;
-
-    /** Returns next available message ID free to be used by SCU
-     *  @return Next free message ID
-     */
-    Uint16 nextMessageID();
 };
 
 #endif // SCU_H
