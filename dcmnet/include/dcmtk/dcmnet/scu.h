@@ -993,6 +993,11 @@ protected:
      */
     virtual OFCondition ignoreSTORERequest(T_ASC_PresentationContextID presID, const T_DIMSE_C_StoreRQ& request);
 
+    /** Returns next available message ID free to be used by SCU
+     *  @return Next free message ID
+     */
+    virtual Uint16 nextMessageID();
+
     /* Callback functions (static) */
 
     /** Callback function used for sending DIMSE messages.
@@ -1006,11 +1011,6 @@ protected:
      *  @param byteCount       [in] Progress bytes count
      */
     static void callbackRECEIVEProgress(void* callbackContext, unsigned long byteCount);
-
-    /** Returns next available message ID free to be used by SCU
-     *  @return Next free message ID
-     */
-    Uint16 nextMessageID();
 
 private:
     /** Private undefined copy-constructor. Shall never be called.
