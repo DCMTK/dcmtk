@@ -213,6 +213,13 @@ protected:
   void notifyThreadExit(DcmBaseSCPWorker* thread,
                         OFCondition result);
 
+  /** Initialize network, i.e. create an instance of T_ASC_Network and set
+   *  transport layer if it is enabled.
+   *  @param network The T_ASC_Network pointer to create the instance
+   *  @return EC_Normal if there were no errors during initialization.
+   */
+  virtual OFCondition initializeNework(T_ASC_Network** network);
+
 private:
 
   /// Possible run modes of pool
