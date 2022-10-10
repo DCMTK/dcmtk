@@ -30,6 +30,11 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/offile.h"
 
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 /*
 ** The separator character between fields in the data dictionary file(s)
 */
