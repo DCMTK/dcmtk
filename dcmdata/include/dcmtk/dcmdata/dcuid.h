@@ -64,6 +64,20 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindNameOfUID(const char* uid, const char* d
  */
 DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char* name);
 
+/** return the keyword of a UID.
+ *  Performs a table lookup and returns a pointer to a read-only string.
+ *  @param uid UID string for which the keyword is to be looked up
+ *  @return keyword string or NULL if UID is unknown
+ */
+DCMTK_DCMDATA_EXPORT const char* dcmFindKeywordOfUID(const char* uid);
+
+/** return the UID of a keyword.
+ *  Performs a table lookup and returns a pointer to a read-only string.
+ *  @param keyword keyword string for which the corresponding UID is to be looked up
+ *  @return UID string or NULL if keyword is unknown
+ */
+DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromKeyword(const char* keyword);
+
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
  *  model, i.e. everything a Storage SCP might want to store in a PACS.
@@ -521,7 +535,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_XRayRadiationDoseSRStorage                             "1.2.840.10008.5.1.4.1.1.88.67"
 #define UID_RadiopharmaceuticalRadiationDoseSRStorage              "1.2.840.10008.5.1.4.1.1.88.68"
 #define UID_ColonCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.69"
-#define UID_ImplantationPlanSRDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.70"
+#define UID_ImplantationPlanSRStorage                              "1.2.840.10008.5.1.4.1.1.88.70"
 #define UID_AcquisitionContextSRStorage                            "1.2.840.10008.5.1.4.1.1.88.71"
 #define UID_SimplifiedAdultEchoSRStorage                           "1.2.840.10008.5.1.4.1.1.88.72"
 #define UID_PatientRadiationDoseSRStorage                          "1.2.840.10008.5.1.4.1.1.88.73"
@@ -641,6 +655,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 // Hanging Protocols
 #define UID_FINDHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.2"
 #define UID_MOVEHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.3"
+#define UID_GETHangingProtocolInformationModel                     "1.2.840.10008.5.1.4.38.4"
 
 // Relevant Patient Information Query
 #define UID_RelevantPatientInformationQuery_Prefix                 "1.2.840.10008.5.1.4.37."
@@ -825,7 +840,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ICBM452T1FrameOfReference                              "1.2.840.10008.1.4.2.1"
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 #define UID_IEC61217FixedCoordinateSystemFrameOfReference          "1.2.840.10008.1.4.3.1"
-#define UID_StandardRoboticCoordinateSystemFrameOfReference        "1.2.840.10008.1.4.3.2"
+#define UID_StandardRoboticArmCoordinateSystemFrameOfReference     "1.2.840.10008.1.4.3.2"
 #define UID_IEC61217TableTopCoordinateSystemFrameOfReference       "1.2.840.10008.1.4.3.3"
 #define UID_SRI24FrameOfReference                                  "1.2.840.10008.1.4.4.1"
 #define UID_Colin27FrameOfReference                                "1.2.840.10008.1.4.5.1"

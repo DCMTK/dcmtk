@@ -691,7 +691,7 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_RadiopharmaceuticalRadiationDoseSRStorage) ||
              compare(sopClass, UID_SpectaclePrescriptionReportStorage) ||
              compare(sopClass, UID_MacularGridThicknessAndVolumeReportStorage) ||
-             compare(sopClass, UID_ImplantationPlanSRDocumentStorage) ||
+             compare(sopClass, UID_ImplantationPlanSRStorage) ||
              compare(sopClass, UID_AcquisitionContextSRStorage) ||
              compare(sopClass, UID_SimplifiedAdultEchoSRStorage) ||
              compare(sopClass, UID_PatientRadiationDoseSRStorage) ||
@@ -1647,7 +1647,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) ||
                                 compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportStorage) ||
                                 compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) ||
-                                compare(mediaSOPClassUID, UID_ImplantationPlanSRDocumentStorage) ||
+                                compare(mediaSOPClassUID, UID_ImplantationPlanSRStorage) ||
                                 compare(mediaSOPClassUID, UID_AcquisitionContextSRStorage) ||
                                 compare(mediaSOPClassUID, UID_SimplifiedAdultEchoSRStorage) ||
                                 compare(mediaSOPClassUID, UID_PatientRadiationDoseSRStorage) ||

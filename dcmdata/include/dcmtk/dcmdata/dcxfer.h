@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -210,6 +210,9 @@ public:
 
     /// return name string for this transfer syntax
     inline const char* getXferName() const { return xferName; }
+
+    /// return keyword string for this transfer syntax
+    const char* getXferKeyword() const;
 
     /// return UID string for this transfer syntax
     inline const char* getXferID() const { return xferID; }

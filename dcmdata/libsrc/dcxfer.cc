@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,7 +58,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #1
     { "",  // illegal type
@@ -72,7 +72,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #2
     { UID_LittleEndianExplicitTransferSyntax,
@@ -86,7 +86,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #3
     { UID_BigEndianExplicitTransferSyntax,
@@ -100,7 +100,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFTrue, // retired with Supplement 98
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #4
     { UID_JPEGProcess1TransferSyntax,
@@ -114,7 +114,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #5
     { UID_JPEGProcess2_4TransferSyntax,
@@ -128,7 +128,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #6
     { UID_JPEGProcess3_5TransferSyntax,
@@ -142,7 +142,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #7
     { UID_JPEGProcess6_8TransferSyntax,
@@ -156,7 +156,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #8
     { UID_JPEGProcess7_9TransferSyntax,
@@ -170,7 +170,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #9
     { UID_JPEGProcess10_12TransferSyntax,
@@ -184,7 +184,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #10
     { UID_JPEGProcess11_13TransferSyntax,
@@ -198,7 +198,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #11
     { UID_JPEGProcess14TransferSyntax,
@@ -212,7 +212,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #12
     { UID_JPEGProcess15TransferSyntax,
@@ -226,7 +226,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #13
     { UID_JPEGProcess16_18TransferSyntax,
@@ -240,7 +240,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #14
     { UID_JPEGProcess17_19TransferSyntax,
@@ -254,7 +254,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #15
     { UID_JPEGProcess20_22TransferSyntax,
@@ -268,7 +268,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #16
     { UID_JPEGProcess21_23TransferSyntax,
@@ -282,7 +282,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #17
     { UID_JPEGProcess24_26TransferSyntax,
@@ -296,7 +296,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #18
     { UID_JPEGProcess25_27TransferSyntax,
@@ -310,7 +310,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #19
     { UID_JPEGProcess28TransferSyntax,
@@ -324,7 +324,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #20
     { UID_JPEGProcess29TransferSyntax,
@@ -338,7 +338,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #21
     { UID_JPEGProcess14SV1TransferSyntax,
@@ -352,7 +352,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #22
     { UID_RLELosslessTransferSyntax,
@@ -366,7 +366,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #23
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
@@ -384,7 +384,7 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported,
 #endif
-      OFFalse 
+      OFFalse
     },
     // entry #24
     { UID_JPEGLSLosslessTransferSyntax,
@@ -398,7 +398,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #25
     { UID_JPEGLSLossyTransferSyntax,
@@ -412,7 +412,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #26
     { UID_JPEG2000LosslessOnlyTransferSyntax,
@@ -426,7 +426,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #27
     { UID_JPEG2000TransferSyntax,
@@ -440,7 +440,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #28
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
@@ -454,7 +454,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #29
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
@@ -468,7 +468,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #30
    { UID_JPIPReferencedTransferSyntax,
@@ -482,7 +482,7 @@ const S_XferNames XferNames[] =
       OFTrue,               // really lossy?
       OFFalse,
       ESC_none,
-      OFTrue 
+      OFTrue
     },
     // entry #31
    { UID_JPIPReferencedDeflateTransferSyntax,
@@ -514,7 +514,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #33
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
@@ -528,7 +528,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #34
     { UID_MPEG4HighProfileLevel4_1TransferSyntax,
@@ -542,7 +542,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #35
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
@@ -556,7 +556,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #36
     { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
@@ -570,7 +570,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #37
     { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
@@ -584,7 +584,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #38
     { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
@@ -598,7 +598,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #39
     { UID_HEVCMainProfileLevel5_1TransferSyntax,
@@ -612,7 +612,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #40
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,
@@ -626,7 +626,7 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     },
     // entry #41
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
@@ -640,7 +640,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse 
+      OFFalse
     }
 };
 
@@ -850,6 +850,13 @@ DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
     return *this;
 }
 
+
+// ********************************
+
+const char* DcmXfer::getXferKeyword() const
+{
+    return dcmFindKeywordOfUID(xferID);
+}
 
 // ********************************
 
