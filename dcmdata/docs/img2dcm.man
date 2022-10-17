@@ -314,6 +314,7 @@ the specific character set of that template is used for the generated DICOM file
 If the \e --study-from or \e --series-from options are used additionally,
 img2dcm will try to convert the character set of these attributes to that
 of the template, and will report an error if that is not possible.
+
 If the \e --study-from or \e --series-from options are used without a template,
 the specific character set of this source is used for the generated DICOM file.
 Any keys specified on the command line with the \e --key option are treated
@@ -339,17 +340,24 @@ the actual encoding of the data inside the JPEG file. Therefore, the following
 Transfer Syntaxes (and their corresponding JPEG encodings) are used by the JPEG
 plugin:
 
-\li JPEG Coding Process 1
-    Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
-    SOP Class = 1.2.840.10008.1.2.4.50
+<ul>
 
-\li JPEG Coding Process 2 (8-bit) and 4 (12-bit)
-    Extended, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8/12 Bit
-    SOP Class = 1.2.840.10008.1.2.4.51
+<li>JPEG Coding Process 1
+<br>Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
+<br>Transfer Syntax UID = 1.2.840.10008.1.2.4.50
+</li>
 
-\li JPEG Coding Process 10 (8-bit) and 12 (12-bit)
-    Full Progression, lossy, Non-Hierarch., Progressive, DCT, Huffman, 8/12 Bit
-    SOP Class = 1.2.840.10008.1.2.4.55
+<li>JPEG Coding Process 2 (8-bit) and 4 (12-bit)
+<br>Extended, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8/12 Bit
+<br>Transfer Syntax UID = 1.2.840.10008.1.2.4.51
+</li>
+
+<li>JPEG Coding Process 10 (8-bit) and 12 (12-bit)
+<br>Full Progression, lossy, Non-Hierarch., Progressive, DCT, Huffman, 8/12 Bit
+<br>Transfer Syntax UID = 1.2.840.10008.1.2.4.55
+</li>
+
+</ul>
 
 Color and grayscale images are supported.
 
@@ -391,16 +399,23 @@ For JPEGL-LS, the original JPEG-LS from the source file is not decoded but
 extracted and slightly transformed (e. g. APP8 marker is cut off) to allow fast
 conversion of even big JPEG-LS files without the need of decoding and
 re-encoding.
+
 The JPEG-LS plugin chooses the necessary output transfer syntax automatically
 depending on the actual encoding of the data inside the JPEG-LS file.
 Therefore, the following Transfer Syntaxes (and there corresponding JPEG-LS
 encodings) are used by the JPEG-LS plugin:
 
-\li JPEG-LS Lossless Image Compression
-    SOP Class = 1.2.840.10008.1.2.4.80
+<ul>
 
-\li JPEG-LS Lossy (Near-Lossless) Image Compression
-    SOP Class = 1.2.840.10008.1.2.4.81
+<li>JPEG-LS Lossless Image Compression
+<br>Transfer Syntax UID = 1.2.840.10008.1.2.4.80
+</li>
+
+<li>JPEG-LS Lossy (Near-Lossless) Image Compression
+<br>Transfer Syntax UID = 1.2.840.10008.1.2.4.81
+</li>
+
+</ul>
 
 Color and grayscale images are supported. CP-1843 enforce that the value of
 Planar Configuration (0028,0006) is irrelevant since the manner of encoding
@@ -433,19 +448,19 @@ There are no specific options for fine-tuning BMP format conversion.
 \subsection img2dcm_output_plugins Output Plugins
 
 The desired output SOP Class can be selected on the command line. Currently,
-export plugins for the Secondary Capture Image SOP class (default, option
-\e -sc), the Multiframe Secondary Capture Image SOP classes (option \e -nsc),
-Visible Light Photographic Image SOP class (option \e -vl), and the Ophthalmic
+export plugins for the Secondary Capture Image SOP Class (default, option
+\e -sc), the Multiframe Secondary Capture Image SOP Classes (option \e -nsc),
+Visible Light Photographic Image SOP Class (option \e -vl), and the Ophthalmic
 Photography Image SOP Classes (option \e -oph) are available. Please note that
 the first one is deprecated according to the DICOM standard but is selected as
 a default because it is widely supported. Future versions of \b img2dcm might
 provide further output plugins for other SOP Classes.
 
-For the new Secondary Capture SOP classes, it is not possible to specify which
-specific SOP class should be used for output. That is because these new SOP
+For the new Secondary Capture SOP Classes, it is not possible to specify which
+specific SOP Class should be used for output. That is because these new SOP
 classes are differentiated from each other by color depth (1/8/16) and the
 fact whether the image is black/white or color. That is why \b img2dcm decides
-during conversion, which output SOP class is suitable for a given source image.
+during conversion, which output SOP Class is suitable for a given source image.
 
 \section img2dcm_examples EXAMPLES
 
@@ -455,10 +470,10 @@ Here are some examples that show how the \b img2dcm application can be used.
 
 <li>
 img2dcm image.jpg out.dcm
-<br>Read JPEG file "image.jpg", convert to the old Secondary Capture SOP class
+<br>Read JPEG file "image.jpg", convert to the old Secondary Capture SOP Class
 and save the result to DICOM file "out.dcm". This is the easiest way of using
 \b img2dcm. Any type 1 and type 2 attributes required for writing valid objects
-of this SOP class are inserted automatically.
+of this SOP Class are inserted automatically.
 </li>
 
 <li>
