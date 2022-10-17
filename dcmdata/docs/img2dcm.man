@@ -15,12 +15,12 @@ img2dcm [options] imgfile-in... dcmfile-out
 \section img2dcm_description DESCRIPTION
 
 The \b img2dcm tool serves as a conversion tool from a standard image format
-like JPEG or BMP to DICOM. Different output SOP Classes can be selected. The
-additional information (regarding patients, series, etc.) stored in the DICOM
-output file can be extracted from other DICOM files which serve as a "template"
-for the resulting DICOM object. \b img2dcm can also be configured to invent
-missing DICOM type 1 and type 2 attributes to work even without any template
-dataset.
+like JPEG (including JPEG-LS) or BMP to DICOM. Different output SOP Classes
+can be selected. The additional information (regarding patients, series, etc.)
+stored in the DICOM output file can be extracted from other DICOM files which
+serve as a "template" for the resulting DICOM object. \b img2dcm can also be
+configured to invent missing DICOM type 1 and type 2 attributes to work even
+without any template dataset.
 
 \section img2dcm_parameters PARAMETERS
 \verbatim
@@ -381,10 +381,50 @@ JFIF information is always removed by \b img2dcm. However, when using this
 option, the APP2 marker is retained, but \b img2dcm does not create an
 equivalent ICC Profile (0028,2000) attribute.
 
+\subsubsection img2dcm_jpegls_input_plugin JPEG-LS Input Plugin
+
+The JPEG-LS plugin has been integrated directly into the main JPEG plugin.
+There is no need for the user to explicitly state in advance if input is JPEG
+or JPEG-LS.
+
+For JPEGL-LS, the original JPEG-LS from the source file is not decoded but
+extracted and slightly transformed (e. g. APP8 marker is cut off) to allow fast
+conversion of even big JPEG-LS files without the need of decoding and
+re-encoding.
+The JPEG-LS plugin chooses the necessary output transfer syntax automatically
+depending on the actual encoding of the data inside the JPEG-LS file.
+Therefore, the following Transfer Syntaxes (and there corresponding JPEG-LS
+encodings) are used by the JPEG-LS plugin:
+
+\li JPEG-LS Lossless Image Compression
+    SOP Class = 1.2.840.10008.1.2.4.80
+
+\li JPEG-LS Lossy (Near-Lossless) Image Compression
+    SOP Class = 1.2.840.10008.1.2.4.81
+
+Color and grayscale images are supported. CP-1843 enforce that the value of
+Planar Configuration (0028,0006) is irrelevant since the manner of encoding
+components is specified in the JPEG-LS bit stream as component, line or sample
+interleaved, hence it shall be set to 0. Since no color transformation
+specific for JPEG-LS is currently defined in DICOM, it is assumed that the
+JPEG-LS stream is encoded in RGB color space.
+
+For DICOM it is clear that SPIFF header should not be present in the DICOM
+object's internal JPEG-LS stream. The plugin will simply rejects any input
+JPEG-LS file containing a SPIFF header at marker APP8.
+
+By default, all APPn markers are cut off from the original JPEG-LS stream.
+However, if you want to keep APPn markers (e. g. APP8/HP color transform
+information, aka 'mrfx') inside the DICOM stream, the option \e --keep-appn
+does the trick. Pay attention that the plugin will check the actual color
+transform specified in the APP8/HP marker. Since DICOM does not allow any color
+transform to be specified in the APP8 marker, only a value of `0` (no color
+transform) is accepted.
+
 \subsubsection img2dcm_bmp_input_plugin BMP Input Plugin
 
 \b img2dcm supports BMP as input format. However, so far only the most common
-BMP images are supported.  In particular, BMP images which use bit fields or
+BMP images are supported. In particular, BMP images which use bit fields or
 run length encoding will be rejected. Such images are uncommon. Input images
 will either be converted into a DICOM image with RGB color model and a bit
 depth of 24, or into an image with MONOCHROME2 color model an 8 bits per pixel.
