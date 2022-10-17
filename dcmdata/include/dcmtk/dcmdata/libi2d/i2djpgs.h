@@ -124,7 +124,6 @@ class DCMTK_I2D_EXPORT I2DJpegSource : public I2DImgSource
 
 public:
     /** Constructor, initializes member variables
-     *  @return none
      */
     I2DJpegSource();
 
@@ -190,46 +189,43 @@ public:
     /** Enable/Disable support for Extended Sequential JPEG Coding
      *  @param enabled - [in] OFTrue: support Extended Sequential,
      *                        OFFalse: do not support
-     *  @return none
      */
     void setExtSeqSupport(const OFBool enabled);
 
     /** Enable/Disable support for Progressive JPEG Coding
      *  @param enabled - [in] OFTrue: support Extended Sequential,
      *                        OFFalse: do not support
-     *  @return none
      */
     void setProgrSupport(const OFBool enabled);
 
     /** If enabled, conversion will only take place if JFIF data could be found
      *  and evaluated. Many digital cameras do not provide a JFIF header, so this
      *  is disabled by default.
+     *  @param enabled - [in] Set whether we want to insist on JFIF header (OFTrue)
+     *                    or not (OFFalse)
      */
     void setInsistOnJFIF(const OFBool enabled);
 
     /**  If enabled, APPn markers (except JFIF!) are also copied to the output file.
      *   Default: false
      *   @param enabled - [in] OFTrue: copy APPn, OFFalse: cut off APPn info
-     *   @return none
      */
     void setKeepAPPn(const OFBool enabled);
 
     /**  If enabled, COM marker is also copied to the output file.
      *   Default: true
      *   @param enabled - [in] OFTrue: copy COM, OFFalse: cut off COM segment
-     *   @return none
      */
     void setKeepCOM(const OFBool enabled);
 
     /** Returns a string representation of a JPEG marker code.
      *  @param marker - [in] The marker to be converted
-     *  @param useJPEGLS - [in] Denotes whether we are handling JPEG-LS data
+     *  @param isJPEGLS - [in] Denotes whether we are handling JPEG-LS data
      *  @return A string representation of the marker
      */
     static OFString jpegMarkerToString(const E_JPGMARKER& marker, const OFBool isJPEGLS);
 
     /** Destructor, frees some memory.
-     *  @return none
      */
     ~I2DJpegSource();
 
@@ -241,7 +237,6 @@ protected:
     OFCondition openFile(const OFString& filename);
 
     /** Closes JPEG file.
-     *  @return A string representation of the marker
      */
     void closeFile();
 
@@ -254,7 +249,6 @@ protected:
     /** Dump the internal JPEG file map to a given stream. The file map
      *  lists JPEG markers and their position in the bitstream found in the JPEG
      *  file
-     *  @return none
      */
     void debugDumpJPEGFileMap() const;
 
@@ -328,7 +322,7 @@ protected:
 
     /** Returns true if marker is one of the SOF0 to SOF15 markers
      *  @param jpegEncoding - [in] Image marker that should be tested
-     *  @param useJPEGLS - [in] Denotes whether we are handling JPEG-LS data
+     *  @param isJPEGLS - [in] Denotes whether we are handling JPEG-LS data
      *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
      */
     static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding, const OFBool isJPEGLS);
@@ -373,7 +367,6 @@ protected:
     inline int read1Byte(Uint8& result);
 
     /** Deletes internal JPEG file map and frees memory.
-     *  @return none
      */
     void clearMap();
 

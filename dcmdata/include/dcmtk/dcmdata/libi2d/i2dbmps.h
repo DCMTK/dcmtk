@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2014, OFFIS e.V.
+ *  Copyright (C) 2009-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,7 +35,6 @@ class DCMTK_I2D_EXPORT I2DBmpSource : public I2DImgSource
 public:
 
   /** Constructor, initializes member variables
-   *  @return none
    */
   I2DBmpSource();
 
@@ -100,7 +99,6 @@ public:
   }
 
   /** Destructor, frees some memory.
-   *  @return none
    */
   virtual ~I2DBmpSource();
 
@@ -113,7 +111,6 @@ protected:
   OFCondition openFile(const OFString& filename);
 
   /** Closes BMP file.
-   *  @return none
    */
   void closeFile();
 
