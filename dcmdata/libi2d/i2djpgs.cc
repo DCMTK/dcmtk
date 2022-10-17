@@ -707,7 +707,7 @@ OFCondition I2DJpegSource::createJPEGFileMap()
             else if (marker == E_JPGMARKER_JPGN7)
             {
                 lastWasSOSMarker = OFTrue;
-		        m_isJPEGLS = OFTrue;
+                m_isJPEGLS = OFTrue;
             }
             else if (marker == E_JPGMARKER_EOI)
             {
