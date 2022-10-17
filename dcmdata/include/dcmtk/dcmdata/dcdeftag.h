@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2022-07-25 09:10:37
+**   Date: 2022-10-17 21:04:18
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2022-07-25 09:10:37"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2022-10-17 21:04:18"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4989
+** Number of entries: 4991
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -259,6 +259,7 @@
 #define DCM_InventoryCompletionStatus            DcmTagKey(0x0008, 0x0426)
 #define DCM_NumberOfStudyRecordsInInstance       DcmTagKey(0x0008, 0x0427)
 #define DCM_TotalNumberOfStudyRecords            DcmTagKey(0x0008, 0x0428)
+#define DCM_MaximumNumberOfRecords               DcmTagKey(0x0008, 0x0429)
 #define DCM_RETIRED_NetworkID                    DcmTagKey(0x0008, 0x1000)
 #define DCM_StationName                          DcmTagKey(0x0008, 0x1010)
 #define DCM_StudyDescription                     DcmTagKey(0x0008, 0x1030)
@@ -460,6 +461,7 @@
 #define DCM_ClinicalTrialTimePointDescription    DcmTagKey(0x0012, 0x0051)
 #define DCM_LongitudinalTemporalOffsetFromEvent  DcmTagKey(0x0012, 0x0052)
 #define DCM_LongitudinalTemporalEventType        DcmTagKey(0x0012, 0x0053)
+#define DCM_ClinicalTrialTimePointTypeCodeSequence DcmTagKey(0x0012, 0x0054)
 #define DCM_ClinicalTrialCoordinatingCenterName  DcmTagKey(0x0012, 0x0060)
 #define DCM_PatientIdentityRemoved               DcmTagKey(0x0012, 0x0062)
 #define DCM_DeidentificationMethod               DcmTagKey(0x0012, 0x0063)

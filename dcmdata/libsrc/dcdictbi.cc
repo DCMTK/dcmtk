@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2022-07-25 09:10:38
+**   Date: 2022-10-17 21:04:19
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -1010,6 +1010,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x0428, 0x0008, 0x0428,
       EVR_UV, "TotalNumberOfStudyRecords", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x0429, 0x0008, 0x0429,
+      EVR_UV, "MaximumNumberOfRecords", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1000, 0x0008, 0x1000,
@@ -3026,6 +3030,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0012, 0x0053, 0x0012, 0x0053,
       EVR_CS, "LongitudinalTemporalEventType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0012, 0x0054, 0x0012, 0x0054,
+      EVR_SQ, "ClinicalTrialTimePointTypeCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0012, 0x0060, 0x0012, 0x0060,

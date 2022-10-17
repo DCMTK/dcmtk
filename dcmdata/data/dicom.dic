@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2022c and PS 3.7-2022c.
-# File created on 2022-07-25 09:08:29 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2022d and PS 3.7-2022d.
+# File created on 2022-10-17 21:01:54 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -246,6 +246,7 @@
 (0008,0426)	CS	InventoryCompletionStatus	1	DICOM
 (0008,0427)	UL	NumberOfStudyRecordsInInstance	1	DICOM
 (0008,0428)	UV	TotalNumberOfStudyRecords	1	DICOM
+(0008,0429)	UV	MaximumNumberOfRecords	1	DICOM
 (0008,1010)	SH	StationName	1	DICOM
 (0008,1030)	LO	StudyDescription	1	DICOM
 (0008,1032)	SQ	ProcedureCodeSequence	1	DICOM
@@ -421,6 +422,7 @@
 (0012,0051)	ST	ClinicalTrialTimePointDescription	1	DICOM
 (0012,0052)	FD	LongitudinalTemporalOffsetFromEvent	1	DICOM
 (0012,0053)	CS	LongitudinalTemporalEventType	1	DICOM
+(0012,0054)	SQ	ClinicalTrialTimePointTypeCodeSequence	1	DICOM
 (0012,0060)	LO	ClinicalTrialCoordinatingCenterName	1	DICOM
 (0012,0062)	CS	PatientIdentityRemoved	1	DICOM
 (0012,0063)	LO	DeidentificationMethod	1-n	DICOM
