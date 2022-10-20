@@ -146,7 +146,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
             closeFile();
             return cond;
         }
-        m_lossyCompressed = nearLossless;
+        m_lossyCompressed = (nearLossless >= 1 ? OFTrue : OFFalse);
 
         // APP8 marker was found, check if this is one of the accepted HP transform ones
         if (entryApp8 != m_jpegFileMap.end())
