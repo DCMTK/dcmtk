@@ -5,8 +5,8 @@
  *
  *  Header file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2022c
- *  File created on 2022-07-25 09:55:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022d
+ *  File created on 2022-10-24 17:49:59 by J. Riesmeier
  *
  */
 

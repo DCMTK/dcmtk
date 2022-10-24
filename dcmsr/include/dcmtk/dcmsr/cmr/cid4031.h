@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4031_CommonAnatomicRegion
  *
- *  Generated automatically from DICOM PS 3.16-2022c
- *  File created on 2022-07-25 09:55:37 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022d
+ *  File created on 2022-10-24 17:50:03 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4031 - Common Anatomic Region.
- *  (type: extensible, version: 20210120)
+ *  (type: extensible, version: 20220922)
  */
 class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
   : public DSRContextGroup
@@ -70,7 +70,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         Calcaneus,
         /// (122494005,SCT,"Cervical spine")
         CervicalSpine,
-        /// (297171002,SCT,"Cervico-thoracic spine")
+        /// (1217257000,SCT,"Cervico-thoracic spine")
         CervicoThoracicSpine,
         /// (816094009,SCT,"Chest")
         Chest,
@@ -154,7 +154,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         LowerLimb,
         /// (122496007,SCT,"Lumbar spine")
         LumbarSpine,
-        /// (297173004,SCT,"Lumbo-sacral spine")
+        /// (1217253001,SCT,"Lumbo-sacral spine")
         LumboSacralSpine,
         /// (91609006,SCT,"Mandible")
         Mandible,
@@ -196,7 +196,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         Patella,
         /// (816092008,SCT,"Pelvis")
         Pelvis,
-        /// (416631005,SCT,"Pelvis and lower extremities")
+        /// (1231522001,SCT,"Pelvis and lower extremities")
         PelvisAndLowerExtremities,
         /// (113681,DCM,"Phantom")
         Phantom,
@@ -206,7 +206,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         Rectum,
         /// (113197003,SCT,"Rib")
         Rib,
-        /// (297174005,SCT,"Sacro-coccygeal Spine")
+        /// (1217254007,SCT,"Sacro-coccygeal Spine")
         SacroCoccygealSpine,
         /// (39723000,SCT,"Sacroiliac joint")
         SacroiliacJoint,
@@ -242,7 +242,7 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         Thigh,
         /// (122495006,SCT,"Thoracic spine")
         ThoracicSpine,
-        /// (297172009,SCT,"Thoraco-lumbar spine")
+        /// (1217256009,SCT,"Thoraco-lumbar spine")
         ThoracoLumbarSpine,
         /// (76505004,SCT,"Thumb")
         Thumb,
