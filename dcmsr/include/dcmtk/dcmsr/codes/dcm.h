@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2022c
- *  File created on 2022-07-25 09:34:29 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2022d
+ *  File created on 2022-10-24 17:36:18 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4657
+// total number of codes: 4658
 // - retired: 201
 // - no name: 27
 // - not unique: 17
@@ -3628,6 +3628,7 @@
 #define CODE_DCM_PlaneThroughCenter                                        DSRBasicCodedEntry("128130", "DCM", "Plane through Center")
 #define CODE_DCM_GeometricCenterpoint                                      DSRBasicCodedEntry("128137", "DCM", "Geometric Centerpoint")
 #define CODE_DCM_CenterOfMass                                              DSRBasicCodedEntry("128138", "DCM", "Center of Mass")
+#define CODE_DCM_SeedPoint                                                 DSRBasicCodedEntry("128139", "DCM", "Seed point")
 #define CODE_DCM_ImpairedRenalFunction                                     DSRBasicCodedEntry("128144", "DCM", "Impaired Renal Function")
 #define CODE_DCM_LaserCrossHairs                                           DSRBasicCodedEntry("128151", "DCM", "Laser Cross-hairs")
 #define CODE_DCM_AcquiredVolume                                            DSRBasicCodedEntry("128160", "DCM", "Acquired Volume")
