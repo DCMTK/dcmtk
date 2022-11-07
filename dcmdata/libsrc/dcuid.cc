@@ -137,8 +137,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax,       "SMPTEST211020UncompressedProgressiveActiveVideo",                    "SMPTEST2110-20:UncompressedProgressiveActiveVideo" },
     { UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax,        "SMPTEST211020UncompressedInterlacedActiveVideo",                     "SMPTEST2110-20:UncompressedInterlacedActiveVideo" },
     { UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax,                          "SMPTEST211030PCMDigitalAudio",                                       "SMPTEST2110-30:PCMDigitalAudio" },
-    { UID_RFC2557MIMEEncapsulationTransferSyntax,                                "RFC2557MIMEEncapsulation",                                           "RFC2557MIMEEncapsulation" },
-    { UID_XMLEncodingTransferSyntax,                                             "XMLEncoding",                                                        "XMLEncoding" },
+    { UID_RETIRED_RFC2557MIMEEncapsulationTransferSyntax,                        "RFC2557MIMEEncapsulation",                                           "RETIRED_RFC2557MIMEEncapsulation" },
+    { UID_RETIRED_XMLEncodingTransferSyntax,                                     "XMLEncoding",                                                        "RETIRED_XMLEncoding" },
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,                    NULL /* no official keyword */,                                       "PrivateGELittleEndianImplicitWithBigEndianPixelData" },
 
     // Storage (DICOM)

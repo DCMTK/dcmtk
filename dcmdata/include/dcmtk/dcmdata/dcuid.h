@@ -391,13 +391,13 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
  *  on a DICOM storage medium. It was never used for network communication
  *  or encoding of DICOM objects.
  */
-#define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
+#define UID_RETIRED_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
 
 /** XML Encoding (RETIRED) was only a pseudo transfer syntax used to refer to
  *  encapsulated HL7 CDA documents from a DICOMDIR when stored on a DICOM storage
  *  medium. It was never used for network communication or encoding of DICOM objects.
  */
-#define UID_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
+#define UID_RETIRED_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
 
 /** Private transfer syntax defined by GE. This transfer syntax is identical to
  *  Implicit VR Little Endian, except that Pixel Data are encoded in big endian.
