@@ -38,6 +38,7 @@ typedef struct
     OFBool              retired;
     E_StreamCompression streamCompression;
     OFBool              referenced;
+    OFBool              fragmentable;
 } S_XferNames;
 
 
@@ -58,6 +59,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
     // entry #1
@@ -72,6 +74,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
     // entry #2
@@ -86,6 +89,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
     // entry #3
@@ -100,6 +104,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFTrue, // retired with Supplement 98
       ESC_none,
+      OFFalse,
       OFFalse
     },
     // entry #4
@@ -114,7 +119,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #5
     { UID_JPEGProcess2_4TransferSyntax,
@@ -128,7 +134,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #6
     { UID_JPEGProcess3_5TransferSyntax,
@@ -142,7 +149,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #7
     { UID_JPEGProcess6_8TransferSyntax,
@@ -156,7 +164,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #8
     { UID_JPEGProcess7_9TransferSyntax,
@@ -170,7 +179,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #9
     { UID_JPEGProcess10_12TransferSyntax,
@@ -184,7 +194,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #10
     { UID_JPEGProcess11_13TransferSyntax,
@@ -198,7 +209,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #11
     { UID_JPEGProcess14TransferSyntax,
@@ -212,7 +224,8 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #12
     { UID_JPEGProcess15TransferSyntax,
@@ -226,7 +239,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #13
     { UID_JPEGProcess16_18TransferSyntax,
@@ -240,7 +254,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #14
     { UID_JPEGProcess17_19TransferSyntax,
@@ -254,7 +269,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #15
     { UID_JPEGProcess20_22TransferSyntax,
@@ -268,7 +284,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #16
     { UID_JPEGProcess21_23TransferSyntax,
@@ -282,7 +299,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #17
     { UID_JPEGProcess24_26TransferSyntax,
@@ -296,7 +314,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #18
     { UID_JPEGProcess25_27TransferSyntax,
@@ -310,7 +329,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #19
     { UID_JPEGProcess28TransferSyntax,
@@ -324,7 +344,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #20
     { UID_JPEGProcess29TransferSyntax,
@@ -338,7 +359,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFTrue,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #21
     { UID_JPEGProcess14SV1TransferSyntax,
@@ -352,7 +374,8 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #22
     { UID_RLELosslessTransferSyntax,
@@ -366,6 +389,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
     // entry #23
@@ -384,6 +408,7 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported,
 #endif
+      OFFalse,
       OFFalse
     },
     // entry #24
@@ -398,7 +423,8 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #25
     { UID_JPEGLSLossyTransferSyntax,
@@ -412,7 +438,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #26
     { UID_JPEG2000LosslessOnlyTransferSyntax,
@@ -426,7 +453,8 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #27
     { UID_JPEG2000TransferSyntax,
@@ -440,7 +468,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #28
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
@@ -454,7 +483,8 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #29
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
@@ -468,7 +498,8 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
     // entry #30
    { UID_JPIPReferencedTransferSyntax,
@@ -482,7 +513,8 @@ const S_XferNames XferNames[] =
       OFTrue,               // really lossy?
       OFFalse,
       ESC_none,
-      OFTrue
+      OFTrue,
+      OFFalse
     },
     // entry #31
    { UID_JPIPReferencedDeflateTransferSyntax,
@@ -500,7 +532,8 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported,
 #endif
-      OFTrue
+      OFTrue,
+      OFFalse
     },
     // entry #32
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
@@ -514,9 +547,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
     // entry #33
+    { UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax,
+      "Fragmentable MPEG2 Main Profile / Main Level",
+      EXS_FragmentableMPEG2MainProfileMainLevel,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #34
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       "MPEG2 Main Profile @ High Level",  // changed with DICOM 2016e to: MPEG2 Main Profile / High Level
       EXS_MPEG2MainProfileAtHighLevel,
@@ -528,9 +577,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
-    // entry #34
+    // entry #35
+    { UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax,
+      "Fragmentable MPEG2 Main Profile / High Level",
+      EXS_FragmentableMPEG2MainProfileHighLevel,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #36
     { UID_MPEG4HighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.1",
       EXS_MPEG4HighProfileLevel4_1,
@@ -542,9 +607,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
-    // entry #35
+    // entry #37
+    { UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax,
+      "Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1",
+      EXS_FragmentableMPEG4HighProfileLevel4_1,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #38
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
       EXS_MPEG4BDcompatibleHighProfileLevel4_1,
@@ -556,9 +637,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
-    // entry #36
+    // entry #39
+    { UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
+      "Fragmentable MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
+      EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #40
     { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
       EXS_MPEG4HighProfileLevel4_2_For2DVideo,
@@ -570,9 +667,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
-    // entry #37
+    // entry #41
+    { UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
+      "Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
+      EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #42
     { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
       EXS_MPEG4HighProfileLevel4_2_For3DVideo,
@@ -584,9 +697,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
-    // entry #38
+    // entry #43
+    { UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
+      "Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
+      EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #44
     { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
       "MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
       EXS_MPEG4StereoHighProfileLevel4_2,
@@ -598,9 +727,25 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     },
-    // entry #39
+    // entry #45
+    { UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax,
+      "Fragmentable MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
+      EXS_FragmentableMPEG4StereoHighProfileLevel4_2,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #46
     { UID_HEVCMainProfileLevel5_1TransferSyntax,
       "HEVC/H.265 Main Profile / Level 5.1",
       EXS_HEVCMainProfileLevel5_1,
@@ -612,9 +757,10 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
-    // entry #40
+    // entry #47
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,
       "HEVC/H.265 Main 10 Profile / Level 5.1",
       EXS_HEVCMain10ProfileLevel5_1,
@@ -626,9 +772,10 @@ const S_XferNames XferNames[] =
       OFTrue,
       OFFalse,
       ESC_none,
-      OFFalse
+      OFFalse,
+      OFTrue
     },
-    // entry #41
+    // entry #48
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
       "Private GE Little Endian Implicit with big endian pixel data",
       EXS_PrivateGE_LEI_WithBigEndianPixelData,
@@ -640,6 +787,7 @@ const S_XferNames XferNames[] =
       OFFalse,
       OFFalse,
       ESC_none,
+      OFFalse,
       OFFalse
     }
 };
@@ -663,7 +811,8 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
     lossy(OFFalse),
     retired(OFFalse),
     streamCompression(ESC_none),
-    referenced(OFFalse)
+    referenced(OFFalse),
+    fragmentable(OFFalse)
 {
     int i = 0;
     while ((i < DIM_OF_XferNames) && XferNames[i].xfer != xfer)
@@ -683,6 +832,7 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
         retired            = XferNames[i].retired;
         streamCompression  = XferNames[i].streamCompression;
         referenced         = XferNames[i].referenced;
+        fragmentable       = XferNames[i].fragmentable;
     }
 }
 
@@ -703,7 +853,8 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
     lossy(OFFalse),
     retired(OFFalse),
     streamCompression(ESC_none),
-    referenced(OFFalse)
+    referenced(OFFalse),
+    fragmentable(OFFalse)
 {
     const char* xname = xferName_xferID;
     if (xname != NULL)
@@ -726,6 +877,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
             retired            = XferNames[i].retired;
             streamCompression  = XferNames[i].streamCompression;
             referenced         = XferNames[i].referenced;
+            fragmentable       = XferNames[i].fragmentable;
         }
         else
         {
@@ -747,6 +899,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
                 retired            = XferNames[i].retired;
                 streamCompression  = XferNames[i].streamCompression;
                 referenced         = XferNames[i].referenced;
+                fragmentable       = XferNames[i].fragmentable;
             }
         }
     }
@@ -769,7 +922,8 @@ DcmXfer::DcmXfer(const DcmXfer &newXfer)
     lossy(newXfer.lossy),
     retired(newXfer.retired),
     streamCompression(newXfer.streamCompression),
-    referenced(newXfer.referenced)
+    referenced(newXfer.referenced),
+    fragmentable(newXfer.fragmentable)
 {
 }
 
@@ -807,6 +961,7 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         retired            = XferNames[i].retired;
         streamCompression  = XferNames[i].streamCompression;
         referenced         = XferNames[i].referenced;
+        fragmentable       = XferNames[i].fragmentable;
     } else {
         xferSyn            = EXS_Unknown;
         xferID             = "";
@@ -821,6 +976,7 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         retired            = OFFalse;
         streamCompression  = ESC_none;
         referenced         = OFFalse;
+        fragmentable       = OFFalse;
     }
     return *this;
 }
@@ -846,6 +1002,7 @@ DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
         retired            = newXfer.retired;
         streamCompression  = newXfer.streamCompression;
         referenced         = newXfer.referenced;
+        fragmentable       = newXfer.fragmentable;
     }
     return *this;
 }

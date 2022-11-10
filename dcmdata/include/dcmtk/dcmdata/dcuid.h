@@ -361,18 +361,32 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_JPIPReferencedDeflateTransferSyntax "1.2.840.10008.1.2.4.95"
 /// MPEG2 Main Profile @ Main Level (changed with DICOM 2016e to: MPEG2 Main Profile / Main Level)
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
+/// Fragmentable MPEG2 Main Profile / Main Level
+#define UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax "1.2.840.10008.1.2.4.100.1"
 /// MPEG2 Main Profile @ High Level (changed with DICOM 2016e to: MPEG2 Main Profile / High Level)
 #define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
+#define UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax "1.2.840.10008.1.2.4.101.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.1
 #define UID_MPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
+#define UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102.1"
 /// MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
 #define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103"
+/// Fragmentable MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
+#define UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
 #define UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax "1.2.840.10008.1.2.4.104"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
+#define UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax "1.2.840.10008.1.2.4.104.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
 #define UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax "1.2.840.10008.1.2.4.105"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
+#define UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax "1.2.840.10008.1.2.4.105.1"
 /// MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
 #define UID_MPEG4StereoHighProfileLevel4_2TransferSyntax "1.2.840.10008.1.2.4.106"
+/// Fragmentable MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
+#define UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax "1.2.840.10008.1.2.4.106.1"
 /// HEVC/H.265 Main Profile / Level 5.1
 #define UID_HEVCMainProfileLevel5_1TransferSyntax "1.2.840.10008.1.2.4.107"
 /// HEVC/H.265 Main 10 Profile / Level 5.1

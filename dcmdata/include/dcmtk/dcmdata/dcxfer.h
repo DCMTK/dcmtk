@@ -103,24 +103,38 @@ typedef enum {
     EXS_JPIPReferencedDeflate = 31,
     /// MPEG2 Main Profile at Main Level
     EXS_MPEG2MainProfileAtMainLevel = 32,
+    /// Fragmentable MPEG2 Main Profile / Main Level
+    EXS_FragmentableMPEG2MainProfileMainLevel = 33,
     /// MPEG2 Main Profile at High Level
-    EXS_MPEG2MainProfileAtHighLevel = 33,
+    EXS_MPEG2MainProfileAtHighLevel = 34,
+    /// Fragmentable MPEG2 Main Profile / High Level
+    EXS_FragmentableMPEG2MainProfileHighLevel = 35,
     /// MPEG4 High Profile / Level 4.1
-    EXS_MPEG4HighProfileLevel4_1 = 34,
+    EXS_MPEG4HighProfileLevel4_1 = 36,
+    /// Fragmentable MPEG4 High Profile / Level 4.1
+    EXS_FragmentableMPEG4HighProfileLevel4_1 = 37,
     /// MPEG4 BD-compatible High Profile / Level 4.1
-    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 35,
+    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 38,
+    /// Fragmentable MPEG4 BD-compatible High Profile / Level 4.1
+    EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1 = 39,
     /// MPEG4 High Profile / Level 4.2 For 2D Video
-    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 36,
+    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 40,
+    /// Fragmentable MPEG4 High Profile / Level 4.2 For 2D Video
+    EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo = 41,
     /// MPEG4 High Profile / Level 4.2 For 3D Video
-    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 37,
+    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 42,
+    /// Fragmentable MPEG4 Stereo High Profile / Level 4.2
+    EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo = 43,
     /// MPEG4 Stereo High Profile / Level 4.2
-    EXS_MPEG4StereoHighProfileLevel4_2 = 38,
+    EXS_MPEG4StereoHighProfileLevel4_2 = 44,
+    /// Fragmentable HEVC/H.265 Main Profile / Level 5.1
+    EXS_FragmentableMPEG4StereoHighProfileLevel4_2 = 45,
     /// HEVC/H.265 Main Profile / Level 5.1
-    EXS_HEVCMainProfileLevel5_1 = 39,
+    EXS_HEVCMainProfileLevel5_1 = 46,
     /// HEVC/H.265 Main 10 Profile / Level 5.1
-    EXS_HEVCMain10ProfileLevel5_1 = 40,
+    EXS_HEVCMain10ProfileLevel5_1 = 47,
     /// Private GE Little Endian Implicit with big endian pixel data
-    EXS_PrivateGE_LEI_WithBigEndianPixelData = 41
+    EXS_PrivateGE_LEI_WithBigEndianPixelData = 48
 } E_TransferSyntax;
 
 /** enumeration of byte orders
@@ -300,6 +314,15 @@ public:
         return referenced;
     }
 
+    /** check whether transfer syntax allows the encapsulated pixel stream of
+     *  encoded pixel data to be split into one or​ more fragments
+     *  @return true if transfer syntax supports fragmentable pixel data
+     */
+    inline OFBool isFragmentable() const
+    {
+        return fragmentable;
+    }
+
     /** return the number of bytes needed to describe the tag, length, VR
      *  and any reserved fields for this transfer syntax when encoding the
      *  specified VR.
@@ -347,6 +370,9 @@ private:
 
     /// flag indicating whether this transfer syntax uses a pixel data URL reference
     OFBool              referenced;
+
+    /// flag indicating whether this transfer syntax supports fragmentable pixel data
+    OFBool              fragmentable;
 
 };
 
