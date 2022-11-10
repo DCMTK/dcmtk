@@ -94,9 +94,9 @@ DCMTK_OFICONV_EXPORT iconv_t OFiconv_open(const char *dstname, const char *srcna
  *
  *   If the string pointed to by *src contains a character which is valid
  *   under the source codeset but can not be converted to the destination
- *   codeset, the character is replaced by an “invalid character” which
- *   depends on the destination codeset, e.g., ‘?’, and the conversion is
- *   continued. iconv() returns the number of such “invalid conversions”.
+ *   codeset, the character is replaced by an "invalid character" which
+ *   depends on the destination codeset, e.g., '?', and the conversion is
+ *   continued. iconv() returns the number of such "invalid conversions".
  *
  *   @param cd conversion descriptor returned by OFiconv_open()
  *   @param src address of pointer to first byte in source buffer

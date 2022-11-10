@@ -315,7 +315,7 @@ public:
     }
 
     /** check whether transfer syntax allows the encapsulated pixel stream of
-     *  encoded pixel data to be split into one or​ more fragments
+     *  encoded pixel data to be split into one or more fragments
      *  @return true if transfer syntax supports fragmentable pixel data
      */
     inline OFBool isFragmentable() const
