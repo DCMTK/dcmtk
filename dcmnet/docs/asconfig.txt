@@ -96,9 +96,9 @@ This supersection contains one or more sections with arbitrary
 user-defined but unique section names that are used as symbolic labels.
 Within each section, one or more key/value pairs are contained.  The key
 names are "PresentationContext1", "PresentationContext2" etc., in
-increasing order.  Each list must not contain more than 128 entries,
-due to the limitation of the DICOM network protocol to 128 presentation
-contexts per association.
+increasing order.  For an association requestor, each list must not
+contain more than 128 entries, due to the limitation of the DICOM network
+protocol to 128 presentation contexts per association.
 
 Each value consists of two parts, separated by a single backslash
 character ('\').  The first value denotes a DICOM SOP Class UID or
