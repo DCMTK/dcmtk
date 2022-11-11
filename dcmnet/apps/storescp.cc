@@ -1010,7 +1010,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
-                                     NULL };                                                      // +1
+                                     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };            // +8
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -1287,25 +1287,32 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
         transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
         transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-        transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
-        transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
-        transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
-        transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
-        transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
-        transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-        transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
-        transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
-        transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[9] = UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax;
+        transferSyntaxes[10] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+        transferSyntaxes[11] = UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax;
+        transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[13] = UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[14] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[15] = UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+        transferSyntaxes[16] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        transferSyntaxes[17] = UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+        transferSyntaxes[18] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        transferSyntaxes[19] = UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+        transferSyntaxes[20] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
+        transferSyntaxes[21] = UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax;
+        transferSyntaxes[22] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+        transferSyntaxes[23] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+        transferSyntaxes[24] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
         if (gLocalByteOrder == EBO_LittleEndian)
         {
-          transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[25] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[26] = UID_BigEndianExplicitTransferSyntax;
         } else {
-          transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[25] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[26] = UID_LittleEndianExplicitTransferSyntax;
         }
-        transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 21;
+        transferSyntaxes[27] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 28;
       } else {
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
