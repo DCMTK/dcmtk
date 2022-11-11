@@ -5,19 +5,6 @@
 # Usage and syntax is equivalent to CMake's try_run().
 #
 
-# CMakeParseArguments was introduced in CMake 2.8.3.
-# DCMTK_TRY_RUN will revert to CMake's internal try_run()
-# for versions prior to 2.8.3, as arguments can't be parsed
-# in that case. This means cross compiling support will be
-# disabled for CMake versions prior to 2.8.3.
-if(CMAKE_VERSION VERSION_LESS 2.8.3)
-
-macro(DCMTK_TRY_RUN)
-    try_run(${ARGN})
-endmacro()
-
-else()
-
 include(CMakeParseArguments)
 
 function(DCMTK_TRY_RUN_CROSS RUN_RESULT_VAR COMPILE_RESULT_VAR bindir srcfile)
@@ -91,5 +78,3 @@ macro(DCMTK_TRY_RUN)
         try_run(${ARGN})
     endif()
 endmacro()
-
-endif()

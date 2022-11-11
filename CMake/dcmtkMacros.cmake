@@ -30,12 +30,7 @@ function(DCMTK_ADD_TESTS MODULE)
             # This assumes that test names are globally unique
             add_test(NAME "${TEST}" COMMAND "${CMAKE_COMMAND}" "-DDCMTK_CTEST_TESTCASE_COMMAND=${TEST_COMMAND}" "-DDCMTK_CTEST_TEST_NAME=${TEST}" "-P" "${DCMTK_RUN_CTEST_SCRIPT}")
             set_property(TEST "${TEST}" PROPERTY LABELS "${MODULE}")
-            if(CMAKE_VERSION VERSION_LESS 3.0.0)
-                # CMake versions prior 3 seemingly don't understand $<TARGET_FILE:tgt> within a test's REQUIRED_FILES property
-                set_property(TEST "${TEST}" PROPERTY REQUIRED_FILES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MODULE}_tests${CMAKE_EXECUTABLE_SUFFIX}")
-            else()
-                set_property(TEST "${TEST}" PROPERTY REQUIRED_FILES "${TEST_EXECUTABLE}")
-            endif()
+            set_property(TEST "${TEST}" PROPERTY REQUIRED_FILES "${TEST_EXECUTABLE}")
         endforeach()
         add_custom_target("${MODULE}-test-exhaustive"
             COMMAND "${CMAKE_COMMAND}" "-DCONFIG=${DCMTK_CONFIG_GENERATOR_EXPRESSION}" "-P" "${DCMTK_SOURCE_DIR}/CMake/CTest/dcmtkCTestRunExhaustive.cmake"
@@ -148,38 +143,20 @@ endmacro()
 set(DCMTK_ALL_LIBRARIES CACHE INTERNAL "List of all libraries in the DCMTK.")
 set(DCMTK_LIBRARY_DEPENDENCIES CACHE INTERNAL "Dependencies of the DCMTK libraries.")
 
-# Failsafe implementation of UNSET for old CMake versions
-if(CMAKE_VERSION VERSION_LESS 2.6.3)
-  macro(DCMTK_UNSET VAR)
-    set(${VAR})
-  endmacro()
-else()
-  macro(DCMTK_UNSET VAR)
-    unset(${VAR})
-  endmacro()
-endif()
+# implementation of UNSET
+macro(DCMTK_UNSET VAR)
+  unset(${VAR})
+endmacro()
 
-# Failsafe implementation of unset(... CACHE) for old CMake versions
-if(CMAKE_VERSION VERSION_LESS 2.6.3)
-  macro(DCMTK_UNSET_CACHE VAR)
-    set(${VAR} CACHE INTERNAL "")
-  endmacro()
-else()
-  macro(DCMTK_UNSET_CACHE VAR)
-    unset(${VAR} CACHE)
-  endmacro()
-endif()
+# implementation of unset(... CACHE)
+macro(DCMTK_UNSET_CACHE VAR)
+  unset(${VAR} CACHE)
+endmacro()
 
-# Failsafe implementation of unset(... PARENT_SCOPE) for old CMake versions
-if(CMAKE_VERSION VERSION_LESS 3.0)
-  macro(DCMTK_UNSET_PARENT_SCOPE VAR)
-    set(${VAR} PARENT_SCOPE)
-  endmacro()
-else()
-  macro(DCMTK_UNSET_PARENT_SCOPE VAR)
-    unset(${VAR} PARENT_SCOPE)
-  endmacro()
-endif()
+# implementation of unset(... PARENT_SCOPE)
+macro(DCMTK_UNSET_PARENT_SCOPE VAR)
+  unset(${VAR} PARENT_SCOPE)
+endmacro()
 
 # A C++ STL style upper_bound function for CMake ';' lists
 function(DCMTK_UPPER_BOUND LIST COMP VAR)
