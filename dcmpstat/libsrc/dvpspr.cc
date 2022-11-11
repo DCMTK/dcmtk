@@ -123,7 +123,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
         {
           /* handle N-EVENT-REPORT-RQ */
           rspDataset = NULL;
-          if (response.msg.NEventReportRQ.DataSetType == DIMSE_DATASET_PRESENT)
+          if (response.msg.NEventReportRQ.DataSetType != DIMSE_DATASET_NULL)
           {
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &thisPresId, &rspDataset, NULL, NULL);
             if (cond.bad()) return cond;
@@ -197,7 +197,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
             return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
           }
           rspDataset = NULL;
-          if (responseDataset == DIMSE_DATASET_PRESENT)
+          if (responseDataset != DIMSE_DATASET_NULL)
           {
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &thisPresId, &rspDataset, NULL, NULL);
             if (cond.bad()) return cond;

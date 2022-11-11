@@ -415,7 +415,7 @@ OFCondition DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationCont
   OFCondition cond = EC_Normal;
   DcmDataset *rspDataset = NULL;
 
-  if (rq.msg.NGetRQ.DataSetType == DIMSE_DATASET_PRESENT)
+  if (rq.msg.NGetRQ.DataSetType != DIMSE_DATASET_NULL)
   {
      DcmDataset *dataset = NULL;
      // should not happen
@@ -473,7 +473,7 @@ OFCondition DVPSPrintSCP::handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationCont
   DcmDataset *rqDataset = NULL;
   DcmDataset *rspDataset = NULL;
 
-  if (rq.msg.NSetRQ.DataSetType == DIMSE_DATASET_PRESENT)
+  if (rq.msg.NSetRQ.DataSetType != DIMSE_DATASET_NULL)
   {
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &rqDataset, NULL, NULL);
      if (cond.bad()) return cond;
@@ -533,7 +533,7 @@ OFCondition DVPSPrintSCP::handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationC
   OFCondition cond = EC_Normal;
   DcmDataset *rqDataset = NULL;
 
-  if (rq.msg.NActionRQ.DataSetType == DIMSE_DATASET_PRESENT)
+  if (rq.msg.NActionRQ.DataSetType != DIMSE_DATASET_NULL)
   {
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &rqDataset, NULL, NULL);
      if (cond.bad()) return cond;
@@ -601,7 +601,7 @@ OFCondition DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationC
   DcmDataset *rqDataset = NULL;
   DcmDataset *rspDataset = NULL;
 
-  if (rq.msg.NCreateRQ.DataSetType == DIMSE_DATASET_PRESENT)
+  if (rq.msg.NCreateRQ.DataSetType != DIMSE_DATASET_NULL)
   {
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &rqDataset, NULL, NULL);
      if (cond.bad()) return cond;
@@ -658,7 +658,7 @@ OFCondition DVPSPrintSCP::handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationC
   rsp.msg.NDeleteRSP.opts = 0;
 
   OFCondition cond = EC_Normal;
-  if (rq.msg.NDeleteRQ.DataSetType == DIMSE_DATASET_PRESENT)
+  if (rq.msg.NDeleteRQ.DataSetType != DIMSE_DATASET_NULL)
   {
      // should not happen
      DcmDataset *dataset = NULL;

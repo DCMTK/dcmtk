@@ -1773,7 +1773,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     rspStatusCode                  = actionRsp.DimseStatus;
 
     // Check whether there is a dataset to be received
-    if (actionRsp.DataSetType == DIMSE_DATASET_PRESENT)
+    if (actionRsp.DataSetType != DIMSE_DATASET_NULL)
     {
         // this should never happen
         DcmDataset* tempDataset = NULL;
@@ -1913,7 +1913,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     rspStatusCode                            = eventReportRsp.DimseStatus;
 
     // Check whether there is a dataset to be received
-    if (eventReportRsp.DataSetType == DIMSE_DATASET_PRESENT)
+    if (eventReportRsp.DataSetType != DIMSE_DATASET_NULL)
     {
         // this should never happen
         DcmDataset* tempDataset = NULL;
@@ -2188,7 +2188,7 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
     }
 
     // If requested, we need to receive the dataset containing the received instance
-    if (response.msg.NCreateRSP.DataSetType == DIMSE_DATASET_PRESENT)
+    if (response.msg.NCreateRSP.DataSetType != DIMSE_DATASET_NULL)
     {
         DcmDataset* respDataset = OFnullptr;
         result = receiveDIMSEDataset(&pcid, &respDataset);
@@ -2320,7 +2320,7 @@ OFCondition DcmSCU::sendNSETRequest(const T_ASC_PresentationContextID presID,
     }
 
     // If requested, we need to receive the dataset containing the received instance
-    if (response.msg.NSetRSP.DataSetType == DIMSE_DATASET_PRESENT)
+    if (response.msg.NSetRSP.DataSetType != DIMSE_DATASET_NULL)
     {
         DcmDataset* respDataset = OFnullptr;
         result = receiveDIMSEDataset(&pcid, &respDataset);

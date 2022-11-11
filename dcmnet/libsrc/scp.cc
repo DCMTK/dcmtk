@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2021, OFFIS e.V.
+ *  Copyright (C) 2009-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1460,7 +1460,7 @@ OFCondition DcmSCP::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     rspStatusCode                            = eventReportRsp.DimseStatus;
 
     // Check whether there is a dataset to be received
-    if (eventReportRsp.DataSetType == DIMSE_DATASET_PRESENT)
+    if (eventReportRsp.DataSetType != DIMSE_DATASET_NULL)
     {
         // this should never happen
         DcmDataset* tempDataset = NULL;
