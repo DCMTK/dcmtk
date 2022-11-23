@@ -160,10 +160,10 @@ OFCondition DVPSGraphicAnnotation::addImageReference(
     DVPSObjectApplicability applicability)
 {
   if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
+  char frameString[100];
   const char *framenumber=NULL;
   if (applicability==DVPSB_currentFrame)
   {
-    char frameString[100];
     sprintf(frameString, "%ld", frame);
     framenumber = frameString;
   }
