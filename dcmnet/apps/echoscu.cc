@@ -101,7 +101,14 @@ static const char* transferSyntaxes[] = {
       UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
       UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
       UID_HEVCMainProfileLevel5_1TransferSyntax,
-      UID_HEVCMain10ProfileLevel5_1TransferSyntax
+      UID_HEVCMain10ProfileLevel5_1TransferSyntax,
+      UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax,
+      UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax,
+      UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax,
+      UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
+      UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
+      UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
+      UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax
 };
 
 // ********************************************

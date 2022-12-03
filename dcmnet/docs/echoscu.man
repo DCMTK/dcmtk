@@ -69,7 +69,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..38)
+  -pts  --propose-ts  [n]umber: integer (1..45)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1..128)
@@ -219,14 +219,64 @@ offline certificate verification:
 The \b echoscu application supports the following SOP Classes as an SCU:
 
 \verbatim
-VerificationSOPClass                1.2.840.10008.1.1
+VerificationSOPClass                                1.2.840.10008.1.1
 \endverbatim
 
-Unless the \e --propose-ts option is used, the echoscu application will only
-propose the transfer syntax
+By default, the \b echoscu application will only propose this transfer syntax:
 
 \verbatim
-LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
+LittleEndianImplicitTransferSyntax                  1.2.840.10008.1.2
+\endverbatim
+
+If the \e --propose-ts option is used, the following transfer syntaxes will
+also be proposed, depending on the numeric value "n" that is passed to this
+option:
+
+\verbatim
+LittleEndianExplicitTransferSyntax                  1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                     1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                          1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                        1.2.840.10008.1.2.4.51
+JPEGProcess3_5TransferSyntax                        1.2.840.10008.1.2.4.52
+JPEGProcess6_8TransferSyntax                        1.2.840.10008.1.2.4.53
+JPEGProcess7_9TransferSyntax                        1.2.840.10008.1.2.4.54
+JPEGProcess10_12TransferSyntax                      1.2.840.10008.1.2.4.55
+JPEGProcess11_13TransferSyntax                      1.2.840.10008.1.2.4.56
+JPEGProcess14TransferSyntax                         1.2.840.10008.1.2.4.57
+JPEGProcess15TransferSyntax                         1.2.840.10008.1.2.4.58
+JPEGProcess16_18TransferSyntax                      1.2.840.10008.1.2.4.59
+JPEGProcess17_19TransferSyntax                      1.2.840.10008.1.2.4.60
+JPEGProcess20_22TransferSyntax                      1.2.840.10008.1.2.4.61
+JPEGProcess21_23TransferSyntax                      1.2.840.10008.1.2.4.62
+JPEGProcess24_26TransferSyntax                      1.2.840.10008.1.2.4.63
+JPEGProcess25_27TransferSyntax                      1.2.840.10008.1.2.4.64
+JPEGProcess28TransferSyntax                         1.2.840.10008.1.2.4.65
+JPEGProcess29TransferSyntax                         1.2.840.10008.1.2.4.66
+JPEGProcess14SV1TransferSyntax                      1.2.840.10008.1.2.4.70
+RLELosslessTransferSyntax                           1.2.840.10008.1.2.5
+DeflatedExplicitVRLittleEndianTransferSyntax        1.2.840.10008.1.2.1.99
+JPEGLSLosslessTransferSyntax                        1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                           1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                  1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                              1.2.840.10008.1.2.4.91
+JPEG2000Part2MulticomponentImageComp.LosslessOnlyT. 1.2.840.10008.1.2.4.92
+JPEG2000Part2MulticomponentImageComp.TransferSyntax 1.2.804.10008.1.2.4.93
+MPEG2MainProfileAtMainLevelTransferSyntax           1.2.840.10008.1.2.4.100
+MPEG2MainProfileAtHighLevelTransferSyntax           1.2.840.10008.1.2.4.101
+MPEG4HighProfileLevel4_1TransferSyntax              1.2.840.10008.1.2.4.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax  1.2.840.10008.1.2.4.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax   1.2.840.10008.1.2.4.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax   1.2.840.10008.1.2.4.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax        1.2.840.10008.1.2.4.106
+HEVCMainProfileLevel5_1TransferSyntax               1.2.840.10008.1.2.4.107
+HEVCMain10ProfileLevel5_1TransferSyntax             1.2.840.10008.1.2.4.108
+FragmentableMPEG2MainProfileMainLevelTransferSyntax 1.2.840.10008.1.2.4.100.1
+FragmentableMPEG2MainProfileHighLevelTransferSyntax 1.2.840.10008.1.2.4.101.1
+FragmentableMPEG4HighProfileLevel4_1TransferSyntax  1.2.840.10008.1.2.4.102.1
+FragmentableMPEG4BDcompatibleHighProfileLevel4_1Tr. 1.2.840.10008.1.2.4.103.1
+FragmentableMPEG4HighProfileLevel4_2_For2DVideoTr.S 1.2.840.10008.1.2.4.104.1
+FragmentableMPEG4HighProfileLevel4_2_For3DVideoTr.S 1.2.840.10008.1.2.4.105.1
+FragmentableMPEG4StereoHighProfileLevel4_2TransferS 1.2.840.10008.1.2.4.106.1
 \endverbatim
 
 \section echoscu_logging LOGGING
