@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -160,10 +160,10 @@ OFCondition DVPSGraphicAnnotation::addImageReference(
     DVPSObjectApplicability applicability)
 {
   if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
+  char frameString[24];
   const char *framenumber=NULL;
   if (applicability==DVPSB_currentFrame)
   {
-    char frameString[100];
     sprintf(frameString, "%ld", frame);
     framenumber = frameString;
   }
