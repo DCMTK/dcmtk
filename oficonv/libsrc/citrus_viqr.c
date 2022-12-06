@@ -36,10 +36,10 @@
 
 /* FreeBSD defines TAILQ_FOREACH_SAFE in <sys/queue.h>, but not all systems do */
 #ifndef TAILQ_FOREACH_SAFE
-#define	TAILQ_FOREACH_SAFE(var, head, field, tvar)			\
-	for ((var) = TAILQ_FIRST((head));				\
-	    (var) && ((tvar) = TAILQ_NEXT((var), field), 1);		\
-	    (var) = (tvar))
+#define TAILQ_FOREACH_SAFE(var, head, field, tvar)          \
+    for ((var) = TAILQ_FIRST((head));               \
+        (var) && ((tvar) = TAILQ_NEXT((var), field), 1);        \
+        (var) = (tvar))
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -205,11 +205,6 @@ mnemonic_append_child(mnemonic_t *m, const char *s,
 
     return (0);
 }
-
-#define TAILQ_FOREACH_SAFE(var, head, field, tvar)                      \
-        for ((var) = TAILQ_FIRST((head));                               \
-            (var) && ((tvar) = TAILQ_NEXT((var), field), 1);            \
-            (var) = (tvar))
 
 static void
 mnemonic_destroy(mnemonic_t *m)
