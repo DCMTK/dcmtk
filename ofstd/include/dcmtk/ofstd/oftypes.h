@@ -29,7 +29,9 @@
 
 // some C++ implementations only define printf format macros like PRIu32
 // when this macro is defined before <inttypes.h> or <cinttypes> are included.
+#ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS 1
+#endif
 
 // include this file in doxygen documentation
 
