@@ -210,5 +210,5 @@ configure_file(
 )
 
 install(FILES "${DCMTK_BINARY_DIR}/dcmtk.pc"
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
