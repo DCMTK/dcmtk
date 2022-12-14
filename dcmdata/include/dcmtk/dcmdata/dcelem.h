@@ -27,6 +27,7 @@
 
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 // forward declarations
 class DcmInputStreamFactory;
@@ -717,10 +718,15 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @param dataset dataset in which this pixel data element is contained
      *  @param frameSize frame size in bytes (without padding) returned in this
      *    parameter upon success, otherwise set to 0
+     *  @param pixelDataIsUncompressed flag indicating whether the frame
+     *    to be accessed already exists in uncompressed form. This is important
+     *    for the YBR_FULL_422 color model, which is never created by DCMTK's
+     *    decoders but can exist in uncompressed format
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUncompressedFrameSize(DcmItem *dataset,
-                                                 Uint32 &frameSize) const;
+                                                 Uint32 &frameSize,
+                                                 OFBool pixelDataIsUncompressed) const;
 
     /** access single frame without decompressing or loading a complete
      *  multi-frame object. The frame is copied into the buffer passed by the caller

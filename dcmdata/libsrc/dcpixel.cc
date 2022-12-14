@@ -1189,7 +1189,7 @@ OFCondition DcmPixelData::getUncompressedFrame(
     if (numberOfFrames < 1) numberOfFrames = 1;
 
     Uint32 frameSize;
-    OFCondition result = getUncompressedFrameSize(dataset, frameSize);
+    OFCondition result = getUncompressedFrameSize(dataset, frameSize, existUnencapsulated);
     if (result.bad()) return result;
 
     // determine the minimum buffer size, which may be frame size plus one pad byte if frame size is odd.

@@ -638,7 +638,7 @@ OFCondition DJCodecDecoder::determineDecompressedColorModel(
     Uint32 startFragment = 1;
     Uint32 bufSize = 0;
     // determine size of uncompressed frame
-    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize).good()) && (bufSize > 0))
+    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize, OFFalse).good()) && (bufSize > 0))
     {
       // allocate temporary buffer for a single frame
       Uint8 *buffer = new Uint8[bufSize];

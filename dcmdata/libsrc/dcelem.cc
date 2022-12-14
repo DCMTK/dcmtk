@@ -2008,7 +2008,8 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
 
 
 OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
-                                                 Uint32 &frameSize) const
+                                                 Uint32 &frameSize,
+                                                 OFBool pixelDataIsUncompressed) const
 {
     OFCondition result = EC_IllegalParameter;
     if (dataset != NULL)
@@ -2017,7 +2018,14 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         Uint16 cols = 0;
         Uint16 samplesPerPixel = 0;
         Uint16 bitsAllocated = 0;
-        /* retrieve values from dataset (and check them for validity and plausibility) */
+        Sint32 numberOfFrames = 1;
+        OFString photometricInterpretation;
+
+        /* retrieve number of frames from dataset (may be absent) */
+        (void) dataset->findAndGetSint32(DCM_NumberOfFrames, numberOfFrames);
+        if (numberOfFrames < 1) numberOfFrames = 1;
+
+        /* retrieve further values from dataset (and check them for validity and plausibility) */
         GET_AND_CHECK_UINT16_VALUE(DCM_Columns, cols)
         else if (cols == 0)
             DCMDATA_WARN("DcmElement: Dubious value (" << cols << ") for element Columns " << DCM_Columns);
@@ -2033,7 +2041,6 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
             else /* result.good() */
             {
                 /* also need to check value of PhotometricInterpretation */
-                OFString photometricInterpretation;
                 if (dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, photometricInterpretation).good())
                 {
                     if (photometricInterpretation.empty())
@@ -2077,6 +2084,40 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         /* if all checks were passed... */
         if (result.good())
         {
+            if (pixelDataIsUncompressed && (photometricInterpretation == "YBR_FULL_422"))
+            {
+              /* YBR_FULL_422 can exist in uncompressed format, but in many cases
+               * images claiming to be YBR_FULL_422 are in fact formerly compressed
+               * images in YBR_FULL color model where the decoder has failed to update
+               * the photometric interpretation. We can keep these apart by checking
+               * the size of the pixel data and the number of frames.
+               */
+               Uint32 pixelLen = 0;
+               DcmElement *pixData = NULL;
+               result = dataset->findAndGetElement(DCM_PixelData, pixData);
+               if (result.good() && pixData && ((pixelLen = pixData->getLength()) > 0))
+               {
+                  const Uint32 v1 = rows * cols * 3;
+                  const Uint32 v2 = (bitsAllocated / 8) * v1;
+                  const Uint32 v3 = ((bitsAllocated % 8) * v1 + 7) / 8;
+
+                  if (pixelLen >= (v2 + v3) * numberOfFrames)
+                  {
+                     /* the size of the pixel data indicates that no subsampling is present. We assume YBR_FULL. */
+                     DCMDATA_WARN("DcmElement: PhotometricInterpretation probably incorrect, assuming YBR_FULL instead of YBR_FULL_422");
+                  }
+                  else
+                  {
+                     /* the size of the pixel data indicates subsampling is present. We assume YBR_FULL_422,
+                      * which means that the frame size can be computed by setting samplesPerPixel to 2.
+                      */
+                     samplesPerPixel = 2;
+                  }
+               }
+               else
+                   DCMDATA_WARN("DcmElement: failed to compute size of PixelData element");
+            }
+
             /* compute frame size (TODO: check for 32-bit integer overflow?) */
             if ((bitsAllocated % 8) == 0)
             {
