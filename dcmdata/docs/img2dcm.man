@@ -276,15 +276,15 @@ order:
 \subsection img2dcm_uids UIDs
 
 New Study and Series Instance UIDs are generated <b>if necessary</b> after
-applying the \e --study-from and \e --series options. If Study Instance UID or
-Series Instance UID are not present after these steps, they are newly generated,
-independently from each other.
+applying the \e --study-from and \e --series-from options. If Study Instance UID
+or Series Instance UID are not present after these steps, they are newly
+generated, independently from each other.
+
 A contrary behavior is chosen for the SOP Instance UID that one could expect
 to be taken over when using the \e --dataset-from option. This is \b not the
 case, the SOP Instance UID is \b not copied to the new object. This should
-be the desirable behavior for most use cases. However, if a certain SOP
-Instance UID should be inserted into the new object, the \e --key option should
-be used.
+be the desirable behavior for most use cases. However, if a certain SOP Instance
+UID should be inserted into the new object, the \e --key option should be used.
 
 \subsection img2dcm_input_templates Input Templates
 
@@ -312,7 +312,7 @@ Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 When an input template is loaded using \e --dataset-from or \e --dataset-from-xml,
 the specific character set of that template is used for the generated DICOM file.
 If the \e --study-from or \e --series-from options are used additionally,
-img2dcm will try to convert the character set of these attributes to that
+\b img2dcm will try to convert the character set of these attributes to that
 of the template, and will report an error if that is not possible.
 
 If the \e --study-from or \e --series-from options are used without a template,
@@ -478,7 +478,7 @@ of this SOP Class are inserted automatically.
 
 <li>
 img2dcm -i BMP image.bmp out.dcm
-<br>Same as above but tells img2dcm to read a BMP file instead of JPEG.
+<br>Same as above but tells \b img2dcm to read a BMP file instead of JPEG.
 </li>
 
 <li>
