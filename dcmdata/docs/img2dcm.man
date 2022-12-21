@@ -221,10 +221,9 @@ order:
     values for validity, e.g. it does not look into sequences to adapt any
     attributes to the new object (referenced images etc.). Therefore, it is
     recommended to use the templates in the data directory for (old) SC and
-    VLP objects. See also section "Input Templates".
-
-\li Using the \e --dataset-from-xml option \b img2dcm is also forced to
-    import attributes from an existing file. In this case, however, the
+    VLP objects. See also section "Input Templates". As an alternative to
+    option \e --dataset-from the mutually exclusive option
+    \e --dataset-from-xml can be used. In this case, however, the
     file must contain XML data in the format as produced by \b dcm2xml.
 
 \li The \e --study-from and \e --series-from options (mutually exclusive) can
@@ -276,15 +275,16 @@ order:
 \subsection img2dcm_uids UIDs
 
 New Study and Series Instance UIDs are generated <b>if necessary</b> after
-applying the \e --study-from and \e --series-from options. If Study Instance UID
-or Series Instance UID are not present after these steps, they are newly
+applying the \e --study-from and \e --series-from options. If Study Instance
+UID or Series Instance UID are not present after these steps, they are newly
 generated, independently from each other.
 
 A contrary behavior is chosen for the SOP Instance UID that one could expect
-to be taken over when using the \e --dataset-from option. This is \b not the
-case, the SOP Instance UID is \b not copied to the new object. This should
-be the desirable behavior for most use cases. However, if a certain SOP Instance
-UID should be inserted into the new object, the \e --key option should be used.
+to be taken over when using the \e --dataset-from or \e --dataset-from-xml
+option. This is \b not the case, the SOP Instance UID is \b not copied to the
+new object. This should be the desirable behavior for most use cases. However,
+if a certain SOP Instance UID should be inserted into the new object, the
+\e --key option should be used.
 
 \subsection img2dcm_input_templates Input Templates
 

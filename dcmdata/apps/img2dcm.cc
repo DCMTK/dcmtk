@@ -92,6 +92,7 @@ static OFCondition evaluateFromFileOptions(
   }
 #endif
 
+  OFBool studyFrom = OFFalse; // only used for app.checkConflict() with --series-from
   if (cmd.findOption("--study-from"))
   {
     OFString tempStr;
@@ -100,10 +101,12 @@ static OFCondition evaluateFromFileOptions(
     if (valStatus != OFCommandLine::VS_Normal)
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to read value of --study-from option");
     converter.setStudyFrom(tempStr);
+    studyFrom = OFTrue;
   }
 
   if (cmd.findOption("--series-from"))
   {
+    app.checkConflict("--series-from", "--study-from", studyFrom);
     OFString tempStr;
     OFCommandLine::E_ValueStatus valStatus;
     valStatus = cmd.getValue(tempStr);
@@ -140,10 +143,12 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--dataset-from-xml",    "-dx",  1, "[f]ilename: string",
                                                         "use dataset from XML file f");
 #endif
-      cmd.addOption("--study-from",          "-stf", 1, "[f]ilename: string",
-                                                        "read patient/study from DICOM file f");
-      cmd.addOption("--series-from",         "-sef", 1, "[f]ilename: string",
-                                                        "read patient/study/series from DICOM file f");
+      cmd.beginOptionBlock();
+        cmd.addOption("--study-from",          "-stf", 1, "[f]ilename: string",
+                                                          "read patient/study from DICOM file f");
+        cmd.addOption("--series-from",         "-sef", 1, "[f]ilename: string",
+                                                          "read patient/study/series from DICOM file f");
+      cmd.endOptionBlock();
       cmd.addOption("--instance-inc",        "-ii",     "increase instance number read from DICOM file");
     cmd.addSubGroup("JPEG format:");
       cmd.addOption("--disable-progr",       "-dp",     "disable support for progressive JPEG");
