@@ -226,13 +226,15 @@ order:
     \e --dataset-from-xml can be used. In this case, however, the
     file must contain XML data in the format as produced by \b dcm2xml.
 
-\li The \e --study-from and \e --series-from options (mutually exclusive) can
-    be used to import patient, study and series information from an existing
-    DICOM file. If \e --series-from is specified, then the given DICOM file
-    is opened by \b img2dcm and all mandatory information down to the series
+\li The \e --study-from and \e --series-from options can be used to import
+    patient, study and series information from an existing DICOM file. If
+    \e --series-from is specified, then the given DICOM file is opened by
+    \b img2dcm and all mandatory information down to the series
     level is imported. Note that this includes patient, study and series
     information. In case of \e --study-from, the series information is
-    excluded. The following attributes are taken over:
+    excluded. Using \e --study-from and \e --series-from at the same time does
+    make sense. If both options are provided on the command line, the rightmost
+    option wins. The following attributes are taken over:
     \verbatim
       Patient Level:
         Patient's Name
