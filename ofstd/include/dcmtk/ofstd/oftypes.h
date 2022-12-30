@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,7 +29,9 @@
 
 // some C++ implementations only define printf format macros like PRIu32
 // when this macro is defined before <inttypes.h> or <cinttypes> are included.
+#ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS 1
+#endif
 
 // include this file in doxygen documentation
 
