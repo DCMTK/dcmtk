@@ -22,8 +22,10 @@ supports uncompressed and RLE compressed DICOM images.
 
 \verbatim
 dcmfile-in   DICOM input filename to be scaled
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename to be written
+             ("-" for stdout)
 \endverbatim
 
 \section dcmscale_options OPTIONS

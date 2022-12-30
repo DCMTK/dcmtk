@@ -30,9 +30,10 @@ with a particular transfer syntax.
 \section dsr2html_parameters PARAMETERS
 
 \verbatim
-dsrfile-in    DICOM SR input filename to be rendered
+dsrfile-in   DICOM SR input filename to be rendered
+             ("-" for stdin)
 
-htmlfile-out  HTML/XHTML output filename (default: stdout)
+htmlfile-out HTML/XHTML output filename (default: stdout)
 \endverbatim
 
 \section dsr2html_options OPTIONS

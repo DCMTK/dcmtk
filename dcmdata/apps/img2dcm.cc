@@ -125,7 +125,7 @@ static OFCondition evaluateFromFileOptions(
 static void addCmdLineOptions(OFCommandLine& cmd)
 {
   cmd.addParam("imgfile-in",  "image input filename", OFCmdParam::PM_MultiMandatory);
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);

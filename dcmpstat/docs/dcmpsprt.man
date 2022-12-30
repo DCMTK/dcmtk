@@ -24,7 +24,8 @@ which performs communication with the printer.
 \section dcmpsprt_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM image file(s) to be printed
+dcmfile-in   DICOM image file(s) to be printed
+             ("-" for stdin)
 \endverbatim
 
 \section dcmpsprt_options OPTIONS

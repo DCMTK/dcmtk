@@ -20,7 +20,7 @@ are DICOM files in part 10 format (with meta-header).
 \section dcmftest_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename to be dumped
+dcmfile-in  DICOM input filename to be checked
 \endverbatim
 
 \section dcmftest_notes NOTES

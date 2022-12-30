@@ -51,6 +51,7 @@ All metrics are computed as defined in R.C. Gonzalez and R.E. Woods,
 dcmfile-in-1  Reference DICOM image file for comparison
 
 dcmfile-in-2  Test DICOM image file for comparison
+              ("-" for stdin)
 \endverbatim
 
 \section dcmicmp_options OPTIONS

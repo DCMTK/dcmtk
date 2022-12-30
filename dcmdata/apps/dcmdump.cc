@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -163,7 +163,7 @@ DCMTK_MAIN_FUNCTION
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "DICOM input file or directory to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dcmfile-in", "DICOM input file or directory to be dumped\n(\"-\" for stdin)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);

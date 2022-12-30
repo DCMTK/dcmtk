@@ -24,6 +24,7 @@ to an output file (\e dcmfile-out).
 stlfile-in   STL input filename to be encapsulated
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section stl2dcm_options OPTIONS

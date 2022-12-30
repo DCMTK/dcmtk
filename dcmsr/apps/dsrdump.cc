@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped\n(\"-\" for stdin)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                   "-h",   "print this help text and exit", OFCommandLine::AF_Exclusive);

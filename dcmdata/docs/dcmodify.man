@@ -70,6 +70,7 @@ tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
 
 \verbatim
 dcmfile-in  DICOM input filename(s) to be modified
+            ("-" for stdin/stdout)
 \endverbatim
 
 \section dcmodify_options OPTIONS

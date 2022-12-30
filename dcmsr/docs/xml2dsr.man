@@ -27,9 +27,11 @@ An appropriate XML file can be created using the \b dsr2xml tool (option
 \section xml2dsr_parameters PARAMETERS
 
 \verbatim
-xmlfile-in   XML input filename to be converted (stdin: "-")
+xmlfile-in   XML input filename to be converted
+             ("-" for stdin)
 
 dsrfile-out  DICOM SR output filename
+             ("-" for stdout)
 \endverbatim
 
 \section xml2dsr_options OPTIONS

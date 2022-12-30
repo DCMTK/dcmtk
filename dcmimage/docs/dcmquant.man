@@ -23,8 +23,10 @@ DICOM palette color image.
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename to be written
+             ("-" for stdout)
 \endverbatim
 
 \section dcmquant_options OPTIONS

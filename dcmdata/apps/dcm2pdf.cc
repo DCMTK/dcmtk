@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-  cmd.addParam("dcmfile-in",  "DICOM input filename");
+  cmd.addParam("dcmfile-in",  "DICOM input filename\n(\"-\" for stdin)");
   cmd.addParam("pdffile-out", "PDF output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);

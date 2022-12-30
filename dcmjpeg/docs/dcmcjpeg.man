@@ -22,8 +22,10 @@ syntax) and writes the converted image to an output file (\e dcmfile-out).
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section dcmcjpeg_options OPTIONS

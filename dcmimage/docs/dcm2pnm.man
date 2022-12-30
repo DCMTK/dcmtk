@@ -24,9 +24,10 @@ number of JPEG compression schemes.
 \section dcm2pnm_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
-bitmap-out  output filename to be written (default: stdout)
+bitmap-out   output filename to be written (default: stdout)
 \endverbatim
 
 \section dcm2pnm_options OPTIONS

@@ -100,8 +100,8 @@ LICENSE_FILE_DECLARATIONS
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-  cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-in",  "DICOM input filename to be converted\n(\"-\" for stdin)");
+  cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);

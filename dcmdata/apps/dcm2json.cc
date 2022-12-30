@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in",   "DICOM input filename to be converted", OFCmdParam::PM_Mandatory);
+    cmd.addParam("dcmfile-in",   "DICOM input filename to be converted\n(\"-\" for stdin)", OFCmdParam::PM_Mandatory);
     cmd.addParam("jsonfile-out", "JSON output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);

@@ -23,6 +23,7 @@ creation of the PDF file.
 
 \verbatim
 dcmfile-in   DICOM input filename
+             ("-" for stdin)
 
 pdffile-out  PDF output filename
 \endverbatim

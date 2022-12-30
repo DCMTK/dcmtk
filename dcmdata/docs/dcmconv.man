@@ -21,8 +21,10 @@ conversion and writes the converted data to an output file (\e dcmfile-out).
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename to write to
+             ("-" for stdout)
 \endverbatim
 
 \section dcmconv_options OPTIONS

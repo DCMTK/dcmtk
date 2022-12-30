@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2020, OFFIS e.V.
+ *  Copyright (C) 2003-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,7 +81,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     cmd->setOptionColumns(LONGCOL, SHORTCOL);
     cmd->setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd->addParam("dcmfile-in", "DICOM input filename to be modified", OFCmdParam::PM_MultiMandatory);
+    cmd->addParam("dcmfile-in", "DICOM input filename to be modified\n(\"-\" for stdin/stdout)", OFCmdParam::PM_MultiMandatory);
 
     // add options to commandline application
     cmd->addGroup("general options:", LONGCOL, SHORTCOL + 2);

@@ -29,9 +29,10 @@ with a particular transfer syntax.
 \section dcm2json_parameters PARAMETERS
 
 \verbatim
-dcmfile-in    DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
-jsonfile-out  JSON output filename (default: stdout)
+jsonfile-out JSON output filename (default: stdout)
 \endverbatim
 
 \section dcm2json_options OPTIONS

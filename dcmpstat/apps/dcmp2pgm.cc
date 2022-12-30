@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -432,7 +432,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("dcmfile-in", "input DICOM image");
+    cmd.addParam("dcmfile-in", "input DICOM image\n(\"-\" for stdin)");
     cmd.addParam("bitmap-out", "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:");

@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dsrfile-in",   "DICOM SR input filename to be rendered", OFCmdParam::PM_Mandatory);
+    cmd.addParam("dsrfile-in",   "DICOM SR input filename to be rendered\n(\"-\" for stdin)", OFCmdParam::PM_Mandatory);
     cmd.addParam("htmlfile-out", "HTML/XHTML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);

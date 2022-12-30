@@ -27,6 +27,7 @@ without any template dataset.
 imgfile-in   image input filename
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section img2dcm_options OPTIONS

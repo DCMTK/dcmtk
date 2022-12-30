@@ -28,10 +28,12 @@ two-dimensional curves.
 
 \verbatim
 dcmfile-in    DICOM input image file
+              ("-" for stdin)
 
 curvedata-in  curve data input file (text)
 
 dcmfile-out   DICOM output filename
+              ("-" for stdout)
 \endverbatim
 
 \section dcmmkcrv_options OPTIONS

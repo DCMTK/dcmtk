@@ -23,8 +23,10 @@ transfer syntax) and writes the converted image to an output file
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section dcmcjpls_options OPTIONS

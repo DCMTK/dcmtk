@@ -27,8 +27,10 @@ when rendered under control of the presentation state.
 
 \verbatim
 dcmfile-in   DICOM image file(s) to be read
+             ("-" for stdin)
 
 dcmfile-out  DICOM presentation state file to be created
+             ("-" for stdout)
 \endverbatim
 
 \section dcmpsmk_options OPTIONS

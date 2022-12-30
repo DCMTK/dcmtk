@@ -30,7 +30,8 @@ with a particular transfer syntax.
 \section dsrdump_parameters PARAMETERS
 
 \verbatim
-dsrfile-in  DICOM SR input filename to be dumped
+dsrfile-in   DICOM SR input filename to be dumped
+             ("-" for stdin)
 \endverbatim
 
 \section dsrdump_options OPTIONS

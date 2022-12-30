@@ -30,6 +30,7 @@ and defined in the configuration file.
 
 \verbatim
 dcmimage-in  input DICOM image
+             ("-" for stdin)
 
 bitmap-out   output DICOM image or PGM bitmap
 \endverbatim

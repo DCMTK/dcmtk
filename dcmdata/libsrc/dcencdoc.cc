@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2021, OFFIS e.V.
+ *  Copyright (C) 2018-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -503,7 +503,7 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("cdafile-in", "CDA input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("override CDA data:");
@@ -520,7 +520,7 @@ void DcmEncapsulatedDocument::addPDFCommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("pdffile-in", "PDF input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   addOutputOptions(cmd);
@@ -532,7 +532,7 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("stlfile-in", "STL input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("enhanced general equipment:");

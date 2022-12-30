@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addParam("dcmfile-in-1",  "Reference DICOM image file for comparison");
-    cmd.addParam("dcmfile-in-2",  "Test DICOM image file for comparison");
+    cmd.addParam("dcmfile-in-2",  "Test DICOM image file for comparison\n(\"-\" for stdin)");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);

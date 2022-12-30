@@ -31,8 +31,10 @@ Five digital signature operations are supported:
 
 \verbatim
 dcmfile-in   DICOM input filename to be processed
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section dcmsign_options OPTIONS

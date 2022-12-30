@@ -33,6 +33,7 @@ with a particular transfer syntax.
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+             ("-" for stdin)
 
 xmlfile-out  XML output filename (default: stdout)
 \endverbatim

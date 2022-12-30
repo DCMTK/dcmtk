@@ -24,6 +24,7 @@ to an output file (\e dcmfile-out).
 cdafile-in   CDA input filename to be encapsulated
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section cda2dcm_options OPTIONS

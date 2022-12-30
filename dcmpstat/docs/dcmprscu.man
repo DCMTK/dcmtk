@@ -41,7 +41,8 @@ in which case commands are read periodically from a spool directory.
 \section dcmprscu_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  stored print file(s) to be spooled
+dcmfile-in   stored print file(s) to be spooled
+             ("-" for stdin)
 \endverbatim
 
 \section dcmprscu_options OPTIONS

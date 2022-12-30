@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
-    cmd.addParam("dcmfile-in",  "DICOM input filename to be scaled");
-    cmd.addParam("dcmfile-out", "DICOM output filename to be written");
+    cmd.addParam("dcmfile-in",  "DICOM input filename to be scaled\n(\"-\" for stdin)");
+    cmd.addParam("dcmfile-out", "DICOM output filename to be written\n(\"-\" for stdout)");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",       "print this help text and exit", OFCommandLine::AF_Exclusive);

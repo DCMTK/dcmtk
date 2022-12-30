@@ -674,7 +674,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmimg-out",                   "DICOM output filename");
+    cmd.addParam("dcmimg-out",                   "DICOM output filename\n(\"-\" for stdout)");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);

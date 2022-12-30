@@ -23,9 +23,11 @@ validate against the DTD (Document Type Definition) which is described in file
 \section xml2dcm_parameters PARAMETERS
 
 \verbatim
-xmlfile-in   XML input filename to be converted (stdin: "-")
+xmlfile-in   XML input filename to be converted
+             ("-" for stdin)
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section xml2dcm_options OPTIONS

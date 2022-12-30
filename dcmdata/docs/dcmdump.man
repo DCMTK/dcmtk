@@ -33,7 +33,8 @@ with a particular transfer syntax.
 \section dcmdump_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input file or directory to be dumped
+dcmfile-in   DICOM input file or directory to be dumped
+             ("-" for stdin)
 \endverbatim
 
 \section dcmdump_options OPTIONS

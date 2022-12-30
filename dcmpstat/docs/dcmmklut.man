@@ -39,7 +39,8 @@ common spread sheet application (e.g. Microsoft Excel).
 \section dcmmklut_parameters PARAMETERS
 
 \verbatim
-dcmimg-out  DICOM output filename
+dcmimg-out   DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section dcmmklut_options OPTIONS

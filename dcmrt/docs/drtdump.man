@@ -30,7 +30,8 @@ with a particular transfer syntax.
 \section drtdump_parameters PARAMETERS
 
 \verbatim
-drtfile-in  DICOM RT input filename to be dumped
+drtfile-in   DICOM RT input filename to be dumped
+             ("-" for stdin)
 \endverbatim
 
 \section drtdump_options OPTIONS

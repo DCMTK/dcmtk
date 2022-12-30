@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("xmlfile-in",   "XML input filename to be converted (stdin: \"-\")", OFCmdParam::PM_Mandatory);
-    cmd.addParam("dsrfile-out",  "DICOM SR output filename", OFCmdParam::PM_Mandatory);
+    cmd.addParam("xmlfile-in",   "XML input filename to be converted\n(\"-\" for stdin)", OFCmdParam::PM_Mandatory);
+    cmd.addParam("dsrfile-out",  "DICOM SR output filename\n(\"-\" for stdout)", OFCmdParam::PM_Mandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);

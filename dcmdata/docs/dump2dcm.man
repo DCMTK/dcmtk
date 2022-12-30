@@ -25,6 +25,7 @@ create a new DICOM file.
 dumpfile-in  dump input filename
 
 dcmfile-out  DICOM output filename
+             ("-" for stdout)
 \endverbatim
 
 \section dump2dcm_options OPTIONS
