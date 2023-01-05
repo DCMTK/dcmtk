@@ -357,6 +357,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
+(0008,1040)​ Institutional Department Name
 (0008,0090) ReferringPhysicianName
 (0008,1080) AdmittingDiagnosesDescription
 (0008,1110) ReferencedStudySequence
