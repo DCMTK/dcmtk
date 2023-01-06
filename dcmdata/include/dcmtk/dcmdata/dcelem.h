@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -877,9 +877,9 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @param vmNum value multiplicity of the value to be checked.
      *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e. no error).
      *  @param vmStr value multiplicity (according to the data dictionary) to be checked for.
-     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-n", "2-2n",
-     *                   "3", "3-n", "3-3n", "4", "5", "5-n", "6", "7", "7-7n", "8", "9",
-     *                   "16", "24", "32", "256")
+     *    (valid values: "1", "1-2", "1-3", "1-8", "1-99", "1-n", "2", "2-4", "2-n", "2-2n",
+     *                   "3", "3-n", "3-3n", "4", "4-5", "4-4n", "5", "5-n", "6", "6-n",
+     *                   "7", "7-7n", "8", "9", "11", "16", "24", "32", "256")
      *  @return status of the check, EC_ValueMultiplicityViolated in case of error
      */
     static OFCondition checkVM(const unsigned long vmNum,

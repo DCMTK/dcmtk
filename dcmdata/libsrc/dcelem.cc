@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2213,6 +2213,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 2) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "2-4")
+    {
+      if ((vmNum < 2) || (vmNum > 4)) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "2-n")
     {
       if (vmNum < 2) result = EC_ValueMultiplicityViolated;
@@ -2237,6 +2241,14 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 4) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "4-5")
+    {
+      if ((vmNum < 4) || (vmNum > 5)) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "4-4n")
+    {
+      if ((vmNum % 4) != 0) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "5")
     {
       if (vmNum != 5) result = EC_ValueMultiplicityViolated;
@@ -2248,6 +2260,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     else if (vmStr == "6")
     {
       if (vmNum != 6) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "6-n")
+    {
+      if (vmNum < 6) result = EC_ValueMultiplicityViolated;
     }
     else if (vmStr == "7")
     {
@@ -2264,6 +2280,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     else if (vmStr == "9")
     {
       if (vmNum != 9) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "11")
+    {
+      if (vmNum != 11) result = EC_ValueMultiplicityViolated;
     }
     else if (vmStr == "16")
     {
