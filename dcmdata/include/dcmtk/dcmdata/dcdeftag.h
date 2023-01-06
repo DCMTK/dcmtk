@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2022-10-17 21:04:18
+**   Date: 2023-01-06 18:02:03
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2022-10-17 21:04:18"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2023-01-06 18:02:03"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 4991
+** Number of entries: 5049
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -221,7 +221,7 @@
 #define DCM_ScopeOfInventorySequence             DcmTagKey(0x0008, 0x0400)
 #define DCM_InventoryPurpose                     DcmTagKey(0x0008, 0x0401)
 #define DCM_InventoryInstanceDescription         DcmTagKey(0x0008, 0x0402)
-#define DCM_InventoryContentLevel                DcmTagKey(0x0008, 0x0403)
+#define DCM_InventoryLevel                       DcmTagKey(0x0008, 0x0403)
 #define DCM_ItemInventoryDateTime                DcmTagKey(0x0008, 0x0404)
 #define DCM_RemovedFromOperationalUse            DcmTagKey(0x0008, 0x0405)
 #define DCM_ReasonForRemovalCodeSequence         DcmTagKey(0x0008, 0x0406)
@@ -235,7 +235,7 @@
 #define DCM_StoredInstanceTransferSyntaxUID      DcmTagKey(0x0008, 0x040e)
 #define DCM_ExtendedMatchingMechanisms           DcmTagKey(0x0008, 0x040f)
 #define DCM_RangeMatchingSequence                DcmTagKey(0x0008, 0x0410)
-#define DCM_UIDListMatchingSequence              DcmTagKey(0x0008, 0x0411)
+#define DCM_ListOfUIDMatchingSequence            DcmTagKey(0x0008, 0x0411)
 #define DCM_EmptyValueMatchingSequence           DcmTagKey(0x0008, 0x0412)
 #define DCM_GeneralMatchingSequence              DcmTagKey(0x0008, 0x0413)
 #define DCM_RequestedStatusInterval              DcmTagKey(0x0008, 0x0414)
@@ -3888,6 +3888,60 @@
 #define DCM_PrimaryFluenceModeSequence           DcmTagKey(0x3002, 0x0050)
 #define DCM_FluenceMode                          DcmTagKey(0x3002, 0x0051)
 #define DCM_FluenceModeID                        DcmTagKey(0x3002, 0x0052)
+#define DCM_SelectedFrameNumber                  DcmTagKey(0x3002, 0x0100)
+#define DCM_SelectedFrameFunctionalGroupsSequence DcmTagKey(0x3002, 0x0101)
+#define DCM_RTImageFrameGeneralContentSequence   DcmTagKey(0x3002, 0x0102)
+#define DCM_RTImageFrameContextSequence          DcmTagKey(0x3002, 0x0103)
+#define DCM_RTImageScopeSequence                 DcmTagKey(0x3002, 0x0104)
+#define DCM_BeamModifierCoordinatesPresenceFlag  DcmTagKey(0x3002, 0x0105)
+#define DCM_StartCumulativeMeterset              DcmTagKey(0x3002, 0x0106)
+#define DCM_StopCumulativeMeterset               DcmTagKey(0x3002, 0x0107)
+#define DCM_RTAcquisitionPatientPositionSequence DcmTagKey(0x3002, 0x0108)
+#define DCM_RTImageFrameImagingDevicePositionSequence DcmTagKey(0x3002, 0x0109)
+#define DCM_RTImageFramekVRadiationAcquisitionSequence DcmTagKey(0x3002, 0x010a)
+#define DCM_RTImageFrameMVRadiationAcquisitionSequence DcmTagKey(0x3002, 0x010b)
+#define DCM_RTImageFrameRadiationAcquisitionSequence DcmTagKey(0x3002, 0x010c)
+#define DCM_ImagingSourcePositionSequence        DcmTagKey(0x3002, 0x010d)
+#define DCM_ImageReceptorPositionSequence        DcmTagKey(0x3002, 0x010e)
+#define DCM_DevicePositionToEquipmentMappingMatrix DcmTagKey(0x3002, 0x010f)
+#define DCM_DevicePositionParameterSequence      DcmTagKey(0x3002, 0x0110)
+#define DCM_ImagingSourceLocationSpecificationType DcmTagKey(0x3002, 0x0111)
+#define DCM_ImagingDeviceLocationMatrixSequence  DcmTagKey(0x3002, 0x0112)
+#define DCM_ImagingDeviceLocationParameterSequence DcmTagKey(0x3002, 0x0113)
+#define DCM_ImagingApertureSequence              DcmTagKey(0x3002, 0x0114)
+#define DCM_ImagingApertureSpecificationType     DcmTagKey(0x3002, 0x0115)
+#define DCM_NumberOfAcquisitionDevices           DcmTagKey(0x3002, 0x0116)
+#define DCM_AcquisitionDeviceSequence            DcmTagKey(0x3002, 0x0117)
+#define DCM_AcquisitionTaskSequence              DcmTagKey(0x3002, 0x0118)
+#define DCM_AcquisitionTaskWorkitemCodeSequence  DcmTagKey(0x3002, 0x0119)
+#define DCM_AcquisitionSubtaskSequence           DcmTagKey(0x3002, 0x011a)
+#define DCM_SubtaskWorkitemCodeSequence          DcmTagKey(0x3002, 0x011b)
+#define DCM_AcquisitionTaskIndex                 DcmTagKey(0x3002, 0x011c)
+#define DCM_AcquisitionSubtaskIndex              DcmTagKey(0x3002, 0x011d)
+#define DCM_ReferencedBaselineParametersRTRadiationInstanceSequence DcmTagKey(0x3002, 0x011e)
+#define DCM_PositionAcquisitionTemplateIdentificationSequence DcmTagKey(0x3002, 0x011f)
+#define DCM_PositionAcquisitionTemplateID        DcmTagKey(0x3002, 0x0120)
+#define DCM_PositionAcquisitionTemplateName      DcmTagKey(0x3002, 0x0121)
+#define DCM_PositionAcquisitionTemplateCodeSequence DcmTagKey(0x3002, 0x0122)
+#define DCM_PositionAcquisitionTemplateDescription DcmTagKey(0x3002, 0x0123)
+#define DCM_AcquisitionTaskApplicabilitySequence DcmTagKey(0x3002, 0x0124)
+#define DCM_ProjectionImagingAcquisitionParameterSequence DcmTagKey(0x3002, 0x0125)
+#define DCM_CTImagingAcquisitionParameterSequence DcmTagKey(0x3002, 0x0126)
+#define DCM_KVImagingGenerationParametersSequence DcmTagKey(0x3002, 0x0127)
+#define DCM_MVImagingGenerationParametersSequence DcmTagKey(0x3002, 0x0128)
+#define DCM_AcquisitionSignalType                DcmTagKey(0x3002, 0x0129)
+#define DCM_AcquisitionMethod                    DcmTagKey(0x3002, 0x012a)
+#define DCM_ScanStartPositionSequence            DcmTagKey(0x3002, 0x012b)
+#define DCM_ScanStopPositionSequence             DcmTagKey(0x3002, 0x012c)
+#define DCM_ImagingSourceToBeamModifierDefinitionPlaneDistance DcmTagKey(0x3002, 0x012d)
+#define DCM_ScanArcType                          DcmTagKey(0x3002, 0x012e)
+#define DCM_DetectorPositioningType              DcmTagKey(0x3002, 0x012f)
+#define DCM_AdditionalRTAccessoryDeviceSequence  DcmTagKey(0x3002, 0x0130)
+#define DCM_DeviceSpecificAcquisitionParameterSequence DcmTagKey(0x3002, 0x0131)
+#define DCM_ReferencedPositionReferenceInstanceSequence DcmTagKey(0x3002, 0x0132)
+#define DCM_EnergyDerivationCodeSequence         DcmTagKey(0x3002, 0x0133)
+#define DCM_MaximumCumulativeMetersetExposure    DcmTagKey(0x3002, 0x0134)
+#define DCM_AcquisitionInitiationSequence        DcmTagKey(0x3002, 0x0135)
 #define DCM_DVHType                              DcmTagKey(0x3004, 0x0001)
 #define DCM_DoseUnits                            DcmTagKey(0x3004, 0x0002)
 #define DCM_DoseType                             DcmTagKey(0x3004, 0x0004)
@@ -3897,8 +3951,8 @@
 #define DCM_DoseSummationType                    DcmTagKey(0x3004, 0x000a)
 #define DCM_GridFrameOffsetVector                DcmTagKey(0x3004, 0x000c)
 #define DCM_DoseGridScaling                      DcmTagKey(0x3004, 0x000e)
-#define DCM_RTDoseROISequence                    DcmTagKey(0x3004, 0x0010)
-#define DCM_DoseValue                            DcmTagKey(0x3004, 0x0012)
+#define DCM_RETIRED_RTDoseROISequence            DcmTagKey(0x3004, 0x0010)
+#define DCM_RETIRED_DoseValue                    DcmTagKey(0x3004, 0x0012)
 #define DCM_TissueHeterogeneityCorrection        DcmTagKey(0x3004, 0x0014)
 #define DCM_DVHNormalizationPoint                DcmTagKey(0x3004, 0x0040)
 #define DCM_DVHNormalizationDoseValue            DcmTagKey(0x3004, 0x0042)
@@ -4021,6 +4075,10 @@
 #define DCM_ReferencedCalculatedDoseReferenceSequence DcmTagKey(0x3008, 0x0090)
 #define DCM_ReferencedCalculatedDoseReferenceNumber DcmTagKey(0x3008, 0x0092)
 #define DCM_BeamLimitingDeviceLeafPairsSequence  DcmTagKey(0x3008, 0x00a0)
+#define DCM_EnhancedRTBeamLimitingDeviceSequence DcmTagKey(0x3008, 0x00a1)
+#define DCM_EnhancedRTBeamLimitingOpeningSequence DcmTagKey(0x3008, 0x00a2)
+#define DCM_EnhancedRTBeamLimitingDeviceDefinitionFlag DcmTagKey(0x3008, 0x00a3)
+#define DCM_ParallelRTBeamDelimiterOpeningExtents DcmTagKey(0x3008, 0x00a4)
 #define DCM_RecordedWedgeSequence                DcmTagKey(0x3008, 0x00b0)
 #define DCM_RecordedCompensatorSequence          DcmTagKey(0x3008, 0x00c0)
 #define DCM_RecordedBlockSequence                DcmTagKey(0x3008, 0x00d0)

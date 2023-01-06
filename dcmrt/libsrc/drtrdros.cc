@@ -1,13 +1,14 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTRTDoseROISequence
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
+ *  Last modified on 2023-01-06 by Riesmeier
  *
  */
 
@@ -22,7 +23,7 @@
 DRTRTDoseROISequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     DoseUnits(DCM_DoseUnits),
-    DoseValue(DCM_DoseValue),
+    DoseValue(DCM_RETIRED_DoseValue),
     ReferencedROINumber(DCM_ReferencedROINumber)
 {
 }
@@ -516,7 +517,7 @@ OFCondition DRTRTDoseROISequence::read(DcmItem &dataset,
         clear();
         /* retrieve sequence element from dataset */
         DcmSequenceOfItems *sequence;
-        result = dataset.findAndGetSequence(DCM_RTDoseROISequence, sequence);
+        result = dataset.findAndGetSequence(DCM_RETIRED_RTDoseROISequence, sequence);
         if (sequence != NULL)
         {
             if (checkElementValue(*sequence, card, type, result, moduleName))
@@ -546,7 +547,7 @@ OFCondition DRTRTDoseROISequence::read(DcmItem &dataset,
                 }
             }
         } else {
-            DcmSequenceOfItems element(DCM_RTDoseROISequence);
+            DcmSequenceOfItems element(DCM_RETIRED_RTDoseROISequence);
             checkElementValue(element, card, type, result, moduleName);
         }
     }
@@ -563,7 +564,7 @@ OFCondition DRTRTDoseROISequence::write(DcmItem &dataset,
     if (!EmptyDefaultSequence)
     {
         result = EC_MemoryExhausted;
-        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_RTDoseROISequence);
+        DcmSequenceOfItems *sequence = new DcmSequenceOfItems(DCM_RETIRED_RTDoseROISequence);
         if (sequence != NULL)
         {
             result = EC_Normal;

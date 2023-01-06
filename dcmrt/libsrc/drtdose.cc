@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTDoseIOD
@@ -1323,7 +1323,7 @@ OFCondition DRTDoseIOD::read(DcmItem &dataset)
         }
 
         // --- RTDoseROIModule (C) ---
-        if (dataset.tagExists(DCM_RTDoseROISequence))
+        if (dataset.tagExists(DCM_RETIRED_RTDoseROISequence))
         {
             RTDoseROISequence.read(dataset, "1-n", "1", "RTDoseROIModule");
         }
