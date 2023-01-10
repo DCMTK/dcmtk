@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -167,7 +167,6 @@ static const UIDNameMap uidNameMap[] = {
     { UID_CArmPhotonElectronRadiationStorage,                                    "CArmPhotonElectronRadiationStorage",                                 "CArmPhotonElectronRadiationStorage" },
     { UID_ChestCADSRStorage,                                                     "ChestCADSRStorage",                                                  "ChestCADSRStorage" },
     { UID_ColonCADSRStorage,                                                     "ColonCADSRStorage",                                                  "ColonCADSRStorage" },
-    { UID_ColorPaletteStorage,                                                   "ColorPaletteStorage",                                                "ColorPaletteStorage" },
     { UID_ColorSoftcopyPresentationStateStorage,                                 "ColorSoftcopyPresentationStateStorage",                              "ColorSoftcopyPresentationStateStorage" },
     { UID_CompositingPlanarMPRVolumetricPresentationStateStorage,                "CompositingPlanarMPRVolumetricPresentationStateStorage",             "CompositingPlanarMPRVolumetricPresentationStateStorage" },
     { UID_Comprehensive3DSRStorage,                                              "Comprehensive3DSRStorage",                                           "Comprehensive3DSRStorage" },
@@ -205,16 +204,12 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ExtensibleSRStorage,                                                   "ExtensibleSRStorage",                                                "ExtensibleSRStorage" },
     { UID_GeneralAudioWaveformStorage,                                           "GeneralAudioWaveformStorage",                                        "GeneralAudioWaveformStorage" },
     { UID_GeneralECGWaveformStorage,                                             "GeneralECGWaveformStorage",                                          "GeneralECGWaveformStorage" },
-    { UID_GenericImplantTemplateStorage,                                         "GenericImplantTemplateStorage",                                      "GenericImplantTemplateStorage" },
     { UID_GrayscalePlanarMPRVolumetricPresentationStateStorage,                  "GrayscalePlanarMPRVolumetricPresentationStateStorage",               "GrayscalePlanarMPRVolumetricPresentationStateStorage" },
     { UID_GrayscaleSoftcopyPresentationStateStorage,                             "GrayscaleSoftcopyPresentationStateStorage",                          "GrayscaleSoftcopyPresentationStateStorage" },
-    { UID_HangingProtocolStorage,                                                "HangingProtocolStorage",                                             "HangingProtocolStorage" },
     { UID_HemodynamicWaveformStorage,                                            "HemodynamicWaveformStorage",                                         "HemodynamicWaveformStorage" },
-    { UID_ImplantAssemblyTemplateStorage,                                        "ImplantAssemblyTemplateStorage",                                     "ImplantAssemblyTemplateStorage" },
     { UID_ImplantationPlanSRStorage,                                             "ImplantationPlanSRStorage",                                          "ImplantationPlanSRStorage" },
     // the following line is needed for reasons of backward compatibility (name of SOP Class changed, see the previous line)
     { UID_ImplantationPlanSRStorage,                                             NULL /* see above */,                                                 "ImplantationPlanSRDocumentStorage" },
-    { UID_ImplantTemplateGroupStorage,                                           "ImplantTemplateGroupStorage",                                        "ImplantTemplateGroupStorage" },
     { UID_IntraocularLensCalculationsStorage,                                    "IntraocularLensCalculationsStorage",                                 "IntraocularLensCalculationsStorage" },
     { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,    "IntravascularOpticalCoherenceTomographyImageStorageForPresentation", "IntravascularOpticalCoherenceTomographyImageStorageForPresentation" },
     { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,      "IntravascularOpticalCoherenceTomographyImageStorageForProcessing",   "IntravascularOpticalCoherenceTomographyImageStorageForProcessing" },
@@ -392,7 +387,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_StorageCommitmentPushModelSOPClass,                                    "StorageCommitmentPushModel",                                         "StorageCommitmentPushModelSOPClass" },
     { UID_StorageCommitmentPushModelSOPInstance,                                 "StorageCommitmentPushModelInstance",                                 "StorageCommitmentPushModelSOPInstance" },
 
-    // Hanging Protocols
+    // Hanging Protocol Storage and Query/Retrieve
+    { UID_HangingProtocolStorage,                                                "HangingProtocolStorage",                                             "HangingProtocolStorage" },
     { UID_FINDHangingProtocolInformationModel,                                   "HangingProtocolInformationModelFind",                                "FINDHangingProtocolInformationModel" },
     { UID_MOVEHangingProtocolInformationModel,                                   "HangingProtocolInformationModelMove",                                "MOVEHangingProtocolInformationModel" },
     { UID_GETHangingProtocolInformationModel,                                    "HangingProtocolInformationModelGet",                                 "GETHangingProtocolInformationModel" },
@@ -402,18 +398,22 @@ static const UIDNameMap uidNameMap[] = {
     { UID_CardiacRelevantPatientInformationQuery,                                "CardiacRelevantPatientInformationQuery",                             "CardiacRelevantPatientInformationQuery" },
     { UID_GeneralRelevantPatientInformationQuery,                                "GeneralRelevantPatientInformationQuery",                             "GeneralRelevantPatientInformationQuery" },
 
-    // Color Palette Query/Retrieve
+    // Color Palette Storage and Query/Retrieve
+    { UID_ColorPaletteStorage,                                                   "ColorPaletteStorage",                                                "ColorPaletteStorage" },
     { UID_FINDColorPaletteInformationModel,                                      "ColorPaletteQueryRetrieveInformationModelFind",                      "FINDColorPaletteInformationModel" },
     { UID_MOVEColorPaletteInformationModel,                                      "ColorPaletteQueryRetrieveInformationModelMove",                      "MOVEColorPaletteInformationModel" },
     { UID_GETColorPaletteInformationModel,                                       "ColorPaletteQueryRetrieveInformationModelGet",                       "GETColorPaletteInformationModel" },
 
-    // Implant Template Query/Retrieve
+    // Implant Template Storage and Query/Retrieve
+    { UID_GenericImplantTemplateStorage,                                         "GenericImplantTemplateStorage",                                      "GenericImplantTemplateStorage" },
     { UID_FINDGenericImplantTemplateInformationModel,                            "GenericImplantTemplateInformationModelFind",                         "FINDGenericImplantTemplateInformationModel" },
     { UID_MOVEGenericImplantTemplateInformationModel,                            "GenericImplantTemplateInformationModelMove",                         "MOVEGenericImplantTemplateInformationModel" },
     { UID_GETGenericImplantTemplateInformationModel,                             "GenericImplantTemplateInformationModelGet",                          "GETGenericImplantTemplateInformationModel" },
+    { UID_ImplantAssemblyTemplateStorage,                                        "ImplantAssemblyTemplateStorage",                                     "ImplantAssemblyTemplateStorage" },
     { UID_FINDImplantAssemblyTemplateInformationModel,                           "ImplantAssemblyTemplateInformationModelFind",                        "FINDImplantAssemblyTemplateInformationModel" },
     { UID_MOVEImplantAssemblyTemplateInformationModel,                           "ImplantAssemblyTemplateInformationModelMove",                        "MOVEImplantAssemblyTemplateInformationModel" },
     { UID_GETImplantAssemblyTemplateInformationModel,                            "ImplantAssemblyTemplateInformationModelGet",                         "GETImplantAssemblyTemplateInformationModel" },
+    { UID_ImplantTemplateGroupStorage,                                           "ImplantTemplateGroupStorage",                                        "ImplantTemplateGroupStorage" },
     { UID_FINDImplantTemplateGroupInformationModel,                              "ImplantTemplateGroupInformationModelFind",                           "FINDImplantTemplateGroupInformationModel" },
     { UID_MOVEImplantTemplateGroupInformationModel,                              "ImplantTemplateGroupInformationModelMove",                           "MOVEImplantTemplateGroupInformationModel" },
     { UID_GETImplantTemplateGroupInformationModel,                               "ImplantTemplateGroupInformationModelGet",                            "GETImplantTemplateGroupInformationModel" },
@@ -427,6 +427,15 @@ static const UIDNameMap uidNameMap[] = {
     { UID_FINDProtocolApprovalInformationModel,                                  "ProtocolApprovalInformationModelFind",                               "FINDProtocolApprovalInformationModel" },
     { UID_MOVEProtocolApprovalInformationModel,                                  "ProtocolApprovalInformationModelMove",                               "MOVEProtocolApprovalInformationModel" },
     { UID_GETProtocolApprovalInformationModel,                                   "ProtocolApprovalInformationModelGet",                                "GETProtocolApprovalInformationModel" },
+
+    // Inventory Storage, Query/Retrieve, and related Services
+    { UID_InventoryStorage,                                                      "InventoryStorage",                                                   "InventoryStorage" },
+    { UID_FINDInventory,                                                         "InventoryFind",                                                      "FINDInventory" },
+    { UID_MOVEInventory,                                                         "InventoryMove",                                                      "MOVEInventory" },
+    { UID_GETInventory,                                                          "InventoryGet",                                                       "GETInventory" },
+    { UID_InventoryCreation,                                                     "InventoryCreation",                                                  "InventoryCreation" },
+    { UID_RepositoryQuery,                                                       "RepositoryQuery",                                                    "RepositoryQuery" },
+    { UID_StorageManagementSOPInstance,                                          "StorageManagementInstance",                                          "StorageManagementSOPInstance" },
 
     // Print
     { UID_BasicAnnotationBoxSOPClass,                                            "BasicAnnotationBox",                                                 "BasicAnnotationBoxSOPClass" },
@@ -834,6 +843,7 @@ const char* dcmNonPatientStorageSOPClassUIDs[] = {
     UID_HangingProtocolStorage,
     UID_ImplantAssemblyTemplateStorage,
     UID_ImplantTemplateGroupStorage,
+    UID_InventoryStorage,
     UID_ProtocolApprovalStorage,
     UID_XADefinedProcedureProtocolStorage,
     // end marker (important!)
@@ -1014,6 +1024,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_HangingProtocolStorage,
 //  UID_ImplantAssemblyTemplateStorage,
 //  UID_ImplantTemplateGroupStorage,
+//  UID_InventoryStorage,
 //  UID_ProtocolApprovalStorage,
 //  UID_XADefinedProcedureProtocolStorage,
     // retired
@@ -1316,6 +1327,7 @@ static const DcmModalityTable modalities[] = {
     { UID_IntraocularLensCalculationsStorage,                      "OPc",  4096 },
     { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation, "OCt", 512 * 512 },
     { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing, "OCp", 512 * 512 },
+    { UID_InventoryStorage,                                        "INV",  4096 },
     { UID_KeratometryMeasurementsStorage,                          "OPk",  4096 },
     { UID_KeyObjectSelectionDocumentStorage,                       "KO",   4096 },
     { UID_LegacyConvertedEnhancedCTImageStorage,                   "CTl",  512 * 512 * 2 },

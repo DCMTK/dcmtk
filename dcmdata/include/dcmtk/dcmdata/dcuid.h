@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -597,10 +597,6 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RTTreatmentPreparationStorage                          "1.2.840.10008.5.1.4.1.1.481.22"
 #define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
 #define UID_RTBrachyApplicationSetupDeliveryInstructionStorage     "1.2.840.10008.5.1.4.34.10"
-#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
-#define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
-#define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
-#define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
 
 // DICOMDIR (was UID_BasicDirectoryStorageSOPClass in DCMTK versions prior to 3.5.3)
 #define UID_MediaStorageDirectoryStorage                           "1.2.840.10008.1.3.10"
@@ -666,7 +662,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RETIRED_StorageCommitmentPullModelSOPClass             "1.2.840.10008.1.20.2"
 #define UID_RETIRED_StorageCommitmentPullModelSOPInstance          "1.2.840.10008.1.20.2.1"
 
-// Hanging Protocols
+// Hanging Protocol Storage and Query/Retrieve
+#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 #define UID_FINDHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.2"
 #define UID_MOVEHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.3"
 #define UID_GETHangingProtocolInformationModel                     "1.2.840.10008.5.1.4.38.4"
@@ -683,13 +680,18 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_MOVEColorPaletteInformationModel                       "1.2.840.10008.5.1.4.39.3"
 #define UID_GETColorPaletteInformationModel                        "1.2.840.10008.5.1.4.39.4"
 
-// Implant Template Query/Retrieve
+// Implant Template Storage and Query/Retrieve
+#define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
 #define UID_FINDGenericImplantTemplateInformationModel             "1.2.840.10008.5.1.4.43.2"
 #define UID_MOVEGenericImplantTemplateInformationModel             "1.2.840.10008.5.1.4.43.3"
 #define UID_GETGenericImplantTemplateInformationModel              "1.2.840.10008.5.1.4.43.4"
+
+#define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
 #define UID_FINDImplantAssemblyTemplateInformationModel            "1.2.840.10008.5.1.4.44.2"
 #define UID_MOVEImplantAssemblyTemplateInformationModel            "1.2.840.10008.5.1.4.44.3"
 #define UID_GETImplantAssemblyTemplateInformationModel             "1.2.840.10008.5.1.4.44.4"
+
+#define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
 #define UID_FINDImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.2"
 #define UID_MOVEImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.3"
 #define UID_GETImplantTemplateGroupInformationModel                "1.2.840.10008.5.1.4.45.4"
@@ -703,6 +705,15 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_FINDProtocolApprovalInformationModel                   "1.2.840.10008.5.1.4.1.1.200.4"
 #define UID_MOVEProtocolApprovalInformationModel                   "1.2.840.10008.5.1.4.1.1.200.5"
 #define UID_GETProtocolApprovalInformationModel                    "1.2.840.10008.5.1.4.1.1.200.6"
+
+// Inventory Storage, Query/Retrieve, and related Services
+#define UID_InventoryStorage                                       "1.2.840.10008.5.1.4.1.1.201.1"
+#define UID_FINDInventory                                          "1.2.840.10008.5.1.4.1.1.201.2"
+#define UID_MOVEInventory                                          "1.2.840.10008.5.1.4.1.1.201.3"
+#define UID_GETInventory                                           "1.2.840.10008.5.1.4.1.1.201.4"
+#define UID_InventoryCreation                                      "1.2.840.10008.5.1.4.1.1.201.5"
+#define UID_RepositoryQuery                                        "1.2.840.10008.5.1.4.1.1.201.6"
+#define UID_StorageManagementSOPInstance                           "1.2.840.10008.5.1.4.1.1.201.1.1"
 
 // Print Management
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
