@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -97,7 +97,8 @@ static const char *DRTypeNames[] =
     "TRACT",
     "ASSESSMENT",
     "RADIOTHERAPY",
-    "ANNOTATION"
+    "ANNOTATION",
+    "INVENTORY"
 };
 
 static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames) / sizeof(DRTypeNames[0])));
@@ -331,6 +332,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Implant:
                 case ERT_ImplantGroup:
                 case ERT_ImplantAssy:
+                case ERT_Inventory:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -530,6 +532,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Assessment:
         case ERT_Radiotherapy:
         case ERT_Annotation:
+        case ERT_Inventory:
         case ERT_Private:
             switch (lowerRecord)
             {
