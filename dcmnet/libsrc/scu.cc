@@ -1613,7 +1613,8 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
 /* ************************************************************************* */
 
 // Send C-CANCEL-REQ and, therefore, ends current C-FIND, -MOVE or -GET session
-OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
+OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID,
+                                      const Sint16 msgIDBeingRespondedTo)
 {
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
@@ -1628,18 +1629,27 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
     T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
     // Set type of message
     msg.CommandField = DIMSE_C_CANCEL_RQ;
-    /* Set message ID responded to. A new message ID is _not_ needed so
-       we do not increment the message ID here but instead have to give the
-       message ID that was used last.
-       Note that that it is required to actually use the message ID of the last
-       C-FIND/GET/MOVE that was issued on this presentation context channel.
-       However, since we only support synchronous association mode so far,
-       it is enough to take the last message ID used at all.
-       For asynchronous operation, we would have to lookup the message ID
-       of the last C-FIND/GET/MOVE request issued and thus, store this
-       information after sending it.
-     */
-    req->MessageIDBeingRespondedTo = m_assoc->nextMsgID - 1;
+
+    if (msgIDBeingRespondedTo != -1)
+    {
+        req->MessageIDBeingRespondedTo = msgIDBeingRespondedTo;
+    }
+    else
+    {
+        /* Set message ID responded to. A new message ID is _not_ needed so
+           we do not increment the message ID here but instead have to give the
+           message ID that was used last.
+           Note that that it is required to actually use the message ID of the last
+           C-FIND/GET/MOVE that was issued on this presentation context channel.
+           However, since we only support synchronous association mode so far,
+           it is enough to take the last message ID used at all.
+           For asynchronous operation, we would have to lookup the message ID
+           of the last C-FIND/GET/MOVE request issued and thus, store this
+           information after sending it.
+         */
+        req->MessageIDBeingRespondedTo = m_assoc->nextMsgID - 1;
+    }
+
     // Announce dataset
     req->DataSetType = DIMSE_DATASET_NULL;
 
