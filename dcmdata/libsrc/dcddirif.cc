@@ -4359,7 +4359,7 @@ DcmDirectoryRecord *DicomDirInterface::buildAnnotationRecord(DcmDirectoryRecord 
 }
 
 
-// create or update implant record and copy required values from dataset
+// create or update inventory record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildInventoryRecord(DcmDirectoryRecord *record,
                                                             DcmFileFormat *fileformat,
                                                             const OFString &referencedFileID,
@@ -4980,11 +4980,25 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
             switch (record->getRecordType())
             {
                 case ERT_Image:
+                case ERT_SRDocument:
+                case ERT_Presentation:
+                case ERT_Waveform:
                 case ERT_RTDose:
                 case ERT_RTStructureSet:
                 case ERT_RTPlan:
-                case ERT_StoredPrint:
+                case ERT_RTTreatRecord:
+                case ERT_KeyObjectDoc:
+                case ERT_Registration:
+                case ERT_Fiducial:
+                case ERT_Spectroscopy:
+                case ERT_EncapDoc:
+                case ERT_ValueMap:
                 case ERT_Surface:
+                case ERT_Measurement:
+                case ERT_Tract:
+                case ERT_Assessment:
+                case ERT_Radiotherapy:
+                case ERT_Annotation:
                     if (!record->tagExistsWithValue(DCM_InstanceNumber))
                         setDefaultValue(record, DCM_InstanceNumber, AutoInstanceNumber++);
                     break;
@@ -5001,23 +5015,11 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                     if (!record->tagExistsWithValue(DCM_RETIRED_CurveNumber))
                         setDefaultValue(record, DCM_RETIRED_CurveNumber, AutoCurveNumber++);
                     break;
-                case ERT_SRDocument:
-                case ERT_Presentation:
-                case ERT_Waveform:
-                case ERT_RTTreatRecord:
-                case ERT_KeyObjectDoc:
-                case ERT_Registration:
-                case ERT_Fiducial:
+                case ERT_StoredPrint:
                 case ERT_RawData:
-                case ERT_Spectroscopy:
-                case ERT_EncapDoc:
-                case ERT_ValueMap:
                 case ERT_Stereometric:
-                case ERT_Measurement:
                 case ERT_Plan:
                 case ERT_SurfaceScan:
-                case ERT_Tract:
-                case ERT_Assessment:
                     /* nothing to do */
                     break;
                 default:

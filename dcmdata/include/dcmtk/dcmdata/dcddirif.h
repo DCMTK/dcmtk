@@ -1243,7 +1243,9 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      */
     void inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent);
 
-    /** invent missing type 1 attributes for all child records (from instance level)
+    /** invent missing type 1 attributes for all child records (from instance level).
+     *  This method is currently limited to the identifying instance-level attributes
+     *  such as Instance Number (0020,0013) or Overlay Number (0020,0022).
      *  @param parent invent missing attributes for all children of this record
      */
     void inventMissingInstanceLevelAttributes(DcmDirectoryRecord *parent);
