@@ -4381,6 +4381,7 @@ DcmDirectoryRecord *DicomDirInterface::buildInventoryRecord(DcmDirectoryRecord *
             copyElementType1(dataset, DCM_InventoryCompletionStatus, record, sourceFilename);
             copyElementType1(dataset, DCM_TotalNumberOfStudyRecords, record, sourceFilename);
             copyElementType2(dataset, DCM_InventoryPurpose, record, sourceFilename);
+            copyElementType2(dataset, DCM_ScopeOfInventorySequence, record, sourceFilename);
         } else {
             printRecordErrorMessage(record->error(), ERT_Inventory, "create");
             /* free memory */
