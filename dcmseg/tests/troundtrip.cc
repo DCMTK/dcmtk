@@ -316,13 +316,11 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
 
     FunctionalGroups::const_iterator srcShared = srcInstance->getFunctionalGroups().getShared()->begin();
     FunctionalGroups::const_iterator cShared   = concat->getFunctionalGroups().getShared()->begin();
-    size_t numShared                           = 0;
     do
     {
         OFCHECK(srcShared->second->compare(*cShared->second) == 0);
         srcShared++;
         cShared++;
-        numShared++;
     } while ((srcShared != srcInstance->getFunctionalGroups().getShared()->end())
              && (cShared != concat->getFunctionalGroups().getShared()->end()));
     OFCHECK((srcShared == srcInstance->getFunctionalGroups().getShared()->end())
