@@ -1614,10 +1614,13 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
 
 // Send C-CANCEL-REQ and, therefore, ends current C-FIND, -MOVE or -GET session
 OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID,
-                                      const Sint16 msgIDBeingRespondedTo)
+                                      const Sint32 msgIDBeingRespondedTo)
 {
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
+
+    if (msgIDBeingRespondedTo > UINT16_MAX || msgIDBeingRespondedTo < -1)
+        return EC_IllegalParameter;
 
     /* Prepare DIMSE data structures for issuing request */
     OFCondition cond;
@@ -1632,7 +1635,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID,
 
     if (msgIDBeingRespondedTo != -1)
     {
-        req->MessageIDBeingRespondedTo = msgIDBeingRespondedTo;
+        req->MessageIDBeingRespondedTo = OFstatic_cast(Uint16, msgIDBeingRespondedTo);
     }
     else
     {
