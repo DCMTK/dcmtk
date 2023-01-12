@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2022, OFFIS e.V.
+ *  Copyright (C) 2008-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -502,9 +502,14 @@ public:
      *  class and usually only, if the last command send on that presentation context was a
      *  C-FIND message.
      *  @param presID [in] The presentation context ID where the C-CANCEL should be sent on.
+     *  @param msgIDBeingRespondedTo [in] Optional message ID to respond with a C-CANCEL request.
+     *                                    -1 means standard logic will take place. It should be
+     *                                    provided when nextMessageId() is overridden.
+     *                                    The value should fit UINT16_MAX.
      *  @return The current implementation always returns EC_Normal.
      */
-    virtual OFCondition sendCANCELRequest(const T_ASC_PresentationContextID presID);
+    virtual OFCondition sendCANCELRequest(const T_ASC_PresentationContextID presID,
+                                          const Sint32 msgIDBeingRespondedTo = -1);
 
     /** This function sends a N-ACTION request on the currently opened association and receives
      *  the corresponding response then
