@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2021, OFFIS e.V.
+ *  Copyright (C) 2009-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,8 +132,7 @@ struct DCMTK_DCMNET_EXPORT DcmPresentationContextInfo
  *  supported list of presentation contexts. However, if this class should negotiate
  *  Verification, call setEnableVerification(). In that case DcmSCP will also
  *  respond to related C-ECHO requests. Note that this cannot be reverted.
- *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
- */
+  */
 class DCMTK_DCMNET_EXPORT DcmSCP
 {
 

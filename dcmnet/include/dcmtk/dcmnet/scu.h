@@ -189,7 +189,6 @@ private:
  *  support for negotiating associations and sending and receiving arbitrary DIMSE messages
  *  on that connection. DcmSCU has built-in C-ECHO support so derived classes do not have to
  *  implement that capability on their own.
- *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
 class DCMTK_DCMNET_EXPORT DcmSCU
 {
