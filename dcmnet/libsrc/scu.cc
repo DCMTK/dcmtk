@@ -1619,7 +1619,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID,
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
 
-    if (msgIDBeingRespondedTo > UINT16_MAX || msgIDBeingRespondedTo < -1)
+    if (msgIDBeingRespondedTo > OFstatic_cast(Sint32,UINT16_MAX) || msgIDBeingRespondedTo < -1)
         return EC_IllegalParameter;
 
     /* Prepare DIMSE data structures for issuing request */
