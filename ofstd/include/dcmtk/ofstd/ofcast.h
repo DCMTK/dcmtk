@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,19 +52,22 @@
 #ifdef HAVE_DYNAMIC_CAST
 #define OFdynamic_cast(x,y) (dynamic_cast< x >(y))
 #else
-#define OFdynamic_cast(x,y) ((x)(y))
+#error Your C++ compiler does not support dynamic_cast(), if you want to use this, report to bugs@dcmtk.org and/or see fix in ofcast.h
+//#define OFdynamic_cast(x,y) ((x)(y)) // uncomment for using old-style cast instead
 #endif
 
 #ifdef HAVE_REINTERPRET_CAST
 #define OFreinterpret_cast(x,y) (reinterpret_cast< x >(y))
 #else
-#define OFreinterpret_cast(x,y) ((x)(y))
+#error Your C++ compiler does not support reinterpret_cast(), if you want to use this, report to bugs@dcmtk.org and/or see fix in ofcast.h
+//#define OFreinterpret_cast(x,y) ((x)(y)) // uncomment for using old-style cast instead
 #endif
 
 #ifdef HAVE_STATIC_CAST
 #define OFstatic_cast(x,y) (static_cast< x >(y))
 #else
-#define OFstatic_cast(x,y) ((x)(y))
+#error Your C++ compiler does not support static_cast(), if you want to use this, report to bugs@dcmtk.org and/or see fix in ofcast.h
+// #define OFstatic_cast(x,y) ((x)(y)) // uncomment for using old-style cast instead
 #endif
 
 #endif
