@@ -6,8 +6,9 @@ ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
   application, based on so-called "association negotiation profiles"
   which may be read from a configuration file.
 
-  This mechanism is currently enabled in the storescu and storescp
-  applications.
+  Originally, this mechanism was only enabled in the storescu and storescp
+  applications.  In the meantime, it is also used by other tools such as
+  dcmrecv and dcmqrscp.
 
 
 1. CONFIGURATION FILE FORMAT
@@ -31,6 +32,7 @@ ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
   The well-known "INI" syntax is extended by the definition of
   supersections which define a grouping for sections, using the
   following syntax:
+
   [[Supersection]]
 
   The content of the configuration file needs to establish a true tree
@@ -42,11 +44,13 @@ ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
 
   A configuration file for association negotiation profiles may contain
   the following supersections:
+
   [[TransferSyntaxes]]
   [[PresentationContexts]]
   [[Profiles]]
   [[SCPSCURoleSelection]]
   [[ExtendedNegotiation]]
+
   The first three supersections are mandatory, the others are optional.
 
 
@@ -233,4 +237,4 @@ procedure can use exactly one of these profiles.
 
 Examples for association negotiation profiles that can be used
 with the storescu and storescp tools are provided with DCMTK, as
-"storescp.cfg" and "storescu.cfg" in the <etcdir> directory.
+"storescu.cfg" and "storescp.cfg" in the <etcdir> directory.
