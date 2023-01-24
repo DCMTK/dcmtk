@@ -1345,6 +1345,10 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
       return EC_Normal;
     }
 
+    /* write JSON Opener and Closer, because otherwise the output is not valid JSON */
+    writeJsonOpener(out, format);
+    writeJsonCloser(out, format);
+
     // pixel data is encapsulated, return error
     return EC_CannotWriteJsonInlineBinary;
 }
