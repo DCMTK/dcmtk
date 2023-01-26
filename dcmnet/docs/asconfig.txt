@@ -93,6 +93,14 @@ On a big endian machine (Sparc, M68K, MIPS)
   - "LocalEndianExplicit" is interpreted as "BigEndianExplicit"
   - "OppositeEndianExplicit" is interpreted as "LittleEndianExplicit"
 
+Please note that the order of transfer syntaxes within a section might be
+significant.  For example, an implementation of a DICOM Storage SCP, such as
+storescp or dcmrecv, will use this order to determine which transfer syntax
+to prefer when multiple transfer syntaxes are offered by the SCU and are
+acceptable for the SCP.  The transfer syntax selection policy is to prefer
+the first transfer syntax that is acceptable, i.e. the one with the lowest
+number.
+
 
 2.2 PRESENTATION CONTEXTS
 
