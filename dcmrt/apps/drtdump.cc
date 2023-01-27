@@ -412,8 +412,8 @@ int main(int argc, char *argv[])
     cmd.addParam("drtfile-in", "DICOM RT input filename to be dumped\n(\"-\" for stdin)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                   "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                       "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--help",                 "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                     "print version information and exit", OFCommandLine::AF_Exclusive);
       OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
