@@ -306,12 +306,8 @@ color:
   +C   --print-color
          use ANSI escape codes for colored output
 
-         # not available on Windows systems
-
   -C   --no-color
          do not use any ANSI escape codes (default)
-
-         # not available on Windows systems
 
 error handling:
 
