@@ -26,8 +26,7 @@ without any template dataset.
 \verbatim
 imgfile-in   image input filename
 
-dcmfile-out  DICOM output filename
-             ("-" for stdout)
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section img2dcm_options OPTIONS
@@ -601,6 +600,6 @@ Photography images
 
 \section img2dcm_copyright COPYRIGHT
 
-Copyright (C) 2007-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

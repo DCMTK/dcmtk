@@ -30,8 +30,7 @@ with a particular transfer syntax.
 \section dsrdump_parameters PARAMETERS
 
 \verbatim
-dsrfile-in   DICOM SR input filename to be dumped
-             ("-" for stdin)
+dsrfile-in  DICOM SR input filename to be dumped ("-" for stdin)
 \endverbatim
 
 \section dsrdump_options OPTIONS
@@ -295,6 +294,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dsrdump_copyright COPYRIGHT
 
-Copyright (C) 2000-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -23,10 +23,9 @@ and RLE compressed DICOM images.
 \section dcml2pnm_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
-             ("-" for stdin)
+dcmfile-in  DICOM input filename to be converted ("-" for stdin)
 
-bitmap-out   output filename to be written (default: stdout)
+bitmap-out  output filename to be written (default: stdout)
 \endverbatim
 
 \section dcml2pnm_options OPTIONS
@@ -498,6 +497,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcml2pnm_copyright COPYRIGHT
 
-Copyright (C) 2001-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

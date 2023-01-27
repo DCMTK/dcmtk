@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-  cmd.addParam("dcmfile-in",  "DICOM input filename\n(\"-\" for stdin)");
+  cmd.addParam("dcmfile-in",  "DICOM input filename (\"-\" for stdin)");
   cmd.addParam("pdffile-out", "PDF output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);

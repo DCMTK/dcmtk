@@ -33,8 +33,7 @@ with a particular transfer syntax.
 \section dcmdump_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input file or directory to be dumped
-             ("-" for stdin)
+dcmfile-in  DICOM input file or directory to be dumped ("-" for stdin)
 \endverbatim
 
 \section dcmdump_options OPTIONS
@@ -424,6 +423,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmdump_copyright COPYRIGHT
 
-Copyright (C) 1994-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -30,11 +30,9 @@ Five digital signature operations are supported:
 \section dcmsign_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be processed
-             ("-" for stdin)
+dcmfile-in   DICOM input filename to be processed ("-" for stdin)
 
-dcmfile-out  DICOM output filename
-             ("-" for stdout)
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section dcmsign_options OPTIONS
@@ -584,6 +582,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmsign_copyright COPYRIGHT
 
-Copyright (C) 2000-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

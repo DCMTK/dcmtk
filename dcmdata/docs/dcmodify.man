@@ -69,8 +69,7 @@ tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
 \section dcmodify_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename(s) to be modified
-            ("-" for stdin/stdout)
+dcmfile-in  DICOM input filename(s) to be modified ("-" for stdin/stdout)
 \endverbatim
 
 \section dcmodify_options OPTIONS
@@ -591,6 +590,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmodify_copyright COPYRIGHT
 
-Copyright (C) 2003-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

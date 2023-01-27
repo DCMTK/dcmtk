@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,7 +125,7 @@ static OFCondition evaluateFromFileOptions(
 static void addCmdLineOptions(OFCommandLine& cmd)
 {
   cmd.addParam("imgfile-in",  "image input filename", OFCmdParam::PM_MultiMandatory);
-  cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
+  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);

@@ -22,8 +22,7 @@ creation of the PDF file.
 \section dcm2pdf_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename
-             ("-" for stdin)
+dcmfile-in   DICOM input filename ("-" for stdin)
 
 pdffile-out  PDF output filename
 \endverbatim
@@ -207,6 +206,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2pdf_copyright COPYRIGHT
 
-Copyright (C) 2007-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

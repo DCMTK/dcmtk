@@ -23,8 +23,7 @@ to an output file (\e dcmfile-out).
 \verbatim
 stlfile-in   STL input filename to be encapsulated
 
-dcmfile-out  DICOM output filename
-             ("-" for stdout)
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section stl2dcm_options OPTIONS
@@ -288,6 +287,6 @@ It is an error if no data dictionary can be loaded.
 
 \section stl2dcm_copyright COPYRIGHT
 
-Copyright (C) 2018-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2018-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

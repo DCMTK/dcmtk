@@ -29,8 +29,7 @@ with a particular transfer syntax.
 \section dcm2json_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
-             ("-" for stdin)
+dcmfile-in   DICOM input filename to be converted ("-" for stdin)
 
 jsonfile-out JSON output filename (default: stdout)
 \endverbatim
@@ -414,6 +413,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

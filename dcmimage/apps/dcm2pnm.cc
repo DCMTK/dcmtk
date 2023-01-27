@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in",  "DICOM input filename to be converted\n(\"-\" for stdin)");
+    cmd.addParam("dcmfile-in", "DICOM input filename to be converted\n(\"-\" for stdin)");
     cmd.addParam("bitmap-out", OFFIS_OUTFILE_DESCRIPTION, OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);

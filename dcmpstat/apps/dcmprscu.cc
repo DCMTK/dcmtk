@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2022, OFFIS e.V.
+ *  Copyright (C) 1999-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -623,7 +623,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("dcmfile-in", "stored print file(s) to be spooled\n(\"-\" for stdin)", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("dcmfile-in", "stored print file(s) to be spooled (\"-\" for stdin)", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
