@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-01-06 18:02:03
+**   Date: 2023-01-30 11:52:58
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2023-01-06 18:02:03"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2023-01-30 11:52:58"
 
 
 /*
@@ -4920,7 +4920,7 @@
 #define DCM_WeekdayFractionPatternSequence       DcmTagKey(0x3010, 0x0087)
 #define DCM_DeliveryTimeStructureCodeSequence    DcmTagKey(0x3010, 0x0088)
 #define DCM_TreatmentSiteModifierCodeSequence    DcmTagKey(0x3010, 0x0089)
-#define DCM_RoboticBaseLocationIndicator         DcmTagKey(0x3010, 0x0090)
+#define DCM_RETIRED_RoboticBaseLocationIndicator DcmTagKey(0x3010, 0x0090)
 #define DCM_RoboticPathNodeSetCodeSequence       DcmTagKey(0x3010, 0x0091)
 #define DCM_RoboticNodeIdentifier                DcmTagKey(0x3010, 0x0092)
 #define DCM_RTTreatmentSourceCoordinates         DcmTagKey(0x3010, 0x0093)

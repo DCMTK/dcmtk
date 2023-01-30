@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-01-06 18:02:04
+**   Date: 2023-01-30 11:52:59
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -30677,7 +30677,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3010, 0x0090, 0x3010, 0x0090,
-      EVR_CS, "RoboticBaseLocationIndicator", 1, 1, "DICOM",
+      EVR_CS, "RETIRED_RoboticBaseLocationIndicator", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3010, 0x0091, 0x3010, 0x0091,
