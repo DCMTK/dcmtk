@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2022d
- *  File created on 2022-10-24 17:50:02 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023a
+ *  File created on 2023-02-02 17:56:49 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20201116)
+ *  (type: extensible, version: 20221201)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -134,7 +134,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Florbetaben_F18,
         /// (456995000,SCT,"Florbetapir F^18^")
         Florbetapir_F18,
-        /// (C000591008,MSH,"Flortaucipir F^18^")
+        /// (879808000,SCT,"Flortaucipir F^18^")
         Flortaucipir_F18,
         /// (126503,DCM,"Flubatine F^18^")
         Flubatine_F18,
@@ -154,8 +154,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fluorocholine_F18,
         /// (35321007,SCT,"Fluorodeoxyglucose F^18^")
         Fluorodeoxyglucose_F18,
-        /// (C1831937,UMLS,"Fluoroestradiol (FES) F^18^")
-        FluoroestradiolFES_F18,
+        /// (926372005,SCT,"Fluoroestradiol F^18^")
+        Fluoroestradiol_F18,
         /// (C1541539,UMLS,"Fluoroetanidazole F^18^")
         Fluoroetanidazole_F18,
         /// (5811000122108,SCT,"Fluoro-L-dopa F^18^")
@@ -164,8 +164,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fluoromethane_F18,
         /// (422598008,SCT,"Fluoromisonidazole F^18^")
         Fluoromisonidazole_F18,
-        /// (C2934038,UMLS,"Fluoropropyl-dihydrotetrabenazine (DTBZ) F^18^")
-        FluoropropylDihydrotetrabenazineDTBZ_F18,
+        /// (C2934038,UMLS,"Fluoropropyl-dihydrotetrabenazine F^18^")
+        FluoropropylDihydrotetrabenazine_F18,
         /// (126707,DCM,"Fluorotriopride F^18^")
         Fluorotriopride_F18,
         /// (425236000,SCT,"Fluorouracil F^18^")
@@ -206,10 +206,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         MK6240_F18,
         /// (126738,DCM,"Mogamulizumab ^89^Zr")
         Mogamulizumab_89Zr,
-        /// (126510,DCM,"Monoclonal Antibody (mAb) ^64^Cu")
-        MonoclonalAntibodymAb_64Cu,
-        /// (126511,DCM,"Monoclonal Antibody (mAb) ^89^Zr")
-        MonoclonalAntibodymAb_89Zr,
+        /// (126510,DCM,"Monoclonal Antibody ^64^Cu")
+        MonoclonalAntibody_64Cu,
+        /// (126511,DCM,"Monoclonal Antibody ^89^Zr")
+        MonoclonalAntibody_89Zr,
         /// (423249007,SCT,"Monoclonal antibody I^124^")
         MonoclonalAntibody_I124,
         /// (126753,DCM,"Nanocolloidal albumin ^89^Zr")
@@ -286,14 +286,14 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         THK5317_F18,
         /// (C4279748,UMLS,"THK5351 F^18^")
         THK5351_F18,
-        /// (129502002,SCT,"Thymidine (FLT) F^18^")
-        ThymidineFLT_F18,
+        /// (129502002,SCT,"Thymidine F^18^")
+        Thymidine_F18,
         /// (126512,DCM,"Trastuzumab ^89^Zr")
         Trastuzumab_89Zr,
         /// (126749,DCM,"TRC105 ^89^Zr")
         TRC105_89Zr,
-        /// (C1742831,UMLS,"tyrosine-3-octreotate Ga^68^")
-        Tyrosine3Octreotate_Ga68,
+        /// (724025002,SCT,"Dotatate Ga^68^")
+        Dotatate_Ga68,
         /// (126739,DCM,"Ublituximab ^89^Zr")
         Ublituximab_89Zr,
         /// (C4506788,UMLS,"UCB-J C^11^")

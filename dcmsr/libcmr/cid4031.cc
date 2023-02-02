@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4031_CommonAnatomicRegion
  *
- *  Generated automatically from DICOM PS 3.16-2022d
- *  File created on 2022-10-24 17:50:03 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023a
+ *  File created on 2023-02-02 17:56:50 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4031 (Common Anatomic Region)
 #define CONTEXT_GROUP_NUMBER  "4031"
-#define CONTEXT_GROUP_VERSION "20220922"
+#define CONTEXT_GROUP_VERSION "20221224"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.308"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -228,7 +228,7 @@ CID4031_CommonAnatomicRegion::CodeList &CID4031_CommonAnatomicRegion::getCodes()
         Codes->insert(OFMake_pair(Patella, DSRBasicCodedEntry("64234005", "SCT", "Patella")));
         Codes->insert(OFMake_pair(Pelvis, DSRBasicCodedEntry("816092008", "SCT", "Pelvis")));
         Codes->insert(OFMake_pair(PelvisAndLowerExtremities, DSRBasicCodedEntry("1231522001", "SCT", "Pelvis and lower extremities")));
-        Codes->insert(OFMake_pair(Phantom, DSRBasicCodedEntry("113681", "DCM", "Phantom")));
+        Codes->insert(OFMake_pair(Phantom, DSRBasicCodedEntry("706342009", "SCT", "Phantom")));
         Codes->insert(OFMake_pair(Prostate, DSRBasicCodedEntry("41216001", "SCT", "Prostate")));
         Codes->insert(OFMake_pair(Rectum, DSRBasicCodedEntry("34402009", "SCT", "Rectum")));
         Codes->insert(OFMake_pair(Rib, DSRBasicCodedEntry("113197003", "SCT", "Rib")));
