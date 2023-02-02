@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2022d
- *  File created on 2022-10-24 17:36:21 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023a
+ *  File created on 2023-01-30 11:50:55 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 49
+// total number of codes: 51
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -73,6 +73,7 @@
 #define CODE_NCIt_NoEvidenceOfDisease                                      DSRBasicCodedEntry("C40413", "NCIt", "No Evidence of Disease")
 #define CODE_NCIt_NativeHawaiianOrOtherPacificIslander                     DSRBasicCodedEntry("C41219", "NCIt", "Native Hawaiian or other Pacific Islander")
 #define CODE_NCIt_AdverseEvent                                             DSRBasicCodedEntry("C41331", "NCIt", "Adverse Event")
+#define CODE_NCIt_Image                                                    DSRBasicCodedEntry("C48179", "NCIt", "Image")
 #define CODE_NCIt_TemperatureSensorDeviceComponent                         DSRBasicCodedEntry("C50304", "NCIt", "Temperature sensor device component")
 #define CODE_NCIt_Experience                                               DSRBasicCodedEntry("C54627", "NCIt", "Experience")
 #define CODE_NCIt_Reviewer                                                 DSRBasicCodedEntry("C54634", "NCIt", "Reviewer")
@@ -84,6 +85,7 @@
 #define CODE_NCIt_MedicalProductExpirationDate                             DSRBasicCodedEntry("C70854", "NCIt", "Medical Product Expiration Date")
 #define CODE_NCIt_CardiotonicAgent                                         DSRBasicCodedEntry("C78322", "NCIt", "Cardiotonic agent")
 #define CODE_NCIt_NonEnhancingLesion                                       DSRBasicCodedEntry("C81175", "NCIt", "Non-Enhancing Lesion")
+#define CODE_NCIt_ImagingRegionOfInterest                                  DSRBasicCodedEntry("C85402", "NCIt", "Imaging Region of Interest")
 #define CODE_NCIt_Erect                                                    DSRBasicCodedEntry("C86043", "NCIt", "erect")
 #define CODE_NCIt_BeddingChange                                            DSRBasicCodedEntry("C90365", "NCIt", "Bedding change")
 #define CODE_NCIt_BeddingMaterial                                          DSRBasicCodedEntry("C90366", "NCIt", "Bedding material")

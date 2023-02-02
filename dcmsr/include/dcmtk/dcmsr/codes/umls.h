@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2022d
- *  File created on 2022-10-24 17:36:21 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023a
+ *  File created on 2023-01-30 11:50:55 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 51
+// total number of codes: 49
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -81,15 +81,13 @@
 #define CODE_UMLS_MedicalPhysicist                                         DSRBasicCodedEntry("C1708969", "UMLS", "Medical Physicist")
 #define CODE_UMLS_Referring                                                DSRBasicCodedEntry("C1709880", "UMLS", "Referring")
 #define CODE_UMLS_Variance                                                 DSRBasicCodedEntry("C1711260", "UMLS", "Variance")
-#define CODE_UMLS_Tyrosine3Octreotate_Ga68                                 DSRBasicCodedEntry("C1742831", "UMLS", "tyrosine-3-octreotate Ga^68^")
-#define CODE_UMLS_Fluoroestradiol_FES_F18                                  DSRBasicCodedEntry("C1831937", "UMLS", "Fluoroestradiol (FES) F^18^")
 #define CODE_UMLS_Sonographer                                              DSRBasicCodedEntry("C1954848", "UMLS", "Sonographer")
 #define CODE_UMLS_Neuroradiology                                           DSRBasicCodedEntry("C2183225", "UMLS", "Neuroradiology")
 #define CODE_UMLS_InverseRatioVentilation                                  DSRBasicCodedEntry("C2223982", "UMLS", "Inverse ratio ventilation")
 #define CODE_UMLS_RootMeanSquare                                           DSRBasicCodedEntry("C2347976", "UMLS", "Root Mean Square")
 #define CODE_UMLS_TimePoint                                                DSRBasicCodedEntry("C2348792", "UMLS", "Time Point")
 #define CODE_UMLS_Edotreotide_Ga68                                         DSRBasicCodedEntry("C2713594", "UMLS", "Edotreotide Ga^68^")
-#define CODE_UMLS_FluoropropylDihydrotetrabenazine_DTBZ_F18                DSRBasicCodedEntry("C2934038", "UMLS", "Fluoropropyl-dihydrotetrabenazine (DTBZ) F^18^")
+#define CODE_UMLS_FluoropropylDihydrotetrabenazine_F18                     DSRBasicCodedEntry("C2934038", "UMLS", "Fluoropropyl-dihydrotetrabenazine F^18^")
 #define CODE_UMLS_ISO1_F18                                                 DSRBasicCodedEntry("C2981788", "UMLS", "ISO-1 F^18^")
 #define CODE_UMLS_RadiationPhysicist                                       DSRBasicCodedEntry("C2985483", "UMLS", "Radiation Physicist")
 #define CODE_UMLS_Pretreatment                                             DSRBasicCodedEntry("C3539075", "UMLS", "Pretreatment")

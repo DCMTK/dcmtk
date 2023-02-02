@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2022d
- *  File created on 2022-10-24 17:36:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023a
+ *  File created on 2023-01-30 11:50:51 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4658
-// - retired: 201
+// total number of codes: 4688
+// - retired: 202
 // - no name: 27
 // - not unique: 17
 
@@ -1937,7 +1937,7 @@
 #define CODE_DCM_OrthogonalLocationArcInnerMargin                          DSRBasicCodedEntry("113670", "DCM", "Orthogonal location arc inner margin")
 #define CODE_DCM_OrthogonalLocationArcOuterMargin                          DSRBasicCodedEntry("113671", "DCM", "Orthogonal location arc outer margin")
 #define CODE_DCM_QualityControlIntent                                      DSRBasicCodedEntry("113680", "DCM", "Quality Control Intent")
-#define CODE_DCM_Phantom                                                   DSRBasicCodedEntry("113681", "DCM", "Phantom")
+#define CODE_DCM_RETIRED_Phantom                                           DSRBasicCodedEntry("113681", "DCM", "Phantom")
 #define CODE_DCM_ACRAccreditationPhantom_CT                                DSRBasicCodedEntry("113682", "DCM", "ACR Accreditation Phantom - CT")
 #define CODE_DCM_ACRAccreditationPhantom_MR                                DSRBasicCodedEntry("113683", "DCM", "ACR Accreditation Phantom - MR")
 #define CODE_DCM_ACRAccreditationPhantom_Mammography                       DSRBasicCodedEntry("113684", "DCM", "ACR Accreditation Phantom - Mammography")
@@ -2147,6 +2147,7 @@
 #define CODE_DCM_FilteredBackProjection                                    DSRBasicCodedEntry("113962", "DCM", "Filtered Back Projection")
 #define CODE_DCM_IterativeReconstruction                                   DSRBasicCodedEntry("113963", "DCM", "Iterative Reconstruction")
 #define CODE_DCM_AtSurfaceOfPatient                                        DSRBasicCodedEntry("113964", "DCM", "At Surface of Patient")
+#define CODE_DCM_100cmFromXRaySource                                       DSRBasicCodedEntry("113965", "DCM", "100cm from X-Ray Source")
 #define CODE_DCM_ProcedureStepToThisPoint                                  DSRBasicCodedEntry("113970", "DCM", "Procedure Step To This Point")
 #define CODE_DCM_WaterEquivalentDiameter                                   DSRBasicCodedEntry("113980", "DCM", "Water Equivalent Diameter")
 #define CODE_DCM_WaterEquivalentDiameterRepresentativeValue                DSRBasicCodedEntry("113981", "DCM", "Water Equivalent Diameter Representative Value")
@@ -3879,6 +3880,7 @@
 #define CODE_DCM_OSLD                                                      DSRBasicCodedEntry("128706", "DCM", "OSLD")
 #define CODE_DCM_IonChamber                                                DSRBasicCodedEntry("128707", "DCM", "Ion Chamber")
 #define CODE_DCM_DiamondDetector                                           DSRBasicCodedEntry("128708", "DCM", "Diamond Detector")
+#define CODE_DCM_RPLGD                                                     DSRBasicCodedEntry("128709", "DCM", "RPLGD")
 #define CODE_DCM_ForTeachingFileExport                                     DSRBasicCodedEntry("128710", "DCM", "For Teaching File Export")
 #define CODE_DCM_ForClinicalTrialExport                                    DSRBasicCodedEntry("128711", "DCM", "For Clinical Trial Export")
 #define CODE_DCM_AdditionalTeachingFileInformation                         DSRBasicCodedEntry("128712", "DCM", "Additional Teaching File Information")
@@ -4706,5 +4708,33 @@
 #define CODE_DCM_HzNormalized                                              DSRBasicCodedEntry("130774", "DCM", "Hz normalized")
 #define CODE_DCM_HzAngular                                                 DSRBasicCodedEntry("130775", "DCM", "Hz angular")
 #define CODE_DCM_MagnitudeNormalized                                       DSRBasicCodedEntry("130776", "DCM", "Magnitude normalized")
+#define CODE_DCM_SpecificObservationSubjectClass                           DSRBasicCodedEntry("130780", "DCM", "Specific observation subject class")
+#define CODE_DCM_ImageFrame                                                DSRBasicCodedEntry("130781", "DCM", "Image frame")
+#define CODE_DCM_RTPatientPositionAcquisition_IntegratedDoseMV             DSRBasicCodedEntry("130782", "DCM", "RT Patient Position Acquisition, Integrated Dose MV")
+#define CODE_DCM_RTPatientPositionAcquisition_FilmCassetteMV               DSRBasicCodedEntry("130783", "DCM", "RT Patient Position Acquisition, Film Cassette MV")
+#define CODE_DCM_RTPatientPositionAcquisition_FilmCassetteKV               DSRBasicCodedEntry("130784", "DCM", "RT Patient Position Acquisition, Film Cassette kV")
+#define CODE_DCM_RTPatientPositionAcquisition_ConeBeamCTKV                 DSRBasicCodedEntry("130785", "DCM", "RT Patient Position Acquisition, Cone-Beam CT kV")
+#define CODE_DCM_RTPatientPositionAcquisition_ConventionalCTKV             DSRBasicCodedEntry("130786", "DCM", "RT Patient Position Acquisition, Conventional CT kV")
+#define CODE_DCM_RTPatientPositionAcquisition_ConeBeamCTMV                 DSRBasicCodedEntry("130787", "DCM", "RT Patient Position Acquisition, Cone-Beam CT MV")
+#define CODE_DCM_RTPatientPositionAcquisition_ConventionalCTMV             DSRBasicCodedEntry("130788", "DCM", "RT Patient Position Acquisition, Conventional CT MV")
+#define CODE_DCM_NominalImagingSourceLocation                              DSRBasicCodedEntry("130789", "DCM", "Nominal Imaging Source Location")
+#define CODE_DCM_RTPatientPositioningReferenceImage                        DSRBasicCodedEntry("130790", "DCM", "RT Patient Positioning Reference Image")
+#define CODE_DCM_AcquisitionInitiationType                                 DSRBasicCodedEntry("130791", "DCM", "Acquisition Initiation Type")
+#define CODE_DCM_AcquisitionInitiationNotDefined                           DSRBasicCodedEntry("130792", "DCM", "Acquisition Initiation not defined")
+#define CODE_DCM_AcquisitionInitiationBeforeStartOfRadiation               DSRBasicCodedEntry("130793", "DCM", "Acquisition Initiation before start of Radiation")
+#define CODE_DCM_AcquisitionInitiationAfterEndOfRadiation                  DSRBasicCodedEntry("130794", "DCM", "Acquisition Initiation after end of Radiation")
+#define CODE_DCM_AcquisitionInitiationByTriggeringParameter                DSRBasicCodedEntry("130795", "DCM", "Acquisition Initiation by triggering parameter")
+#define CODE_DCM_IncrementalAcquisitionTriggering                          DSRBasicCodedEntry("130796", "DCM", "Incremental Acquisition Triggering")
+#define CODE_DCM_Meterset                                                  DSRBasicCodedEntry("130797", "DCM", "Meterset")
+#define CODE_DCM_SourceContinuousRollAngle                                 DSRBasicCodedEntry("130798", "DCM", "Source Continuous Roll Angle")
+#define CODE_DCM_TimeAfterStartOfRadiation                                 DSRBasicCodedEntry("130799", "DCM", "Time after start of Radiation")
+#define CODE_DCM_PercentageOfExpectedBeamonTimeOfRadiation                 DSRBasicCodedEntry("130800", "DCM", "Percentage of expected beam-on time of Radiation")
+#define CODE_DCM_IEC61217ImagingSourceToAxisDistance                       DSRBasicCodedEntry("130801", "DCM", "IEC61217 Imaging Source to Axis Distance")
+#define CODE_DCM_IEC61217XRayImageReceptorRadialDisplacementFromIsocenter  DSRBasicCodedEntry("130802", "DCM", "IEC61217 X-Ray Image Receptor Radial Displacement from Isocenter")
+#define CODE_DCM_IEC61217XRayImageReceptorLongitudinalDisplacement         DSRBasicCodedEntry("130803", "DCM", "IEC61217 X-Ray Image Receptor Longitudinal Displacement")
+#define CODE_DCM_IEC61217XRayImageReceptorLateralDisplacement              DSRBasicCodedEntry("130804", "DCM", "IEC61217 X-Ray Image Receptor Lateral Displacement")
+#define CODE_DCM_IEC61217XRayImageReceptorRotation                         DSRBasicCodedEntry("130805", "DCM", "IEC61217 X-Ray Image Receptor Rotation")
+#define CODE_DCM_ConfiguredLowestImagingEnergy                             DSRBasicCodedEntry("130806", "DCM", "Configured Lowest Imaging Energy")
+#define CODE_DCM_ConfiguredDefaultImagingEnergy                            DSRBasicCodedEntry("130807", "DCM", "Configured Default Imaging Energy")
 
 #endif
