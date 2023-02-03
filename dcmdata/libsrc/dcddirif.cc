@@ -803,7 +803,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
         result = ERT_ImplantAssy;
     else if (compare(sopClass, UID_RTBeamsDeliveryInstructionStorage) ||
-             compare(sopClass, UID_RTBrachyApplicationSetupDeliveryInstructionStorage))
+             compare(sopClass, UID_RTBrachyApplicationSetupDeliveryInstructionStorage) ||
+             compare(sopClass, UID_RTPatientPositionAcquisitionInstructionStorage))
     {
         result = ERT_Plan;
     }
@@ -1101,10 +1102,12 @@ static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
     return compare(sopClassUID, UID_BreastProjectionXRayImageStorageForPresentation) ||
            compare(sopClassUID, UID_BreastProjectionXRayImageStorageForProcessing) ||
            compare(sopClassUID, UID_BreastTomosynthesisImageStorage) ||
+           compare(sopClassUID, UID_EnhancedContinuousRTImageStorage) ||
            compare(sopClassUID, UID_EnhancedCTImageStorage) ||
            compare(sopClassUID, UID_EnhancedMRColorImageStorage) ||
            compare(sopClassUID, UID_EnhancedMRImageStorage) ||
            compare(sopClassUID, UID_EnhancedPETImageStorage) ||
+           compare(sopClassUID, UID_EnhancedRTImageStorage) ||
            compare(sopClassUID, UID_EnhancedUSVolumeStorage) ||
            compare(sopClassUID, UID_EnhancedXAImageStorage) ||
            compare(sopClassUID, UID_EnhancedXRFImageStorage) ||

@@ -595,6 +595,9 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RoboticRadiationRecordStorage                          "1.2.840.10008.5.1.4.1.1.481.20"
 #define UID_RTRadiationSetDeliveryInstructionStorage               "1.2.840.10008.5.1.4.1.1.481.21"
 #define UID_RTTreatmentPreparationStorage                          "1.2.840.10008.5.1.4.1.1.481.22"
+#define UID_EnhancedRTImageStorage                                 "1.2.840.10008.5.1.4.1.1.481.23"
+#define UID_EnhancedContinuousRTImageStorage                       "1.2.840.10008.5.1.4.1.1.481.24"
+#define UID_RTPatientPositionAcquisitionInstructionStorage         "1.2.840.10008.5.1.4.1.1.481.25"
 #define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
 #define UID_RTBrachyApplicationSetupDeliveryInstructionStorage     "1.2.840.10008.5.1.4.34.10"
 

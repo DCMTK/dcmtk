@@ -779,6 +779,9 @@ CArmPhotonElectronRadiationRecordStorage             1.2.840.10008.5.1.4.1.1.481
 RoboticRadiationRecordStorage                        1.2.840.10008.5.1.4.1.1.481.20
 RTRadiationSetDeliveryInstructionStorage             1.2.840.10008.5.1.4.1.1.481.21
 RTTreatmentPreparationStorage                        1.2.840.10008.5.1.4.1.1.481.22
+EnhancedRTImageStorage                               1.2.840.10008.5.1.4.1.1.481.23
+EnhancedContinuousRTImageStorage                     1.2.840.10008.5.1.4.1.1.481.24
+RTPatientPositionAcquisitionInstructionStorage       1.2.840.10008.5.1.4.1.1.481.25
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
@@ -842,7 +845,9 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 
 Additional Storage SOP Classes and Transfer Syntaxes can be used with the
-so-called "association negotiation profiles" (see below).
+so-called "association negotiation profiles" (see below).  This could be both
+Private Storage SOP Classes and Standard Storage SOP Classes that do not fit
+into the PATIENT-STUDY-SERIES-INSTANCE information model.
 
 The \b storescp application does not support extended negotiation by default.
 However, using an appropriate association negotiation profile (see below)
