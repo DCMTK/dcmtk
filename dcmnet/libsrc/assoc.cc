@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -305,7 +305,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     ASC_setAPTitles(*params,
                     "calling AP Title",
                     "called AP Title",
-                    "resp. AP Title");
+                    "");
 
     /* make sure max pdv length is even */
     if ((maxReceivePDUSize % 2) != 0)
