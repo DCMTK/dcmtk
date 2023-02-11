@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2020, OFFIS e.V.
+ *  Copyright (C) 2013-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -116,9 +116,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--config-file",         "-xf",  2, "[f]ilename, [p]rofile: string",
                                                           "use profile p from configuration file f");
       cmd.addSubGroup("application entity title:");
-        CONVERT_TO_STRING("set my AE title (default: " << opt_aeTitle << ")", optString1);
-        cmd.addOption("--aetitle",             "-aet", 1, "[a]etitle: string", optString1.c_str());
-        cmd.addOption("--use-called-aetitle",  "-uca",    "always respond with called AE title");
+        cmd.addOption("--use-called-aetitle",  "-uca",    "always respond with called AE title (default)");
+        cmd.addOption("--aetitle",             "-aet", 1, "[a]etitle: string", "set my AE title");
       cmd.addSubGroup("other network options:");
         CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acseTimeout << ")", optString2);
         cmd.addOption("--acse-timeout",        "-ta",  1, optString2.c_str(),

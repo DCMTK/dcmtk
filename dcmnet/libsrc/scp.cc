@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2022, OFFIS e.V.
+ *  Copyright (C) 2009-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2075,8 +2075,17 @@ void DcmSCP::notifyAssociationRequest(const T_ASC_Parameters& params, DcmSCPActi
 
 // ----------------------------------------------------------------------------
 
-OFBool DcmSCP::checkCalledAETitleAccepted(const OFString& /*calledAETitle*/)
+OFBool DcmSCP::checkCalledAETitleAccepted(const OFString& calledAETitle)
 {
+    if (m_cfg->getRespondWithCalledAETitle() || (calledAETitle == m_cfg->getAETitle()))
+    {
+        return OFTrue;
+    }
+    else if (calledAETitle != m_cfg->getAETitle())
+    {
+        DCMNET_ERROR("Called AE Title does not match configured AE Title: " << m_cfg->getAETitle());
+        return OFFalse;
+    }
     return OFTrue;
 }
 

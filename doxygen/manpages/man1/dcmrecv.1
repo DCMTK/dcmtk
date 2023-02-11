@@ -64,11 +64,11 @@ association negotiation profile from configuration file:
 
 application entity title:
 
-  -aet  --aetitle  [a]etitle: string
-          set my AE title (default: DCMRECV)
-
   -uca  --use-called-aetitle
-          always respond with called AE title
+          always respond with called AE title (default)
+
+  -aet  --aetitle  [a]etitle: string
+          set my AE title
 
 other network options:
 
@@ -387,4 +387,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmsend\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2013-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2013-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
