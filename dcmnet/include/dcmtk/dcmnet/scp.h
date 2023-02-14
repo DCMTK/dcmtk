@@ -555,7 +555,7 @@ protected:
      *  and in particular good for testing.
      *
      *  If setRespondWithCalledAETitle() is set to false, DcmSCP will check whether
-     *  the Calling AE Title used by the remote AE matches the one configured for
+     *  the Called AE Title used by the remote AE matches the one configured for
      *  DcmSCP. The default value is "DCMTK_SCP" and can be changed calling setAETitle().
      *  @param calledAE The called AE title the SCU used that should be checked
      *  @return OFTrue, if AE title is accepted, OFFalse otherwise
