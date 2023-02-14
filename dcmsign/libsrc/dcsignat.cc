@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -964,7 +964,7 @@ OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)
     if ((((DcmElement *)(stack.top()))->getString(uid)).good() && uid)
     {
       DcmXfer xf(uid);
-      if (xf.getXfer() == EXS_Unknown) str=uid; else
+      if (xf == EXS_Unknown) str=uid; else
       {
         str = "=";
         str.append(xf.getXferName());

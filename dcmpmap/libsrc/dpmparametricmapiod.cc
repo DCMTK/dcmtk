@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2021, Open Connections GmbH
+ *  Copyright (C) 2016-2023, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -988,7 +988,7 @@ OFCondition DPMParametricMapIOD::decompress(DcmDataset& dset)
   // If the original transfer syntax could have been lossy, print warning
   if (dset.hasRepresentation(EXS_LittleEndianExplicit, NULL))
   {
-    if ( xfer.isEncapsulated() && (xfer.getXfer() != EXS_RLELossless) && (xfer.getXfer() != EXS_DeflatedLittleEndianExplicit) )
+    if ( xfer.isEncapsulated() && (xfer != EXS_RLELossless) && (xfer != EXS_DeflatedLittleEndianExplicit) )
     {
       DCMPMAP_WARN("Dataset has been compressed using a (possibly) lossy compression scheme (ignored)");
     }
@@ -997,14 +997,14 @@ OFCondition DPMParametricMapIOD::decompress(DcmDataset& dset)
   else if (xfer.isEncapsulated())
   {
     // RLE compression is fine (truly lossless). Deflated is handled internally by DCMTK.
-    if (xfer.getXfer() == EXS_RLELossless)
+    if (xfer == EXS_RLELossless)
     {
       DCMPMAP_DEBUG("DICOM file is RLE-compressed, converting to uncompressed transfer syntax first");
       result = DcmIODUtil::decompress(dset);
     }
     else // We do not accept any transfer syntax that could be lossy compressed
     {
-      DCMPMAP_ERROR("Transfer syntax " << DcmXfer(xfer).getXferName() << " uses lossy compression, not supported for Parametric Map objects!");
+      DCMPMAP_ERROR("Transfer syntax " << xfer.getXferName() << " uses lossy compression, not supported for Parametric Map objects!");
       result = IOD_EC_CannotDecompress;
     }
   }

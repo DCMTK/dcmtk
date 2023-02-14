@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -617,7 +617,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                 if ((*transferEntry)->PresentationContextID == 0)
                 {
                     // check whether transfer syntax is known at all
-                    if (xfer.getXfer() == EXS_Unknown)
+                    if (xfer == EXS_Unknown)
                     {
                         // warn that an unknown (and therefore unsupported) transfer syntax is used
                         DCMNET_WARN("transfer syntax is unknown, trying to propose only this one: "
@@ -1207,7 +1207,7 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
                 {
                     DCMNET_DEBUG("retired transfer syntax: " << transferSyntaxUID);
                 }
-                else if (xfer.getXfer() == EXS_Unknown)
+                else if (xfer == EXS_Unknown)
                 {
                     // check whether the DICOM standard prefix for transfer syntax UIDs is used
                     if (sopClassUID.compare(0, 17, "1.2.840.10008.1.2") == 0)

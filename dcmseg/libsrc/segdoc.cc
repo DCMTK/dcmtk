@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2023, Open Connections GmbH
  *
  *  All rights reserved.  See COPYRIGHT file for details.
  *
@@ -1407,8 +1407,7 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
     // If the original transfer syntax could have been lossy, print warning
     if (dset.hasRepresentation(EXS_LittleEndianExplicit, NULL))
     {
-        if (xfer.isEncapsulated() && (xfer.getXfer() != EXS_RLELossless)
-            && (xfer.getXfer() != EXS_DeflatedLittleEndianExplicit))
+        if (xfer.isEncapsulated() && (xfer != EXS_RLELossless) && (xfer != EXS_DeflatedLittleEndianExplicit))
         {
             DCMSEG_WARN("Dataset has been compressed using a (possibly) lossy compression scheme (ignored)");
         }
@@ -1418,7 +1417,7 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
     else if (xfer.isEncapsulated())
     {
         // RLE compression is fine (truly lossless). Deflated is handled internally by DCMTK.
-        if (xfer.getXfer() == EXS_RLELossless)
+        if (xfer == EXS_RLELossless)
         {
             DCMSEG_DEBUG("DICOM file is RLE-compressed, converting to uncompressed transfer syntax first");
             result = DcmIODUtil::decompress(dset);

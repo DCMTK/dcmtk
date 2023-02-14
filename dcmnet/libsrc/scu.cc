@@ -788,8 +788,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                             << OFstatic_cast(unsigned int, pcid) << ": abstract syntax does not match SOP class UID");
             }
             /* Try to convert to the negotiated transfer syntax */
-            DcmXfer netXfer = DcmXfer(transferSyntax.c_str()).getXfer();
-            if (netXfer.getXfer() != xferSyntax)
+            DcmXfer netXfer(transferSyntax.c_str());
+            if (netXfer != xferSyntax)
             {
                 DCMNET_INFO("Converting transfer syntax: " << xfer.getXferName() << " -> " << netXfer.getXferName());
                 cond = dataset->chooseRepresentation(netXfer.getXfer(), NULL);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1337,7 +1337,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     filexfer = EXS_DeflatedLittleEndianExplicit;
   }
 
-  if (filexfer.getXfer() != EXS_Unknown)
+  if (filexfer != EXS_Unknown)
     presID = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
   else
     presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);

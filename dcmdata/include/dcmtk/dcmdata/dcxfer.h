@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -194,42 +194,93 @@ public:
     /** constructor
      *  @param xfer transfer syntax enum
      */
-    DcmXfer( E_TransferSyntax xfer );
+    DcmXfer(E_TransferSyntax xfer);
 
     /** constructor
      *  @param xferName_xferID transfer syntax name as string
      */
-    DcmXfer( const char *xferName_xferID );
+    DcmXfer(const char *xferName_xferID);
 
     /// copy constructor
-    DcmXfer( const DcmXfer &newXfer );
+    DcmXfer(const DcmXfer &newXfer);
 
     /// destructor
     ~DcmXfer();
 
     /// assignment operator for transfer syntax enum
-    DcmXfer & operator = ( const E_TransferSyntax xfer );
+    DcmXfer & operator=(const E_TransferSyntax xfer);
 
     /// copy assignment operator
-    DcmXfer & operator = ( const DcmXfer &newtag );
+    DcmXfer & operator=(const DcmXfer &newXfer);
+
+    /** comparison operator
+     *  @param xfer transfer syntax enum to compare with
+     *  @return true if equal, false if not equal
+     */
+    OFBool operator==(const E_TransferSyntax xfer) const
+    {
+        return xferSyn == xfer;
+    }
+
+    /** comparison operator
+     *  @param xfer transfer syntax to compare with
+     *  @return true if equal, false if not equal
+     */
+    OFBool operator==(const DcmXfer &xfer) const
+    {
+        return xferSyn == xfer.getXfer();
+    }
+
+    /** comparison operator
+     *  @param xfer transfer syntax enum to compare with
+     *  @return true if not equal, false if equal
+     */
+    OFBool operator!=(const E_TransferSyntax xfer) const
+    {
+        return xferSyn != xfer;
+    }
+
+    /** comparison operator
+     *  @param xfer transfer syntax to compare with
+     *  @return true if not equal, false if equal
+     */
+    OFBool operator!=(const DcmXfer &xfer) const
+    {
+        return xferSyn != xfer.getXfer();
+    }
 
     /// return transfer syntax enum for this transfer syntax
-    inline E_TransferSyntax getXfer() const  { return xferSyn; }
+    inline E_TransferSyntax getXfer() const
+    {
+        return xferSyn;
+    }
 
     /// return byte order for this transfer syntax
-    inline E_ByteOrder getByteOrder() const { return byteOrder; }
+    inline E_ByteOrder getByteOrder() const
+    {
+        return byteOrder;
+    }
 
     /// return byte order for this transfer syntax
-    inline E_ByteOrder getPixelDataByteOrder() const { return pixelDataByteOrder; }
+    inline E_ByteOrder getPixelDataByteOrder() const
+    {
+        return pixelDataByteOrder;
+    }
 
     /// return name string for this transfer syntax
-    inline const char* getXferName() const { return xferName; }
+    inline const char* getXferName() const
+    {
+        return xferName;
+    }
 
     /// return keyword string for this transfer syntax
     const char* getXferKeyword() const;
 
     /// return UID string for this transfer syntax
-    inline const char* getXferID() const { return xferID; }
+    inline const char* getXferID() const
+    {
+        return xferID;
+    }
 
     /// return true if transfer syntax is little endian, false otherwise
     inline OFBool isLittleEndian() const
@@ -238,13 +289,22 @@ public:
     }
 
     /// return true if transfer syntax is big endian, false otherwise
-    inline OFBool isBigEndian() const { return byteOrder == EBO_BigEndian; }
+    inline OFBool isBigEndian() const
+    {
+        return byteOrder == EBO_BigEndian;
+    }
 
     /// return true if transfer syntax is implicit VR, false otherwise
-    inline OFBool isImplicitVR() const { return vrType == EVT_Implicit; }
+    inline OFBool isImplicitVR() const
+    {
+        return vrType == EVT_Implicit;
+    }
 
     /// return true if transfer syntax is explicit VR, false otherwise
-    inline OFBool isExplicitVR() const { return vrType == EVT_Explicit; }
+    inline OFBool isExplicitVR() const
+    {
+        return vrType == EVT_Explicit;
+    }
 
     /// return true if transfer syntax is encapsulated, false otherwise
     inline OFBool isEncapsulated() const
@@ -263,14 +323,20 @@ public:
      *  When called for a non-JPEG transfer syntax, returns 0.
      *  @return 8-bit JPEG process ID
      */
-    inline Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
+    inline Uint32 getJPEGProcess8Bit() const
+    {
+        return JPEGProcess8;
+    }
 
     /** return 12-bit JPEG process ID for this transfer syntax.
      *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes - 8 and 12 bits.
      *  When called for a non-JPEG transfer syntax, returns 0.
      *  @return 12-bit JPEG process ID
      */
-    inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
+    inline Uint32 getJPEGProcess12Bit() const
+    {
+        return JPEGProcess12;
+    }
 
     /** check whether transfer syntax uses a lossy compression
      *  @return true if transfer syntax uses a lossy compression, false otherwise

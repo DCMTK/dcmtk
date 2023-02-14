@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -296,11 +296,11 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         // check determined transfer syntax
         if ((tmpXferSyn.isExplicitVR() && xferSyn.isImplicitVR()) ||
             (tmpXferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
-            xferSyn.getXfer() == EXS_Unknown)
+            xferSyn == EXS_Unknown)
         {
             // use determined transfer syntax
             newxfer = tmpXferSyn.getXfer();
-            if (xferSyn.getXfer() != EXS_Unknown)
+            if (xferSyn != EXS_Unknown)
                 DCMDATA_WARN("DcmMetaInfo: TransferSyntax of MetaInfo is other than expected");
         } else
             newxfer = xferSyn.getXfer();

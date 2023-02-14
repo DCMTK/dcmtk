@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -788,7 +788,7 @@ static int dcmchkMetaHeader(
         meta->findAndGetOFStringArray(tsuid, transferSyntaxUID);
         // is this transfer syntax known ?
         DcmXfer expected(transferSyntaxUID.c_str());
-        if (expected.getXfer() == EXS_Unknown) {
+        if (expected == EXS_Unknown) {
             OFLOG_WARN(dcmpschkLogger, MSGe_wrongAtt << OFendl
                 << "   Unknown Transfer Syntax" << OFendl
                 << "   Affected attribute: " << OFendl
