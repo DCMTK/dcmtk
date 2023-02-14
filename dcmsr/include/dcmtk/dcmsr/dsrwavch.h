@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformChannelItem
 
     /** comparison operator
      ** @param  item  item with which the (m,c) pair should be compared
-     ** @return true if not equal, false if equal
+     ** @return OFTrue if not equal, OFFalse if equal
      */
     inline OFBool operator!=(const DSRWaveformChannelItem &item) const
     {
@@ -71,7 +71,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformChannelItem
 
     /** comparison operator
      ** @param  item  item with which the (m,c) pair should be compared
-     ** @return true if smaller. ChannelNumber takes precedence over MultiplexGroupNumber.
+     ** @return OFTrue if smaller. ChannelNumber takes precedence over MultiplexGroupNumber.
      */
     inline OFBool operator<(const DSRWaveformChannelItem &item) const
     {
@@ -80,7 +80,7 @@ class DCMTK_DCMSR_EXPORT DSRWaveformChannelItem
 
     /** comparison operator
      ** @param  item  item with which the (m,c) pair should be compared
-     ** @return true if greater. ChannelNumber takes precedence over MultiplexGroupNumber.
+     ** @return OFTrue if greater. ChannelNumber takes precedence over MultiplexGroupNumber.
      */
     inline OFBool operator>(const DSRWaveformChannelItem &item) const
     {

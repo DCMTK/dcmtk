@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2015, OFFIS e.V.
+ *  Copyright (C) 2010-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -65,7 +65,7 @@ class DCMTK_DCMSR_EXPORT DSRGraphicData3DItem
 
     /** comparison operator
      ** @param  item  item with which the (x,y,z) triplet should be compared
-     ** @return true if not equal, false if equal
+     ** @return OFTrue if not equal, OFFalse if equal
      */
     inline OFBool operator!=(const DSRGraphicData3DItem &item) const
     {
