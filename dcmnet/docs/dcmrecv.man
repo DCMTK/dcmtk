@@ -70,11 +70,11 @@ association negotiation profile from configuration file:
 
 application entity title:
 
-  -aet  --aetitle  [a]etitle: string
-          set my AE title (default: DCMRECV)
-
   -uca  --use-called-aetitle
-          always respond with called AE title
+          always respond with called AE title (default)
+
+  -aet  --aetitle  [a]etitle: string
+          set my AE title and check called AE title
 
 other network options:
 
@@ -458,6 +458,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
