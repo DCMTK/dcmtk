@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,25 +113,25 @@ public:
 
     /** load a particular dictionary from file.
      *  @param fileName filename
-     *  @param errorIfAbsent causes the method to return false
-     *     if the file cannot be opened
+     *  @param errorIfAbsent causes the method to return false if the file
+     *     cannot be opened
      *  @return false if the file contains a parse error or if the file could
      *     not be opened and errorIfAbsent was set, true otherwise.
      */
     OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent = OFTrue);
 
-    /** dictionary lookup for the given tag key and private creator name.
-     *  First the normal tag dictionary is searched.  If not found
-     *  then the repeating tag dictionary is searched.
+    /** dictionary lookup for the given tag key and private creator identifier.
+     *  First the normal tag dictionary is searched.  If not found then the
+     *  repeating tag dictionary is searched.
      *  @param key tag key
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      */
     const DcmDictEntry* findEntry(const DcmTagKey& key, const char *privCreator) const;
 
     /** dictionary lookup for the given attribute name.
-     *  First the normal tag dictionary is searched.  If not found
-     *  then the repeating tag dictionary is searched.
-     *  Only considers standard attributes (i. e. without private creator)
+     *  First the normal tag dictionary is searched.  If not found then the
+     *  repeating tag dictionary is searched.
+     *  Only considers standard attributes (i. e. without private creator).
      *  @param name attribute name
      */
     const DcmDictEntry* findEntry(const char *name) const;

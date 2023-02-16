@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2015, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,7 +45,7 @@
 
 
 /** this class encapsulates an attribute tag (group, element) and a VR.
- *  It maintains a private creator name for private tags and caches
+ *  It maintains a private creator identifier for private tags and caches
  *  the attribute name, once it is looked up in the data dictionary.
  *  This class maintains the interface to the DICOM data dictionary,
  *  i.e. performs look-ups of attribute VR and name in the background.
@@ -60,21 +60,21 @@ public:
     DcmTag();
 
     /** constructor.
-     *  Initializes group/element from given tag key and performs
-     *  a dictionary lookup for the VR.  The lookup also considers
-     *  private tags if the private creator is defined (not NULL).
+     *  Initializes group/element from given tag key and performs a dictionary
+     *  lookup for the VR.  The lookup also considers private tags if the
+     *  private creator identifier is defined (not NULL).
      *  @param akey tag key
-     *  @param privCreator private creator code (optional)
+     *  @param privCreator private creator identifier (optional)
      */
     DcmTag(const DcmTagKey& akey, const char *privCreator = NULL);
 
     /** constructor.
-     *  Initializes group/element from given parameters and performs
-     *  a dictionary lookup for the VR.  The lookup also considers
-     *  private tags if the private creator is defined (not NULL).
+     *  Initializes group/element from given parameters and performs a
+     *  dictionary lookup for the VR.  The lookup also considers private tags
+     *  if the private creator identifier is defined (not NULL).
      *  @param g tag group
      *  @param e tag element
-     *  @param privCreator private creator code (optional)
+     *  @param privCreator private creator identifier (optional)
      */
     DcmTag(Uint16 g, Uint16 e, const char *privCreator = NULL);
 
@@ -135,36 +135,36 @@ public:
     }
 
     /** returns name of attribute tag.
-     *  If name has not been accessed before, a dictionary lookup
-     *  under consideration of the current private creator code
-     *  is performed.  If no attribute name is found, a default
-     *  name is used.  Never returns NULL.
+     *  If name has not been accessed before, a dictionary lookup under
+     *  consideration of the current private creator identifier is performed.
+     *  If no attribute name is found, a default name is used.  Never returns
+     *  NULL.
      *  @return attribute tag name, never NULL.
      */
     const char* getTagName();
 
-    /** returns the current private creator string for this object
-     *  if any, NULL otherwise.
-     *  @return creator code if present, NULL otherwise
+    /** returns the current private creator identifier for this object if any,
+     *  NULL otherwise.
+     *  @return private creator identifier if present, NULL otherwise
      */
     const char* getPrivateCreator() const;
 
-    /** assigns a private creator code and deletes a possibly
-     *  cached attribute name since the attribute name could
-     *  change if a different private creator code is used.
-     *  @param privCreator private creator code, may be NULL
+    /** assigns a private creator identifier and deletes a possibly cached
+     *  attribute name since the attribute name could change if a different
+     *  private creator identifier is used.
+     *  @param privCreator private creator identifier, may be NULL
      */
     void setPrivateCreator(const char *privCreator);
 
     /** performs a look-up of the VR for the current tag key in the dictionary,
-     *  under consideration of the private creator (if defined).
+     *  under consideration of the private creator identifier (if defined).
      *  If a dictionary entry is found, the VR of this object is copied
      *  from the dictionary entry, otherwise the VR remains unmodified.
      */
     void lookupVRinDictionary();
 
-    /** returns true if a data element with the given tag and VR
-     *  can be digitally signed, false otherwise
+    /** returns true if a data element with the given tag and VR can be
+     *  digitally signed, false otherwise
      *  @return true if signable, false otherwise
      */
     OFBool isSignable() const;
@@ -199,7 +199,7 @@ private:
     void updateTagName(const char *c);
 
     /** replace privateCreator with copy of given string
-     *  @param c new private creator
+     *  @param c new private creator identifier
      */
     void updatePrivateCreator(const char *c);
 
@@ -209,7 +209,8 @@ private:
     /// name of this attribute tag, remains NULL unless getTagName() is called
     char *tagName;
 
-    /// private creator code, remains NULL unless setPrivateCreator() is called
+    /// private creator identifier, remains NULL unless setPrivateCreator() is
+    /// called
     char *privateCreator;
 
     /// current error code, EC_Normal if a valid VR for the tag is known

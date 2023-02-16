@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -361,7 +361,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
 
     if (pi > 0)
     {
-      // copy private creator name
+      // copy private creator identifier
       size_t buflen = strlen(pc) + 1;
       privCreator = new char[buflen]; // deleted by caller
       if (privCreator) OFStandard::strlcpy(privCreator, pc, buflen);

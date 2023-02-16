@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -232,9 +232,8 @@ const char* DcmTag::getPrivateCreator() const
 
 void DcmTag::setPrivateCreator(const char *privCreator)
 {
-    // a new private creator code probably changes the name
-    // of the tag. Enforce new dictionary lookup the next time
-    // getTagName() is called.
+    // a new private creator identifier probably changes the name of the tag.
+    // Enforce new dictionary lookup the next time getTagName() is called.
     updateTagName(NULL);
     updatePrivateCreator(privCreator);
 }

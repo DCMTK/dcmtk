@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1308,8 +1308,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  in the dictionary) will result in a DcmElement instance of derived type
      *  DcmOtherByteOtherWord.
      *  @param tag attribute tag of the element to be created
-     *  @param privateCreator private creator of the element, if element tag
-     *    is private (default: NULL, i.e. non-private DICOM standard tag)
+     *  @param privateCreator private creator identifier of the element, if element
+     *    tag is private (default: NULL, i.e. non-private DICOM standard tag)
      *  @return pointer to newly created element upon success, NULL pointer otherwise
      *
      */
@@ -1323,8 +1323,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  @param newElement pointer to newly created element returned in this parameter
      *    upon success, NULL pointer otherwise
      *  @param tag attribute tag of the element to be created
-     *  @param privateCreator private creator of the element, if element tag
-     *    is private (default: NULL, i.e. non-private DICOM standard tag)
+     *  @param privateCreator private creator identifier of the element, if element
+     *    tag is private (default: NULL, i.e. non-private DICOM standard tag)
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition newDicomElement(DcmElement *&newElement,
@@ -1451,8 +1451,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  @param tag attribute tag of the element to be created. VR of tag may be
      *    updated within the method.
      *  @param length attribute value length of the element to be created
-     *  @param privateCreatorCache cache object for private creator strings in
-     *    the current dataset
+     *  @param privateCreatorCache cache object for private creator elements
+     *    in the current dataset
      *  @param readAsUN flag indicating whether parser is currently handling
      *    UN element that must be read in implicit VR little endian; updated
      *    upon return
@@ -1487,7 +1487,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     static OFBool foundVR(const Uint8* atposition);
 
-    /// cache for private creator tags and names
+    /// cache for private creator tags and identifiers
     DcmPrivateTagCache privateCreatorCache;
 };
 

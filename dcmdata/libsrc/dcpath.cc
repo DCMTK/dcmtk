@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2021, OFFIS e.V.
+ *  Copyright (C) 2008-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -942,11 +942,11 @@ DcmPathProcessor::checkPrivateTagReservation(DcmItem* item, const DcmTagKey& tag
         // check whether private creator is correct
         if (actualPrivateCreator != privateCreator)
         {
-            OFString msg = "Private creator string (";
+            OFString msg = "Private creator identifier (";
             msg += actualPrivateCreator;
             msg += ") other than expected ( ";
             msg += privateCreator;
-            msg += privateCreator;
+            msg += ")";
             return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
         }
     }
