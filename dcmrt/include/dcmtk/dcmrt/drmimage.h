@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2022, OFFIS e.V.
+ *  Copyright (C) 2012-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,11 +71,18 @@ public:
     /** Get the DicomImage instance for this RT Image.
      *  @return the DicomImage instance for this RT Image, may be NULL!
      */
-    DicomImage *getImage() { return image_; }
+    DicomImage *getImage()
+    {
+        return image_;
+    }
+
     /** Get the DicomImage instance for this RT Image.
      *  @return the DicomImage instance for this RT Image, may be NULL!
      */
-    const DicomImage *getImage() const { return image_; }
+    const DicomImage *getImage() const
+    {
+        return image_;
+    }
 
     /** Get the number of pixels in one row
      *  @return number of pixels in one row
