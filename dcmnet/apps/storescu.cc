@@ -105,10 +105,10 @@ static OFCmdUnsignedInt opt_inventStudyCount = 50;
 static OFCmdUnsignedInt opt_inventSeriesCount = 100;
 static OFBool opt_inventSOPInstanceInformation = OFFalse;
 static OFBool opt_correctUIDPadding = OFFalse;
-static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (maximum 16 chars)
-static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
-static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
-static OFString accessionNumberPrefix;   // AccessionNumber is SH (maximum 16 chars)
+static OFString patientNamePrefix("OFFIS^TEST_PN_");  // PatientName is PN (maximum 16 chars)
+static OFString patientIDPrefix("PID_");              // PatientID is LO (maximum 64 chars)
+static OFString studyIDPrefix("SID_");                // StudyID is SH (maximum 16 chars)
+static OFString accessionNumberPrefix;                // AccessionNumber is SH (maximum 16 chars)
 static const char *opt_configFile = NULL;
 static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
@@ -1237,7 +1237,7 @@ progressCallback(void * /*callbackData*/,
   if (progress->state == DIMSE_StoreBegin)
   {
     OFString str;
-    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, *req, DIMSE_OUTGOING));
+    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, *req, DIMSE_OUTGOING /*, NULL, presID */));
   }
 
   // We can't use oflog for the pdu output, but we use a special logger for
@@ -1356,10 +1356,11 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   DcmXfer netTransfer(pc.acceptedTransferSyntax);
 
   /* if required, dump general information concerning transfer syntaxes */
-  if (storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+  if ((netTransfer != dcmff.getDataset()->getOriginalXfer()) &&
+    storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
-    DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-    OFLOG_INFO(storescuLogger, "Converting transfer syntax: " << fileTransfer.getXferName()
+    DcmXfer origTransfer(dcmff.getDataset()->getOriginalXfer());
+    OFLOG_INFO(storescuLogger, "Converting transfer syntax: " << origTransfer.getXferName()
       << " -> " << netTransfer.getXferName());
   }
 
