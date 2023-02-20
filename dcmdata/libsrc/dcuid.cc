@@ -1514,7 +1514,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 
 
 /*
-** dcmFindNameOfUID(const char* uid)
+** dcmFindNameOfUID(const char* uid, const char* defaultValue)
 ** Return the name of a UID.
 ** Performs a table lookup and returns a pointer to a read-only string.
 ** Returns defaultValue if the UID is not known.
@@ -1553,22 +1553,22 @@ dcmFindUIDFromName(const char* name)
 
 
 /*
-** dcmFindKeywordOfUID(const char* uid)
+** dcmFindKeywordOfUID(const char* uid, const char* defaultValue)
 ** Return the keyword of a UID.
 ** Performs a table lookup and returns a pointer to a read-only string.
-** Returns NULL if the UID is not known.
+** Returns defaultValue if the UID is not known.
 */
 
 const char*
-dcmFindKeywordOfUID(const char* uid)
+dcmFindKeywordOfUID(const char* uid, const char* defaultValue)
 {
-    if (uid == NULL) return NULL;
+    if (uid == NULL) return defaultValue;
     for (int i = 0; i < uidNameMap_size; i++) {
       if (uidNameMap[i].uid != NULL && strcmp(uid, uidNameMap[i].uid) == 0) {
         return uidNameMap[i].keyword;
       }
     }
-    return NULL;
+    return defaultValue;
 }
 
 //

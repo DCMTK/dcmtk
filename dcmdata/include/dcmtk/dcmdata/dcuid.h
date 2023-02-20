@@ -67,9 +67,10 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char* name);
 /** return the keyword of a UID.
  *  Performs a table lookup and returns a pointer to a read-only string.
  *  @param uid UID string for which the keyword is to be looked up
- *  @return keyword string or NULL if UID is unknown
+ *  @param defaultValue default to return if UID not known
+ *  @return keyword string or defaultValue if UID is unknown
  */
-DCMTK_DCMDATA_EXPORT const char* dcmFindKeywordOfUID(const char* uid);
+DCMTK_DCMDATA_EXPORT const char* dcmFindKeywordOfUID(const char* uid, const char* defaultValue = NULL);
 
 /** return the UID of a keyword.
  *  Performs a table lookup and returns a pointer to a read-only string.
