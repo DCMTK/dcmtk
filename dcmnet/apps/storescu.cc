@@ -1343,10 +1343,12 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
   if (presID == 0)
   {
-    const char *modalityName = dcmSOPClassUIDToModality(sopClass);
-    if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
-    if (!modalityName) modalityName = "unknown SOP class";
-    OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
+    if (storescuLogger.isEnabledFor(OFLogger::ERROR_LOG_LEVEL))
+    {
+      const char *modalityName = dcmSOPClassUIDToModality(sopClass);
+      if (!modalityName) modalityName = dcmFindNameOfUID(sopClass, "unknown SOP class");
+      OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
+    }
     renameFile(fname, ".bad");
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
@@ -1385,6 +1387,14 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* if required, dump some more general information */
   OFLOG_INFO(storescuLogger, "Sending Store Request (MsgID " << msgId << ", "
     << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
+  /* the following is needed, because the presentation context ID is not shown otherwise */
+  if (storescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    const char *sopClassName = dcmFindKeywordOfUID(sopClass, sopClass /*defaultValue*/);
+    const char *netXferName = dcmFindKeywordOfUID(netTransfer.getXferID(), netTransfer.getXferID() /*defaultValue*/);
+    OFLOG_DEBUG(storescuLogger, "  using Presentation Context ID " << OFstatic_cast(int, presID)
+      << " = " << sopClassName << " with " << netXferName << " transfer syntax");
+  }
 
   /* finally conduct transmission of data */
   cond = DIMSE_storeUser(assoc, presID, &req,
