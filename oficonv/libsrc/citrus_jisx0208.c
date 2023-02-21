@@ -210,8 +210,12 @@ _citrus_JISX0208_mbrtowc_priv(_JISX0208EncodingInfo *ei, _citrus_wc_t *pwc, char
     while (psenc->chlen < c) {
         if (n < 1)
             goto restart;
-        psenc->ch[psenc->chlen] = *s0++;
-        psenc->chlen++;
+        if (psenc->chlen < 3) {
+            psenc->ch[psenc->chlen] = *s0++;
+            psenc->chlen++;
+        } else {
+            return (E2BIG);
+        }
         n--;
     }
     *s = s0;
