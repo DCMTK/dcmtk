@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 #include <cstring>
 
@@ -86,6 +87,13 @@ class OFBitmanipTemplate
         memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
 #else
 
+// suppress gcc warning on MinGW, where no memory block
+// can be larger than PTRDIFF_MAX. The warning is correct
+// (but harmless) on MinGW, but a change of the code that
+// fixes the warning would break other platforms.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW
+
 #ifdef HAVE_MEMMOVE
         // On some platforms (such as MinGW), memmove cannot move buffers
         // larger than PTRDIFF_MAX. In the rare case of such huge buffers,
@@ -118,6 +126,7 @@ class OFBitmanipTemplate
             for (i = count; i != 0; --i)
                 *q-- = *p--;
         }
+#include DCMTK_DIAGNOSTIC_POP
 #endif
     }
 

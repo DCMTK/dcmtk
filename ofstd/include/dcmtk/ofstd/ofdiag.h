@@ -213,6 +213,12 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER <unspecified>
 
+/*! @brief A macro to disable warnings about an overflow in a string operation
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -236,6 +242,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREACHABLE_CODE_WARNING "dcmtk/ofstd/diag/unreachb.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_ATTRIBUTE_REDECLARATION "dcmtk/ofstd/diag/ignrattr.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER "dcmtk/ofstd/diag/unrefprm.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW "dcmtk/ofstd/diag/stringop.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

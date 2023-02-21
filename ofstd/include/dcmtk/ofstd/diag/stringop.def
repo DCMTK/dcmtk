@@ -1,0 +1,3 @@
+#if ( defined(__GNUC__) && (__GNUC__ >= 7 ) )
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
