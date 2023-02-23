@@ -113,13 +113,13 @@ set(DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIRS})
 # Depend packages
 if(DCMTK_WITH_ZLIB)
   if(NOT ZLIB_FOUND)
-    find_package(ZLIB)
+    find_dependency(ZLIB)
   endif()
 endif()
 
 if(DCMTK_WITH_OPENSSL)
   if(NOT OPENSSL_FOUND)
-    find_package(OpenSSL)
+    find_dependency(OpenSSL)
   endif()
 endif()
 
