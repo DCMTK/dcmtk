@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, OFFIS e.V.
+ *  Copyright (C) 2016-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -219,6 +219,13 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW <unspecified>
 
+/*! @brief A macro to disable warnings about a restrict-qualified parameter
+ *  that is aliased by another argument, or when copies between such objects overlap.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_RESTRICT <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -243,6 +250,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_ATTRIBUTE_REDECLARATION "dcmtk/ofstd/diag/ignrattr.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER "dcmtk/ofstd/diag/unrefprm.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW "dcmtk/ofstd/diag/stringop.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_RESTRICT "dcmtk/ofstd/diag/restrict.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

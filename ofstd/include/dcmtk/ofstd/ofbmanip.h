@@ -93,6 +93,7 @@ class OFBitmanipTemplate
 // fixes the warning would break other platforms.
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW
+#include DCMTK_DIAGNOSTIC_IGNORE_RESTRICT
 
 #ifdef HAVE_MEMMOVE
         // On some platforms (such as MinGW), memmove cannot move buffers
