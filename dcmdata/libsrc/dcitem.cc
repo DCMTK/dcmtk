@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -3765,6 +3765,10 @@ OFCondition DcmItem::putAndInsertUint32Array(const DcmTag& tag,
         case EVR_UL:
             elem = new DcmUnsignedLong(tag);
             break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
         default:
             status = EC_IllegalCall;
             break;
@@ -3821,6 +3825,42 @@ OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
     return status;
 }
 
+
+OFCondition DcmItem::putAndInsertSint32Array(const DcmTag& tag,
+                                             const Sint32 *value,
+                                             const unsigned long count,
+                                             const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_SL:
+            elem = new DcmSignedLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putSint32Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
 
 OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
                                          const Float32 value,

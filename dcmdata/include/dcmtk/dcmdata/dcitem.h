@@ -95,9 +95,9 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *          cannot be casted to this object type or both objects are of
      *          different VR (i.e. the DcmEVR returned by the element's ident()
      *          call are different).
-     *          1 if either this element has more components than the rhs element, or
-     *          if the first component that does not match is greater in this object than
-     *          in rhs object.
+     *          1 if either this element has more components than the rhs
+     *          element, or if the first component that does not match is
+     *          greater in this object than in rhs object.
      */
     virtual int compare(const DcmItem& rhs) const;
 
@@ -448,8 +448,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the
      *  next object in the list AFTER the given object. If the caller passes NULL,
      *  a pointer to the first object in the list is returned. If the given object
-     *  is not found, the given object is the last one in the list or the list is empty,
-     *  NULL is returned.
+     *  is not found, the given object is the last one in the list or the list is
+     *  empty, NULL is returned.
      *  @param obj pointer to one object in the container; we are looking for the
      *    next entry after this one. NULL if looking for the first entry.
      *  @return pointer to next object in container or NULL if not found
@@ -1205,6 +1205,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const Sint32 value,
                                    const unsigned long pos = 0,
                                    const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: SL.
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertSint32Array(const DcmTag &tag,
+                                        const Sint32 *value,
+                                        const unsigned long count,
+                                        const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: FL, OF.
