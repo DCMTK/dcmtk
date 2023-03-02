@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include <cstring>
 #include <cstdlib>                  /* for free() */
 
@@ -222,6 +223,11 @@ public:
     }
   }
 
+// suppress spurious gcc 12 warning about use-after-free.
+// this is a known bug in gcc.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_USE_AFTER_FREE
+
   /// destructor
   ~OFCondition()
   {
@@ -230,6 +236,8 @@ public:
       free(OFconst_cast(char *, theCondition.theText)); // cast away const
     }
   }
+
+#include DCMTK_DIAGNOSTIC_POP
 
   /** copy assignment operator
    *  @param arg The OFCondition instance to copy

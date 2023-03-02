@@ -1,0 +1,3 @@
+#if ( defined(__GNUC__) && (__GNUC__ >= 12 ) )
+#pragma GCC diagnostic ignored "-Wuse-after-free"
+#endif

@@ -226,6 +226,19 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_RESTRICT <unspecified>
 
+/*! @brief A macro to disable warnings about the possible use of an
+ *  object after deallocation by a call to free().
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_USE_AFTER_FREE <unspecified>
+
+/*! @brief A macro to disable warnings about out-of bounds array indices.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_ARRAY_BOUNDS <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -251,6 +264,8 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER "dcmtk/ofstd/diag/unrefprm.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW "dcmtk/ofstd/diag/stringop.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_RESTRICT "dcmtk/ofstd/diag/restrict.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_USE_AFTER_FREE "dcmtk/ofstd/diag/useafree.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_ARRAY_BOUNDS "dcmtk/ofstd/diag/arrybnds.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

@@ -126,12 +126,17 @@ public:
         init<0>();
     }
 
+// suppress spurious gcc warnings about array subscript issues in 
+// OFvariant_destroy_invoker issued by gcc 11 and newer
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_ARRAY_BOUNDS
     OFTypename Invoker::return_type operator()( size_t index, void* content, const Invoker& invoker = Invoker() )
     {
         // Select the fitting function pointer based on the index and call it with
         // the given pointer to the current contents.
         return (invoker.*m_Alternatives[index])( content );
     }
+#include DCMTK_DIAGNOSTIC_POP
 
 private:
 
