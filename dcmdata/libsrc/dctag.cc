@@ -87,6 +87,17 @@ DcmTag::DcmTag(const DcmTag& tag)
     updatePrivateCreator(tag.privateCreator);
 }
 
+DcmTag::DcmTag(const DcmTag& tag, const DcmVR& avr)
+  : DcmTagKey(tag),
+    vr(avr),
+    tagName(NULL),
+    privateCreator(NULL),
+    errorFlag(tag.errorFlag)
+{
+    updateTagName(tag.tagName);
+    updatePrivateCreator(tag.privateCreator);
+}
+
 
 // ********************************
 

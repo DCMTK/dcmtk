@@ -95,8 +95,19 @@ public:
      */
     DcmTag(Uint16 g, Uint16 e, const DcmVR& avr);
 
-    /// copy constructor
+    /** copy constructor
+     *  @param tag tag to be copied
+     */
     DcmTag(const DcmTag& tag);
+
+    /** constructor.
+     *  Initializes tag from given parameter, but uses the specified VR.
+     *  This constructor is e.g. useful for attributes with multiple VRs.
+     *  No dictionary lookup needed/performed.
+     *  @param tag tag to be copied
+     *  @param avr VR to be used
+     */
+    DcmTag(const DcmTag& tag, const DcmVR& avr);
 
     /// destructor
     ~DcmTag();
@@ -111,20 +122,32 @@ public:
     DcmVR getVR() const { return vr; }
 
     /// returns VR code
-    DcmEVR getEVR() const { return vr.getEVR(); }
+    DcmEVR getEVR() const
+    {
+      return vr.getEVR();
+    }
 
     /// returns name of VR
-    const char* getVRName() const { return vr.getVRName(); }
+    const char* getVRName() const
+    {
+      return vr.getVRName();
+    }
 
     /** returns tag group
      *  @return tag group
      */
-    Uint16 getGTag() const { return getGroup(); }
+    Uint16 getGTag() const
+    {
+      return getGroup();
+    }
 
     /** returns tag element
      *  @return tag element
      */
-    Uint16 getETag() const { return getElement(); }
+    Uint16 getETag() const
+    {
+      return getElement();
+    }
 
     /** returns a copy of the tag key by value
      *  @return copy of tag key, by value
@@ -174,7 +197,10 @@ public:
     OFBool isUnknownVR() const;
 
     /// returns current status flag
-    OFCondition error() const { return errorFlag; }
+    OFCondition error() const
+    {
+      return errorFlag;
+    }
 
     // --- static helper functions ---
 
