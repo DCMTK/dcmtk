@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2023, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -422,7 +422,7 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
     OFCondition result;
     if (values.size() > OFnumeric_limits<unsigned long>::max())
     {
-        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag());
         return IOD_EC_InvalidElementValue;
     }
     const unsigned long vmCount          = OFstatic_cast(unsigned long, values.size());
@@ -432,8 +432,8 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
         result = delem.putFloat64((*it), count);
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Setting value "
-                                                 << " #" << count << " to \" " << *it << "\" not possible");
+            DCMIOD_WARN(delem.getTag() << ": Setting value "
+                                       << " #" << count << " to \" " << *it << "\" not possible");
         }
         else if (check)
         {
@@ -457,7 +457,7 @@ OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
     OFCondition result;
     if (values.size() > OFnumeric_limits<unsigned long>::max())
     {
-        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag());
         return IOD_EC_InvalidElementValue;
     }
     const unsigned long vmCount          = OFstatic_cast(unsigned long, values.size());
@@ -467,8 +467,8 @@ OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
         result = delem.putFloat32((*it), count);
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Setting value "
-                                                 << " #" << count << " to \" " << *it << "\" not possible");
+            DCMIOD_WARN(delem.getTag() << ": Setting value "
+                                       << " #" << count << " to \" " << *it << "\" not possible");
         }
         else if (check)
         {
@@ -487,7 +487,7 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement& delem,
     OFCondition result;
     if (values.size() > OFnumeric_limits<unsigned long>::max())
     {
-        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag());
         return IOD_EC_InvalidElementValue;
     }
     const unsigned long vmCount         = OFstatic_cast(unsigned long, values.size());
@@ -497,8 +497,8 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement& delem,
         result = delem.putUint16((*it), count);
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Setting value "
-                                                 << " #" << count << " to \" " << *it << "\" not possible");
+            DCMIOD_WARN(delem.getTag() << ": Setting value "
+                                       << " #" << count << " to \" " << *it << "\" not possible");
         }
         else if (check)
         {
@@ -520,8 +520,8 @@ OFCondition DcmIODUtil::getUint16ValuesFromElement(DcmElement& delem, OFVector<U
         result = delem.getUint16(val, OFstatic_cast(unsigned long, i));
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Getting value "
-                                                 << " #" << i << " not possible");
+            DCMIOD_WARN(delem.getTag() << ": Getting value "
+                                       << " #" << i << " not possible");
             break;
         }
         values.push_back(val);
@@ -553,7 +553,7 @@ OFCondition DcmIODUtil::getAndCheckSingleItem(DcmSequenceOfItems& seq, DcmItem*&
     const OFString tagName = OFconst_cast(DcmTag*, &seq.getTag())->getTagName(); // getTagName is not const...
     if (checkKey != DCM_UndefinedTagKey)
     {
-        if (seq.getTag().getXTag() != checkKey)
+        if (seq.getTag() != checkKey)
         {
             DCMIOD_ERROR("Expected sequence " << checkKey << " but got " << &seq.getTag() << "(" << tagName << ")");
             return EC_ItemNotFound;

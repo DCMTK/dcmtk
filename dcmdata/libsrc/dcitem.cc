@@ -1209,7 +1209,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         {
             DCMDATA_WARN("DcmItem: Explicit item length (" << valueLengthItem << " bytes) too large for the elements contained in the item");
             /* if the next tag is the sequence delimiter item, we can adapt to the situation */
-            if (newTag.getXTag() == DCM_SequenceDelimitationItem)
+            if (newTag == DCM_SequenceDelimitationItem)
             {
                 DCMDATA_WARN("DcmItem: Sequence delimitation occurred before all bytes announced by explicit item length could be read");
                 l_error = EC_PrematureSequDelimitationItem;
@@ -1430,7 +1430,7 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                         checkAndUpdateVR(*this, newTag);
 
                     /* check if we want to stop parsing at this point, in the main dataset only */
-                    if( (stopParsingAtElement != DCM_UndefinedTagKey) && (newTag.getXTag()>=stopParsingAtElement) && ident() == EVR_dataset)
+                    if ((stopParsingAtElement != DCM_UndefinedTagKey) && (newTag >= stopParsingAtElement) && (ident() == EVR_dataset))
                     {
                       lastElementComplete = OFTrue;
                       readStopElem = OFTrue;
@@ -1803,7 +1803,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
             }
             /* else if the new element's tag is greater than the current element's tag */
             /* (i.e. we have found the position where the new element shall be inserted) */
-            else if (elem->getTag() > dE->getTag())
+            else if (elem->getTag() > dE->getTag().getTagKey() /* only compare the attribute tag */)
             {
                 /* insert the new element after the current element */
                 elementList->insert(elem, ELP_next);
@@ -1831,7 +1831,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 break;
             }
             /* else if the current element and the new element show the same tag */
-            else if (elem->getTag() == dE->getTag())
+            else if (elem->getTag() == dE->getTag().getTagKey() /* only compare the attribute tag */)
             {
                 /* if new and current element are not identical */
                 if (elem != dE)
@@ -3862,6 +3862,7 @@ OFCondition DcmItem::putAndInsertSint32Array(const DcmTag& tag,
     return status;
 }
 
+
 OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
                                          const Float32 value,
                                          const unsigned long pos,
@@ -4622,7 +4623,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
         case EVR_UL :
             {
                 // generate tag with VR from dictionary!
-                DcmTag ulupTag(tag.getXTag());
+                DcmTag ulupTag(tag.getTagKey());
                 if (ulupTag.getEVR() == EVR_up)
                     newElement = new DcmUnsignedLongOffset(ulupTag, length);
                 else
@@ -4659,11 +4660,11 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
             newElement = new DcmSequenceOfItems(tag, length, readAsUN);
             break;
         case EVR_na :
-            if (tag.getXTag() == DCM_Item)
+            if (tag == DCM_Item)
                 l_error = EC_InvalidTag;
-            else if (tag.getXTag() == DCM_SequenceDelimitationItem)
+            else if (tag == DCM_SequenceDelimitationItem)
                 l_error = EC_SequEnd;
-            else if (tag.getXTag() == DCM_ItemDelimitationItem)
+            else if (tag == DCM_ItemDelimitationItem)
                 l_error = EC_ItemEnd;
             else
                 l_error = EC_InvalidTag;
@@ -4745,7 +4746,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
             else if (tag.isPrivate())
             {
                 // look up VR in private data dictionary
-                DcmTag newTag(tag.getXTag(), tag.getPrivateCreator());
+                DcmTag newTag(tag.getTagKey(), tag.getPrivateCreator());
                 // special handling for private pixel data (compressed or uncompressed)
                 if (newTag.getEVR() == EVR_px)
                 {

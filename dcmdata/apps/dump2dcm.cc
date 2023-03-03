@@ -626,10 +626,10 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
         }
         else if (newElementError == EC_InvalidTag)
         {
-            if (tag.getXTag() == DCM_Item)
+            if (tag == DCM_Item)
             {
                 DcmItem *item = NULL;
-                if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
+                if (topOfStack->getTag() == DCM_DirectoryRecordSequence)
                 {
                     // an Item must be pushed to the stack
                     item = new DcmDirectoryRecord(tag, 0);

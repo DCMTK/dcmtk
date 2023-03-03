@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -523,7 +523,7 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
         DcmXfer xf(oxfer);
         templen += xf.sizeofTagHeader(dO->getVR());
 
-        if ( dO->getTag().getXTag() == DCM_DirectoryRecordSequence )
+        if ( dO->getTag() == DCM_DirectoryRecordSequence )
             break;
 
         Uint32 sublength = dO->getLength( oxfer, enctype );

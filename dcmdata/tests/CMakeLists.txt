@@ -17,6 +17,7 @@ DCMTK_ADD_EXECUTABLE(dcmdata_tests
   tsequen.cc
   tspchrs.cc
   tstrval.cc
+  ttag.cc
   tvrcomp.cc
   tvrdatim.cc
   tvrds.cc

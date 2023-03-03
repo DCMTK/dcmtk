@@ -135,7 +135,7 @@ public:
      */
     inline DcmTagKey& operator = (const DcmTagKey& key);
 
-    /** Comparison operator. Returns true if both group and element number
+    /** comparison operator. Returns true if both group and element number
      *  are the same.
      *  @param key key to compare with
      *  @return true if tag keys are the same

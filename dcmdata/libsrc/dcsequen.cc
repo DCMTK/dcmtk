@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -549,16 +549,16 @@ OFCondition DcmSequenceOfItems::makeSubObject(DcmObject *&subObject,
     switch (newTag.getEVR())
     {
         case EVR_na:
-            if (newTag.getXTag() == DCM_Item)
+            if (newTag == DCM_Item)
             {
-                if (getTag().getXTag() == DCM_DirectoryRecordSequence)
+                if (getTag() == DCM_DirectoryRecordSequence)
                     subItem = new DcmDirectoryRecord(newTag, newLength);
                 else
                     subItem = new DcmItem(newTag, newLength);
             }
-            else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
+            else if (newTag == DCM_SequenceDelimitationItem)
                 l_error = EC_SequEnd;
-            else if (newTag.getXTag() == DCM_ItemDelimitationItem)
+            else if (newTag == DCM_ItemDelimitationItem)
                 l_error = EC_ItemEnd;
             else
                 l_error = EC_InvalidTag;

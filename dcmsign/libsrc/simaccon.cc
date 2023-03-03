@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -143,7 +143,7 @@ OFCondition SiMACConstructor::encodeDigitalSignatureItem(
     {
       if (element->isSignable())
       {
-        tagkey = element->getTag().getXTag();
+        tagkey = element->getTag().getTagKey();
         if ((tagkey != DCM_CertificateOfSigner) &&
             (tagkey != DCM_Signature) &&
             (tagkey != DCM_CertifiedTimestampType) &&

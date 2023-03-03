@@ -355,7 +355,7 @@ static OFBool compareAttributes(DcmElement *elem1,
         if (elem2 != NULL)
         {
             /* check whether tags are equal */
-            if (elem1->getTag().getXTag() == elem2->getTag().getXTag())
+            if (elem1->getTag() == elem2->getTag())
             {
                 DcmVR vr1(elem1->getVR());
                 DcmVR vr2(elem2->getVR());
@@ -463,7 +463,7 @@ static OFBool compareSQAttributes(DcmSequenceOfItems *seq1,
         if (seq2 != NULL)
         {
             /* check whether tags are equal */
-            if (seq1->getTag().getXTag() == seq2->getTag().getXTag())
+            if (seq1->getTag() == seq2->getTag())
             {
                 const unsigned long card1 = seq1->card();
                 const unsigned long card2 = seq2->card();
@@ -5588,7 +5588,7 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
             if ((delem != NULL) && (delem->getLength() > 0))
             {
                 /* record attribute has a value */
-                tag = delem->getTag().getXTag();
+                tag = delem->getTag();
                 if (dataset->tagExistsWithValue(tag))
                 {
                     if (delem->getTag().getEVR() == EVR_SQ)

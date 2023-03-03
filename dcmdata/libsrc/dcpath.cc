@@ -650,7 +650,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item, OFString& path
                     // check private reservation if desired
                     if (m_checkPrivateReservations)
                     {
-                        status = checkPrivateTagReservation(item, tag.getXTag());
+                        status = checkPrivateTagReservation(item, tag.getTagKey());
                         if (status.bad())
                             return status;
                     }

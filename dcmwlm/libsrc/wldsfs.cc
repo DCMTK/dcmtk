@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -479,7 +479,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
   OFCondition cond;
 
   // determine the current elements tag.
-  DcmTagKey tag( element->getTag().getXTag() );
+  const DcmTagKey tag( element->getTag() );
 
   // check if the current element is the "Specific Character Set" (0008,0005) attribute;
   // we do not want to deal with this attribute here.
@@ -547,7 +547,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
     // add all information from the matching record in the data source to this sequence
 
     // determine the current sequence elements tag.
-    DcmTagKey sequenceTag( sequenceOfItemsElement->getTag().getXTag() );
+    const DcmTagKey sequenceTag( sequenceOfItemsElement->getTag() );
 
     // determine how many items this sequence has in the matching record in the data source
     numOfItemsInResultSequence = fileSystemInteractionManager.GetNumberOfSequenceItemsForMatchingRecord( sequenceTag, superiorSequenceArray, numOfSuperiorSequences, idx );

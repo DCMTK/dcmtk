@@ -119,7 +119,7 @@ static void printResult(
         /* do not print if a DCM_Item as this is not
          * very helpful to distinguish instances.
          */
-        if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item)
+        if (dobj != NULL && dobj->getTag() != DCM_Item)
         {
             char buf[128];
             sprintf(buf, "(%04x,%04x).",
@@ -674,8 +674,7 @@ chkType1AttributeExistance(
     if (!dset->tagExistsWithValue(key)) {
         DcmTag t(key);
         OFLOG_WARN(dcmpschkLogger, MSGe_missingAtt << OFendl
-            << "   Affected attribute: " << t.getXTag()
-            << " " << t.getTagName() << OFendl);
+            << "   Affected attribute: " << t << " " << t.getTagName() << OFendl);
         found = OFFalse;
     }
     return found;

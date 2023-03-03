@@ -115,6 +115,22 @@ public:
     /// copy assignment operator
     DcmTag& operator=(const DcmTag& tag);
 
+    /** comparison operator. Returns true if both group and element number
+     *  as well as private creator identifier (if present) are the same.
+     *  Please note that the VR is not used for comparison.
+     *  @param tag tag to compare with
+     *  @return true if tags are the same
+     */
+    OFBool operator==(const DcmTag& tag) const;
+
+    /** negation operator. Returns true if either group or element number
+     *  or private creator identifier (if present) are not the same.
+     *  Please note that the VR is not used for comparison.
+     *  @param tag tag to compare with
+     *  @return true if tags are not the same
+     */
+    OFBool operator!=(const DcmTag& tag) const;
+
     /// set specific VR
     DcmVR setVR(const DcmVR& avr);
 
@@ -149,12 +165,21 @@ public:
       return getElement();
     }
 
-    /** returns a copy of the tag key by value
+    /** returns a copy of the tag key by value.
+     *  @note In most cases, the method getTagKey() should be preferred.
      *  @return copy of tag key, by value
      */
     DcmTagKey getXTag() const
     {
       return * OFstatic_cast(const DcmTagKey *, this);
+    }
+
+    /** returns tag key as a const reference
+     *  @return tag key
+     */
+    const DcmTagKey &getTagKey() const
+    {
+      return *this;
     }
 
     /** returns name of attribute tag.
@@ -217,6 +242,12 @@ public:
      */
     static OFCondition findTagFromName(const char *name,
                                        DcmTag &value);
+
+    // --- re-introduce methods from base class
+
+    using DcmTagKey::operator==;
+    using DcmTagKey::operator!=;
+
 private:
 
     /** replace tagName with copy of given string

@@ -224,8 +224,8 @@ int DcmElement::compare(const DcmElement& rhs) const
     DcmElement* myThis = OFconst_cast(DcmElement*, this);
     DcmElement* myRhs = OFconst_cast(DcmElement*, &rhs);
 
-    DcmTagKey thisKey = (*myThis).getTag().getXTag();
-    DcmTagKey rhsKey = (*myRhs).getTag().getXTag();
+    DcmTagKey thisKey = (*myThis).getTag();
+    DcmTagKey rhsKey = (*myRhs).getTag();
 
     if ( thisKey > rhsKey )
     {

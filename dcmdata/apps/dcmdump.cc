@@ -734,7 +734,7 @@ static void printResult(STD_NAMESPACE ostream &out,
             /* do not print if a DCM_Item as this is not
              * very helpful to distinguish instances.
              */
-            if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
+            if (dobj != NULL && dobj->getTag() != DCM_Item) {
                 out << dobj->getTag() << ".";
             }
         }

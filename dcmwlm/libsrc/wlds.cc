@@ -470,7 +470,7 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
 
     // depending on what kind of supported sequence attribute
     // was passed, we have to insert different attributes
-    DcmTagKey key = element->getTag().getXTag();
+    const DcmTagKey key(element->getTag());
     if( key == DCM_ScheduledProcedureStepSequence )
     {
       newElement = new DcmApplicationEntity( DcmTag( DCM_ScheduledStationAETitle ) );      if( item->insert( newElement ) != EC_Normal ) delete newElement;
@@ -960,11 +960,11 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
   DcmTagKey elementKey, supSequenceElementKey;
 
   // determine the current element's tag
-  elementKey = element->getTag().getXTag();
+  elementKey = element->getTag();
 
   // determine the sequence element's tag, if there is one
   if( supSequenceElement != NULL )
-    supSequenceElementKey = supSequenceElement->getTag().getXTag();
+    supSequenceElementKey = supSequenceElement->getTag();
 
   // initialize result variable
   OFBool isSupportedMatchingKeyAttribute = OFFalse;
@@ -1112,11 +1112,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
   DcmTagKey elementKey, supSequenceElementKey;
 
   // determine the current element's tag
-  elementKey = element->getTag().getXTag();
+  elementKey = element->getTag();
 
   // determine the sequence element's tag, if there is one
   if( supSequenceElement != NULL )
-    supSequenceElementKey = supSequenceElement->getTag().getXTag();
+    supSequenceElementKey = supSequenceElement->getTag();
 
   // initialize result variable
   OFBool isSupportedReturnKeyAttribute = OFFalse;
