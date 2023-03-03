@@ -80,8 +80,7 @@ DICOM network protocol over TLS. DCMTK supports the following profiles:
           Basic TLS Secure Transport Connection Profile (retired)
 
   +pn   --profile-null
-          Authenticated unencrypted communication
-          (retired, was used in IHE ATNA)
+          Authenticated unencrypted communication (retired, was used in IHE ATNA)
 \endverbatim
 
 The Non-downgrading BCP 195 TLS Profile, which is selected by default, is
@@ -134,6 +133,8 @@ The list of supported ciphersuites can be printed using the following option:
   +cc   --list-ciphers
           show list of supported TLS ciphersuites and exit
 \endverbatim
+
+Option \c \--cipher be specified more than once to add multiple ciphersuites.
 
 \section dcmtls_certstore_peer_authentication Peer authentication
 
@@ -196,6 +197,8 @@ line options for this purpose:
     +cd   --add-cert-dir  [d]irectory: string
             add certificates in d to list of certificates
 \endverbatim
+
+Both options can be specified more than once, also in combination.
 
 \subsection dcmtls_certstore_certification_authority_file File-based management of trusted root certificates
 
@@ -276,8 +279,7 @@ The following CRL options are available starting with DCMTK 3.6.7:
 
 \verbatim
   +crl  --add-crl-file  [f]ilename: string
-          add certificate revocation list file
-          (implies --enable-crl-vfy)
+          add certificate revocation list file (implies --enable-crl-vfy)
 
   +crv  --enable-crl-vfy
           enable leaf CRL verification
