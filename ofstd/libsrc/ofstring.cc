@@ -810,7 +810,11 @@ STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFString& s)
 
 STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s)
 {
+// suppress spurious gcc 12 warning
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW
     s.resize(0);
+#include DCMTK_DIAGNOSTIC_POP
     char c = '\0';
     size_t n = s.max_size();
     if (i.width() > 0) {
