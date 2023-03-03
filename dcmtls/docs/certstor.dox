@@ -134,7 +134,8 @@ The list of supported ciphersuites can be printed using the following option:
           show list of supported TLS ciphersuites and exit
 \endverbatim
 
-Option \c \--cipher be specified more than once to add multiple ciphersuites.
+Option \c \--cipher can be specified more than once to add multiple
+ciphersuites.
 
 \section dcmtls_certstore_peer_authentication Peer authentication
 
