@@ -181,24 +181,23 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
  *   - then sort by hash key algorithm  (SHA-256 < SHA-384)
  */
 
+#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
 static const DcmCipherSuiteList globalTLS13CipherSuiteList[] =
 {
 #ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_128_CCM_8_SHA256
     {"TLS_AES_128_CCM_SHA256",                        TLS1_3_RFC_AES_128_CCM_SHA256,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA256,  TKM_CCM,  128, 128},
     {"TLS_AES_128_CCM_8_SHA256",                      TLS1_3_RFC_AES_128_CCM_8_SHA256,                 TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA256,  TKM_CCM,  128, 128},
 #endif
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
     {"TLS_AES_128_GCM_SHA256",                        TLS1_3_RFC_AES_128_GCM_SHA256,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA256,  TKM_GCM,  128, 128},
-#endif
 #ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_CHACHA20_POLY1305_SHA256
     {"TLS_CHACHA20_POLY1305_SHA256",                  TLS1_3_RFC_CHACHA20_POLY1305_SHA256,             TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_ChaCha20, TCM_SHA256,  TKM_NA,   256, 256},
 #endif
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
     {"TLS_AES_256_GCM_SHA384",                        TLS1_3_RFC_AES_256_GCM_SHA384,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA384,  TKM_GCM,  256, 256},
-#endif
 };
 
 #define GLOBAL_NUM_TLS13_CIPHERSUITES (sizeof(globalCipherSuiteList)/sizeof(DcmCipherSuiteList))
+
+#endif
 
 
 const size_t DcmTLSCiphersuiteHandler::unknownCipherSuiteIndex = (size_t) -1;

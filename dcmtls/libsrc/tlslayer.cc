@@ -267,7 +267,7 @@ int DcmTLSTransportLayer_ALPNCallback(SSL *ssl, const unsigned char **out, unsig
 
 extern "C" int DcmTLSTransportLayer_SNICallback(SSL *s, int *al, void *arg);
 
-int DcmTLSTransportLayer_SNICallback(SSL *s, int *al, void *arg)
+int DcmTLSTransportLayer_SNICallback(SSL *s, int * /* al */, void *arg)
 {
   const char *called_name = SSL_get_servername(s, TLSEXT_NAMETYPE_host_name);
   if (called_name)
