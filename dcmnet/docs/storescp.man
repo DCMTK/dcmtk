@@ -259,17 +259,28 @@ certification authority:
 
 security profile:
 
+  +pn   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile (default)
+          Non-downgrading BCP 195 TLS Profile (retired)
 
   +px   --profile-bcp195
-          BCP 195 TLS Profile
+          BCP 195 TLS Profile (retired)
 
   +pz   --profile-bcp195-ex
-          Extended BCP 195 TLS Profile
+          Extended BCP 195 TLS Profile (retired)
 
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
 
   +pa   --profile-aes
           AES TLS Secure Transport Connection Profile (retired)
@@ -963,6 +974,6 @@ It is an error if no data dictionary can be loaded.
 
 \section storescp_copyright COPYRIGHT
 
-Copyright (C) 1996-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

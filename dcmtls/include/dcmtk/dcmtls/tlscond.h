@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, OFFIS e.V.
+ *  Copyright (C) 2017-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -232,6 +232,9 @@ extern DCMTK_DCMTLS_EXPORT const DcmTLSECGenericOpenSSLError DCMTLS_EC_GenericOp
 
 /// condition constant: OpenSSL I/O error, not further specified (SSL_ERROR_SYSCALL)
 extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_OpenSSLIOError;
+
+/// condition constant: DICOM TLS Secure Transport Connection Profile not supported
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSProfileNotSupported;
 
 // X.509 Verification Errors. These use condition codes > DCMTLS_EC_X509Verify_Offset.
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, OFFIS e.V.
+ *  Copyright (C) 2017-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,7 @@ makeOFConditionConst( DCMTLS_EC_OtherSSLError,                        OFM_dcmtls
 makeOFConditionConst( DCMTLS_EC_FailedToSetVerificationMode,          OFM_dcmtls, 21, OF_error, "Setting of the X.509 verification mode failed" );
 makeOFConditionConst( DCMTLS_EC_CertStoreCtxInitFailed,               OFM_dcmtls, 22, OF_error, "Certificate store context initialization failed" );
 makeOFConditionConst( DCMTLS_EC_OpenSSLIOError,                       OFM_dcmtls, 23, OF_error, "OpenSSL I/O error (SSL_ERROR_SYSCALL)" );
+makeOFConditionConst( DCMTLS_EC_TLSProfileNotSupported,               OFM_dcmtls, 24, OF_error, "DICOM TLS Secure Transport Connection Profile not supported" );
 
 // implementation of specializable error codes
 

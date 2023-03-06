@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -357,8 +357,10 @@ int main(int argc, char *argv[])
       OFString profileName;
       const char *profileNamePtr = dvi.getTargetTLSProfile(opt_printer);
       if (profileNamePtr) profileName = profileNamePtr;
-      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
-      if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
+      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP_195_RFC_8996;  // default
+      if (profileName == "BCP195-RFC8996") tlsProfile = TSP_Profile_BCP_195_RFC_8996;
+      else if (profileName == "BCP195-RFC8996-MOD") tlsProfile = TSP_Profile_BCP_195_RFC_8996_Modified;
+      else if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
       else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
       else if (profileName == "BCP195-EX") tlsProfile = TSP_Profile_BCP195_Extended;
       else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
@@ -397,7 +399,7 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(dcmprscpLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
         return 1;
       }
-      if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat).bad())
+      if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat, tlsProfile).bad())
       {
         OFLOG_FATAL(dcmprscpLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
         return 1;

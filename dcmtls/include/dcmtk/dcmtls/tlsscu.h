@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2022, OFFIS e.V.
+ *  Copyright (C) 2010-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,8 +34,9 @@
  *  class is derived from the general DcmSCU class and just adds the corresponding TLS
  *  capabilities.
  *  @remark This class is only available if DCMTK is compiled with OpenSSL support enabled.
- *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
- *    API changes in the future are possible and likely to happen.
+ *  @warning This class is DEPRECATED and will be removed from future DCMTK releases.
+ *    Instead of using this class, directly use class DcmSCU, which offers the method
+ *    DcmSCU::useSecureConnection() to enable a TLS connection.
  */
 class DCMTK_DCMTLS_EXPORT DcmTLSSCU : public DcmSCU
 {

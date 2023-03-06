@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, OFFIS e.V.
+ *  Copyright (C) 2017-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,8 +25,9 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmtls/tlscond.h"
 #include "dcmtk/dcmnet/assoc.h"       /* for ASC_setTransportLayer() */
+#include "tlsfmacr.h"                 /* for OpenSSL feature macros */
 
-void DcmTLSOptions::printLibraryVersion()
+void DcmTLSOptionsBase::printLibraryVersion()
 {
 #ifdef WITH_OPENSSL
     COUT << "- " << DcmTLSTransportLayer::getOpenSSLVersionName() << OFendl;
@@ -34,31 +35,130 @@ void DcmTLSOptions::printLibraryVersion()
 }
 
 #ifdef WITH_OPENSSL
-DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole networkRole)
+DcmTLSOptionsBase::DcmTLSOptionsBase(T_ASC_NetworkRole networkRole)
 : opt_keyFileFormat( DCF_Filetype_PEM )
 , opt_doAuthenticate( OFFalse )
 , opt_privateKeyFile( OFnullptr )
 , opt_certificateFile( OFnullptr )
 , opt_passwd( OFnullptr )
-, opt_tlsProfile( TSP_Profile_BCP195_ND ) // default: BCP 195 ND profile
+, opt_tlsProfile( TSP_Profile_BCP_195_RFC_8996 ) // default: BCP 195 RFC 8996 TLS Profile
 , opt_readSeedFile( OFnullptr )
 , opt_writeSeedFile( OFnullptr )
 , opt_certVerification( DCV_requireCertificate )
 , opt_dhparam( OFnullptr )
 , opt_secureConnection( OFFalse ) // default: no secure connection
 , opt_networkRole( networkRole )
+, opt_clientSNI( OFnullptr )
+, opt_serverSNI( OFnullptr )
 , tLayer( OFnullptr )
 #else
-DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole /* networkRole */)
+DcmTLSOptionsBase::DcmTLSOptionsBase(T_ASC_NetworkRole /* networkRole */)
 #endif
+{
+}
+
+DcmTLSOptionsBase::~DcmTLSOptionsBase()
+{
+#ifdef WITH_OPENSSL
+  delete tLayer;
+#endif
+}
+
+#ifdef WITH_OPENSSL
+OFBool DcmTLSOptionsBase::listOfCiphersRequested(OFCommandLine& cmd)
+{
+  if (cmd.findOption("--list-ciphers")) return OFTrue;
+  return OFFalse;
+}
+#else
+OFBool DcmTLSOptionsBase::listOfCiphersRequested(OFCommandLine& /* cmd */)
+{
+  return OFFalse;
+}
+#endif
+
+#ifdef WITH_OPENSSL
+void DcmTLSOptionsBase::printSupportedCiphersuites(OFConsoleApplication& app, STD_NAMESPACE ostream& os)
+{
+  DcmTLSCiphersuiteHandler csh;
+  app.printHeader(OFTrue /*print host identifier*/);
+  os << OFendl << "Supported TLS ciphersuites are:" << OFendl;
+  csh.printSupportedCiphersuites(os);
+}
+#else
+void DcmTLSOptionsBase::printSupportedCiphersuites(OFConsoleApplication& /* app */, STD_NAMESPACE ostream& /* os */)
+{
+}
+#endif
+
+OFBool DcmTLSOptionsBase::secureConnectionRequested() const
+{
+#ifdef WITH_OPENSSL
+  return opt_secureConnection;
+#else
+  return OFFalse;
+#endif
+}
+
+DcmTransportLayer *DcmTLSOptionsBase::getTransportLayer()
+{
+#ifdef WITH_OPENSSL
+  return tLayer;
+#else
+  return NULL;
+#endif
+}
+
+OFCondition DcmTLSOptionsBase::writeRandomSeed()
+{
+#ifdef WITH_OPENSSL
+    if( opt_writeSeedFile && tLayer)
+    {
+        if( tLayer->canWriteRandomSeed() )
+        {
+            if( ! tLayer->writeRandomSeed( opt_writeSeedFile ) )
+                return DCMTLS_EC_FailedToWriteRandomSeedFile( opt_writeSeedFile );
+        }
+        else return DCMTLS_EC_FailedToWriteRandomSeedFile( opt_writeSeedFile );
+    }
+#endif
+    return EC_Normal;
+}
+
+#ifdef WITH_OPENSSL
+OFCondition DcmTLSOptionsBase::verifyClientCertificate(const char *fileName)
+{
+  if (tLayer) return tLayer->verifyClientCertificate(fileName, opt_keyFileFormat);
+  return EC_IllegalCall;
+}
+#else
+OFCondition DcmTLSOptionsBase::verifyClientCertificate(const char * /* fileName */)
+{
+  return EC_IllegalCall;
+}
+#endif
+
+#ifdef WITH_OPENSSL
+OFCondition DcmTLSOptionsBase::isRootCertificate(const char *fileName)
+{
+  return DcmTLSTransportLayer::isRootCertificate(fileName, opt_keyFileFormat);
+}
+#else
+OFCondition DcmTLSOptionsBase::isRootCertificate(const char * /* fileName */)
+{
+  return EC_IllegalCall;
+}
+#endif
+
+// ----------------------------------------------------------------------------
+
+DcmTLSOptions::DcmTLSOptions(T_ASC_NetworkRole networkRole)
+: DcmTLSOptionsBase(networkRole)
 {
 }
 
 DcmTLSOptions::~DcmTLSOptions()
 {
-#ifdef WITH_OPENSSL
-  delete tLayer;
-#endif
 }
 
 #ifdef WITH_OPENSSL
@@ -94,9 +194,13 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--enable-crl-vfy",     "+crv",    "enable leaf CRL verification");
       cmd.addOption("--enable-crl-all",     "+cra",    "enable full chain CRL verification");
     cmd.addSubGroup("security profile:");
-      cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile (default)");
-      cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile");
-      cmd.addOption("--profile-bcp195-ex",  "+pz",     "Extended BCP 195 TLS Profile");
+      cmd.addOption("--profile-8996",       "+pn",     "BCP 195 RFC 8996 TLS Profile (default)");
+#ifdef DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
+      cmd.addOption("--profile-8996-mod",   "+pm",     "Modified BCP 195 RFC 8996 TLS Profile");
+#endif
+      cmd.addOption("--profile-bcp195-nd",  "+py",     "Non-downgrading BCP 195 TLS Profile (retired)");
+      cmd.addOption("--profile-bcp195",     "+px",     "BCP 195 TLS Profile (retired)");
+      cmd.addOption("--profile-bcp195-ex",  "+pz",     "Extended BCP 195 TLS Profile (retired)");
       if (csh.cipher3DESsupported())
       {
         cmd.addOption("--profile-basic",    "+pb",     "Basic TLS Secure Transport Connection Profile\n(retired)");
@@ -118,6 +222,18 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
         cmd.addOption("--dhparam",          "+dp",  1, "[f]ilename: string",
                                                        "read DH parameters for DH/DSS ciphersuites");
       }
+    cmd.addSubGroup("server name indication:");
+      if (opt_networkRole != NET_ACCEPTOR)
+      {
+        cmd.addOption("--request-sni",              1, "[s]erver name: string (default: no SNI)",
+                                                       "request server name s");
+      }
+      if (opt_networkRole != NET_REQUESTOR)
+      {
+        cmd.addOption("--expect-sni",              1, "[s]erver name: string (default: no SNI)",
+                                                       "expect requests for server name s");
+      }
+
     cmd.addSubGroup("pseudo random generator:");
       cmd.addOption("--seed",               "+rs",  1, "[f]ilename: string",
                                                        "seed random generator with contents of f");
@@ -200,6 +316,17 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
         app.checkDependence("--dhparam", tlsopts, opt_secureConnection);
         app.checkValue( cmd.getValue( opt_dhparam ) );
     }
+
+    if ( cmd.findOption( "--request-sni" ) )
+    {
+        app.checkValue( cmd.getValue( opt_clientSNI ) );
+    }
+
+    if ( (opt_networkRole != NET_REQUESTOR) && cmd.findOption( "--expect-sni" ) )
+    {
+        app.checkValue( cmd.getValue( opt_serverSNI ) );
+    }
+
     if( cmd.findOption( "--seed" ) )
     {
         app.checkDependence("--seed", tlsopts, opt_secureConnection);
@@ -240,6 +367,18 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
+    if (cmd.findOption("--profile-8996"))
+    {
+        app.checkDependence("--profile-8996", tlsopts, opt_secureConnection);
+        opt_tlsProfile = TSP_Profile_BCP_195_RFC_8996;
+    }
+#ifdef DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
+    if (cmd.findOption("--profile-8996-mod"))
+    {
+        app.checkDependence("--profile-8996-mod", tlsopts, opt_secureConnection);
+        opt_tlsProfile = TSP_Profile_BCP_195_RFC_8996_Modified;
+    }
+#endif
     if (cmd.findOption("--profile-bcp195"))
     {
         app.checkDependence("--profile-bcp195", tlsopts, opt_secureConnection);
@@ -381,10 +520,10 @@ OFCondition DcmTLSOptions::createTransportLayer(
         // replace the low-level error message with an easier to understand one
         if (cond.bad()) return DCMTLS_EC_FailedToLoadPrivateKey( opt_privateKeyFile );
 
-        cond = tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat);
+        cond = tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat, opt_tlsProfile);
 
         // replace the low-level error message with an easier to understand one
-        if (cond.bad()) DCMTLS_EC_FailedToLoadCertificate( opt_certificateFile );
+        if (cond.bad()) return DCMTLS_EC_FailedToLoadCertificate( opt_certificateFile );
 
         if (! tLayer->checkPrivateKeyMatchesCertificate())
            return DCMTLS_EC_MismatchedPrivateKeyAndCertificate( opt_privateKeyFile, opt_certificateFile );
@@ -408,6 +547,10 @@ OFCondition DcmTLSOptions::createTransportLayer(
 
       cond = tLayer->activateCipherSuites();
       if (cond.bad()) return cond;
+
+      // set SNI names
+      tLayer->setClientSNI(opt_clientSNI);
+      tLayer->setServerSNI(opt_serverSNI);
 
       // Loading of DH parameters should happen after the call to setTLSProfile()
       // because otherwise we cannot check profile specific restrictions
@@ -441,88 +584,3 @@ OFCondition DcmTLSOptions::createTransportLayer(
 }
 #endif
 
-#ifdef WITH_OPENSSL
-OFBool DcmTLSOptions::listOfCiphersRequested(OFCommandLine& cmd)
-{
-  if (cmd.findOption("--list-ciphers")) return OFTrue;
-  return OFFalse;
-}
-#else
-OFBool DcmTLSOptions::listOfCiphersRequested(OFCommandLine& /* cmd */)
-{
-  return OFFalse;
-}
-#endif
-
-#ifdef WITH_OPENSSL
-void DcmTLSOptions::printSupportedCiphersuites(OFConsoleApplication& app, STD_NAMESPACE ostream& os)
-{
-  DcmTLSCiphersuiteHandler csh;
-  app.printHeader(OFTrue /*print host identifier*/);
-  os << OFendl << "Supported TLS ciphersuites are:" << OFendl;
-  csh.printSupportedCiphersuites(os);
-}
-#else
-void DcmTLSOptions::printSupportedCiphersuites(OFConsoleApplication& /* app */, STD_NAMESPACE ostream& /* os */)
-{
-}
-#endif
-
-OFBool DcmTLSOptions::secureConnectionRequested() const
-{
-#ifdef WITH_OPENSSL
-  return opt_secureConnection;
-#else
-  return OFFalse;
-#endif
-}
-
-DcmTransportLayer *DcmTLSOptions::getTransportLayer()
-{
-#ifdef WITH_OPENSSL
-  return tLayer;
-#else
-  return NULL;
-#endif
-}
-
-OFCondition DcmTLSOptions::writeRandomSeed()
-{
-#ifdef WITH_OPENSSL
-    if( opt_writeSeedFile && tLayer)
-    {
-        if( tLayer->canWriteRandomSeed() )
-        {
-            if( ! tLayer->writeRandomSeed( opt_writeSeedFile ) )
-                return DCMTLS_EC_FailedToWriteRandomSeedFile( opt_writeSeedFile );
-        }
-        else return DCMTLS_EC_FailedToWriteRandomSeedFile( opt_writeSeedFile );
-    }
-#endif
-    return EC_Normal;
-}
-
-#ifdef WITH_OPENSSL
-OFCondition DcmTLSOptions::verifyClientCertificate(const char *fileName)
-{
-  if (tLayer) return tLayer->verifyClientCertificate(fileName, opt_keyFileFormat);
-  return EC_IllegalCall;
-}
-#else
-OFCondition DcmTLSOptions::verifyClientCertificate(const char * /* fileName */)
-{
-  return EC_IllegalCall;
-}
-#endif
-
-#ifdef WITH_OPENSSL
-OFCondition DcmTLSOptions::isRootCertificate(const char *fileName)
-{
-  return DcmTLSTransportLayer::isRootCertificate(fileName, opt_keyFileFormat);
-}
-#else
-OFCondition DcmTLSOptions::isRootCertificate(const char * /* fileName */)
-{
-  return EC_IllegalCall;
-}
-#endif

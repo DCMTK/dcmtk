@@ -46,8 +46,8 @@ if (tLayer->setCertificateFile("certificate.pem", SSL_FILETYPE_PEM).bad())
   return;
 }
 
-// enable the ciphersuites for the BCP 195 secure transport profile
-tLayer->setTLSProfile(TSP_Profile_BCP195);
+// enable the ciphersuites for the BCP 195 RFC 8996 secure transport profile
+tLayer->setTLSProfile(TSP_Profile_BCP_195_RFC_8996);
 tLayer->activateCipherSuites();
 
 // accept any certificate from the remote site (not recommended)
