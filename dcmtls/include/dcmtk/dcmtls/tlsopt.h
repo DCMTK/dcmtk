@@ -177,6 +177,11 @@ protected:
     /// OpenSSL support enabled.
     const char* opt_serverSNI;
 
+    /// CRL verification mode
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
+    DcmTLSCRLVerification opt_crlMode;
+
     /// pointer to the secure transport layer managed by this object
     /// @remark this member is only available if DCMTK is compiled with
     /// OpenSSL support enabled.

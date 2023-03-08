@@ -50,6 +50,7 @@ DcmTLSOptionsBase::DcmTLSOptionsBase(T_ASC_NetworkRole networkRole)
 , opt_networkRole(networkRole)
 , opt_clientSNI(OFnullptr)
 , opt_serverSNI(OFnullptr)
+, opt_crlMode(TCR_noCRL)
 , tLayer(OFnullptr)
 #else
 DcmTLSOptionsBase::DcmTLSOptionsBase(T_ASC_NetworkRole /* networkRole */)
@@ -173,8 +174,8 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
                                                        "use authenticated secure TLS connection");
       if (opt_networkRole == NET_REQUESTOR)
       {
-         // this command line options only makes sense for association requesters (TLS clients)
-         cmd.addOption("--anonymous-tls",   "+tla",    "use secure TLS connection without certificate");
+        // this command line option only makes sense for association requesters (TLS clients)
+        cmd.addOption("--anonymous-tls",    "+tla",    "use secure TLS connection without certificate");
       }
     cmd.addSubGroup("private key password (only with --enable-tls):");
       cmd.addOption("--std-passwd",         "+ps",     "prompt user to type password on stdin (default)");
@@ -217,7 +218,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
                                                        "add ciphersuite to list of negotiated suites\n(not with --profile-bcp195-ex)");
       if (opt_networkRole != NET_REQUESTOR)
       {
-        // this command line options only makes sense for association acceptors (TLS servers)
+        // this command line option only makes sense for association acceptors (TLS servers)
         // or systems that accept and request associations
         cmd.addOption("--dhparam",          "+dp",  1, "[f]ilename: string",
                                                        "read DH parameters for DH/DSS ciphersuites");
@@ -231,7 +232,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       }
       if (opt_networkRole != NET_REQUESTOR)
       {
-        cmd.addOption("--expect-sni",              1, "[s]erver name: string",
+        cmd.addOption("--expect-sni",               1, "[s]erver name: string",
                                                        "expect requests for server name s");
       }
 
@@ -245,7 +246,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--require-peer-cert",  "-rc",     "verify peer certificate, fail if absent (default)");
       if (opt_networkRole != NET_REQUESTOR)
       {
-        // this command line options only makes sense for association acceptors (TLS servers)
+        // this command line option only makes sense for association acceptors (TLS servers)
         // or systems that accept and request associations
         cmd.addOption("--verify-peer-cert", "-vc",     "verify peer certificate if present");
       }
@@ -316,6 +317,19 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
     {
         app.checkDependence("--der-keys", tlsopts, opt_secureConnection);
         opt_keyFileFormat = DCF_Filetype_ASN1;
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--enable-crl-vfy"))
+    {
+        app.checkDependence("--enable-crl-vfy", tlsopts, opt_secureConnection);
+        opt_crlMode = TCR_checkLeafCRL;
+    }
+    if (cmd.findOption("--enable-crl-all"))
+    {
+        app.checkDependence("--enable-crl-all", tlsopts, opt_secureConnection);
+        opt_crlMode = TCR_checkAllCRL;
     }
     cmd.endOptionBlock();
 
@@ -433,24 +447,14 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
 
     // check the other TLS specific options that will only be evaluated
     // later in DcmTLSOptions::createTransportLayer().
-    if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
+    if (cmd.findOption("--add-cert-file"))
         app.checkDependence("--add-cert-file", tlsopts, opt_secureConnection);
-    if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+    if (cmd.findOption("--add-cert-dir"))
         app.checkDependence("--add-cert-dir", tlsopts, opt_secureConnection);
-    if (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_First))
+    if (cmd.findOption("--add-crl-file"))
         app.checkDependence("--add-crl-file", tlsopts, opt_secureConnection);
 
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First))
-        app.checkDependence("--enable-crl-vfy", tlsopts, opt_secureConnection);
-    if (cmd.findOption("--enable-crl-all", 0, OFCommandLine::FOM_First))
-    {
-        app.checkDependence("--enable-crl-all", tlsopts, opt_secureConnection);
-        app.checkConflict("--enable-crl-all", "--enable-crl-vfy", cmd.findOption("--enable-crl-vfy", 0, OFCommandLine::FOM_First));
-    }
-    cmd.endOptionBlock();
-
-    if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
+    if (cmd.findOption("--cipher"))
     {
         app.checkDependence("--cipher", tlsopts, opt_secureConnection);
         app.checkConflict("--cipher", "--profile-bcp195-ex", (opt_tlsProfile == TSP_Profile_BCP195_Extended));
@@ -469,7 +473,8 @@ OFCondition DcmTLSOptions::createTransportLayer(
       OFConsoleApplication& app,
       OFCommandLine& cmd)
 {
-    DcmTLSCRLVerification crlmode = TCR_noCRL;
+    // use mode that was passed via command line options
+    DcmTLSCRLVerification crlmode = opt_crlMode;
 
     if (opt_secureConnection)
     {
@@ -509,17 +514,18 @@ OFCondition DcmTLSOptions::createTransportLayer(
         do
         {
           app.checkValue(cmd.getValue(current));
-          if (tLayer->addCertificateRevocationList(current, opt_keyFileFormat).bad())
+          if (tLayer->addCertificateRevocationList(current, opt_keyFileFormat).good())
           {
-              DCMTLS_WARN("unable to load CRL file '" << current << "', ignoring");
+            // enable default CRL verification mode if file was loaded successfully
+            if (crlmode == TCR_noCRL)
+              crlmode = TCR_checkLeafCRL;
+          } else {
+            DCMTLS_WARN("unable to load CRL file '" << current << "', ignoring");
           }
-          crlmode = TCR_checkLeafCRL;
         } while (cmd.findOption("--add-crl-file", 0, OFCommandLine::FOM_Next));
       }
 
       // set CRL verification mode
-      if (cmd.findOption("--enable-crl-vfy")) crlmode = TCR_checkLeafCRL;
-      if (cmd.findOption("--enable-crl-all")) crlmode = TCR_checkAllCRL;
       tLayer->setCRLverification(crlmode);
 
       OFCondition cond;
@@ -566,7 +572,7 @@ OFCondition DcmTLSOptions::createTransportLayer(
       tLayer->setClientSNI(opt_clientSNI);
       tLayer->setServerSNI(opt_serverSNI);
 
-      // Loading of DH parameters should happen after the call to setTLSProfile()
+      // loading of DH parameters should happen after the call to setTLSProfile()
       // because otherwise we cannot check profile specific restrictions
       if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
           DCMTLS_WARN("unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring");
@@ -597,4 +603,3 @@ OFCondition DcmTLSOptions::createTransportLayer(
     return EC_Normal;
 }
 #endif
-
