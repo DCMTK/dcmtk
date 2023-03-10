@@ -341,7 +341,7 @@ certification authority:
 
 security profile:
 
-  +pn   --profile-8996
+  +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
   +pm   --profile-8996-mod
@@ -378,6 +378,14 @@ ciphersuite:
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --request-sni  [s]erver name: string
+          request server name s
 
 pseudo random generator:
 

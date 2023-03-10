@@ -259,7 +259,7 @@ certification authority:
 
 security profile:
 
-  +pn   --profile-8996
+  +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
   +pm   --profile-8996-mod
@@ -299,6 +299,14 @@ ciphersuite:
 
   +dp   --dhparam  [f]ilename: string
           read DH parameters for DH/DSS ciphersuites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --expect-sni  [s]erver name: string
+          expect requests for server name s
 
 pseudo random generator:
 

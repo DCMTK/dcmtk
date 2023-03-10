@@ -31,14 +31,56 @@ on their own priorities, e.g. by always selecting the most secure ciphersuite.
 In DCMTK, the selection of ciphersuites is based on "TLS profiles", which
 follow the secure profiles define in DICOM Part 15:
 
-- BCP 195 TLS Profile (default)
+- BCP 195 RFC 8996 TLS Profile (default)
+  This profile proposes the following set of ciphersuites:
+
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+
+  This profile will support TLS 1.3 when compiled against OpenSSL 1.1.1
+  or newer. In this case, the following TLS 1.3 ciphersuites will be
+  proposed additionally:
+
+  - TLS_AES_256_GCM_SHA384 (only TLS 1.3)
+  - TLS_CHACHA20_POLY1305_SHA256 (only TLS 1.3)
+  - TLS_AES_128_GCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_8_SHA256 (only TLS 1.3)
+
+- Modified BCP 195 RFC 8996 TLS Profile
+  This profile proposes the following set of ciphersuites:
+
+  - TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CCM (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CCM (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8 (only TLS 1.2)
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+  - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
+
+  - TLS_AES_256_GCM_SHA384 (only TLS 1.3)
+  - TLS_CHACHA20_POLY1305_SHA256 (only TLS 1.3)
+  - TLS_AES_128_GCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_8_SHA256 (only TLS 1.3)
+
+- BCP 195 TLS Profile (retired)
   This profile proposes the following set of ciphersuites:
   - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
   - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
   - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
   - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (only TLS 1.2)
-  - TLS_RSA_WITH_AES_128_CBC_SHA
-  - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+  - TLS_RSA_WITH_AES_128_CBC_SHA (TLS 1.0 - 1.2)
+  - TLS_RSA_WITH_3DES_EDE_CBC_SHA (TLS 1.0 - 1.2)
 
   The first four ciphersuites are modern, state-of the art ciphersuites
   but only work with TLS version 1.2 (or newer). The other two ciphersuites
@@ -47,7 +89,17 @@ follow the secure profiles define in DICOM Part 15:
   Transport Connection Profile (e.g. DCMTK versions older than 3.6.4) and
   can be used with TLS version 1.0 (or newer).
 
-- Non-downgrading BCP 195 TLS Profile
+  This profile will support TLS 1.3 when compiled against OpenSSL 1.1.1
+  or newer. In this case, the following TLS 1.3 ciphersuites will be
+  proposed additionally:
+
+  - TLS_AES_256_GCM_SHA384 (only TLS 1.3)
+  - TLS_CHACHA20_POLY1305_SHA256 (only TLS 1.3)
+  - TLS_AES_128_GCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_8_SHA256 (only TLS 1.3)
+
+- Non-downgrading BCP 195 TLS Profile (retired)
   This profile proposes the following set of ciphersuites:
   - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
   - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
@@ -57,7 +109,17 @@ follow the secure profiles define in DICOM Part 15:
   Furthermore, when this profile is active, only TLS version 1.2
   or newer will be negotiated.
 
-- Extended BCP 195 TLS Profile
+  This profile will support TLS 1.3 when compiled against OpenSSL 1.1.1
+  or newer. In this case, the following TLS 1.3 ciphersuites will be
+  proposed additionally:
+
+  - TLS_AES_256_GCM_SHA384 (only TLS 1.3)
+  - TLS_CHACHA20_POLY1305_SHA256 (only TLS 1.3)
+  - TLS_AES_128_GCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_SHA256 (only TLS 1.3)
+  - TLS_AES_128_CCM_8_SHA256 (only TLS 1.3)
+
+- Extended BCP 195 TLS Profile (retired)
   This profile proposes the following set of ciphersuites:
   - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
   - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (only TLS 1.2)
@@ -123,11 +185,13 @@ may also depend on the OpenSSL library with which DCMTK is compiled:
   Connection Profile will not offer backwards compatibility with the
   Basic TLS profile.
 
-OpenSSL versions older than 1.0.1 are not supported anymore, and
-we recommend the use of OpenSSL 1.0.2 or newer since some optional
-features recommended by RFC 7525 (BCP 195) are only available starting
-with this release.
+- The TLS 1.3 ciphersuites are only available when compiled against
+  OpenSSL 1.1.1 or newer.
 
+OpenSSL versions older than 1.0.2 are not supported anymore, and
+we recommend the use of OpenSSL 1.1.1 or newer since because the
+considerably improved TLS 1.3 protocol is only available starting
+with this release.
 
 ==============================
 NOTES ON CIPHERSUITE SELECTION
@@ -201,54 +265,64 @@ OpenSSL has been compiled (see above for details).
 
   - TLS_RSA_WITH_NULL_SHA
   - TLS_RSA_WITH_3DES_EDE_CBC_SHA
-  - TLS_RSA_WITH_AES_128_GCM_SHA256
   - TLS_RSA_WITH_AES_128_CBC_SHA
+  - TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
   - TLS_RSA_WITH_AES_128_CBC_SHA256
-  - TLS_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDH_RSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256
+  - TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256
+  - TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_RSA_WITH_CAMELLIA_256_CBC_SHA
   - TLS_RSA_WITH_AES_256_CBC_SHA
   - TLS_RSA_WITH_AES_256_CBC_SHA256
-  - TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
-  - TLS_RSA_WITH_CAMELLIA_256_CBC_SHA
-  - TLS_DHE_DSS_WITH_AES_128_GCM_SHA256
-  - TLS_DHE_DSS_WITH_AES_128_CBC_SHA
-  - TLS_DHE_DSS_WITH_AES_128_CBC_SHA256
-  - TLS_DHE_DSS_WITH_AES_256_GCM_SHA384
-  - TLS_DHE_DSS_WITH_AES_256_CBC_SHA
-  - TLS_DHE_DSS_WITH_AES_256_CBC_SHA256
-  - TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA
-  - TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA
-  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
-  - TLS_DHE_RSA_WITH_AES_128_CBC_SHA
-  - TLS_DHE_RSA_WITH_AES_128_CBC_SHA256
-  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
-  - TLS_DHE_RSA_WITH_AES_256_CBC_SHA
-  - TLS_DHE_RSA_WITH_AES_256_CBC_SHA256
-  - TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA
-  - TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA
-  - TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256
-  - TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA
-  - TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256
-  - TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384
+  - TLS_RSA_WITH_AES_256_GCM_SHA384
   - TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA
-  - TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384
-  - TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256
-  - TLS_ECDH_RSA_WITH_AES_128_CBC_SHA
-  - TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256
-  - TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384
   - TLS_ECDH_RSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384
   - TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384
-  - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_DHE_DSS_WITH_AES_128_CBC_SHA
+  - TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA
+  - TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+  - TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA
+  - TLS_DHE_DSS_WITH_AES_128_CBC_SHA256
+  - TLS_DHE_RSA_WITH_AES_128_CBC_SHA256
+  - TLS_DHE_DSS_WITH_AES_128_GCM_SHA256
+  - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
   - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
-  - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
-  - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-  - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
-  - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
-  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
   - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
   - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
-  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-  - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
-  - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CCM
+  - TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8
+  - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+  - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+  - TLS_DHE_DSS_WITH_AES_256_CBC_SHA
+  - TLS_DHE_RSA_WITH_AES_256_CBC_SHA
   - TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+  - TLS_DHE_DSS_WITH_AES_256_CBC_SHA256
+  - TLS_DHE_RSA_WITH_AES_256_CBC_SHA256
+  - TLS_DHE_DSS_WITH_AES_256_GCM_SHA384
+  - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+  - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
   - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
   - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CCM
+  - TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8
+  - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+  - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+
+TLS 1.3 ciphersuites:
+
+  - TLS_AES_128_CCM_SHA256
+  - TLS_AES_128_CCM_8_SHA256
+  - TLS_AES_128_GCM_SHA256
+  - TLS_CHACHA20_POLY1305_SHA256
+  - TLS_AES_256_GCM_SHA384

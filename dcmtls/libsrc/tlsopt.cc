@@ -194,7 +194,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--enable-crl-vfy",     "+crv",    "enable leaf CRL verification");
       cmd.addOption("--enable-crl-all",     "+cra",    "enable full chain CRL verification");
     cmd.addSubGroup("security profile:");
-      cmd.addOption("--profile-8996",       "+pn",     "BCP 195 RFC 8996 TLS Profile (default)");
+      cmd.addOption("--profile-8996",       "+pg",     "BCP 195 RFC 8996 TLS Profile (default)");
 #ifdef DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
       cmd.addOption("--profile-8996-mod",   "+pm",     "Modified BCP 195 RFC 8996 TLS Profile");
 #endif
@@ -223,14 +223,15 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
                                                        "read DH parameters for DH/DSS ciphersuites");
       }
     cmd.addSubGroup("server name indication:");
+      cmd.addOption("--no-sni",                        "do not use SNI (default)");
       if (opt_networkRole != NET_ACCEPTOR)
       {
-        cmd.addOption("--request-sni",              1, "[s]erver name: string (default: no SNI)",
+        cmd.addOption("--request-sni",              1, "[s]erver name: string",
                                                        "request server name s");
       }
       if (opt_networkRole != NET_REQUESTOR)
       {
-        cmd.addOption("--expect-sni",              1, "[s]erver name: string (default: no SNI)",
+        cmd.addOption("--expect-sni",              1, "[s]erver name: string",
                                                        "expect requests for server name s");
       }
 
@@ -324,14 +325,20 @@ void DcmTLSOptions::parseArguments(OFConsoleApplication& app, OFCommandLine& cmd
         app.checkValue(cmd.getValue(opt_dhparam));
     }
 
-    if (cmd.findOption("--request-sni"))
+    if ((opt_networkRole != NET_ACCEPTOR) && cmd.findOption("--request-sni"))
     {
         app.checkValue(cmd.getValue(opt_clientSNI));
     }
-
     if ((opt_networkRole != NET_REQUESTOR) && cmd.findOption("--expect-sni"))
     {
         app.checkValue(cmd.getValue(opt_serverSNI));
+    }
+    if (cmd.findOption("--no-sni"))
+    {
+        app.checkConflict("--no-sni", "--request-sni", (opt_clientSNI != NULL));
+        app.checkConflict("--no-sni", "--expect-sni", (opt_serverSNI != NULL));
+        opt_clientSNI = OFnullptr;
+        opt_serverSNI = OFnullptr;
     }
 
     if (cmd.findOption("--seed"))
