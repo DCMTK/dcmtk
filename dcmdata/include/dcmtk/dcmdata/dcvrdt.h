@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -129,8 +129,8 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     OFCondition setOFDateTime(const OFDateTime &dateTimeValue);
 
     /** get the current element value in OFDateTime format.
-     *  Please note that the element value is expected to be in valid DICOM DT format
-     *  ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]"). If the optional time zone ("&ZZZZ") is
+     *  Please note that the element value is expected to be in the DICOM DT format
+     *  "YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]". If the optional time zone ("&ZZZZ") is
      *  missing the local time zone is used.
      *  If this function fails the result variable 'dateTimeValue' is cleared automatically.
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
@@ -143,7 +143,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     /** get the current element value in ISO date/time format.
      *  The ISO date/time format supported by this function is "YYYY-MM-DD[ HH:MM[:SS[.FFFFFF]]]
      *  [&HH:MM]" where the brackets enclose optional parts. Please note that the element value
-     *  is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
+     *  is expected to be in the DICOM DT format "YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]".
      *  If this function fails or the current element value is empty, the result variable
      *  'formattedDateTime' is cleared automatically.
      *  @param formattedDateTime reference to string variable where the result is stored
@@ -255,7 +255,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     /** get the specified DICOM datetime value in ISO format.
      *  The ISO date/time format supported by this function is "YYYY-MM-DD[ HH:MM[:SS[.FFFFFF]]]
      *  [&HH:MM]" where the brackets enclose optional parts. Please note that the specified
-     *  value is expected to be in valid DICOM DT format ("YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]").
+     *  value is expected to be in the DICOM DT format "YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]".
      *  If this function fails or the specified DICOM datetime value is empty, the result
      *  variable 'formattedDateTime' is cleared automatically.
      *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
