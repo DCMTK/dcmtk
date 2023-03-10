@@ -252,6 +252,7 @@ automatically deleted by \b wlmscpfs.
 If request files are enabled, \b wlmscpfs must automatically create file names
 within the given directory.  By default, the format is \<timestamp\>.dump where
 \<timestamp\> is in the format YYYYMMDDhhmmssffffff where:
+
 - YYYY is the current year
 - MM is the current month
 - DD is the current day
