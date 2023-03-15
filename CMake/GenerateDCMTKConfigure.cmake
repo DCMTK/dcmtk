@@ -1479,7 +1479,7 @@ function(DCMTK_CHECK_CXX_STANDARD STANDARD)
   else()
     set(MESSAGE "Checking whether the compiler supports C++${STANDARD}")
     message(STATUS "${MESSAGE}")
-    try_compile(COMPILE_RESULT "${CMAKE_BINARY_DIR}" "${DCMTK_SOURCE_DIR}/config/tests/cxx${STANDARD}.cc")
+    try_compile(COMPILE_RESULT "${CMAKE_BINARY_DIR}" "${DCMTK_SOURCE_DIR}/config/tests/cxx${STANDARD}.cc" COMPILE_DEFINITIONS ${FORCE_MSVC_CPLUSPLUS_MACRO})
     set(HAVE_CXX${STANDARD}_TEST_RESULT "${COMPILE_RESULT}" CACHE INTERNAL "Caches the configuration test result for C++${STANDARD} support.")
     if(COMPILE_RESULT)
       set(RESULT 1)
@@ -1493,9 +1493,12 @@ endfunction()
 
 function(DCMTK_TEST_ENABLE_CXX11)
   get_property(MODERN_CXX_STANDARDS GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS)
+  # loop through all standard versions (11, 14, ...) and reset
+  # ENABLE_CXX_... for this standard to 0 for the moment
   foreach(STANDARD ${MODERN_CXX_STANDARDS})
     set(ENABLE_CXX${STANDARD} 0)
   endforeach()
+  # DCMTK_CMAKE_HAS_CXX_STANDARD is true for CMake versions >= 3.1.3
   get_property(DCMTK_CMAKE_HAS_CXX_STANDARD GLOBAL PROPERTY DCMTK_CMAKE_HAS_CXX_STANDARD)
   if(DCMTK_CMAKE_HAS_CXX_STANDARD)
     get_property(MODERN_CXX_STANDARD GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD)
@@ -1572,6 +1575,20 @@ function(DCMTK_TEST_ENABLE_STL_FEATURE NAME)
   message(STATUS "Info: STL ${NAME} support ${TEXT_RESULT}")
 endfunction()
 
+
+
+# Visual Studio >= 2017 supports C++11 and later, but does not set
+# the __cplusplus macro with the supported C++ standard version.
+# /Zc:__cplusplus will enforce setting this macro in Visual Studio.
+# VS Versions < 2017 do not support this switch.
+# See also https://learn.microsoft.com/de-de/cpp/build/reference/zc-cplusplus
+set(FORCE_MSVC_CPLUSPLUS_MACRO "")
+if(MSVC)
+  if(NOT (MSVC_VERSION LESS 1910)) # VS 2017 and above
+    set (FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
+  endif()
+endif()
+# Check which modern C++ standards should be enabled
 DCMTK_TEST_ENABLE_CXX11()
 DCMTK_TEST_ENABLE_STL_FEATURE("vector")
 DCMTK_TEST_ENABLE_STL_FEATURE("algorithm" "algo")
@@ -1584,6 +1601,19 @@ DCMTK_TEST_ENABLE_STL_FEATURE("string")
 DCMTK_TEST_ENABLE_STL_FEATURE("type_traits" "ttraits")
 DCMTK_TEST_ENABLE_STL_FEATURE("tuple")
 DCMTK_TEST_ENABLE_STL_FEATURE("system_error" "syserr")
+# if at least one modern C++ standard should be supported,
+# add FORCE_MSVC_CPLUSPLUS_MACRO for MSVC to enforce setting
+# of __cplusplus macro
+if(MSVC)
+  get_property(MODERN_CXX_STANDARDS GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS)
+  foreach(STANDARD ${MODERN_CXX_STANDARDS})
+    if(HAVE_CXX${STANDARD})
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FORCE_MSVC_CPLUSPLUS_MACRO}")
+      break()
+    endif()
+  endforeach()
+endif()
+
 
 if(CMAKE_CROSSCOMPILING)
   set(DCMTK_CROSS_COMPILING ${CMAKE_CROSSCOMPILING})
