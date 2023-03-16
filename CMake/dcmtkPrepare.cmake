@@ -376,7 +376,7 @@ else()
   set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OFF)
 endif()
 
-if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*")
+if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*|NMake .*")
   if (POLICY CMP0091)
     # CMake 3.15 and newer use CMAKE_MSVC_RUNTIME_LIBRARY to select
     # the MSVC runtime library
