@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2010, OFFIS e.V.
+ *  Copyright (C) 2002-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,19 +11,18 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  ofstd
+ *  Module:  dcmdata
  *
  *  Author:  Marco Eichelberg
  *
- *  Purpose: general purpose 32-bit CRC in C++
- *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
+ *  Purpose: class DcmPrivateTagCache
  *
  */
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcpcache.h"
-#include "dcmtk/dcmdata/dcelem.h"      /* for DcmElement, DcmObject */
+#include "dcmtk/dcmdata/dcelem.h"     /* for DcmElement, DcmObject */
 
 DcmPrivateTagCacheEntry::DcmPrivateTagCacheEntry(const DcmTagKey& tk, const char *pc)
 : tagKey(tk)
