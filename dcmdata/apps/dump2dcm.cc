@@ -1012,7 +1012,7 @@ int main(int argc, char *argv[])
     }
     OFLOG_INFO(dump2dcmLogger, "reading dump file: " << opt_ifname);
 
-    FILE *dumpfile = fopen(opt_ifname, "r");
+    FILE *dumpfile = fopen(opt_ifname, "rb");
     if (!dumpfile)
     {
         OFLOG_FATAL(dump2dcmLogger, "input file does not exist: " << opt_ifname);
