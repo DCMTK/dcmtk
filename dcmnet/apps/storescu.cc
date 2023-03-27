@@ -780,9 +780,6 @@ int main(int argc, char *argv[])
       }
     }
 
-    /* dump the connection parameters if in debug mode*/
-    OFLOG_DEBUG(storescuLogger, ASC_dumpConnectionParameters(temp_str, assoc));
-
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_showPresentationContexts)
       OFLOG_INFO(storescuLogger, "Association Parameters Negotiated:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_AC));

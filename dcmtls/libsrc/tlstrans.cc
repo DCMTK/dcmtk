@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -324,9 +324,8 @@ OFString& DcmTLSConnection::dumpConnectionParameters(OFString& str)
 void DcmTLSConnection::logTLSConnection()
 {
   OFString s;
-  dumpConnectionParameters(s);
   DCMTLS_DEBUG(
-    "================== BEGIN TLS CONNECTION DETAILS =================\n" << s <<
+    "================== BEGIN TLS CONNECTION DETAILS =================\n" << dumpConnectionParameters(s) <<
     "\n=================== END TLS CONNECTION DETAILS ==================");
 }
 
