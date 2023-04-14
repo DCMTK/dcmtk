@@ -1,12 +1,16 @@
 set(USE_FIND_PACKAGE_DOCS "Control whether libraries are searched via CMake's find_package() mechanism or a Windows specific fallback")
+# Advanced user (eg. vcpkg) may want to override this:
+if(NOT DEFINED DCMTK_USE_FIND_PACKAGE_WIN_DEFAULT)
+  set(DCMTK_USE_FIND_PACKAGE_WIN_DEFAULT FALSE)
+endif()
 if(WIN32)
-  # For Windows, we don't used FIND_PACKAGE because DCMTK usually is used with its
+  # For Windows, we don't use FIND_PACKAGE because DCMTK usually is used with its
   # own set of 3rd-party support libraries that can be downloaded from DCMTK's
   # website (pre-built).
   if(MINGW)
     set(DCMTK_USE_FIND_PACKAGE TRUE CACHE BOOL "${USE_FIND_PACKAGE_DOCS}")
   else()
-    set(DCMTK_USE_FIND_PACKAGE FALSE CACHE BOOL "${USE_FIND_PACKAGE_DOCS}")
+    set(DCMTK_USE_FIND_PACKAGE ${DCMTK_USE_FIND_PACKAGE_WIN_DEFAULT} CACHE BOOL "${USE_FIND_PACKAGE_DOCS}")
   endif()
 else()
   # Only find_package is supported
