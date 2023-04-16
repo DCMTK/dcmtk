@@ -116,6 +116,8 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/helpers.h"
 #include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
+#include "dcmtk/ofstd/oftimer.h"
+
 #include <ctime>
 
 
@@ -2303,6 +2305,9 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     if (rc < 0 && errno == EINPROGRESS)
 #endif
     {
+        rc = 0;
+        OFTimer connectTimer;
+        do {
 #ifndef DCMTK_HAVE_POLL
         // we're in non-blocking mode. Prepare to wait for timeout.
         fd_set fdSet;
@@ -2316,8 +2321,17 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif /* DCMTK_HAVE_POLL */
 
         struct timeval timeout;
-        timeout.tv_sec = connectTimeout;
+        if (params->tcpPollInterval == -1)
+            timeout.tv_sec = connectTimeout;
+        else
+            timeout.tv_sec = params->tcpPollInterval;
         timeout.tv_usec = 0;
+
+            if (params->tcpConnectCanceled && params->tcpConnectCanceled(params->tcpCancelContext)) {
+                // TCP connect attempt was canceled. Flag connection as timed out
+                rc = 0; 
+                break;
+            }
 
         do {
 #ifdef DCMTK_HAVE_POLL
@@ -2331,6 +2345,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             rc = select(OFstatic_cast(int, s + 1), NULL, &fdSet, NULL, &timeout);
 #endif
         } while (rc == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
+        } while (rc == 0 && connectTimer.getDiff() < connectTimeout);
 
         if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         {
