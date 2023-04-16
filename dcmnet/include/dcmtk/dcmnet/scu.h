@@ -690,6 +690,15 @@ public:
      */
     void setConnectionTimeout(const Sint32 connectionTimeout);
 
+    /** Set the poll interval (short timeout) used when connecting to the SCP.
+     * While requesting an association, the TCP connection will be checked for successful
+     * connection with this timeout until the full connection timeout has been reached, or
+     * until the connection attempt has been cancelled.
+     *  @param pollInterval [in] poll interval in seconds, <= connectionTimeout).
+     *                           set to -1 to disable connect cancellation
+     */
+    void setTcpPollInterval(const Sint32 pollInterval);
+
     /** Set an association configuration file and profile to be used
      *  @param filename [in] File name of the association configuration file
      *  @param profile  [in] Profile inside the association negotiation file
@@ -785,6 +794,12 @@ public:
      *  @return The connection timeout (in seconds)
      */
     Sint32 getConnectionTimeout() const;
+
+    /** Gets the poll interval (short timeout) that defines how frequently the SCU will check
+     * for cancelled connect attempt.
+     * @return The poll interval (in seconds)
+     */
+    Sint32 getTcpPollInterval() const;
 
     /** Returns the storage directory used for storing objects received with C-STORE requests
      *  in the context of C-GET sessions. Default is empty string which refers to the current
@@ -1098,6 +1113,9 @@ private:
 
     /// TCP connection timeout (default: value of global dcmConnectionTimeout)
     Sint32 m_tcpConnectTimeout;
+
+    /// TCP poll interval (default: -1 (disabled))
+    Sint32 m_tcpPollInterval;
 
     /// Storage directory for objects received with C-STORE due to a running
     /// C-GET session. By default, the received objects are stored in the current

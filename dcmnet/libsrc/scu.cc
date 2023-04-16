@@ -50,6 +50,7 @@ DcmSCU::DcmSCU()
     , m_dimseTimeout(0)
     , m_acseTimeout(30)
     , m_tcpConnectTimeout(dcmConnectionTimeout.get())
+    , m_tcpPollInterval(-1)
     , m_storageDir()
     , m_storageMode(DCMSCU_STORAGE_DISK)
     , m_verbosePCMode(OFFalse)
@@ -2562,6 +2563,11 @@ void DcmSCU::setConnectionTimeout(const Sint32 connectionTimeout)
     m_tcpConnectTimeout = connectionTimeout;
 }
 
+void DcmSCU::setTcpPollInterval(const Sint32 pollInterval)
+{
+    m_tcpPollInterval = pollInterval;
+}
+
 void DcmSCU::setAssocConfigFileAndProfile(const OFString& filename, const OFString& profile)
 {
     m_assocConfigFilename = filename;
@@ -2648,6 +2654,11 @@ Uint32 DcmSCU::getACSETimeout() const
 Sint32 DcmSCU::getConnectionTimeout() const
 {
     return m_tcpConnectTimeout;
+}
+
+Sint32 DcmSCU::getTcpPollInterval() const
+{
+    return m_tcpPollInterval;
 }
 
 OFString DcmSCU::getStorageDir() const
