@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -462,10 +462,23 @@ OFCondition DJLSEncoderBase::losslessRawEncode(
       // an image that is not supported by either the raw or the cooked encoder.
       result = EC_JLSUnsupportedImageType;
     }
+  }
 
+  if (result.good())
+  {
     // make sure that all the descriptive attributes have sensible values
     if ((columns < 1)||(rows < 1)||(samplesPerPixel < 1)) result = EC_JLSUnsupportedImageType;
+  }
 
+  if (result.good())
+  {
+    // we do not support JPEG-LS compression of YBR_FULL_422 images
+    if (photometricInterpretation == "YBR_FULL_422")
+      result = EC_JLSUnsupportedImageType;
+  }
+
+  if (result.good())
+  {
     // make sure that we have at least as many bytes of pixel data as we expect
     if (bytesAllocated * samplesPerPixel * columns * rows *
       OFstatic_cast(unsigned long,numberOfFrames) > length)
