@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2023a
- *  File created on 2023-01-30 11:50:51 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023b
+ *  File created on 2023-04-17 10:32:06 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4688
+// total number of codes: 4689
 // - retired: 202
 // - no name: 27
 // - not unique: 17
@@ -3207,6 +3207,7 @@
 #define CODE_DCM_EndovaginalTransducer                                     DSRBasicCodedEntry("125263", "DCM", "Endovaginal Transducer")
 #define CODE_DCM_EndorectalTransducer                                      DSRBasicCodedEntry("125264", "DCM", "Endorectal Transducer")
 #define CODE_DCM_IntravascularTransducer                                   DSRBasicCodedEntry("125265", "DCM", "Intravascular Transducer")
+#define CODE_DCM_EndocavitaryTransducer                                    DSRBasicCodedEntry("125266", "DCM", "Endocavitary Transducer")
 #define CODE_DCM_LeftVentricleMassByAreaLength                             DSRBasicCodedEntry("125270", "DCM", "Left Ventricle Mass by Area Length")
 #define CODE_DCM_LeftVentricleMassByMMode_adjustedByHeight                 DSRBasicCodedEntry("125271", "DCM", "Left Ventricle Mass by M-mode - adjusted by Height")
 #define CODE_DCM_LeftVentricleMassByTruncatedEllipse_adjustedByHeight      DSRBasicCodedEntry("125272", "DCM", "Left Ventricle Mass by Truncated Ellipse - adjusted by Height")
