@@ -32,6 +32,15 @@
 #include <zlib.h> /* for zlibVersion() */
 #endif
 
+static bool CancelTcpConnect(void* context)
+{
+    if (!context)
+        return false;
+
+    const IDcmCancelToken* token = OFstatic_cast(const IDcmCancelToken*, context);
+    return token->IsCanceled();
+}
+
 DcmSCU::DcmSCU()
     : m_assoc(NULL)
     , m_net(NULL)
@@ -128,6 +137,9 @@ OFCondition DcmSCU::initNetwork()
         DCMNET_ERROR(DimseCondition::dump(tempStr, cond));
         return cond;
     }
+
+    m_params->DULparams.tcpPollInterval = m_tcpPollInterval;
+    m_params->DULparams.tcpConnectCanceled = CancelTcpConnect;
 
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values are "ANY-SCU" and "ANY-SCP". */
@@ -271,6 +283,9 @@ OFCondition DcmSCU::negotiateAssociation(IDcmCancelToken* tcpCancelToken)
         DCMNET_INFO("Request Parameters:" << OFendl << ASC_dumpParameters(tempStr, m_params, ASC_ASSOC_RQ));
     else
         DCMNET_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(tempStr, m_params, ASC_ASSOC_RQ));
+
+
+    m_params->DULparams.tcpCancelContext = tcpCancelToken;
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */

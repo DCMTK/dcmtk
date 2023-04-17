@@ -230,8 +230,14 @@ public:
     /** Negotiate association by using presentation contexts and parameters as defined by
      *  earlier function calls. If negotiation fails, there is no need to close the association
      *  or to do anything else with this class.
+     *  @param tcpCancelToken [in] Optional cancellation token which is checked periodically
+     *                             for cancellation. If the token is cancelled during TCP
+     *                             connect phase, the TCP connect attempts are stopped and this
+     *                             function returns failure.
      *  @return EC_Normal if negotiation was successful, otherwise error code.
-     *          NET_EC_AlreadyConnected if SCU is already connected.
+     *          NET_EC_AlreadyConnected if SCU is already connected. DULC_TCPINITERROR is returned
+     *          if the TCP connect attempt was cancelled before the connection was established
+     *
      */
     virtual OFCondition negotiateAssociation(IDcmCancelToken* tcpCancelToken = NULL);
 

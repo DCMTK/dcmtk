@@ -505,6 +505,118 @@ OFTEST(dcmnet_scu_getConectionTimeout_returns_scu_tcp_connection_timeout)
     OFCHECK(scu.getConnectionTimeout() == 42);
 }
 
+struct CancelToken : IDcmCancelToken
+{
+    CancelToken(Uint32 cancelAfterNumCalls)
+        : m_canceled(false)
+        , m_cancelAfterNumCalls(cancelAfterNumCalls)
+        , m_callCount(0)
+    {}
+
+    bool IsCanceled() const /* override */
+    {
+        ++m_callCount;
+        if (m_callCount > m_cancelAfterNumCalls)
+            m_canceled = true;
+
+        return m_canceled;
+    }
+
+    mutable bool m_canceled;
+    const Uint32 m_cancelAfterNumCalls;
+    mutable Uint32 m_callCount;
+};
+
+
+struct TcpCancelFixture
+{
+    TcpCancelFixture()
+    {
+        m_scu.setPeerAETitle("ACCEPTOR");
+        m_scu.setAETitle("REQUESTOR");
+        m_scu.setPeerHostName("localhost");
+        m_scu.setPeerPort(GetUnusedPort());
+
+        OFList<OFString> ts;
+        ts.push_back(UID_LittleEndianImplicitTransferSyntax);
+        OFCHECK(m_scu.addPresentationContext(UID_VerificationSOPClass, ts, ASC_SC_ROLE_DEFAULT).good());
+    }
+
+    // Temporarily start an SCP to get an unused port
+    // Note: The port is not reserved after this call returns
+    static Uint16 GetUnusedPort()
+    {
+        TestSCP m_scp;
+        DcmSCPConfig& config = m_scp.getConfig();
+        configure_scp_for_echo(config, 0, ASC_SC_ROLE_SCP);
+        config.setAETitle("ACCEPTOR");
+        config.setConnectionBlockingMode(DUL_NOBLOCK);
+        config.setConnectionTimeout(4);
+        OFCHECK(m_scp.openListenPort().good());
+        const Uint16 port = config.getPort();
+        m_scp.join();
+        return port;
+    }
+
+    DcmSCU m_scu;
+
+};
+
+OFTEST(dcmnet_scu_negotiateAssociation_fails_when_token_is_initially_cancelled)
+{
+    TcpCancelFixture m_fixture;
+    DcmSCU& scu = m_fixture.m_scu;
+
+    scu.setTcpPollInterval(1);
+    scu.setConnectionTimeout(60);
+
+    OFCHECK(scu.initNetwork().good());
+
+    CancelToken tok(0);
+    tok.m_canceled = true;
+
+    const OFCondition result = scu.negotiateAssociation(&tok);
+
+    OFCHECK(result.code() == DULC_TCPINITERROR);
+    OFCHECK(tok.m_callCount == 1);
+}
+
+OFTEST(dcmnet_scu_negotiateAssociation_fails_when_token_gets_cancelled_after_3_calls)
+{
+    TcpCancelFixture m_fixture;
+    DcmSCU& scu = m_fixture.m_scu;
+
+    scu.setTcpPollInterval(1);
+    scu.setConnectionTimeout(60);
+
+    OFCHECK(scu.initNetwork().good());
+
+    CancelToken tok(3);
+
+    const OFCondition result = scu.negotiateAssociation(&tok);
+
+    OFCHECK(result.code() == DULC_TCPINITERROR);
+    OFCHECK(tok.m_callCount == 4);
+}
+
+OFTEST(dcmnet_scu_negotiateAssociation_fails_when_connectionTimeout_elapses)
+{
+
+    TcpCancelFixture m_fixture;
+    DcmSCU& scu = m_fixture.m_scu;
+
+    scu.setTcpPollInterval(1);
+    scu.setConnectionTimeout(5);
+
+    CancelToken tok(15); // Should never be called 15 times since connection timeout is reached first
+
+    OFCHECK(scu.initNetwork().good());
+    const OFCondition result = scu.negotiateAssociation(&tok);
+
+    OFCHECK(result.code() == DULC_TCPINITERROR);
+    OFCHECK(!tok.m_canceled);
+}
+
 
 /** Helper function for testing role selection, test "dcmnet_scp_role_selection".
  *  @param  r_req The role selection setting from the association requestor
