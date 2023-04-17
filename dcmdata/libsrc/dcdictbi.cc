@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-01-30 11:52:59
+**   Date: 2023-04-17 10:18:46
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -16506,6 +16506,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ModalityLUTSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0028, 0x3001, 0x0028, 0x3001,
+      EVR_SQ, "VariableModalityLUTSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0028, 0x3002, 0x0028, 0x3002,
       EVR_xs, "LUTDescriptor", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -27125,7 +27129,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3008, 0x002b, 0x3008, 0x002b,
-      EVR_SH, "TreatmentTerminationCode", 1, 1, "DICOM",
+      EVR_SH, "RETIRED_TreatmentTerminationCode", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3008, 0x002c, 0x3008, 0x002c,

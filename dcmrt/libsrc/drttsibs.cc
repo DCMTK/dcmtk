@@ -8,6 +8,7 @@
  *
  *  Generated automatically from DICOM PS 3.3-2017e
  *  File created on 2017-12-05 09:30:54
+ *  Last modified on 2023-04-17 by Riesmeier
  *
  */
 
@@ -71,7 +72,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     SpecifiedSecondaryMeterset(DCM_SpecifiedSecondaryMeterset),
     SpecifiedTreatmentTime(DCM_SpecifiedTreatmentTime),
     TreatmentDeliveryType(DCM_TreatmentDeliveryType),
-    TreatmentTerminationCode(DCM_TreatmentTerminationCode),
+    TreatmentTerminationCode(DCM_RETIRED_TreatmentTerminationCode),
     TreatmentTerminationStatus(DCM_TreatmentTerminationStatus),
     TreatmentVerificationStatus(DCM_TreatmentVerificationStatus)
 {

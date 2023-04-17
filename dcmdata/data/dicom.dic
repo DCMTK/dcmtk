@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2023a and PS 3.7-2023a.
-# File created on 2023-01-26 13:22:53 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2023b and PS 3.7-2023b.
+# File created on 2023-04-17 10:16:59 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -2039,6 +2039,7 @@
 (0028,2112)	DS	LossyImageCompressionRatio	1-n	DICOM
 (0028,2114)	CS	LossyImageCompressionMethod	1-n	DICOM
 (0028,3000)	SQ	ModalityLUTSequence	1	DICOM
+(0028,3001)	SQ	VariableModalityLUTSequence	1	DICOM
 (0028,3002)	xs	LUTDescriptor	3	DICOM
 (0028,3003)	LO	LUTExplanation	1	DICOM
 (0028,3004)	LO	ModalityLUTType	1	DICOM
@@ -3664,7 +3665,6 @@
 (3008,0024)	DA	TreatmentControlPointDate	1	DICOM
 (3008,0025)	TM	TreatmentControlPointTime	1	DICOM
 (3008,002A)	CS	TreatmentTerminationStatus	1	DICOM
-(3008,002B)	SH	TreatmentTerminationCode	1	DICOM
 (3008,002C)	CS	TreatmentVerificationStatus	1	DICOM
 (3008,0030)	SQ	ReferencedTreatmentRecordSequence	1	DICOM
 (3008,0032)	DS	SpecifiedPrimaryMeterset	1	DICOM
@@ -5073,6 +5073,7 @@
 (3006,00C0)	SQ	RETIRED_FrameOfReferenceRelationshipSequence	1	DICOM/retired
 (3006,00C2)	UI	RETIRED_RelatedFrameOfReferenceUID	1	DICOM/retired
 (3006,00C4)	CS	RETIRED_FrameOfReferenceTransformationType	1	DICOM/retired
+(3008,002B)	SH	RETIRED_TreatmentTerminationCode	1	DICOM/retired
 (300A,000B)	LO	RETIRED_TreatmentSites	1-n	DICOM/retired
 (300A,0082)	DS	RETIRED_BeamDoseSpecificationPoint	3	DICOM/retired
 (300A,008D)	FL	RETIRED_AverageBeamDosePointDepth	1	DICOM/retired

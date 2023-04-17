@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-01-30 11:52:58
+**   Date: 2023-04-17 10:18:45
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2023-01-30 11:52:58"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2023-04-17 10:18:45"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5049
+** Number of entries: 5050
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2204,6 +2204,7 @@
 #define DCM_LossyImageCompressionRatio           DcmTagKey(0x0028, 0x2112)
 #define DCM_LossyImageCompressionMethod          DcmTagKey(0x0028, 0x2114)
 #define DCM_ModalityLUTSequence                  DcmTagKey(0x0028, 0x3000)
+#define DCM_VariableModalityLUTSequence          DcmTagKey(0x0028, 0x3001)
 #define DCM_LUTDescriptor                        DcmTagKey(0x0028, 0x3002)
 #define DCM_LUTExplanation                       DcmTagKey(0x0028, 0x3003)
 #define DCM_ModalityLUTType                      DcmTagKey(0x0028, 0x3004)
@@ -4032,7 +4033,7 @@
 #define DCM_TreatmentControlPointDate            DcmTagKey(0x3008, 0x0024)
 #define DCM_TreatmentControlPointTime            DcmTagKey(0x3008, 0x0025)
 #define DCM_TreatmentTerminationStatus           DcmTagKey(0x3008, 0x002a)
-#define DCM_TreatmentTerminationCode             DcmTagKey(0x3008, 0x002b)
+#define DCM_RETIRED_TreatmentTerminationCode     DcmTagKey(0x3008, 0x002b)
 #define DCM_TreatmentVerificationStatus          DcmTagKey(0x3008, 0x002c)
 #define DCM_ReferencedTreatmentRecordSequence    DcmTagKey(0x3008, 0x0030)
 #define DCM_SpecifiedPrimaryMeterset             DcmTagKey(0x3008, 0x0032)
