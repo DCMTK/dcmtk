@@ -259,7 +259,7 @@ OFCondition DcmSCU::initNetwork()
     return cond;
 }
 
-OFCondition DcmSCU::negotiateAssociation()
+OFCondition DcmSCU::negotiateAssociation(IDcmCancelToken* tcpCancelToken)
 {
     /* Return error if SCU is already connected */
     if (isConnected())

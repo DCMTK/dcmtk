@@ -185,6 +185,13 @@ private:
     RetrieveResponse& operator=(const RetrieveResponse& other);
 };
 
+class IDcmCancelToken
+{
+public:
+    virtual ~IDcmCancelToken() {}
+    virtual bool IsCanceled() const = 0;
+};
+
 /** Base class for implementing DICOM Service Class User functionality. The class offers
  *  support for negotiating associations and sending and receiving arbitrary DIMSE messages
  *  on that connection. DcmSCU has built-in C-ECHO support so derived classes do not have to
@@ -226,7 +233,7 @@ public:
      *  @return EC_Normal if negotiation was successful, otherwise error code.
      *          NET_EC_AlreadyConnected if SCU is already connected.
      */
-    virtual OFCondition negotiateAssociation();
+    virtual OFCondition negotiateAssociation(IDcmCancelToken* tcpCancelToken = NULL);
 
     /** After negotiation association, this call returns the first usable presentation context
      *  given the desired abstract syntax and transfer syntax
