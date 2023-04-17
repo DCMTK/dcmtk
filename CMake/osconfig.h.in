@@ -1262,6 +1262,9 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 
 /* Feature Tests for the OpenSSL Library */
 
+/* Define if your OpenSSL library provides the OPENSSL_init_crypto function */
+#cmakedefine HAVE_OPENSSL_PROTOTYPE_OPENSSL_INIT_CRYPTO @HAVE_OPENSSL_PROTOTYPE_OPENSSL_INIT_CRYPTO@
+
 /* Define if your OpenSSL library provides the SSL_CTX_GET0_PARAM function */
 #cmakedefine HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET0_PARAM @HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET0_PARAM@
 
