@@ -714,6 +714,7 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_VolumeRenderingVolumetricPresentationStateStorage) ||
              compare(sopClass, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage) ||
              compare(sopClass, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage) ||
+             compare(sopClass, UID_VariableModalityLUTSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_BasicStructuredDisplayStorage))
     {
         result = ERT_Presentation;
@@ -1694,7 +1695,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_AdvancedBlendingPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_VolumeRenderingVolumetricPresentationStateStorage) ||
                                 compare(mediaSOPClassUID, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage);
+                                compare(mediaSOPClassUID, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_VariableModalityLUTSoftcopyPresentationStateStorage);
                     }
                     /* is it one of the encapsulated document SOP Classes? */
                     if (!found)

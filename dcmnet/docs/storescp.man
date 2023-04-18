@@ -684,6 +684,7 @@ AdvancedBlendingPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.
 VolumeRenderingVolumetricPresentationStateStorage    1.2.840.10008.5.1.4.1.1.11.9
 SegmentedVolumeRenderingVolumetricPres.StateStorage  1.2.840.10008.5.1.4.1.1.11.10
 MultipleVolumeRenderingVolumetricPres.StateStorage   1.2.840.10008.5.1.4.1.1.11.11
+VariableModalityLUTSoftcopyPresentationStateStorage  1.2.840.10008.5.1.4.1.1.11.12
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2

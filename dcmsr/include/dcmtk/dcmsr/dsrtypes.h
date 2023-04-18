@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -653,8 +653,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         PT_SegmentedVolumeRendering,
         /// Multiple Volume Rendering Volumetric Presentation State (MVR-VPS)
         PT_MultipleVolumeRendering,
+        /// Variable Modality LUT Softcopy Presentation State (VML-SPS)
+        PT_VariableModalityLUT,
         /// internal type used to mark the last entry
-        PT_last = PT_MultipleVolumeRendering
+        PT_last = PT_VariableModalityLUT
     };
 
     /** SR graphic types.  Used for content item SCOORD.
