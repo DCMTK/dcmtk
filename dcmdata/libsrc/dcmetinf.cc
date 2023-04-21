@@ -581,6 +581,9 @@ OFCondition DcmMetaInfo::write(
             /* set the transfer state of certain elements to indicate that they have already been written. */
             if (getTransferState() == ERW_init)
             {
+                // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+                // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+                outStream.write(NULL, 0);
                 if (preambleUsed || !elementList->empty())
                 {
                     if (fPreambleTransferState == ERW_init)

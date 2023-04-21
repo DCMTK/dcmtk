@@ -1548,6 +1548,9 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
     {
       if (getTransferState() == ERW_init)
       {
+        // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+        // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+        outStream.write(NULL, 0);
         if (outStream.avail() >= 8)
         {
           if (enctype == EET_ExplicitLength)
@@ -1565,8 +1568,9 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
           outStream.write(&valueLength, 4); // 4 bytes length
           elementList->seek(ELP_first);
           setTransferState(ERW_inWork);
-        } else
+        } else {
           errorFlag = EC_StreamNotifyClient;
+        }
       }
       if (getTransferState() == ERW_inWork)
       {
@@ -1587,6 +1591,9 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
           setTransferState(ERW_ready);
           if (getLengthField() == DCM_UndefinedLength)
           {
+            // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+            // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+            outStream.write(NULL, 0);
             if (outStream.avail() >= 8)
             {
                 // write Item delimitation
@@ -1628,6 +1635,9 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
     {
       if (getTransferState() == ERW_init)
       {
+        // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+        // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+        outStream.write(NULL, 0);
         if (outStream.avail() >= 4)
         {
           if (enctype == EET_ExplicitLength)

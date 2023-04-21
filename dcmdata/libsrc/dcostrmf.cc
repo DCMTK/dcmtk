@@ -94,7 +94,7 @@ offile_off_t DcmFileConsumer::avail() const
 offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
 {
   offile_off_t result = 0;
-  if (status_.good() && file_.open() && buf && buflen)
+  if (buflen && buf && status_.good() && file_.open())
   {
 #ifdef WRITE_VERY_LARGE_CHUNKS
     /* This is the old behaviour prior to DCMTK 3.5.5 */

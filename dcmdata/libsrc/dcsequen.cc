@@ -796,6 +796,10 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
         {
             if (getTransferState() == ERW_init)
             {
+                // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+                // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+                outStream.write(NULL, 0);
+
                 /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
@@ -838,6 +842,9 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
                     setTransferState(ERW_ready);
                     if (getLengthField() == DCM_UndefinedLength)
                     {
+                        // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+                        // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+                        outStream.write(NULL, 0);
                         if (outStream.avail() >= 8)
                         {
                             // write sequence delimitation item
@@ -920,6 +927,10 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
         {
             if (getTransferState() == ERW_init)
             {
+                // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+                // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+                outStream.write(NULL, 0);
+
                 /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
@@ -957,6 +968,11 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                 if (errorFlag.good())
                 {
                     setTransferState(ERW_ready);
+
+                    // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+                    // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+                    outStream.write(NULL, 0);
+
                     /* we always write a sequence delimitation item tag, but no length */
                     if (outStream.avail() >= 4)
                     {
