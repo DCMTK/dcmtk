@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -107,10 +107,10 @@ private:
    */
   OFCondition negotiateAssociation(T_ASC_Association * assoc);
 
-  OFCondition refuseAssociation(T_ASC_Association ** assoc, CTN_RefuseReason reason);
+  OFCondition refuseAssociation(T_ASC_Association ** pAssoc, CTN_RefuseReason reason);
 
   OFCondition handleAssociation(
-    T_ASC_Association * assoc,
+    T_ASC_Association ** assoc,
     OFBool correctUIDPadding);
 
   OFCondition echoSCP(

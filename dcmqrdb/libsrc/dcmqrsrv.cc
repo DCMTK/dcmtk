@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -205,13 +205,19 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 }
 
 
-OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OFBool correctUIDPadding)
+OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association ** pAssoc, OFBool correctUIDPadding)
 {
     OFCondition         cond = EC_Normal;
     DIC_NODENAME        peerHostName;
     DIC_AE              peerAETitle;
     DIC_AE              myAETitle;
     OFString            temp_str;
+    T_ASC_Association * assoc;
+
+    if (pAssoc == NULL) {
+        return EC_IllegalParameter;
+    }
+    assoc = *pAssoc;
 
     ASC_getPresentationAddresses(assoc->params, peerHostName, sizeof(peerHostName), NULL, 0);
     ASC_getAPTitles(assoc->params, peerAETitle, sizeof(peerAETitle), myAETitle, sizeof(myAETitle), NULL, 0);
@@ -236,7 +242,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     if (cond.bad()) {
         DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
     }
-    cond = ASC_destroyAssociation(&assoc);
+    cond = ASC_destroyAssociation(pAssoc);
     if (cond.bad()) {
         DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
     }
@@ -1096,7 +1102,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         if (options_.singleProcess_)
         {
             /* don't spawn a sub-process to handle the association */
-            cond = handleAssociation(assoc, options_.correctUIDPadding_);
+            cond = handleAssociation(&assoc, options_.correctUIDPadding_);
         }
 #ifdef HAVE_FORK
         else
@@ -1118,7 +1124,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             else
             {
                 /* child process, handle the association */
-                cond = handleAssociation(assoc, options_.correctUIDPadding_);
+                cond = handleAssociation(&assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 exit(0);
             }
