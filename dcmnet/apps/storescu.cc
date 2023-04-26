@@ -555,13 +555,13 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--empty-password"))
       {
         app.checkDependence("--empty-password", "--user", opt_identMode == ASC_USER_IDENTITY_USER);
-        opt_password= "";
+        opt_password = "";
         opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
       }
       cmd.endOptionBlock();
       if (cmd.findOption("--pos-response"))
       {
-         app.checkDependence("--pos-response", "--user, --kerberos or --saml", opt_identMode != ASC_USER_IDENTITY_NONE);
+         app.checkDependence("--pos-response", "--user, --kerberos, --saml or --jwt", opt_identMode != ASC_USER_IDENTITY_NONE);
          opt_identResponse = OFTrue;
       }
    }
