@@ -564,7 +564,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
         uncompressedXfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         // make sure that the list of presentation contexts is empty before we start
         clearPresentationContexts();
-        // iterate over the list of SOP instance to be transferred
+        // iterate over the list of SOP instances to be transferred
         // (continue with next SOP instance if there already was a transmission)
         if (PresentationContextCounter == 0)
             CurrentTransferEntry = TransferList.begin();
@@ -729,7 +729,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                         (*transferEntry)->PresentationContextID = OFstatic_cast(T_ASC_PresentationContextID, presContextID);
                         // increase ID for the next presentation context
                         presContextID += 2;
-                        // count total number of presentation context
+                        // count total number of presentation contexts
                         ++PresentationContextCounter;
                     } else {
                         if (status == EC_UnsupportedEncoding)
@@ -794,7 +794,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
     if (!TransferList.empty())
     {
         DcmDataset *dataset = NULL;
-        // iterate over the list of SOP instance to be transferred
+        // iterate over the list of SOP instances to be transferred
         // (continue with next SOP instance if there already was a transmission)
         OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
         while ((CurrentTransferEntry != lastEntry) && status.good())
@@ -872,9 +872,8 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     // notify user of this class that the current SOP instance is to be sent
                     notifySOPInstanceToBeSent(**CurrentTransferEntry);
                     // call the inherited method from the base class doing the real work
-                    status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
-                        dataset, (*CurrentTransferEntry)->ResponseStatusCode,
-                        MoveOriginatorAETitle, MoveOriginatorMsgID);
+                    status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */, dataset,
+                        (*CurrentTransferEntry)->ResponseStatusCode, MoveOriginatorAETitle, MoveOriginatorMsgID);
                     // store some further information (even in case of error)
                     (*CurrentTransferEntry)->AssociationNumber = AssociationCounter;
                     (*CurrentTransferEntry)->NetworkTransferSyntax = dataset->getCurrentXfer();
