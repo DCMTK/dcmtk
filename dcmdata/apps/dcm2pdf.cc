@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
       cmd.addOption("--read-file-only",     "+fo",    "read file format only");
       cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("input transfer syntax:");
       cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
       cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
       cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
