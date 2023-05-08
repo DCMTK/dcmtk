@@ -125,6 +125,9 @@ static T_ASC_UserIdentityNegotiationMode opt_identMode = ASC_USER_IDENTITY_NONE;
 static OFString opt_user;
 static OFString opt_password;
 static OFString opt_identFile;
+// Denotes whether we ask for an explicit server response for
+// our identity negotiation request and only continue if this
+// positive response is provided by the SCP.
 static OFBool opt_identResponse = OFFalse;
 
 static OFCondition

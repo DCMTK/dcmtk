@@ -541,6 +541,19 @@ negotiation profiles" which may be read from a configuration file.
 The format and semantics of this configuration file are documented in
 \e asconfig.txt.
 
+\subsection storescu_userid User Identity Negotiation
+
+When specifying user name and/or password using options \e --user and
+\-e --password, the value has to provided in UTF-8 encoding.
+
+If the option \e --pos-response is used, the SCP is asked to explicitly
+repond, i.e. acknowledge, the user credentials provided in the \b storescu
+request.  Otherwise, if no such response is sent, \b storescu will not
+continue but instead abort the connection.  Since User Identity Negotiation
+is an optional feature that has been introduced later into the standard,
+many SCPs will not check the user identity provided and therefore will not
+provide a user identity response at all.
+
 \section storescu_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
