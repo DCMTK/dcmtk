@@ -544,10 +544,10 @@ The format and semantics of this configuration file are documented in
 \subsection storescu_userid User Identity Negotiation
 
 When specifying user name and/or password using options \e --user and
-\-e --password, the value has to provided in UTF-8 encoding.
+\-e --password, the value has to be provided in UTF-8 encoding.
 
 If the option \e --pos-response is used, the SCP is asked to explicitly
-repond, i.e. acknowledge, the user credentials provided in the \b storescu
+respond, i.e. acknowledge, the user credentials provided in the \b storescu
 request.  Otherwise, if no such response is sent, \b storescu will not
 continue but instead abort the connection.  Since User Identity Negotiation
 is an optional feature that has been introduced later into the standard,
