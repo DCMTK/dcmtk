@@ -49,6 +49,7 @@
 #include "dcmtk/dcmsign/sitsfs.h"
 
 BEGIN_EXTERN_C
+#include <openssl/conf.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
@@ -67,6 +68,7 @@ static OSSL_PROVIDER *defaultProvider = NULL;
 
 void DcmSignature::initializeLibrary()
 {
+  OPENSSL_no_config();
   SSL_library_init();
   SSL_load_error_strings();
   OpenSSL_add_all_algorithms();
