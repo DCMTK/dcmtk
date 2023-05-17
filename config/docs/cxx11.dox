@@ -40,7 +40,8 @@ Trying to include a DCMTK build with C++11 enabled from a non C++11
 environment will give you the following error message:
 
 @verbatim
-DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
+DCMTK was configured to use C++11 features, but your compiler does not or was
+not configured to provide them.
 @endverbatim
 
 To reduce DCMTK's implementation complexity, C++11 shall only be used if your
@@ -49,7 +50,10 @@ this is currently true for the following compilers:
 
 \li GNU C++ Compiler (g++) Version 4.8.1 or later.
 \li Clang (clang++) Version 3.3 or later.
-\li Visual Studio 2019 Version 16.8 (or higher) with Windows SDK 10.0.20348.0 Version 2104 (or higher)
+\li According to <a href="https://learn.microsoft.com/en-us/cpp/overview/install-c17-support?view=msvc-170">
+Microsoft documentation</a>, Visual Studio 2019 Version 16.8 (or higher)
+with Windows SDK 10.0.20348.0 Version 2104 (or higher). DCMTK already allows
+enabling C++11 for VS 2017 which reportedly also works well.
 
 To enable the C++11 STL, different steps are necessary on CMake and GNU
 Autoconf, see the appropriate section below:
