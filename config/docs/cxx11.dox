@@ -49,6 +49,7 @@ this is currently true for the following compilers:
 
 \li GNU C++ Compiler (g++) Version 4.8.1 or later.
 \li Clang (clang++) Version 3.3 or later.
+\li Visual Studio 2019 Version 16.8 (or higher) with Windows SDK 10.0.20348.0 Version 2104 (or higher)
 
 To enable the C++11 STL, different steps are necessary on CMake and GNU
 Autoconf, see the appropriate section below:
