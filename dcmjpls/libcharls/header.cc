@@ -479,7 +479,7 @@ JpegMarkerSegment* CreateJFIF(const JfifParameters* jfif)
 	rgbyte.push_back((BYTE)jfif->Ythumb);
 	if(jfif->Xthumb > 0)
 	{
-		if(jfif->pdataThumbnail)
+		if(jfif->pdataThumbnail == NULL)
 			throw JlsException(InvalidJlsParameters);
 
 		rgbyte.insert(rgbyte.end(), (BYTE*)jfif->pdataThumbnail, (BYTE*)jfif->pdataThumbnail+3*jfif->Xthumb*jfif->Ythumb
