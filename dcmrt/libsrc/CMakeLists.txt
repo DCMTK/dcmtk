@@ -181,7 +181,6 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtrdais.cc
   drtrdcks.cc
   drtrdps.cc
-  drtrdros.cc
   drtrdrs1.cc
   drtrdrs2.cc
   drtrdrs3.cc

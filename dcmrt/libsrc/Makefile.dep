@@ -22900,7 +22900,6 @@ drtrdps.o: drtrdps.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrov.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
-drtrdros.o: drtrdros.cc ../../config/include/dcmtk/config/osconfig.h
 drtrdrs1.o: drtrdrs1.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmrt/seq/drtrdrs1.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \

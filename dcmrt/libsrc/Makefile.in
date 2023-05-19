@@ -48,21 +48,21 @@ objs = drtdose.o drtimage.o drtplan.o drtstrct.o drttreat.o drtionpl.o \
 	drtpss.o drtpsss.o drtpvis.o drtqds.o drtras.o drtrbas1.o drtrbas2.o \
 	drtrbdgs.o drtrbls.o drtrbos1.o drtrbos2.o drtrbos3.o drtrbs1.o \
 	drtrbs2.o drtrbs3.o drtrbss.o drtrcdrs.o drtrcos.o drtrcps.o drtrcs.o \
-	drtrdais.o drtrdcks.o drtrdps.o drtrdros.o drtrdrs1.o drtrdrs2.o \
-	drtrdrs3.o drtrds.o drtrdsis.o drtrecs.o drtrfgs.o drtrfors.o \
-	drtrics.o drtrims.o drtris.o drtrlsds.o drtrmdrs.o drtrms.o drtrmss1.o \
-	drtrmss2.o drtrpcs.o drtrpis.o drtrppcs.o drtrpphs.o drtrpprs.o \
-	drtrpps.o drtrppss.o drtrps.o drtrris1.o drtrris2.o drtrris3.o \
-	drtrrms.o drtrros.o drtrrpcs.o drtrrros.o drtrrs.o drtrrshs.o \
-	drtrscs.o drtrsers.o drtrses.o drtrshs1.o drtrshs2.o drtrshs.o \
-	drtrsis.o drtrsns.o drtrsos.o drtrsrs.o drtrss.o drtrsss.o drtrsts.o \
-	drtrtps1.o drtrtps2.o drtrtps3.o drtrtps4.o drtrtrs1.o drtrtrs2.o \
-	drtrvcs.o drtrvis.o drtrws.o drtrwvms.o drtscris.o drtscs.o drtscvs.o \
-	drtsdcs.o drtsds.o drtshds.o drtsins.o drtsis.o drtsns.o drtspccs.o \
-	drtspcs.o drtspgis.o drtsppcs.o drtsptcs.o drtss.o drtssrcs.o \
-	drtssrs.o drtsss.o drttms1.o drttms2.o drttrccs.o drttrtcs.o \
-	drttscds.o drttscs.o drttsibs.o drttsmds.o drtttrcs.o drttts.o \
-	drtudis.o drtvls.o drtwps.o drtwrs.o drtwrsrs.o drtws.o drtxrs.o
+	drtrdais.o drtrdcks.o drtrdps.o drtrdrs1.o drtrdrs2.o drtrdrs3.o \
+	drtrds.o drtrdsis.o drtrecs.o drtrfgs.o drtrfors.o drtrics.o drtrims.o \
+	drtris.o drtrlsds.o drtrmdrs.o drtrms.o drtrmss1.o drtrmss2.o \
+	drtrpcs.o drtrpis.o drtrppcs.o drtrpphs.o drtrpprs.o drtrpps.o \
+	drtrppss.o drtrps.o drtrris1.o drtrris2.o drtrris3.o drtrrms.o \
+	drtrros.o drtrrpcs.o drtrrros.o drtrrs.o drtrrshs.o drtrscs.o \
+	drtrsers.o drtrses.o drtrshs1.o drtrshs2.o drtrshs.o drtrsis.o \
+	drtrsns.o drtrsos.o drtrsrs.o drtrss.o drtrsss.o drtrsts.o drtrtps1.o \
+	drtrtps2.o drtrtps3.o drtrtps4.o drtrtrs1.o drtrtrs2.o 	drtrvcs.o \
+	drtrvis.o drtrws.o drtrwvms.o drtscris.o drtscs.o drtscvs.o drtsdcs.o \
+	drtsds.o drtshds.o drtsins.o drtsis.o drtsns.o drtspccs.o drtspcs.o \
+	drtspgis.o drtsppcs.o drtsptcs.o drtss.o drtssrcs.o drtssrs.o drtsss.o \
+	drttms1.o drttms2.o drttrccs.o drttrtcs.o drttscds.o drttscs.o \
+	drttsibs.o drttsmds.o drtttrcs.o drttts.o drtudis.o drtvls.o drtwps.o \
+	drtwrs.o drtwrsrs.o drtws.o drtxrs.o
 
 library = libdcmrt.$(LIBEXT)
 
