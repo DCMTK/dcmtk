@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule
+ *  Header file for class DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -21,9 +21,9 @@
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 
 
-/** Interface class for ReferencedBrachyApplicationSetupSequence (300c,000a) in RTDoseModule
+/** Interface class for ReferencedBrachyApplicationSetupSequence (300c,000a) in RTFractionSchemeModule
  */
-class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule
+class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule
   : protected DRTTypes
 {
 
@@ -91,6 +91,40 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModu
 
       // --- get DICOM attribute values ---
 
+        /** get BrachyApplicationSetupDose (300a,00a4)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBrachyApplicationSetupDose(OFString &value, const signed long pos = 0) const;
+
+        /** get BrachyApplicationSetupDose (300a,00a4)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBrachyApplicationSetupDose(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBrachyApplicationSetupDoseSpecificationPoint(OFString &value, const signed long pos = 0) const;
+
+        /** get BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBrachyApplicationSetupDoseSpecificationPoint(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
+         *  @param  value  reference to variable in which the value(s) should be stored
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBrachyApplicationSetupDoseSpecificationPoint(OFVector<Float64> &value) const;
+
         /** get ReferencedBrachyApplicationSetupNumber (300c,000c)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -105,7 +139,28 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModu
          */
         OFCondition getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos = 0) const;
 
+        /** get ReferencedDoseReferenceUID (300a,0083)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getReferencedDoseReferenceUID(OFString &value, const signed long pos = 0) const;
+
       // --- set DICOM attribute values ---
+
+        /** set BrachyApplicationSetupDose (300a,00a4)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setBrachyApplicationSetupDose(const OFString &value, const OFBool check = OFTrue);
+
+        /** set BrachyApplicationSetupDoseSpecificationPoint (300a,00a2)
+         *  @param  value  value to be set (possibly multi-valued) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (3) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setBrachyApplicationSetupDoseSpecificationPoint(const OFString &value, const OFBool check = OFTrue);
 
         /** set ReferencedBrachyApplicationSetupNumber (300c,000c)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -114,13 +169,26 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModu
          */
         OFCondition setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ReferencedDoseReferenceUID (300a,0083)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setReferencedDoseReferenceUID(const OFString &value, const OFBool check = OFTrue);
+
       private:
 
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// BrachyApplicationSetupDose (300a,00a4) vr=DS, vm=1, type=3
+        DcmDecimalString BrachyApplicationSetupDose;
+        /// BrachyApplicationSetupDoseSpecificationPoint (300a,00a2) vr=DS, vm=3, type=3
+        DcmDecimalString BrachyApplicationSetupDoseSpecificationPoint;
         /// ReferencedBrachyApplicationSetupNumber (300c,000c) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedBrachyApplicationSetupNumber;
+        /// ReferencedDoseReferenceUID (300a,0083) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier ReferencedDoseReferenceUID;
 
     };
 
@@ -129,22 +197,22 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModu
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule(const OFBool emptyDefaultSequence = OFFalse);
+    DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule(const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &copy);
+    DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy);
 
     /** destructor
      */
-    virtual ~DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule();
+    virtual ~DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule();
 
     /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */
-    DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &operator=(const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &copy);
+    DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &operator=(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy);
 
   // --- general methods ---
 
@@ -230,13 +298,13 @@ class DCMTK_DCMRT_EXPORT DRTReferencedBrachyApplicationSetupSequenceInRTDoseModu
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

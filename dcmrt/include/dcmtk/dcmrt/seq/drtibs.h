@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,9 +19,10 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtas6.h"    // for ApplicatorSequence
+#include "dcmtk/dcmrt/seq/drtas3.h"    // for ApplicatorSequence
 #include "dcmtk/dcmrt/seq/drtddps.h"   // for DepthDoseParametersSequence
-#include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
+#include "dcmtk/dcmrt/seq/drtgas5.h"   // for GeneralAccessorySequence
+#include "dcmtk/dcmrt/seq/drtidcs.h"   // for InstitutionalDepartmentTypeCodeSequence
 #include "dcmtk/dcmrt/seq/drtiblds.h"  // for IonBeamLimitingDeviceSequence
 #include "dcmtk/dcmrt/seq/drtibls.h"   // for IonBlockSequence
 #include "dcmtk/dcmrt/seq/drticps.h"   // for IonControlPointSequence
@@ -30,9 +31,9 @@
 #include "dcmtk/dcmrt/seq/drtlsds.h"   // for LateralSpreadingDeviceSequence
 #include "dcmtk/dcmrt/seq/drtrms.h"    // for RangeModulatorSequence
 #include "dcmtk/dcmrt/seq/drtrshs.h"   // for RangeShifterSequence
-#include "dcmtk/dcmrt/seq/drtrbos6.h"  // for ReferencedBolusSequence
+#include "dcmtk/dcmrt/seq/drtrbos2.h"  // for ReferencedBolusSequence
 #include "dcmtk/dcmrt/seq/drtrds.h"    // for ReferencedDoseSequence
-#include "dcmtk/dcmrt/seq/drtrris6.h"  // for ReferencedReferenceImageSequence
+#include "dcmtk/dcmrt/seq/drtrris2.h"  // for ReferencedReferenceImageSequence
 #include "dcmtk/dcmrt/seq/drtsns.h"    // for SnoutSequence
 
 
@@ -147,6 +148,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getDeviceSerialNumber(OFString &value, const signed long pos = 0) const;
+
+        /** get EntityLongLabel (3010,0038)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getEntityLongLabel(OFString &value, const signed long pos = 0) const;
 
         /** get FinalCumulativeMetersetWeight (300a,010e)
          *  @param  value  reference to variable in which the value should be stored
@@ -513,14 +521,26 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         /** get GeneralAccessorySequence (300a,0420)
          *  @return reference to sequence element
          */
-        DRTGeneralAccessorySequence &getGeneralAccessorySequence()
+        DRTGeneralAccessorySequenceInRTIonBeamsModule &getGeneralAccessorySequence()
             { return GeneralAccessorySequence; }
 
         /** get GeneralAccessorySequence (300a,0420)
          *  @return const reference to sequence element
          */
-        const DRTGeneralAccessorySequence &getGeneralAccessorySequence() const
+        const DRTGeneralAccessorySequenceInRTIonBeamsModule &getGeneralAccessorySequence() const
             { return GeneralAccessorySequence; }
+
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return reference to sequence element
+         */
+        DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence()
+            { return InstitutionalDepartmentTypeCodeSequence; }
+
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return const reference to sequence element
+         */
+        const DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence() const
+            { return InstitutionalDepartmentTypeCodeSequence; }
 
         /** get IonBeamLimitingDeviceSequence (300a,03a4)
          *  @return reference to sequence element
@@ -702,6 +722,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setDeviceSerialNumber(const OFString &value, const OFBool check = OFTrue);
+
+        /** set EntityLongLabel (3010,0038)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setEntityLongLabel(const OFString &value, const OFBool check = OFTrue);
 
         /** set FinalCumulativeMetersetWeight (300a,010e)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -967,6 +994,8 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         DRTDepthDoseParametersSequence DepthDoseParametersSequence;
         /// DeviceSerialNumber (0018,1000) vr=LO, vm=1, type=3
         DcmLongString DeviceSerialNumber;
+        /// EntityLongLabel (3010,0038) vr=LO, vm=1, type=3
+        DcmLongString EntityLongLabel;
         /// FinalCumulativeMetersetWeight (300a,010e) vr=DS, vm=1, type=1C
         DcmDecimalString FinalCumulativeMetersetWeight;
         /// FixationEye (300a,0150) vr=CS, vm=1, type=3
@@ -976,13 +1005,15 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
         /// FixationLightPolarAngle (300a,0358) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationLightPolarAngle;
         /// GeneralAccessorySequence (300a,0420) vr=SQ, vm=1, type=3
-        DRTGeneralAccessorySequence GeneralAccessorySequence;
+        DRTGeneralAccessorySequenceInRTIonBeamsModule GeneralAccessorySequence;
         /// InstitutionAddress (0008,0081) vr=ST, vm=1, type=3
         DcmShortText InstitutionAddress;
         /// InstitutionName (0008,0080) vr=LO, vm=1, type=3
         DcmLongString InstitutionName;
         /// InstitutionalDepartmentName (0008,1040) vr=LO, vm=1, type=3
         DcmLongString InstitutionalDepartmentName;
+        /// InstitutionalDepartmentTypeCodeSequence (0008,1041) vr=SQ, vm=1, type=3
+        DRTInstitutionalDepartmentTypeCodeSequence InstitutionalDepartmentTypeCodeSequence;
         /// IonBeamLimitingDeviceSequence (300a,03a4) vr=SQ, vm=1, type=3
         DRTIonBeamLimitingDeviceSequence IonBeamLimitingDeviceSequence;
         /// IonBlockSequence (300a,03a6) vr=SQ, vm=1, type=1C
@@ -1172,13 +1203,13 @@ class DCMTK_DCMRT_EXPORT DRTIonBeamSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

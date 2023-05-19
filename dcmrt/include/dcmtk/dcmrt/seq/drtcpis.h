@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTConsultingPhysicianIdentificationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtics.h"    // for InstitutionCodeSequence
+#include "dcmtk/dcmrt/seq/drtidcs.h"   // for InstitutionalDepartmentTypeCodeSequence
 #include "dcmtk/dcmrt/seq/drtpics.h"   // for PersonIdentificationCodeSequence
 
 
@@ -107,6 +108,13 @@ class DCMTK_DCMRT_EXPORT DRTConsultingPhysicianIdentificationSequence
          */
         OFCondition getInstitutionName(OFString &value, const signed long pos = 0) const;
 
+        /** get InstitutionalDepartmentName (0008,1040)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getInstitutionalDepartmentName(OFString &value, const signed long pos = 0) const;
+
         /** get PersonAddress (0040,1102)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -142,6 +150,18 @@ class DCMTK_DCMRT_EXPORT DRTConsultingPhysicianIdentificationSequence
         const DRTInstitutionCodeSequence &getInstitutionCodeSequence() const
             { return InstitutionCodeSequence; }
 
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return reference to sequence element
+         */
+        DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence()
+            { return InstitutionalDepartmentTypeCodeSequence; }
+
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return const reference to sequence element
+         */
+        const DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence() const
+            { return InstitutionalDepartmentTypeCodeSequence; }
+
         /** get PersonIdentificationCodeSequence (0040,1101)
          *  @return reference to sequence element
          */
@@ -169,6 +189,13 @@ class DCMTK_DCMRT_EXPORT DRTConsultingPhysicianIdentificationSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setInstitutionName(const OFString &value, const OFBool check = OFTrue);
+
+        /** set InstitutionalDepartmentName (0008,1040)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setInstitutionalDepartmentName(const OFString &value, const OFBool check = OFTrue);
 
         /** set PersonAddress (0040,1102)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -202,6 +229,10 @@ class DCMTK_DCMRT_EXPORT DRTConsultingPhysicianIdentificationSequence
         DRTInstitutionCodeSequence InstitutionCodeSequence;
         /// InstitutionName (0008,0080) vr=LO, vm=1, type=1C
         DcmLongString InstitutionName;
+        /// InstitutionalDepartmentName (0008,1040) vr=LO, vm=1, type=3
+        DcmLongString InstitutionalDepartmentName;
+        /// InstitutionalDepartmentTypeCodeSequence (0008,1041) vr=SQ, vm=1, type=3
+        DRTInstitutionalDepartmentTypeCodeSequence InstitutionalDepartmentTypeCodeSequence;
         /// PersonAddress (0040,1102) vr=ST, vm=1, type=3
         DcmShortText PersonAddress;
         /// PersonIdentificationCodeSequence (0040,1101) vr=SQ, vm=1, type=1
@@ -319,13 +350,13 @@ class DCMTK_DCMRT_EXPORT DRTConsultingPhysicianIdentificationSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

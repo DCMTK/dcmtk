@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -21,10 +21,13 @@
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtas1.h"    // for ApplicatorSequence
 #include "dcmtk/dcmrt/seq/drtblds1.h"  // for BeamLimitingDeviceSequence
-#include "dcmtk/dcmrt/seq/drtbl2.h"    // for BlockSequence
+#include "dcmtk/dcmrt/seq/drtbl1.h"    // for BlockSequence
 #include "dcmtk/dcmrt/seq/drtcos.h"    // for CompensatorSequence
 #include "dcmtk/dcmrt/seq/drtcps.h"    // for ControlPointSequence
-#include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
+#include "dcmtk/dcmrt/seq/drtdfss.h"   // for DefinitionSourceSequence
+#include "dcmtk/dcmrt/seq/drteblds.h"  // for EnhancedRTBeamLimitingDeviceSequence
+#include "dcmtk/dcmrt/seq/drtgas2.h"   // for GeneralAccessorySequence
+#include "dcmtk/dcmrt/seq/drtidcs.h"   // for InstitutionalDepartmentTypeCodeSequence
 #include "dcmtk/dcmrt/seq/drtpvis.h"   // for PlannedVerificationImageSequence
 #include "dcmtk/dcmrt/seq/drtpfms.h"   // for PrimaryFluenceModeSequence
 #include "dcmtk/dcmrt/seq/drtrbos1.h"  // for ReferencedBolusSequence
@@ -145,6 +148,20 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getDeviceSerialNumber(OFString &value, const signed long pos = 0) const;
+
+        /** get EnhancedRTBeamLimitingDeviceDefinitionFlag (3008,00a3)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getEnhancedRTBeamLimitingDeviceDefinitionFlag(OFString &value, const signed long pos = 0) const;
+
+        /** get EntityLongLabel (3010,0038)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getEntityLongLabel(OFString &value, const signed long pos = 0) const;
 
         /** get FinalCumulativeMetersetWeight (300a,010e)
          *  @param  value  reference to variable in which the value should be stored
@@ -432,17 +449,53 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
         const DRTControlPointSequence &getControlPointSequence() const
             { return ControlPointSequence; }
 
+        /** get DefinitionSourceSequence (0008,1156)
+         *  @return reference to sequence element
+         */
+        DRTDefinitionSourceSequence &getDefinitionSourceSequence()
+            { return DefinitionSourceSequence; }
+
+        /** get DefinitionSourceSequence (0008,1156)
+         *  @return const reference to sequence element
+         */
+        const DRTDefinitionSourceSequence &getDefinitionSourceSequence() const
+            { return DefinitionSourceSequence; }
+
+        /** get EnhancedRTBeamLimitingDeviceSequence (3008,00a1)
+         *  @return reference to sequence element
+         */
+        DRTEnhancedRTBeamLimitingDeviceSequence &getEnhancedRTBeamLimitingDeviceSequence()
+            { return EnhancedRTBeamLimitingDeviceSequence; }
+
+        /** get EnhancedRTBeamLimitingDeviceSequence (3008,00a1)
+         *  @return const reference to sequence element
+         */
+        const DRTEnhancedRTBeamLimitingDeviceSequence &getEnhancedRTBeamLimitingDeviceSequence() const
+            { return EnhancedRTBeamLimitingDeviceSequence; }
+
         /** get GeneralAccessorySequence (300a,0420)
          *  @return reference to sequence element
          */
-        DRTGeneralAccessorySequence &getGeneralAccessorySequence()
+        DRTGeneralAccessorySequenceInRTBeamsModule &getGeneralAccessorySequence()
             { return GeneralAccessorySequence; }
 
         /** get GeneralAccessorySequence (300a,0420)
          *  @return const reference to sequence element
          */
-        const DRTGeneralAccessorySequence &getGeneralAccessorySequence() const
+        const DRTGeneralAccessorySequenceInRTBeamsModule &getGeneralAccessorySequence() const
             { return GeneralAccessorySequence; }
+
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return reference to sequence element
+         */
+        DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence()
+            { return InstitutionalDepartmentTypeCodeSequence; }
+
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return const reference to sequence element
+         */
+        const DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence() const
+            { return InstitutionalDepartmentTypeCodeSequence; }
 
         /** get PlannedVerificationImageSequence (300a,00ca)
          *  @return reference to sequence element
@@ -564,6 +617,20 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setDeviceSerialNumber(const OFString &value, const OFBool check = OFTrue);
+
+        /** set EnhancedRTBeamLimitingDeviceDefinitionFlag (3008,00a3)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setEnhancedRTBeamLimitingDeviceDefinitionFlag(const OFString &value, const OFBool check = OFTrue);
+
+        /** set EntityLongLabel (3010,0038)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setEntityLongLabel(const OFString &value, const OFBool check = OFTrue);
 
         /** set FinalCumulativeMetersetWeight (300a,010e)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -721,7 +788,7 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
         DRTApplicatorSequenceInRTBeamsModule ApplicatorSequence;
         /// BeamDescription (300a,00c3) vr=ST, vm=1, type=3
         DcmShortText BeamDescription;
-        /// BeamLimitingDeviceSequence (300a,00b6) vr=SQ, vm=1, type=1
+        /// BeamLimitingDeviceSequence (300a,00b6) vr=SQ, vm=1, type=1C
         DRTBeamLimitingDeviceSequenceInRTBeamsModule BeamLimitingDeviceSequence;
         /// BeamName (300a,00c2) vr=LO, vm=1, type=3
         DcmLongString BeamName;
@@ -735,12 +802,20 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
         DRTCompensatorSequence CompensatorSequence;
         /// ControlPointSequence (300a,0111) vr=SQ, vm=1, type=1
         DRTControlPointSequence ControlPointSequence;
+        /// DefinitionSourceSequence (0008,1156) vr=SQ, vm=1, type=3
+        DRTDefinitionSourceSequence DefinitionSourceSequence;
         /// DeviceSerialNumber (0018,1000) vr=LO, vm=1, type=3
         DcmLongString DeviceSerialNumber;
+        /// EnhancedRTBeamLimitingDeviceDefinitionFlag (3008,00a3) vr=CS, vm=1, type=3
+        DcmCodeString EnhancedRTBeamLimitingDeviceDefinitionFlag;
+        /// EnhancedRTBeamLimitingDeviceSequence (3008,00a1) vr=SQ, vm=1, type=1C
+        DRTEnhancedRTBeamLimitingDeviceSequence EnhancedRTBeamLimitingDeviceSequence;
+        /// EntityLongLabel (3010,0038) vr=LO, vm=1, type=3
+        DcmLongString EntityLongLabel;
         /// FinalCumulativeMetersetWeight (300a,010e) vr=DS, vm=1, type=1C
         DcmDecimalString FinalCumulativeMetersetWeight;
         /// GeneralAccessorySequence (300a,0420) vr=SQ, vm=1, type=3
-        DRTGeneralAccessorySequence GeneralAccessorySequence;
+        DRTGeneralAccessorySequenceInRTBeamsModule GeneralAccessorySequence;
         /// HighDoseTechniqueType (300a,00c7) vr=CS, vm=1, type=1C
         DcmCodeString HighDoseTechniqueType;
         /// InstitutionAddress (0008,0081) vr=ST, vm=1, type=3
@@ -749,6 +824,8 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
         DcmLongString InstitutionName;
         /// InstitutionalDepartmentName (0008,1040) vr=LO, vm=1, type=3
         DcmLongString InstitutionalDepartmentName;
+        /// InstitutionalDepartmentTypeCodeSequence (0008,1041) vr=SQ, vm=1, type=3
+        DRTInstitutionalDepartmentTypeCodeSequence InstitutionalDepartmentTypeCodeSequence;
         /// Manufacturer (0008,0070) vr=LO, vm=1, type=3
         DcmLongString Manufacturer;
         /// ManufacturerModelName (0008,1090) vr=LO, vm=1, type=3
@@ -904,13 +981,13 @@ class DCMTK_DCMRT_EXPORT DRTBeamSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

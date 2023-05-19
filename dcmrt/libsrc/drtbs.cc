@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -30,13 +30,18 @@ DRTBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     BlockSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     CompensatorSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    DefinitionSourceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     DeviceSerialNumber(DCM_DeviceSerialNumber),
+    EnhancedRTBeamLimitingDeviceDefinitionFlag(DCM_EnhancedRTBeamLimitingDeviceDefinitionFlag),
+    EnhancedRTBeamLimitingDeviceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    EntityLongLabel(DCM_EntityLongLabel),
     FinalCumulativeMetersetWeight(DCM_FinalCumulativeMetersetWeight),
     GeneralAccessorySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     HighDoseTechniqueType(DCM_HighDoseTechniqueType),
     InstitutionAddress(DCM_InstitutionAddress),
     InstitutionName(DCM_InstitutionName),
     InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     Manufacturer(DCM_Manufacturer),
     ManufacturerModelName(DCM_ManufacturerModelName),
     NumberOfBlocks(DCM_NumberOfBlocks),
@@ -75,13 +80,18 @@ DRTBeamSequence::Item::Item(const Item &copy)
     BlockSequence(copy.BlockSequence),
     CompensatorSequence(copy.CompensatorSequence),
     ControlPointSequence(copy.ControlPointSequence),
+    DefinitionSourceSequence(copy.DefinitionSourceSequence),
     DeviceSerialNumber(copy.DeviceSerialNumber),
+    EnhancedRTBeamLimitingDeviceDefinitionFlag(copy.EnhancedRTBeamLimitingDeviceDefinitionFlag),
+    EnhancedRTBeamLimitingDeviceSequence(copy.EnhancedRTBeamLimitingDeviceSequence),
+    EntityLongLabel(copy.EntityLongLabel),
     FinalCumulativeMetersetWeight(copy.FinalCumulativeMetersetWeight),
     GeneralAccessorySequence(copy.GeneralAccessorySequence),
     HighDoseTechniqueType(copy.HighDoseTechniqueType),
     InstitutionAddress(copy.InstitutionAddress),
     InstitutionName(copy.InstitutionName),
     InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(copy.InstitutionalDepartmentTypeCodeSequence),
     Manufacturer(copy.Manufacturer),
     ManufacturerModelName(copy.ManufacturerModelName),
     NumberOfBlocks(copy.NumberOfBlocks),
@@ -128,13 +138,18 @@ DRTBeamSequence::Item &DRTBeamSequence::Item::operator=(const Item &copy)
         BlockSequence = copy.BlockSequence;
         CompensatorSequence = copy.CompensatorSequence;
         ControlPointSequence = copy.ControlPointSequence;
+        DefinitionSourceSequence = copy.DefinitionSourceSequence;
         DeviceSerialNumber = copy.DeviceSerialNumber;
+        EnhancedRTBeamLimitingDeviceDefinitionFlag = copy.EnhancedRTBeamLimitingDeviceDefinitionFlag;
+        EnhancedRTBeamLimitingDeviceSequence = copy.EnhancedRTBeamLimitingDeviceSequence;
+        EntityLongLabel = copy.EntityLongLabel;
         FinalCumulativeMetersetWeight = copy.FinalCumulativeMetersetWeight;
         GeneralAccessorySequence = copy.GeneralAccessorySequence;
         HighDoseTechniqueType = copy.HighDoseTechniqueType;
         InstitutionAddress = copy.InstitutionAddress;
         InstitutionName = copy.InstitutionName;
         InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
+        InstitutionalDepartmentTypeCodeSequence = copy.InstitutionalDepartmentTypeCodeSequence;
         Manufacturer = copy.Manufacturer;
         ManufacturerModelName = copy.ManufacturerModelName;
         NumberOfBlocks = copy.NumberOfBlocks;
@@ -170,7 +185,9 @@ void DRTBeamSequence::Item::clear()
         /* clear all DICOM attributes */
         BeamNumber.clear();
         BeamName.clear();
+        EntityLongLabel.clear();
         BeamDescription.clear();
+        DefinitionSourceSequence.clear();
         BeamType.clear();
         RadiationType.clear();
         PrimaryFluenceModeSequence.clear();
@@ -180,12 +197,15 @@ void DRTBeamSequence::Item::clear()
         InstitutionName.clear();
         InstitutionAddress.clear();
         InstitutionalDepartmentName.clear();
+        InstitutionalDepartmentTypeCodeSequence.clear();
         ManufacturerModelName.clear();
         DeviceSerialNumber.clear();
         PrimaryDosimeterUnit.clear();
         ReferencedToleranceTableNumber.clear();
         SourceAxisDistance.clear();
+        EnhancedRTBeamLimitingDeviceDefinitionFlag.clear();
         BeamLimitingDeviceSequence.clear();
+        EnhancedRTBeamLimitingDeviceSequence.clear();
         ReferencedPatientSetupNumber.clear();
         ReferencedReferenceImageSequence.clear();
         PlannedVerificationImageSequence.clear();
@@ -215,7 +235,9 @@ OFBool DRTBeamSequence::Item::isEmpty()
 {
     return BeamNumber.isEmpty() &&
            BeamName.isEmpty() &&
+           EntityLongLabel.isEmpty() &&
            BeamDescription.isEmpty() &&
+           DefinitionSourceSequence.isEmpty() &&
            BeamType.isEmpty() &&
            RadiationType.isEmpty() &&
            PrimaryFluenceModeSequence.isEmpty() &&
@@ -225,12 +247,15 @@ OFBool DRTBeamSequence::Item::isEmpty()
            InstitutionName.isEmpty() &&
            InstitutionAddress.isEmpty() &&
            InstitutionalDepartmentName.isEmpty() &&
+           InstitutionalDepartmentTypeCodeSequence.isEmpty() &&
            ManufacturerModelName.isEmpty() &&
            DeviceSerialNumber.isEmpty() &&
            PrimaryDosimeterUnit.isEmpty() &&
            ReferencedToleranceTableNumber.isEmpty() &&
            SourceAxisDistance.isEmpty() &&
+           EnhancedRTBeamLimitingDeviceDefinitionFlag.isEmpty() &&
            BeamLimitingDeviceSequence.isEmpty() &&
+           EnhancedRTBeamLimitingDeviceSequence.isEmpty() &&
            ReferencedPatientSetupNumber.isEmpty() &&
            ReferencedReferenceImageSequence.isEmpty() &&
            PlannedVerificationImageSequence.isEmpty() &&
@@ -270,7 +295,9 @@ OFCondition DRTBeamSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, BeamNumber, "1", "1", "BeamSequence");
         getAndCheckElementFromDataset(item, BeamName, "1", "3", "BeamSequence");
+        getAndCheckElementFromDataset(item, EntityLongLabel, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, BeamDescription, "1", "3", "BeamSequence");
+        DefinitionSourceSequence.read(item, "1-n", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, BeamType, "1", "1", "BeamSequence");
         getAndCheckElementFromDataset(item, RadiationType, "1", "2", "BeamSequence");
         PrimaryFluenceModeSequence.read(item, "1-n", "3", "BeamSequence");
@@ -280,12 +307,15 @@ OFCondition DRTBeamSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, InstitutionName, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, InstitutionAddress, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, InstitutionalDepartmentName, "1", "3", "BeamSequence");
+        InstitutionalDepartmentTypeCodeSequence.read(item, "1-n", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, ManufacturerModelName, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, DeviceSerialNumber, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, PrimaryDosimeterUnit, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, ReferencedToleranceTableNumber, "1", "3", "BeamSequence");
         getAndCheckElementFromDataset(item, SourceAxisDistance, "1", "3", "BeamSequence");
-        BeamLimitingDeviceSequence.read(item, "1-n", "1", "BeamSequence");
+        getAndCheckElementFromDataset(item, EnhancedRTBeamLimitingDeviceDefinitionFlag, "1", "3", "BeamSequence");
+        BeamLimitingDeviceSequence.read(item, "1-n", "1C", "BeamSequence");
+        EnhancedRTBeamLimitingDeviceSequence.read(item, "1-n", "1C", "BeamSequence");
         getAndCheckElementFromDataset(item, ReferencedPatientSetupNumber, "1", "3", "BeamSequence");
         ReferencedReferenceImageSequence.read(item, "1-n", "3", "BeamSequence");
         PlannedVerificationImageSequence.read(item, "1-n", "3", "BeamSequence");
@@ -321,7 +351,9 @@ OFCondition DRTBeamSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(BeamNumber), "1", "1", "BeamSequence");
         addElementToDataset(result, item, new DcmLongString(BeamName), "1", "3", "BeamSequence");
+        addElementToDataset(result, item, new DcmLongString(EntityLongLabel), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmShortText(BeamDescription), "1", "3", "BeamSequence");
+        if (result.good()) result = DefinitionSourceSequence.write(item, "1-n", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmCodeString(BeamType), "1", "1", "BeamSequence");
         addElementToDataset(result, item, new DcmCodeString(RadiationType), "1", "2", "BeamSequence");
         if (result.good()) result = PrimaryFluenceModeSequence.write(item, "1-n", "3", "BeamSequence");
@@ -331,12 +363,15 @@ OFCondition DRTBeamSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(InstitutionName), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmShortText(InstitutionAddress), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmLongString(InstitutionalDepartmentName), "1", "3", "BeamSequence");
+        if (result.good()) result = InstitutionalDepartmentTypeCodeSequence.write(item, "1-n", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmLongString(ManufacturerModelName), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmLongString(DeviceSerialNumber), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmCodeString(PrimaryDosimeterUnit), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(ReferencedToleranceTableNumber), "1", "3", "BeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(SourceAxisDistance), "1", "3", "BeamSequence");
-        if (result.good()) result = BeamLimitingDeviceSequence.write(item, "1-n", "1", "BeamSequence");
+        addElementToDataset(result, item, new DcmCodeString(EnhancedRTBeamLimitingDeviceDefinitionFlag), "1", "3", "BeamSequence");
+        if (result.good()) result = BeamLimitingDeviceSequence.write(item, "1-n", "1C", "BeamSequence");
+        if (result.good()) result = EnhancedRTBeamLimitingDeviceSequence.write(item, "1-n", "1C", "BeamSequence");
         addElementToDataset(result, item, new DcmIntegerString(ReferencedPatientSetupNumber), "1", "3", "BeamSequence");
         if (result.good()) result = ReferencedReferenceImageSequence.write(item, "1-n", "3", "BeamSequence");
         if (result.good()) result = PlannedVerificationImageSequence.write(item, "1-n", "3", "BeamSequence");
@@ -414,6 +449,24 @@ OFCondition DRTBeamSequence::Item::getDeviceSerialNumber(OFString &value, const 
         return EC_IllegalCall;
     else
         return getStringValueFromElement(DeviceSerialNumber, value, pos);
+}
+
+
+OFCondition DRTBeamSequence::Item::getEnhancedRTBeamLimitingDeviceDefinitionFlag(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(EnhancedRTBeamLimitingDeviceDefinitionFlag, value, pos);
+}
+
+
+OFCondition DRTBeamSequence::Item::getEntityLongLabel(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(EntityLongLabel, value, pos);
 }
 
 
@@ -765,6 +818,32 @@ OFCondition DRTBeamSequence::Item::setDeviceSerialNumber(const OFString &value, 
         result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = DeviceSerialNumber.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTBeamSequence::Item::setEnhancedRTBeamLimitingDeviceDefinitionFlag(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = EnhancedRTBeamLimitingDeviceDefinitionFlag.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTBeamSequence::Item::setEntityLongLabel(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = EntityLongLabel.putOFStringArray(value);
     }
     return result;
 }
@@ -1167,10 +1246,12 @@ OFCondition DRTBeamSequence::gotoFirstItem()
 OFCondition DRTBeamSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

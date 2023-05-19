@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTOriginalAttributesSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -24,6 +24,7 @@ DRTOriginalAttributesSequence::Item::Item(const OFBool emptyDefaultItem)
     AttributeModificationDateTime(DCM_AttributeModificationDateTime),
     ModifiedAttributesSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ModifyingSystem(DCM_ModifyingSystem),
+    NonconformingModifiedAttributesSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReasonForTheAttributeModification(DCM_ReasonForTheAttributeModification),
     SourceOfPreviousValues(DCM_SourceOfPreviousValues)
 {
@@ -35,6 +36,7 @@ DRTOriginalAttributesSequence::Item::Item(const Item &copy)
     AttributeModificationDateTime(copy.AttributeModificationDateTime),
     ModifiedAttributesSequence(copy.ModifiedAttributesSequence),
     ModifyingSystem(copy.ModifyingSystem),
+    NonconformingModifiedAttributesSequence(copy.NonconformingModifiedAttributesSequence),
     ReasonForTheAttributeModification(copy.ReasonForTheAttributeModification),
     SourceOfPreviousValues(copy.SourceOfPreviousValues)
 {
@@ -54,6 +56,7 @@ DRTOriginalAttributesSequence::Item &DRTOriginalAttributesSequence::Item::operat
         AttributeModificationDateTime = copy.AttributeModificationDateTime;
         ModifiedAttributesSequence = copy.ModifiedAttributesSequence;
         ModifyingSystem = copy.ModifyingSystem;
+        NonconformingModifiedAttributesSequence = copy.NonconformingModifiedAttributesSequence;
         ReasonForTheAttributeModification = copy.ReasonForTheAttributeModification;
         SourceOfPreviousValues = copy.SourceOfPreviousValues;
     }
@@ -71,6 +74,7 @@ void DRTOriginalAttributesSequence::Item::clear()
         ModifyingSystem.clear();
         ReasonForTheAttributeModification.clear();
         ModifiedAttributesSequence.clear();
+        NonconformingModifiedAttributesSequence.clear();
     }
 }
 
@@ -81,7 +85,8 @@ OFBool DRTOriginalAttributesSequence::Item::isEmpty()
            AttributeModificationDateTime.isEmpty() &&
            ModifyingSystem.isEmpty() &&
            ReasonForTheAttributeModification.isEmpty() &&
-           ModifiedAttributesSequence.isEmpty();
+           ModifiedAttributesSequence.isEmpty() &&
+           NonconformingModifiedAttributesSequence.isEmpty();
 }
 
 
@@ -103,6 +108,7 @@ OFCondition DRTOriginalAttributesSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ModifyingSystem, "1", "1", "OriginalAttributesSequence");
         getAndCheckElementFromDataset(item, ReasonForTheAttributeModification, "1", "1", "OriginalAttributesSequence");
         ModifiedAttributesSequence.read(item, "1-n", "1", "OriginalAttributesSequence");
+        NonconformingModifiedAttributesSequence.read(item, "1-n", "3", "OriginalAttributesSequence");
         result = EC_Normal;
     }
     return result;
@@ -120,6 +126,7 @@ OFCondition DRTOriginalAttributesSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(ModifyingSystem), "1", "1", "OriginalAttributesSequence");
         addElementToDataset(result, item, new DcmCodeString(ReasonForTheAttributeModification), "1", "1", "OriginalAttributesSequence");
         if (result.good()) result = ModifiedAttributesSequence.write(item, "1-n", "1", "OriginalAttributesSequence");
+        if (result.good()) result = NonconformingModifiedAttributesSequence.write(item, "1-n", "3", "OriginalAttributesSequence");
     }
     return result;
 }
@@ -337,10 +344,12 @@ OFCondition DRTOriginalAttributesSequence::gotoFirstItem()
 OFCondition DRTOriginalAttributesSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

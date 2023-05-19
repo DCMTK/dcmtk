@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTBeamDoseVerificationControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -24,6 +24,7 @@ DRTBeamDoseVerificationControlPointSequence::Item::Item(const OFBool emptyDefaul
     BeamDosePointDepth(DCM_BeamDosePointDepth),
     BeamDosePointEquivalentDepth(DCM_BeamDosePointEquivalentDepth),
     BeamDosePointSSD(DCM_BeamDosePointSSD),
+    BeamDosePointSourceToExternalContourDistance(DCM_BeamDosePointSourceToExternalContourDistance),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
     ReferencedControlPointIndex(DCM_ReferencedControlPointIndex)
 {
@@ -35,6 +36,7 @@ DRTBeamDoseVerificationControlPointSequence::Item::Item(const Item &copy)
     BeamDosePointDepth(copy.BeamDosePointDepth),
     BeamDosePointEquivalentDepth(copy.BeamDosePointEquivalentDepth),
     BeamDosePointSSD(copy.BeamDosePointSSD),
+    BeamDosePointSourceToExternalContourDistance(copy.BeamDosePointSourceToExternalContourDistance),
     CumulativeMetersetWeight(copy.CumulativeMetersetWeight),
     ReferencedControlPointIndex(copy.ReferencedControlPointIndex)
 {
@@ -54,6 +56,7 @@ DRTBeamDoseVerificationControlPointSequence::Item &DRTBeamDoseVerificationContro
         BeamDosePointDepth = copy.BeamDosePointDepth;
         BeamDosePointEquivalentDepth = copy.BeamDosePointEquivalentDepth;
         BeamDosePointSSD = copy.BeamDosePointSSD;
+        BeamDosePointSourceToExternalContourDistance = copy.BeamDosePointSourceToExternalContourDistance;
         CumulativeMetersetWeight = copy.CumulativeMetersetWeight;
         ReferencedControlPointIndex = copy.ReferencedControlPointIndex;
     }
@@ -71,6 +74,7 @@ void DRTBeamDoseVerificationControlPointSequence::Item::clear()
         BeamDosePointDepth.clear();
         BeamDosePointEquivalentDepth.clear();
         BeamDosePointSSD.clear();
+        BeamDosePointSourceToExternalContourDistance.clear();
     }
 }
 
@@ -81,7 +85,8 @@ OFBool DRTBeamDoseVerificationControlPointSequence::Item::isEmpty()
            ReferencedControlPointIndex.isEmpty() &&
            BeamDosePointDepth.isEmpty() &&
            BeamDosePointEquivalentDepth.isEmpty() &&
-           BeamDosePointSSD.isEmpty();
+           BeamDosePointSSD.isEmpty() &&
+           BeamDosePointSourceToExternalContourDistance.isEmpty();
 }
 
 
@@ -103,6 +108,7 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::read(DcmItem &ite
         getAndCheckElementFromDataset(item, BeamDosePointDepth, "1", "1C", "BeamDoseVerificationControlPointSequence");
         getAndCheckElementFromDataset(item, BeamDosePointEquivalentDepth, "1", "1C", "BeamDoseVerificationControlPointSequence");
         getAndCheckElementFromDataset(item, BeamDosePointSSD, "1", "1C", "BeamDoseVerificationControlPointSequence");
+        getAndCheckElementFromDataset(item, BeamDosePointSourceToExternalContourDistance, "1", "3", "BeamDoseVerificationControlPointSequence");
         result = EC_Normal;
     }
     return result;
@@ -120,6 +126,7 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::write(DcmItem &it
         addElementToDataset(result, item, new DcmFloatingPointSingle(BeamDosePointDepth), "1", "1C", "BeamDoseVerificationControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(BeamDosePointEquivalentDepth), "1", "1C", "BeamDoseVerificationControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(BeamDosePointSSD), "1", "1C", "BeamDoseVerificationControlPointSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BeamDosePointSourceToExternalContourDistance), "1", "3", "BeamDoseVerificationControlPointSequence");
     }
     return result;
 }
@@ -149,6 +156,24 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::getBeamDosePointS
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmFloatingPointSingle &, BeamDosePointSSD).getFloat32(value, pos);
+}
+
+
+OFCondition DRTBeamDoseVerificationControlPointSequence::Item::getBeamDosePointSourceToExternalContourDistance(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BeamDosePointSourceToExternalContourDistance, value, pos);
+}
+
+
+OFCondition DRTBeamDoseVerificationControlPointSequence::Item::getBeamDosePointSourceToExternalContourDistance(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, BeamDosePointSourceToExternalContourDistance).getFloat64(value, pos);
 }
 
 
@@ -212,6 +237,19 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::Item::setBeamDosePointS
         return EC_IllegalCall;
     else
         return BeamDosePointSSD.putFloat32(value, pos);
+}
+
+
+OFCondition DRTBeamDoseVerificationControlPointSequence::Item::setBeamDosePointSourceToExternalContourDistance(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = BeamDosePointSourceToExternalContourDistance.putOFStringArray(value);
+    }
+    return result;
 }
 
 
@@ -365,10 +403,12 @@ OFCondition DRTBeamDoseVerificationControlPointSequence::gotoFirstItem()
 OFCondition DRTBeamDoseVerificationControlPointSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

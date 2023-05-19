@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTStructureSetROISequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,7 +19,10 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtcvis.h"   // for ConceptualVolumeIdentificationSequence
+#include "dcmtk/dcmrt/seq/drtdfss.h"   // for DefinitionSourceSequence
 #include "dcmtk/dcmrt/seq/drtdcs.h"    // for DerivationCodeSequence
+#include "dcmtk/dcmrt/seq/drtrdais.h"  // for ROIDerivationAlgorithmIdentificationSequence
 
 
 /** Interface class for StructureSetROISequence (3006,0020)
@@ -157,6 +160,30 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetROISequence
 
       // --- get DICOM sequence attributes ---
 
+        /** get ConceptualVolumeIdentificationSequence (3010,00a0)
+         *  @return reference to sequence element
+         */
+        DRTConceptualVolumeIdentificationSequence &getConceptualVolumeIdentificationSequence()
+            { return ConceptualVolumeIdentificationSequence; }
+
+        /** get ConceptualVolumeIdentificationSequence (3010,00a0)
+         *  @return const reference to sequence element
+         */
+        const DRTConceptualVolumeIdentificationSequence &getConceptualVolumeIdentificationSequence() const
+            { return ConceptualVolumeIdentificationSequence; }
+
+        /** get DefinitionSourceSequence (0008,1156)
+         *  @return reference to sequence element
+         */
+        DRTDefinitionSourceSequence &getDefinitionSourceSequence()
+            { return DefinitionSourceSequence; }
+
+        /** get DefinitionSourceSequence (0008,1156)
+         *  @return const reference to sequence element
+         */
+        const DRTDefinitionSourceSequence &getDefinitionSourceSequence() const
+            { return DefinitionSourceSequence; }
+
         /** get DerivationCodeSequence (0008,9215)
          *  @return reference to sequence element
          */
@@ -168,6 +195,18 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetROISequence
          */
         const DRTDerivationCodeSequence &getDerivationCodeSequence() const
             { return DerivationCodeSequence; }
+
+        /** get ROIDerivationAlgorithmIdentificationSequence (3006,0037)
+         *  @return reference to sequence element
+         */
+        DRTROIDerivationAlgorithmIdentificationSequence &getROIDerivationAlgorithmIdentificationSequence()
+            { return ROIDerivationAlgorithmIdentificationSequence; }
+
+        /** get ROIDerivationAlgorithmIdentificationSequence (3006,0037)
+         *  @return const reference to sequence element
+         */
+        const DRTROIDerivationAlgorithmIdentificationSequence &getROIDerivationAlgorithmIdentificationSequence() const
+            { return ROIDerivationAlgorithmIdentificationSequence; }
 
       // --- set DICOM attribute values ---
 
@@ -225,8 +264,14 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetROISequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// ConceptualVolumeIdentificationSequence (3010,00a0) vr=SQ, vm=1, type=3
+        DRTConceptualVolumeIdentificationSequence ConceptualVolumeIdentificationSequence;
+        /// DefinitionSourceSequence (0008,1156) vr=SQ, vm=1, type=3
+        DRTDefinitionSourceSequence DefinitionSourceSequence;
         /// DerivationCodeSequence (0008,9215) vr=SQ, vm=1, type=3
         DRTDerivationCodeSequence DerivationCodeSequence;
+        /// ROIDerivationAlgorithmIdentificationSequence (3006,0037) vr=SQ, vm=1, type=3
+        DRTROIDerivationAlgorithmIdentificationSequence ROIDerivationAlgorithmIdentificationSequence;
         /// ROIDescription (3006,0028) vr=ST, vm=1, type=3
         DcmShortText ROIDescription;
         /// ROIGenerationAlgorithm (3006,0036) vr=CS, vm=1, type=2
@@ -350,13 +395,13 @@ class DCMTK_DCMRT_EXPORT DRTStructureSetROISequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

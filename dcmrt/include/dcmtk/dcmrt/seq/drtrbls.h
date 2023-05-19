@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTRecordedBlockSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,6 +19,7 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtrbss.h"   // for RecordedBlockSlabSequence
 
 
 /** Interface class for RecordedBlockSequence (3008,00d0)
@@ -112,6 +113,20 @@ class DCMTK_DCMRT_EXPORT DRTRecordedBlockSequence
          */
         OFCondition getBlockTrayID(OFString &value, const signed long pos = 0) const;
 
+        /** get NumberOfBlockSlabItems (300a,0440)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getNumberOfBlockSlabItems(OFString &value, const signed long pos = 0) const;
+
+        /** get NumberOfBlockSlabItems (300a,0440)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getNumberOfBlockSlabItems(Sint32 &value, const unsigned long pos = 0) const;
+
         /** get ReferencedBlockNumber (300c,00e0)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -125,6 +140,20 @@ class DCMTK_DCMRT_EXPORT DRTRecordedBlockSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getReferencedBlockNumber(Sint32 &value, const unsigned long pos = 0) const;
+
+      // --- get DICOM sequence attributes ---
+
+        /** get RecordedBlockSlabSequence (3008,00d1)
+         *  @return reference to sequence element
+         */
+        DRTRecordedBlockSlabSequence &getRecordedBlockSlabSequence()
+            { return RecordedBlockSlabSequence; }
+
+        /** get RecordedBlockSlabSequence (3008,00d1)
+         *  @return const reference to sequence element
+         */
+        const DRTRecordedBlockSlabSequence &getRecordedBlockSlabSequence() const
+            { return RecordedBlockSlabSequence; }
 
       // --- set DICOM attribute values ---
 
@@ -149,6 +178,13 @@ class DCMTK_DCMRT_EXPORT DRTRecordedBlockSequence
          */
         OFCondition setBlockTrayID(const OFString &value, const OFBool check = OFTrue);
 
+        /** set NumberOfBlockSlabItems (300a,0440)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setNumberOfBlockSlabItems(const OFString &value, const OFBool check = OFTrue);
+
         /** set ReferencedBlockNumber (300c,00e0)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
@@ -167,6 +203,10 @@ class DCMTK_DCMRT_EXPORT DRTRecordedBlockSequence
         DcmLongString BlockName;
         /// BlockTrayID (300a,00f5) vr=SH, vm=1, type=3
         DcmShortString BlockTrayID;
+        /// NumberOfBlockSlabItems (300a,0440) vr=IS, vm=1, type=3
+        DcmIntegerString NumberOfBlockSlabItems;
+        /// RecordedBlockSlabSequence (3008,00d1) vr=SQ, vm=1, type=1C
+        DRTRecordedBlockSlabSequence RecordedBlockSlabSequence;
         /// ReferencedBlockNumber (300c,00e0) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedBlockNumber;
 
@@ -278,13 +318,13 @@ class DCMTK_DCMRT_EXPORT DRTRecordedBlockSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

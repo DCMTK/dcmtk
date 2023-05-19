@@ -1,14 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTContourSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
- *  Last modified on 2021-02-01 by Riesmeier
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -22,13 +21,10 @@
 
 DRTContourSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    AttachedContours(DCM_RETIRED_AttachedContours),
     ContourData(DCM_ContourData),
     ContourGeometricType(DCM_ContourGeometricType),
     ContourImageSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ContourNumber(DCM_ContourNumber),
-    ContourOffsetVector(DCM_RETIRED_ContourOffsetVector),
-    ContourSlabThickness(DCM_RETIRED_ContourSlabThickness),
     NumberOfContourPoints(DCM_NumberOfContourPoints)
 {
 }
@@ -36,13 +32,10 @@ DRTContourSequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTContourSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    AttachedContours(copy.AttachedContours),
     ContourData(copy.ContourData),
     ContourGeometricType(copy.ContourGeometricType),
     ContourImageSequence(copy.ContourImageSequence),
     ContourNumber(copy.ContourNumber),
-    ContourOffsetVector(copy.ContourOffsetVector),
-    ContourSlabThickness(copy.ContourSlabThickness),
     NumberOfContourPoints(copy.NumberOfContourPoints)
 {
 }
@@ -58,13 +51,10 @@ DRTContourSequence::Item &DRTContourSequence::Item::operator=(const Item &copy)
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        AttachedContours = copy.AttachedContours;
         ContourData = copy.ContourData;
         ContourGeometricType = copy.ContourGeometricType;
         ContourImageSequence = copy.ContourImageSequence;
         ContourNumber = copy.ContourNumber;
-        ContourOffsetVector = copy.ContourOffsetVector;
-        ContourSlabThickness = copy.ContourSlabThickness;
         NumberOfContourPoints = copy.NumberOfContourPoints;
     }
     return *this;
@@ -77,11 +67,8 @@ void DRTContourSequence::Item::clear()
     {
         /* clear all DICOM attributes */
         ContourNumber.clear();
-        AttachedContours.clear();
         ContourImageSequence.clear();
         ContourGeometricType.clear();
-        ContourSlabThickness.clear();
-        ContourOffsetVector.clear();
         NumberOfContourPoints.clear();
         ContourData.clear();
     }
@@ -91,11 +78,8 @@ void DRTContourSequence::Item::clear()
 OFBool DRTContourSequence::Item::isEmpty()
 {
     return ContourNumber.isEmpty() &&
-           AttachedContours.isEmpty() &&
            ContourImageSequence.isEmpty() &&
            ContourGeometricType.isEmpty() &&
-           ContourSlabThickness.isEmpty() &&
-           ContourOffsetVector.isEmpty() &&
            NumberOfContourPoints.isEmpty() &&
            ContourData.isEmpty();
 }
@@ -115,11 +99,8 @@ OFCondition DRTContourSequence::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ContourNumber, "1", "3", "ContourSequence");
-        getAndCheckElementFromDataset(item, AttachedContours, "1-n", "3", "ContourSequence");
         ContourImageSequence.read(item, "1-n", "3", "ContourSequence");
         getAndCheckElementFromDataset(item, ContourGeometricType, "1", "1", "ContourSequence");
-        getAndCheckElementFromDataset(item, ContourSlabThickness, "1", "3", "ContourSequence");
-        getAndCheckElementFromDataset(item, ContourOffsetVector, "3", "3", "ContourSequence");
         getAndCheckElementFromDataset(item, NumberOfContourPoints, "1", "1", "ContourSequence");
         getAndCheckElementFromDataset(item, ContourData, "3-3n", "1", "ContourSequence");
         result = EC_Normal;
@@ -135,33 +116,12 @@ OFCondition DRTContourSequence::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ContourNumber), "1", "3", "ContourSequence");
-        addElementToDataset(result, item, new DcmIntegerString(AttachedContours), "1-n", "3", "ContourSequence");
         if (result.good()) result = ContourImageSequence.write(item, "1-n", "3", "ContourSequence");
         addElementToDataset(result, item, new DcmCodeString(ContourGeometricType), "1", "1", "ContourSequence");
-        addElementToDataset(result, item, new DcmDecimalString(ContourSlabThickness), "1", "3", "ContourSequence");
-        addElementToDataset(result, item, new DcmDecimalString(ContourOffsetVector), "3", "3", "ContourSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfContourPoints), "1", "1", "ContourSequence");
         addElementToDataset(result, item, new DcmDecimalString(ContourData), "3-3n", "1", "ContourSequence");
     }
     return result;
-}
-
-
-OFCondition DRTContourSequence::Item::getAttachedContours(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(AttachedContours, value, pos);
-}
-
-
-OFCondition DRTContourSequence::Item::getAttachedContours(Sint32 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmIntegerString &, AttachedContours).getSint32(value, pos);
 }
 
 
@@ -219,51 +179,6 @@ OFCondition DRTContourSequence::Item::getContourNumber(Sint32 &value, const unsi
 }
 
 
-OFCondition DRTContourSequence::Item::getContourOffsetVector(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContourOffsetVector, value, pos);
-}
-
-
-OFCondition DRTContourSequence::Item::getContourOffsetVector(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, ContourOffsetVector).getFloat64(value, pos);
-}
-
-
-OFCondition DRTContourSequence::Item::getContourOffsetVector(OFVector<Float64> &value) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, ContourOffsetVector).getFloat64Vector(value);
-}
-
-
-OFCondition DRTContourSequence::Item::getContourSlabThickness(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ContourSlabThickness, value, pos);
-}
-
-
-OFCondition DRTContourSequence::Item::getContourSlabThickness(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, ContourSlabThickness).getFloat64(value, pos);
-}
-
-
 OFCondition DRTContourSequence::Item::getNumberOfContourPoints(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
@@ -279,19 +194,6 @@ OFCondition DRTContourSequence::Item::getNumberOfContourPoints(Sint32 &value, co
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmIntegerString &, NumberOfContourPoints).getSint32(value, pos);
-}
-
-
-OFCondition DRTContourSequence::Item::setAttachedContours(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmIntegerString::checkStringValue(value, "1-n") : EC_Normal;
-        if (result.good())
-            result = AttachedContours.putOFStringArray(value);
-    }
-    return result;
 }
 
 
@@ -329,32 +231,6 @@ OFCondition DRTContourSequence::Item::setContourNumber(const OFString &value, co
         result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ContourNumber.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTContourSequence::Item::setContourOffsetVector(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "3") : EC_Normal;
-        if (result.good())
-            result = ContourOffsetVector.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTContourSequence::Item::setContourSlabThickness(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ContourSlabThickness.putOFStringArray(value);
     }
     return result;
 }
@@ -497,10 +373,12 @@ OFCondition DRTContourSequence::gotoFirstItem()
 OFCondition DRTContourSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

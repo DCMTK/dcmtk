@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtbldps.h"  // for BeamLimitingDevicePositionSequence
+#include "dcmtk/dcmrt/seq/drteblos.h"  // for EnhancedRTBeamLimitingOpeningSequence
 #include "dcmtk/dcmrt/seq/drtrdrs1.h"  // for ReferencedDoseReferenceSequence
 #include "dcmtk/dcmrt/seq/drtrds.h"    // for ReferencedDoseSequence
 #include "dcmtk/dcmrt/seq/drtwps.h"    // for WedgePositionSequence
@@ -415,6 +416,18 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
         const DRTBeamLimitingDevicePositionSequence &getBeamLimitingDevicePositionSequence() const
             { return BeamLimitingDevicePositionSequence; }
 
+        /** get EnhancedRTBeamLimitingOpeningSequence (3008,00a2)
+         *  @return reference to sequence element
+         */
+        DRTEnhancedRTBeamLimitingOpeningSequence &getEnhancedRTBeamLimitingOpeningSequence()
+            { return EnhancedRTBeamLimitingOpeningSequence; }
+
+        /** get EnhancedRTBeamLimitingOpeningSequence (3008,00a2)
+         *  @return const reference to sequence element
+         */
+        const DRTEnhancedRTBeamLimitingOpeningSequence &getEnhancedRTBeamLimitingOpeningSequence() const
+            { return EnhancedRTBeamLimitingOpeningSequence; }
+
         /** get ReferencedDoseReferenceSequence (300c,0050)
          *  @return reference to sequence element
          */
@@ -659,6 +672,8 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
         DcmDecimalString CumulativeMetersetWeight;
         /// DoseRateSet (300a,0115) vr=DS, vm=1, type=3
         DcmDecimalString DoseRateSet;
+        /// EnhancedRTBeamLimitingOpeningSequence (3008,00a2) vr=SQ, vm=1, type=2C
+        DRTEnhancedRTBeamLimitingOpeningSequence EnhancedRTBeamLimitingOpeningSequence;
         /// ExternalContourEntryPoint (300a,0133) vr=FL, vm=3, type=3
         DcmFloatingPointSingle ExternalContourEntryPoint;
         /// GantryAngle (300a,011e) vr=DS, vm=1, type=1C
@@ -818,13 +833,13 @@ class DCMTK_DCMRT_EXPORT DRTControlPointSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

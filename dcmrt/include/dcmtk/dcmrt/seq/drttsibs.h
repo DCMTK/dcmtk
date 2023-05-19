@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTTreatmentSessionIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,11 +19,13 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtas7.h"    // for ApplicatorSequence
+#include "dcmtk/dcmrt/seq/drtas4.h"    // for ApplicatorSequence
 #include "dcmtk/dcmrt/seq/drtbldls.h"  // for BeamLimitingDeviceLeafPairsSequence
 #include "dcmtk/dcmrt/seq/drtdddps.h"  // for DeliveredDepthDoseParametersSequence
-#include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
+#include "dcmtk/dcmrt/seq/drtgas6.h"   // for GeneralAccessorySequence
 #include "dcmtk/dcmrt/seq/drticpds.h"  // for IonControlPointDeliverySequence
+#include "dcmtk/dcmrt/seq/drtmttcs.h"  // for MachineSpecificTreatmentTerminationCodeSequence
+#include "dcmtk/dcmrt/seq/drtttrcs.h"  // for RTTreatmentTerminationReasonCodeSequence
 #include "dcmtk/dcmrt/seq/drtrbls.h"   // for RecordedBlockSequence
 #include "dcmtk/dcmrt/seq/drtrcos.h"   // for RecordedCompensatorSequence
 #include "dcmtk/dcmrt/seq/drtrlsds.h"  // for RecordedLateralSpreadingDeviceSequence
@@ -31,7 +33,7 @@
 #include "dcmtk/dcmrt/seq/drtrrshs.h"  // for RecordedRangeShifterSequence
 #include "dcmtk/dcmrt/seq/drtrsns.h"   // for RecordedSnoutSequence
 #include "dcmtk/dcmrt/seq/drtrws.h"    // for RecordedWedgeSequence
-#include "dcmtk/dcmrt/seq/drtrbos7.h"  // for ReferencedBolusSequence
+#include "dcmtk/dcmrt/seq/drtrbos3.h"  // for ReferencedBolusSequence
 #include "dcmtk/dcmrt/seq/drtrcdrs.h"  // for ReferencedCalculatedDoseReferenceSequence
 #include "dcmtk/dcmrt/seq/drtrmdrs.h"  // for ReferencedMeasuredDoseReferenceSequence
 #include "dcmtk/dcmrt/seq/drtrvis.h"   // for ReferencedVerificationImageSequence
@@ -183,6 +185,13 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getDeliveredTreatmentTime(Float64 &value, const unsigned long pos = 0) const;
+
+        /** get EntityLongLabel (3010,0038)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getEntityLongLabel(OFString &value, const signed long pos = 0) const;
 
         /** get FixationEye (300a,0150)
          *  @param  value  reference to variable in which the value should be stored
@@ -485,12 +494,12 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
          */
         OFCondition getTreatmentDeliveryType(OFString &value, const signed long pos = 0) const;
 
-        /** get TreatmentTerminationCode (3008,002b)
+        /** get TreatmentTerminationDescription (300a,0730)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition getTreatmentTerminationCode(OFString &value, const signed long pos = 0) const;
+        OFCondition getTreatmentTerminationDescription(OFString &value, const signed long pos = 0) const;
 
         /** get TreatmentTerminationStatus (3008,002a)
          *  @param  value  reference to variable in which the value should be stored
@@ -547,13 +556,13 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         /** get GeneralAccessorySequence (300a,0420)
          *  @return reference to sequence element
          */
-        DRTGeneralAccessorySequence &getGeneralAccessorySequence()
+        DRTGeneralAccessorySequenceInRTIonBeamsSessionRecordModule &getGeneralAccessorySequence()
             { return GeneralAccessorySequence; }
 
         /** get GeneralAccessorySequence (300a,0420)
          *  @return const reference to sequence element
          */
-        const DRTGeneralAccessorySequence &getGeneralAccessorySequence() const
+        const DRTGeneralAccessorySequenceInRTIonBeamsSessionRecordModule &getGeneralAccessorySequence() const
             { return GeneralAccessorySequence; }
 
         /** get IonControlPointDeliverySequence (3008,0041)
@@ -567,6 +576,30 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
          */
         const DRTIonControlPointDeliverySequence &getIonControlPointDeliverySequence() const
             { return IonControlPointDeliverySequence; }
+
+        /** get MachineSpecificTreatmentTerminationCodeSequence (300a,0716)
+         *  @return reference to sequence element
+         */
+        DRTMachineSpecificTreatmentTerminationCodeSequence &getMachineSpecificTreatmentTerminationCodeSequence()
+            { return MachineSpecificTreatmentTerminationCodeSequence; }
+
+        /** get MachineSpecificTreatmentTerminationCodeSequence (300a,0716)
+         *  @return const reference to sequence element
+         */
+        const DRTMachineSpecificTreatmentTerminationCodeSequence &getMachineSpecificTreatmentTerminationCodeSequence() const
+            { return MachineSpecificTreatmentTerminationCodeSequence; }
+
+        /** get RTTreatmentTerminationReasonCodeSequence (300a,0715)
+         *  @return reference to sequence element
+         */
+        DRTRTTreatmentTerminationReasonCodeSequence &getRTTreatmentTerminationReasonCodeSequence()
+            { return RTTreatmentTerminationReasonCodeSequence; }
+
+        /** get RTTreatmentTerminationReasonCodeSequence (300a,0715)
+         *  @return const reference to sequence element
+         */
+        const DRTRTTreatmentTerminationReasonCodeSequence &getRTTreatmentTerminationReasonCodeSequence() const
+            { return RTTreatmentTerminationReasonCodeSequence; }
 
         /** get RecordedBlockSequence (3008,00d0)
          *  @return reference to sequence element
@@ -750,6 +783,13 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setDeliveredTreatmentTime(const OFString &value, const OFBool check = OFTrue);
+
+        /** set EntityLongLabel (3010,0038)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setEntityLongLabel(const OFString &value, const OFBool check = OFTrue);
 
         /** set FixationEye (300a,0150)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -940,12 +980,12 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
          */
         OFCondition setTreatmentDeliveryType(const OFString &value, const OFBool check = OFTrue);
 
-        /** set TreatmentTerminationCode (3008,002b)
+        /** set TreatmentTerminationDescription (300a,0730)
          *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
+         *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
          *  @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition setTreatmentTerminationCode(const OFString &value, const OFBool check = OFTrue);
+        OFCondition setTreatmentTerminationDescription(const OFString &value, const OFBool check = OFTrue);
 
         /** set TreatmentTerminationStatus (3008,002a)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -986,6 +1026,8 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         DcmDecimalString DeliveredSecondaryMeterset;
         /// DeliveredTreatmentTime (3008,003b) vr=DS, vm=1, type=3
         DcmDecimalString DeliveredTreatmentTime;
+        /// EntityLongLabel (3010,0038) vr=LO, vm=1, type=3
+        DcmLongString EntityLongLabel;
         /// FixationEye (300a,0150) vr=CS, vm=1, type=3
         DcmCodeString FixationEye;
         /// FixationLightAzimuthalAngle (300a,0356) vr=FL, vm=1, type=3
@@ -993,9 +1035,11 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         /// FixationLightPolarAngle (300a,0358) vr=FL, vm=1, type=3
         DcmFloatingPointSingle FixationLightPolarAngle;
         /// GeneralAccessorySequence (300a,0420) vr=SQ, vm=1, type=3
-        DRTGeneralAccessorySequence GeneralAccessorySequence;
+        DRTGeneralAccessorySequenceInRTIonBeamsSessionRecordModule GeneralAccessorySequence;
         /// IonControlPointDeliverySequence (3008,0041) vr=SQ, vm=1, type=1
         DRTIonControlPointDeliverySequence IonControlPointDeliverySequence;
+        /// MachineSpecificTreatmentTerminationCodeSequence (300a,0716) vr=SQ, vm=1, type=3
+        DRTMachineSpecificTreatmentTerminationCodeSequence MachineSpecificTreatmentTerminationCodeSequence;
         /// ModulatedScanModeType (300a,0309) vr=CS, vm=1, type=1C
         DcmCodeString ModulatedScanModeType;
         /// NumberOfBlocks (300a,00f0) vr=IS, vm=1, type=1
@@ -1020,6 +1064,8 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         DcmShortString PatientSupportID;
         /// PatientSupportType (300a,0350) vr=CS, vm=1, type=1
         DcmCodeString PatientSupportType;
+        /// RTTreatmentTerminationReasonCodeSequence (300a,0715) vr=SQ, vm=1, type=3
+        DRTRTTreatmentTerminationReasonCodeSequence RTTreatmentTerminationReasonCodeSequence;
         /// RadiationAtomicNumber (300a,0304) vr=IS, vm=1, type=1C
         DcmIntegerString RadiationAtomicNumber;
         /// RadiationChargeState (300a,0306) vr=SS, vm=1, type=1C
@@ -1066,8 +1112,8 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
         DcmDecimalString SpecifiedTreatmentTime;
         /// TreatmentDeliveryType (300a,00ce) vr=CS, vm=1, type=2
         DcmCodeString TreatmentDeliveryType;
-        /// TreatmentTerminationCode (3008,002b) vr=SH, vm=1, type=3
-        DcmShortString TreatmentTerminationCode;
+        /// TreatmentTerminationDescription (300a,0730) vr=ST, vm=1, type=3
+        DcmShortText TreatmentTerminationDescription;
         /// TreatmentTerminationStatus (3008,002a) vr=CS, vm=1, type=1
         DcmCodeString TreatmentTerminationStatus;
         /// TreatmentVerificationStatus (3008,002c) vr=CS, vm=1, type=2
@@ -1181,13 +1227,13 @@ class DCMTK_DCMRT_EXPORT DRTTreatmentSessionIonBeamSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

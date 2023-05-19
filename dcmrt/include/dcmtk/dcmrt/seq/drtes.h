@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTExposureSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,10 +19,11 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtas5.h"    // for ApplicatorSequence
-#include "dcmtk/dcmrt/seq/drtblds5.h"  // for BeamLimitingDeviceSequence
-#include "dcmtk/dcmrt/seq/drtbl5.h"    // for BlockSequence
-#include "dcmtk/dcmrt/seq/drtgas.h"    // for GeneralAccessorySequence
+#include "dcmtk/dcmrt/seq/drtas2.h"    // for ApplicatorSequence
+#include "dcmtk/dcmrt/seq/drtblds2.h"  // for BeamLimitingDeviceSequence
+#include "dcmtk/dcmrt/seq/drtbl2.h"    // for BlockSequence
+#include "dcmtk/dcmrt/seq/drteblos.h"  // for EnhancedRTBeamLimitingOpeningSequence
+#include "dcmtk/dcmrt/seq/drtgas4.h"   // for GeneralAccessorySequence
 #include "dcmtk/dcmrt/seq/drtpfms.h"   // for PrimaryFluenceModeSequence
 
 
@@ -357,16 +358,28 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
         const DRTBlockSequenceInRTImageModule &getBlockSequence() const
             { return BlockSequence; }
 
+        /** get EnhancedRTBeamLimitingOpeningSequence (3008,00a2)
+         *  @return reference to sequence element
+         */
+        DRTEnhancedRTBeamLimitingOpeningSequence &getEnhancedRTBeamLimitingOpeningSequence()
+            { return EnhancedRTBeamLimitingOpeningSequence; }
+
+        /** get EnhancedRTBeamLimitingOpeningSequence (3008,00a2)
+         *  @return const reference to sequence element
+         */
+        const DRTEnhancedRTBeamLimitingOpeningSequence &getEnhancedRTBeamLimitingOpeningSequence() const
+            { return EnhancedRTBeamLimitingOpeningSequence; }
+
         /** get GeneralAccessorySequence (300a,0420)
          *  @return reference to sequence element
          */
-        DRTGeneralAccessorySequence &getGeneralAccessorySequence()
+        DRTGeneralAccessorySequenceInRTImageModule &getGeneralAccessorySequence()
             { return GeneralAccessorySequence; }
 
         /** get GeneralAccessorySequence (300a,0420)
          *  @return const reference to sequence element
          */
-        const DRTGeneralAccessorySequence &getGeneralAccessorySequence() const
+        const DRTGeneralAccessorySequenceInRTImageModule &getGeneralAccessorySequence() const
             { return GeneralAccessorySequence; }
 
         /** get PrimaryFluenceModeSequence (3002,0050)
@@ -524,6 +537,8 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
         DRTBlockSequenceInRTImageModule BlockSequence;
         /// DiaphragmPosition (3002,0034) vr=DS, vm=4, type=3
         DcmDecimalString DiaphragmPosition;
+        /// EnhancedRTBeamLimitingOpeningSequence (3008,00a2) vr=SQ, vm=1, type=2C
+        DRTEnhancedRTBeamLimitingOpeningSequence EnhancedRTBeamLimitingOpeningSequence;
         /// ExposureTime (0018,1150) vr=IS, vm=1, type=2C
         DcmIntegerString ExposureTime;
         /// ExposureTimeInms (0018,9328) vr=FD, vm=1, type=3
@@ -533,7 +548,7 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
         /// GantryPitchAngle (300a,014a) vr=FL, vm=1, type=3
         DcmFloatingPointSingle GantryPitchAngle;
         /// GeneralAccessorySequence (300a,0420) vr=SQ, vm=1, type=3
-        DRTGeneralAccessorySequence GeneralAccessorySequence;
+        DRTGeneralAccessorySequenceInRTImageModule GeneralAccessorySequence;
         /// KVP (0018,0060) vr=DS, vm=1, type=2C
         DcmDecimalString KVP;
         /// MetersetExposure (3002,0032) vr=DS, vm=1, type=2C
@@ -669,13 +684,13 @@ class DCMTK_DCMRT_EXPORT DRTExposureSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

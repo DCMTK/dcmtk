@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTContributingEquipmentSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -25,9 +25,11 @@ DRTContributingEquipmentSequence::Item::Item(const OFBool emptyDefaultItem)
     ContributionDescription(DCM_ContributionDescription),
     DateOfLastCalibration(DCM_DateOfLastCalibration),
     DeviceSerialNumber(DCM_DeviceSerialNumber),
+    DeviceUID(DCM_DeviceUID),
     InstitutionAddress(DCM_InstitutionAddress),
     InstitutionName(DCM_InstitutionName),
     InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     Manufacturer(DCM_Manufacturer),
     ManufacturerModelName(DCM_ManufacturerModelName),
     OperatorIdentificationSequence(emptyDefaultItem /*emptyDefaultSequence*/),
@@ -36,7 +38,8 @@ DRTContributingEquipmentSequence::Item::Item(const OFBool emptyDefaultItem)
     SoftwareVersions(DCM_SoftwareVersions),
     SpatialResolution(DCM_SpatialResolution),
     StationName(DCM_StationName),
-    TimeOfLastCalibration(DCM_TimeOfLastCalibration)
+    TimeOfLastCalibration(DCM_TimeOfLastCalibration),
+    UDISequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
 }
 
@@ -47,9 +50,11 @@ DRTContributingEquipmentSequence::Item::Item(const Item &copy)
     ContributionDescription(copy.ContributionDescription),
     DateOfLastCalibration(copy.DateOfLastCalibration),
     DeviceSerialNumber(copy.DeviceSerialNumber),
+    DeviceUID(copy.DeviceUID),
     InstitutionAddress(copy.InstitutionAddress),
     InstitutionName(copy.InstitutionName),
     InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(copy.InstitutionalDepartmentTypeCodeSequence),
     Manufacturer(copy.Manufacturer),
     ManufacturerModelName(copy.ManufacturerModelName),
     OperatorIdentificationSequence(copy.OperatorIdentificationSequence),
@@ -58,7 +63,8 @@ DRTContributingEquipmentSequence::Item::Item(const Item &copy)
     SoftwareVersions(copy.SoftwareVersions),
     SpatialResolution(copy.SpatialResolution),
     StationName(copy.StationName),
-    TimeOfLastCalibration(copy.TimeOfLastCalibration)
+    TimeOfLastCalibration(copy.TimeOfLastCalibration),
+    UDISequence(copy.UDISequence)
 {
 }
 
@@ -77,9 +83,11 @@ DRTContributingEquipmentSequence::Item &DRTContributingEquipmentSequence::Item::
         ContributionDescription = copy.ContributionDescription;
         DateOfLastCalibration = copy.DateOfLastCalibration;
         DeviceSerialNumber = copy.DeviceSerialNumber;
+        DeviceUID = copy.DeviceUID;
         InstitutionAddress = copy.InstitutionAddress;
         InstitutionName = copy.InstitutionName;
         InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
+        InstitutionalDepartmentTypeCodeSequence = copy.InstitutionalDepartmentTypeCodeSequence;
         Manufacturer = copy.Manufacturer;
         ManufacturerModelName = copy.ManufacturerModelName;
         OperatorIdentificationSequence = copy.OperatorIdentificationSequence;
@@ -89,6 +97,7 @@ DRTContributingEquipmentSequence::Item &DRTContributingEquipmentSequence::Item::
         SpatialResolution = copy.SpatialResolution;
         StationName = copy.StationName;
         TimeOfLastCalibration = copy.TimeOfLastCalibration;
+        UDISequence = copy.UDISequence;
     }
     return *this;
 }
@@ -105,11 +114,14 @@ void DRTContributingEquipmentSequence::Item::clear()
         InstitutionAddress.clear();
         StationName.clear();
         InstitutionalDepartmentName.clear();
+        InstitutionalDepartmentTypeCodeSequence.clear();
         OperatorsName.clear();
         OperatorIdentificationSequence.clear();
         ManufacturerModelName.clear();
         DeviceSerialNumber.clear();
         SoftwareVersions.clear();
+        DeviceUID.clear();
+        UDISequence.clear();
         SpatialResolution.clear();
         DateOfLastCalibration.clear();
         TimeOfLastCalibration.clear();
@@ -127,11 +139,14 @@ OFBool DRTContributingEquipmentSequence::Item::isEmpty()
            InstitutionAddress.isEmpty() &&
            StationName.isEmpty() &&
            InstitutionalDepartmentName.isEmpty() &&
+           InstitutionalDepartmentTypeCodeSequence.isEmpty() &&
            OperatorsName.isEmpty() &&
            OperatorIdentificationSequence.isEmpty() &&
            ManufacturerModelName.isEmpty() &&
            DeviceSerialNumber.isEmpty() &&
            SoftwareVersions.isEmpty() &&
+           DeviceUID.isEmpty() &&
+           UDISequence.isEmpty() &&
            SpatialResolution.isEmpty() &&
            DateOfLastCalibration.isEmpty() &&
            TimeOfLastCalibration.isEmpty() &&
@@ -159,11 +174,14 @@ OFCondition DRTContributingEquipmentSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, InstitutionAddress, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, StationName, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, InstitutionalDepartmentName, "1", "3", "ContributingEquipmentSequence");
+        InstitutionalDepartmentTypeCodeSequence.read(item, "1-n", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, OperatorsName, "1-n", "3", "ContributingEquipmentSequence");
         OperatorIdentificationSequence.read(item, "1-n", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, ManufacturerModelName, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, DeviceSerialNumber, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, SoftwareVersions, "1-n", "3", "ContributingEquipmentSequence");
+        getAndCheckElementFromDataset(item, DeviceUID, "1", "3", "ContributingEquipmentSequence");
+        UDISequence.read(item, "1-n", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, SpatialResolution, "1", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, DateOfLastCalibration, "1-n", "3", "ContributingEquipmentSequence");
         getAndCheckElementFromDataset(item, TimeOfLastCalibration, "1-n", "3", "ContributingEquipmentSequence");
@@ -187,11 +205,14 @@ OFCondition DRTContributingEquipmentSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmShortText(InstitutionAddress), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmShortString(StationName), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(InstitutionalDepartmentName), "1", "3", "ContributingEquipmentSequence");
+        if (result.good()) result = InstitutionalDepartmentTypeCodeSequence.write(item, "1-n", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmPersonName(OperatorsName), "1-n", "3", "ContributingEquipmentSequence");
         if (result.good()) result = OperatorIdentificationSequence.write(item, "1-n", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(ManufacturerModelName), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(DeviceSerialNumber), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmLongString(SoftwareVersions), "1-n", "3", "ContributingEquipmentSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(DeviceUID), "1", "3", "ContributingEquipmentSequence");
+        if (result.good()) result = UDISequence.write(item, "1-n", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmDecimalString(SpatialResolution), "1", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmDate(DateOfLastCalibration), "1-n", "3", "ContributingEquipmentSequence");
         addElementToDataset(result, item, new DcmTime(TimeOfLastCalibration), "1-n", "3", "ContributingEquipmentSequence");
@@ -235,6 +256,15 @@ OFCondition DRTContributingEquipmentSequence::Item::getDeviceSerialNumber(OFStri
         return EC_IllegalCall;
     else
         return getStringValueFromElement(DeviceSerialNumber, value, pos);
+}
+
+
+OFCondition DRTContributingEquipmentSequence::Item::getDeviceUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(DeviceUID, value, pos);
 }
 
 
@@ -384,6 +414,19 @@ OFCondition DRTContributingEquipmentSequence::Item::setDeviceSerialNumber(const 
         result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = DeviceSerialNumber.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTContributingEquipmentSequence::Item::setDeviceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = DeviceUID.putOFStringArray(value);
     }
     return result;
 }
@@ -643,10 +686,12 @@ OFCondition DRTContributingEquipmentSequence::gotoFirstItem()
 OFCondition DRTContributingEquipmentSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

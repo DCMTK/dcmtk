@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTChannelSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -99,6 +99,20 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getAfterloaderChannelID(OFString &value, const signed long pos = 0) const;
+
+        /** get ApplicatorShapeReferencedROINumber (300a,02a1)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getApplicatorShapeReferencedROINumber(OFString &value, const signed long pos = 0) const;
+
+        /** get ApplicatorShapeReferencedROINumber (300a,02a1)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getApplicatorShapeReferencedROINumber(Sint32 &value, const unsigned long pos = 0) const;
 
         /** get ChannelEffectiveLength (300a,0271)
          *  @param  value  reference to variable in which the value should be stored
@@ -443,6 +457,13 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
          */
         OFCondition setAfterloaderChannelID(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ApplicatorShapeReferencedROINumber (300a,02a1)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setApplicatorShapeReferencedROINumber(const OFString &value, const OFBool check = OFTrue);
+
         /** set ChannelEffectiveLength (300a,0271)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -625,6 +646,8 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
 
         /// AfterloaderChannelID (300a,0273) vr=SH, vm=1, type=3
         DcmShortString AfterloaderChannelID;
+        /// ApplicatorShapeReferencedROINumber (300a,02a1) vr=IS, vm=1, type=3
+        DcmIntegerString ApplicatorShapeReferencedROINumber;
         /// BrachyControlPointSequence (300a,02d0) vr=SQ, vm=1, type=1
         DRTBrachyControlPointSequence BrachyControlPointSequence;
         /// ChannelEffectiveLength (300a,0271) vr=DS, vm=1, type=3
@@ -788,13 +811,13 @@ class DCMTK_DCMRT_EXPORT DRTChannelSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

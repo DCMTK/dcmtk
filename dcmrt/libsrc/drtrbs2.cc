@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTReferencedBeamSequenceInRTDoseModule
+ *  Source file for class DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,64 +19,109 @@
 
 // --- item class ---
 
-DRTReferencedBeamSequenceInRTDoseModule::Item::Item(const OFBool emptyDefaultItem)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    AlternateBeamDose(DCM_AlternateBeamDose),
+    AlternateBeamDoseType(DCM_AlternateBeamDoseType),
+    BeamDeliveryDurationLimit(DCM_BeamDeliveryDurationLimit),
+    BeamDose(DCM_BeamDose),
+    BeamDoseType(DCM_BeamDoseType),
+    BeamMeterset(DCM_BeamMeterset),
+    DoseCalibrationConditionsSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    DoseCalibrationConditionsVerifiedFlag(DCM_DoseCalibrationConditionsVerifiedFlag),
+    RadiationDeviceConfigurationAndCommissioningKeySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedBeamNumber(DCM_ReferencedBeamNumber),
-    ReferencedControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/)
+    ReferencedDoseReferenceUID(DCM_ReferencedDoseReferenceUID)
 {
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::Item::Item(const Item &copy)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    AlternateBeamDose(copy.AlternateBeamDose),
+    AlternateBeamDoseType(copy.AlternateBeamDoseType),
+    BeamDeliveryDurationLimit(copy.BeamDeliveryDurationLimit),
+    BeamDose(copy.BeamDose),
+    BeamDoseType(copy.BeamDoseType),
+    BeamMeterset(copy.BeamMeterset),
+    DoseCalibrationConditionsSequence(copy.DoseCalibrationConditionsSequence),
+    DoseCalibrationConditionsVerifiedFlag(copy.DoseCalibrationConditionsVerifiedFlag),
+    RadiationDeviceConfigurationAndCommissioningKeySequence(copy.RadiationDeviceConfigurationAndCommissioningKeySequence),
     ReferencedBeamNumber(copy.ReferencedBeamNumber),
-    ReferencedControlPointSequence(copy.ReferencedControlPointSequence)
+    ReferencedDoseReferenceUID(copy.ReferencedDoseReferenceUID)
 {
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::Item::~Item()
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::~Item()
 {
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::Item::operator=(const Item &copy)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        AlternateBeamDose = copy.AlternateBeamDose;
+        AlternateBeamDoseType = copy.AlternateBeamDoseType;
+        BeamDeliveryDurationLimit = copy.BeamDeliveryDurationLimit;
+        BeamDose = copy.BeamDose;
+        BeamDoseType = copy.BeamDoseType;
+        BeamMeterset = copy.BeamMeterset;
+        DoseCalibrationConditionsSequence = copy.DoseCalibrationConditionsSequence;
+        DoseCalibrationConditionsVerifiedFlag = copy.DoseCalibrationConditionsVerifiedFlag;
+        RadiationDeviceConfigurationAndCommissioningKeySequence = copy.RadiationDeviceConfigurationAndCommissioningKeySequence;
         ReferencedBeamNumber = copy.ReferencedBeamNumber;
-        ReferencedControlPointSequence = copy.ReferencedControlPointSequence;
+        ReferencedDoseReferenceUID = copy.ReferencedDoseReferenceUID;
     }
     return *this;
 }
 
 
-void DRTReferencedBeamSequenceInRTDoseModule::Item::clear()
+void DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
         ReferencedBeamNumber.clear();
-        ReferencedControlPointSequence.clear();
+        ReferencedDoseReferenceUID.clear();
+        BeamDose.clear();
+        BeamDoseType.clear();
+        AlternateBeamDose.clear();
+        AlternateBeamDoseType.clear();
+        BeamMeterset.clear();
+        BeamDeliveryDurationLimit.clear();
+        DoseCalibrationConditionsVerifiedFlag.clear();
+        DoseCalibrationConditionsSequence.clear();
+        RadiationDeviceConfigurationAndCommissioningKeySequence.clear();
     }
 }
 
 
-OFBool DRTReferencedBeamSequenceInRTDoseModule::Item::isEmpty()
+OFBool DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::isEmpty()
 {
     return ReferencedBeamNumber.isEmpty() &&
-           ReferencedControlPointSequence.isEmpty();
+           ReferencedDoseReferenceUID.isEmpty() &&
+           BeamDose.isEmpty() &&
+           BeamDoseType.isEmpty() &&
+           AlternateBeamDose.isEmpty() &&
+           AlternateBeamDoseType.isEmpty() &&
+           BeamMeterset.isEmpty() &&
+           BeamDeliveryDurationLimit.isEmpty() &&
+           DoseCalibrationConditionsVerifiedFlag.isEmpty() &&
+           DoseCalibrationConditionsSequence.isEmpty() &&
+           RadiationDeviceConfigurationAndCommissioningKeySequence.isEmpty();
 }
 
 
-OFBool DRTReferencedBeamSequenceInRTDoseModule::Item::isValid() const
+OFBool DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::read(DcmItem &item)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -84,27 +129,135 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1", "ReferencedBeamSequence");
-        ReferencedControlPointSequence.read(item, "1-n", "1C", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, ReferencedDoseReferenceUID, "1", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, BeamDose, "1", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, BeamDoseType, "1", "1C", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, AlternateBeamDose, "1", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, AlternateBeamDoseType, "1", "1C", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, BeamMeterset, "1", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, BeamDeliveryDurationLimit, "1", "3", "ReferencedBeamSequence");
+        getAndCheckElementFromDataset(item, DoseCalibrationConditionsVerifiedFlag, "1", "3", "ReferencedBeamSequence");
+        DoseCalibrationConditionsSequence.read(item, "1-n", "1C", "ReferencedBeamSequence");
+        RadiationDeviceConfigurationAndCommissioningKeySequence.read(item, "1-n", "1C", "ReferencedBeamSequence");
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::write(DcmItem &item)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1", "ReferencedBeamSequence");
-        if (result.good()) result = ReferencedControlPointSequence.write(item, "1-n", "1C", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedDoseReferenceUID), "1", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BeamDose), "1", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmCodeString(BeamDoseType), "1", "1C", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmDecimalString(AlternateBeamDose), "1", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmCodeString(AlternateBeamDoseType), "1", "1C", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BeamMeterset), "1", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmFloatingPointDouble(BeamDeliveryDurationLimit), "1", "3", "ReferencedBeamSequence");
+        addElementToDataset(result, item, new DcmCodeString(DoseCalibrationConditionsVerifiedFlag), "1", "3", "ReferencedBeamSequence");
+        if (result.good()) result = DoseCalibrationConditionsSequence.write(item, "1-n", "1C", "ReferencedBeamSequence");
+        if (result.good()) result = RadiationDeviceConfigurationAndCommissioningKeySequence.write(item, "1-n", "1C", "ReferencedBeamSequence");
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBeamNumber(OFString &value, const signed long pos) const
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getAlternateBeamDose(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(AlternateBeamDose, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getAlternateBeamDose(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, AlternateBeamDose).getFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getAlternateBeamDoseType(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(AlternateBeamDoseType, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getBeamDeliveryDurationLimit(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointDouble &, BeamDeliveryDurationLimit).getFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getBeamDose(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BeamDose, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getBeamDose(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, BeamDose).getFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getBeamDoseType(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BeamDoseType, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getBeamMeterset(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BeamMeterset, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getBeamMeterset(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, BeamMeterset).getFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getDoseCalibrationConditionsVerifiedFlag(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(DoseCalibrationConditionsVerifiedFlag, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getReferencedBeamNumber(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -113,7 +266,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBeamNumb
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBeamNumber(Sint32 &value, const unsigned long pos) const
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getReferencedBeamNumber(Sint32 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -122,7 +275,103 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::getReferencedBeamNumb
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::setReferencedBeamNumber(const OFString &value, const OFBool check)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::getReferencedDoseReferenceUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ReferencedDoseReferenceUID, value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setAlternateBeamDose(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = AlternateBeamDose.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setAlternateBeamDoseType(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = AlternateBeamDoseType.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setBeamDeliveryDurationLimit(const Float64 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return BeamDeliveryDurationLimit.putFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setBeamDose(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = BeamDose.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setBeamDoseType(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = BeamDoseType.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setBeamMeterset(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = BeamMeterset.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setDoseCalibrationConditionsVerifiedFlag(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = DoseCalibrationConditionsVerifiedFlag.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setReferencedBeamNumber(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -135,9 +384,22 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::Item::setReferencedBeamNumb
 }
 
 
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item::setReferencedDoseReferenceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ReferencedDoseReferenceUID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
 // --- sequence class ---
 
-DRTReferencedBeamSequenceInRTDoseModule::DRTReferencedBeamSequenceInRTDoseModule(const OFBool emptyDefaultSequence)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -147,7 +409,7 @@ DRTReferencedBeamSequenceInRTDoseModule::DRTReferencedBeamSequenceInRTDoseModule
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::DRTReferencedBeamSequenceInRTDoseModule(const DRTReferencedBeamSequenceInRTDoseModule &copy)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule(const DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -173,7 +435,7 @@ DRTReferencedBeamSequenceInRTDoseModule::DRTReferencedBeamSequenceInRTDoseModule
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule &DRTReferencedBeamSequenceInRTDoseModule::operator=(const DRTReferencedBeamSequenceInRTDoseModule &copy)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::operator=(const DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule &copy)
 {
     if (this != &copy)
     {
@@ -201,13 +463,13 @@ DRTReferencedBeamSequenceInRTDoseModule &DRTReferencedBeamSequenceInRTDoseModule
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::~DRTReferencedBeamSequenceInRTDoseModule()
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::~DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule()
 {
     clear();
 }
 
 
-void DRTReferencedBeamSequenceInRTDoseModule::clear()
+void DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -226,25 +488,25 @@ void DRTReferencedBeamSequenceInRTDoseModule::clear()
 }
 
 
-OFBool DRTReferencedBeamSequenceInRTDoseModule::isEmpty()
+OFBool DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTReferencedBeamSequenceInRTDoseModule::isValid() const
+OFBool DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-size_t DRTReferencedBeamSequenceInRTDoseModule::getNumberOfItems() const
+size_t DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoFirstItem()
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -256,19 +518,21 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoFirstItem()
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoNextItem()
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -288,7 +552,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoItem(const size_t num, 
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -308,13 +572,13 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoItem(const size_t num, 
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::gotoItem(const size_t num)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::getCurrentItem(Item *&item) const
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -326,7 +590,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::getCurrentItem(Item *&item)
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::getCurrentItem()
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -335,7 +599,7 @@ DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDose
 }
 
 
-const DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::getCurrentItem() const
+const DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -344,7 +608,7 @@ const DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceIn
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::getItem(const size_t num, Item *&item)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -354,7 +618,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::getItem(const size_t num, I
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::getItem(const size_t num)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -364,7 +628,7 @@ DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDose
 }
 
 
-const DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::getItem(const size_t num) const
+const DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -374,19 +638,19 @@ const DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceIn
 }
 
 
-DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::operator[](const size_t num)
+DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTReferencedBeamSequenceInRTDoseModule::Item &DRTReferencedBeamSequenceInRTDoseModule::operator[](const size_t num) const
+const DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::addItem(Item *&item)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -403,7 +667,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::addItem(Item *&item)
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::insertItem(const size_t pos, Item *&item)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -426,7 +690,7 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::insertItem(const size_t pos
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::removeItem(const size_t pos)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -444,10 +708,10 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::removeItem(const size_t pos
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::read(DcmItem &dataset,
-                                                          const OFString &card,
-                                                          const OFString &type,
-                                                          const char *moduleName)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::read(DcmItem &dataset,
+                                                                            const OFString &card,
+                                                                            const OFString &type,
+                                                                            const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -494,10 +758,10 @@ OFCondition DRTReferencedBeamSequenceInRTDoseModule::read(DcmItem &dataset,
 }
 
 
-OFCondition DRTReferencedBeamSequenceInRTDoseModule::write(DcmItem &dataset,
-                                                           const OFString &card,
-                                                           const OFString &type,
-                                                           const char *moduleName)
+OFCondition DRTReferencedBeamSequenceInRTGeneralTreatmentRecordModule::write(DcmItem &dataset,
+                                                                             const OFString &card,
+                                                                             const OFString &type,
+                                                                             const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

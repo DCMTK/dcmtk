@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTStructureSetROISequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -21,7 +21,10 @@
 
 DRTStructureSetROISequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    ConceptualVolumeIdentificationSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    DefinitionSourceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     DerivationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    ROIDerivationAlgorithmIdentificationSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ROIDescription(DCM_ROIDescription),
     ROIGenerationAlgorithm(DCM_ROIGenerationAlgorithm),
     ROIGenerationDescription(DCM_ROIGenerationDescription),
@@ -35,7 +38,10 @@ DRTStructureSetROISequence::Item::Item(const OFBool emptyDefaultItem)
 
 DRTStructureSetROISequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    ConceptualVolumeIdentificationSequence(copy.ConceptualVolumeIdentificationSequence),
+    DefinitionSourceSequence(copy.DefinitionSourceSequence),
     DerivationCodeSequence(copy.DerivationCodeSequence),
+    ROIDerivationAlgorithmIdentificationSequence(copy.ROIDerivationAlgorithmIdentificationSequence),
     ROIDescription(copy.ROIDescription),
     ROIGenerationAlgorithm(copy.ROIGenerationAlgorithm),
     ROIGenerationDescription(copy.ROIGenerationDescription),
@@ -57,7 +63,10 @@ DRTStructureSetROISequence::Item &DRTStructureSetROISequence::Item::operator=(co
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        ConceptualVolumeIdentificationSequence = copy.ConceptualVolumeIdentificationSequence;
+        DefinitionSourceSequence = copy.DefinitionSourceSequence;
         DerivationCodeSequence = copy.DerivationCodeSequence;
+        ROIDerivationAlgorithmIdentificationSequence = copy.ROIDerivationAlgorithmIdentificationSequence;
         ROIDescription = copy.ROIDescription;
         ROIGenerationAlgorithm = copy.ROIGenerationAlgorithm;
         ROIGenerationDescription = copy.ROIGenerationDescription;
@@ -76,13 +85,16 @@ void DRTStructureSetROISequence::Item::clear()
     {
         /* clear all DICOM attributes */
         ROINumber.clear();
+        ConceptualVolumeIdentificationSequence.clear();
         ReferencedFrameOfReferenceUID.clear();
         ROIName.clear();
         ROIDescription.clear();
         ROIVolume.clear();
         ROIGenerationAlgorithm.clear();
         ROIGenerationDescription.clear();
+        ROIDerivationAlgorithmIdentificationSequence.clear();
         DerivationCodeSequence.clear();
+        DefinitionSourceSequence.clear();
     }
 }
 
@@ -90,13 +102,16 @@ void DRTStructureSetROISequence::Item::clear()
 OFBool DRTStructureSetROISequence::Item::isEmpty()
 {
     return ROINumber.isEmpty() &&
+           ConceptualVolumeIdentificationSequence.isEmpty() &&
            ReferencedFrameOfReferenceUID.isEmpty() &&
            ROIName.isEmpty() &&
            ROIDescription.isEmpty() &&
            ROIVolume.isEmpty() &&
            ROIGenerationAlgorithm.isEmpty() &&
            ROIGenerationDescription.isEmpty() &&
-           DerivationCodeSequence.isEmpty();
+           ROIDerivationAlgorithmIdentificationSequence.isEmpty() &&
+           DerivationCodeSequence.isEmpty() &&
+           DefinitionSourceSequence.isEmpty();
 }
 
 
@@ -114,13 +129,16 @@ OFCondition DRTStructureSetROISequence::Item::read(DcmItem &item)
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ROINumber, "1", "1", "StructureSetROISequence");
+        ConceptualVolumeIdentificationSequence.read(item, "1-n", "3", "StructureSetROISequence");
         getAndCheckElementFromDataset(item, ReferencedFrameOfReferenceUID, "1", "1", "StructureSetROISequence");
         getAndCheckElementFromDataset(item, ROIName, "1", "2", "StructureSetROISequence");
         getAndCheckElementFromDataset(item, ROIDescription, "1", "3", "StructureSetROISequence");
         getAndCheckElementFromDataset(item, ROIVolume, "1", "3", "StructureSetROISequence");
         getAndCheckElementFromDataset(item, ROIGenerationAlgorithm, "1", "2", "StructureSetROISequence");
         getAndCheckElementFromDataset(item, ROIGenerationDescription, "1", "3", "StructureSetROISequence");
+        ROIDerivationAlgorithmIdentificationSequence.read(item, "1-n", "3", "StructureSetROISequence");
         DerivationCodeSequence.read(item, "1-n", "3", "StructureSetROISequence");
+        DefinitionSourceSequence.read(item, "1-n", "3", "StructureSetROISequence");
         result = EC_Normal;
     }
     return result;
@@ -134,13 +152,16 @@ OFCondition DRTStructureSetROISequence::Item::write(DcmItem &item)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ROINumber), "1", "1", "StructureSetROISequence");
+        if (result.good()) result = ConceptualVolumeIdentificationSequence.write(item, "1-n", "3", "StructureSetROISequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedFrameOfReferenceUID), "1", "1", "StructureSetROISequence");
         addElementToDataset(result, item, new DcmLongString(ROIName), "1", "2", "StructureSetROISequence");
         addElementToDataset(result, item, new DcmShortText(ROIDescription), "1", "3", "StructureSetROISequence");
         addElementToDataset(result, item, new DcmDecimalString(ROIVolume), "1", "3", "StructureSetROISequence");
         addElementToDataset(result, item, new DcmCodeString(ROIGenerationAlgorithm), "1", "2", "StructureSetROISequence");
         addElementToDataset(result, item, new DcmLongString(ROIGenerationDescription), "1", "3", "StructureSetROISequence");
+        if (result.good()) result = ROIDerivationAlgorithmIdentificationSequence.write(item, "1-n", "3", "StructureSetROISequence");
         if (result.good()) result = DerivationCodeSequence.write(item, "1-n", "3", "StructureSetROISequence");
+        if (result.good()) result = DefinitionSourceSequence.write(item, "1-n", "3", "StructureSetROISequence");
     }
     return result;
 }
@@ -442,10 +463,12 @@ OFCondition DRTStructureSetROISequence::gotoFirstItem()
 OFCondition DRTStructureSetROISequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

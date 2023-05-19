@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTFractionGroupSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -22,6 +22,7 @@
 DRTFractionGroupSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     BeamDoseMeaning(DCM_BeamDoseMeaning),
+    DefinitionSourceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     FractionGroupDescription(DCM_FractionGroupDescription),
     FractionGroupNumber(DCM_FractionGroupNumber),
     FractionPattern(DCM_FractionPattern),
@@ -41,6 +42,7 @@ DRTFractionGroupSequence::Item::Item(const OFBool emptyDefaultItem)
 DRTFractionGroupSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     BeamDoseMeaning(copy.BeamDoseMeaning),
+    DefinitionSourceSequence(copy.DefinitionSourceSequence),
     FractionGroupDescription(copy.FractionGroupDescription),
     FractionGroupNumber(copy.FractionGroupNumber),
     FractionPattern(copy.FractionPattern),
@@ -68,6 +70,7 @@ DRTFractionGroupSequence::Item &DRTFractionGroupSequence::Item::operator=(const 
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
         BeamDoseMeaning = copy.BeamDoseMeaning;
+        DefinitionSourceSequence = copy.DefinitionSourceSequence;
         FractionGroupDescription = copy.FractionGroupDescription;
         FractionGroupNumber = copy.FractionGroupNumber;
         FractionPattern = copy.FractionPattern;
@@ -92,6 +95,7 @@ void DRTFractionGroupSequence::Item::clear()
         /* clear all DICOM attributes */
         FractionGroupNumber.clear();
         FractionGroupDescription.clear();
+        DefinitionSourceSequence.clear();
         ReferencedDoseSequence.clear();
         ReferencedDoseReferenceSequence.clear();
         NumberOfFractionsPlanned.clear();
@@ -111,6 +115,7 @@ OFBool DRTFractionGroupSequence::Item::isEmpty()
 {
     return FractionGroupNumber.isEmpty() &&
            FractionGroupDescription.isEmpty() &&
+           DefinitionSourceSequence.isEmpty() &&
            ReferencedDoseSequence.isEmpty() &&
            ReferencedDoseReferenceSequence.isEmpty() &&
            NumberOfFractionsPlanned.isEmpty() &&
@@ -140,6 +145,7 @@ OFCondition DRTFractionGroupSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, FractionGroupNumber, "1", "1", "FractionGroupSequence");
         getAndCheckElementFromDataset(item, FractionGroupDescription, "1", "3", "FractionGroupSequence");
+        DefinitionSourceSequence.read(item, "1-n", "3", "FractionGroupSequence");
         ReferencedDoseSequence.read(item, "1-n", "3", "FractionGroupSequence");
         ReferencedDoseReferenceSequence.read(item, "1-n", "3", "FractionGroupSequence");
         getAndCheckElementFromDataset(item, NumberOfFractionsPlanned, "1", "2", "FractionGroupSequence");
@@ -165,6 +171,7 @@ OFCondition DRTFractionGroupSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(FractionGroupNumber), "1", "1", "FractionGroupSequence");
         addElementToDataset(result, item, new DcmLongString(FractionGroupDescription), "1", "3", "FractionGroupSequence");
+        if (result.good()) result = DefinitionSourceSequence.write(item, "1-n", "3", "FractionGroupSequence");
         if (result.good()) result = ReferencedDoseSequence.write(item, "1-n", "3", "FractionGroupSequence");
         if (result.good()) result = ReferencedDoseReferenceSequence.write(item, "1-n", "3", "FractionGroupSequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfFractionsPlanned), "1", "2", "FractionGroupSequence");
@@ -557,10 +564,12 @@ OFCondition DRTFractionGroupSequence::gotoFirstItem()
 OFCondition DRTFractionGroupSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

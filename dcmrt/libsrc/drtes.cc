@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTExposureSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -26,6 +26,7 @@ DRTExposureSequence::Item::Item(const OFBool emptyDefaultItem)
     BeamLimitingDeviceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     BlockSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     DiaphragmPosition(DCM_DiaphragmPosition),
+    EnhancedRTBeamLimitingOpeningSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ExposureTime(DCM_ExposureTime),
     ExposureTimeInms(DCM_ExposureTimeInms),
     GantryAngle(DCM_GantryAngle),
@@ -55,6 +56,7 @@ DRTExposureSequence::Item::Item(const Item &copy)
     BeamLimitingDeviceSequence(copy.BeamLimitingDeviceSequence),
     BlockSequence(copy.BlockSequence),
     DiaphragmPosition(copy.DiaphragmPosition),
+    EnhancedRTBeamLimitingOpeningSequence(copy.EnhancedRTBeamLimitingOpeningSequence),
     ExposureTime(copy.ExposureTime),
     ExposureTimeInms(copy.ExposureTimeInms),
     GantryAngle(copy.GantryAngle),
@@ -92,6 +94,7 @@ DRTExposureSequence::Item &DRTExposureSequence::Item::operator=(const Item &copy
         BeamLimitingDeviceSequence = copy.BeamLimitingDeviceSequence;
         BlockSequence = copy.BlockSequence;
         DiaphragmPosition = copy.DiaphragmPosition;
+        EnhancedRTBeamLimitingOpeningSequence = copy.EnhancedRTBeamLimitingOpeningSequence;
         ExposureTime = copy.ExposureTime;
         ExposureTimeInms = copy.ExposureTimeInms;
         GantryAngle = copy.GantryAngle;
@@ -130,6 +133,7 @@ void DRTExposureSequence::Item::clear()
         MetersetExposure.clear();
         DiaphragmPosition.clear();
         BeamLimitingDeviceSequence.clear();
+        EnhancedRTBeamLimitingOpeningSequence.clear();
         GantryAngle.clear();
         GantryPitchAngle.clear();
         BeamLimitingDeviceAngle.clear();
@@ -159,6 +163,7 @@ OFBool DRTExposureSequence::Item::isEmpty()
            MetersetExposure.isEmpty() &&
            DiaphragmPosition.isEmpty() &&
            BeamLimitingDeviceSequence.isEmpty() &&
+           EnhancedRTBeamLimitingOpeningSequence.isEmpty() &&
            GantryAngle.isEmpty() &&
            GantryPitchAngle.isEmpty() &&
            BeamLimitingDeviceAngle.isEmpty() &&
@@ -198,6 +203,7 @@ OFCondition DRTExposureSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, MetersetExposure, "1", "2C", "ExposureSequence");
         getAndCheckElementFromDataset(item, DiaphragmPosition, "4", "3", "ExposureSequence");
         BeamLimitingDeviceSequence.read(item, "1-n", "3", "ExposureSequence");
+        EnhancedRTBeamLimitingOpeningSequence.read(item, "1-n", "2C", "ExposureSequence");
         getAndCheckElementFromDataset(item, GantryAngle, "1", "3", "ExposureSequence");
         getAndCheckElementFromDataset(item, GantryPitchAngle, "1", "3", "ExposureSequence");
         getAndCheckElementFromDataset(item, BeamLimitingDeviceAngle, "1", "3", "ExposureSequence");
@@ -233,6 +239,7 @@ OFCondition DRTExposureSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(MetersetExposure), "1", "2C", "ExposureSequence");
         addElementToDataset(result, item, new DcmDecimalString(DiaphragmPosition), "4", "3", "ExposureSequence");
         if (result.good()) result = BeamLimitingDeviceSequence.write(item, "1-n", "3", "ExposureSequence");
+        if (result.good()) result = EnhancedRTBeamLimitingOpeningSequence.write(item, "1-n", "2C", "ExposureSequence");
         addElementToDataset(result, item, new DcmDecimalString(GantryAngle), "1", "3", "ExposureSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(GantryPitchAngle), "1", "3", "ExposureSequence");
         addElementToDataset(result, item, new DcmDecimalString(BeamLimitingDeviceAngle), "1", "3", "ExposureSequence");
@@ -877,10 +884,12 @@ OFCondition DRTExposureSequence::gotoFirstItem()
 OFCondition DRTExposureSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

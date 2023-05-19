@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTFractionGroupSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,9 +19,10 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtrbs8.h"   // for ReferencedBeamSequence
-#include "dcmtk/dcmrt/seq/drtrbas8.h"  // for ReferencedBrachyApplicationSetupSequence
-#include "dcmtk/dcmrt/seq/drtrdrs8.h"  // for ReferencedDoseReferenceSequence
+#include "dcmtk/dcmrt/seq/drtdfss.h"   // for DefinitionSourceSequence
+#include "dcmtk/dcmrt/seq/drtrbs3.h"   // for ReferencedBeamSequence
+#include "dcmtk/dcmrt/seq/drtrbas2.h"  // for ReferencedBrachyApplicationSetupSequence
+#include "dcmtk/dcmrt/seq/drtrdrs3.h"  // for ReferencedDoseReferenceSequence
 #include "dcmtk/dcmrt/seq/drtrds.h"    // for ReferencedDoseSequence
 
 
@@ -202,6 +203,18 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSequence
 
       // --- get DICOM sequence attributes ---
 
+        /** get DefinitionSourceSequence (0008,1156)
+         *  @return reference to sequence element
+         */
+        DRTDefinitionSourceSequence &getDefinitionSourceSequence()
+            { return DefinitionSourceSequence; }
+
+        /** get DefinitionSourceSequence (0008,1156)
+         *  @return const reference to sequence element
+         */
+        const DRTDefinitionSourceSequence &getDefinitionSourceSequence() const
+            { return DefinitionSourceSequence; }
+
         /** get ReferencedBeamSequence (300c,0004)
          *  @return reference to sequence element
          */
@@ -322,6 +335,8 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSequence
 
         /// BeamDoseMeaning (300a,008b) vr=CS, vm=1, type=3
         DcmCodeString BeamDoseMeaning;
+        /// DefinitionSourceSequence (0008,1156) vr=SQ, vm=1, type=3
+        DRTDefinitionSourceSequence DefinitionSourceSequence;
         /// FractionGroupDescription (300a,0072) vr=LO, vm=1, type=3
         DcmLongString FractionGroupDescription;
         /// FractionGroupNumber (300a,0071) vr=IS, vm=1, type=1
@@ -455,13 +470,13 @@ class DCMTK_DCMRT_EXPORT DRTFractionGroupSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
