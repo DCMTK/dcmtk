@@ -265,21 +265,35 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #endif
 
 /*
-** Useful UID prefixes. These can be whatever you want.
+** Useful UID prefixes.
 **
 ** These site UIDs are arbitrary, non-standard, with no meaning
 ** and can be changed at any time.  Do _not_ rely on these values.
-** Do _not_ assume any semantics when using these suffixes.
+** Do _not_ assume any semantics when using these prefixes.
 **
+** The DCMTK currently uses the following site-specific UID prefixes:
+** - SITE_UID_ROOT + ".1"
+**
+** In addition, the DCMTK uses the following UID prefixes based on the
+** organization root that is registered for OFFIS, which is identical
+*  to SITE_UID_ROOT if not redefined:
+** - OFFIS_UID_ROOT + ".0"
+** - OFFIS_UID_ROOT + ".4"
+**
+** Note: For application-specific purposes that require specific
+**       semantics, the UID prefix SITE_UID_ROOT + ".9" may be used
+**       in user code.  DCMTK does not and will not use this UID prefix
+**       internally.  Of course, this UID prefix should preferably be
+**       used with a site-specific SITE_UID_ROOT (see above).
 */
 
-/// UID root for study instance UIDs
+/// UID root for Study Instance UIDs
 #define SITE_STUDY_UID_ROOT                     SITE_UID_ROOT ".1.2"
 
-/// UID root for series instance UIDs
+/// UID root for Series Instance UIDs
 #define SITE_SERIES_UID_ROOT                    SITE_UID_ROOT ".1.3"
 
-/// UID root for SOP instance UIDs
+/// UID root for SOP Instance UIDs
 #define SITE_INSTANCE_UID_ROOT                  SITE_UID_ROOT ".1.4"
 
 /** A private SOP Class UID which is used in a file meta-header when no
