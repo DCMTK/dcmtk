@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2021, OFFIS e.V.
+ *  Copyright (C) 2021-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -677,10 +677,10 @@ OFCondition DicomImageComparison::computeMonochromeImageComparionMetricsRaw()
         DCMIMAGE_DEBUG("square_error_sum: " << square_error_sum);
 
         // as a helper variable, divide the sum of squared errors by the total number of samples
-        double meanSquareError = square_error_sum / (numValues * fcount);
+        double meanSquareError = square_error_sum / numValues;
 
         // the mean absolute error is the sum of (unsigned) error values divided by the total number of samples
-        meanAbsoluteError = simple_error_sum / (numValues * fcount);
+        meanAbsoluteError = simple_error_sum / numValues;
 
         // RMSE is the square root of the mean square error
         rootMeanSquareError = sqrt(meanSquareError);
