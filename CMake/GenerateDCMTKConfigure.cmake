@@ -814,8 +814,7 @@ if(NOT DEFINED C_CHAR_UNSIGNED)
 "// Fail compile for unsigned char.
 int main()
 {
-  unsigned char uc = 255;
-  char *unused_array[(*reinterpret_cast<char*>(&uc) < 0)?1:-1];
+  char *unused_array[((char)-1<0)?1:-1];
   return 0;
 }")
    if(C_CHAR_SIGNED_COMPILED)
