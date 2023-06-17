@@ -232,15 +232,12 @@ int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *s
   return ok;
 }
 
-#ifdef ENABLE_EXPERIMENTAL_TLS_ALPN_SUPPORT
+// The 'dicom' protocol identifier for DICOM in network format
+// (string length, followed by a sequence of characters, no terminating zero,
+// as defined in https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids
 
-// The protocol identifier for DICOM in network format
-// (string length, followed by a sequence of characters, no terminating zero.
-//
-// Note that no official protocol identifier has been registered with IANA yet,
-// so this is likely to break interoperability.
 static const unsigned char alpn_dicom_protocol[] = {
-     5, 'd', 'i', 'c', 'o', 'm'
+     5, 0x64, 0x69, 0x63, 0x6f, 0x6d
 };
 
 static const unsigned char alpn_dicom_protocol_len = OFstatic_cast(unsigned char, sizeof(alpn_dicom_protocol));
@@ -262,8 +259,6 @@ int DcmTLSTransportLayer_ALPNCallback(SSL *ssl, const unsigned char **out, unsig
   DCMTLS_ERROR("TLS ALPN negotiation failure: Client has proposed protocol(s) other than 'dicom'");
   return SSL_TLSEXT_ERR_ALERT_FATAL;
 }
-
-#endif /* ENABLE_EXPERIMENTAL_TLS_ALPN_SUPPORT */
 
 extern "C" int DcmTLSTransportLayer_SNICallback(SSL *s, int *al, void *arg);
 
@@ -536,7 +531,6 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
     }
 #endif /* HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_CURVES */
 
-#ifdef ENABLE_EXPERIMENTAL_TLS_ALPN_SUPPORT
     if (networkRole != NET_ACCEPTOR)
     {
       if (0 != SSL_CTX_set_alpn_protos(transportLayerContext, alpn_dicom_protocol, alpn_dicom_protocol_len))
@@ -549,8 +543,6 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(T_ASC_NetworkRole networkRole, const 
     {
       SSL_CTX_set_alpn_select_cb(transportLayerContext, DcmTLSTransportLayer_ALPNCallback, NULL);
     }
-
-#endif /* ENABLE_EXPERIMENTAL_TLS_ALPN_SUPPORT */
 
     // activate the callback for incoming connections using SNI
     if (networkRole != NET_REQUESTOR)

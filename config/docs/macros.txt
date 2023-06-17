@@ -282,21 +282,6 @@ ENABLE_DCMJPLS_INTERLEAVE_NONE
     DCMTK has been ported to CharLS 2.x, another branch of the JPEG-LS library
     that requires a C++14 compiler, however.
 
-ENABLE_EXPERIMENTAL_TLS_ALPN_SUPPORT
-  Affected: dcmtls
-  Type of modification: Enables experimental feature
-  Explanation: The DICOM TLS Secure Connection Profiles introduced with
-    supplement 230 require an implementation of RFC 9325, which in turn
-    specifies that TLS implementations MUST support the ALPN
-    (application-layer protocol negotiation) extension of the TLS protocol.
-    However, ALPN cannot be used with DICOM yet because no protocol name
-    has been registered with IANA. When compiled with this macro, DCMTK
-    implements ALPN. Clients will propose 'application/dicom' as protocol
-    and servers will reject connection requests that contain an ALPN
-    extension that does not contain 'application/dicom' as protocol.
-    This feature will be permanently enabled once an official protocol
-    name is defined.
-
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
   Type of modification: Activates experimental or rarely used feature
