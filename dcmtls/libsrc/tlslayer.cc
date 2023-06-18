@@ -244,7 +244,7 @@ static const unsigned char alpn_dicom_protocol_len = OFstatic_cast(unsigned char
 
 extern "C" int DcmTLSTransportLayer_ALPNCallback(SSL *ssl, const unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg);
 
-int DcmTLSTransportLayer_ALPNCallback(SSL *ssl, const unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void * /*arg*/ )
+int DcmTLSTransportLayer_ALPNCallback(SSL * /*ssl*/, const unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void * /*arg*/ )
 {
   // check if the list of protocols proposed by the client contains DICOM
   unsigned char *npout = NULL;
