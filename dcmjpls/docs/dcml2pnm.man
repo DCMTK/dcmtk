@@ -396,10 +396,10 @@ image format:
 The following preferred interpolation algorithms can be selected using the
 \e --interpolate option:
 
-\li 1 = free scaling algorithm with interpolation from pbmplus toolkit
-\li 2 = free scaling algorithm with interpolation from c't magazine
-\li 3 = magnification algorithm with bilinear interpolation from Eduard Stanescu
-\li 4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
+- 1 = free scaling algorithm with interpolation from pbmplus toolkit
+- 2 = free scaling algorithm with interpolation from c't magazine
+- 3 = magnification algorithm with bilinear interpolation from Eduard Stanescu
+- 4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
 
 The \e --write-tiff option is only available when DCMTK has been configured
 and compiled with support for the external \b libtiff TIFF library.  The

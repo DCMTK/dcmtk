@@ -570,12 +570,14 @@ compressed image still complies with all restrictions of the object's IOD.
 
 A few examples:
 
-\li MR images are required to have BitsAllocated=16.
-\li NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric
-    interpretation but not with RGB or YBR_FULL (which effectively prevents
-    compression).
-\li Hardcopy Color images must have RGB color model which is a problem if lossy
-    compression is to be performed.
+- MR images are required to have BitsAllocated=16.
+
+- NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric
+  interpretation but not with RGB or YBR_FULL (which effectively prevents
+  compression).
+
+- Hardcopy Color images must have RGB color model which is a problem if lossy
+  compression is to be performed.
 
 The user is responsible for making sure that the compressed images he creates
 are compliant with the DICOM standard.  If in question, the \b dcmcjpeg utility
@@ -587,14 +589,18 @@ added (\e --true-lossless).  Compared to the old (\e --pseudo-lossless) encoder,
 that creates slightly lossy images caused from internal color space conversions,
 windowing etc., there are a some issues to consider:
 
-\li Only source images with Bits Allocated 8 or 16 are supported
-\li Options for color space conversions, windowing or pixel scaling are
-    ignored or overridden
-\li Photometric Interpretations YBR_FULL_422, YBR_PARTIAL_422, YBR_PARTIAL_420,
-    YBR_ICT, YBR_RCT are not supported
-\li The encoder changes automatically Planar Configuration from 1 to 0 if
-    necessary
-\li The compression ratio can be lower than in \e --pseudo-lossless mode
+- Only source images with Bits Allocated 8 or 16 are supported
+
+- Options for color space conversions, windowing or pixel scaling are
+  ignored or overridden
+
+- Photometric Interpretations YBR_FULL_422, YBR_PARTIAL_422, YBR_PARTIAL_420,
+  YBR_ICT, YBR_RCT are not supported
+
+- The encoder changes automatically Planar Configuration from 1 to 0 if
+  necessary
+
+- The compression ratio can be lower than in \e --pseudo-lossless mode
 
 However, when using the new encoder (default), you can be sure, that
 compression does not affect image quality.

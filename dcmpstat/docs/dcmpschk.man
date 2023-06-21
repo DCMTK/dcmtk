@@ -18,24 +18,23 @@ The \b dcmpschk utility checks DICOM Grayscale Softcopy Presentation State
 objects for conformance with the standard.  The test is performed in three
 phases:
 
-\li Phase 1 checks the Meta-header of the DICOM file.  It is tested whether
-    all required attributes are present, whether the SOP class and instance
-    UIDs match the UIDs in the main object and whether the group length
-    attribute contains a correct value.  The Transfer Syntax of the Meta
-    header is also checked.
+- Phase 1 checks the Meta-header of the DICOM file.  It is tested whether all
+  required attributes are present, whether the SOP class and instance UIDs
+  match the UIDs in the main object and whether the group length attribute
+  contains a correct value.  The Transfer Syntax of the Meta header is also
+  checked.
 
-\li Phase 2 performs a syntactic check of the values, value representations
-    and value multiplicities for each attribute in the object.  The values
-    present in the object under test are compared with the definitions of the
-    DICOM data dictionary.
+- Phase 2 performs a syntactic check of the values, value representations and
+  value multiplicities for each attribute in the object.  The values present in
+  the object under test are compared with the definitions of the DICOM data
+  dictionary.
 
-\li Phase 3 performs a semantic check of the integrity of the Presentation
-    State.  This phase is omitted when objects of other SOP Classes are
-    encountered.  Phase 1 and 2 can also be applied to other DICOM objects of
-    arbitrary SOP class.
-    It should be noted that \b dcmpschk does not support Presentation States
-    which contain the Mask Module.  These will be rejected with a message
-    that the Mask Module is not supported.
+- Phase 3 performs a semantic check of the integrity of the Presentation State.
+  This phase is omitted when objects of other SOP Classes are encountered.
+  Phase 1 and 2 can also be applied to other DICOM objects of arbitrary SOP
+  class.  It should be noted that \b dcmpschk does not support Presentation
+  States which contain the Mask Module.  These will be rejected with a message
+  that the Mask Module is not supported.
 
 \section dcmpschk_parameters PARAMETERS
 
@@ -132,6 +131,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpschk_copyright COPYRIGHT
 
-Copyright (C) 2000-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
