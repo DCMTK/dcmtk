@@ -1434,7 +1434,7 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                     {
                       lastElementComplete = OFTrue;
                       readStopElem = OFTrue;
-                      DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                      DCMDATA_INFO("DcmItem: Element " << newTag.getTagName() << " " << newTag
                         << " encountered, skipping rest of dataset");
                     }
                     else
