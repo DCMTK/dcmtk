@@ -1481,7 +1481,7 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                          (dcmStopParsingAfterElement.get() == elementList->get()->getTag()) &&
                           ident() == EVR_dataset)
                     {
-                        DCMDATA_WARN("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                        DCMDATA_INFO("DcmItem: Element " << newTag.getTagName() << " " << newTag
                             << " encountered, skipping rest of data set");
                         readStopElem = OFTrue;
                     }
