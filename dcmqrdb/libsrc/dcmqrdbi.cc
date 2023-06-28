@@ -3257,7 +3257,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     if (m==NULL) m = "XX";
     sprintf(prefix, "%s_", m);
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
-    unsigned int seed = (unsigned int)time(NULL);
+    static unsigned int seed = (unsigned int)time(NULL);
     newImageFileName[0]=0; // return empty string in case of error
     if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename))
         return QR_EC_IndexDatabaseError;
