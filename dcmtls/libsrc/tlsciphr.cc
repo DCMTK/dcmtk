@@ -577,7 +577,7 @@ OFCondition DcmTLSCiphersuiteHandler::addCipherSuite(const char *suite)
     return EC_Normal;
   }
   // invalid/unknown cipher suite name
-  return EC_IllegalCall;
+  return DCMTLS_EC_UnknownCiphersuite( suite ? suite : "(NULL)" );
 }
 
 // Static helper function for the qsort() call in
