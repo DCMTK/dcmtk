@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -3257,7 +3257,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     if (m==NULL) m = "XX";
     sprintf(prefix, "%s_", m);
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
-    unsigned int seed = (unsigned int)time(NULL);
+
+    // Make seed static so that multiple/concurrent calls to this method
+    // will not use a seed that is initialized by the same time. Instead,
+    // rely on a seed that is updated by each call to makeFilename below, thus
+    // resulting in more "randomness" when called within the same second.
+    static unsigned int seed = (unsigned int)time(NULL);
     newImageFileName[0]=0; // return empty string in case of error
     if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename))
         return QR_EC_IndexDatabaseError;
