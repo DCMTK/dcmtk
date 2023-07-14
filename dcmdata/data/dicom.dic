@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2023b and PS 3.7-2023b.
-# File created on 2023-04-17 10:16:59 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2023c and PS 3.7-2023c.
+# File created on 2023-07-14 12:17:55 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -927,6 +927,8 @@
 (0018,1201)	TM	TimeOfLastCalibration	1-n	DICOM
 (0018,1202)	DT	DateTimeOfLastCalibration	1	DICOM
 (0018,1203)	DT	CalibrationDateTime	1	DICOM
+(0018,1204)	DA	DateOfManufacture	1	DICOM
+(0018,1205)	DA	DateOfInstallation	1	DICOM
 (0018,1210)	SH	ConvolutionKernel	1-n	DICOM
 (0018,1242)	IS	ActualFrameDuration	1	DICOM
 (0018,1243)	IS	CountRate	1	DICOM
@@ -1526,6 +1528,27 @@
 (0018,980E)	SQ	TransducerBeamSteeringCodeSequence	1	DICOM
 (0018,980F)	SQ	TransducerApplicationCodeSequence	1	DICOM
 (0018,9810)	xs	ZeroVelocityPixelValue	1	DICOM
+(0018,9821)	SQ	PhotoacousticExcitationCharacteristicsSequence	1	DICOM
+(0018,9822)	FD	ExcitationSpectralWidth	1	DICOM
+(0018,9823)	FD	ExcitationEnergy	1	DICOM
+(0018,9824)	FD	ExcitationPulseDuration	1	DICOM
+(0018,9825)	SQ	ExcitationWavelengthSequence	1	DICOM
+(0018,9826)	FD	ExcitationWavelength	1	DICOM
+(0018,9828)	CS	IlluminationTranslationFlag	1	DICOM
+(0018,9829)	CS	AcousticCouplingMediumFlag	1	DICOM
+(0018,982A)	SQ	AcousticCouplingMediumCodeSequence	1	DICOM
+(0018,982B)	FD	AcousticCouplingMediumTemperature	1	DICOM
+(0018,982C)	SQ	TransducerResponseSequence	1	DICOM
+(0018,982D)	FD	CenterFrequency	1	DICOM
+(0018,982E)	FD	FractionalBandwidth	1	DICOM
+(0018,982F)	FD	LowerCutoffFrequency	1	DICOM
+(0018,9830)	FD	UpperCutoffFrequency	1	DICOM
+(0018,9831)	SQ	TransducerTechnologySequence	1	DICOM
+(0018,9832)	SQ	SoundSpeedCorrectionMechanismCodeSequence	1	DICOM
+(0018,9833)	FD	ObjectSoundSpeed	1	DICOM
+(0018,9834)	FD	AcousticCouplingMediumSoundSpeed	1	DICOM
+(0018,9835)	SQ	PhotoacousticImageFrameTypeSequence	1	DICOM
+(0018,9836)	SQ	ImageDataTypeCodeSequence	1	DICOM
 (0018,9900)	LO	ReferenceLocationLabel	1	DICOM
 (0018,9901)	UT	ReferenceLocationDescription	1	DICOM
 (0018,9902)	SQ	ReferenceBasisCodeSequence	1	DICOM

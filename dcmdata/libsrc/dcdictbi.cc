@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-04-17 10:18:46
+**   Date: 2023-07-14 12:18:43
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -5274,6 +5274,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DT, "CalibrationDateTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0018, 0x1204, 0x0018, 0x1204,
+      EVR_DA, "DateOfManufacture", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x1205, 0x0018, 0x1205,
+      EVR_DA, "DateOfInstallation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0018, 0x1210, 0x0018, 0x1210,
       EVR_SH, "ConvolutionKernel", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -7740,6 +7748,90 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9810, 0x0018, 0x9810,
       EVR_xs, "ZeroVelocityPixelValue", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9821, 0x0018, 0x9821,
+      EVR_SQ, "PhotoacousticExcitationCharacteristicsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9822, 0x0018, 0x9822,
+      EVR_FD, "ExcitationSpectralWidth", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9823, 0x0018, 0x9823,
+      EVR_FD, "ExcitationEnergy", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9824, 0x0018, 0x9824,
+      EVR_FD, "ExcitationPulseDuration", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9825, 0x0018, 0x9825,
+      EVR_SQ, "ExcitationWavelengthSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9826, 0x0018, 0x9826,
+      EVR_FD, "ExcitationWavelength", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9828, 0x0018, 0x9828,
+      EVR_CS, "IlluminationTranslationFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9829, 0x0018, 0x9829,
+      EVR_CS, "AcousticCouplingMediumFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x982a, 0x0018, 0x982a,
+      EVR_SQ, "AcousticCouplingMediumCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x982b, 0x0018, 0x982b,
+      EVR_FD, "AcousticCouplingMediumTemperature", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x982c, 0x0018, 0x982c,
+      EVR_SQ, "TransducerResponseSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x982d, 0x0018, 0x982d,
+      EVR_FD, "CenterFrequency", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x982e, 0x0018, 0x982e,
+      EVR_FD, "FractionalBandwidth", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x982f, 0x0018, 0x982f,
+      EVR_FD, "LowerCutoffFrequency", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9830, 0x0018, 0x9830,
+      EVR_FD, "UpperCutoffFrequency", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9831, 0x0018, 0x9831,
+      EVR_SQ, "TransducerTechnologySequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9832, 0x0018, 0x9832,
+      EVR_SQ, "SoundSpeedCorrectionMechanismCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9833, 0x0018, 0x9833,
+      EVR_FD, "ObjectSoundSpeed", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9834, 0x0018, 0x9834,
+      EVR_FD, "AcousticCouplingMediumSoundSpeed", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9835, 0x0018, 0x9835,
+      EVR_SQ, "PhotoacousticImageFrameTypeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9836, 0x0018, 0x9836,
+      EVR_SQ, "ImageDataTypeCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0x9900, 0x0018, 0x9900,

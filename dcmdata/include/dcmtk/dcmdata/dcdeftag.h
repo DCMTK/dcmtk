@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-04-17 10:18:45
+**   Date: 2023-07-14 12:18:43
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2023-04-17 10:18:45"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2023-07-14 12:18:43"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5050
+** Number of entries: 5073
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -980,6 +980,8 @@
 #define DCM_TimeOfLastCalibration                DcmTagKey(0x0018, 0x1201)
 #define DCM_DateTimeOfLastCalibration            DcmTagKey(0x0018, 0x1202)
 #define DCM_CalibrationDateTime                  DcmTagKey(0x0018, 0x1203)
+#define DCM_DateOfManufacture                    DcmTagKey(0x0018, 0x1204)
+#define DCM_DateOfInstallation                   DcmTagKey(0x0018, 0x1205)
 #define DCM_ConvolutionKernel                    DcmTagKey(0x0018, 0x1210)
 #define DCM_RETIRED_UpperLowerPixelValues        DcmTagKey(0x0018, 0x1240)
 #define DCM_ActualFrameDuration                  DcmTagKey(0x0018, 0x1242)
@@ -1597,6 +1599,27 @@
 #define DCM_TransducerBeamSteeringCodeSequence   DcmTagKey(0x0018, 0x980e)
 #define DCM_TransducerApplicationCodeSequence    DcmTagKey(0x0018, 0x980f)
 #define DCM_ZeroVelocityPixelValue               DcmTagKey(0x0018, 0x9810)
+#define DCM_PhotoacousticExcitationCharacteristicsSequence DcmTagKey(0x0018, 0x9821)
+#define DCM_ExcitationSpectralWidth              DcmTagKey(0x0018, 0x9822)
+#define DCM_ExcitationEnergy                     DcmTagKey(0x0018, 0x9823)
+#define DCM_ExcitationPulseDuration              DcmTagKey(0x0018, 0x9824)
+#define DCM_ExcitationWavelengthSequence         DcmTagKey(0x0018, 0x9825)
+#define DCM_ExcitationWavelength                 DcmTagKey(0x0018, 0x9826)
+#define DCM_IlluminationTranslationFlag          DcmTagKey(0x0018, 0x9828)
+#define DCM_AcousticCouplingMediumFlag           DcmTagKey(0x0018, 0x9829)
+#define DCM_AcousticCouplingMediumCodeSequence   DcmTagKey(0x0018, 0x982a)
+#define DCM_AcousticCouplingMediumTemperature    DcmTagKey(0x0018, 0x982b)
+#define DCM_TransducerResponseSequence           DcmTagKey(0x0018, 0x982c)
+#define DCM_CenterFrequency                      DcmTagKey(0x0018, 0x982d)
+#define DCM_FractionalBandwidth                  DcmTagKey(0x0018, 0x982e)
+#define DCM_LowerCutoffFrequency                 DcmTagKey(0x0018, 0x982f)
+#define DCM_UpperCutoffFrequency                 DcmTagKey(0x0018, 0x9830)
+#define DCM_TransducerTechnologySequence         DcmTagKey(0x0018, 0x9831)
+#define DCM_SoundSpeedCorrectionMechanismCodeSequence DcmTagKey(0x0018, 0x9832)
+#define DCM_ObjectSoundSpeed                     DcmTagKey(0x0018, 0x9833)
+#define DCM_AcousticCouplingMediumSoundSpeed     DcmTagKey(0x0018, 0x9834)
+#define DCM_PhotoacousticImageFrameTypeSequence  DcmTagKey(0x0018, 0x9835)
+#define DCM_ImageDataTypeCodeSequence            DcmTagKey(0x0018, 0x9836)
 #define DCM_ReferenceLocationLabel               DcmTagKey(0x0018, 0x9900)
 #define DCM_ReferenceLocationDescription         DcmTagKey(0x0018, 0x9901)
 #define DCM_ReferenceBasisCodeSequence           DcmTagKey(0x0018, 0x9902)
