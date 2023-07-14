@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2023b
- *  File created on 2023-04-17 10:32:10 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023c
+ *  File created on 2023-07-14 12:40:31 by J. Riesmeier
  *
  */
 
