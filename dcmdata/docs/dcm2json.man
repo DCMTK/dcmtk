@@ -325,6 +325,8 @@ As required by the DICOM JSON encoding, \b dcm2json always creates output in
 Unicode UTF-8 encoding and converts DICOM datasets accordingly.  If this is not
 possible, for example because DCMTK has been compiled without either iconv or
 ICU library, an error is returned.
+There is no default escaping of characters as it is handled by the underlying
+library in use (eg. libiconv and oficonv may have different settings).
 
 \section dcm2json_logging LOGGING
 
