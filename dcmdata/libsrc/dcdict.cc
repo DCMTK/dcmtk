@@ -27,7 +27,6 @@
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/offile.h"
 
 #ifdef HAVE_WINDOWS_H
