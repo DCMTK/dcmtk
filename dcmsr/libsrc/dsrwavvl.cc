@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -271,7 +271,7 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
     OFCondition result = DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID);
     if (result.good())
     {
-        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2021c) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.6-2023c) */
         if ((sopClassUID != UID_TwelveLeadECGWaveformStorage) &&
             (sopClassUID != UID_GeneralECGWaveformStorage) &&
             (sopClassUID != UID_AmbulatoryECGWaveformStorage) &&
@@ -286,7 +286,8 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
             (sopClassUID != UID_ElectromyogramWaveformStorage) &&
             (sopClassUID != UID_ElectrooculogramWaveformStorage) &&
             (sopClassUID != UID_SleepElectroencephalogramWaveformStorage) &&
-            (sopClassUID != UID_BodyPositionWaveformStorage))
+            (sopClassUID != UID_BodyPositionWaveformStorage) &&
+            (sopClassUID != UID_General32BitECGWaveformStorage))
         {
             REPORT_WARNING("Invalid or unknown waveform SOP class referenced from WAVEFORM content item")
             result = SR_EC_InvalidValue;

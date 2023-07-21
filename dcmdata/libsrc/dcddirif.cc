@@ -733,7 +733,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_ElectrooculogramWaveformStorage) ||
              compare(sopClass, UID_SleepElectroencephalogramWaveformStorage) ||
              compare(sopClass, UID_MultichannelRespiratoryWaveformStorage) ||
-             compare(sopClass, UID_BodyPositionWaveformStorage))
+             compare(sopClass, UID_BodyPositionWaveformStorage) ||
+             compare(sopClass, UID_General32BitECGWaveformStorage))
     {
         result = ERT_Waveform;
     }
@@ -1680,7 +1681,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 compare(mediaSOPClassUID, UID_ElectromyogramWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_ElectrooculogramWaveformStorage) ||
                                 compare(mediaSOPClassUID, UID_SleepElectroencephalogramWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_BodyPositionWaveformStorage);
+                                compare(mediaSOPClassUID, UID_BodyPositionWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_General32BitECGWaveformStorage);
                     }
                     /* is it one of the presentation state SOP Classes? */
                     if (!found)

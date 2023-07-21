@@ -743,6 +743,7 @@ RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
 EnhancedUSVolumeStorage                              1.2.840.10008.5.1.4.1.1.6.2
+PhotoacousticImageStorage                            1.2.840.10008.5.1.4.1.1.6.3
 SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
 MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
 MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
@@ -754,6 +755,7 @@ DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
 TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
 GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
 AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+General32BitECGWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.1.4
 HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
 CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
 BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
