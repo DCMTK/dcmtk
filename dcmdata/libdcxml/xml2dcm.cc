@@ -122,9 +122,6 @@ void DcmXMLParseHelper::initLibrary()
     /* check for compatible libxml version */
     LIBXML_TEST_VERSION
 
-    /* temporary buffer needed for xml2dcm_errorFunction - more detailed explanation there */
-    OFString tmpErrorString;
-
     /* initialize the XML library (only required for MT-safety) */
     xmlInitParser();
 
@@ -140,7 +137,6 @@ void DcmXMLParseHelper::initLibrary()
 
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
-    xmlSetGenericErrorFunc(&tmpErrorString, xml2dcm_errorFunction);
 }
 
 
@@ -689,6 +685,11 @@ OFCondition DcmXMLParseHelper::readXmlFile(
 {
     OFCondition result = EC_Normal;
     xfer = EXS_Unknown;
+
+    /* temporary buffer needed for xml2dcm_errorFunction - more detailed explanation there */
+    OFString tmpErrorString;
+    xmlSetGenericErrorFunc(&tmpErrorString, xml2dcm_errorFunction);
+
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the file */
 #if LIBXML_VERSION >= 20703
@@ -785,6 +786,12 @@ OFCondition DcmXMLParseHelper::readXmlFile(
         DCMDATA_ERROR("could not parse document: " << ifname);
         result = EC_XMLParseError;
     }
+
+    /* Reset to default function because we used a local string as context for
+     * the error function.
+     */
+    xmlSetGenericErrorFunc(NULL, NULL);
+
     /* free allocated memory */
     xmlFreeDoc(doc);
     return result;
