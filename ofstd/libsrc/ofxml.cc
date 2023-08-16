@@ -123,7 +123,6 @@
 #include <cstring>
 #include <cassert>
 #include <cstdlib>
-#include "dcmtk/ofstd/ofstdinc.h"
 
 using STD_NAMESPACE free;
 using STD_NAMESPACE malloc;
