@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2022, OFFIS e.V.
+ *  Copyright (C) 2017-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -960,7 +960,7 @@ struct NCREATEFixture
     T_ASC_PresentationContextID presIDMpps;
 };
 
-OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null)
+OFTEST_FLAGS(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null, EF_Slow)
 {
     NCREATEFixture fixture;
 
@@ -974,7 +974,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_n
     OFStandard::forceSleep(2);
 }
 
-OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty)
+OFTEST_FLAGS(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty, EF_Slow)
 {
     NCREATEFixture fixture;
 
@@ -986,7 +986,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_fails_when_affectedsopinstance_is_empty)
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
-OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted)
+OFTEST_FLAGS(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accepted, EF_Slow)
 {
     NCREATEFixture fixture;
 
@@ -1006,7 +1006,7 @@ OFTEST(dcmnet_scu_sendNCREATERequest_creates_instance_when_association_was_accep
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
-OFTEST(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status)
+OFTEST_FLAGS(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status, EF_Slow)
 {
     NCREATEFixture fixture;
     Uint16 rspStatusCode = 0;
@@ -1048,7 +1048,7 @@ struct NSETFixture : NCREATEFixture
     DcmDataset* modifiedAttributes;
 };
 
-OFTEST(dcmnet_scu_sendNSETRequest_fails_when_requestedsopinstance_is_empty)
+OFTEST_FLAGS(dcmnet_scu_sendNSETRequest_fails_when_requestedsopinstance_is_empty, EF_Slow)
 {
     NSETFixture fixture;
 
@@ -1061,7 +1061,7 @@ OFTEST(dcmnet_scu_sendNSETRequest_fails_when_requestedsopinstance_is_empty)
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
-OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_modifies_instance_when_scp_has_instance)
+OFTEST_FLAGS(dcmnet_scu_sendNSETRequest_succeeds_and_modifies_instance_when_scp_has_instance, EF_Slow)
 {
     NSETFixture fixture;
 
@@ -1098,7 +1098,7 @@ OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_modifies_instance_when_scp_has_in
     OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
 }
 
-OFTEST(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status)
+OFTEST_FLAGS(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status, EF_Slow)
 {
     NSETFixture fixture;
 
