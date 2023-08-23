@@ -1,5 +1,5 @@
 # Minimum CMake version required
-cmake_minimum_required(VERSION 3.0.0...3.26.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.0...3.27.3 FATAL_ERROR)
 
 # Declare project
 project(DCMTK)
