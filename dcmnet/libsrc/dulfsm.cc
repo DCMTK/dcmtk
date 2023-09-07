@@ -1387,8 +1387,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned long
         pduLength,
         pdvLength,
-        pdvCount;
-    long
+        pdvCount,
         length;
     unsigned char
        *p;
