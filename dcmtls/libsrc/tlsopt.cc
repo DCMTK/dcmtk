@@ -183,7 +183,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
                                                        "use specified password");
       cmd.addOption("--null-passwd",        "-pw",     "use empty string as password");
     cmd.addSubGroup("key and certificate file format:");
-      cmd.addOption("--pem-keys",           "-pem",    "read keys and certificates as PEM file (default)");
+      cmd.addOption("--pem-keys",           "-pem",    "read keys and certs as PEM file (default)");
       cmd.addOption("--der-keys",           "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",      "+cf",  1, "[f]ilename: string",
@@ -213,7 +213,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       }
 
     cmd.addSubGroup("ciphersuite:");
-      cmd.addOption("--list-ciphers",       "+cc",     "show list of supported TLS ciphersuites and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--list-ciphers",       "+cc",     "list supported TLS ciphersuites and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--cipher",             "+cs",  1, "[c]iphersuite name: string",
                                                        "add ciphersuite to list of negotiated suites\n(not with --profile-bcp195-ex)");
       if (opt_networkRole != NET_REQUESTOR)
@@ -243,7 +243,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--write-seed-file",    "+wf",  1, "[f]ilename: string (only with --seed)",
                                                        "write modified seed to file f");
     cmd.addSubGroup("peer authentication:");
-      cmd.addOption("--require-peer-cert",  "-rc",     "verify peer certificate, fail if absent (default)");
+      cmd.addOption("--require-peer-cert",  "-rc",     "verify peer cert, fail if absent (default)");
       if (opt_networkRole != NET_REQUESTOR)
       {
         // this command line option only makes sense for association acceptors (TLS servers)

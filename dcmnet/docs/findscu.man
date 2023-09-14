@@ -177,7 +177,7 @@ private key password (only with --enable-tls):
 key and certificate file format:
 
   -pem  --pem-keys
-          read keys and certificates as PEM file (default)
+          read keys and certs as PEM file (default)
 
   -der  --der-keys
           read keys and certificates as DER file
@@ -235,7 +235,7 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -262,7 +262,7 @@ pseudo random generator:
 peer authentication:
 
   -rc   --require-peer-cert
-          verify peer certificate, fail if absent (default)
+          verify peer cert, fail if absent (default)
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
