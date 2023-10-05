@@ -131,7 +131,7 @@ specific character set:
          require declaration of extended charset (default)
 
   +Ca  --charset-assume  [c]harset: string
-         assume charset c if no extended charset declared
+         assume charset c if no extended CS declared
 
        --charset-check-all
          check all data elements with string values

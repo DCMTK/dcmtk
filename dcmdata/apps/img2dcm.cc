@@ -171,7 +171,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--transliterate",       "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
       cmd.addOption("--discard-illegal",     "-Cd",     "discard characters that cannot be represented\nin destination character set");
     cmd.addSubGroup("other processing options:");
-      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
+      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict name=\"str\"",
                                                         "add further attribute");
 
   cmd.addGroup("output options:");

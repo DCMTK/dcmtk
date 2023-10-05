@@ -180,8 +180,8 @@ main(int argc, char *argv[])
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("association negotiation profiles from configuration file:");
-      cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-profile, [o]ut-profile: string",
-                                                           "use profile i from f for incoming associations,\nuse profile o from f for outgoing associations");
+      cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-prof, [o]ut-prof: string",
+                                                           "use profile i from f for incoming,\nand profile o from f for outgoing associations");
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",         "+x=",     "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",     "prefer explicit VR little endian TS");
@@ -202,7 +202,7 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg4-2-3d",      "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",      "+xo",     "prefer MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
       cmd.addOption("--prefer-hevc",            "+x4",     "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--prefer-hevc10",          "+x5",     "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--prefer-hevc10",          "+x5",     "prefer HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
@@ -231,7 +231,7 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-mpeg4-2-3d",     "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--propose-mpeg4-2-st",     "-xo",     "propose MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
       cmd.addOption("--propose-hevc",           "-x4",     "propose HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--propose-hevc10",         "-x5",     "propose HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--propose-hevc10",         "-x5",     "propose HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--propose-rle",            "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",       "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
