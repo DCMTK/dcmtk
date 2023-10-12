@@ -122,9 +122,21 @@ struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
     inline DB_SerializedTagKey(const DcmTagKey& rhs) { *this = rhs; }
     inline DB_SerializedTagKey& operator=(const DcmTagKey& tk) { key[0] = tk.getGroup(); key[1] = tk.getElement(); return *this; }
     inline operator DcmTagKey() const { return DcmTagKey( key[0], key[1] ); }
-    inline bool operator==(const DB_SerializedTagKey& rhs) const { return key[0] == rhs.key[0] && key[1] == rhs.key[1]; }
     Uint16 key[2];
 };
+
+inline bool operator==(const DB_SerializedTagKey& lhs, const DB_SerializedTagKey& rhs)
+{
+    return lhs.key[0] == rhs.key[0] && lhs.key[1] == rhs.key[1];
+}
+inline bool operator==(const DB_SerializedTagKey& lhs, const DcmTagKey& rhs)
+{
+    return lhs == DB_SerializedTagKey(rhs);
+}
+inline bool operator==(const DcmTagKey& lhs, const DB_SerializedTagKey& rhs)
+{
+    return rhs == lhs;
+}
 
 /* ENSURE THAT DBVERSION IS INCREMENTED WHENEVER ONE OF THESE STRUCTS IS MODIFIED */
 
