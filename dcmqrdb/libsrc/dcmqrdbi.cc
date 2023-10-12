@@ -1216,13 +1216,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
          */
 
         DB_GetUIDTag (level, &XTag) ;
-        const DB_SerializedTagKey XTagDBSerialized = XTag;
 
         /** Find Element with this XTag in Identifier list
          */
 
         for (plist = phandle->findRequestList ; plist ; plist = plist->next)
-            if (plist->elem. XTag == XTagDBSerialized)
+            if (plist->elem. XTag == XTag)
                 break ;
 
         /** Element not found
@@ -1238,7 +1237,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
          */
 
         for (i = 0 ; i < NBPARAMETERS ; i++)
-            if (idxRec->param [i]. XTag == XTagDBSerialized)
+            if (idxRec->param [i]. XTag == XTag)
                 break ;
 
         /** Compare with Single value matching
@@ -1371,8 +1370,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         DcmElement* dcelem = findRequestIdentifiers->getElement(elemIndex);
 
         elem.XTag = dcelem->getTag().getXTag();
-        const DB_SerializedTagKey DCM_QueryRetrieveLevelDBSerialized = DCM_QueryRetrieveLevel;
-        if (elem.XTag == DCM_QueryRetrieveLevelDBSerialized || DB_TagSupported(elem.XTag)) {
+        if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
             elem.ValueLength = dcelem->getLength();
             if (elem.ValueLength == 0) {
                 elem.PValueField = NULL ;
@@ -1389,7 +1387,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             /** If element is the Query Level, store it in handle
              */
 
-            if (elem.XTag == DCM_QueryRetrieveLevelDBSerialized && elem.PValueField) {
+            if (elem.XTag == DCM_QueryRetrieveLevel && elem.PValueField) {
                 char *pc ;
                 char level [50] ;
 
@@ -2057,8 +2055,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         DcmElement* dcelem = moveRequestIdentifiers->getElement(elemIndex);
 
         elem.XTag = dcelem->getTag().getXTag();
-        const DB_SerializedTagKey DCM_QueryRetrieveLevelDBSerialized = DCM_QueryRetrieveLevel;
-        if (elem.XTag == DCM_QueryRetrieveLevelDBSerialized || DB_TagSupported(elem.XTag)) {
+        if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
             elem.ValueLength = dcelem->getLength();
             if (elem.ValueLength == 0) {
                 elem.PValueField = NULL ;
@@ -2076,7 +2073,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             /** If element is the Query Level, store it in handle
              */
 
-            if (elem. XTag == DCM_QueryRetrieveLevelDBSerialized && elem.PValueField) {
+            if (elem. XTag == DCM_QueryRetrieveLevel && elem.PValueField) {
                 char *pc ;
                 char level [50] ;
 
