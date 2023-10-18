@@ -609,7 +609,7 @@ ASC_setIdentRQJwt(
 DCMTK_DCMNET_EXPORT OFCondition ASC_setIdentAC(
     T_ASC_Parameters * params,
     const char* response,
-    const Uint16 length);
+    const Uint16& length);
 
 /** Returns a copy of the User Identity Negotiation response value.
  *  CAUTION: The returned buffer (copy of original data) must be freed by the
