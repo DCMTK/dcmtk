@@ -142,7 +142,8 @@ else()
 endif()
 
 # Configure dictionary path and install prefix
-if(WIN32 AND NOT CYGWIN)
+string(COMPARE EQUAL CMAKE_HOST_SYSTEM_NAME "Windows" RUNNING_ON_WINDOWS_HOST)
+if(WIN32 AND RUNNING_ON_WINDOWS_HOST AND NOT CYGWIN)
   # Set DCMTK_PREFIX needed within some code. Be sure that all / are replaced by \\.
   set(DCMTK_PREFIX "${CMAKE_INSTALL_PREFIX}")
   string(REGEX REPLACE "/" "\\\\\\\\" DCMTK_PREFIX "${DCMTK_PREFIX}")
