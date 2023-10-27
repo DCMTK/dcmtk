@@ -1387,8 +1387,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned long
         pduLength,
         pdvLength,
-        pdvCount;
-    long
+        pdvCount,
         length;
     unsigned char
        *p;
@@ -1413,19 +1412,22 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     p = (*association)->fragmentBuffer;     //set p to the buffer which contains the PDU's PDVs
     while (length >= 4) {                   //as long as length is at least 4 (= a length field can be read)
         EXTRACT_LONG_BIG(p, pdvLength);     //determine the length of the current PDV (the PDV p points to)
-        p += 4 + pdvLength;                 //move p so that it points to the next PDV (move p 4 bytes over the length field plus the amount of bytes which is captured in the PDV's length field (over presentation context.Id, message information header and data fragment))
-        length -= 4 + pdvLength;            //update length (i.e. determine the length of the buffer which has not been evaluated yet.)
-        pdvCount++;                         //increase counter by one, since we've found another PDV
 
         // There must be at least a presentation context ID and a message
         // control header (see below), else the calculation pdvLength - 2 below
         // will underflow.
-        if (pdvLength < 2)
+        // Check that pdvLength will not overflow ULONG_MAX with additional 4 bytes.
+        // Check that pdvLength + additional 4 bytes is less than remaining length.
+        if (pdvLength < 2 || ULONG_MAX - pdvLength < 4 || length < 4 + pdvLength)
         {
            char buf[256];
            sprintf(buf, "PDV with invalid length %lu encountered. This probably indicates a malformed P DATA PDU.", pdvLength);
            return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
         }
+
+        p += 4 + pdvLength;                 //move p so that it points to the next PDV (move p 4 bytes over the length field plus the amount of bytes which is captured in the PDV's length field (over presentation context.Id, message information header and data fragment))
+        length -= 4 + pdvLength;            //update length (i.e. determine the length of the buffer which has not been evaluated yet.)
+        pdvCount++;                         //increase counter by one, since we've found another PDV
     }
 
     /* if after having counted the PDVs the length variable does not equal */
