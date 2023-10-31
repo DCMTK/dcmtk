@@ -181,7 +181,7 @@ OFCondition DcmQuant::createPaletteColorImage(
 
     if (frames > 1)
     {
-      char buf[20];
+      char buf[21];
       sprintf(buf, "%lu", frames);
       if (result.good()) result = target.putAndInsertString(DCM_NumberOfFrames, buf);
     }
