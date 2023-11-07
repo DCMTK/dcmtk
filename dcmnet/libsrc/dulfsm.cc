@@ -117,7 +117,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/helpers.h"
 #include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
 #include <ctime>
-
+#include <climits>
 
 /* At least Solaris doesn't define this */
 #ifndef INADDR_NONE
