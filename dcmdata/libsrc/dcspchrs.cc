@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -548,8 +548,9 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
                                                    const OFString &delimiters)
 {
     OFCondition status = EC_Normal;
-    // check whether there are any code extensions at all
-    if (EncodingConverters.empty() || !checkForEscapeCharacter(fromString, fromLength))
+    // check whether there are or could be any code extensions
+    const OFBool hasEscapeChar = checkForEscapeCharacter(fromString, fromLength);
+    if (EncodingConverters.empty() || (!hasEscapeChar && delimiters.empty()))
     {
         DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
             << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
@@ -564,10 +565,11 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
         } else {
             DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
                 << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with code extensions and delimiters '" << delimiters << "')");
+                << "' (with " << (hasEscapeChar ? "code extensions and " : "")
+                << "delimiters '" << delimiters << "')");
         }
-        // code extensions according to ISO 2022 used, so we need to check for
-        // particular escape sequences in order to switch between character sets
+        // code extensions according to ISO 2022 (possibly) used, so we need to check
+        // for particular escape sequences in order to switch between character sets
         toString.clear();
         size_t pos = 0;
         // some (extended) character sets use more than 1 byte per character
