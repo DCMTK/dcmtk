@@ -211,7 +211,7 @@ else()
 
   # libxml support: find out whether user has library
   file(GLOB LIBXML_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libxml2*")
-  find_path(WITH_LIBXMLINC "${DCMTK_SUPPORT_LIBRARIES_DIR}/include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
+  find_path(WITH_LIBXMLINC "include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
 
   # libpng support: find out whether user has library
   file(GLOB LIBPNG_DIR "${DCMTK_SUPPORT_LIBRARIES_DIR}/libpng*")
