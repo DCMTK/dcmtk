@@ -685,6 +685,10 @@ Through CMake, perform the following steps:
     - BUILD_SINGLE_SHARED_LIBRARY: Build a single shared library for the
       whole toolkit.  This setting overrides the value of the option
       "BUILD_SHARED_LIBS", which is set to "ON".  Default: OFF.
+    - DCMTK_USE_WIN32_PROGRAMDATA: An experimental setting that will cause
+      data files (such as the DICOM dictionary "dicom.dic" and the oficonv
+      character set mapping tables) and configuration files to be installed
+      and expected in a subdirectory of the ProgramData directory.
 
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.)
@@ -1102,4 +1106,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2023-11-12 (Eichelberg)
+Last revised: 2023-11-15 (Eichelberg)
