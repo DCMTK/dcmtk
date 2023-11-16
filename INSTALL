@@ -840,9 +840,22 @@ When oficonv is used to implement character set conversion (which is the
 default, starting with DCMTK 3.6.8), then a set of binary data files containing
 mapping tables are used during the conversion process.  By default, these are
 installed and expected in DCMTK's data path ("/usr/local/share/dcmtk-<VERSION>/
-data") in the subdirectories "esdb" and "csmapper".  The data path can
-be overridden at runtime by setting the environment variable "DCMICONVPATH" to
+data") in the subdirectories "esdb" and "csmapper".  The data path can be
+overridden at runtime by setting the environment variable "DCMICONVPATH" to
 point to a different directory.
+
+It is possible to embed the mapping tables into the oficonv library, in which
+case no external files are needed at runtime.  This can be enabled by setting
+the CMake variable "DCMTK_ENABLE_BUILTIN_OFICONV_DATA" to "ON".  This behavior
+is enabled by default when DCMTK is compiled into shared libraries (option
+"BUILD_SHARED_LIBS" set to "ON"), and disabled by default otherwise.  Note that
+when using static libraries, the built-in mapping tables will increase the size
+of each executable by ca. 4 MBytes.
+
+The "DCMICONVPATH" environment variable is respected even when built-in mapping
+tables are available.  In this case, the files referred to by "DCMICONVPATH"
+override the built-in files, unless "DCMICONVPATH" points to DCMTK's default
+data path.
 
 
 COMPILE-TIME FLAGS AND ENVIRONMENT VARIABLES
@@ -904,7 +917,7 @@ In detail, these are the variables that need to be provided:
   - DCMTK_FIXED_ICONV_CONVERSION_FLAGS: The output printed by the test program
     config/tests/iconv.cc, when run on the target platform. This value is only
     used when compiling with old libiconv versions (older than libiconv 1.8)
-    and determines the iconv behaviour when encountering illegal byte sequences
+    and determines the iconv behavior when encountering illegal byte sequences
     during a character set conversion. Possible values are:
     - "AbortTranscodingOnIllegalSequence" (use as default)
     - "DiscardIllegalSequences"
@@ -1106,4 +1119,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2023-11-15 (Eichelberg)
+Last revised: 2023-11-16 (Riesmeier)

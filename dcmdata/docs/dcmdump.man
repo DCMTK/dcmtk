@@ -413,6 +413,16 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+Depending on the command line options specified, the \b dcmdump utility will
+attempt to load character set mapping tables.  This happens when DCMTK was
+compiled with the oficonv library (which is the default) and the mapping tables
+are not built into the library (default when DCMTK uses shared libraries).
+
+The mapping table files are expected in DCMTK's <em>\<datadir\></em>.
+The \e DCMICONVPATH environment variable can be used to specify a different
+location.  If a different location is specified, those mapping tables also
+replace any built-in tables.
+
 \section dcmdump_see_also SEE ALSO
 
 <b>dump2dcm</b>(1), <b>dcmconv</b>(1)
