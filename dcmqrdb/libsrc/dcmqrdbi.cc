@@ -2808,11 +2808,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     /* is dataset digitally signed? */
     if (strlen(idxRec.InstanceDescription) + 9 < DESCRIPTION_MAX_LENGTH)
     {
-        DcmStack stack;
-        if (dset->search(DCM_DigitalSignaturesSequence, stack, ESM_fromHere, OFTrue /* searchIntoSub */) == EC_Normal)
+        DcmSequenceOfItems *signature_sequence = NULL;
+        if (dset->findAndGetSequence(DCM_DigitalSignaturesSequence, signature_sequence, OFTrue /* searchIntoSub */).good() && signature_sequence)
         {
             /* in principle it should be checked whether there is _any_ non-empty digital signatures sequence, but ... */
-            if (((DcmSequenceOfItems *)stack.top())->card() > 0)
+            if (signature_sequence->card() > 0)
             {
                 if (strlen(idxRec.InstanceDescription) > 0)
                     OFStandard::strlcat(idxRec.InstanceDescription, " (Signed)", DESCRIPTION_MAX_LENGTH+1);
