@@ -1009,15 +1009,15 @@ Configure will assume that the OpenSSL include files are installed in
 "/usr/local/apps/openssl-1.1.1w/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
-Support for zlib, libtiff, libpng, libxml2, libwrap, libiconv and ICU can be
+Support for zlib, libtiff, libpng, libxml2, libwrap, libiconv and/or ICU can be
 enabled in a similar way (in case these libraries are not installed in the
-standard path):
+standard path), e.g.:
 
     ./configure --ignore-deprecation
                 --with-libzlibinc=/usr/local/apps/zlib-1.3
                 --with-libtiffinc=/usr/local/apps/libtiff-4.6.0
                 --with-libpnginc=/usr/local/apps/libpng-1.6.40
-                --with-libxmlinc=/usr/local/apps/libxml2-2.9.14
+                --with-libxmlinc=/usr/local/apps/libxml2-2.11.5
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
                 --with-libiconvinc=/usr/local/apps/libiconv-1.17
            <or>
@@ -1119,4 +1119,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2023-11-16 (Riesmeier)
+Last revised: 2023-11-26 (Riesmeier)
