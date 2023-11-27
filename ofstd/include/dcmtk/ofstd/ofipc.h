@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022, OFFIS e.V.
+ *  Copyright (C) 2022-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,6 +43,12 @@
 // Android has <mqueue.h> and <sys/msg.h> but no implementation
 // of Posix or System V message queues
 #ifdef __ANDROID__
+#define DCMTK_USE_UNIX_SOCKET_QUEUE
+#endif
+
+// GNU Hurd has <mqueue.h> but no working implementation
+// of Posix message queues
+#ifdef __gnu_hurd__
 #define DCMTK_USE_UNIX_SOCKET_QUEUE
 #endif
 
