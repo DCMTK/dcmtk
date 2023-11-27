@@ -1,4 +1,4 @@
-.TH "dcmrecv" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmrecv" 1 "Thu Oct 26 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmrecv \- Simple DICOM storage SCP (receiver)
@@ -68,7 +68,7 @@ application entity title:
           always respond with called AE title (default)
 
   -aet  --aetitle  [a]etitle: string
-          set my AE title
+          set my AE title and check called AE title
 
 other network options:
 
@@ -78,7 +78,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes (default: 16384)
 
   -dhl  --disable-host-lookup  disable hostname lookup
@@ -134,17 +134,28 @@ certification authority:
 
 security profile:
 
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile (default)
+          Non-downgrading BCP 195 TLS Profile (retired)
 
   +px   --profile-bcp195
-          BCP 195 TLS Profile
+          BCP 195 TLS Profile (retired)
 
   +pz   --profile-bcp195-ex
-          Extended BCP 195 TLS Profile
+          Extended BCP 195 TLS Profile (retired)
 
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
 
   +pa   --profile-aes
           AES TLS Secure Transport Connection Profile (retired)
@@ -163,6 +174,14 @@ ciphersuite:
 
   +dp   --dhparam  [f]ilename: string
           read DH parameters for DH/DSS ciphersuites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --expect-sni  [s]erver name: string
+          expect requests for server name s
 
 pseudo random generator:
 
@@ -192,7 +211,7 @@ peer authentication:
 .nf
 general:
 
-  -od   --output-directory  [d]irectory: string (default: ".")
+  -od   --output-directory  [d]irectory: string (default: '\&.')
           write received objects to existing directory d
 
 subdirectory generation:
@@ -239,7 +258,7 @@ A typical use case of \fBdcmrecv\fP is to receive SOP instances that are sent fr
 .PP
 .PP
 .nf
-dcmrecv --verbose <port> --config-file storescp.cfg default
+dcmrecv --verbose <port> --config-file storescp\&.cfg default
 .fi
 .PP
 .PP
@@ -247,9 +266,9 @@ If you prefer some automatically created subdirectory structure, shorter file na
 .PP
 .PP
 .nf
-dcmrecv -v -xf storescp.cfg default <port> --series-date-subdir
+dcmrecv -v -xf storescp\&.cfg default <port> --series-date-subdir
                                            --short-unique-names
-                                           --filename-extension .dcm
+                                           --filename-extension \&.dcm
 .fi
 .PP
 .PP
@@ -257,7 +276,7 @@ In case of very large SOP instances or if the dataset should be written exactly 
 .PP
 .PP
 .nf
-dcmrecv -v -xf storescp.cfg default <port> --bit-preserving
+dcmrecv -v -xf storescp\&.cfg default <port> --bit-preserving
 .fi
 .PP
 .PP
@@ -291,7 +310,7 @@ By default, the filenames for storing the received DICOM datasets are generated 
 .PP
 .PP
 .nf
-<short-modality-prefix>.<sop-instance-uid><filename-extension>
+<short-modality-prefix>\&.<sop-instance-uid><filename-extension>
 .fi
 .PP
 .PP
@@ -301,7 +320,7 @@ The option \fI--unique-filenames\fP makes sure that each received DICOM dataset 
 .PP
 .PP
 .nf
-<short-modality-prefix>.X.<unique-identifier><filename-extension>
+<short-modality-prefix>\&.X\&.<unique-identifier><filename-extension>
 .fi
 .PP
 .PP
@@ -319,7 +338,7 @@ Finally, option \fI--system-time-names\fP allows for generating filenames based 
 .PP
 .PP
 .nf
-<date><time>.<short-modality-prefix><filename-extension>
+<date><time>\&.<short-modality-prefix><filename-extension>
 .fi
 .PP
 .PP

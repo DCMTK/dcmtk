@@ -443,6 +443,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmqrti_copyright COPYRIGHT
 
-Copyright (C) 1993-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

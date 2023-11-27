@@ -39,6 +39,6 @@ is intended for use in shell script programming.
 
 \section dcmftest_copyright COPYRIGHT
 
-Copyright (C) 1997-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1997-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
