@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -181,7 +181,7 @@ OFCondition DcmQuant::createPaletteColorImage(
 
     if (frames > 1)
     {
-      char buf[20];
+      char buf[32];
       sprintf(buf, "%lu", frames);
       if (result.good()) result = target.putAndInsertString(DCM_NumberOfFrames, buf);
     }
