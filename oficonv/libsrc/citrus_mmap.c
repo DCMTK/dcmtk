@@ -70,7 +70,7 @@ void *lookup_builtin_data_file(const char *path, size_t *len)
     const char *current_path;
     size_t default_path_len;
 #ifdef HAVE_WINDOWS_H
-    char buf[PATH_MAX+1];
+    char buf[OFICONV_PATH_MAX+1];
 #endif
 
     /* check if we are trying to load from the default location */

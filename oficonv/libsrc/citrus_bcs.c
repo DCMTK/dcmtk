@@ -174,7 +174,7 @@ void get_data_path(char *path_out, size_t path_size, const char *dirname, const 
     size_t len;
     char sep[3];
 #ifdef HAVE_WINDOWS_H
-    char buf[PATH_MAX+1];
+    char buf[OFICONV_PATH_MAX+1];
     memset(buf, 0, sizeof(buf));
 #endif
 

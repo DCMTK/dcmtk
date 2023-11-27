@@ -53,7 +53,7 @@
 #define ESDB_ALIAS  "esdb.alias"
 
 /* write the full path to the ESDB directory and the given filename (which may be NULL)
- * to the path_out buffer, which is expected to be PATH_MAX in size.
+ * to the path_out buffer, which is expected to be OFICONV_PATH_MAX in size.
  */
 static void getESDBPath(char *path_out, size_t path_size, const char *filename)
 {
@@ -68,7 +68,7 @@ static void getESDBPath(char *path_out, size_t path_size, const char *filename)
 const char *
 _citrus_esdb_alias(const char *esname, char *buf, size_t bufsize)
 {
-    char esdb_path[PATH_MAX];
+    char esdb_path[OFICONV_PATH_MAX];
     getESDBPath(esdb_path, sizeof(esdb_path), ESDB_ALIAS);
     return (_citrus_lookup_alias(esdb_path, esname, buf, bufsize, _CITRUS_LOOKUP_CASE_IGNORE));
 }
@@ -200,7 +200,7 @@ _citrus_esdb_open(struct _citrus_esdb *db, const char *esname)
 {
     struct _citrus_region fr;
     const char *realname, *encfile;
-    char buf1[PATH_MAX], buf2[PATH_MAX], path[PATH_MAX];
+    char buf1[OFICONV_PATH_MAX], buf2[OFICONV_PATH_MAX], path[OFICONV_PATH_MAX];
     int ret;
 
     getESDBPath(path, sizeof(path), ESDB_ALIAS);
@@ -266,10 +266,10 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
     struct _citrus_lookup *cla, *cld;
     struct _citrus_region key, data;
     char **list, **q;
-    char buf[PATH_MAX];
+    char buf[OFICONV_PATH_MAX];
     size_t num;
     int ret;
-    char esdb_path[PATH_MAX];
+    char esdb_path[OFICONV_PATH_MAX];
 
     num = 0;
 
@@ -333,7 +333,7 @@ _citrus_esdb_get_list(char ***rlist, size_t *rnum, bool sorted)
         else {
             /* check duplicated entry */
             char *p;
-            char buf1[PATH_MAX];
+            char buf1[OFICONV_PATH_MAX];
 
             snprintf(buf1, sizeof(buf1), "%.*s",
                 (int)_citrus_region_size(&data),

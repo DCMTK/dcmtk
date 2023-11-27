@@ -75,7 +75,7 @@ static pthread_rwlock_t ma_lock = PTHREAD_RWLOCK_INITIALIZER;
 /* ---------------------------------------------------------------------- */
 
 /* write the full path to the CSMAPPER directory and the given filename (which may be NULL)
- * to the path_out buffer, which is expected to be PATH_MAX in size.
+ * to the path_out buffer, which is expected to be OFICONV_PATH_MAX in size.
  */
 static void getCSMapperPath(char *path_out, size_t path_size, const char *filename)
 {
@@ -121,7 +121,7 @@ find_best_pivot_pvdb(const char *src, const char *dst, char *pivot,
     struct _citrus_db *db1, *db2, *db3;
     struct _citrus_region fr, r1, r2;
     char buf[LINE_MAX];
-    char mapper_path[PATH_MAX];
+    char mapper_path[OFICONV_PATH_MAX];
     uint32_t val32;
     unsigned long norm;
     int i, num, ret;
@@ -198,7 +198,7 @@ struct zone {
 };
 
 struct parse_arg {
-    char dst[PATH_MAX];
+    char dst[OFICONV_PATH_MAX];
     unsigned long norm;
 };
 
@@ -238,7 +238,7 @@ find_dst(struct parse_arg *pasrc, const char *dst)
     struct parse_arg padst;
     struct _citrus_region data;
     int ret;
-    char mapper_path[PATH_MAX];
+    char mapper_path[OFICONV_PATH_MAX];
 
     getCSMapperPath(mapper_path, sizeof(mapper_path), CS_PIVOT_FILENAME);
     ret = _citrus_lookup_seq_open(&cl, mapper_path, _CITRUS_LOOKUP_CASE_IGNORE);
@@ -268,10 +268,10 @@ find_best_pivot_lookup(const char *src, const char *dst, char *pivot,
     struct _citrus_lookup *cl;
     struct _citrus_region data;
     struct parse_arg pa;
-    char pivot_min[PATH_MAX];
+    char pivot_min[OFICONV_PATH_MAX];
     unsigned long norm_min;
     int ret;
-    char mapper_path[PATH_MAX];
+    char mapper_path[OFICONV_PATH_MAX];
 
     getCSMapperPath(mapper_path, sizeof(mapper_path), CS_PIVOT_FILENAME);
     ret = _citrus_lookup_seq_open(&cl, mapper_path, _CITRUS_LOOKUP_CASE_IGNORE);
@@ -326,7 +326,7 @@ open_serial_mapper(struct _citrus_mapper_area * ma,
     struct _citrus_csmapper * * rcm,
     const char *src, const char *pivot, const char *dst)
 {
-    char buf[PATH_MAX];
+    char buf[OFICONV_PATH_MAX];
 
 #if ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
 #pragma GCC diagnostic push
@@ -375,11 +375,11 @@ _citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
 {
     const char *realsrc, *realdst;
 #ifdef DCMTK_USE_OFICONV_CHARSET_ALIAS_FILE
-    char buf1[PATH_MAX], buf2[PATH_MAX];
-    char alias_path[PATH_MAX];
+    char buf1[OFICONV_PATH_MAX], buf2[OFICONV_PATH_MAX];
+    char alias_path[OFICONV_PATH_MAX];
 #endif
-    char key[PATH_MAX], pivot[PATH_MAX];
-    char mapper_path[PATH_MAX];
+    char key[OFICONV_PATH_MAX], pivot[OFICONV_PATH_MAX];
+    char mapper_path[OFICONV_PATH_MAX];
     unsigned long norm;
     int ret;
     norm = 0;

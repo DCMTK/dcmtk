@@ -140,7 +140,7 @@ static int
 seq_open_db(struct _citrus_lookup *cl, const char *name)
 {
     struct _citrus_region r;
-    char path[PATH_MAX];
+    char path[OFICONV_PATH_MAX];
     int ret;
 
     snprintf(path, sizeof(path), "%s.db", name);

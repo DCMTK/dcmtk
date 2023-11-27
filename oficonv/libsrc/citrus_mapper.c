@@ -92,7 +92,7 @@ _citrus_mapper_create_area(
 {
     struct _citrus_mapper_area *ma;
     struct stat st;
-    char path[PATH_MAX];
+    char path[OFICONV_PATH_MAX];
     int ret;
     size_t len;
 
@@ -103,7 +103,7 @@ _citrus_mapper_create_area(
         goto quit;
     }
 
-    snprintf(path, (size_t)PATH_MAX, "%s/%s", area, _CITRUS_MAPPER_DIR);
+    snprintf(path, (size_t)OFICONV_PATH_MAX, "%s/%s", area, _CITRUS_MAPPER_DIR);
 
     if (NULL == lookup_builtin_data_file(path, &len)) {
         ret = stat(path, &st);
@@ -152,12 +152,12 @@ lookup_mapper_entry(const char *dir, const char *mapname, void *linebuf,
     struct _citrus_memory_stream ms;
     const char *cp, *cq;
     char *p;
-    char path[PATH_MAX];
+    char path[OFICONV_PATH_MAX];
     size_t len;
     int ret;
 
     /* create mapper.dir path */
-    snprintf(path, (size_t)PATH_MAX, "%s/%s", dir, _CITRUS_MAPPER_DIR);
+    snprintf(path, (size_t)OFICONV_PATH_MAX, "%s/%s", dir, _CITRUS_MAPPER_DIR);
 
     /* open read stream */
     ret = _citrus_map_file(&r, path);
@@ -335,7 +335,7 @@ _citrus_mapper_open(struct _citrus_mapper_area * ma,
     const char * mapname)
 {
     struct _citrus_csmapper *cm;
-    char linebuf[PATH_MAX];
+    char linebuf[OFICONV_PATH_MAX];
     const char *module, *variable;
     int hashval, ret;
 
@@ -357,7 +357,7 @@ _citrus_mapper_open(struct _citrus_mapper_area * ma,
 
     /* search mapper entry */
     ret = lookup_mapper_entry(ma->ma_dir, mapname, linebuf,
-        (size_t)PATH_MAX, &module, &variable);
+        (size_t)OFICONV_PATH_MAX, &module, &variable);
     if (ret)
         goto quit;
 

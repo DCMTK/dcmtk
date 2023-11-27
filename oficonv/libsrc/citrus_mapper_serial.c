@@ -118,7 +118,7 @@ parse_var(struct _citrus_mapper_area * ma,
 {
     struct _citrus_region r;
     struct maplink *ml;
-    char mapname[PATH_MAX];
+    char mapname[OFICONV_PATH_MAX];
     int ret;
 
     STAILQ_INIT(&sr->sr_mappers);
