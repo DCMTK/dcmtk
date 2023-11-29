@@ -1,16 +1,240 @@
 
-Release 3.6.8 (Public Minor Release - 2023-10-26)
+Release 3.6.8 (Public Minor Release - 2023-12-06)
 
-**** Changes from 2023.10.26 (onken)
+**** Changes from 2023.11.28 (onken)
 
 - Created CHANGES.368 for DCMTK release 3.6.8:
   CHANGES.368 contains the Git commit history since DCMTK release 3.6.7.
-  Added:   docs/CHANGES.368
+  Affects: docs/CHANGES.368
 
 - Updated man pages for DCMTK release 3.6.8.
-  Added:   doxygen/manpages/man1/mkcsmapper.1
-           doxygen/manpages/man1/mkesdb.1
   Affects: doxygen/manpages/man1/cda2dcm.1
+           doxygen/manpages/man1/dcm2json.1
+           doxygen/manpages/man1/dcm2pdf.1
+           doxygen/manpages/man1/dcm2pnm.1
+           doxygen/manpages/man1/dcm2xml.1
+           doxygen/manpages/man1/dcmcjpeg.1
+           doxygen/manpages/man1/dcmcjpls.1
+           doxygen/manpages/man1/dcmconv.1
+           doxygen/manpages/man1/dcmcrle.1
+           doxygen/manpages/man1/dcmdjpeg.1
+           doxygen/manpages/man1/dcmdjpls.1
+           doxygen/manpages/man1/dcmdrle.1
+           doxygen/manpages/man1/dcmdspfn.1
+           doxygen/manpages/man1/dcmdump.1
+           doxygen/manpages/man1/dcmftest.1
+           doxygen/manpages/man1/dcmgpdir.1
+           doxygen/manpages/man1/dcmicmp.1
+           doxygen/manpages/man1/dcmj2pnm.1
+           doxygen/manpages/man1/dcml2pnm.1
+           doxygen/manpages/man1/dcmmkcrv.1
+           doxygen/manpages/man1/dcmmkdir.1
+           doxygen/manpages/man1/dcmmklut.1
+           doxygen/manpages/man1/dcmodify.1
+           doxygen/manpages/man1/dcmp2pgm.1
+           doxygen/manpages/man1/dcmprscp.1
+           doxygen/manpages/man1/dcmprscu.1
+           doxygen/manpages/man1/dcmpschk.1
+           doxygen/manpages/man1/dcmpsmk.1
+           doxygen/manpages/man1/dcmpsprt.1
+           doxygen/manpages/man1/dcmpsrcv.1
+           doxygen/manpages/man1/dcmpssnd.1
+           doxygen/manpages/man1/dcmqridx.1
+           doxygen/manpages/man1/dcmqrscp.1
+           doxygen/manpages/man1/dcmqrti.1
+           doxygen/manpages/man1/dcmquant.1
+           doxygen/manpages/man1/dcmrecv.1
+           doxygen/manpages/man1/dcmscale.1
+           doxygen/manpages/man1/dcmsend.1
+           doxygen/manpages/man1/dcmsign.1
+           doxygen/manpages/man1/dcod2lum.1
+           doxygen/manpages/man1/dconvlum.1
+           doxygen/manpages/man1/drtdump.1
+           doxygen/manpages/man1/dsr2html.1
+           doxygen/manpages/man1/dsr2xml.1
+           doxygen/manpages/man1/dsrdump.1
+           doxygen/manpages/man1/dump2dcm.1
+           doxygen/manpages/man1/echoscu.1
+           doxygen/manpages/man1/findscu.1
+           doxygen/manpages/man1/getscu.1
+           doxygen/manpages/man1/img2dcm.1
+           doxygen/manpages/man1/mkcsmapper.1
+           doxygen/manpages/man1/mkesdb.1
+           doxygen/manpages/man1/movescu.1
+           doxygen/manpages/man1/pdf2dcm.1
+           doxygen/manpages/man1/stl2dcm.1
+           doxygen/manpages/man1/storescp.1
+           doxygen/manpages/man1/storescu.1
+           doxygen/manpages/man1/termscu.1
+           doxygen/manpages/man1/wlmscpfs.1
+           doxygen/manpages/man1/xml2dcm.1
+           doxygen/manpages/man1/xml2dsr.1
+
+- Updated version information for DCMTK release 3.6.8.
+  Affects: CMake/dcmtkPrepare.cmake
+
+- Updated Makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libdcxml/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmect/libsrc/Makefile.dep
+           dcmect/tests/Makefile.dep
+           dcmfg/libsrc/Makefile.dep
+           dcmfg/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmiod/libsrc/Makefile.dep
+           dcmiod/tests/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/tests/Makefile.dep
+           dcmpmap/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+           dcmseg/libsrc/Makefile.dep
+           dcmseg/tests/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libcmr/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmtract/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           oficonv/apps/Makefile.dep
+           oficonv/libsrc/Makefile.dep
+           oficonv/tests/Makefile.dep
+           oflog/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           ofstd/tests/Makefile.dep
+
+**** Changes from 2023.11.27 (eichelberg)
+
+- Fixed ofipc on GNU Hurd.
+  Affects: ofstd/include/dcmtk/ofstd/ofipc.h
+
+- Fixed compile issues on Debian GNU Hurd:
+  Fixed compile issues on Debian GNU Hurd. In particular, replaced the use
+  of the PATH_MAX constant with an internal constant named OFICONV_PATH_MAX,
+  because PATH_MAX is not available on all systems and known to be "broken",
+  since on many operating systems the maximum path length is determined by
+  the file system, and not fixed for the entire operating system. We now use
+  a maximum path length of 4 kBytes, which is the longest PATH_MAX on the
+  supported operating systems. Note that longer paths will not cause a
+  buffer overrun, but may cause data files not to be found if the path is
+  too long.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for reporting
+  this issue.
+  Affects: oficonv/libsrc/citrus_bcs.c
+           oficonv/libsrc/citrus_bcs.h
+           oficonv/libsrc/citrus_csmapper.c
+           oficonv/libsrc/citrus_esdb.c
+           oficonv/libsrc/citrus_iconv.c
+           oficonv/libsrc/citrus_lookup.c
+           oficonv/libsrc/citrus_mapper.c
+           oficonv/libsrc/citrus_mapper_646.c
+           oficonv/libsrc/citrus_mapper_serial.c
+           oficonv/libsrc/citrus_mapper_std.c
+           oficonv/libsrc/citrus_mmap.c
+
+- Mention DCMTK_USE_WIN32_PROGRAMDATA in ANNOUNCE.
+  Affects: ANNOUNCE
+
+**** Changes from 2023.11.27 (onken)
+
+- Use safe buffer length for sprintf:
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the
+  report.
+  Affects: dcmimage/libsrc/diquant.cc
+
+**** Changes from 2023.11.27 (riesmeier)
+
+- Updated libxml2 version number for Autoconf.
+  Affects: INSTALL
+
+**** Changes from 2023.11.27 (eichelberg)
+
+- Fixed segmentation fault in dcmqrscp:
+  Fixed segmentation fault in dcmqrscp that could be triggered
+  by receiving a DICOM dataset containing an in invalid
+  (fffa,fffa) DigitalSignaturesSequence attribute using a
+  value representation other than SQ.
+  Thanks to Song Xiangpu <songxiangpu@mail.sdu.edu.cn> for the report.
+  This closes DCMTK issue #1089.
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
+- Updated documentation on oficonv data files.
+  Affects: INSTALL
+           dcmdata/docs/dcm2json.man
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
+           dcmnet/docs/findscu.man
+           dcmqrdb/docs/dcmqrscp.man
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+
+- Restored behaviour of INSTALL target on Windows:
+  By default, the INSTALL target on Windows will now behave as in previous
+  releases. A new CMake cache variable DCMTK_USE_WIN32_PROGRAMDATA has been
+  added that allows to enable the experimental new behaviour under which
+  data files, documentation and configuration files will be installed in
+  a subdirectory of the Windows ProgramData directory (on most Windows
+  installations, this is located in C:\ProgramData).
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           INSTALL
+
+- Fixed INSTALL target on Windows.
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+
+- Fixed bug in libxml2 detection.
+  Affects: CMake/3rdparty.cmake
+
+**** Changes from 2023.11.27 (onken)
+
+- Various doc. updates for pending 3.6.8 release.
+  Added:   docs/CHANGES.368
+           doxygen/manpages/man1/mkcsmapper.1
+           doxygen/manpages/man1/mkesdb.1
+  Affects: ANNOUNCE
+           CMake/dcmtkPrepare.cmake
+           INSTALL
+           VERSION
+           config/configure
+           config/configure.in
+           config/confmod
+           config/include/dcmtk/config/osconfig.h.in
+           dcmdata/docs/dcmftest.man
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/docs/dcod2lum.man
+           dcmimgle/docs/dconvlum.man
+           dcmnet/docs/dcmsend.man
+           dcmnet/docs/getscu.man
+           dcmnet/docs/termscu.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+           dcmqrdb/docs/dcmqridx.man
+           dcmqrdb/docs/dcmqrti.man
+           doxygen/manpages/man1/cda2dcm.1
            doxygen/manpages/man1/dcm2json.1
            doxygen/manpages/man1/dcm2pdf.1
            doxygen/manpages/man1/dcm2pnm.1
@@ -70,26 +294,21 @@ Release 3.6.8 (Public Minor Release - 2023-10-26)
            doxygen/manpages/man1/xml2dcm.1
            doxygen/manpages/man1/xml2dsr.1
 
-- Updated version information for DCMTK release 3.6.8.
-  Affects: CMake/dcmtkPrepare.cmake
-           VERSION
+**** Changes from 2023.11.07 (eichelberg)
 
-- Updated copyright date.
-  Affects: dcmdata/docs/dcmftest.man
-           dcmimgle/docs/dcmdspfn.man
-           dcmimgle/docs/dcod2lum.man
-           dcmimgle/docs/dconvlum.man
-           dcmnet/docs/dcmsend.man
-           dcmnet/docs/getscu.man
-           dcmnet/docs/termscu.man
-           dcmpstat/docs/dcmpsrcv.man
-           dcmpstat/docs/dcmpssnd.man
-           dcmqrdb/docs/dcmqridx.man
-           dcmqrdb/docs/dcmqrti.man
+- Fixed previous commit:
+  Fixed compilation of previous commit on OpenIndiana.
+  Affects: dcmnet/libsrc/dulfsm.cc
 
-- Added 3.6.8 versions of INSTALL and ANNOUNCE.
-  Affects: ANNOUNCE
-           INSTALL
+**** Changes from 2023.10.27 (onken)
+
+- Fix read access violation for length overflow:
+  It was possible to overflow length in "length -= 4 + pdvLength;"
+  when pdvLength is set to a value greater then LONG_MAX + pduLength.
+  By doing that the length overflowed and became positive, even if it
+  was initially less than 4 + pdvLength.
+  Thanks to GitHub user "doskachok" for the report and suggested patch.
+  Affects: dcmnet/libsrc/dulfsm.cc
 
 **** Changes from 2023.10.19 (onken)
 
