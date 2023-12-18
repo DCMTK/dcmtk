@@ -122,8 +122,8 @@ previous version 3.6.7:
 
   - The minimum supported CMake version has been increased to 3.0.0.
 
-  - A new, still experimental setting named DCMTK_USE_WIN32_PROGRAMDATA
-    allows data files to be installed in the ProgramData directory on Windows.
+  - A new, still experimental setting named DCMTK_USE_WIN32_PROGRAMDATA allows
+    data files to be installed in the "ProgramData" directory on Windows.
 
 - The default installation directories for support data, configuration data and
   documentation now contain the DCMTK release number in the path.  This allows
@@ -140,7 +140,7 @@ alphabetical order.  Thank you very much for your support!
   Calvin Fong <calvin.fong@trailofbits.com>
   Dimitri Papadopoulos Orfanos <dimitri.papadopoulos@cea.fr>
   Franz Reitner <franz.reitner@excelitas.com>
-  Jøger Hansegård <joger.hansegard@ge.com>
+  Joger Hansegard <joger.hansegard@ge.com>
   Juhee Kim <kimjuhi96@snu.ac.kr>
   Marcus Hennix <Marcus.Hennix@elekta.com>
   Mathieu Malaterre <mathieu.malaterre@gmail.com>
@@ -148,14 +148,15 @@ alphabetical order.  Thank you very much for your support!
   Oliver Klerx <klerx@phoenix-pacs.de>
   Peter Klotz <peter.klotz@siemens-healthineers.com>
   Sharon Brizinov>sharon.b@claroty.com>
-  songxiangpu <songxiangpu@mail.sdu.edu.cn>
+  Song Xiangpu <songxiangpu@mail.sdu.edu.cn>
   Tamas Nemeth <TNemeth@erad.com>
   Zahra Mirzamomen <zahra.mirzamomen@monash.edu>
 
   DCMTK forum users "nbeck", "pgimeno", "Martin Roeseler"
 
   GitHub users "bettar", "Cheney-W", "chrisse74", "doskachok", "jogerh",
-  "kwach", "maddin200", "malaterre", "mrbean-bremen", "StillerHarpo"
+    "knight2995", "kwach", "maddin200", "malaterre", "mrbean-bremen",
+    "reunanen", "StillerHarpo"
 
 Members of the DCMTK Team who have worked on this release are:
 
