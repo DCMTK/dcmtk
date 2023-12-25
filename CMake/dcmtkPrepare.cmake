@@ -52,7 +52,11 @@ set(DCMTK_PACKAGE_VERSION_SUFFIX "")
 option(DCMTK_LINK_STATIC "Statically link all libraries and tools with the runtime and third party libraries." OFF)
 # Modify linker flags and libraries for static builds if enabled by the user
 if(DCMTK_LINK_STATIC)
-    set(CMAKE_EXE_LINKER_FLAGS "-static")
+    if (NOT APPLE)
+        # MacOS does not support static libraries. DCMTK_LINK_STATIC is still useful on MacOS though,
+        # since it will create binaries that only depend on MacOS's libc.
+        set(CMAKE_EXE_LINKER_FLAGS "-static")
+    endif()
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
     # remove "-Wl,-Bdynamic"
     list(REMOVE_ITEM CMAKE_EXE_LINK_DYNAMIC_C_FLAGS "-Wl,-Bdynamic")
