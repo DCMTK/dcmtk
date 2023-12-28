@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -143,8 +143,23 @@ OFCondition DJLSDecoderBase::decode(
   // compute size of uncompressed frame, in bytes
   Uint32 frameSize = bytesPerSample * imageRows * imageColumns * imageSamplesPerPixel;
 
+  // check for overflow
+  if (imageRows != 0 && frameSize / imageRows != (bytesPerSample * imageColumns * imageSamplesPerPixel))
+  {
+    DCMJPLS_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+    return EC_ElemLengthExceeds32BitField;
+  }
+
   // compute size of pixel data attribute, in bytes
   Uint32 totalSize = frameSize * imageFrames;
+
+  // check for overflow
+  if (totalSize == 0xFFFFFFFF || (frameSize != 0 && totalSize / frameSize != OFstatic_cast(Uint32, imageFrames)))
+  {
+    DCMJPLS_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+    return EC_ElemLengthExceeds32BitField;
+  }
+
   if (totalSize & 1) totalSize++; // align on 16-bit word boundary
 
   // assume we can cast the codec parameter to what we need

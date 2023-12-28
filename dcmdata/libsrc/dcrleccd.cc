@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -129,9 +129,25 @@ OFCondition DcmRLECodecDecoder::decode(
       if (rledecoder.fail()) result = EC_MemoryExhausted;  // RLE decoder failed to initialize
       else
       {
-        const size_t frameSize = OFstatic_cast(size_t, imageBytesAllocated) * OFstatic_cast(size_t, imageRows)
-            * OFstatic_cast(size_t, imageColumns) * OFstatic_cast(size_t, imageSamplesPerPixel);
-        size_t totalSize = frameSize * imageFrames;
+        // compute size of uncompressed frame, in bytes
+        Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+
+        // check for overflow
+        if (imageRows != 0 && frameSize / imageRows != (imageBytesAllocated * imageColumns * imageSamplesPerPixel))
+        {
+          DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+          return EC_ElemLengthExceeds32BitField;
+        }
+
+        Uint32 totalSize = frameSize * imageFrames;
+
+        // check for overflow
+        if (totalSize == 0xFFFFFFFF || (frameSize != 0 && totalSize / frameSize != OFstatic_cast(Uint32, imageFrames)))
+        {
+          DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+          return EC_ElemLengthExceeds32BitField;
+        }
+
         if (totalSize & 1) totalSize++; // align on 16-bit word boundary
         Uint16 *imageData16 = NULL;
         Sint32 currentFrame = 0;
@@ -139,7 +155,7 @@ OFCondition DcmRLECodecDecoder::decode(
         Uint32 numberOfStripes = 0;
         Uint32 fragmentLength = 0;
 
-        result = uncompressedPixelData.createUint16Array(OFstatic_cast(Uint32, totalSize/sizeof(Uint16)), imageData16);
+        result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), imageData16);
         if (result.good())
         {
           Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, imageData16);
@@ -463,7 +479,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     Uint16 imageColumns = 0;
     Sint32 imageFrames = 1;
     Uint16 imageBitsAllocated = 0;
-    Uint16 imageBytesAllocated = 0;
+    Uint32 imageBytesAllocated = 0;
     Uint16 imagePlanarConfiguration = 0;
     Uint32 rleHeader[16];
     OFString photometricInterpretation;
@@ -476,7 +492,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     if (result.good()) result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, photometricInterpretation);
     if (result.good())
     {
-        imageBytesAllocated = OFstatic_cast(Uint16, imageBitsAllocated / 8);
+        imageBytesAllocated = OFstatic_cast(Uint32, imageBitsAllocated / 8);
         if ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0))
         {
           DCMDATA_ERROR("The RLE decoder only supports images where BitsAllocated is a multiple of 8.");
@@ -500,8 +516,15 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     const size_t bytesPerStripe = OFstatic_cast(size_t, imageColumns) * OFstatic_cast(size_t, imageRows);
     Uint32 numberOfStripes = 0;
     Uint32 fragmentLength = 0;
-    Uint32 frameSize = OFstatic_cast(Uint32, imageBytesAllocated) * OFstatic_cast(Uint32, imageRows)
+    Uint32 frameSize = imageBytesAllocated * OFstatic_cast(Uint32, imageRows)
                        * OFstatic_cast(Uint32, imageColumns) * OFstatic_cast(Uint32, imageSamplesPerPixel);
+
+    // check for overflow
+    if (imageRows != 0 && frameSize / imageRows != (imageBytesAllocated * imageColumns * imageSamplesPerPixel))
+    {
+      DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+      return EC_ElemLengthExceeds32BitField;
+    }
 
     if (frameSize > bufSize) return EC_IllegalCall;
 
