@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string",
-                                                          "assume charset c if no extended CS declared");
+                                                          "assume charset c if no ext. charset declared");
         cmd.addOption("--charset-check-all",              "check all data elements with string values\n(default: only PN, LO, LT, SH, ST, UC and UT)");
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
         cmd.addOption("--convert-to-utf8",      "+U8",    "convert all element values that are affected\nby Specific Character Set (0008,0005) to UTF-8");
