@@ -33,7 +33,7 @@ following options:
 
 \verbatim
   -pem  --pem-keys
-          read keys and certs as PEM file (default)
+          read keys and certificates as PEM file (default)
 
   -der  --der-keys
           read keys and certificates as DER file
@@ -182,7 +182,7 @@ This behavior can be modified with the following command line options:
 
 \verbatim
   -rc   --require-peer-cert
-          verify peer cert, fail if absent (default)
+          verify peer certificate, fail if absent (default)
 
   -vc   --verify-peer-cert
           verify peer certificate if present
