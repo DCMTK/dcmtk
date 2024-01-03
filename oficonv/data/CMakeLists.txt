@@ -8,6 +8,9 @@ set(DCMTK_ICONV_DATAFILES
 
 # declare installation files
 
+# Note: Any change to the install instructions below needs to be mirrored in the
+# package generation scripts at packages/CMakeLists.txt
+
 install(FILES
     "csmapper/charset.pivot.pvdb"
     "csmapper/mapper.dir"
