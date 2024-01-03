@@ -146,7 +146,7 @@ OFCondition DJLSDecoderBase::decode(
   // check for overflow
   if (imageRows != 0 && frameSize / imageRows != (OFstatic_cast(Uint32, bytesPerSample) * imageColumns * imageSamplesPerPixel))
   {
-    DCMJPLS_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+    DCMJPLS_WARN("cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
     return EC_ElemLengthExceeds32BitField;
   }
 
@@ -156,7 +156,7 @@ OFCondition DJLSDecoderBase::decode(
   // check for overflow
   if (totalSize == 0xFFFFFFFF || (frameSize != 0 && totalSize / frameSize != OFstatic_cast(Uint32, imageFrames)))
   {
-    DCMJPLS_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+    DCMJPLS_WARN("cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
     return EC_ElemLengthExceeds32BitField;
   }
 

@@ -135,7 +135,7 @@ OFCondition DcmRLECodecDecoder::decode(
         // check for overflow
         if (imageRows != 0 && frameSize / imageRows != OFstatic_cast(Uint32, imageBytesAllocated) * imageColumns * imageSamplesPerPixel)
         {
-          DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+          DCMDATA_WARN("DcmRLECodecDecoder: Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
           return EC_ElemLengthExceeds32BitField;
         }
 
@@ -144,7 +144,7 @@ OFCondition DcmRLECodecDecoder::decode(
         // check for overflow
         if (totalSize == 0xFFFFFFFF || (frameSize != 0 && totalSize / frameSize != OFstatic_cast(Uint32, imageFrames)))
         {
-          DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+          DCMDATA_WARN("DcmRLECodecDecoder: Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
           return EC_ElemLengthExceeds32BitField;
         }
 
@@ -522,7 +522,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     // check for overflow
     if (imageRows != 0 && frameSize / imageRows != (imageBytesAllocated * imageColumns * imageSamplesPerPixel))
     {
-      DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
+      DCMDATA_WARN("DcmRLECodecDecoder: Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
       return EC_ElemLengthExceeds32BitField;
     }
 
