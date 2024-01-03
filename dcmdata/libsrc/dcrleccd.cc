@@ -133,7 +133,7 @@ OFCondition DcmRLECodecDecoder::decode(
         Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
 
         // check for overflow
-        if (imageRows != 0 && frameSize / imageRows != (imageBytesAllocated * imageColumns * imageSamplesPerPixel))
+        if (imageRows != 0 && frameSize / imageRows != OFstatic_cast(Uint32, imageBytesAllocated) * imageColumns * imageSamplesPerPixel)
         {
           DCMDATA_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
           return EC_ElemLengthExceeds32BitField;

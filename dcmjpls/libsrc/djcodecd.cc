@@ -144,7 +144,7 @@ OFCondition DJLSDecoderBase::decode(
   Uint32 frameSize = bytesPerSample * imageRows * imageColumns * imageSamplesPerPixel;
 
   // check for overflow
-  if (imageRows != 0 && frameSize / imageRows != (bytesPerSample * imageColumns * imageSamplesPerPixel))
+  if (imageRows != 0 && frameSize / imageRows != (OFstatic_cast(Uint32, bytesPerSample) * imageColumns * imageSamplesPerPixel))
   {
     DCMJPLS_WARN("Cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute.");
     return EC_ElemLengthExceeds32BitField;
