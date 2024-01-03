@@ -177,7 +177,7 @@ private key password (only with --enable-tls):
 key and certificate file format:
 
   -pem  --pem-keys
-          read keys and certs as PEM file (default)
+          read keys and certificates as PEM file (default)
 
   -der  --der-keys
           read keys and certificates as DER file
@@ -262,7 +262,7 @@ pseudo random generator:
 peer authentication:
 
   -rc   --require-peer-cert
-          verify peer cert, fail if absent (default)
+          verify peer certificate, fail if absent (default)
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
@@ -494,6 +494,6 @@ replace any built-in tables.
 
 \section findscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

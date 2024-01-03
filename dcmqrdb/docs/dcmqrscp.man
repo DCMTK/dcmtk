@@ -186,8 +186,8 @@ restriction of query/retrieve models:
 association negotiation profiles from configuration file:
 
   -xf   --assoc-config-file
-          [f]ilename, [i]n-prof, [o]ut-prof: string
-          use profile i from f for incoming,
+          [f]ilename, [i]n-profile, [o]ut-profile: string
+          use profile i from f for incoming associations,
           and profile o from f for outgoing associations
 
 preferred network transfer syntaxes (incoming associations):
@@ -247,7 +247,7 @@ preferred network transfer syntaxes (incoming associations):
           prefer HEVC/H.265 Main Profile / Level 5.1 TS
 
   +x5   --prefer-hevc10
-          prefer HEVC/H.265 Main 10 Profile / L5.1 TS
+          prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -326,7 +326,7 @@ proposed transmission transfer syntaxes (outgoing associations):
           propose HEVC/H.265 Main Profile / Level 5.1 TS only
 
   -x5   --propose-hevc10
-          propose HEVC/H.265 Main 10 Profile / L5.1 TS only
+          propose HEVC/H.265 Main 10 Profile / Level 5.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -1114,6 +1114,6 @@ profiles
 
 \section dcmqrscp_copyright COPYRIGHT
 
-Copyright (C) 1993-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

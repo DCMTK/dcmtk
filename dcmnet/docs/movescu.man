@@ -151,7 +151,7 @@ preferred network transfer syntaxes (incoming associations):
           prefer HEVC/H.265 Main Profile / Level 5.1 TS
 
   +x5   --prefer-hevc10
-          prefer HEVC/H.265 Main Profile / L5.1 TS
+          prefer HEVC/H.265 Main Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -792,6 +792,6 @@ It is an error if no data dictionary can be loaded.
 
 \section movescu_copyright COPYRIGHT
 
-Copyright (C) 1994-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -182,7 +182,7 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose HEVC/H.265 Main Profile / Level 5.1 TS only
 
   -x5   --propose-hevc10
-          propose HEVC/H.265 Main Profile / L5.1 TS only
+          propose HEVC/H.265 Main Profile / Level 5.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -622,6 +622,6 @@ It is an error if no data dictionary can be loaded.
 
 \section storescu_copyright COPYRIGHT
 
-Copyright (C) 1996-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

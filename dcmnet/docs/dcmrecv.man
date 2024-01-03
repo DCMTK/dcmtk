@@ -114,7 +114,7 @@ private key password (only with --enable-tls):
 key and certificate file format:
 
   -pem  --pem-keys
-          read keys and certs as PEM file (default)
+          read keys and certificates as PEM file (default)
 
   -der  --der-keys
           read keys and certificates as DER file
@@ -202,7 +202,7 @@ pseudo random generator:
 peer authentication:
 
   -rc   --require-peer-cert
-          verify peer cert, fail if absent (default)
+          verify peer certificate, fail if absent (default)
 
   -vc   --verify-peer-cert
           verify peer certificate if present
@@ -477,6 +477,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
