@@ -1,5 +1,5 @@
 # Minimum CMake version required
-cmake_minimum_required(VERSION 3.0.0...3.27.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.0...3.27.9 FATAL_ERROR)
 
 # Declare project
 project(DCMTK)
@@ -95,9 +95,9 @@ install(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
 
 # Install DCMTK's general documentation files
 install(FILES ANNOUNCE COPYRIGHT CREDITS FAQ HISTORY VERSION
-        DESTINATION "${CMAKE_INSTALL_FULL_DOCDIR}"
+        DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc)
-install(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_FULL_DOCDIR}"
+install(DIRECTORY docs/ DESTINATION "${CMAKE_INSTALL_DOCDIR}"
         COMPONENT doc FILES_MATCHING PATTERN "CHANGES.???")
 
 #-----------------------------------------------------------------------------
