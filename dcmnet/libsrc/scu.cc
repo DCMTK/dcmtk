@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2023, OFFIS e.V.
+ *  Copyright (C) 2008-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1619,7 +1619,7 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID,
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
 
-    if (msgIDBeingRespondedTo > OFstatic_cast(Sint32,UINT16_MAX) || msgIDBeingRespondedTo < -1)
+    if (msgIDBeingRespondedTo > 65535 || msgIDBeingRespondedTo < -1)
         return EC_IllegalParameter;
 
     /* Prepare DIMSE data structures for issuing request */
