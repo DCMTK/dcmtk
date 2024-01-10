@@ -29,8 +29,6 @@ endif()
 
 
 # Basic version information
-# (Starting with version 3.5.5, an odd number at the last position indicates
-#  a development snapshot and an even number indicates an official release.)
 set(DCMTK_MAJOR_VERSION 3)
 set(DCMTK_MINOR_VERSION 6)
 set(DCMTK_BUILD_VERSION 8)
