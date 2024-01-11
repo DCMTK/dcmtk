@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,7 +58,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
-#include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
+#include "dcmtk/dcmtls/tlsopt.h"       /* for DcmTLSOptions */
 
 #ifdef WITH_SQL_DATABASE
 #include "dcmtk/dcmqrdbx/dcmqrdbq.h"

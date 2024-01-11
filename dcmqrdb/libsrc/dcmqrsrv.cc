@@ -19,7 +19,7 @@
  *
  */
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmqrdb/dcmqrsrv.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
@@ -30,7 +30,7 @@
 #include "dcmtk/dcmqrdb/dcmqrcbm.h"    /* for class DcmQueryRetrieveMoveContext */
 #include "dcmtk/dcmqrdb/dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmtk/dcmqrdb/dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
-#include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
+#include "dcmtk/dcmtls/tlsopt.h"       /* for DcmTLSOptions */
 
 static void findCallback(
   /* in */

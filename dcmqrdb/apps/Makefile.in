@@ -45,8 +45,8 @@ dcmtlslib = -ldcmtls
 LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofstdinc) $(ofloginc) $(dcmtlsinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
 	$(ofstdlibdir) $(ofloglibdir) $(dcmtlslibdir) $(oficonvlibdir)
-LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmtlslib) $(dcmdatalib) \
-    $(ofstdlib) $(ofloglib) $(oficonvlib)\
+LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmtlslib) $(dcmdatalib) $(ofstdlib) \
+	$(ofloglib) $(oficonvlib) \
 	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmqrscp.o dcmqrti.o dcmqridx.o
