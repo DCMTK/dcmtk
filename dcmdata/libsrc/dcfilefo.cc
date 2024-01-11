@@ -468,7 +468,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
+                const char *uid = dcmImplementationClassUID.get();
                 OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
             }
         }
@@ -481,7 +481,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_SH)
             {
-                const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
+                const char *uid = dcmImplementationVersionName.get();
                 OFstatic_cast(DcmShortString *, elem)->putString(uid);
             }
         }

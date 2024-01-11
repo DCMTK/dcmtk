@@ -1326,7 +1326,7 @@ OFCondition DIMSE_createFilestream(
     if (NULL != (elem = new DcmUniqueIdentifier(implementationClassUID)))
     {
       metainfo->insert(elem, OFTrue);
-      const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
+      const char *uid = dcmImplementationClassUID.get();
       ((DcmUniqueIdentifier*)elem)->putString(uid);
     } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmShortString(implementationVersionName)))

@@ -78,6 +78,9 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofsockad.h"
 
+OFGlobal<const char*> dcmImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID);
+OFGlobal<const char*> dcmImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+
 struct UIDNameMap {
     const char* uid;
     const char* keyword;
