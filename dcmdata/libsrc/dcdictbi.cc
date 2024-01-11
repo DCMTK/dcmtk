@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-07-14 12:18:43
+**   Date: 2024-01-11 12:43:37
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -18745,7 +18745,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       "GEMS_DRS_1" }
 #endif
   , { 0x0038, 0x0004, 0x0038, 0x0004,
-      EVR_SQ, "ReferencedPatientAliasSequence", 1, 1, "DICOM",
+      EVR_SQ, "RETIRED_ReferencedPatientAliasSequence", 1, 1, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0038, 0x0008, 0x0038, 0x0008,
@@ -22036,6 +22036,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0048, 0x0113, 0x0048, 0x0113,
       EVR_DS, "ObjectiveLensNumericalAperture", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0114, 0x0048, 0x0114,
+      EVR_CS, "ConfocalMode", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0115, 0x0048, 0x0115,
+      EVR_CS, "TissueLocation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0116, 0x0048, 0x0116,
+      EVR_SQ, "ConfocalMicroscopyImageFrameTypeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0048, 0x0117, 0x0048, 0x0117,
+      EVR_FD, "ImageAcquisitionDepth", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0048, 0x0120, 0x0048, 0x0120,
@@ -29744,6 +29760,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ReferencedRTPrescriptionSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x068b, 0x300a, 0x068b,
+      EVR_CS, "DoseValueInterpretation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0700, 0x300a, 0x0700,
       EVR_UI, "TreatmentSessionUID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -30210,6 +30230,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300c, 0x0128, 0x300c, 0x0128,
       EVR_SQ, "BeamHoldOriginatingDeviceSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300c, 0x0129, 0x300c, 0x0129,
+      EVR_CS, "BeamHoldTransitionTriggerSource", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300e, 0x0002, 0x300e, 0x0002,

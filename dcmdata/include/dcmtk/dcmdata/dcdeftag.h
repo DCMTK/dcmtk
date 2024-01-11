@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2023-07-14 12:18:43
+**   Date: 2024-01-11 12:43:36
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2023-07-14 12:18:43"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2024-01-11 12:43:36"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5073
+** Number of entries: 5079
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2368,7 +2368,7 @@
 #define DCM_CameraPositionGroupSequence          DcmTagKey(0x0034, 0x000b)
 #define DCM_IncludesInformation                  DcmTagKey(0x0034, 0x000c)
 #define DCM_TimeOfFrameGroupSequence             DcmTagKey(0x0034, 0x000d)
-#define DCM_ReferencedPatientAliasSequence       DcmTagKey(0x0038, 0x0004)
+#define DCM_RETIRED_ReferencedPatientAliasSequence DcmTagKey(0x0038, 0x0004)
 #define DCM_VisitStatusID                        DcmTagKey(0x0038, 0x0008)
 #define DCM_AdmissionID                          DcmTagKey(0x0038, 0x0010)
 #define DCM_RETIRED_IssuerOfAdmissionID          DcmTagKey(0x0038, 0x0011)
@@ -2931,6 +2931,10 @@
 #define DCM_CondenserLensPower                   DcmTagKey(0x0048, 0x0111)
 #define DCM_ObjectiveLensPower                   DcmTagKey(0x0048, 0x0112)
 #define DCM_ObjectiveLensNumericalAperture       DcmTagKey(0x0048, 0x0113)
+#define DCM_ConfocalMode                         DcmTagKey(0x0048, 0x0114)
+#define DCM_TissueLocation                       DcmTagKey(0x0048, 0x0115)
+#define DCM_ConfocalMicroscopyImageFrameTypeSequence DcmTagKey(0x0048, 0x0116)
+#define DCM_ImageAcquisitionDepth                DcmTagKey(0x0048, 0x0117)
 #define DCM_PaletteColorLookupTableSequence      DcmTagKey(0x0048, 0x0120)
 #define DCM_RETIRED_ReferencedImageNavigationSequence DcmTagKey(0x0048, 0x0200)
 #define DCM_RETIRED_TopLeftHandCornerOfLocalizerArea DcmTagKey(0x0048, 0x0201)
@@ -4687,6 +4691,7 @@
 #define DCM_RTBeamModifierDefinitionDistance     DcmTagKey(0x300a, 0x0688)
 #define DCM_BeamAreaLimitSequence                DcmTagKey(0x300a, 0x0689)
 #define DCM_ReferencedRTPrescriptionSequence     DcmTagKey(0x300a, 0x068a)
+#define DCM_DoseValueInterpretation              DcmTagKey(0x300a, 0x068b)
 #define DCM_TreatmentSessionUID                  DcmTagKey(0x300a, 0x0700)
 #define DCM_RTRadiationUsage                     DcmTagKey(0x300a, 0x0701)
 #define DCM_ReferencedRTRadiationSetSequence     DcmTagKey(0x300a, 0x0702)
@@ -4804,6 +4809,7 @@
 #define DCM_BeamHoldTransition                   DcmTagKey(0x300c, 0x0126)
 #define DCM_BeamHoldTransitionDateTime           DcmTagKey(0x300c, 0x0127)
 #define DCM_BeamHoldOriginatingDeviceSequence    DcmTagKey(0x300c, 0x0128)
+#define DCM_BeamHoldTransitionTriggerSource      DcmTagKey(0x300c, 0x0129)
 #define DCM_ApprovalStatus                       DcmTagKey(0x300e, 0x0002)
 #define DCM_ReviewDate                           DcmTagKey(0x300e, 0x0004)
 #define DCM_ReviewTime                           DcmTagKey(0x300e, 0x0005)
