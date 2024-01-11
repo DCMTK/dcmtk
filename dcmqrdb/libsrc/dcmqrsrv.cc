@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2023, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,8 +31,6 @@
 #include "dcmtk/dcmqrdb/dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmtk/dcmqrdb/dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
 #include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
-
-#include <openssl/crypto.h>
 
 static void findCallback(
   /* in */
