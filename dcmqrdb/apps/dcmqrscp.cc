@@ -276,16 +276,16 @@ main(int argc, char *argv[])
     cmd.addSubGroup("specific character set:");
       cmd.addOption("--use-request-charset",    "+Cr",     "try to convert all element values that are\naffected by Specific Character Set (0008,0005)\n"
                                                            "to the one specified in the request data set,\nfall back to the one specified via\n"
-                                                           "--convert-to-xxx if that is not possible\n(default, unless overridden by config file)");
+                                                           "--convert-to-xxx if that is not possible\n(default, unless overridden by config file)", OFCommandLine::AF_NoWarning);
       cmd.addOption("--override-charset",       "-Cr",     "convert affected element values to the\ncharacter set specified via --convert-to-xxx,\n"
-                                                           "ignoring the one specified in the request");
-      cmd.addOption("--convert-to-ascii",       "+A7",     "convert affected element values to 7-bit ASCII\n(default, unless overridden by config file)");
-      cmd.addOption("--convert-to-utf8",        "+U8",     "convert affected element values to UTF-8");
-      cmd.addOption("--convert-to-latin1",      "+L1",     "convert affected element values to ISO 8859-1");
+                                                           "ignoring the one specified in the request", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--convert-to-ascii",       "+A7",     "convert affected element values to 7-bit ASCII\n(default, unless overridden by config file)", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--convert-to-utf8",        "+U8",     "convert affected element values to UTF-8", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--convert-to-latin1",      "+L1",     "convert affected element values to ISO 8859-1", OFCommandLine::AF_NoWarning);
       cmd.addOption("--convert-to-charset",     "+C",   1, "[c]harset: string",
-                                                           "convert affected element values to the char.\nset specified by the DICOM defined term c");
-      cmd.addOption("--transliterate",          "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
-      cmd.addOption("--discard-illegal",        "-Cd",     "discard characters that cannot be represented\nin destination character set");
+                                                           "convert affected element values to the char.\nset specified by the DICOM defined term c", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--transliterate",          "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--discard-illegal",        "-Cd",     "discard characters that cannot be represented\nin destination character set", OFCommandLine::AF_NoWarning);
 #endif
 
   // add TLS specific command line options if (and only if) we are compiling with OpenSSL
