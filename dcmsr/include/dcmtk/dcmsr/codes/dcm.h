@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2023c
- *  File created on 2023-07-14 12:40:27 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023e
+ *  File created on 2024-01-12 09:31:08 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4706
+// total number of codes: 4716
 // - retired: 202
 // - no name: 27
 // - not unique: 17
@@ -61,6 +61,7 @@
 #define CODE_DCM_ImageCapture                                              DSRBasicCodedEntry("CAPTURE", "DCM", "Image Capture")
 #define CODE_DCM_RETIRED_ColorFlowDoppler                                  DSRBasicCodedEntry("CD", "DCM", "Color flow Doppler")
 #define CODE_DCM_RETIRED_Cinefluorography                                  DSRBasicCodedEntry("CF", "DCM", "Cinefluorography")
+#define CODE_DCM_ConfocalMicroscopy                                        DSRBasicCodedEntry("CFM", "DCM", "Confocal Microscopy")
 #define CODE_DCM_ComputationServer                                         DSRBasicCodedEntry("COMP", "DCM", "Computation Server")
 #define CODE_DCM_RETIRED_Culposcopy                                        DSRBasicCodedEntry("CP", "DCM", "Culposcopy")
 #define CODE_DCM_ComputedRadiography                                       DSRBasicCodedEntry("CR", "DCM", "Computed Radiography")
@@ -4754,5 +4755,14 @@
 #define CODE_DCM_SphericalBackProjection                                   DSRBasicCodedEntry("130821", "DCM", "Spherical Back Projection")
 #define CODE_DCM_NumericalAcousticModel                                    DSRBasicCodedEntry("130822", "DCM", "Numerical Acoustic Model")
 #define CODE_DCM_BloodDeoxygenationLevel                                   DSRBasicCodedEntry("130823", "DCM", "Blood Deoxygenation Level")
+#define CODE_DCM_ScanSpotInterlock                                         DSRBasicCodedEntry("130824", "DCM", "Scan Spot Interlock")
+#define CODE_DCM_ScanSpotPositionInterlock                                 DSRBasicCodedEntry("130825", "DCM", "Scan Spot Position Interlock")
+#define CODE_DCM_ScanSpotSizeInterlock                                     DSRBasicCodedEntry("130826", "DCM", "Scan Spot Size Interlock")
+#define CODE_DCM_ScanSpotMetersetInterlock                                 DSRBasicCodedEntry("130827", "DCM", "Scan Spot Meterset Interlock")
+#define CODE_DCM_RadiationDetectedDuringBeamHoldInterlock                  DSRBasicCodedEntry("130828", "DCM", "Radiation Detected During Beam Hold Interlock")
+#define CODE_DCM_MLCPositionInterlock                                      DSRBasicCodedEntry("130829", "DCM", "MLC Position Interlock")
+#define CODE_DCM_MetersetRateInterlock                                     DSRBasicCodedEntry("130830", "DCM", "Meterset Rate Interlock")
+#define CODE_DCM_BeamEnergyInterlock                                       DSRBasicCodedEntry("130831", "DCM", "Beam Energy Interlock")
+#define CODE_DCM_SkinLesionColor                                           DSRBasicCodedEntry("130832", "DCM", "Skin lesion color")
 
 #endif

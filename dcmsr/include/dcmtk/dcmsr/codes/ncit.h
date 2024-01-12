@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2023c
- *  File created on 2023-07-14 12:40:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023e
+ *  File created on 2024-01-12 09:31:13 by J. Riesmeier
  *
  */
 
