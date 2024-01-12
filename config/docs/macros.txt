@@ -198,15 +198,17 @@ DISABLE_NAGLE_ALGORITHM
     TCP_NODELAY accordingly (see config/docs/envvars.txt or
     /usr/local/share/doc/dcmtk-<VERSION>/envvars.txt).
 
-DISABLE_OFSTD_ATOF
+ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
   Affected: all modules
-  Type of modification: Disables feature
-  Explanation: By default, DCMTK uses its own implementation of atof() to
-    convert strings to double numbers in a locale-independent manner.
-    This flag forces DCMTK to use the standard sscanf() function instead, which
-    is normally much faster and gives a higher precision than DCMTK's built in
-    code, but is locale dependent, i.e. cannot be used with locales such as
-    German since DICOM decimal strings always use the Posix locale.
+  Type of modification: Re-activates behavior of earlier DCMTK releases
+  Explanation: DCMTK provides an implementation of atof() in class OFStandard
+    that converts strings to double numbers in a locale-independent manner,
+    whereas std:atof(), std::strtod() etc. depend on the global setting of the
+    locale for the current process and may expect a decimal point character
+    other than the period character.
+    The implementation used in DCMTK 3.5.2 to 3.6.8 was found to produce rounding
+    errors in certain cases and has thus been replaced by an iostream-based
+    implementation.
 
 DISABLE_OFSTD_FTOA
   Affected: all modules

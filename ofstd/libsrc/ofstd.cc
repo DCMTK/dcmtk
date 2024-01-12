@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -115,6 +115,7 @@ END_EXTERN_C
 
 #include <cmath>
 #include <cstring>       /* for memset() */
+#include <sstream>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -1918,27 +1919,59 @@ size_t OFStandard::decodeBase64(const OFString &data,
     return count;
 }
 
-#ifdef DISABLE_OFSTD_ATOF
-
-// we use sscanf instead of atof because atof doesn't return a status flag
+#ifndef ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
 
 double OFStandard::atof(const char *s, OFBool *success)
 {
-  double result;
-  if (success)
+  double d = 0.0;
+  if (success) *success = OFFalse;
+  if (s)
   {
-    *success = (1 == sscanf(s,"%lf",&result));
+    // convert input to a string object
+    std::string ss(s);
+
+    // erase leading whitespace
+    ss.erase(0, ss.find_first_not_of("\t "));
+
+    // handle NaN as a special case, since iostream does not
+    if ((ss.length() >= 3) && (ss[0] == 'n' || ss[0] == 'N') && (ss[1] == 'a' || ss[1] == 'A') && (ss[2] == 'n' || ss[2] == 'N'))
+    {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::quiet_NaN();
+    }
+
+    // handle positive infinity as a special case, since iostream does not
+    if ((ss.length() >= 3) && (ss[0] == 'i' || ss[0] == 'I') && (ss[1] == 'n' || ss[1] == 'N') && (ss[2] == 'f' || ss[2] == 'F'))
+    {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::infinity();
+    }
+
+    // handle negative infinity as a special case, since iostream does not
+    if ((ss.length() >= 4) && (ss[0] == '-') && (ss[1] == 'i' || ss[1] == 'I') && (ss[2] == 'n' || ss[2] == 'N') && (ss[3] == 'f' || ss[3] == 'F'))
+    {
+        if (success) *success = OFTrue;
+        return -OFnumeric_limits<double>::infinity();
+    }
+
+    // create an input string stream
+    std::istringstream iss(s);
+
+    // create a locale object for the C locale and activate it in the stream
+    std::locale mylocale("C");
+    iss.imbue(mylocale);
+
+    // convert string to double and set success flag
+    if ((iss >> d) && success) *success = OFTrue;
   }
-  else
-  {
-    (void) sscanf(s,"%lf",&result);
-  }
-  return result;
+  return d;
 }
 
 #else
 
-// --- definitions and constants for atof() ---
+// Old implementation of OFStandard::atof(). This implementation may produce
+// rounding errors (see DCMTK issue #1100) and has thus been replaced by
+// a new implementation based on std::istringstream.
 
 /* Largest possible base 10 exponent.  Any exponent larger than this will
  * already produce underflow or overflow, so there's no need to worry
@@ -2152,7 +2185,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     return fraction;
 }
 
-#endif /* DISABLE_OFSTD_ATOF */
+#endif /* ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION */
 
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define FTOA_MAXEXP          308
