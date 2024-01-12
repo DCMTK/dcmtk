@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedure
  *
- *  Generated automatically from DICOM PS 3.16-2023a
- *  File created on 2023-02-02 17:56:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023e
+ *  File created on 2024-01-12 09:54:33 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 100 (Quantitative Diagnostic Imaging Procedure)
 #define CONTEXT_GROUP_NUMBER  "100"
-#define CONTEXT_GROUP_VERSION "20210905"
+#define CONTEXT_GROUP_VERSION "20230630"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.998"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -160,6 +160,8 @@ CID100_QuantitativeDiagnosticImagingProcedure::CodeList &CID100_QuantitativeDiag
         Codes->insert(OFMake_pair(MRIUnspecifiedBodyRegion, DSRBasicCodedEntry("25056-3", "LN", "MRI unspecified body region")));
         Codes->insert(OFMake_pair(NMUnspecifiedBodyRegion, DSRBasicCodedEntry("49118-3", "LN", "NM unspecified body region")));
         Codes->insert(OFMake_pair(PETUnspecifiedBodyRegion, DSRBasicCodedEntry("44136-0", "LN", "PET unspecified body region")));
+        Codes->insert(OFMake_pair(XRUnspecifiedBodyRegion, DSRBasicCodedEntry("43468-8", "LN", "XR unspecified body region")));
+        Codes->insert(OFMake_pair(Angiography, DSRBasicCodedEntry("77343006", "SCT", "Angiography")));
         Codes->insert(OFMake_pair(PETWholeBody, DSRBasicCodedEntry("44139-4", "LN", "PET whole body")));
         Codes->insert(OFMake_pair(PETCT_FDGImagingOfWholeBody, DSRBasicCodedEntry("443271005", "SCT", "PET/CT FDG imaging of whole body")));
         Codes->insert(OFMake_pair(PETCT_METImagingOfWholeBody, DSRBasicCodedEntry("764704008", "SCT", "PET/CT MET imaging of whole body")));

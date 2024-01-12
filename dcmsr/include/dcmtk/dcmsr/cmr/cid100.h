@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedure
  *
- *  Generated automatically from DICOM PS 3.16-2023a
- *  File created on 2023-02-02 17:56:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2023e
+ *  File created on 2024-01-12 09:54:33 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 100 - Quantitative Diagnostic Imaging Procedure.
- *  (type: extensible, version: 20210905)
+ *  (type: extensible, version: 20230630)
  */
 class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedure
   : public DSRContextGroup
@@ -62,6 +62,10 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedure
         NMUnspecifiedBodyRegion,
         /// (44136-0,LN,"PET unspecified body region")
         PETUnspecifiedBodyRegion,
+        /// (43468-8,LN,"XR unspecified body region")
+        XRUnspecifiedBodyRegion,
+        /// (77343006,SCT,"Angiography")
+        Angiography,
         /// (44139-4,LN,"PET whole body")
         PETWholeBody,
         /// (443271005,SCT,"PET/CT FDG imaging of whole body")
