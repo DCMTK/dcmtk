@@ -41,8 +41,9 @@
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  The code for OFStandard::atof has been derived from an implementation
- *  which carries the following copyright notice:
+ *  The code for OFStandard::atof that is used when DCMTK is compiled
+ *  with the macro ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION has been derived
+ *  from an implementation that carries the following copyright notice:
  *
  *  Copyright 1988 Regents of the University of California
  *  Permission to use, copy, modify, and distribute this software and
@@ -1928,7 +1929,7 @@ double OFStandard::atof(const char *s, OFBool *success)
   if (s)
   {
     // convert input to a string object
-    std::string ss(s);
+    STD_NAMESPACE string ss(s);
 
     // erase leading whitespace
     ss.erase(0, ss.find_first_not_of("\t "));
@@ -1955,10 +1956,10 @@ double OFStandard::atof(const char *s, OFBool *success)
     }
 
     // create an input string stream
-    std::istringstream iss(s);
+    STD_NAMESPACE istringstream iss(s);
 
     // create a locale object for the C locale and activate it in the stream
-    std::locale mylocale("C");
+    STD_NAMESPACE locale mylocale("C");
     iss.imbue(mylocale);
 
     // convert string to double and set success flag

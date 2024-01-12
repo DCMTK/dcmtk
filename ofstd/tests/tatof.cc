@@ -61,8 +61,8 @@ const ValuePair vp[] =
 
   // since our precision is limited, everything else smaller then this may be converted to zero.
   {"2.2250738585072014E-292", 2.2250738585072014E-292, OFTrue},
-  {"3.402823466E+38F", 3.402823466E+38F, OFTrue},
-  {"1.175494351E-38F", 1.175494351E-38F, OFTrue},
+  {"3.402823466E+38", 3.402823466E+38F, OFTrue},
+  {"1.175494351E-38", 1.175494351E-38F, OFTrue},
 
   // very large numbers that produce an overflow during conversion to double
   // cause undefined behavior in std::atof().

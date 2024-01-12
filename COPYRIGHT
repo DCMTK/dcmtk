@@ -259,8 +259,9 @@ following copyright notice:
 ---------------------------------------------------------------------------
 
 The code for the OFStandard::atof helper function in ofstd/libsrc/ofstd.cc
-has been derived from an implementation which carries the following
-copyright notice:
+that is used when DCMTK is compiled with the macro
+ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION has been derived from an implementation
+that carries the following copyright notice:
 
 /*
  *  Copyright 1988 Regents of the University of California
