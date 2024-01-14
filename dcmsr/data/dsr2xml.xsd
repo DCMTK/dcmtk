@@ -10,7 +10,7 @@
   <xsd:annotation>
     <xsd:documentation xml:lang="en">
       XML Schema for DCMTK tools dsr2xml and xml2dsr.
-      Copyright (C) 2003-2022, OFFIS e.V. and J. Riesmeier
+      Copyright (C) 2003-2024, OFFIS e.V. and J. Riesmeier
       All rights reserved.  See COPYRIGHT file for details.
     </xsd:documentation>
   </xsd:annotation>
@@ -853,6 +853,7 @@
       <xsd:enumeration value="ISO_IR 126"/>
       <xsd:enumeration value="ISO_IR 138"/>
       <xsd:enumeration value="ISO_IR 148"/>
+      <xsd:enumeration value="ISO_IR 203"/>
       <xsd:enumeration value="ISO_IR 166"/>
       <xsd:enumeration value="ISO 2022 IR 13\ISO 2022 IR 87"/>
       <xsd:enumeration value="ISO 2022 IR 6\ISO 2022 IR 149"/>
