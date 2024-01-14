@@ -1076,6 +1076,7 @@ AC_CHECK_EXT_LIB_PROTOTYPE(TLS_method, OpenSSL, openssl/ssl.h)
 AC_CHECK_EXT_LIB_COMPILES(X509_STORE_CTX_get0_cert, OpenSSL, openssl/x509_vfy.h, [X509_STORE_CTX_get0_cert])
 AC_CHECK_EXT_LIB_PROTOTYPE(X509_STORE_get0_param, OpenSSL, openssl/x509.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(X509_get_signature_nid, OpenSSL, openssl/x509.h)
+AC_CHECK_EXT_LIB_COMPILES(OPENSSL_init_crypto, OpenSSL, openssl/crypto.h, [OPENSSL_init_crypto])
 
 dnl test presence of functions, constants and macros needed for the dcmsign module
 AC_CHECK_EXT_LIB_PROTOTYPE(ASN1_STRING_get0_data, OpenSSL, openssl/asn1.h)

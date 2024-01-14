@@ -647,6 +647,10 @@ typedef unsigned short ushort;
    in <openssl/obj_mac.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_NID_SHA512_256WITHRSAENCRYPTION
 
+/* Define if OpenSSL provides a prototype for OPENSSL_init_crypto in
+   <openssl/crypto.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_OPENSSL_INIT_CRYPTO
+
 /* Define if OpenSSL provides a prototype for OSSL_PROVIDER_load in
    <openssl/provider.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_OSSL_PROVIDER_LOAD

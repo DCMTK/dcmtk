@@ -15615,6 +15615,48 @@ else
 $as_echo "no" >&6; }
 fi
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether OpenSSL provides a prototype for OPENSSL_init_crypto (in openssl/crypto.h)" >&5
+$as_echo_n "checking whether OpenSSL provides a prototype for OPENSSL_init_crypto (in openssl/crypto.h)... " >&6; }
+
+ac_includes=""
+for ac_header in openssl/crypto.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+tmp_save_1=`echo OPENSSL_init_crypto | tr ' :' '__'`
+if eval \${ac_cv_compiles_$tmp_save_1+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$ac_includes
+int
+main ()
+{
+OPENSSL_init_crypto
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval "ac_cv_compiles_$tmp_save_1=yes"
+else
+  eval "ac_cv_compiles_$tmp_save_1=no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_compiles_$tmp_save_1'}'`\" = yes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  $as_echo "#define HAVE_OPENSSL_PROTOTYPE_OPENSSL_INIT_CRYPTO 1" >>confdefs.h
+
+  :
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether OpenSSL provides a prototype for ASN1_STRING_get0_data (in openssl/asn1.h)" >&5
 $as_echo_n "checking whether OpenSSL provides a prototype for ASN1_STRING_get0_data (in openssl/asn1.h)... " >&6; }
