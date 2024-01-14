@@ -172,7 +172,7 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
         /* indicate that debug code is present */
         (*output) << " debug";
 #endif
-#ifdef ofstd_EXPORTS
+#ifdef DCMTK_SHARED
         /* indicate that shared library support is enabled */
         (*output) << " shared";
 #endif
