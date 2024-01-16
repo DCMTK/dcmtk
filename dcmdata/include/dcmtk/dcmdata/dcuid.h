@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Andrew Hewett
+ *  Author:  Andrew Hewett, Joerg Riesmeier
  *
  *  Purpose:
  *  Definitions of "well known" DICOM Unique Identifiers,
@@ -35,7 +35,6 @@
  *  @brief global definitions and functions for UID handling
  */
 
-
 /// type of Storage SOP Class
 typedef enum {
     /// patient objects
@@ -47,6 +46,117 @@ typedef enum {
     /// all types (patient and non-patient objects)
     ESSC_All        = 0x03
 } E_StorageSOPClassType;
+
+
+/// standard that defines the UID
+typedef enum {
+    /// DICOM standard
+    EUS_DICOM,
+    /// DICOS standard
+    EUS_DICOS,
+    /// DICONDE standard
+    EUS_DICONDE,
+    /// anything else
+    EUS_other
+} E_UIDStandard;
+
+/// validity of the UID definition
+typedef enum {
+    /// defined in the standard
+    EUV_Standard,
+    /// retired from the standard
+    EUV_Retired,
+    /// draft definition, e.g. for trial implementation
+    EUV_Draft,
+    /// private definition
+    EUV_Private,
+    /// anything else
+    EUV_other
+} E_UIDValidity;
+
+/// UID type
+typedef enum {
+    /// Application Context Name
+    EUT_ApplicationContextName,
+    /// Transfer Syntax
+    EUT_TransferSyntax,
+    /// Service Class
+    EUT_ServiceClass,
+    /// SOP Class
+    EUT_SOPClass,
+    /// Meta SOP Class
+    EUT_MetaSOPClass,
+    /// Well-known SOP Instance
+    EUT_SOPInstance,
+    /// Coding Scheme
+    EUT_CodingScheme,
+    /// Context Group (not yet used)
+    EUT_ContextGroup,
+    /// Mapping Resource
+    EUT_MappingResource,
+    /// Well-known Frame of Reference
+    EUT_FrameOfReference,
+    /// Application Hosting
+    EUT_ApplicationHosting,
+    /// LDAP OID
+    EUT_LDAP,
+    /// anything else
+    EUT_other
+} E_UIDType;
+
+/// UID sub type
+typedef enum {
+    /// Storage
+    EUST_Storage,
+    /// Query/Retrieve
+    EUST_QueryRetrieve,
+    /// Worklist
+    EUST_Worklist,
+    /// Print Management
+    EUST_PrintManagement,
+    /// Color Palette
+    EUST_ColorPalette,
+    /// anything else
+    EUST_other
+} E_UIDSubType;
+
+/// UID IOD type
+typedef enum {
+    /// Image IOD
+    EUIT_Image,
+    /// Presentation State IOD
+    EUIT_PresentationState,
+    /// Structured Report IOD
+    EUIT_StructuredReport,
+    /// Waveform IOD
+    EUIT_Waveform,
+    /// Encapsulated IOD
+    EUIT_Encapsulated,
+    /// other IOD
+    EUIT_other
+} E_UIDIODType;
+
+/// UID properties
+struct DcmUIDProperties {
+    /// standard that defines the UID
+    E_UIDStandard standard;
+    /// validity of the UID definition
+    E_UIDValidity validity;
+    /// UID type
+    E_UIDType uidType;
+    /// UID sub type
+    E_UIDSubType subType;
+    /// UID IOD type
+    E_UIDIODType iodType;
+    /// other flags
+    size_t otherFlags;
+};
+
+// UID property flags
+#define UID_PROP_NONE          0x0000UL
+#define UID_PROP_NON_PATIENT   0x0001UL
+#define UID_PROP_NO_DIR_RECORD 0x0002UL
+#define UID_PROP_ENHANCED_MF   0x0004UL
 
 
 /** return the name of a UID.
@@ -78,6 +188,14 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindKeywordOfUID(const char* uid, const char
  *  @return UID string or NULL if keyword is unknown
  */
 DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromKeyword(const char* keyword);
+
+/** return properties of a UID.
+ *  Performs a table lookup and fills a given struct with the properties.
+ *  @param uid UID string for which the properties are to be looked up
+ *  @param properties struct that is filled with the properties of the UID
+ *  @return true if UID was found, false otherwise
+ */
+DCMTK_DCMDATA_EXPORT OFBool dcmGetPropertiesOfUID(const char* uid, DcmUIDProperties &properties);
 
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
