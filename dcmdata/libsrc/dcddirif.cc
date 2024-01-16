@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2023, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -719,7 +719,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     {
         result = ERT_Presentation;
     }
-    else if (compare(sopClass, UID_TwelveLeadECGWaveformStorage) ||
+    else if (compare(sopClass, UID_DRAFT_WaveformStorage) ||
+             compare(sopClass, UID_TwelveLeadECGWaveformStorage) ||
              compare(sopClass, UID_GeneralECGWaveformStorage) ||
              compare(sopClass, UID_AmbulatoryECGWaveformStorage) ||
              compare(sopClass, UID_HemodynamicWaveformStorage) ||
@@ -805,6 +806,7 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
     else if (compare(sopClass, UID_ImplantAssemblyTemplateStorage))
         result = ERT_ImplantAssy;
     else if (compare(sopClass, UID_RTBeamsDeliveryInstructionStorage) ||
+             compare(sopClass, UID_DRAFT_RTBeamsDeliveryInstructionStorage) ||
              compare(sopClass, UID_RTBrachyApplicationSetupDeliveryInstructionStorage) ||
              compare(sopClass, UID_RTPatientPositionAcquisitionInstructionStorage))
     {
@@ -1619,161 +1621,30 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         expectedTransferSyntax = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
                     else if (ApplicationProfile == AP_GeneralPurposeBDMPEG4StereoHPatLV42)
                         expectedTransferSyntax = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-                    /* is it an image ? */
-                    for (int i = 0; i < numberOfDcmImageSOPClassUIDs && !found; i++)
-                        found = compare(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
-                    /* is it one of the RT SOP Classes? */
-                    if (!found)
+                    /* check for Storage SOP Classes that should not be accepted: */
+                    if (!(
+                          /* unsupported/outdated directory record definitions */
+                          compare(mediaSOPClassUID, UID_DRAFT_SRTextStorage) ||
+                          compare(mediaSOPClassUID, UID_DRAFT_SRAudioStorage) ||
+                          compare(mediaSOPClassUID, UID_DRAFT_SRDetailStorage) ||
+                          compare(mediaSOPClassUID, UID_DRAFT_SRComprehensiveStorage)
+                        ))
                     {
-                        found = compare(mediaSOPClassUID, UID_RTDoseStorage) ||
-                                compare(mediaSOPClassUID, UID_RTStructureSetStorage) ||
-                                compare(mediaSOPClassUID, UID_RTPlanStorage) ||
-                                compare(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage) ||
-                                compare(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage) ||
-                                compare(mediaSOPClassUID, UID_RTBeamsDeliveryInstructionStorage) ||
-                                compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage) ||
-                                compare(mediaSOPClassUID, UID_RTBrachyApplicationSetupDeliveryInstructionStorage) ||
-                                compare(mediaSOPClassUID, UID_RTIonPlanStorage) ||
-                                compare(mediaSOPClassUID, UID_RTIonBeamsTreatmentRecordStorage) ||
-                                compare(mediaSOPClassUID, UID_RTPhysicianIntentStorage) ||
-                                compare(mediaSOPClassUID, UID_RTSegmentAnnotationStorage) ||
-                                compare(mediaSOPClassUID, UID_RTRadiationSetStorage) ||
-                                compare(mediaSOPClassUID, UID_CArmPhotonElectronRadiationStorage);
-                    }
-                    /* is it one of the structured reporting SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_BasicTextSRStorage) ||
-                                compare(mediaSOPClassUID, UID_EnhancedSRStorage) ||
-                                compare(mediaSOPClassUID, UID_ComprehensiveSRStorage) ||
-                                compare(mediaSOPClassUID, UID_Comprehensive3DSRStorage) ||
-                                compare(mediaSOPClassUID, UID_ExtensibleSRStorage) ||
-                                compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
-                                compare(mediaSOPClassUID, UID_MammographyCADSRStorage) ||
-                                compare(mediaSOPClassUID, UID_ChestCADSRStorage) ||
-                                compare(mediaSOPClassUID, UID_ColonCADSRStorage) ||
-                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSRStorage) ||
-                                compare(mediaSOPClassUID, UID_EnhancedXRayRadiationDoseSRStorage) ||
-                                compare(mediaSOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) ||
-                                compare(mediaSOPClassUID, UID_SpectaclePrescriptionReportStorage) ||
-                                compare(mediaSOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) ||
-                                compare(mediaSOPClassUID, UID_ImplantationPlanSRStorage) ||
-                                compare(mediaSOPClassUID, UID_AcquisitionContextSRStorage) ||
-                                compare(mediaSOPClassUID, UID_SimplifiedAdultEchoSRStorage) ||
-                                compare(mediaSOPClassUID, UID_PatientRadiationDoseSRStorage) ||
-                                compare(mediaSOPClassUID, UID_PerformedImagingAgentAdministrationSRStorage) ||
-                                compare(mediaSOPClassUID, UID_PlannedImagingAgentAdministrationSRStorage);
-                     }
-                    /* is it one of the waveform SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_GeneralECGWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_AmbulatoryECGWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_HemodynamicWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_GeneralAudioWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_ArterialPulseWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_RespiratoryWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_MultichannelRespiratoryWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_RoutineScalpElectroencephalogramWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_ElectromyogramWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_ElectrooculogramWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_SleepElectroencephalogramWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_BodyPositionWaveformStorage) ||
-                                compare(mediaSOPClassUID, UID_General32BitECGWaveformStorage);
-                    }
-                    /* is it one of the presentation state SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_ColorSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_XAXRFGrayscaleSoftcopyPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_GrayscalePlanarMPRVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_CompositingPlanarMPRVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_AdvancedBlendingPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_VolumeRenderingVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_MultipleVolumeRenderingVolumetricPresentationStateStorage) ||
-                                compare(mediaSOPClassUID, UID_VariableModalityLUTSoftcopyPresentationStateStorage);
-                    }
-                    /* is it one of the encapsulated document SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
-                                compare(mediaSOPClassUID, UID_EncapsulatedCDAStorage) ||
-                                compare(mediaSOPClassUID, UID_EncapsulatedSTLStorage);
-                    }
-                    /* is it one of the spatial registration SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_SpatialRegistrationStorage) ||
-                                compare(mediaSOPClassUID, UID_SpatialFiducialsStorage) ||
-                                compare(mediaSOPClassUID, UID_DeformableSpatialRegistrationStorage);
-                    }
-                    /* is it one of the segmentation SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_SegmentationStorage) ||  // will be mapped to IMAGE record
-                                compare(mediaSOPClassUID, UID_SurfaceSegmentationStorage);
-                    }
-                    /* is it one of the measurement SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_LensometryMeasurementsStorage) ||
-                                compare(mediaSOPClassUID, UID_AutorefractionMeasurementsStorage) ||
-                                compare(mediaSOPClassUID, UID_KeratometryMeasurementsStorage) ||
-                                compare(mediaSOPClassUID, UID_SubjectiveRefractionMeasurementsStorage) ||
-                                compare(mediaSOPClassUID, UID_VisualAcuityMeasurementsStorage) ||
-                                compare(mediaSOPClassUID, UID_OphthalmicAxialMeasurementsStorage) ||
-                                compare(mediaSOPClassUID, UID_IntraocularLensCalculationsStorage) ||
-                                compare(mediaSOPClassUID, UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage);
-                    }
-                    /* is it one of the implant SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_GenericImplantTemplateStorage) ||
-                                compare(mediaSOPClassUID, UID_ImplantAssemblyTemplateStorage) ||
-                                compare(mediaSOPClassUID, UID_ImplantTemplateGroupStorage);
-                    }
-                    /* is it one of the surface scan SOP Classes? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_SurfaceScanMeshStorage) ||
-                                compare(mediaSOPClassUID, UID_SurfaceScanPointCloudStorage);
-                    }
-                    /* is it any other SOP class? */
-                    if (!found)
-                    {
-                        found = compare(mediaSOPClassUID, UID_KeyObjectSelectionDocumentStorage) ||
-                                compare(mediaSOPClassUID, UID_RawDataStorage) ||
-                                compare(mediaSOPClassUID, UID_MRSpectroscopyStorage) ||
-                                compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage) ||
-                                compare(mediaSOPClassUID, UID_HangingProtocolStorage) ||
-                                compare(mediaSOPClassUID, UID_BasicStructuredDisplayStorage) ||
-                                compare(mediaSOPClassUID, UID_StereometricRelationshipStorage) ||
-                                compare(mediaSOPClassUID, UID_ColorPaletteStorage) ||
-                                compare(mediaSOPClassUID, UID_TractographyResultsStorage) ||
-                                compare(mediaSOPClassUID, UID_ContentAssessmentResultsStorage) ||
-                                compare(mediaSOPClassUID, UID_MicroscopyBulkSimpleAnnotationsStorage) ||
-                                compare(mediaSOPClassUID, UID_InventoryStorage);
-                    }
-                    /* the following SOP classes have been retired with previous editions of the DICOM standard */
-                    if (!found && RetiredSOPClassSupport)
-                    {
-                        found = compare(mediaSOPClassUID, UID_RETIRED_StoredPrintStorage) ||
-                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneOverlayStorage) ||
-                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneCurveStorage) ||
-                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneModalityLUTStorage) ||
-                                compare(mediaSOPClassUID, UID_RETIRED_StandaloneVOILUTStorage) ||
-                                compare(mediaSOPClassUID, UID_RETIRED_StandalonePETCurveStorage);
-                        if (!found && (ApplicationProfile == AP_GeneralPurpose))
+                        /* check for retired SOP Classes that might also be accepted */
+                        if (compare(mediaSOPClassUID, UID_RETIRED_DetachedPatientManagementMetaSOPClass))
                         {
-                            /* a detached patient mgmt sop class is also ok */
-                            found = compare(mediaSOPClassUID, UID_RETIRED_DetachedPatientManagementSOPClass);
+                            /* detached patient management is only accepted in certain cases */
+                            found = RetiredSOPClassSupport && (ApplicationProfile == AP_GeneralPurpose);
+                        } else {
+                            /* otherwise: is it one of the known Storage SOP Classes? */
+                            DcmUIDProperties uidProperties;
+                            if (dcmGetPropertiesOfUID(mediaSOPClassUID.c_str(), uidProperties))
+                                found = (uidProperties.uidType == EUT_SOPClass) && (uidProperties.subType == EUST_Storage);
+                            /* check whether a directory record type is defined or not */
+                            found &= ((uidProperties.otherFlags & UID_PROP_NO_DIR_RECORD) != UID_PROP_NO_DIR_RECORD);
+                            /* check whether retired SOP Classes should be supported or not */
+                            if (found && !RetiredSOPClassSupport)
+                                found = (uidProperties.validity != EUV_Retired);
                         }
                     }
                 }
