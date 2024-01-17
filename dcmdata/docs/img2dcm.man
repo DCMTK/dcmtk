@@ -309,6 +309,13 @@ attributes are present which should be part of the constructed DICOM object.
 The SOP Class UID and the Pixel Data attributes (including attributes like
 Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 
+\subsection img2dcm_multiframe_images Multiframe Images
+
+It is possible to convert multiple input files into one DICOM multiframe
+image if the selected DICOM SOP class supports multiframe. In particular,
+the Multiframe Secondary Capture SOP Classes support this feature.
+They are selected through the \e --new-sc command line option.
+
 \subsection img2dcm_character_sets Character Sets
 
 When an input template is loaded using \e --dataset-from or \e --dataset-from-xml,
@@ -329,8 +336,8 @@ will take place before the values are stored in the DICOM file.
 
 \subsection img2dcm_input_plugins Input Plugins
 
-The \b img2dcm application currently supports the JPEG and the BMP image format
-as input.
+The \b img2dcm application currently supports the JPEG, JPEG-LS and the BMP
+image format as input.
 
 \subsubsection img2dcm_jpeg_input_plugin JPEG Input Plugin
 
@@ -497,6 +504,11 @@ Here are some examples that show how the \b img2dcm application can be used.
    object's resulting JPEG stream.  Further, \e --insist-on-jfif will force
    \b img2dcm to abort if no JFIF information is existent in the source file.
 
+-# img2dcm image1.jpg image2.jpg out.dcm --new-sc<br>
+   Read the JPEG files image1.jpg and image2.jpg, convert to a multiframe
+   image of the Multi-frame Byte Secondary Capture SOP Class, and save the
+   result to DICOM file "out.dcm".
+
 \section img2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -569,6 +581,6 @@ Photography images
 
 \section img2dcm_copyright COPYRIGHT
 
-Copyright (C) 2007-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
