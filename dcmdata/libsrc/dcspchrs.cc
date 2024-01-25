@@ -453,7 +453,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         }
         else if (definedTerm == "ISO 2022 IR 58")       // Simplified Chinese (multi-byte)
         {
-            encodingName = "GB2312";                    // - should work, but not tested yet!
+            encodingName = "GB2312";
             notFirstValue = OFTrue;
         }
         else {
