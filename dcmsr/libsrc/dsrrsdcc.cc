@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2020-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2020-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -84,7 +84,7 @@ OFBool DSRRenditionSelectionDocumentConstraintChecker::checkContentRelationship(
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
             result = (targetValueType == VT_Text)  || (targetValueType == VT_Code) || (targetValueType == VT_UIDRef) ||
-                     (targetValueType == VT_PName) || (targetValueType == VT_Container) /* see CP-2084 */;
+                     (targetValueType == VT_PName) || (targetValueType == VT_Container);
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasConceptMod) && (sourceValueType == VT_Container))

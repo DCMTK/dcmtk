@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2021, OFFIS e.V.
+ *  Copyright (C) 2005-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,7 +85,7 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
             result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)  || (targetValueType == VT_DateTime) ||
-                     (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) || (targetValueType == VT_Container) /* see CP-2084 */;
+                     (targetValueType == VT_UIDRef) || (targetValueType == VT_PName) || (targetValueType == VT_Container);
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasObsContext) &&
