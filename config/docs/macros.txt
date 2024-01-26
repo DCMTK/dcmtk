@@ -61,25 +61,23 @@ DCMTK_UNDEF_SANITIZER
 DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
   Affected: dcmnet
   Type of modification: Toolkit customization
-  Explanation: In DCMTK releases before 3.6.8, some tools incorrectly
-    compare DataSetType for equality with DIMSE_DATASET_PRESENT,
-    instead of checking whether DataSetType is different from
-    DIMSE_DATASET_NULL. These tools will fail if a different value
-    than 0x0001 is used for this constant. See DCMTK issue #1045.
-    The DICOM standard, on the other hand, recommends the value 0x0102
-    if backwards compatibility with ACR-NEMA is desired. If this is
+  Explanation: In DCMTK releases before 3.6.8, some tools incorrectly compare
+    DataSetType for equality with DIMSE_DATASET_PRESENT, instead of checking
+    whether DataSetType is different from DIMSE_DATASET_NULL.  These tools will
+    fail if a different value than 0x0001 is used for this constant.  See DCMTK
+    issue #1045.  The DICOM standard, on the other hand, recommends the value
+    0x0102 if backwards compatibility with ACR-NEMA is desired.  If this is
     important, compile with this macro enabled.
 
 DCMTK_ENABLE_ICONV_PASSTHROUGH
   Affected: oficonv
   Type of modification: Activates feature
-  Explanation: If compiled with this macro, the oficonv libary will
-    simply copy input to output during a character set conversion if
-    input and output encoding are the same. This is more efficient, but
-    means that in invalid byte sequences in the source will remain
-    undetected and copied to the target, whereas the default behaviour
-    would detect this and stop the conversion. It is also incompatible
-    with the behaviour of the GNU iconv library.
+  Explanation: If compiled with this macro, the oficonv library will simply
+    copy input to output during a character set conversion if input and output
+    encoding are the same.  This is more efficient, but means that invalid byte
+    sequences in the source will remain undetected and copied to the target,
+    whereas the default behavior would detect this and stop the conversion.  It
+    is also incompatible with the behavior of the GNU iconv library.
     In DCMTK 3.6.8, this feature was always enabled.
 
 DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
@@ -164,14 +162,13 @@ DCMTK_USE_UNIX_SOCKET_QUEUE
   Type of modification: Selects implementation variant
   Explanation: The implementation of message queues for inter-process
     communication in DCMTK can either use Windows mailslots, Posix message
-    queues, System V message queues, or a solution based on Unix Domain
-    sockets and a separate thread that handles incoming connections
-    in the message queue server. When this macro is defined, the implementation
-    based on Unix Domain sockets is preferred when possible
-    (i.e. Unix Domain sockets and threads are available). This macro can
-    be used on platforms where the use of the other IPC mechanisms causes
-    problems, e.g. because of platform specific limitations to the number
-    of queues permitted system-wide.
+    queues, System V message queues, or a solution based on Unix Domain sockets
+    and a separate thread that handles incoming connections in the message
+    queue server.  When this macro is defined, the implementation based on Unix
+    Domain sockets is preferred when possible (i.e. Unix Domain sockets and
+    threads are available).  This macro can be used on platforms where the use
+    of the other IPC mechanisms causes problems, e.g. because of platform
+    specific limitations to the number of queues permitted system-wide.
 
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
