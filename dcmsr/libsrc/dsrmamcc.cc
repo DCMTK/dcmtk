@@ -75,8 +75,8 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     if ((relationshipType == RT_contains) && !byReference && (sourceValueType == VT_Container))
     {
         result = (targetValueType == VT_Code)  || (targetValueType == VT_Num)       || (targetValueType == VT_SCoord) ||
-                 (targetValueType == VT_Image) || (targetValueType == VT_Container) ||
-                 (targetValueType == VT_Text)  || (targetValueType == VT_Date);
+                 (targetValueType == VT_Image) || (targetValueType == VT_Container) || (targetValueType == VT_Text)   ||
+                 (targetValueType == VT_Date);
     }
     /* row 2 of the table (CONTAINER-related constraints are checked with row 3) */
     else if ((relationshipType == RT_hasObsContext) && !byReference &&
@@ -87,7 +87,7 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table (including CONTAINER-related constraints from row 2) */
-    else if ((relationshipType == RT_hasObsContext) && !byReference  && (sourceValueType == VT_Container))
+    else if ((relationshipType == RT_hasObsContext) && !byReference && (sourceValueType == VT_Container))
     {
         result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)      || (targetValueType == VT_Num)   ||
                  (targetValueType == VT_Date)   || (targetValueType == VT_Time)      || (targetValueType == VT_PName) ||

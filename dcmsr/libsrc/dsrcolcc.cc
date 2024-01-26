@@ -87,7 +87,7 @@ OFBool DSRColonCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table (including CONTAINER-related constraints from row 2) */
-    else if ((relationshipType == RT_hasObsContext) && !byReference  && (sourceValueType == VT_Container))
+    else if ((relationshipType == RT_hasObsContext) && !byReference && (sourceValueType == VT_Container))
     {
         result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)      || (targetValueType == VT_Num)   ||
                  (targetValueType == VT_Date)   || (targetValueType == VT_Time)      || (targetValueType == VT_PName) ||

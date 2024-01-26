@@ -113,7 +113,7 @@ OFBool DSRPatientRadiationDoseSRConstraintChecker::checkContentRelationship(cons
         else if ((relationshipType == RT_hasProperties) &&
             ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num) || (sourceValueType == VT_Composite)))
         {
-            result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num)   ||
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef)    || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Image)    || (targetValueType == VT_Composite) || (targetValueType == VT_Container);
         }
