@@ -139,8 +139,7 @@ open_shared(struct _citrus_iconv_shared * * rci,
     size_t len_convname;
     int ret;
 
-#define INCOMPATIBLE_WITH_GNU_ICONV
-#ifdef INCOMPATIBLE_WITH_GNU_ICONV
+#ifdef DCMTK_ENABLE_ICONV_PASSTHROUGH
     /* 
      * Use a pass-through when the (src,dest) encodings are the same.
      */
