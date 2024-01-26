@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -477,6 +477,7 @@ public:
      *    is equal to the default representation parameters
      *  @deprecated The direct call of this method by user code is deprecated.
      *    Use DcmDataset::chooseRepresentation() instead.
+     *
      *  @repType the representation type
      *  @repParam the representation parameters
      *  @stack the object stack
