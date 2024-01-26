@@ -804,11 +804,6 @@ class DCMTK_OFSTD_EXPORT OFStandard
       *  This implementation guarantees that the given string size
       *  is always respected by using strlcpy to copy the formatted
       *  string into the target buffer.
-      *  @note The use of this implementation can be disabled by defining
-      *    the macro DISABLE_OFSTD_FTOA at compile time; in this case,
-      *    the locale dependent Posix implementation of sprintf is used and
-      *    the application is responsible for making sure that the Posix locale
-      *    is activated at all times.
       *  @param target pointer to target string buffer
       *  @param targetSize size of target string buffer
       *  @param value double value to be formatted
@@ -829,19 +824,23 @@ class DCMTK_OFSTD_EXPORT OFStandard
       */
      //@{
 
-     /// Use %e or %E conversion format instead of %g or %G
+     /// Use scientific format (equivalent to %e or %E in printf),
+     /// instead of the default, which is equivalent to %g or %G.
+     /// If both ftoa_format_e and ftoa_format_f are specified,
+     /// ftoa_format_e format is used.
      static const unsigned int ftoa_format_e;
 
-     /// Use %f or %F conversion format instead of %g or %G
+     /// Use fixed format (equivalent to %f or %F in printf),
+     /// instead of the default, which is equivalent to %g or %G
+     /// If both ftoa_format_e and ftoa_format_f are specified,
+     /// ftoa_format_e format is used.
      static const unsigned int ftoa_format_f;
 
-     /// Use %E, %F or %G conversion format instead of %e, %f or %g
+     /// Use an uppercase 'E' letter (like %E, %F or %G in printf)
      static const unsigned int ftoa_uppercase;
 
-     /** convert value to alternate form. The result will always contain
-      *  a decimal point, even if no digits follow the point. For g and G
-      *  conversions, trailing zeroes will not be removed from the result.
-      */
+     /// convert value to alternate form. The result will always contain
+     /// a decimal point, even if no digits follow the point.
      static const unsigned int ftoa_alternate;
 
      /// left-justify number be within the field

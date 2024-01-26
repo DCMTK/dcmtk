@@ -54,8 +54,9 @@
  *  is" without express or implied warranty.
  *
  *
- *  The code for OFStandard::ftoa has been derived from an implementation
- *  which carries the following copyright notice:
+ *  The code for OFStandard::ftoa that is used when DCMTK is compiled
+ *  with the macro ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION has been derived
+ *  from an implementation that carries the following copyright notice:
  *
  *  Copyright (c) 1988 Regents of the University of California.
  *  All rights reserved.  See COPYRIGHT file for details.
@@ -2182,27 +2183,13 @@ double OFStandard::atof(const char *s, OFBool *success)
 
 #endif /* ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION */
 
-/* 11-bit exponent (VAX G floating point) is 308 decimal digits */
-#define FTOA_MAXEXP          308
-/* 128 bit fraction takes up 39 decimal digits; max reasonable precision */
-#define FTOA_MAXFRACT        39
-/* default precision */
-#define FTOA_DEFPREC         6
-/* internal buffer size for ftoa code */
-#define FTOA_BUFSIZE         (FTOA_MAXEXP+FTOA_MAXFRACT+1)
+/* binary "and" mask for format flags */
+#define FTOA_FORMAT_MASK 0x03
 
-#define FTOA_TODIGIT(c)      ((c) - '0')
-#define FTOA_TOCHAR(n)       ((n) + '0')
+/* default precision is 6 digits */
+#define FTOA_DEFPREC 6
 
-#define FTOA_FORMAT_MASK 0x03 /* and mask for format flags */
-#define FTOA_FORMAT_E         OFStandard::ftoa_format_e
-#define FTOA_FORMAT_F         OFStandard::ftoa_format_f
-#define FTOA_FORMAT_UPPERCASE OFStandard::ftoa_uppercase
-#define FTOA_ALTERNATE_FORM   OFStandard::ftoa_alternate
-#define FTOA_LEFT_ADJUSTMENT  OFStandard::ftoa_leftadj
-#define FTOA_ZEROPAD          OFStandard::ftoa_zeropad
-
-#ifdef DISABLE_OFSTD_FTOA
+#ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
 
 void OFStandard::ftoa(
   char *dst,
@@ -2212,13 +2199,8 @@ void OFStandard::ftoa(
   int width,
   int prec)
 {
-  // this version of the function uses snprintf to format the output string.
-  // Since we have to assemble the snprintf format string, this version might
-  // even be slower than the alternative implementation.
-
-  char buf[FTOA_BUFSIZE];
-  OFString s("%"); // this will become the format string
-  unsigned char fmtch = 'G';
+  // if target string is NULL or zero bytes long, bail out.
+  if (!dst || !siz) return;
 
   // check if val is NAN
   if (OFMath::isnan(val))
@@ -2236,40 +2218,68 @@ void OFStandard::ftoa(
     return;
   }
 
-  // determine format character
-  if (flags & FTOA_FORMAT_UPPERCASE)
-  {
-    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'E';
-    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f'; // there is no uppercase for 'f'
-    else fmtch = 'G';
-  }
-  else
-  {
-    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'e';
-    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f';
-    else fmtch = 'g';
-  }
+  // create an output string stream
+  STD_NAMESPACE ostringstream oss;
 
-  if (flags & FTOA_ALTERNATE_FORM) s += "#";
-  if (flags & FTOA_LEFT_ADJUSTMENT) s += "-";
-  if (flags & FTOA_ZEROPAD) s += "0";
-  if (width > 0)
-  {
-    OFStandard::snprintf(buf, sizeof(buf), "%d", width);
-    s += buf;
-  }
-  if (prec >= 0)
-  {
-    OFStandard::snprintf(buf, sizeof(buf), ".%d", prec);
-    s += buf;
-  }
-  s += fmtch;
+  // create a locale object for the C locale and activate it in the stream
+  STD_NAMESPACE locale mylocale("C");
+  oss.imbue(mylocale);
 
-  OFStandard::snprintf(buf, sizeof(buf), s.c_str(), val);
-  OFStandard::strlcpy(dst, buf, siz);
+  // set width
+  if (width > 0) oss << STD_NAMESPACE setw(width);
+
+  // set adjustment
+  if (flags & OFStandard::ftoa_leftadj) oss << STD_NAMESPACE left;
+
+  // set precision
+  if (prec < 0) prec = FTOA_DEFPREC;
+  oss << STD_NAMESPACE setprecision(prec);
+
+  // set uppercase
+  if (flags & OFStandard::ftoa_uppercase) oss << STD_NAMESPACE uppercase;
+
+  // set alternate form
+  if (flags & OFStandard::ftoa_alternate) oss << STD_NAMESPACE showpoint;
+
+  // set zero padding
+  if (flags & OFStandard::ftoa_zeropad) oss << STD_NAMESPACE setfill('0') << STD_NAMESPACE internal;
+
+  // set scientific vs fixed format
+  if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) oss << STD_NAMESPACE scientific;
+  else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) oss << STD_NAMESPACE fixed;
+  else oss << STD_NAMESPACE defaultfloat;
+
+  // insert the value into the string stream
+  oss << val;
+
+  // create a string object and store the stream content
+  STD_NAMESPACE string os;
+  os = oss.str();
+
+  // copy string into target buffer
+  OFStandard::strlcpy(dst, os.c_str(), siz);
+
+  return;
 }
 
 #else
+
+/* 11-bit exponent (VAX G floating point) is 308 decimal digits */
+#define FTOA_MAXEXP          308
+/* 128 bit fraction takes up 39 decimal digits; max reasonable precision */
+#define FTOA_MAXFRACT        39
+/* internal buffer size for ftoa code */
+#define FTOA_BUFSIZE         (FTOA_MAXEXP+FTOA_MAXFRACT+1)
+
+#define FTOA_TODIGIT(c)      ((c) - '0')
+#define FTOA_TOCHAR(n)       ((n) + '0')
+
+#define FTOA_FORMAT_E         OFStandard::ftoa_format_e
+#define FTOA_FORMAT_F         OFStandard::ftoa_format_f
+#define FTOA_FORMAT_UPPERCASE OFStandard::ftoa_uppercase
+#define FTOA_ALTERNATE_FORM   OFStandard::ftoa_alternate
+#define FTOA_LEFT_ADJUSTMENT  OFStandard::ftoa_leftadj
+#define FTOA_ZEROPAD          OFStandard::ftoa_zeropad
 
 /** internal helper class that maintains a string buffer
  *  to which characters can be written. If the string buffer
@@ -2759,7 +2769,7 @@ void OFStandard::ftoa(
   if (c) OFStandard::strlcpy(dst, c, siz); else *dst = 0;
 }
 
-#endif /* DISABLE_OFSTD_FTOA */
+#endif /* ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION */
 
 
 unsigned int OFStandard::my_sleep(unsigned int seconds)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,9 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oflimits.h"
+
+#define ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
 
 struct tuple
 {
@@ -58,73 +61,154 @@ private:
   tuple &operator=(const tuple &obj);
 };
 
-
 static const tuple values[] =
 {
-  tuple(12345.6789, 0, 0, -1,                                                        "12345.7" ),
-  tuple(12345.6789, 0, 20, -1,                                                       "             12345.7" ),
-  tuple(12345.6789, 0, 20, 10,                                                       "          12345.6789" ),
-  tuple(12345.6789, 0, 20, 0,                                                        "               1e+04" ),
-  tuple(12345.6789, OFStandard::ftoa_zeropad, 20, 10,                                "000000000012345.6789"),
-  tuple(12345.6789, OFStandard::ftoa_leftadj, 20, 10,                                "12345.6789          " ),
-  tuple(12345.6789, OFStandard::ftoa_alternate, 0, -1,                               "12345.7" ),
-  tuple(12345.6789, OFStandard::ftoa_alternate, 20, -1,                              "             12345.7" ),
-  tuple(12345.6789, OFStandard::ftoa_alternate, 20, 10,                              "         12345.67890" ),
-  tuple(12345.6789, OFStandard::ftoa_alternate, 20, 0,                               "              1.e+04" ),
-  tuple(12345.6789, OFStandard::ftoa_format_e, 0, -1,                                "1.234568e+04" ),
-  tuple(12345.6789, OFStandard::ftoa_format_e, 20, -1,                               "        1.234568e+04" ),
-  tuple(12345.6789, OFStandard::ftoa_format_e, 20, 10,                               "    1.2345678900e+04" ),
-  tuple(12345.6789, OFStandard::ftoa_format_e, 20, 0,                                "               1e+04" ),
-  tuple(12345.6789, OFStandard::ftoa_format_f, 0, -1,                                "12345.678900" ),
-  tuple(12345.6789, OFStandard::ftoa_format_f, 20, -1,                               "        12345.678900" ),
-  tuple(12345.6789, OFStandard::ftoa_format_f, 20, 10,                               "    12345.6789000000" ),
-  tuple(12345.6789, OFStandard::ftoa_format_f, 20, 0,                                "               12346" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase, 0, -1,                               "12345.7" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase, 20, -1,                              "             12345.7" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase, 20, 10,                              "          12345.6789" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase, 20, 0,                               "               1E+04" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 0, -1,   "1.234568E+04" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, -1,  "        1.234568E+04" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 10,  "    1.2345678900E+04" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 0,   "               1E+04" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,   "12345.678900" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "        12345.678900" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "    12345.6789000000" ),
-  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "               12346" ),
-  tuple(1.23456789E89, 0, 0, -1,                                                        "1.23457e+89"                                       ),
-  tuple(1.23456789E89, 0, 20, -1,                                                       "         1.23457e+89"                              ),
-  tuple(1.23456789E89, 0, 20, 10,                                                       "      1.23456789e+89"                              ),
-  tuple(1.23456789E89, 0, 20, 0,                                                        "               1e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_zeropad, 20, 10,                                "0000001.23456789e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_leftadj, 20, 10,                                "1.23456789e+89      "                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_alternate, 0, -1,                               "1.23457e+89"                                       ),
-  tuple(1.23456789E89, OFStandard::ftoa_alternate, 20, -1,                              "         1.23457e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_alternate, 20, 10,                              "     1.234567890e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_alternate, 20, 0,                               "              1.e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_e, 0, -1,                                "1.234568e+89"                                      ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_e, 20, -1,                               "        1.234568e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_e, 20, 10,                               "    1.2345678900e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_e, 20, 0,                                "               1e+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 0, -1,                               "1.23457E+89"                                       ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 20, -1,                              "         1.23457E+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 20, 10,                              "      1.23456789E+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 20, 0,                               "               1E+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 0, -1,   "1.234568E+89"                                      ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, -1,  "        1.234568E+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 10,  "    1.2345678900E+89"                              ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 0,   "               1E+89"                              ),
 
-  // these tests fail on Solaris 7 when compiling with -DDISABLE_OFSTD_FTOA because of different rounding.
-  tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, -1,                               "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 10,                               "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 0,                                "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,   "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000500000000000000000000000000000000" )
+  tuple(OFnumeric_limits<double>::infinity(), 0, 0, -1,                                 "inf"                   ),
+  tuple(-OFnumeric_limits<double>::infinity(), 0, 0, -1,                                "-inf"                  ),
+  tuple(-OFnumeric_limits<double>:: quiet_NaN(), 0, 0, -1,                              "nan"                   ),
+  tuple(12345.6789, 0, 0, -1,                                                           "12345.7"               ),
+  tuple(12345.6789, 0, 20, -1,                                                          "             12345.7"  ),
+  tuple(12345.6789, 0, 20, 10,                                                          "          12345.6789"  ),
+  tuple(12345.6789, 0, 20, 0,                                                           "               1e+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_zeropad, 20, 10,                                   "000000000012345.6789"  ),
+  tuple(12345.6789, OFStandard::ftoa_leftadj, 20, 10,                                   "12345.6789          "  ),
+  tuple(12345.6789, OFStandard::ftoa_alternate, 0, -1,                                  "12345.7"               ),
+  tuple(12345.6789, OFStandard::ftoa_alternate, 20, -1,                                 "             12345.7"  ),
+  tuple(12345.6789, OFStandard::ftoa_alternate, 20, 10,                                 "         12345.67890"  ),
+  tuple(12345.6789, OFStandard::ftoa_alternate, 20, 0,                                  "              1.e+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_format_e, 0, -1,                                   "1.234568e+04"          ),
+  tuple(12345.6789, OFStandard::ftoa_format_e, 20, -1,                                  "        1.234568e+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_format_e, 20, 10,                                  "    1.2345678900e+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_format_e, 20, 0,                                   "               1e+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_format_f, 0, -1,                                   "12345.678900"          ),
+  tuple(12345.6789, OFStandard::ftoa_format_f, 20, -1,                                  "        12345.678900"  ),
+  tuple(12345.6789, OFStandard::ftoa_format_f, 20, 10,                                  "    12345.6789000000"  ),
+  tuple(12345.6789, OFStandard::ftoa_format_f, 20, 0,                                   "               12346"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase, 0, -1,                                  "12345.7"               ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase, 20, -1,                                 "             12345.7"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase, 20, 10,                                 "          12345.6789"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase, 20, 0,                                  "               1E+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 0, -1,      "1.234568E+04"          ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, -1,     "        1.234568E+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 10,     "    1.2345678900E+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 0,      "               1E+04"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,      "12345.678900"          ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,     "        12345.678900"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,     "    12345.6789000000"  ),
+  tuple(12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,      "               12346"  ),
+  tuple(1.23456789E89, 0, 0, -1,                                                        "1.23457e+89"           ),
+  tuple(1.23456789E89, 0, 20, -1,                                                       "         1.23457e+89"  ),
+  tuple(1.23456789E89, 0, 20, 10,                                                       "      1.23456789e+89"  ),
+  tuple(1.23456789E89, 0, 20, 0,                                                        "               1e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_zeropad, 20, 10,                                "0000001.23456789e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_leftadj, 20, 10,                                "1.23456789e+89      "  ),
+  tuple(1.23456789E89, OFStandard::ftoa_alternate, 0, -1,                               "1.23457e+89"           ),
+  tuple(1.23456789E89, OFStandard::ftoa_alternate, 20, -1,                              "         1.23457e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_alternate, 20, 10,                              "     1.234567890e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_alternate, 20, 0,                               "              1.e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_e, 0, -1,                                "1.234568e+89"          ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_e, 20, -1,                               "        1.234568e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_e, 20, 10,                               "    1.2345678900e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_e, 20, 0,                                "               1e+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 0, -1,                               "1.23457E+89"           ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 20, -1,                              "         1.23457E+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 20, 10,                              "      1.23456789E+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase, 20, 0,                               "               1E+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 0, -1,   "1.234568E+89"          ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, -1,  "        1.234568E+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 10,  "    1.2345678900E+89"  ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 0,   "               1E+89"  ),
+  tuple(-12345.6789, 0, 0, -1,                                                          "-12345.7"              ),
+  tuple(-12345.6789, 0, 20, -1,                                                         "            -12345.7"  ),
+  tuple(-12345.6789, 0, 20, 10,                                                         "         -12345.6789"  ),
+  tuple(-12345.6789, 0, 20, 0,                                                          "              -1e+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_zeropad, 20, 10,                                  "-00000000012345.6789"  ),
+  tuple(-12345.6789, OFStandard::ftoa_leftadj, 20, 10,                                  "-12345.6789         "  ),
+  tuple(-12345.6789, OFStandard::ftoa_alternate, 0, -1,                                 "-12345.7"              ),
+  tuple(-12345.6789, OFStandard::ftoa_alternate, 20, -1,                                "            -12345.7"  ),
+  tuple(-12345.6789, OFStandard::ftoa_alternate, 20, 10,                                "        -12345.67890"  ),
+  tuple(-12345.6789, OFStandard::ftoa_alternate, 20, 0,                                 "             -1.e+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_format_e, 0, -1,                                  "-1.234568e+04"         ),
+  tuple(-12345.6789, OFStandard::ftoa_format_e, 20, -1,                                 "       -1.234568e+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_format_e, 20, 10,                                 "   -1.2345678900e+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_format_e, 20, 0,                                  "              -1e+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_format_f, 0, -1,                                  "-12345.678900"         ),
+  tuple(-12345.6789, OFStandard::ftoa_format_f, 20, -1,                                 "       -12345.678900"  ),
+  tuple(-12345.6789, OFStandard::ftoa_format_f, 20, 10,                                 "   -12345.6789000000"  ),
+  tuple(-12345.6789, OFStandard::ftoa_format_f, 20, 0,                                  "              -12346"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase, 0, -1,                                 "-12345.7"              ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase, 20, -1,                                "            -12345.7"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase, 20, 10,                                "         -12345.6789"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase, 20, 0,                                 "              -1E+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 0, -1,     "-1.234568E+04"         ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, -1,    "       -1.234568E+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 10,    "   -1.2345678900E+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 0,     "              -1E+04"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,     "-12345.678900"         ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,    "       -12345.678900"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,    "   -12345.6789000000"  ),
+  tuple(-12345.6789, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,     "              -12346"  ),
+  tuple(-1.23456789E89, 0, 0, -1,                                                       "-1.23457e+89"          ),
+  tuple(-1.23456789E89, 0, 20, -1,                                                      "        -1.23457e+89"  ),
+  tuple(-1.23456789E89, 0, 20, 10,                                                      "     -1.23456789e+89"  ),
+  tuple(-1.23456789E89, 0, 20, 0,                                                       "              -1e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_zeropad, 20, 10,                               "-000001.23456789e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_leftadj, 20, 10,                               "-1.23456789e+89     "  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_alternate, 0, -1,                              "-1.23457e+89"          ),
+  tuple(-1.23456789E89, OFStandard::ftoa_alternate, 20, -1,                             "        -1.23457e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_alternate, 20, 10,                             "    -1.234567890e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_alternate, 20, 0,                              "             -1.e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_format_e, 0, -1,                               "-1.234568e+89"         ),
+  tuple(-1.23456789E89, OFStandard::ftoa_format_e, 20, -1,                              "       -1.234568e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_format_e, 20, 10,                              "   -1.2345678900e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_format_e, 20, 0,                               "              -1e+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase, 0, -1,                              "-1.23457E+89"          ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase, 20, -1,                             "        -1.23457E+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase, 20, 10,                             "     -1.23456789E+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase, 20, 0,                              "              -1E+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 0, -1,  "-1.234568E+89"         ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, -1, "       -1.234568E+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 10, "   -1.2345678900E+89"  ),
+  tuple(-1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_e, 20, 0,  "              -1E+89"  ),
+  tuple(0.1,     0, 0, 1,                                                               "0.1"                   ),
+  tuple(0.1,     0, 0, 3,                                                               "0.1"                   ),
+  tuple(0.1,     0, 0, 3,                                                               "0.1"                   ),
+  tuple(0.1,     0, 0, 10,                                                              "0.1"                   ),
+  tuple(0.1,     0, 0, 17,                                                              "0.1"                   ),
+  tuple(0.01,    0, 0, 1,                                                               "0.01"                  ),
+  tuple(0.01,    0, 0, 3,                                                               "0.01"                  ),
+  tuple(0.01,    0, 0, 5,                                                               "0.01"                  ),
+  tuple(0.01,    0, 0, 10,                                                              "0.01"                  ),
+  tuple(0.01,    0, 0, 17,                                                              "0.01"                  ),
+  tuple(0.001,   0, 0, 1,                                                               "0.001"                 ),
+  tuple(0.001,   0, 0, 3,                                                               "0.001"                 ),
+  tuple(0.001,   0, 0, 5,                                                               "0.001"                 ),
+  tuple(0.001,   0, 0, 10,                                                              "0.001"                 ),
+  tuple(0.001,   0, 0, 17,                                                              "0.001"                 ),
+  tuple(0.0001,  0, 0, 1,                                                               "0.0001"                ),
+  tuple(0.0001,  0, 0, 3,                                                               "0.0001"                ),
+  tuple(0.0001,  0, 0, 5,                                                               "0.0001"                ),
+  tuple(0.0001,  0, 0, 10,                                                              "0.0001"                ),
+  tuple(0.0001,  0, 0, 17,                                                              "0.0001"                ),
+  tuple(0.00001, 0, 0, 1,                                                               "1e-05"                 ),
+  tuple(0.00001, 0, 0, 3,                                                               "1e-05"                 ),
+  tuple(0.00001, 0, 0, 5,                                                               "1e-05"                 ),
+  tuple(0.00001, 0, 0, 10,                                                              "1e-05"                 ),
+  tuple(0.00001, 0, 0, 17,                                                              "1e-05"                 ),
+  tuple(0.0045678901234567, 0, 0, 1,                                                    "0.005"                 ),
+  tuple(0.0045678901234567, 0, 0, 3,                                                    "0.005"                 ),
+  tuple(0.0045678901234567, 0, 0, 5,                                                    "0.0046"                ),
+  tuple(0.0045678901234567, 0, 0, 12,                                                   "0.00456789012"         ),
+  tuple(0.0045678901234567, 0, 0, 17,                                                   "0.0045678901234567"    ),
+  tuple(0.0005678901234567, 0, 0, 1,                                                    "0.0006"                ),
+  tuple(0.0005678901234567, 0, 0, 3,                                                    "0.0006"                ),
+  tuple(0.0005678901234567, 0, 0, 5,                                                    "0.0006"                ),
+  tuple(0.0005678901234567, 0, 0, 12,                                                   "0.00056789012"         ),
+  tuple(0.0005678901234567, 0, 0, 17,                                                   "0.0005678901234567"    ),
 
-  /* this is what Solaris actually delivers when compiled with -DDISABLE_OFSTD_FTOA
+#ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
+  // This is the expected output of the new routine
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, -1,                               "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 10,                               "1234567890000000012898796547947496515996930375163" ),
@@ -133,7 +217,18 @@ static const tuple values[] =
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000012898796547947496515996930375163" )
-  */
+#else
+  // This is the expected output of the old routine, probably due to rounding errors
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, -1,                               "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 10,                               "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 0,                                "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,   "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000500000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000500000000000000000000000000000000" )
+#endif
+
 };
 
 OFTEST(ofstd_ftoa)
@@ -147,6 +242,30 @@ OFTEST(ofstd_ftoa)
     OFStandard::ftoa(buf, 50, values[i].val, values[i].flags, values[i].width, values[i].prec);
     s = values[i].output;
 
-    OFCHECK_EQUAL(s, buf);
+    OFCHECK_EQUAL(buf, s);
   }
+
+#ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
+  // regression test for DCMTK issue #860: Make sure that we can convert
+  // OFnumeric_limits<double>::max() into a string, convert the string back to double,
+  // with a result equal to OFnumeric_limits<double>::max().
+
+  OFStandard::ftoa(buf, 50, OFnumeric_limits<double>::max(), OFStandard::ftoa_format_e, 0, 17);
+  s = "1.79769313486231571e+308";
+  OFCHECK_EQUAL(buf, s);
+  OFBool success = OFFalse;
+  double d = OFStandard::atof(buf, &success);
+  OFCHECK_EQUAL(OFTrue, success);
+  OFCHECK_EQUAL(d, OFnumeric_limits<double>::max());
+
+  // now repeat the test for OFnumeric_limits<double>::min()
+  OFStandard::ftoa(buf, 50, OFnumeric_limits<double>::min(), OFStandard::ftoa_format_e, 0, 17);
+  s = "2.22507385850720138e-308";
+  OFCHECK_EQUAL(buf, s);
+  success = OFFalse;
+  d = OFStandard::atof(buf, &success);
+  OFCHECK_EQUAL(OFTrue, success);
+  OFCHECK_EQUAL(d, OFnumeric_limits<double>::min());
+#endif
+
 }
