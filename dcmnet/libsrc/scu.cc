@@ -55,6 +55,7 @@ DcmSCU::DcmSCU()
     , m_verbosePCMode(OFFalse)
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
+    , m_secureConnectionEnabled(OFFalse)
 {
     OFStandard::initializeNetwork();
 }
@@ -337,6 +338,8 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer* tlayer)
     OFCondition cond = ASC_setTransportLayer(m_net, tlayer, OFFalse /* do not take over ownership */);
     if (cond.good())
         cond = ASC_setTransportLayerType(m_params, OFTrue /* use TLS */);
+
+    if (cond.good()) m_secureConnectionEnabled = OFTrue;
     return cond;
 }
 
@@ -2607,7 +2610,7 @@ Uint32 DcmSCU::getMaxReceivePDULength() const
 
 OFBool DcmSCU::getTLSEnabled() const
 {
-    return OFFalse;
+    return m_secureConnectionEnabled;
 }
 
 T_DIMSE_BlockingMode DcmSCU::getDIMSEBlockingMode() const
