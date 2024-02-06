@@ -20,6 +20,7 @@ Here are some further classes that are of interest:
 
 This module contains the following command line tools:
 \li \ref cda2dcm
+\li \ref dcm2cda
 \li \ref dcm2json
 \li \ref dcm2pdf
 \li \ref dcm2xml
