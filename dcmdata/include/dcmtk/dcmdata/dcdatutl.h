@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2015, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,7 +26,9 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 #include "dcmtk/dcmdata/dcxfer.h"
-#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/ofstd/offile.h"
+
+class DcmDataset;
 
 
 /** Class with helper functions used within the dcmdata module (and beyond)
@@ -82,5 +84,6 @@ public:
                                                  OFString &sopInstanceUID,
                                                  OFString &transferSyntaxUID);
 };
+
 
 #endif // DCDATUTL_H
