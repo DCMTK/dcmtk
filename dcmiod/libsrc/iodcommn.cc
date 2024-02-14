@@ -82,13 +82,13 @@ DcmIODCommon::~DcmIODCommon()
 
 void DcmIODCommon::clearData()
 {
-    // TODO
-    //   OFVector<IODModule*>::iterator it = m_Modules.begin();
-    //   while (it != m_Modules.end())
-    //   {
-    //     (*it)->clearData();
-    //     it++;
-    //   }
+    // Clear data in all modules
+    OFVector<IODModule*>::iterator it = m_Modules.begin();
+    while (it != m_Modules.end())
+    {
+        (*it)->clearData();
+        it++;
+    }
 }
 
 IODPatientModule& DcmIODCommon::getPatient()
