@@ -1,9 +1,10 @@
 # declare executables
 DCMTK_ADD_EXECUTABLE(dcmiod_tests
-  tests.cc
+  tchecks.cc
   tcielabutil.cc
   tcodes.cc
   timagepixel.cc
+  tests.cc
 )
 
 # make sure executables are linked to the corresponding libraries

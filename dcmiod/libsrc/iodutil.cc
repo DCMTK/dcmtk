@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2023, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -34,6 +34,8 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstrutl.h"
 
 // --- static helpers ---
 
@@ -143,7 +145,7 @@ OFCondition DcmIODUtil::copyElementToDataset(OFCondition& result,
 }
 
 OFCondition
-DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElement* delem, const IODRule* rule)
+DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElement* delem, const IODRule* rule, const OFBool checkValue)
 {
     OFBool insertionOK = OFFalse;
     if (result.good())
@@ -179,7 +181,9 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                     return result;
                 }
             }
-            // At this point, we certainly have an element. Check its value (empty ok for type 2)
+            // At this point, we certainly have an element. Check its value (empty ok for type 2).
+            dcmtk::log4cplus::LogLevel logLevel;
+            if (checkValue) logLevel = dcmtk::log4cplus::ERROR_LOG_LEVEL; else logLevel = dcmtk::log4cplus::WARN_LOG_LEVEL;
             if ((type == "2") || !delem->isEmpty())
             {
                 // Insert non-empty element or empty "type 2" element. First, perform the insertion, and then
@@ -193,7 +197,8 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                                                type,
                                                result,
                                                rule->getModule().c_str(),
-                                               dcmtk::log4cplus::ERROR_LOG_LEVEL);
+                                               logLevel);
+                    reset_value_check_result(result, checkValue, *delem);
                 }
                 if (result.good())
                 {
@@ -210,7 +215,7 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                 // Empty element value not allowed for "type 1"
                 result = EC_InvalidValue;
                 checkElementValue(
-                    *delem, rule->getVM(), type, result, rule->getModule().c_str(), dcmtk::log4cplus::ERROR_LOG_LEVEL);
+                    *delem, rule->getVM(), type, result, rule->getModule().c_str(), logLevel);
             }
         }
         else
@@ -771,4 +776,34 @@ void DcmIODUtil::alignFrameOnByteBoundary(Uint8* buf, size_t bufLen, Uint8 numBi
     }
     // Shift last byte manually
     buf[bufLen - 1] = OFstatic_cast(unsigned char, buf[bufLen - 1]) >> numBits;
+}
+
+
+void DcmIODUtil::reset_value_check_result(OFCondition& result, const OFBool checkValue, DcmElement& elem)
+{
+    if (!checkValue)
+    {
+        if ( (result == EC_ValueRepresentationViolated) ||
+             (result == EC_MaximumLengthViolated) ||
+             (result == EC_InvalidCharacter) ||
+             (result == EC_ValueMultiplicityViolated) )
+        {
+            // print element to string
+            OFOStringStream oss;
+            oss << elem.getTag() << " " << DcmVR(elem.getVR()).getVRName() << " ";
+            oss << DcmTag(elem.getTag()).getTagName() << " ";
+            if (elem.getLength() > 1024)
+            {
+                oss << "(value too long for printing)";
+            }
+            {
+                OFString val;
+                elem.getOFString(val, 0, OFTrue);
+                oss << "[" << val << "]";
+            }
+
+            DCMIOD_DEBUG("Ignoring error (" << result.text() <<") when checking element: " << oss.str().c_str());
+            result = EC_Normal;
+        }
+    }
 }

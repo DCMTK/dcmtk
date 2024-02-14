@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -225,6 +225,21 @@ public:
      */
     virtual OFCondition write(DcmItem& dataset);
 
+    /** Set whether attribute values should be checked on writing, i.e. if writing
+     *  should fail if attribute values violate their VR, VM, character set or value length.
+     *  A missing but required value is always considered an error, independent of this setting.
+     *  If set to OFFalse, writing will always succeed, even if attribute value constraints
+     *  are violated. A warning instead of an error will be printed to the logger.
+     *  @param  checkValue If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
+     *          any errors are ignored.
+     */
+    virtual void setValueCheckOnWrite(const OFBool checkValue);
+
+    /** Get whether attribute value errors will be handled as errors on writing.
+     *  @return OFTrue if attribute value errors are handled as errors on writing, OFFalse otherwise.
+     */
+    virtual OFBool getValueCheckOnWrite() const;
+
 private:
     /** Copy assignment disabled
      *  @param  rhs Object to copy from
@@ -264,6 +279,14 @@ private:
 
     /// Collects all modules of this class for convenience (iteration)
     OFVector<IODModule*> m_Modules;
+
+    /// Denotes whether attribute values should be checked on writing, i.e. if writing
+    /// should fail if attribute values violate their VR, VM, character set or value length.
+    /// A missing but required value is always considered an error, independent of this setting.
+    /// If set to OFFalse, writing will always succeed, even if attribute values constraints
+    /// are violated. A warning instead of an error will be printed to the logger.
+    /// OFTrue if attribute value errors are handled as errors on writing, OFFalse otherwise.
+    OFBool m_CheckValueOnWrite;
 };
 
 #endif // IODCOMMN_H
