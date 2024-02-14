@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,8 +27,6 @@
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofoption.h"
-#include "dcmtk/ofstd/ofvector.h"
 
 /** Class representing the Enhanced Ultrasound Series Module:
  *

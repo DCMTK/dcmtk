@@ -19,8 +19,8 @@
  *
  */
 
-#include "dcmtk/dcmiod/iodcommn.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/iodcommn.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dctypes.h" // logger
 

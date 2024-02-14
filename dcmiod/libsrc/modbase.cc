@@ -19,9 +19,8 @@
  *
  */
 
-#include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/iodutil.h"

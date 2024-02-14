@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,8 +20,10 @@
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmiod/iodmacro.h"
+
 
 static OFLogger tCodeLogger = OFLog::getLogger("dcmtk.test.t_codes");
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -21,11 +21,12 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvris.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/fgtypes.h"
 

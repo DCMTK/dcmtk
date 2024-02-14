@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2015, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,7 +23,6 @@
 #define MODACQUISITIONCONTEXT_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/modbase.h"
 

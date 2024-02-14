@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022, OFFIS e.V.
+ *  Copyright (C) 2022-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,8 +34,8 @@
 #include "dcmtk/dcmfg/fgseg.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofstrutl.h"
 #include "dcmtk/ofstd/oftempf.h"
 
 static const Uint8 NUM_ROWS             = 5;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -21,9 +21,8 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmfg/fgbase.h"
-#include "dcmtk/dcmiod/iodcommn.h" // for static element helpers
+#include "dcmtk/dcmdata/dcsequen.h"
 
 FGBase::FGBase(const DcmFGTypes::E_FGType fgType)
     : m_fgType(fgType)

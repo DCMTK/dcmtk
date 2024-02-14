@@ -24,7 +24,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdatset.h"
-#include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmiod/ioddef.h"

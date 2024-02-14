@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,9 +19,12 @@
  *
  */
 
-#include "dcmtk/dcmiod/modsegmentationseries.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/modsegmentationseries.h"
 #include "dcmtk/dcmiod/iodutil.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcvris.h"
 
 const OFString IODSegmentationSeriesModule::m_ModuleName = "SegmentationSeriesModule";
 

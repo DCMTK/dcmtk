@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,8 +19,9 @@
  *
  */
 
-#include "dcmtk/dcmect/types.h"
 #include "dcmtk/config/osconfig.h"
+
+#include "dcmtk/dcmect/types.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
 OFLogger DCM_dcmectLogger = OFLog::getLogger("dcmtk.dcmect");

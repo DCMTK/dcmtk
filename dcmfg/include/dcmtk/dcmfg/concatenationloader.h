@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -26,11 +26,12 @@
 
 #include "dcmtk/dcmfg/fgdefine.h"
 #include "dcmtk/dcmiod/iodtypes.h"
-#include "dcmtk/dcmiod/iodutil.h"
+#include "dcmtk/ofstd/offile.h"
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofmap.h"
 
 class DcmDataset;
+class DcmItem;
 
 /** Class for scanning files for concatenations and if desired, load
  *  one of them. If successful, loading produces the merged SOP Instance

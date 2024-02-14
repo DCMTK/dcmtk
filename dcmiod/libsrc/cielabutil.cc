@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2021, Pascal Getreuer, Open Connections GmbH
+ *  Copyright (C) 2005-2024, Pascal Getreuer, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -18,9 +18,10 @@
  *  Purpose: Static helper functionality for CIE<->RGB color conversions
  *
  */
-#include "dcmtk/dcmiod/cielabutil.h"
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmiod/cielabutil.h"
 #include "dcmtk/ofstd/ofstdinc.h" /* for STD_NAMESPACE */
+#include "dcmtk/ofstd/ofcast.h"
 
 // workaround for SunPro not defining these C functions in the global namespace
 #ifdef __sun

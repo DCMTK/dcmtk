@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2023, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,7 +22,6 @@
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofstrutl.h"
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/oftest.h"
 
@@ -30,7 +29,9 @@
 
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcswap.h"
-
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/concatenationloader.h"
 #include "dcmtk/dcmfg/fgctacquisitiondetails.h"
@@ -51,7 +52,6 @@
 #include "dcmtk/dcmfg/fgpixmsr.h"
 #include "dcmtk/dcmfg/fgplanor.h"
 #include "dcmtk/dcmfg/fgplanpo.h"
-#include "dcmtk/dcmfg/fgrealworldvaluemapping.h"
 #include "dcmtk/dcmfg/fgtemporalposition.h"
 
 static OFLogger tRoundLogger = OFLog::getLogger("dcmtk.test.t_roundtrip");

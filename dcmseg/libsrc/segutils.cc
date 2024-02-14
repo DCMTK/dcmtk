@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -22,7 +22,6 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmiod/iodutil.h"
-#include "dcmtk/dcmseg/segdef.h"
 #include "dcmtk/dcmseg/segutils.h"
 
 DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(const Uint8* pixelData, const Uint16 rows, const Uint16 columns)

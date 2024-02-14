@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,9 +24,10 @@
 #include "dcmtk/dcmfg/fg.h"
 #include "dcmtk/dcmfg/fgfact.h" // for creating new functional groups
 #include "dcmtk/dcmfg/fginterface.h"
-#include "dcmtk/dcmiod/iodutil.h" // for static helpers
 #include "dcmtk/ofstd/ofmap.h"
 #include "dcmtk/ofstd/ofmem.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcsequen.h"
 
 FGInterface::FGInterface()
     : m_shared()

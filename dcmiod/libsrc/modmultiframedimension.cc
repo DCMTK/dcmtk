@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,14 +19,15 @@
  *
  */
 
-#include "dcmtk/dcmiod/modmultiframedimension.h"
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmiod/modmultiframedimension.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcpath.h" // for private tag reservation checking
 #include "dcmtk/dcmdata/dcvrat.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmiod/iodutil.h" // for static helpers
 
 const OFString IODMultiframeDimensionModule::m_ModuleName = "MultiframeDimensionModule";

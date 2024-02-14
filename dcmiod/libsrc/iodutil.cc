@@ -19,8 +19,8 @@
  *
  */
 
-#include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmdata/dctypes.h" // logger
 #include "dcmtk/dcmiod/iodrules.h"
 
@@ -29,13 +29,11 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcitem.h"
-#include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofstrutl.h"
 
 // --- static helpers ---
 

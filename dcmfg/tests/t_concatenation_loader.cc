@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,14 +22,18 @@
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmfg/concatenationloader.h"
-#include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/dcmiod/iodtypes.h"
+#include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/ofstd/ofmap.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstrutl.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 // Path to NEMA example data with trailing slash
 static OFString NEMA_ENHANCED_CT_DIR = "/home/michael/data/dcm/nema_mf/DISCIMG/IMAGES/";

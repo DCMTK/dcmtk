@@ -27,7 +27,6 @@
 #include "dcmtk/dcmiod/ioddef.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofvector.h"
 
 /** Class for managing sets of DICOM attributes (e.g.\ macros and modules).
  *  The data is hold in a container (DcmItem) that can be shared with other

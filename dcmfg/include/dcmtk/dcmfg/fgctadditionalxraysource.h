@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -25,9 +25,13 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmdata/dcitem.h"
-#include "dcmtk/dcmdata/dctk.h" // TODO: include only needed VRs
 #include "dcmtk/dcmfg/fgbase.h"
 #include "dcmtk/dcmfg/fgdefine.h"
+#include "dcmtk/dcmdata/dcvrds.h"
+#include "dcmtk/dcmdata/dcvrfd.h"
+#include "dcmtk/dcmdata/dcvrfl.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
 
 /** Class representing the CT Additional X-Ray Source Functional Group Macro.
  */

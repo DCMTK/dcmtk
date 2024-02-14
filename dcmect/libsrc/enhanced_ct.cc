@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -18,9 +18,12 @@
  *  Purpose: Class representing a Enhanced CT object
  *
  */
+ #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmect/enhanced_ct.h"
-#include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmect/types.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/concatenationloader.h"

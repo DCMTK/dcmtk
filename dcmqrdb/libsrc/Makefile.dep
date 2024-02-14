@@ -829,7 +829,12 @@ dcmqrsrv.o: dcmqrsrv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
  ../include/dcmtk/dcmqrdb/dcmqrdba.h ../include/dcmtk/dcmqrdb/dcmqrcbf.h \
  ../include/dcmtk/dcmqrdb/dcmqrcbm.h ../include/dcmtk/dcmqrdb/dcmqrcbg.h \
- ../include/dcmtk/dcmqrdb/dcmqrcbs.h
+ ../include/dcmtk/dcmqrdb/dcmqrcbs.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 dcmqrtis.o: dcmqrtis.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmqrdb/dcmqrtis.h \
  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \

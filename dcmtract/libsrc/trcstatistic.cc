@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,9 +19,9 @@
  *
  */
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmtract/trcstatistic.h"
+#include "dcmtk/dcmtract/trctypes.h"
 
 
 // ------------------------------ class TrcTStatistic --------------------------

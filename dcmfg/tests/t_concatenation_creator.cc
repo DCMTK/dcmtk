@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,10 @@
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 
 // NEMA CT Test files are available at:
 // ftp://medical.nema.org/medical/dicom/Multiframe/CT/nemamfct.images.tar.bz2

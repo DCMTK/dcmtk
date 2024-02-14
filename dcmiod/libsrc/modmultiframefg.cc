@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,12 +19,13 @@
  *
  */
 
-#include "dcmtk/dcmiod/modmultiframefg.h"
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmiod/modmultiframefg.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
 #include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmiod/iodutil.h" // for static helpers
 
 const OFString IODMultiFrameFGModule::m_ModuleName = "MultiframeFunctionalGroupsModule";

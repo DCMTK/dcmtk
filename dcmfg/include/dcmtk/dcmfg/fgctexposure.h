@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,11 +24,13 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmfg/fgbase.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcvrfd.h"
+#include "dcmtk/dcmdata/dcvrds.h"
 
 #include <cmath>
 

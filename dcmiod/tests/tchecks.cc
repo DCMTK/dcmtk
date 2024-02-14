@@ -22,8 +22,10 @@
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmiod/iodcommn.h"
+
 
 static OFLogger tCodeLogger = OFLog::getLogger("dcmtk.dcmiod.tests.t_checks");
 
