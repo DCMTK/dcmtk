@@ -207,15 +207,14 @@ build settings are usually required, see section "BUILDING" for details.
 OpenSSL Support
 ---------------
 
-DCMTK supports encrypted network transmissions using the Transport 
-Layer Security (TLS) protocol as defined in DICOM part 15, as well as
-digital signatures. DCMTK relies on the OpenSSL toolkit (www.openssl.org)
-for the underlying cryptographic routines and the TLS protocol implementation.
+DCMTK supports encrypted network transmissions using the Transport Layer
+Security (TLS) protocol as defined in DICOM part 15, as well as digital
+signatures.  DCMTK relies on the OpenSSL toolkit (www.openssl.org) for the
+underlying cryptographic routines and the TLS protocol implementation.
 
-This release of DCMTK requires OpenSSL release 1.1.1 or newer.  
-Users should make care that the most recent OpenSSL patch level is applied.
-This release of DCMTK is known to compile with OpenSSL releases 1.1.1,
-3.0.x, 3.1.x and 3.2.x.
+This release of DCMTK requires OpenSSL release 1.1.1 or newer.  Users should
+make sure that the most recent OpenSSL patch level is applied.  This release of
+DCMTK is known to compile with OpenSSL releases 1.1.1, 3.0.x, 3.1.x and 3.2.x.
 
 When using CMake, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
@@ -1117,4 +1116,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-02-15 (Riesmeier)
+Last revised: 2024-02-19 (Riesmeier)
