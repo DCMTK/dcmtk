@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2021, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -188,11 +188,7 @@ void DcmQueryRetrieveProcessTable::cleanChildren()
 #ifdef HAVE_WAITPID
     int stat_loc;
 #else
-#if defined(__NeXT__)
-    union wait status; /* some systems need a union wait as argument to wait3 */
-#else
     int status;
-#endif
     struct rusage rusage;
 #endif
 

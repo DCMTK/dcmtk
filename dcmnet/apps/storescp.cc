@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2452,12 +2452,7 @@ static void cleanChildren(pid_t /* pid */, OFBool /* synch */)
   int stat_loc;
 #elif defined(HAVE_WAIT3)
   struct rusage rusage;
-#if defined(__NeXT__)
-  /* some systems need a union wait as argument to wait3 */
-  union wait status;
-#else
   int        status;
-#endif
 #endif
 
 #if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)

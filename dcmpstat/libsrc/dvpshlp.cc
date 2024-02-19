@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -129,12 +129,7 @@ void DVPSHelper::cleanChildren()
     int stat_loc;
 #elif defined(HAVE_WAIT3)
     struct rusage rusage;
-#if defined(__NeXT__)
-    /* some systems need a union wait as argument to wait3 */
-    union wait status;
-#else
     int        status;
-#endif
 #endif
 
 #if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)

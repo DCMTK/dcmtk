@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -971,12 +971,7 @@ void WlmActivityManager::CleanChildren()
   }
 
 #elif defined(HAVE_WAIT3)                                     // PLATFORMS THAT HAVE wait3()
-#if defined(__NeXT__)
-  // some systems need a union wait as argument to wait3
-  union wait status;
-#else
   int status;
-#endif
   int options = WNOHANG;
   struct rusage rusage;
   int child = 1;

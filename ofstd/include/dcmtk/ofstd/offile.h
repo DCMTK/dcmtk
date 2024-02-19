@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2021, OFFIS e.V.
+ *  Copyright (C) 2006-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -801,8 +801,6 @@ public:
         break;
     }
     result = this->fsetpos(&off2);
-#elif defined(__BEOS__)
-    result = :: _fseek(file_, off, whence);
 #else
 #ifdef HAVE_FSEEKO
 #ifdef EXPLICIT_LFS_64
