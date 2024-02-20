@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,13 +29,6 @@
 
 #include <cmath>
 
-/*---------------------*
- *  macro definitions  *
- *---------------------*/
-
-// SunCC 4.x does not support default values for template types :-/
-#define T3_ double
-
 
 /*------------------*
  *  template class  *
@@ -43,16 +36,16 @@
 
 /** Template class for polynomial curve fitting algorithm
  */
-template <class T1, class T2 /*, class T3 = double*/>
+template <class T1, class T2, class T3 = double>
 class DiCurveFitting
 {
 
  public:
 
     /** calculate coefficients for resulting polynomial function.
-     *  T1  = type of x coordinates
-     *  T2  = type of y coordinates
-     *  T3_ = type of coefficients (and for internal calculations)
+     *  T1 = type of x coordinates
+     *  T2 = type of y coordinates
+     *  T3 = type of coefficients (and for internal calculations)
      *
      ** @param  x  array with x coordinates of given points
      *  @param  y  array with y coordinates of given points
@@ -66,16 +59,16 @@ class DiCurveFitting
                                      const T2 *y,
                                      const unsigned int n,
                                      const unsigned int o,
-                                     T3_ *c)
+                                     T3 *c)
     {
         int result = 0;
         if ((x != NULL) && (y != NULL) && (c !=NULL) && (n > 0))
         {
             const unsigned int order = o + 1;
             const unsigned int order2 = order * order;
-            T3_ *basis = new T3_[order * n];
-            T3_ *alpha = new T3_[order2];
-            T3_ *beta = new T3_[order];
+            T3 *basis = new T3[order * n];
+            T3 *alpha = new T3[order2];
+            T3 *beta = new T3[order];
             if ((basis != NULL) && (alpha != NULL) && (beta != NULL))
             {
                 unsigned int i;
@@ -89,10 +82,10 @@ class DiCurveFitting
                         if (i == 0)
                             basis[k] = 1;
                         else
-                            basis[k] = OFstatic_cast(T3_, x[j]) * basis[k - 1];
+                            basis[k] = OFstatic_cast(T3, x[j]) * basis[k - 1];
                      }
                 }
-                T3_ sum;
+                T3 sum;
                 for (i = 0; i < order; ++i)
                 {
                     const unsigned int i_order = i * order;
@@ -110,7 +103,7 @@ class DiCurveFitting
                 {
                     sum = 0;
                     for (j = 0; j < n; ++j)
-                        sum += OFstatic_cast(T3_, y[j]) * basis[i + j * order];
+                        sum += OFstatic_cast(T3, y[j]) * basis[i + j * order];
                     beta[i] = sum;
                 }
                 if (solve(alpha, beta, order))
@@ -130,9 +123,9 @@ class DiCurveFitting
 
     /** calculate y coordinates for the given range of x coordinates.
      *  The polynomial function is defined by the specified coefficients.
-     *  T1  = type of x coordinates
-     *  T2  = type of y coordinates
-     *  T3_ = type of coefficients (and for internal calculations)
+     *  T1 = type of x coordinates
+     *  T2 = type of y coordinates
+     *  T3 = type of coefficients (and for internal calculations)
      *
      ** @param  xs  first x coordinate for computation
      *  @param  xe  last x coordinate for computation
@@ -148,21 +141,21 @@ class DiCurveFitting
                                T2 *y,
                                const unsigned int n,
                                const unsigned int o,
-                               const T3_ *c)
+                               const T3 *c)
     {
         int result = 0;
         if ((y != NULL) && (c != NULL) && (n > 0) && (xe > xs))
         {
             unsigned int i;
             unsigned int j;
-            T3_ x;
-            T3_ x2;
-            T3_ w;
-            const T3_ xo = OFstatic_cast(T3_, xs);
-            const T3_ xi = OFstatic_cast(T3_, (OFstatic_cast(T3_, xe) - OFstatic_cast(T3_, xs)) / (n - 1));
+            T3 x;
+            T3 x2;
+            T3 w;
+            const T3 xo = OFstatic_cast(T3, xs);
+            const T3 xi = OFstatic_cast(T3, (OFstatic_cast(T3, xe) - OFstatic_cast(T3, xs)) / (n - 1));
             for (i = 0; i < n; ++i)
             {
-                x = xo + OFstatic_cast(T3_, i) * xi;
+                x = xo + OFstatic_cast(T3, i) * xi;
                 x2 = 1;
                 w = 0;
                 for (j = 0; j <= o; ++j)
@@ -187,7 +180,7 @@ class DiCurveFitting
      *
      ** @return output value
      */
-    static void convertValue(const T3_ input, Uint8 &output)
+    static void convertValue(const T3 input, Uint8 &output)
     {
         output = (input <= 0) ? 0 : ((input >= 255) ? 255 : OFstatic_cast(Uint8, input));
     }
@@ -199,7 +192,7 @@ class DiCurveFitting
      *
      ** @return output value
      */
-    static void convertValue(const T3_ input, Sint8 &output)
+    static void convertValue(const T3 input, Sint8 &output)
     {
         output = (input <= -128) ? -128 : ((input >= 127) ? 127 : OFstatic_cast(Sint8, input));
     }
@@ -211,7 +204,7 @@ class DiCurveFitting
      *
      ** @return output value
      */
-    static void convertValue(const T3_ input, Uint16 &output)
+    static void convertValue(const T3 input, Uint16 &output)
     {
         output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : OFstatic_cast(Uint16, input));
     }
@@ -223,7 +216,7 @@ class DiCurveFitting
      *
      ** @return output value
      */
-    static void convertValue(const T3_ input, Sint16 &output)
+    static void convertValue(const T3 input, Sint16 &output)
     {
         output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : OFstatic_cast(Sint16, input));
     }
@@ -235,13 +228,13 @@ class DiCurveFitting
      *
      ** @return output value
      */
-    static inline void convertValue(const T3_ input, double &output)
+    static inline void convertValue(const T3 input, double &output)
     {
         output = OFstatic_cast(double, input);
     }
 
     /** solve the equation given by the two matrixes.
-     *  T3_ = type of coefficients (and for internal calculations)
+     *  T3 = type of coefficients (and for internal calculations)
      *
      ** @param  a  first matrix (array of values)
      *  @param  b  second matrix (array of values)
@@ -249,8 +242,8 @@ class DiCurveFitting
      *
      ** @return true if successful, false otherwise
      */
-    static int solve(T3_ *a,
-                     T3_ *b,
+    static int solve(T3 *a,
+                     T3 *b,
                      const unsigned int n)
     {
         int result = 0;
@@ -260,9 +253,9 @@ class DiCurveFitting
             unsigned int j;
             unsigned int k;
             signed int pivot;
-            T3_ mag;
-            T3_ mag2;
-            T3_ temp;
+            T3 mag;
+            T3 mag2;
+            T3 temp;
             for (i = 0; i < n; ++i)
             {
                 mag = 0;

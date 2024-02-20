@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,13 +26,6 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
 
-/*--------------------*
- *  macro definition  *
- *--------------------*/
-
-// SunCC 4.x does not support default values for template types :-/
-#define T3_ double
-
 
 /*------------------*
  *  template class  *
@@ -40,16 +33,16 @@
 
 /** Template class for cubic spline interpolation
  */
-template <class T1, class T2 /*, class T3 = double*/>
+template <class T1, class T2, class T3 = double>
 class DiCubicSpline
 {
 
  public:
 
     /** calculate spline function for given points.
-     *  T1  = type of x coordinates
-     *  T2  = type of y coordinates
-     *  T3_ = type of y coordinates of the spline function
+     *  T1 = type of x coordinates
+     *  T2 = type of y coordinates
+     *  T3 = type of y coordinates of the spline function
      *
      ** @param  x    array with x coordinates of given points
      *  @param  y    array with y coordinates of given points
@@ -63,47 +56,47 @@ class DiCubicSpline
     static int Function(const T1 *x,
                         const T2 *y,
                         const unsigned int n,
-                        T3_ *y2,
-                        const T3_ yp1 = 1.0e30,
-                        const T3_ ypn = 1.0e30)
+                        T3 *y2,
+                        const T3 yp1 = 1.0e30,
+                        const T3 ypn = 1.0e30)
     {
         if ((x != NULL) && (y != NULL) && (n > 0) && (y2 != NULL))
         {
-            T3_ *u = new T3_[n];                            // temporary vector
+            T3 *u = new T3[n];                              // temporary vector
             if (u != NULL)
             {
                 unsigned int i;
-                T3_ p, qn, sig, un;
+                T3 p, qn, sig, un;
                 if (yp1 > 0.99e30)                          // ignore value for first derivative at point 1
                     y2[0] = u[0] = 0.0;
                 else
                 {
                     y2[0] = -0.5;
-                    u[0] = (3.0 / (OFstatic_cast(T3_, x[1]) - OFstatic_cast(T3_, x[0]))) *
-                           ((OFstatic_cast(T3_, y[1]) - OFstatic_cast(T3_, y[0])) /
-                           (OFstatic_cast(T3_, x[1]) - OFstatic_cast(T3_, x[0])) - yp1);
+                    u[0] = (3.0 / (OFstatic_cast(T3, x[1]) - OFstatic_cast(T3, x[0]))) *
+                           ((OFstatic_cast(T3, y[1]) - OFstatic_cast(T3, y[0])) /
+                           (OFstatic_cast(T3, x[1]) - OFstatic_cast(T3, x[0])) - yp1);
                 }
                 for (i = 1; i < n - 1; ++i)
                 {
-                    sig = (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, x[i - 1])) /
-                          (OFstatic_cast(T3_, x[i + 1]) - OFstatic_cast(T3_, x[i - 1]));
+                    sig = (OFstatic_cast(T3, x[i]) - OFstatic_cast(T3, x[i - 1])) /
+                          (OFstatic_cast(T3, x[i + 1]) - OFstatic_cast(T3, x[i - 1]));
                     p = sig * y2[i - 1] + 2.0;
                     y2[i] = (sig - 1.0) / p;
-                    u[i] = (OFstatic_cast(T3_, y[i + 1]) - OFstatic_cast(T3_, y[i])) /
-                           (OFstatic_cast(T3_, x[i + 1]) - OFstatic_cast(T3_, x[i])) -
-                           (OFstatic_cast(T3_, y[i]) - OFstatic_cast(T3_, y[i - 1])) /
-                           (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, x[i - 1]));
-                    u[i] = (6.0 * u[i] / (OFstatic_cast(T3_, x[i + 1]) -
-                            OFstatic_cast(T3_, x[i - 1])) - sig * u[i - 1]) / p;
+                    u[i] = (OFstatic_cast(T3, y[i + 1]) - OFstatic_cast(T3, y[i])) /
+                           (OFstatic_cast(T3, x[i + 1]) - OFstatic_cast(T3, x[i])) -
+                           (OFstatic_cast(T3, y[i]) - OFstatic_cast(T3, y[i - 1])) /
+                           (OFstatic_cast(T3, x[i]) - OFstatic_cast(T3, x[i - 1]));
+                    u[i] = (6.0 * u[i] / (OFstatic_cast(T3, x[i + 1]) -
+                            OFstatic_cast(T3, x[i - 1])) - sig * u[i - 1]) / p;
                 }
                 if (ypn > 0.99e30)                          // ignore value for first derivative at point 1
                     qn = un = 0.0;
                 else
                 {
                     qn = 0.5;
-                    un = (3.0 / (OFstatic_cast(T3_, x[n - 1]) - OFstatic_cast(T3_, x[n - 2]))) *
-                         (ypn - (OFstatic_cast(T3_, y[n - 1]) - OFstatic_cast(T3_, y[n - 2])) /
-                         (OFstatic_cast(T3_, x[n - 1]) - OFstatic_cast(T3_, x[n - 2])));
+                    un = (3.0 / (OFstatic_cast(T3, x[n - 1]) - OFstatic_cast(T3, x[n - 2]))) *
+                         (ypn - (OFstatic_cast(T3, y[n - 1]) - OFstatic_cast(T3, y[n - 2])) /
+                         (OFstatic_cast(T3, x[n - 1]) - OFstatic_cast(T3, x[n - 2])));
                 }
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
                 for (i = n - 1; i > 0; --i)
@@ -117,9 +110,9 @@ class DiCubicSpline
 
 
     /** perform cubic spline interpolation for given points.
-     *  T1  = type of x coordinates
-     *  T2  = type of y coordinates
-     *  T3_ = type of y coordinates of the spline function
+     *  T1 = type of x coordinates
+     *  T2 = type of y coordinates
+     *  T3 = type of y coordinates of the spline function
      *
      ** @param  xa   array with x coordinates of given points
      *  @param  ya   array with y coordinates of given points
@@ -133,7 +126,7 @@ class DiCubicSpline
      */
     static int Interpolation(const T1 *xa,
                              const T2 *ya,
-                             const T3_ *y2a,
+                             const T3 *y2a,
                              const unsigned int na,
                              const T1 *x,
                              T2 *y,
@@ -144,7 +137,7 @@ class DiCubicSpline
             unsigned int k, i;
             unsigned int klo = 0;
             unsigned int khi = na - 1;
-            T3_ h, b, a;
+            T3 h, b, a;
             for (i = 0; i < n; ++i)
             {
                 if ((xa[klo] > x[i]) || (xa[khi] < x[i]))       // optimization
@@ -164,12 +157,12 @@ class DiCubicSpline
                     y[i] = ya[khi];
                 else
                 {
-                    h = OFstatic_cast(T3_, xa[khi]) - OFstatic_cast(T3_, xa[klo]);
+                    h = OFstatic_cast(T3, xa[khi]) - OFstatic_cast(T3, xa[klo]);
                     if (h == 0.0)                               // bad xa input, values must be distinct !
                         return 0;
-                    a = (OFstatic_cast(T3_, xa[khi]) - OFstatic_cast(T3_, x[i])) / h;
-                    b = (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, xa[klo])) / h;
-                    y[i] = OFstatic_cast(T2, a * OFstatic_cast(T3_, ya[klo]) + b * OFstatic_cast(T3_, ya[khi]) +
+                    a = (OFstatic_cast(T3, xa[khi]) - OFstatic_cast(T3, x[i])) / h;
+                    b = (OFstatic_cast(T3, x[i]) - OFstatic_cast(T3, xa[klo])) / h;
+                    y[i] = OFstatic_cast(T2, a * OFstatic_cast(T3, ya[klo]) + b * OFstatic_cast(T3, ya[khi]) +
                            ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0);
                 }
             }
