@@ -24,10 +24,10 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(oficonvdir)/libsrc
 LOCALLIBS = -ldcmect -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd -loficonv \
 	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
-LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
+LOCALINCLUDES = -I$(top_srcdir)/include -I$(configdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include
 
-test_objs = tests.o t_huge_concat.o t_roundtrip.o
+test_objs = tests.o t_huge_concat.o t_overflow.cc t_roundtrip.o
 objs = $(test_objs)
 progs = tests
 

@@ -27,6 +27,7 @@
 #include "dcmtk/dcmect/types.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/concatenationloader.h"
+#include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmiod/modimagepixel.h"
 
@@ -103,8 +104,19 @@ struct EctEnhancedCT::WriteVisitor
         m_CT.getRows(rows);
         m_CT.getColumns(cols);
         const size_t numFrames      = m_CT.m_Frames.size();
+        if (numFrames > 2147483647)
+        {
+            DCMECT_ERROR("More than 2147483647 frames provided");
+            return FG_EC_PixelDataTooLarge;
+        }
+        const size_t numPixelsFrame = OFstatic_cast(size_t, rows) * OFstatic_cast(size_t, cols);
         const size_t numBytesFrame  = m_CT.m_Frames[0]->length;
-        const size_t numPixelsFrame = rows * cols;
+        if (numBytesFrame != numPixelsFrame * 2)
+        {
+            DCMECT_ERROR("Invalid number of bytes per frame: Expected " << numPixelsFrame * 2 << " but got "
+              << numBytesFrame << " frame pixel data");
+            return ECT_InvalidPixelInfo;
+        }
         // Creates the correct pixel data element, based on the image pixel module used.
         DcmPixelData* pixData = new DcmPixelData(DCM_PixelData);
         OFCondition result;

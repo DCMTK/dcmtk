@@ -2,6 +2,7 @@
 DCMTK_ADD_EXECUTABLE(dcmect_tests
   tests.cc
   t_huge_concat.cc
+  t_overflow.cc
   t_roundtrip.cc
 )
 

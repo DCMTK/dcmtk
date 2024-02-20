@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,5 +23,6 @@
 #include "dcmtk/ofstd/oftest.h"
 
 OFTEST_REGISTER(dcmect_huge_concat);
+OFTEST_REGISTER(dcmect_overflow);
 OFTEST_REGISTER(dcmect_roundtrip);
 OFTEST_MAIN("dcmect")
