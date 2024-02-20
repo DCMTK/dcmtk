@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,6 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/ofstd/ofstring.h"
 
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diutils.h"
@@ -33,7 +32,7 @@
  *  constructors  *
  *----------------*/
 
-DiDocument::DiDocument(const char *filename,
+DiDocument::DiDocument(const OFFilename &filename,
                        const unsigned long flags,
                        const unsigned long fstart,
                        const unsigned long fcount)

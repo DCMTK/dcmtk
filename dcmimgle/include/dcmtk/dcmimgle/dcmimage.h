@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,8 +24,6 @@
 #define DCMIMAGE_H
 
 #include "dcmtk/config/osconfig.h"
-
-#include "dcmtk/ofstd/ofcast.h"
 
 #include "dcmtk/dcmimgle/dimoimg.h"
 #include "dcmtk/dcmimgle/didispfn.h"
@@ -65,13 +63,13 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      *  Opens specified file and reads image related data, creates internal representation
      *  of image data.  Use getStatus() to obtain detailed information about any errors.
      *
-     ** @param  filename  the DICOM file
+     ** @param  filename  the DICOM file specified by its filename
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
      *  @param  fstart    first frame to be processed (optional, 0 = 1st frame), all subsequent use
      *                    of parameters labeled 'frame' in this class refers to this start frame.
      *  @param  fcount    number of frames (optional, 0 = all frames)
      */
-    DicomImage(const char *filename,
+    DicomImage(const OFFilename &filename,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,7 +35,6 @@
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diregbas.h"
 #include "dcmtk/dcmimgle/diplugin.h"
-#include "dcmtk/dcmdata/dcdicent.h"  /* needed by MSVC5 */
 
 #ifndef FILENAME_MAX
 #define FILENAME_MAX 255
@@ -55,7 +54,7 @@ DiRegisterBase *DiRegisterBase::Pointer = NULL;
 
 // --- create 'DicomImage' from 'filename', for valid 'flags' see 'diutils.h'
 
-DicomImage::DicomImage(const char *filename,
+DicomImage::DicomImage(const OFFilename &filename,
                        const unsigned long flags,
                        const unsigned long fstart,
                        const unsigned long fcount)
