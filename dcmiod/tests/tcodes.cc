@@ -24,9 +24,6 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 
-
-static OFLogger tCodeLogger = OFLog::getLogger("dcmtk.test.t_codes");
-
 static void clearCode(CodeSequenceMacro& c);
 
 OFTEST(dcmiod_codes)

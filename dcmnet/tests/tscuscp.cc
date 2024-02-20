@@ -30,8 +30,6 @@
 #include "dcmtk/dcmnet/scu.h"
 
 
-static OFLogger t_scuscp_logger= OFLog::getLogger("dcmtk.test.tscuscp");
-
 /** SCP derived from DcmSCP in order to test two types of virtual methods:
  *  <ul>
  *    <li> Notifiers: Called for some events happening in DcmSCP. So far

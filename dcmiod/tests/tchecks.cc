@@ -27,8 +27,6 @@
 #include "dcmtk/dcmiod/iodcommn.h"
 
 
-static OFLogger tCodeLogger = OFLog::getLogger("dcmtk.dcmiod.tests.t_checks");
-
 /** Setup that is run for all test cases.
  *  It creates an IODCommon instance and sets all mandatory attributes besides Modality.
  *  Some missing attribute values are invented when writing (such as Instance UIDs).

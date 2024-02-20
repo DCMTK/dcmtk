@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,7 +61,7 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
 
-static OFLogger msgservLogger = OFLog::getLogger("dcmtk.tests." OFFIS_CONSOLE_APPLICATION);
+static OFLogger msgservLogger = OFLog::getLogger("dcmtk.test." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";

@@ -54,7 +54,7 @@
 #include "dcmtk/dcmfg/fgplanpo.h"
 #include "dcmtk/dcmfg/fgtemporalposition.h"
 
-static OFLogger tRoundLogger = OFLog::getLogger("dcmtk.test.t_roundtrip");
+static OFLogger tRoundLogger = OFLog::getLogger("dcmtk.test.troundtrip");
 
 // Do not change values below since
 // a) The expected dataset (dump) is made for these values

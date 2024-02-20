@@ -55,8 +55,6 @@
 #include "dcmtk/dcmfg/fgplanpo.h"
 #include "dcmtk/dcmfg/fgtemporalposition.h"
 
-static OFLogger tRoundLogger = OFLog::getLogger("dcmtk.test.t_huge_concat");
-
 // Number of Rows of image, might be changed for testing purposes
 static const Uint16 NUM_ROWS = 4000;
 // Number of Columns of image, might be changed for testing purposes
