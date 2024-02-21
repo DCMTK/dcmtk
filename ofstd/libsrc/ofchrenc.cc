@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2023, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -297,6 +297,20 @@ class OFCharacterEncoding::Implementation
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
 
 #include "dcmtk/oficonv/iconv.h"
+
+// helper class for cleanup up oficonv at application exit
+class OFiconvCleanupHelper
+{
+public:
+  ~OFiconvCleanupHelper()
+  {
+    OFiconv_cleanup();
+  }
+};
+
+// global helper object that will clean up the oficonv csmapper area buffer
+// at application exit and thus avoid reports about memory leaks
+OFiconvCleanupHelper cleanupHelper;
 
 #undef LIBICONV_SECOND_ARGUMENT_CONST
 #define iconv_open OFiconv_open
