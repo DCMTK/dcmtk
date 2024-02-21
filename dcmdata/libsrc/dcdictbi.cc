@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-01-11 12:43:37
+**   Date: 2024-02-21 19:12:10
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -1108,6 +1108,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ReferencedPerformedProcedureStepSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0008, 0x1112, 0x0008, 0x1112,
+      EVR_SQ, "ReferencedInstancesBySOPClassSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0008, 0x1115, 0x0008, 0x1115,
       EVR_SQ, "ReferencedSeriesSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -1214,6 +1218,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x119a, 0x0008, 0x119a,
       EVR_SQ, "OtherFailuresSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x119b, 0x0008, 0x119b,
+      EVR_SQ, "FailedStudySequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1200, 0x0008, 0x1200,
@@ -27040,6 +27048,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "ROIVolume", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x3006, 0x002d, 0x3006, 0x002d,
+      EVR_DT, "ROIDateTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x002e, 0x3006, 0x002e,
+      EVR_DT, "ROIObservationDateTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x3006, 0x0030, 0x3006, 0x0030,
       EVR_SQ, "RTRelatedROISequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -27094,6 +27110,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3006, 0x004a, 0x3006, 0x004a,
       EVR_SQ, "SourcePixelPlanesCharacteristicsSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x004b, 0x3006, 0x004b,
+      EVR_SQ, "SourceSeriesSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x004c, 0x3006, 0x004c,
+      EVR_SQ, "SourceSeriesInformationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x004d, 0x3006, 0x004d,
+      EVR_SQ, "ROICreatorSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x004e, 0x3006, 0x004e,
+      EVR_SQ, "ROIInterpreterSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3006, 0x004f, 0x3006, 0x004f,
+      EVR_SQ, "ROIObservationContextCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3006, 0x0050, 0x3006, 0x0050,

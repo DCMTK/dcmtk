@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-01-11 12:43:36
+**   Date: 2024-02-21 19:12:09
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2024-01-11 12:43:36"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2024-02-21 19:12:09"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5079
+** Number of entries: 5088
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -283,6 +283,7 @@
 #define DCM_RETIRED_ReferencedResultsSequence    DcmTagKey(0x0008, 0x1100)
 #define DCM_ReferencedStudySequence              DcmTagKey(0x0008, 0x1110)
 #define DCM_ReferencedPerformedProcedureStepSequence DcmTagKey(0x0008, 0x1111)
+#define DCM_ReferencedInstancesBySOPClassSequence DcmTagKey(0x0008, 0x1112)
 #define DCM_ReferencedSeriesSequence             DcmTagKey(0x0008, 0x1115)
 #define DCM_ReferencedPatientSequence            DcmTagKey(0x0008, 0x1120)
 #define DCM_ReferencedVisitSequence              DcmTagKey(0x0008, 0x1125)
@@ -310,6 +311,7 @@
 #define DCM_FailedSOPSequence                    DcmTagKey(0x0008, 0x1198)
 #define DCM_ReferencedSOPSequence                DcmTagKey(0x0008, 0x1199)
 #define DCM_OtherFailuresSequence                DcmTagKey(0x0008, 0x119a)
+#define DCM_FailedStudySequence                  DcmTagKey(0x0008, 0x119b)
 #define DCM_StudiesContainingOtherReferencedInstancesSequence DcmTagKey(0x0008, 0x1200)
 #define DCM_RelatedSeriesSequence                DcmTagKey(0x0008, 0x1250)
 #define DCM_RETIRED_LossyImageCompressionRetired DcmTagKey(0x0008, 0x2110)
@@ -4011,6 +4013,8 @@
 #define DCM_ROIDescription                       DcmTagKey(0x3006, 0x0028)
 #define DCM_ROIDisplayColor                      DcmTagKey(0x3006, 0x002a)
 #define DCM_ROIVolume                            DcmTagKey(0x3006, 0x002c)
+#define DCM_ROIDateTime                          DcmTagKey(0x3006, 0x002d)
+#define DCM_ROIObservationDateTime               DcmTagKey(0x3006, 0x002e)
 #define DCM_RTRelatedROISequence                 DcmTagKey(0x3006, 0x0030)
 #define DCM_RTROIRelationship                    DcmTagKey(0x3006, 0x0033)
 #define DCM_ROIGenerationAlgorithm               DcmTagKey(0x3006, 0x0036)
@@ -4025,6 +4029,11 @@
 #define DCM_ContourNumber                        DcmTagKey(0x3006, 0x0048)
 #define DCM_RETIRED_AttachedContours             DcmTagKey(0x3006, 0x0049)
 #define DCM_SourcePixelPlanesCharacteristicsSequence DcmTagKey(0x3006, 0x004a)
+#define DCM_SourceSeriesSequence                 DcmTagKey(0x3006, 0x004b)
+#define DCM_SourceSeriesInformationSequence      DcmTagKey(0x3006, 0x004c)
+#define DCM_ROICreatorSequence                   DcmTagKey(0x3006, 0x004d)
+#define DCM_ROIInterpreterSequence               DcmTagKey(0x3006, 0x004e)
+#define DCM_ROIObservationContextCodeSequence    DcmTagKey(0x3006, 0x004f)
 #define DCM_ContourData                          DcmTagKey(0x3006, 0x0050)
 #define DCM_RTROIObservationsSequence            DcmTagKey(0x3006, 0x0080)
 #define DCM_ObservationNumber                    DcmTagKey(0x3006, 0x0082)

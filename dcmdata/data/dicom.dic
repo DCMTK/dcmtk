@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2023e and PS 3.7-2023e.
-# File created on 2024-01-11 12:41:12 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2024a and PS 3.7-2024a.
+# File created on 2024-02-21 19:09:59 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -268,6 +268,7 @@
 (0008,1090)	LO	ManufacturerModelName	1	DICOM
 (0008,1110)	SQ	ReferencedStudySequence	1	DICOM
 (0008,1111)	SQ	ReferencedPerformedProcedureStepSequence	1	DICOM
+(0008,1112)	SQ	ReferencedInstancesBySOPClassSequence	1	DICOM
 (0008,1115)	SQ	ReferencedSeriesSequence	1	DICOM
 (0008,1120)	SQ	ReferencedPatientSequence	1	DICOM
 (0008,1125)	SQ	ReferencedVisitSequence	1	DICOM
@@ -293,6 +294,7 @@
 (0008,1198)	SQ	FailedSOPSequence	1	DICOM
 (0008,1199)	SQ	ReferencedSOPSequence	1	DICOM
 (0008,119A)	SQ	OtherFailuresSequence	1	DICOM
+(0008,119B)	SQ	FailedStudySequence	1	DICOM
 (0008,1200)	SQ	StudiesContainingOtherReferencedInstancesSequence	1	DICOM
 (0008,1250)	SQ	RelatedSeriesSequence	1	DICOM
 (0008,2111)	ST	DerivationDescription	1	DICOM
@@ -3651,6 +3653,8 @@
 (3006,0028)	ST	ROIDescription	1	DICOM
 (3006,002A)	IS	ROIDisplayColor	3	DICOM
 (3006,002C)	DS	ROIVolume	1	DICOM
+(3006,002D)	DT	ROIDateTime	1	DICOM
+(3006,002E)	DT	ROIObservationDateTime	1	DICOM
 (3006,0030)	SQ	RTRelatedROISequence	1	DICOM
 (3006,0033)	CS	RTROIRelationship	1	DICOM
 (3006,0036)	CS	ROIGenerationAlgorithm	1	DICOM
@@ -3662,6 +3666,11 @@
 (3006,0046)	IS	NumberOfContourPoints	1	DICOM
 (3006,0048)	IS	ContourNumber	1	DICOM
 (3006,004A)	SQ	SourcePixelPlanesCharacteristicsSequence	1	DICOM
+(3006,004B)	SQ	SourceSeriesSequence	1	DICOM
+(3006,004C)	SQ	SourceSeriesInformationSequence	1	DICOM
+(3006,004D)	SQ	ROICreatorSequence	1	DICOM
+(3006,004E)	SQ	ROIInterpreterSequence	1	DICOM
+(3006,004F)	SQ	ROIObservationContextCodeSequence	1	DICOM
 (3006,0050)	DS	ContourData	3-3n	DICOM
 (3006,0080)	SQ	RTROIObservationsSequence	1	DICOM
 (3006,0082)	IS	ObservationNumber	1	DICOM
