@@ -427,3 +427,12 @@ _citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
 
     return (ret);
 }
+
+void
+_citrus_csmapper_free()
+{
+    if (maparea)
+    {
+        _citrus_mapper_delete_area(&maparea);
+    }
+}

@@ -80,6 +80,22 @@ struct _citrus_mapper_area {
     char                            *ma_dir;
 };
 
+/* _citrus_mapper_delete_area:
+ * delete mapper area
+ * This function is not present in the original Citrus implementation.
+ */
+void _citrus_mapper_delete_area(struct _citrus_mapper_area * * rma)
+{
+    if (rma && *rma)
+    {
+        WLOCK(&cm_lock);
+        if ((*rma)->ma_dir) free((*rma)->ma_dir);
+        free(*rma);
+        *rma = NULL;
+        UNLOCK(&cm_lock);
+    }
+}
+
 /*
  * _citrus_mapper_create_area:
  *  create mapper area

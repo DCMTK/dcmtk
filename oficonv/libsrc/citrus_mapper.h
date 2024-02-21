@@ -39,6 +39,7 @@ BEGIN_EXTERN_C
 int  _citrus_mapper_create_area(
         struct _citrus_mapper_area * *,
         const char *);
+void _citrus_mapper_delete_area(struct _citrus_mapper_area * *);
 int  _citrus_mapper_open(struct _citrus_mapper_area *,
         struct _citrus_csmapper * *,
         const char *);
