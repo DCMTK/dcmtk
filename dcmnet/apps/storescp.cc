@@ -99,6 +99,7 @@ static void renameOnEndOfStudy();
 static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute );
 static void executeCommand( const OFString &cmd );
 static void cleanChildren(pid_t pid, OFBool synch);
+static void sanitizeAETitle(OFString& aet);
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          T_ASC_Parameters * params,
          const char* transferSyntaxes[],
@@ -2193,6 +2194,33 @@ static void executeEndOfStudyEvents()
   lastStudySubdirectoryPathAndName.clear();
 }
 
+/* replace all characters that might be interpreted by the shell with underscores
+ */
+static void sanitizeAETitle(OFString& aet)
+{
+  static const char sanitized_aetitle_charset[] =
+  {
+    ' ', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '-', '.', '_', 
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '_', '_', '_', '_', '_', 
+    '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 
+    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '_', '_', '_', '_', 
+    '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', '_', '_', '_', '_'
+  };
+
+  // the aet string starts and ends with quotation marks. We ignore these.
+  size_t len = aet.length();
+  if (len < 3) return;
+
+  char c;
+  --len;
+  for (size_t i=1; i < len; ++i)
+  {
+    c = aet[i];
+    if (c != 0 && (c < 32 || c >= 127)) c = '_'; else c = sanitized_aetitle_charset[c-32];
+    aet[i] = c;
+  }
+}
 
 static void executeOnReception()
     /*
@@ -2209,6 +2237,7 @@ static void executeOnReception()
      */
 {
   OFString cmd = opt_execOnReception;
+  OFString s;
 
   // in case a file was actually written
   if( !opt_ignore )
@@ -2224,10 +2253,14 @@ static void executeOnReception()
   }
 
   // perform substitution for placeholder #a
-  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle );
+  s = callingAETitle;
+  sanitizeAETitle(s);
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), s );
 
   // perform substitution for placeholder #c
-  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
+  s = calledAETitle;
+  sanitizeAETitle(s);
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), s );
 
   // perform substitution for placeholder #r
   cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
@@ -2332,15 +2365,20 @@ static void executeOnEndOfStudy()
      */
 {
   OFString cmd = opt_execOnEndOfStudy;
+  OFString s;
 
   // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
 
   // perform substitution for placeholder #a
-  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle );
+  s = callingAETitle;
+  sanitizeAETitle(s);
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), s );
 
   // perform substitution for placeholder #c
-  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
+  s = calledAETitle;
+  sanitizeAETitle(s);
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), s );
 
   // perform substitution for placeholder #r
   cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
