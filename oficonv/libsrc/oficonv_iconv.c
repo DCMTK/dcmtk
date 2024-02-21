@@ -56,6 +56,7 @@
 #include "citrus_esdb.h"
 #include "citrus_hash.h"
 #include "citrus_iconv.h"
+#include "citrus_csmapper.h"
 #include "oficonv_strlcpy.h"
 #include "oficonv_strcasestr.h"
 
@@ -155,7 +156,6 @@ OFiconv_close_in(iconv_allocation_t *ptr)
 int
 OFiconv_close(iconv_t handle)
 {
-
     if (ISBADF(handle)) {
         errno = EBADF;
         return (-1);
@@ -378,4 +378,9 @@ const char *OFlocale_charset(iconv_locale_allocation_t *buf)
   (void) buf;
   return nl_langinfo(CODESET);
 #endif
+}
+
+void OFiconv_cleanup()
+{
+  _citrus_csmapper_free();
 }

@@ -72,8 +72,6 @@
 #define _CITRUS_ICONV_ALIAS "iconv.alias"
 
 #define CI_HASH_SIZE 101
-#define CI_INITIAL_MAX_REUSE    5
-#define CI_ENV_MAX_REUSE    "ICONV_MAX_REUSE"
 
 static bool          isinit = false;
 static int           shared_max_reuse, shared_num_unused;
@@ -101,11 +99,7 @@ init_cache(void)
     if (!isinit) {
         _CITRUS_HASH_INIT(&shared_pool, CI_HASH_SIZE);
         TAILQ_INIT(&shared_unused);
-        shared_max_reuse = -1;
-        if (getenv(CI_ENV_MAX_REUSE))
-            shared_max_reuse = atoi(getenv(CI_ENV_MAX_REUSE));
-        if (shared_max_reuse < 0)
-            shared_max_reuse = CI_INITIAL_MAX_REUSE;
+        shared_max_reuse = 0;
         isinit = true;
     }
     UNLOCK(&ci_lock);
@@ -278,7 +272,6 @@ quit:
 static void
 release_shared(struct _citrus_iconv_shared * ci)
 {
-
     WLOCK(&ci_lock);
     ci->ci_used_count--;
     if (ci->ci_used_count == 0) {

@@ -195,6 +195,13 @@ DCMTK_OFICONV_EXPORT int OFiconv_open_into(const char *dstname, const char *srcn
  */
 DCMTK_OFICONV_EXPORT int OFiconv_close_in(iconv_allocation_t *ptr);
 
+/** free static memory allocated in the oficonv module.
+ *  Calling this function will delete the csmapper area object.
+ *  This function may be called at application exit in order to avoid
+ *  reports of memory leaks when a memory leak checker is in use.
+ */
+DCMTK_OFICONV_EXPORT void OFiconv_cleanup();
+
 /*
  * OFiconvctl() request macros
  */
