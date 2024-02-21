@@ -521,7 +521,7 @@ Set) and Latin-1 (Specific Character Set valued "ISO_IR 100") are supported.
 If another character set is found and the patient name contains non-ASCII
 characters, a warning is printed and the transformation is performed as if
 Latin-1 character set would be set in the file.  This may lead to unreadable
-or unexpected patient name directories and behaviour.  Thus, it is advisable
+or unexpected patient name directories and behavior.  Thus, it is advisable
 to use \e --sort-on-patientname only if Latin-1 or ASCII patient names are
 expected to be received.
 
@@ -573,8 +573,8 @@ The specified command line is executed as a separate process, so that the
 execution of \b storescp will not be held back.  This behavior can be influenced
 with the \e --exec-sync option.
 
-Option \e --exec-on-eostudy allows one to execute a certain command line when all
-DICOM objects that belong to one study have been received by \b storescp.
+Option \e --exec-on-eostudy allows one to execute a certain command line when
+all DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
 '\#f', which is not supported.  A study is considered complete by \b storescp
 when an object belonging to a different study is received or the timeout
