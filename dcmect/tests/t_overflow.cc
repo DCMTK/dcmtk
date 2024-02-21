@@ -330,7 +330,7 @@ static void addFrames(EctEnhancedCT *ct)
                 data[i] = 0x4141;
             }
             OFCHECK(
-                OFget<EctEnhancedCT::Frames<Uint16>>(&frames)->addFrame(data, NUM_PIXELS_PER_FRAME, groups).good());
+                OFget<EctEnhancedCT::Frames<Uint16> >(&frames)->addFrame(data, NUM_PIXELS_PER_FRAME, groups).good());
             delete[] data;
         }
     }
