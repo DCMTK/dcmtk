@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2023e
- *  File created on 2024-01-12 09:31:08 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024a
+ *  File created on 2024-02-22 13:38:35 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4716
+// total number of codes: 4718
 // - retired: 202
 // - no name: 27
 // - not unique: 17
@@ -522,6 +522,7 @@
 #define CODE_DCM_EquipmentChange                                           DSRBasicCodedEntry("110516", "DCM", "Equipment change")
 #define CODE_DCM_PatientMovement                                           DSRBasicCodedEntry("110518", "DCM", "Patient Movement")
 #define CODE_DCM_OperatorError                                             DSRBasicCodedEntry("110519", "DCM", "Operator Error")
+#define CODE_DCM_ChannelObstruction                                        DSRBasicCodedEntry("110520", "DCM", "Channel Obstruction")
 #define CODE_DCM_ObjectsIncorrectlyFormatted                               DSRBasicCodedEntry("110521", "DCM", "Objects incorrectly formatted")
 #define CODE_DCM_ObjectTypesNotSupported                                   DSRBasicCodedEntry("110522", "DCM", "Object Types not supported")
 #define CODE_DCM_ObjectSetIncomplete                                       DSRBasicCodedEntry("110523", "DCM", "Object Set incomplete")
@@ -2076,7 +2077,7 @@
 #define CODE_DCM_1cmAboveTabletop                                          DSRBasicCodedEntry("113862", "DCM", "1cm above Tabletop")
 #define CODE_DCM_30cmAboveTabletop                                         DSRBasicCodedEntry("113863", "DCM", "30cm above Tabletop")
 #define CODE_DCM_15cmFromTableCenterline                                   DSRBasicCodedEntry("113864", "DCM", "15cm from Table Centerline")
-#define CODE_DCM_EntranceExposureToA4dot2cmBreastThickness                 DSRBasicCodedEntry("113865", "DCM", "Entrance exposure to a 4.2 cm breast thickness")
+#define CODE_DCM_4dot2cmAboveBreastSupportSurface                          DSRBasicCodedEntry("113865", "DCM", "4.2cm above Breast Support Surface")
 #define CODE_DCM_CopiedFromImageAttributes                                 DSRBasicCodedEntry("113866", "DCM", "Copied From Image Attributes")
 #define CODE_DCM_ComputedFromImageAttributes                               DSRBasicCodedEntry("113867", "DCM", "Computed From Image Attributes")
 #define CODE_DCM_DerivedFromHumanReadableReports                           DSRBasicCodedEntry("113868", "DCM", "Derived From Human-Readable Reports")
@@ -4764,5 +4765,6 @@
 #define CODE_DCM_MetersetRateInterlock                                     DSRBasicCodedEntry("130830", "DCM", "Meterset Rate Interlock")
 #define CODE_DCM_BeamEnergyInterlock                                       DSRBasicCodedEntry("130831", "DCM", "Beam Energy Interlock")
 #define CODE_DCM_SkinLesionColor                                           DSRBasicCodedEntry("130832", "DCM", "Skin lesion color")
+#define CODE_DCM_PreSurgicalAnatomy                                        DSRBasicCodedEntry("130833", "DCM", "Pre-surgical anatomy")
 
 #endif
