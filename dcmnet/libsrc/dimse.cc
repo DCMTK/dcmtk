@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -357,6 +357,13 @@ getTransferSyntax(
         case EXS_MPEG4StereoHighProfileLevel4_2:
         case EXS_HEVCMainProfileLevel5_1:
         case EXS_HEVCMain10ProfileLevel5_1:
+        case EXS_FragmentableMPEG2MainProfileMainLevel:
+        case EXS_FragmentableMPEG2MainProfileHighLevel:
+        case EXS_FragmentableMPEG4HighProfileLevel4_1:
+        case EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1:
+        case EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo:
+        case EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo:
+        case EXS_FragmentableMPEG4StereoHighProfileLevel4_2:
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif
