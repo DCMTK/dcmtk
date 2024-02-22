@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -776,6 +776,85 @@ const S_XferNames XferNames[] =
       OFTrue
     },
     // entry #48
+    { UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,
+      "High-Throughput JPEG 2000 Image Compression (Lossless Only)",
+      EXS_HighThroughputJPEG2000LosslessOnly,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFFalse,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #49
+    { UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,
+      "High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)",
+      EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFFalse,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #50
+    { UID_HighThroughputJPEG2000ImageCompressionTransferSyntax,
+      "High-Throughput JPEG 2000 Image Compression",
+      EXS_HighThroughputJPEG2000,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      OFTrue,
+      OFFalse,
+      ESC_none,
+      OFFalse,
+      OFTrue
+    },
+    // entry #51
+    { UID_JPIPHTJ2KReferencedTransferSyntax,
+      "JPIP HTJ2K Referenced",
+      EXS_JPIPHTJ2KReferenced,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
+      0L, 0L,
+      OFTrue,               // really lossy?
+      OFFalse,
+      ESC_none,
+      OFTrue,
+      OFFalse
+    },
+    // entry #52
+    { UID_JPIPHTJ2KReferencedDeflateTransferSyntax,
+      "JPIP HTJ2K Referenced Deflate",
+      EXS_JPIPHTJ2KReferencedDeflate,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_NotEncapsulated,  // in fact, pixel data shall be referenced via (0028,7FE0) Pixel Data Provider URL
+      0L, 0L,
+      OFTrue,               // really lossy?
+      OFFalse,
+#ifdef WITH_ZLIB
+      ESC_zlib,
+#else
+      ESC_unsupported,
+#endif
+      OFTrue,
+      OFFalse
+    },
+    // entry #53
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
       "Private GE Little Endian Implicit with big endian pixel data",
       EXS_PrivateGE_LEI_WithBigEndianPixelData,

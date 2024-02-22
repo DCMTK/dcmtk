@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,7 +108,10 @@ static const char* transferSyntaxes[] = {
       UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
       UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
-      UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax
+      UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax,
+      UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,
+      UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,
+      UID_HighThroughputJPEG2000ImageCompressionTransferSyntax
 };
 
 // ********************************************

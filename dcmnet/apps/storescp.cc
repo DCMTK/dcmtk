@@ -1009,9 +1009,10 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     UID_VerificationSOPClass
   };
 
-  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-                                     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
-                                     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };            // +8
+  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 10
+                                     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 20
+                                     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 30
+                                     NULL };                                                       // +1
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -1303,17 +1304,20 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         transferSyntaxes[21] = UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax;
         transferSyntaxes[22] = UID_HEVCMainProfileLevel5_1TransferSyntax;
         transferSyntaxes[23] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
-        transferSyntaxes[24] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[24] = UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax;
+        transferSyntaxes[25] = UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax;
+        transferSyntaxes[26] = UID_HighThroughputJPEG2000ImageCompressionTransferSyntax;
+        transferSyntaxes[27] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
         if (gLocalByteOrder == EBO_LittleEndian)
         {
-          transferSyntaxes[25] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[26] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[28] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[29] = UID_BigEndianExplicitTransferSyntax;
         } else {
-          transferSyntaxes[25] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[26] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[28] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[29] = UID_LittleEndianExplicitTransferSyntax;
         }
-        transferSyntaxes[27] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 28;
+        transferSyntaxes[30] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 31;
       } else {
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer

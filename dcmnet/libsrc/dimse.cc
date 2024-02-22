@@ -364,6 +364,9 @@ getTransferSyntax(
         case EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo:
         case EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo:
         case EXS_FragmentableMPEG4StereoHighProfileLevel4_2:
+        case EXS_HighThroughputJPEG2000LosslessOnly:
+        case EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly:
+        case EXS_HighThroughputJPEG2000:
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif

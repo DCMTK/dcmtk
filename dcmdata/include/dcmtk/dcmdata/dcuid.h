@@ -427,124 +427,134 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 */
 
 /// Implicit VR Little Endian: Default Transfer Syntax for DICOM
-#define UID_LittleEndianImplicitTransferSyntax  "1.2.840.10008.1.2"
+#define UID_LittleEndianImplicitTransferSyntax          "1.2.840.10008.1.2"
 /// Explicit VR Little Endian
-#define UID_LittleEndianExplicitTransferSyntax  "1.2.840.10008.1.2.1"
+#define UID_LittleEndianExplicitTransferSyntax           "1.2.840.10008.1.2.1"
 /// Explicit VR Big Endian - RETIRED
-#define UID_BigEndianExplicitTransferSyntax     "1.2.840.10008.1.2.2"
+#define UID_BigEndianExplicitTransferSyntax              "1.2.840.10008.1.2.2"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
  *  for Lossy JPEG 8 Bit Image Compression
  */
-#define UID_JPEGProcess1TransferSyntax          "1.2.840.10008.1.2.4.50"
+#define UID_JPEGProcess1TransferSyntax                   "1.2.840.10008.1.2.4.50"
 /** JPEG Extended (Process 2 & 4): Default Transfer Syntax
  *  for Lossy JPEG 12 Bit Image Compression (Process 4 only)
  */
-#define UID_JPEGProcess2_4TransferSyntax        "1.2.840.10008.1.2.4.51"
+#define UID_JPEGProcess2_4TransferSyntax                 "1.2.840.10008.1.2.4.51"
 /// JPEG Extended (Process 3 & 5) - RETIRED
-#define UID_JPEGProcess3_5TransferSyntax        "1.2.840.10008.1.2.4.52"
+#define UID_JPEGProcess3_5TransferSyntax                 "1.2.840.10008.1.2.4.52"
 /// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) - RETIRED
-#define UID_JPEGProcess6_8TransferSyntax        "1.2.840.10008.1.2.4.53"
+#define UID_JPEGProcess6_8TransferSyntax                 "1.2.840.10008.1.2.4.53"
 /// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) - RETIRED
-#define UID_JPEGProcess7_9TransferSyntax        "1.2.840.10008.1.2.4.54"
+#define UID_JPEGProcess7_9TransferSyntax                 "1.2.840.10008.1.2.4.54"
 /// JPEG Full Progression, Non-Hierarchical (Process 10 & 12) - RETIRED
-#define UID_JPEGProcess10_12TransferSyntax      "1.2.840.10008.1.2.4.55"
+#define UID_JPEGProcess10_12TransferSyntax               "1.2.840.10008.1.2.4.55"
 /// JPEG Full Progression, Non-Hierarchical (Process 11 & 13) - RETIRED
-#define UID_JPEGProcess11_13TransferSyntax      "1.2.840.10008.1.2.4.56"
+#define UID_JPEGProcess11_13TransferSyntax               "1.2.840.10008.1.2.4.56"
 /// JPEG Lossless, Non-Hierarchical (Process 14)
-#define UID_JPEGProcess14TransferSyntax         "1.2.840.10008.1.2.4.57"
+#define UID_JPEGProcess14TransferSyntax                  "1.2.840.10008.1.2.4.57"
 /// JPEG Lossless, Non-Hierarchical (Process 15) - RETIRED
-#define UID_JPEGProcess15TransferSyntax         "1.2.840.10008.1.2.4.58"
+#define UID_JPEGProcess15TransferSyntax                  "1.2.840.10008.1.2.4.58"
 /// JPEG Extended, Hierarchical (Process 16 & 18) - RETIRED
-#define UID_JPEGProcess16_18TransferSyntax      "1.2.840.10008.1.2.4.59"
+#define UID_JPEGProcess16_18TransferSyntax               "1.2.840.10008.1.2.4.59"
 /// JPEG Extended, Hierarchical (Process 17 & 19) - RETIRED
-#define UID_JPEGProcess17_19TransferSyntax      "1.2.840.10008.1.2.4.60"
+#define UID_JPEGProcess17_19TransferSyntax               "1.2.840.10008.1.2.4.60"
 /// JPEG Spectral Selection, Hierarchical (Process 20 & 22) - RETIRED
-#define UID_JPEGProcess20_22TransferSyntax      "1.2.840.10008.1.2.4.61"
+#define UID_JPEGProcess20_22TransferSyntax               "1.2.840.10008.1.2.4.61"
 /// JPEG Spectral Selection, Hierarchical (Process 21 & 23) - RETIRED
-#define UID_JPEGProcess21_23TransferSyntax      "1.2.840.10008.1.2.4.62"
+#define UID_JPEGProcess21_23TransferSyntax               "1.2.840.10008.1.2.4.62"
 /// JPEG Full Progression, Hierarchical (Process 24 & 26) - RETIRED
-#define UID_JPEGProcess24_26TransferSyntax      "1.2.840.10008.1.2.4.63"
+#define UID_JPEGProcess24_26TransferSyntax               "1.2.840.10008.1.2.4.63"
 /// JPEG Full Progression, Hierarchical (Process 25 & 27) - RETIRED
-#define UID_JPEGProcess25_27TransferSyntax      "1.2.840.10008.1.2.4.64"
+#define UID_JPEGProcess25_27TransferSyntax               "1.2.840.10008.1.2.4.64"
 /// JPEG Lossless, Hierarchical (Process 28) - RETIRED
-#define UID_JPEGProcess28TransferSyntax         "1.2.840.10008.1.2.4.65"
+#define UID_JPEGProcess28TransferSyntax                  "1.2.840.10008.1.2.4.65"
 /// JPEG Lossless, Hierarchical (Process 29) - RETIRED
-#define UID_JPEGProcess29TransferSyntax         "1.2.840.10008.1.2.4.66"
+#define UID_JPEGProcess29TransferSyntax                  "1.2.840.10008.1.2.4.66"
 /** JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14
  *  [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression
  */
-#define UID_JPEGProcess14SV1TransferSyntax      "1.2.840.10008.1.2.4.70"
+#define UID_JPEGProcess14SV1TransferSyntax               "1.2.840.10008.1.2.4.70"
 /// JPEG-LS Lossless Image Compression
-#define UID_JPEGLSLosslessTransferSyntax        "1.2.840.10008.1.2.4.80"
+#define UID_JPEGLSLosslessTransferSyntax                 "1.2.840.10008.1.2.4.80"
 /// JPEG-LS Lossy (Near-Lossless) Image Compression
-#define UID_JPEGLSLossyTransferSyntax           "1.2.840.10008.1.2.4.81"
+#define UID_JPEGLSLossyTransferSyntax                    "1.2.840.10008.1.2.4.81"
 /// JPEG 2000 Image Compression (Lossless Only)
-#define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
+#define UID_JPEG2000LosslessOnlyTransferSyntax           "1.2.840.10008.1.2.4.90"
 /// JPEG 2000 Image Compression (Lossless or Lossy)
-#define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
+#define UID_JPEG2000TransferSyntax                       "1.2.840.10008.1.2.4.91"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only)
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy)
-#define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
+#define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax             "1.2.840.10008.1.2.4.93"
 /// JPIP Referenced
-#define UID_JPIPReferencedTransferSyntax        "1.2.840.10008.1.2.4.94"
+#define UID_JPIPReferencedTransferSyntax                                          "1.2.840.10008.1.2.4.94"
 /// JPIP Referenced Deflate
-#define UID_JPIPReferencedDeflateTransferSyntax "1.2.840.10008.1.2.4.95"
+#define UID_JPIPReferencedDeflateTransferSyntax                                   "1.2.840.10008.1.2.4.95"
 /// MPEG2 Main Profile @ Main Level (changed with DICOM 2016e to: MPEG2 Main Profile / Main Level)
-#define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
+#define UID_MPEG2MainProfileAtMainLevelTransferSyntax                             "1.2.840.10008.1.2.4.100"
 /// Fragmentable MPEG2 Main Profile / Main Level
-#define UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax "1.2.840.10008.1.2.4.100.1"
+#define UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax                   "1.2.840.10008.1.2.4.100.1"
 /// MPEG2 Main Profile @ High Level (changed with DICOM 2016e to: MPEG2 Main Profile / High Level)
-#define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
+#define UID_MPEG2MainProfileAtHighLevelTransferSyntax                             "1.2.840.10008.1.2.4.101"
 /// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
-#define UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax "1.2.840.10008.1.2.4.101.1"
+#define UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax                   "1.2.840.10008.1.2.4.101.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.1
-#define UID_MPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102"
+#define UID_MPEG4HighProfileLevel4_1TransferSyntax                                "1.2.840.10008.1.2.4.102"
 /// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
-#define UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102.1"
+#define UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax                    "1.2.840.10008.1.2.4.102.1"
 /// MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
-#define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103"
+#define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax                    "1.2.840.10008.1.2.4.103"
 /// Fragmentable MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
-#define UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103.1"
+#define UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax        "1.2.840.10008.1.2.4.103.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
-#define UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax "1.2.840.10008.1.2.4.104"
+#define UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax                     "1.2.840.10008.1.2.4.104"
 /// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
-#define UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax "1.2.840.10008.1.2.4.104.1"
+#define UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax         "1.2.840.10008.1.2.4.104.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
-#define UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax "1.2.840.10008.1.2.4.105"
+#define UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax                     "1.2.840.10008.1.2.4.105"
 /// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
-#define UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax "1.2.840.10008.1.2.4.105.1"
+#define UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax         "1.2.840.10008.1.2.4.105.1"
 /// MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
-#define UID_MPEG4StereoHighProfileLevel4_2TransferSyntax "1.2.840.10008.1.2.4.106"
+#define UID_MPEG4StereoHighProfileLevel4_2TransferSyntax                          "1.2.840.10008.1.2.4.106"
 /// Fragmentable MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
-#define UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax "1.2.840.10008.1.2.4.106.1"
+#define UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax              "1.2.840.10008.1.2.4.106.1"
 /// HEVC/H.265 Main Profile / Level 5.1
-#define UID_HEVCMainProfileLevel5_1TransferSyntax "1.2.840.10008.1.2.4.107"
+#define UID_HEVCMainProfileLevel5_1TransferSyntax                                 "1.2.840.10008.1.2.4.107"
 /// HEVC/H.265 Main 10 Profile / Level 5.1
-#define UID_HEVCMain10ProfileLevel5_1TransferSyntax "1.2.840.10008.1.2.4.108"
+#define UID_HEVCMain10ProfileLevel5_1TransferSyntax                               "1.2.840.10008.1.2.4.108"
+/// High-Throughput JPEG 2000 Image Compression (Lossless Only)
+#define UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax      "1.2.840.10008.1.2.4.201"
+/// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
+#define UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.202"
+/// High-Throughput JPEG 2000 Image Compression
+#define UID_HighThroughputJPEG2000ImageCompressionTransferSyntax                  "1.2.840.10008.1.2.4.203"
+/// JPIP HTJ2K Referenced
+#define UID_JPIPHTJ2KReferencedTransferSyntax                                     "1.2.840.10008.1.2.4.204"
+/// JPIP HTJ2K Referenced Deflate
+#define UID_JPIPHTJ2KReferencedDeflateTransferSyntax                              "1.2.840.10008.1.2.4.205"
 /// RLE Lossless
-#define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
+#define UID_RLELosslessTransferSyntax                                             "1.2.840.10008.1.2.5"
 /// SMPTE ST 2110-20 Uncompressed Progressive Active Video
-#define UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax "1.2.840.10008.1.2.7.1"
+#define UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax       "1.2.840.10008.1.2.7.1"
 /// SMPTE ST 2110-20 Uncompressed Interlaced Active Video
-#define UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax "1.2.840.10008.1.2.7.2"
+#define UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax        "1.2.840.10008.1.2.7.2"
 /// SMPTE ST 2110-30 PCM Digital Audio
-#define UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax "1.2.840.10008.1.2.7.3"
+#define UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax                          "1.2.840.10008.1.2.7.3"
 
 /** RFC 2557 MIME Encapsulation (RETIRED) was only a pseudo transfer syntax used
  *  to refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
  *  on a DICOM storage medium. It was never used for network communication
  *  or encoding of DICOM objects.
  */
-#define UID_RETIRED_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
+#define UID_RETIRED_RFC2557MIMEEncapsulationTransferSyntax     "1.2.840.10008.1.2.6.1"
 
 /** XML Encoding (RETIRED) was only a pseudo transfer syntax used to refer to
  *  encapsulated HL7 CDA documents from a DICOMDIR when stored on a DICOM storage
  *  medium. It was never used for network communication or encoding of DICOM objects.
  */
-#define UID_RETIRED_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
+#define UID_RETIRED_XMLEncodingTransferSyntax                  "1.2.840.10008.1.2.6.2"
 
 /** Private transfer syntax defined by GE. This transfer syntax is identical to
  *  Implicit VR Little Endian, except that Pixel Data are encoded in big endian.

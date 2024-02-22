@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -133,8 +133,18 @@ typedef enum {
     EXS_HEVCMainProfileLevel5_1 = 46,
     /// HEVC/H.265 Main 10 Profile / Level 5.1
     EXS_HEVCMain10ProfileLevel5_1 = 47,
+    /// High-Throughput JPEG 2000 Image Compression (Lossless Only)
+    EXS_HighThroughputJPEG2000LosslessOnly = 48,
+    /// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
+    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 49,
+    /// High-Throughput JPEG 2000 Image Compression
+    EXS_HighThroughputJPEG2000 = 50,
+    /// JPIP HTJ2K Referenced
+    EXS_JPIPHTJ2KReferenced = 51,
+    /// JPIP HTJ2K Referenced Deflate
+    EXS_JPIPHTJ2KReferencedDeflate = 52,
     /// Private GE Little Endian Implicit with big endian pixel data
-    EXS_PrivateGE_LEI_WithBigEndianPixelData = 48
+    EXS_PrivateGE_LEI_WithBigEndianPixelData = 53
 } E_TransferSyntax;
 
 /** enumeration of byte orders
