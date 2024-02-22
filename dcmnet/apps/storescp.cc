@@ -2255,11 +2255,19 @@ static void executeOnReception()
   // perform substitution for placeholder #a
   s = callingAETitle;
   sanitizeAETitle(s);
+  if (s != callingAETitle)
+  {
+    OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling aetitle, converted from " << callingAETitle << " to " << s << ".");
+  }
   cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), s );
 
   // perform substitution for placeholder #c
   s = calledAETitle;
   sanitizeAETitle(s);
+  if (s != calledAETitle)
+  {
+    OFLOG_WARN(storescpLogger, "Sanitized unusual characters in called aetitle, converted from " << calledAETitle << " to " << s << ".");
+  }
   cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), s );
 
   // perform substitution for placeholder #r

@@ -573,6 +573,11 @@ The specified command line is executed as a separate process, so that the
 execution of \b storescp will not be held back.  This behavior can be influenced
 with the \e --exec-sync option.
 
+Note that the application entity titles (\#a and \#c) will be 'sanitized'
+to avoid undesirable behavior when the parameters are passed to the shell.
+Unusual characters will be mapped to the '_' character. A warning is printed
+to the logger in this case.
+
 Option \e --exec-on-eostudy allows one to execute a certain command line when
 all DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
