@@ -1641,11 +1641,11 @@ dnl -------------------------------------------------------
 dnl Include config test code from config/tests
 dnl -------------------------------------------------------
 
-ac_enable_cxx11="no"
+ac_enable_cxx11="yes"
 AC_MSG_CHECKING(whether to enable C++11 support)
 AC_ARG_ENABLE(cxx11,
-[  --enable-cxx11          use C++11
-  --disable-cxx11         do not use C++11 (default)],
+[  --enable-cxx11          use C++11 (default)
+  --disable-cxx11         do not use C++11],
 [ case "$enableval" in
   yes)
    AC_MSG_RESULT()

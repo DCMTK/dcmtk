@@ -1408,8 +1408,8 @@ Optional Features:
                           enable builtin oficonv data files
   --disable-builtin-oficonv
                           disable builtin oficonv data files (default)
-  --enable-cxx11          use C++11
-  --disable-cxx11         do not use C++11 (default)
+  --enable-cxx11          use C++11 (default)
+  --disable-cxx11         do not use C++11
   --enable-stl            use C++ STL
   --disable-stl           do not use C++ STL (default)
   --enable-stl-vector     use C++ STL vector
@@ -17660,7 +17660,7 @@ fi
 
 
 
-ac_enable_cxx11="no"
+ac_enable_cxx11="yes"
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable C++11 support" >&5
 $as_echo_n "checking whether to enable C++11 support... " >&6; }
 # Check whether --enable-cxx11 was given.
