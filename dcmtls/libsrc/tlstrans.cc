@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2023, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,27 +92,15 @@ static OFCondition convertSSLError(int sslError)
     case SSL_ERROR_WANT_ACCEPT:
       return DCMTLS_EC_TLSAcceptOperationDidNotComplete;
       break;
-
-#ifdef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC
-    // SSL_ERROR_WANT_ASYNC is defined starting with OpenSSL 1.1.0
     case SSL_ERROR_WANT_ASYNC:
       return DCMTLS_EC_TLSAsyncOperationDidNotComplete;
       break;
-#endif
-
-#ifdef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC_JOB
-    // SSL_ERROR_WANT_ASYNC_JOB is defined starting with OpenSSL 1.1.0
     case SSL_ERROR_WANT_ASYNC_JOB:
       return DCMTLS_EC_TLSAsyncJobCouldNotBeStarted;
       break;
-#endif
-
-#if HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_CLIENT_HELLO_CB
-    // SSL_ERROR_WANT_CLIENT_HELLO_CB is defined starting with OpenSSL 1.1.1
     case SSL_ERROR_WANT_CLIENT_HELLO_CB:
       return DCMTLS_EC_TLSClientHelloCallbackNeeded;
       break;
-#endif
   }
   return DCMTLS_EC_OtherSSLError;
 }

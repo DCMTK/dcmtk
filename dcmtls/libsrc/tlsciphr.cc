@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2023, OFFIS e.V.
+ *  Copyright (C) 2018-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,10 +33,6 @@ BEGIN_EXTERN_C
 #include <openssl/ssl.h>
 #include <openssl/tls1.h>
 END_EXTERN_C
-
-#ifndef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CIPHERS
-#define SSL_CTX_get_ciphers(ctx) (ctx)->cipher_list
-#endif
 
 /* POD struct for the list of supported ciphersuite
  */
@@ -138,10 +134,7 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
     {"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",              TLS1_TXT_DHE_RSA_WITH_AES_256_SHA,               TPV_SSLv3,  TKE_DH,         TCA_RSA,    TCE_AES,      TCM_SHA1,    TKM_CBC,  256, 256},
     {"TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA",         TLS1_TXT_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA,      TPV_SSLv3,  TKE_DH,         TCA_DSS,    TCE_Camellia, TCM_SHA1,    TKM_CBC,  256, 256},
     {"TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA",         TLS1_TXT_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,      TPV_SSLv3,  TKE_DH,         TCA_RSA,    TCE_Camellia, TCM_SHA1,    TKM_CBC,  256, 256},
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */
     {"TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256",     TLS1_TXT_DHE_RSA_WITH_CHACHA20_POLY1305,         TPV_TLSv12, TKE_DH,         TCA_RSA,    TCE_ChaCha20, TCM_AEAD,    TKM_NA,   256, 256},
-#endif
     {"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",           TLS1_TXT_DHE_DSS_WITH_AES_256_SHA256,            TPV_TLSv12, TKE_DH,         TCA_DSS,    TCE_AES,      TCM_SHA256,  TKM_CBC,  256, 256},
     {"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",           TLS1_TXT_DHE_RSA_WITH_AES_256_SHA256,            TPV_TLSv12, TKE_DH,         TCA_RSA,    TCE_AES,      TCM_SHA256,  TKM_CBC,  256, 256},
     {"TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",           TLS1_TXT_DHE_DSS_WITH_AES_256_GCM_SHA384,        TPV_TLSv12, TKE_DH,         TCA_DSS,    TCE_AESGCM,   TCM_AEAD,    TKM_GCM,  256, 256},
@@ -158,11 +151,8 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
     {"TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384",  TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384, TPV_TLSv12, TKE_ECDH,     TCA_ECDSA,  TCE_Camellia, TCM_SHA384,  TKM_GCM,  256, 256},
     {"TLS_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384",    TLS1_TXT_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384,   TPV_TLSv12, TKE_ECDH,     TCA_RSA,    TCE_Camellia, TCM_SHA384,  TKM_GCM,  256, 256},
 #endif
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305
-    /* OpenSSL 1.1.0 supports the ChaCha20-Poly1305 ciphersuites defined in RFC 7905 */
     {"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", TLS1_TXT_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,     TPV_TLSv12, TKE_ECDH,       TCA_ECDSA,  TCE_ChaCha20, TCM_AEAD,    TKM_NA,   256, 256},
     {"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",   TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305,       TPV_TLSv12, TKE_ECDH,       TCA_RSA,    TCE_ChaCha20, TCM_AEAD,    TKM_NA,   256, 256},
-#endif
 #ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8
     /* OpenSSL 1.1.1 supports the AES-CCM Elliptic Curve Cryptography (ECC) ciphersuites defined in RFC 7251 */
     {"TLS_ECDHE_ECDSA_WITH_AES_256_CCM",              TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM,           TPV_TLSv12, TKE_ECDH,       TCA_ECDSA,  TCE_AES,      TCM_CBC_MAC, TKM_CCM,  256, 256},
@@ -181,23 +171,16 @@ static const DcmCipherSuiteList globalCipherSuiteList[] =
  *   - then sort by hash key algorithm  (SHA-256 < SHA-384)
  */
 
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
 static const DcmCipherSuiteList globalTLS13CipherSuiteList[] =
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_128_CCM_8_SHA256
     {"TLS_AES_128_CCM_SHA256",                        TLS1_3_RFC_AES_128_CCM_SHA256,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA256,  TKM_CCM,  128, 128},
     {"TLS_AES_128_CCM_8_SHA256",                      TLS1_3_RFC_AES_128_CCM_8_SHA256,                 TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA256,  TKM_CCM,  128, 128},
-#endif
     {"TLS_AES_128_GCM_SHA256",                        TLS1_3_RFC_AES_128_GCM_SHA256,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA256,  TKM_GCM,  128, 128},
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_CHACHA20_POLY1305_SHA256
     {"TLS_CHACHA20_POLY1305_SHA256",                  TLS1_3_RFC_CHACHA20_POLY1305_SHA256,             TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_ChaCha20, TCM_SHA256,  TKM_NA,   256, 256},
-#endif
     {"TLS_AES_256_GCM_SHA384",                        TLS1_3_RFC_AES_256_GCM_SHA384,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA384,  TKM_GCM,  256, 256},
 };
 
 #define GLOBAL_NUM_TLS13_CIPHERSUITES (sizeof(globalCipherSuiteList)/sizeof(DcmCipherSuiteList))
-
-#endif
 
 
 const size_t DcmTLSCiphersuiteHandler::unknownCipherSuiteIndex = (size_t) -1;
@@ -223,12 +206,7 @@ void DcmTLSCiphersuiteHandler::determineSupportedCiphers()
   size_t numEntries = GLOBAL_NUM_CIPHERSUITES;
   for (size_t i = 0; i < numEntries; i++) ciphersuiteSupported[i] = OFFalse;
 
-#ifndef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
-  SSL_CTX *ctx = SSL_CTX_new(SSLv23_method());
-#else
   SSL_CTX *ctx = SSL_CTX_new(TLS_method());
-#endif
-
   if (ctx)
   {
     // we don't want to support SSL2 and SSL3 and its ciphers
@@ -278,7 +256,6 @@ OFCondition DcmTLSCiphersuiteHandler::addRequiredCipherSuite(const char *name)
 OFCondition DcmTLSCiphersuiteHandler::addRequiredTLS13CipherSuite(const char *name)
 {
   if (NULL == name) return EC_IllegalCall;
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   size_t idx = lookupTLS13Ciphersuite(name);
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) tls13ciphersuiteList.push_back(idx);
   else
@@ -287,10 +264,6 @@ OFCondition DcmTLSCiphersuiteHandler::addRequiredTLS13CipherSuite(const char *na
      return DCMTLS_EC_UnknownCiphersuite(name);
   }
   return EC_Normal;
-#else
-  DCMTLS_FATAL("TLS 1.3, and therefore, ciphersuite '" << name << "' not supported by the OpenSSL library used to compile this application.");
-  return DCMTLS_EC_UnknownCiphersuite(name);
-#endif
 }
 
 
@@ -657,11 +630,7 @@ size_t DcmTLSCiphersuiteHandler::getNumberOfCipherSuites()
 
 size_t DcmTLSCiphersuiteHandler::getNumberOfTLS13CipherSuites()
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   return GLOBAL_NUM_TLS13_CIPHERSUITES;
-#else
-  return 0;
-#endif
 }
 
 const char *DcmTLSCiphersuiteHandler::getTLSCipherSuiteName(size_t idx)
@@ -672,9 +641,7 @@ const char *DcmTLSCiphersuiteHandler::getTLSCipherSuiteName(size_t idx)
 
 const char *DcmTLSCiphersuiteHandler::getTLS13CipherSuiteName(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].TLSname;
-#endif
   return NULL;
 }
 
@@ -686,9 +653,7 @@ const char *DcmTLSCiphersuiteHandler::getOpenSSLCipherSuiteName(size_t idx)
 
 const char *DcmTLSCiphersuiteHandler::getOpenSSLTLS13CipherSuiteName(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].openSSLName;
-#endif
   return NULL;
 }
 
@@ -700,9 +665,7 @@ DcmTLSCipherProtocolVersion DcmTLSCiphersuiteHandler::getCipherSuiteProtocolVers
 
 DcmTLSCipherProtocolVersion DcmTLSCiphersuiteHandler::getTLS13CipherSuiteProtocolVersion(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].protocolVersion;
-#endif
   return TPV_TLSv12;  // invalid index, return a (rather arbitrary) default
 }
 
@@ -714,9 +677,7 @@ DcmTLSCipherKeyExchange DcmTLSCiphersuiteHandler::getCipherSuiteKeyExchange(size
 
 DcmTLSCipherKeyExchange DcmTLSCiphersuiteHandler::getTLS13CipherSuiteKeyExchange(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].keyExchange;
-#endif
   return TKE_RSA;  // invalid index, return a (rather arbitrary) default
 }
 
@@ -728,9 +689,7 @@ DcmTLSCipherAuthentication DcmTLSCiphersuiteHandler::getCipherSuiteAuthenticatio
 
 DcmTLSCipherAuthentication DcmTLSCiphersuiteHandler::getTLS13CipherSuiteAuthentication(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].authentication;
-#endif
   return TCA_RSA;  // invalid index, return a (rather arbitrary) default
 }
 
@@ -742,9 +701,7 @@ DcmTLSCipherEncryption DcmTLSCiphersuiteHandler::getCipherSuiteEncryption(size_t
 
 DcmTLSCipherEncryption DcmTLSCiphersuiteHandler::getTLS13CipherSuiteEncryption(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].encryption;
-#endif
   return TCE_None;  // invalid index, return a (rather arbitrary) default
 }
 
@@ -756,9 +713,7 @@ DcmTLSCipherMAC DcmTLSCiphersuiteHandler::getCipherSuiteMAC(size_t idx)
 
 DcmTLSCipherMAC DcmTLSCiphersuiteHandler::getTLS13CipherSuiteMAC(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].mac;
-#endif
   return TCM_AEAD;
 }
 
@@ -770,9 +725,7 @@ DcmTLSCipherMode DcmTLSCiphersuiteHandler::getCipherSuiteMode(size_t idx)
 
 DcmTLSCipherMode DcmTLSCiphersuiteHandler::getTLS13CipherSuiteMode(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].mode;
-#endif
   return TKM_NA;
 }
 
@@ -784,9 +737,7 @@ size_t DcmTLSCiphersuiteHandler::getCipherSuiteKeySize(size_t idx)
 
 size_t DcmTLSCiphersuiteHandler::getTLS13CipherSuiteKeySize(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].keySize;
-#endif
   return 0;
 }
 
@@ -798,9 +749,7 @@ size_t DcmTLSCiphersuiteHandler::getCipherSuiteEffectiveKeySize(size_t idx)
 
 size_t DcmTLSCiphersuiteHandler::getTLS13CipherSuiteEffectiveKeySize(size_t idx)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (idx < GLOBAL_NUM_TLS13_CIPHERSUITES) return globalTLS13CipherSuiteList[idx].effectiveKeySize;
-#endif
   return 0;
 }
 
@@ -821,7 +770,6 @@ size_t DcmTLSCiphersuiteHandler::lookupCiphersuite(const char *tlsCipherSuiteNam
 
 size_t DcmTLSCiphersuiteHandler::lookupTLS13Ciphersuite(const char *tlsCipherSuiteName)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (tlsCipherSuiteName)
   {
     OFString aString(tlsCipherSuiteName);
@@ -831,7 +779,6 @@ size_t DcmTLSCiphersuiteHandler::lookupTLS13Ciphersuite(const char *tlsCipherSui
       if (aString == globalTLS13CipherSuiteList[i].TLSname) return i;
     }
   }
-#endif
 
   // ciphersuite not found
   return unknownCipherSuiteIndex;
@@ -854,7 +801,6 @@ size_t DcmTLSCiphersuiteHandler::lookupCiphersuiteByOpenSSLName(const char *open
 
 size_t DcmTLSCiphersuiteHandler::lookupTLS13CiphersuiteByOpenSSLName(const char *opensslCipherSuiteName)
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   if (opensslCipherSuiteName)
   {
     OFString aString(opensslCipherSuiteName);
@@ -864,7 +810,6 @@ size_t DcmTLSCiphersuiteHandler::lookupTLS13CiphersuiteByOpenSSLName(const char 
       if (aString == globalTLS13CipherSuiteList[i].openSSLName) return i;
     }
   }
-#endif
 
   // ciphersuite not found
   return unknownCipherSuiteIndex;
@@ -882,14 +827,12 @@ void DcmTLSCiphersuiteHandler::printSupportedCiphersuites(STD_NAMESPACE ostream&
 
 void DcmTLSCiphersuiteHandler::printSupportedTLS13Ciphersuites(STD_NAMESPACE ostream& os) const
 {
-#ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
   size_t numEntries = GLOBAL_NUM_TLS13_CIPHERSUITES;
   for (size_t i = 0; i < numEntries; i++)
   {
     if (ciphersuiteSupported[i])
        os << "  " << globalTLS13CipherSuiteList[i].TLSname << OFendl;
   }
-#endif
 }
 
 const char *DcmTLSCiphersuiteHandler::lookupProfileName(DcmTLSSecurityProfile profile)
@@ -953,15 +896,9 @@ OFBool DcmTLSCiphersuiteHandler::isTLS13Enabled() const
 long DcmTLSCiphersuiteHandler::getTLSOptions() const
 {
   long result = 0;
-#ifndef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
-  // When compiling with OpenSSL 1.1.0, SSL support is disabled in DcmTLSTransportLayer anyway.
-  // For older OpenSSL versions we explicitly disable them here.
-  result |= SSL_OP_NO_SSLv2;
-  result |= SSL_OP_NO_SSLv3;
-#endif
 
   // For the Non-downgrading and Extended BCP 195 TLS Profile,
-  // we also disable TLS 1.0 and TLS 1.1
+  // we disable TLS 1.0 and TLS 1.1
   if ((currentProfile == TSP_Profile_BCP195_ND) || (currentProfile == TSP_Profile_BCP195_Extended))
   {
     result |= SSL_OP_NO_TLSv1;

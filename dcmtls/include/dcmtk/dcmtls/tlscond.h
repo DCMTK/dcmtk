@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2023, OFFIS e.V.
+ *  Copyright (C) 2017-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  dcmtls
  *
- *  Author:  Jan Schlamelcher
+ *  Author:  Jan Schlamelcher, Marco Eichelberg
  *
  *  Purpose: error conditions for DcmTLS
  *
@@ -519,6 +519,10 @@ extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_X509VerifyExtensions
 
 /// condition constant: X.509 certificate verification error - Certificate public key has explicit ECC parameters
 extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_X509VerifyECKeyExplicitParams;
+
+/// condition constant: X.509 certificate verification error - Raw public key untrusted, no trusted keys configured
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_X509VerifyRPKUntrusted;
+
 
 // TLS errors and alerts. These use condition codes > DCMTLS_EC_SSL_Offset.
 
@@ -1472,5 +1476,87 @@ extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSTLSv1BadCertifica
 
 /// condition constant: TLS alert: certificate required
 extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSTLSv13AlertCertificateRequired;
+
+
+/// condition constant: TLS error: legacy sigalg disallowed or unsupported
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSLegacySigalgDisallowedOrUnsupported;
+
+/// condition constant: TLS error: missing psk kex modes extension
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSMissingPSKKexModesExtension;
+
+/// condition constant: TLS error: ocsp callback failure
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSOCSPCallbackFailure;
+
+/// condition constant: TLS error: bad certificate
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSBadCertificate;
+
+/// condition constant: TLS error: bad compression algorithm
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSBadCompressionAlgorithm;
+
+/// condition constant: TLS error: conn use only
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSConnUseOnly;
+
+/// condition constant: TLS error: empty raw public key
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSEmptyRawPublicKey;
+
+/// condition constant: TLS error: failed to get parameter
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSFailedToGetParameter;
+
+/// condition constant: TLS error: invalid raw public key
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSInvalidRawPublicKey;
+
+/// condition constant: TLS error: invalid record
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSInvalidRecord;
+
+/// condition constant: TLS error: maximum encrypted pkts reached
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSMaximumEncryptedPktsReached;
+
+/// condition constant: TLS error: no stream
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSNoStream;
+
+/// condition constant: TLS error: no suitable record layer
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSNoSuitableRecordLayer;
+
+/// condition constant: TLS error: quic handshake layer error
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSQUICHandshakeLayerError;
+
+/// condition constant: TLS error: quic network error
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSQUICNetworkError;
+
+/// condition constant: TLS error: quic protocol error
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSQUICProtocolError;
+
+/// condition constant: TLS error: records not released
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSRecordsNotReleased;
+
+/// condition constant: TLS error: record layer failure
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSRecordLayerFailure;
+
+/// condition constant: TLS error: remote peer address not set
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSRemotePeerAddressNotSet;
+
+/// condition constant: TLS error: sequence ctr wrapped
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSSequenceCtrWrapped;
+
+/// condition constant: TLS error: stream count limited
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSStreamCountLimited;
+
+/// condition constant: TLS error: stream finished
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSStreamFinished;
+
+/// condition constant: TLS error: stream recv only
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSStreamRecvOnly;
+
+/// condition constant: TLS error: stream reset
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSStreamReset;
+
+/// condition constant: TLS error: stream send only
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSStreamSendOnly;
+
+/// condition constant: TLS error: unknown mandatory parameter
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSUnknownMandatoryParameter;
+
+/// condition constant: TLS error: wrong rpk type
+extern DCMTK_DCMTLS_EXPORT const OFConditionConst DCMTLS_EC_TLSWrongRPKType;
 
 #endif // TLSCOND_H

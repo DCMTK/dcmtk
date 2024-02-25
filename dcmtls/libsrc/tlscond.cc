@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2023, OFFIS e.V.
+ *  Copyright (C) 2017-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -494,7 +494,7 @@ const DcmTLSECGenericOpenSSLError DCMTLS_EC_GenericOpenSSLError;
 #define X509_V_ERR_INVALID_CA                           79
 #endif
 
-// the following defines were added in OpenSSL 3.0.0
+// the following defines were added in OpenSSL 3.0
 
 #ifndef X509_V_ERR_UNSUPPORTED_SIGNATURE_ALGORITHM
 #define X509_V_ERR_UNSUPPORTED_SIGNATURE_ALGORITHM      76
@@ -549,6 +549,12 @@ const DcmTLSECGenericOpenSSLError DCMTLS_EC_GenericOpenSSLError;
 #endif
 #ifndef X509_V_ERR_EC_KEY_EXPLICIT_PARAMS
 #define X509_V_ERR_EC_KEY_EXPLICIT_PARAMS               94
+#endif
+
+// the following defines were added in OpenSSL 3.2
+
+#ifndef X509_V_ERR_RPK_UNTRUSTED
+#define X509_V_ERR_RPK_UNTRUSTED                        95
 #endif
 
 // OpenSSL 1.x defines X509_V_ERR_INVALID_CA as 24 and does not define X509_V_ERR_NO_ISSUER_PUBLIC_KEY.
@@ -655,6 +661,8 @@ makeOFConditionConst( DCMTLS_EC_X509VerifySubjectKeyIdentifierCritical,    OFM_d
 makeOFConditionConst( DCMTLS_EC_X509VerifyCACertMissingKeyUsage,           OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + X509_V_ERR_CA_CERT_MISSING_KEY_USAGE,            OF_error, "X.509 certificate verification error - CA cert does not include key usage extension" );
 makeOFConditionConst( DCMTLS_EC_X509VerifyExtensionsRequireVersion3,       OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + X509_V_ERR_EXTENSIONS_REQUIRE_VERSION_3,         OF_error, "X.509 certificate verification error - Using cert extension requires at least X509v3" );
 makeOFConditionConst( DCMTLS_EC_X509VerifyECKeyExplicitParams,             OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + X509_V_ERR_EC_KEY_EXPLICIT_PARAMS,               OF_error, "X.509 certificate verification error - Certificate public key has explicit ECC parameters" );
+makeOFConditionConst( DCMTLS_EC_X509VerifyRPKUntrusted,                    OFM_dcmtls, DCMTLS_EC_X509Verify_Offset + X509_V_ERR_RPK_UNTRUSTED,                        OF_error, "X.509 certificate verification error - Raw public key untrusted, no trusted keys configured" );
+
 
 // the following defines are present in OpenSSL 1.0.1
 
@@ -1967,6 +1975,94 @@ makeOFConditionConst( DCMTLS_EC_X509VerifyECKeyExplicitParams,             OFM_d
 #define SSL_R_CANNOT_GET_GROUP_NAME                         299
 #endif
 
+// the following defines were added in OpenSSL 3.1
+
+#ifndef SSL_R_LEGACY_SIGALG_DISALLOWED_OR_UNSUPPORTED
+#define SSL_R_LEGACY_SIGALG_DISALLOWED_OR_UNSUPPORTED       333
+#endif
+#ifndef SSL_R_MISSING_PSK_KEX_MODES_EXTENSION
+#define SSL_R_MISSING_PSK_KEX_MODES_EXTENSION               310
+#endif
+#ifndef SSL_R_OCSP_CALLBACK_FAILURE
+#define SSL_R_OCSP_CALLBACK_FAILURE                         305
+#endif
+
+// the following defines were added in OpenSSL 3.2
+
+#ifndef SSL_R_BAD_CERTIFICATE
+#define SSL_R_BAD_CERTIFICATE                               348
+#endif
+#ifndef SSL_R_BAD_COMPRESSION_ALGORITHM
+#define SSL_R_BAD_COMPRESSION_ALGORITHM                     326
+#endif
+#ifndef SSL_R_CONN_USE_ONLY
+#define SSL_R_CONN_USE_ONLY                                 356
+#endif
+#ifndef SSL_R_EMPTY_RAW_PUBLIC_KEY
+#define SSL_R_EMPTY_RAW_PUBLIC_KEY                          349
+#endif
+#ifndef SSL_R_FAILED_TO_GET_PARAMETER
+#define SSL_R_FAILED_TO_GET_PARAMETER                       316
+#endif
+#ifndef SSL_R_INVALID_RAW_PUBLIC_KEY
+#define SSL_R_INVALID_RAW_PUBLIC_KEY                        350
+#endif
+#ifndef SSL_R_INVALID_RECORD
+#define SSL_R_INVALID_RECORD                                317
+#endif
+#ifndef SSL_R_MAXIMUM_ENCRYPTED_PKTS_REACHED
+#define SSL_R_MAXIMUM_ENCRYPTED_PKTS_REACHED                395
+#endif
+#ifndef SSL_R_NO_STREAM
+#define SSL_R_NO_STREAM                                     355
+#endif
+#ifndef SSL_R_NO_SUITABLE_RECORD_LAYER
+#define SSL_R_NO_SUITABLE_RECORD_LAYER                      322
+#endif
+#ifndef SSL_R_QUIC_HANDSHAKE_LAYER_ERROR
+#define SSL_R_QUIC_HANDSHAKE_LAYER_ERROR                    393
+#endif
+#ifndef SSL_R_QUIC_NETWORK_ERROR
+#define SSL_R_QUIC_NETWORK_ERROR                            387
+#endif
+#ifndef SSL_R_QUIC_PROTOCOL_ERROR
+#define SSL_R_QUIC_PROTOCOL_ERROR                           382
+#endif
+#ifndef SSL_R_RECORDS_NOT_RELEASED
+#define SSL_R_RECORDS_NOT_RELEASED                          321
+#endif
+#ifndef SSL_R_RECORD_LAYER_FAILURE
+#define SSL_R_RECORD_LAYER_FAILURE                          313
+#endif
+#ifndef SSL_R_REMOTE_PEER_ADDRESS_NOT_SET
+#define SSL_R_REMOTE_PEER_ADDRESS_NOT_SET                   346
+#endif
+#ifndef SSL_R_SEQUENCE_CTR_WRAPPED
+#define SSL_R_SEQUENCE_CTR_WRAPPED                          327
+#endif
+#ifndef SSL_R_STREAM_COUNT_LIMITED
+#define SSL_R_STREAM_COUNT_LIMITED                          411
+#endif
+#ifndef SSL_R_STREAM_FINISHED
+#define SSL_R_STREAM_FINISHED                               365
+#endif
+#ifndef SSL_R_STREAM_RECV_ONLY
+#define SSL_R_STREAM_RECV_ONLY                              366
+#endif
+#ifndef SSL_R_STREAM_RESET
+#define SSL_R_STREAM_RESET                                  375
+#endif
+#ifndef SSL_R_STREAM_SEND_ONLY
+#define SSL_R_STREAM_SEND_ONLY                              379
+#endif
+#ifndef SSL_R_UNKNOWN_MANDATORY_PARAMETER
+#define SSL_R_UNKNOWN_MANDATORY_PARAMETER                   323
+#endif
+#ifndef SSL_R_WRONG_RPK_TYPE
+#define SSL_R_WRONG_RPK_TYPE                                351
+#endif
+
+
 // X.509 certificate verification errors use condition codes > DCMTLS_EC_SSL_Offset.
 
 makeOFConditionConst( DCMTLS_EC_TLSAppDataInHandshake,                     OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_APP_DATA_IN_HANDSHAKE,                            OF_error, "TLS error: app data in handshake" );
@@ -2286,3 +2382,30 @@ makeOFConditionConst( DCMTLS_EC_TLSTLSv1UnrecognizedName,                  OFM_d
 makeOFConditionConst( DCMTLS_EC_TLSTLSv1BadCertificateStatusResponse,      OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_TLSV1_BAD_CERTIFICATE_STATUS_RESPONSE,            OF_error, "TLS error: bad certificate status response" );
 makeOFConditionConst( DCMTLS_EC_TLSTLSv1BadCertificateHashValue,           OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_TLSV1_BAD_CERTIFICATE_HASH_VALUE,                 OF_error, "TLS error: bad certificate hash value" );
 makeOFConditionConst( DCMTLS_EC_TLSTLSv13AlertCertificateRequired,         OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_TLSV13_ALERT_CERTIFICATE_REQUIRED,                OF_error, "TLS alert: certificate required" );
+makeOFConditionConst( DCMTLS_EC_TLSLegacySigalgDisallowedOrUnsupported,    OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_LEGACY_SIGALG_DISALLOWED_OR_UNSUPPORTED,          OF_error, "TLS error: legacy sigalg disallowed or unsupported" );
+makeOFConditionConst( DCMTLS_EC_TLSMissingPSKKexModesExtension,            OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_MISSING_PSK_KEX_MODES_EXTENSION,                  OF_error, "TLS error: missing psk kex modes extension" );
+makeOFConditionConst( DCMTLS_EC_TLSOCSPCallbackFailure,                    OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_OCSP_CALLBACK_FAILURE,                            OF_error, "TLS error: ocsp callback failure" );
+makeOFConditionConst( DCMTLS_EC_TLSBadCertificate,                         OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_BAD_CERTIFICATE,                                  OF_error, "TLS error: bad certificate" );
+makeOFConditionConst( DCMTLS_EC_TLSBadCompressionAlgorithm,                OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_BAD_COMPRESSION_ALGORITHM,                        OF_error, "TLS error: bad compression algorithm" );
+makeOFConditionConst( DCMTLS_EC_TLSConnUseOnly,                            OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_CONN_USE_ONLY,                                    OF_error, "TLS error: conn use only" );
+makeOFConditionConst( DCMTLS_EC_TLSEmptyRawPublicKey,                      OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_EMPTY_RAW_PUBLIC_KEY,                             OF_error, "TLS error: empty raw public key" );
+makeOFConditionConst( DCMTLS_EC_TLSFailedToGetParameter,                   OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_FAILED_TO_GET_PARAMETER,                          OF_error, "TLS error: failed to get parameter" );
+makeOFConditionConst( DCMTLS_EC_TLSInvalidRawPublicKey,                    OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_INVALID_RAW_PUBLIC_KEY,                           OF_error, "TLS error: invalid raw public key" );
+makeOFConditionConst( DCMTLS_EC_TLSInvalidRecord,                          OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_INVALID_RECORD,                                   OF_error, "TLS error: invalid record" );
+makeOFConditionConst( DCMTLS_EC_TLSMaximumEncryptedPktsReached,            OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_MAXIMUM_ENCRYPTED_PKTS_REACHED,                   OF_error, "TLS error: maximum encrypted pkts reached" );
+makeOFConditionConst( DCMTLS_EC_TLSNoStream,                               OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_NO_STREAM,                                        OF_error, "TLS error: no stream" );
+makeOFConditionConst( DCMTLS_EC_TLSNoSuitableRecordLayer,                  OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_NO_SUITABLE_RECORD_LAYER,                         OF_error, "TLS error: no suitable record layer" );
+makeOFConditionConst( DCMTLS_EC_TLSQUICHandshakeLayerError,                OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_QUIC_HANDSHAKE_LAYER_ERROR,                       OF_error, "TLS error: quic handshake layer error" );
+makeOFConditionConst( DCMTLS_EC_TLSQUICNetworkError,                       OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_QUIC_NETWORK_ERROR,                               OF_error, "TLS error: quic network error" );
+makeOFConditionConst( DCMTLS_EC_TLSQUICProtocolError,                      OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_QUIC_PROTOCOL_ERROR,                              OF_error, "TLS error: quic protocol error" );
+makeOFConditionConst( DCMTLS_EC_TLSRecordsNotReleased,                     OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_RECORDS_NOT_RELEASED,                             OF_error, "TLS error: records not released" );
+makeOFConditionConst( DCMTLS_EC_TLSRecordLayerFailure,                     OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_RECORD_LAYER_FAILURE,                             OF_error, "TLS error: record layer failure" );
+makeOFConditionConst( DCMTLS_EC_TLSRemotePeerAddressNotSet,                OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_REMOTE_PEER_ADDRESS_NOT_SET,                      OF_error, "TLS error: remote peer address not set" );
+makeOFConditionConst( DCMTLS_EC_TLSSequenceCtrWrapped,                     OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_SEQUENCE_CTR_WRAPPED,                             OF_error, "TLS error: sequence ctr wrapped" );
+makeOFConditionConst( DCMTLS_EC_TLSStreamCountLimited,                     OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_STREAM_COUNT_LIMITED,                             OF_error, "TLS error: stream count limited" );
+makeOFConditionConst( DCMTLS_EC_TLSStreamFinished,                         OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_STREAM_FINISHED,                                  OF_error, "TLS error: stream finished" );
+makeOFConditionConst( DCMTLS_EC_TLSStreamRecvOnly,                         OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_STREAM_RECV_ONLY,                                 OF_error, "TLS error: stream recv only" );
+makeOFConditionConst( DCMTLS_EC_TLSStreamReset,                            OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_STREAM_RESET,                                     OF_error, "TLS error: stream reset" );
+makeOFConditionConst( DCMTLS_EC_TLSStreamSendOnly,                         OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_STREAM_SEND_ONLY,                                 OF_error, "TLS error: stream send only" );
+makeOFConditionConst( DCMTLS_EC_TLSUnknownMandatoryParameter,              OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_UNKNOWN_MANDATORY_PARAMETER,                      OF_error, "TLS error: unknown mandatory parameter" );
+makeOFConditionConst( DCMTLS_EC_TLSWrongRPKType,                           OFM_dcmtls, DCMTLS_EC_SSL_Offset + SSL_R_WRONG_RPK_TYPE,                                   OF_error, "TLS error: wrong rpk type" );
