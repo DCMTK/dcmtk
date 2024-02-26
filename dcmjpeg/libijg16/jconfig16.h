@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,10 +33,6 @@
 #undef INCOMPLETE_TYPES_BROKEN
 
 /* the following settings are derived from osconfig.h */
-
-#ifndef HAVE_C_CONST
-#define const
-#endif
 
 #ifdef C_CHAR_UNSIGNED
 #define CHAR_IS_UNSIGNED

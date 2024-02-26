@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,10 +42,6 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdefine.h"
-
-#ifndef HAVE_CLASS_TEMPLATE
-#error Your C++ compiler cannot handle class templates:
-#endif
 
 #ifdef HAVE_STL_LIST
 // It is possible to use the standard template library list class since the
@@ -522,30 +518,12 @@ public:
 };
 
 
-#ifdef HAVE_FUNCTION_TEMPLATE
 
 #define OFListInsert(InputIterator, T, c, pos, first, last) OF_ListInsert((c), (pos), (first), (last))
-
 #define OFListRemoveIf(Predicate, T, c, pred) OF_ListRemoveIf((c), (pred))
-
-#elif defined(HAVE_STATIC_TEMPLATE_METHOD)
-
-#define OFListInsert(InputIterator, T, c, pos, first, last) OF_ListInsertClass<InputIterator, T>::OF_ListInsert((c), (pos), (first), (last))
-
-#define OFListRemoveIf(Predicate, T, c, pred) OF_ListRemoveIfClass<Predicate, T>::OF_ListRemoveIf((c), (pred))
-
-#else
-#error Your C++ Compiler is not capable of compiling this code
-#endif
 
 // Insert the elements in range [first, last) into list
 template <class InputIterator, class T>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_ListInsertClass
-{
-public:
-static
-#endif
 void OF_ListInsert(OFList<T>& c, OFIterator<T> position,
                   InputIterator first, InputIterator last)
 {
@@ -555,19 +533,10 @@ void OF_ListInsert(OFList<T>& c, OFIterator<T> position,
         ++first;
     }
 }
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 // Erases all elements in the list referred by an iterator i where
 // pred(*i) == true
 template <class Predicate, class T>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_ListRemoveIfClass
-{
-public:
-static
-#endif
 void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 {
     OFIterator<T> first = c.begin();
@@ -580,10 +549,6 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
             ++first;
     }
 }
-
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 #define OFListIterator(x) OFIterator< x >
 #define OFListConstIterator(x) OFIterator< x >

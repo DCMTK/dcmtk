@@ -96,9 +96,6 @@
 /* Define to 1 if you have the `connect' function. */
 #cmakedefine HAVE_CONNECT @HAVE_CONNECT@
 
-/* define if the compiler supports const_cast<> */
-#define HAVE_CONST_CAST 1
-
 /* Define to 1 if you have the <ctype.h> header file. */
 #cmakedefine HAVE_CTYPE_H @HAVE_CTYPE_H@
 
@@ -107,12 +104,6 @@
 
 /* Define to 1 if you have the `fgetln' function. */
 #cmakedefine HAVE_FGETLN @HAVE_FGETLN@
-
-/* Define if volatile is a known keyword */
-#define HAVE_CXX_VOLATILE 1
-
-/* Define if "const" is supported by the C compiler */
-#define HAVE_C_CONST 1
 
 /* Define if your system has a declaration for fp_except_t in ieeefp.h */
 #cmakedefine HAVE_DECLARATION_FP_EXCEPT_T @HAVE_DECLARATION_FP_EXCEPT_T@
@@ -125,10 +116,6 @@
    iostream.h */
 #cmakedefine HAVE_DECLARATION_STD__IOS_BASE__OPENMODE @HAVE_DECLARATION_STD__IOS_BASE__OPENMODE@
 
-/* Define if your system has a declaration for struct utimbuf in sys/types.h
-   utime.h sys/utime.h */
-#define HAVE_DECLARATION_STRUCT_UTIMBUF 1
-
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
 #cmakedefine HAVE_DIRENT_H @HAVE_DIRENT_H@
 
@@ -138,9 +125,6 @@
 /* Define to 1 if you have the `_doprnt' function. */
 #cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
 
-/* define if the compiler supports dynamic_cast<> */
-#define HAVE_DYNAMIC_CAST 1
-
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
 /* #undef HAVE_EMPTY_ARGC_ARGV */
 
@@ -149,10 +133,6 @@
 
 /* Define to 1 if <errno.h> defined ENAMETOOLONG. */
 #cmakedefine HAVE_ENAMETOOLONG @HAVE_ENAMETOOLONG@
-
-/* Define if your C++ compiler supports the explicit template specialization
-   syntax */
-#define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #cmakedefine HAVE_FCNTL_H @HAVE_FCNTL_H@
@@ -183,9 +163,6 @@
 
 /* Define to 1 if you have the `ftime' function. */
 #cmakedefine HAVE_FTIME @HAVE_FTIME@
-
-/* Define if your C++ compiler can work with function templates */
-#define HAVE_FUNCTION_TEMPLATE 1
 
 /* Define to 1 if you have the `getaddrinfo' function. */
 #cmakedefine HAVE_GETADDRINFO @HAVE_GETADDRINFO@
@@ -342,9 +319,6 @@
 
 /* Define to 1 if you have the `lstat' function. */
 #cmakedefine HAVE_LSTAT @HAVE_LSTAT@
-
-/* Define to 1 if you support file names longer than 14 characters. */
-#define HAVE_LONG_FILE_NAMES 1
 
 /* Define to 1 if you have the `malloc_debug' function. */
 #cmakedefine HAVE_MALLOC_DEBUG @HAVE_MALLOC_DEBUG@
@@ -566,9 +540,6 @@
 /* Define to 1 if you have the <pwd.h> header file. */
 #cmakedefine HAVE_PWD_H @HAVE_PWD_H@
 
-/* define if the compiler supports reinterpret_cast<> */
-#define HAVE_REINTERPRET_CAST 1
-
 /* Define to 1 if you have the `rindex' function. */
 #cmakedefine HAVE_RINDEX @HAVE_RINDEX@
 
@@ -604,13 +575,6 @@
 
 /* Define to 1 if you have the `stat' function. */
 #cmakedefine HAVE_STAT @HAVE_STAT@
-
-/* define if the compiler supports static_cast<> */
-#define HAVE_STATIC_CAST 1
-
-/* Define if your C++ compiler can work with static methods in class templates
-   */
-#define HAVE_STATIC_TEMPLATE_METHOD 1
 
 /* Define to 1 if you have the <stat.h> header file. */
 #cmakedefine HAVE_STAT_H @HAVE_STAT_H@
@@ -930,9 +894,6 @@
 
 /* The size of a `off_t', as computed by sizeof. */
 #cmakedefine SIZEOF_OFF_T @SIZEOF_OFF_T@
-
-/* Define to 1 if you have the ANSI C header files. */
-#define STDC_HEADERS 1
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 /* #undef TM_IN_SYS_TIME */
@@ -1297,6 +1258,41 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 
 /* Define if we have the <openssl/provider.h> header file*/
 #cmakedefine HAVE_OPENSSL_PROVIDER_H @HAVE_OPENSSL_PROVIDER_H@
+
+/* Historical C/C++ language features and APIs that are guaranteed by C++98,
+ * C89, or POSIX.1-2001 for Posix platforms, and thus not tested anymore.
+ * These macros are deprecated and will be removed from a future version.
+ */
+
+#if defined(POISON_DEPRECATED_FEATURE_MACROS) && defined(__GNUC__)
+#pragma GCC poison HAVE_CONST_CAST
+#pragma GCC poison HAVE_CXX_VOLATILE
+#pragma GCC poison HAVE_C_CONST
+#pragma GCC poison HAVE_DECLARATION_STRUCT_UTIMBUF
+#pragma GCC poison HAVE_DYNAMIC_CAST
+#pragma GCC poison HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#pragma GCC poison HAVE_FUNCTION_TEMPLATE
+#pragma GCC poison HAVE_LONG_FILE_NAMES
+#pragma GCC poison HAVE_REINTERPRET_CAST
+#pragma GCC poison HAVE_STATIC_CAST
+#pragma GCC poison HAVE_STATIC_TEMPLATE_METHOD
+#pragma GCC poison STDC_HEADERS
+#endif
+
+#if !defined(POISON_DEPRECATED_FEATURE_MACROS) || !defined(__GNUC__)
+#define HAVE_CONST_CAST 1
+#define HAVE_CXX_VOLATILE 1
+#define HAVE_C_CONST 1
+#define HAVE_DECLARATION_STRUCT_UTIMBUF 1
+#define HAVE_DYNAMIC_CAST 1
+#define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
+#define HAVE_FUNCTION_TEMPLATE 1
+#define HAVE_LONG_FILE_NAMES 1
+#define HAVE_REINTERPRET_CAST 1
+#define HAVE_STATIC_CAST 1
+#define HAVE_STATIC_TEMPLATE_METHOD 1
+#define STDC_HEADERS 1
+#endif
 
 /* Historical OpenSSL feature tests that are not required anymore for OpenSSL 1.1.1 and newer.
  * We do not execute these tests and do not use these macros anymore inside DCMTK anymore.

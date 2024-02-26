@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2023, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1272,18 +1272,10 @@ void DVInterface::resetDatabaseReferenceTime()
     // set index file modification time to "yesterday" to make sure
     // we notice any change even if different processes have minor
     // date/time differences (i.e. over NFS)
-#ifdef HAVE_DECLARATION_STRUCT_UTIMBUF
     struct utimbuf utime_buf;
     utime_buf.actime  = OFstatic_cast(time_t, referenceTime);
     utime_buf.modtime = OFstatic_cast(time_t, referenceTime);
     if (0 != utime(databaseIndexFile.c_str(), &utime_buf))
-#else
-    // some old platforms use the prototype int utime(char *file, time_t timep[])
-    time_t utime_buf[2];
-    utime_buf[0]  = OFstatic_cast(time_t, referenceTime);
-    utime_buf[1] = OFstatic_cast(time_t, referenceTime);
-    if (0 != utime(OFconst_cast(char *, databaseIndexFile.c_str()), utime_buf))
-#endif
     {
       DCMPSTAT_WARN("Cannot set database index file modification time");
     } else {
