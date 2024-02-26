@@ -1047,52 +1047,18 @@ AC_CHECK_HEADERS(openssl/x509.h)
 AC_CHECK_HEADERS(openssl/provider.h)
 
 dnl test presence of functions, constants and macros needed for the dcmtls module
-AC_CHECK_EXT_LIB_PROTOTYPE(DH_bits, OpenSSL, openssl/dh.h)
-AC_CHECK_EXT_LIB_COMPILES(EVP_PKEY_RSA_PSS, OpenSSL, openssl/evp.h, [EVP_PKEY_RSA_PSS])
-AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_base_id, OpenSSL, openssl/evp.h)
 AC_CHECK_EXT_LIB_COMPILES(NID_dsa_with_SHA512, OpenSSL, openssl/obj_mac.h, [NID_dsa_with_SHA512])
 AC_CHECK_EXT_LIB_COMPILES(NID_ecdsa_with_SHA3_256, OpenSSL, openssl/obj_mac.h, [NID_ecdsa_with_SHA3_256])
 AC_CHECK_EXT_LIB_COMPILES(NID_sha512_256WithRSAEncryption, OpenSSL, openssl/obj_mac.h, [NID_sha512_256WithRSAEncryption])
 AC_CHECK_EXT_LIB_PROTOTYPE(RAND_egd, OpenSSL, openssl/rand.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_get_cert_store, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_get_ciphers, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_get0_param, OpenSSL, openssl/ssl.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set0_tmp_dh_pkey, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set1_curves, OpenSSL, openssl/ssl.h, [SSL_CTX_set1_curves(0,0,0)])
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set1_sigalgs, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set_ecdh_auto, OpenSSL, openssl/ssl.h, [SSL_CTX_set_ecdh_auto(0,0)])
-AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set_max_proto_version, OpenSSL, openssl/ssl.h, [SSL_CTX_set_max_proto_version(0,0)])
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set_security_level, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(SSL_ERROR_WANT_ASYNC, OpenSSL, openssl/ssl.h, [SSL_ERROR_WANT_ASYNC])
-AC_CHECK_EXT_LIB_COMPILES(SSL_ERROR_WANT_ASYNC_JOB, OpenSSL, openssl/ssl.h, [SSL_ERROR_WANT_ASYNC_JOB])
-AC_CHECK_EXT_LIB_COMPILES(SSL_ERROR_WANT_CLIENT_HELLO_CB, OpenSSL, openssl/ssl.h, [SSL_ERROR_WANT_CLIENT_HELLO_CB])
-AC_CHECK_EXT_LIB_COMPILES(TLS1_3_RFC_AES_128_CCM_8_SHA256, OpenSSL, openssl/ssl.h, [TLS1_3_RFC_AES_128_CCM_8_SHA256])
-AC_CHECK_EXT_LIB_COMPILES(TLS1_3_RFC_AES_256_GCM_SHA384, OpenSSL, openssl/ssl.h, [TLS1_3_RFC_AES_256_GCM_SHA384])
-AC_CHECK_EXT_LIB_COMPILES(TLS1_3_RFC_CHACHA20_POLY1305_SHA256, OpenSSL, openssl/ssl.h, [TLS1_3_RFC_CHACHA20_POLY1305_SHA256])
+AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set1_sigalgs, OpenSSL, openssl/ssl.h, [SSL_CTX_set1_sigalgs(0,0,0)])
 AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8])
 AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384])
-AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305])
-AC_CHECK_EXT_LIB_PROTOTYPE(TLS_method, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(X509_STORE_CTX_get0_cert, OpenSSL, openssl/x509_vfy.h, [X509_STORE_CTX_get0_cert])
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_STORE_get0_param, OpenSSL, openssl/x509.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_get_signature_nid, OpenSSL, openssl/x509.h)
-AC_CHECK_EXT_LIB_COMPILES(OPENSSL_init_crypto, OpenSSL, openssl/crypto.h, [OPENSSL_init_crypto])
 
 dnl test presence of functions, constants and macros needed for the dcmsign module
-AC_CHECK_EXT_LIB_PROTOTYPE(ASN1_STRING_get0_data, OpenSSL, openssl/asn1.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_get0_EC_KEY, OpenSSL, openssl/evp.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_get_group_name, OpenSSL, openssl/evp.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_id, OpenSSL, openssl/evp.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(OSSL_PROVIDER_load, OpenSSL, openssl/provider.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_STATUS_INFO_get0_failure_info, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_STATUS_INFO_get0_status, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_STATUS_INFO_get0_text, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_COMPILES(TS_VERIFY_CTS_set_certs, OpenSSL, openssl/ts.h, [TS_VERIFY_CTS_set_certs(0,0)])
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_VERIFY_CTX_set_data, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_VERIFY_CTX_set_flags, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_VERIFY_CTX_set_store, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_get0_notAfter, OpenSSL, openssl/x509.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_get0_notBefore, OpenSSL, openssl/x509.h)
 
 dnl check if type EVP_MD_CTX is defined as typedef for "struct evp_md_ctx_st" (new) or "struct env_md_ctx_st" (old)
 AC_MSG_CHECKING(whether OpenSSL defines the new typedef of EVP_MD_CTX as struct evp_md_ctx_st)
@@ -1101,15 +1067,6 @@ AH_TEMPLATE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX, [Define if OpenSSL provides
   [struct evp_md_ctx_st *a; EVP_MD_CTX *b=a],
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX) ],
-  [AC_MSG_RESULT(no)])
-
-dnl check if the first parameter passed to X509_ALGOR_get0() should be "const ASN1_OBJECT **" (new) or "ASN1_OBJECT **" (old)
-AC_MSG_CHECKING(whether OpenSSL defines the first parameter of function X509_ALGOR_get0() const)
-AH_TEMPLATE(HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM, [Define if OpenSSL provides the X509_ALGOR_get0() function that expects a const pointer as first parameter.])
-AC_TRY_COMPILE([#include <openssl/x509.h>],
-  [const ASN1_OBJECT *a; X509_ALGOR_get0(&a,0,0,0)],
-  [ AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM) ],
   [AC_MSG_RESULT(no)])
 
 fi

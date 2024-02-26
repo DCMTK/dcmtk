@@ -608,32 +608,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <openssl/evp.h> header file. */
 #undef HAVE_OPENSSL_EVP_H
 
-/* Define if OpenSSL provides a prototype for ASN1_STRING_get0_data in
-   <openssl/asn1.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_ASN1_STRING_GET0_DATA
-
-/* Define if OpenSSL provides a prototype for DH_bits in <openssl/dh.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_DH_BITS
-
-/* Define if OpenSSL provides a prototype for EVP_PKEY_base_id in
-   <openssl/evp.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_BASE_ID
-
-/* Define if OpenSSL provides a prototype for EVP_PKEY_get0_EC_KEY in
-   <openssl/evp.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
-
 /* Define if OpenSSL provides a prototype for EVP_PKEY_get_group_name in
    <openssl/evp.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME
-
-/* Define if OpenSSL provides a prototype for EVP_PKEY_id in <openssl/evp.h>.
-   */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_ID
-
-/* Define if OpenSSL provides a prototype for EVP_PKEY_RSA_PSS in
-   <openssl/evp.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_RSA_PSS
 
 /* Define if OpenSSL provides a prototype for NID_dsa_with_SHA512 in
    <openssl/obj_mac.h>. */
@@ -647,10 +624,6 @@ typedef unsigned short ushort;
    in <openssl/obj_mac.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_NID_SHA512_256WITHRSAENCRYPTION
 
-/* Define if OpenSSL provides a prototype for OPENSSL_init_crypto in
-   <openssl/crypto.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_OPENSSL_INIT_CRYPTO
-
 /* Define if OpenSSL provides a prototype for OSSL_PROVIDER_load in
    <openssl/provider.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_OSSL_PROVIDER_LOAD
@@ -658,65 +631,13 @@ typedef unsigned short ushort;
 /* Define if OpenSSL provides a prototype for RAND_egd in <openssl/rand.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_RAND_EGD
 
-/* Define if OpenSSL provides a prototype for SSL_CTX_get0_param in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET0_PARAM
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_get_cert_store in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CERT_STORE
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_get_ciphers in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CIPHERS
-
 /* Define if OpenSSL provides a prototype for SSL_CTX_set0_tmp_dh_pkey in
    <openssl/ssl.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET0_TMP_DH_PKEY
 
-/* Define if OpenSSL provides a prototype for SSL_CTX_set1_curves in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_CURVES
-
 /* Define if OpenSSL provides a prototype for SSL_CTX_set1_sigalgs in
    <openssl/ssl.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_SIGALGS
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_set_ecdh_auto in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_ECDH_AUTO
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_set_max_proto_version in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_MAX_PROTO_VERSION
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_set_security_level in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_SECURITY_LEVEL
-
-/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_ASYNC in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC
-
-/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_ASYNC_JOB in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC_JOB
-
-/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_CLIENT_HELLO_CB
-   in <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_CLIENT_HELLO_CB
-
-/* Define if OpenSSL provides a prototype for TLS1_3_RFC_AES_128_CCM_8_SHA256
-   in <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_128_CCM_8_SHA256
-
-/* Define if OpenSSL provides a prototype for TLS1_3_RFC_AES_256_GCM_SHA384 in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_AES_256_GCM_SHA384
-
-/* Define if OpenSSL provides a prototype for
-   TLS1_3_RFC_CHACHA20_POLY1305_SHA256 in <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS1_3_RFC_CHACHA20_POLY1305_SHA256
 
 /* Define if OpenSSL provides a prototype for
    TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8 in <openssl/ssl.h>. */
@@ -726,62 +647,6 @@ typedef unsigned short ushort;
    TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 in <openssl/ssl.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384
 
-/* Define if OpenSSL provides a prototype for
-   TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305 in <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305
-
-/* Define if OpenSSL provides a prototype for TLS_method in <openssl/ssl.h>.
-   */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
-
-/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_failure_info
-   in <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_FAILURE_INFO
-
-/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_status in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_STATUS
-
-/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_text in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_TEXT
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTS_set_certs in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTS_SET_CERTS
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_data in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_DATA
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_flags in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_FLAGS
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_store in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_STORE
-
-/* Define if OpenSSL provides a prototype for X509_get0_notAfter in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTAFTER
-
-/* Define if OpenSSL provides a prototype for X509_get0_notBefore in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTBEFORE
-
-/* Define if OpenSSL provides a prototype for X509_get_signature_nid in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_GET_SIGNATURE_NID
-
-/* Define if OpenSSL provides a prototype for X509_STORE_CTX_get0_cert in
-   <openssl/x509_vfy.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_STORE_CTX_GET0_CERT
-
-/* Define if OpenSSL provides a prototype for X509_STORE_get0_param in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_STORE_GET0_PARAM
-
 /* Define to 1 if you have the <openssl/provider.h> header file. */
 #undef HAVE_OPENSSL_PROVIDER_H
 
@@ -790,10 +655,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <openssl/ts.h> header file. */
 #undef HAVE_OPENSSL_TS_H
-
-/* Define if OpenSSL provides the X509_ALGOR_get0() function that expects a
-   const pointer as first parameter. */
-#undef HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM
 
 /* Define to 1 if you have the <openssl/x509.h> header file. */
 #undef HAVE_OPENSSL_X509_H
