@@ -31,12 +31,6 @@
 #include "jmemsys12.h"      /* import the system-dependent declarations */
 #include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
 
-#ifndef NO_GETENV
-#ifndef HAVE_STDLIB_H       /* <stdlib.h> should declare getenv() */
-extern char * getenv JPP((const char * name));
-#endif
-#endif
-
 
 /*
  * Some important notes:

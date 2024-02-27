@@ -38,12 +38,6 @@
 #define CHAR_IS_UNSIGNED
 #endif
 
-#ifdef HAVE_STRINGS_H
-#ifndef HAVE_STRING_H
-#define NEED_BSD_STRINGS
-#endif
-#endif
-
 #ifdef HAVE_SYS_TYPES_H
 #define NEED_SYS_TYPES_H
 #endif

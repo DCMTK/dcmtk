@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,16 +26,6 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofdiag.h"
 #include <csetjmp>
-
-// These two macros are re-defined in the IJG header files.
-// We undefine them here and hope that IJG's configure has
-// come to the same conclusion that we have...
-#ifdef HAVE_STDLIB_H
-#undef HAVE_STDLIB_H
-#endif
-#ifdef HAVE_STDDEF_H
-#undef HAVE_STDDEF_H
-#endif
 
 // use 16K blocks for temporary storage of compressed JPEG data
 #define IJGE16_BLOCKSIZE 16384

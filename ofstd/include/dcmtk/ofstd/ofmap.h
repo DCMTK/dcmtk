@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2019, OFFIS e.V.
+ *  Copyright (C) 2009-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,10 +37,6 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/oflist.h"
-
-#ifndef HAVE_CLASS_TEMPLATE
-#error Your C++ compiler cannot handle class templates:
-#endif
 
 /** associative container class. This class is a subset of std::map.
  */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,10 +39,6 @@
 #else
 
 #include <cassert>
-
-#ifndef HAVE_CLASS_TEMPLATE
-#error Your C++ compiler cannot handle class templates:
-#endif
 
 
 /** non-template single linked list class, used to store elements of a stack.

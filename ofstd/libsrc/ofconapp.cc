@@ -139,7 +139,7 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
     if (hostInfo)
     {
         (*output) << OFendl << "Host type: " << CANONICAL_HOST_TYPE << OFendl;
-#if defined(DCMTK_ENABLE_CHARSET_CONVERSION) && defined(HAVE_LOCALE_H)
+#if defined(DCMTK_ENABLE_CHARSET_CONVERSION)
         /* determine system's current locale */
         const char *currentLocale = setlocale(LC_CTYPE, NULL);
         if (setlocale(LC_CTYPE, "") != NULL)

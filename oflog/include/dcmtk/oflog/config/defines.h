@@ -52,9 +52,7 @@
 #endif
 
 /* */
-#ifdef HAVE_TIME_H
 #define DCMTK_LOG4CPLUS_HAVE_TIME_H
-#endif
 
 /* */
 #ifdef HAVE_SYS_SOCKET_H
@@ -77,24 +75,16 @@
 #endif
 
 /* */
-#ifdef HAVE_STDARG_H
 #define DCMTK_LOG4CPLUS_HAVE_STDARG_H
-#endif
 
 /* */
-#ifdef HAVE_STDIO_H
 #define DCMTK_LOG4CPLUS_HAVE_STDIO_H
-#endif
 
 /* */
-#ifdef HAVE_STDLIB_H
 #define DCMTK_LOG4CPLUS_HAVE_STDLIB_H
-#endif
 
 /* */
-#ifdef HAVE_ERRNO_H
 #define DCMTK_LOG4CPLUS_HAVE_ERRNO_H
-#endif
 
 /* */
 #ifdef HAVE_WCHAR_H
@@ -102,9 +92,7 @@
 #endif
 
 /* */
-#ifdef HAVE_LIMITS_H
 #define DCMTK_LOG4CPLUS_HAVE_LIMITS_H
-#endif
 
 /* */
 #ifdef HAVE_FTIME

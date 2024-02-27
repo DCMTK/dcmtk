@@ -28,10 +28,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
-#ifdef HAVE_SIGNAL_H
+
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
-#endif
 END_EXTERN_C
 
 #include <cerrno>
