@@ -104,7 +104,7 @@
 #cmakedefine HAVE_DECLARATION_SOCKLEN_T @HAVE_DECLARATION_SOCKLEN_T@
 
 /* Define if your system has a declaration for std::ios_base::openmode in
-   iostream.h */
+   <iostream> */
 #cmakedefine HAVE_DECLARATION_STD__IOS_BASE__OPENMODE @HAVE_DECLARATION_STD__IOS_BASE__OPENMODE@
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
@@ -232,9 +232,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
-
-/* Define if your system defines ios::nocreate in iostream.h */
-/* defined below */
 
 /* Define to 1 if you have the <io.h> header file. */
 #cmakedefine HAVE_IO_H @HAVE_IO_H@
@@ -966,7 +963,7 @@ typedef unsigned long ulong;
 #endif /* _MSC_VER >= 1400 */
 #endif /* _MSC_VER */
 
-/* Define if your system defines ios::nocreate in iostream.h */
+/* Define if your system defines ios::nocreate in <iostream> */
 #cmakedefine HAVE_IOS_NOCREATE @HAVE_IOS_NOCREATE@
 
 /* Define if ANSI standard C++ includes use std namespace */

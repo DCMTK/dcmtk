@@ -413,8 +413,6 @@ endif()
     set(HEADERS ${HEADERS} io.h)
   endif()
 
-  set(HEADERS ${HEADERS} iostream.h)
-
   set(HEADERS ${HEADERS} math.h)
 
   if(HAVE_LIBC_H)
@@ -528,16 +526,15 @@ endif()
   # std::vsnprintf and std::vsnprintf need the C++ version of the headers.
   # We just assume they exist when the C version was found
   set(CXXHEADERS)
-
   set(CXXHEADERS ${CXXHEADERS} cmath)
   set(CXXHEADERS ${CXXHEADERS} cstdio)
   set(CXXHEADERS ${CXXHEADERS} cstdarg)
+  set(CXXHEADERS ${CXXHEADERS} cstddef)
+  set(CXXHEADERS ${CXXHEADERS} iostream)
 
   if(HAVE_CSTDINT)
     set(CXXHEADERS ${CXXHEADERS} cstdint)
   endif()
-
-  set(CXXHEADERS ${CXXHEADERS} cstddef)
 
   if(WIN32)
     # CHECK_FUNCTION_EXISTS does not work correctly on Windows (due to symbol name mangling)
