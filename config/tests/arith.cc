@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2021, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,15 +41,11 @@
 #include <xmmintrin.h>
 #endif
 
-#ifdef HAVE_SETJMP_H
 // For setjmp for the SunPro compiler
 #include <setjmp.h>
-#endif
 
-#ifdef HAVE_SIGNAL_H
 // For signal for the SunPro compiler
 #include <signal.h>
-#endif
 
 // hackish definition of cout, as we can't depend on
 // OFConsole.
