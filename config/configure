@@ -15857,9 +15857,21 @@ $as_echo_n "checking whether to enable C++11 support... " >&6; }
 if test "${enable_cxx11+set}" = set; then :
   enableval=$enable_cxx11;  case "$enableval" in
   yes)
+   ac_enable_cxx11="yes"
+   ;;
+
+  *)
+   ac_enable_cxx11="no"
+   ;;
+  esac
+
+fi
+
+
+if test "$ac_enable_cxx11" = "yes"; then
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-     ax_cxx_compile_alternatives="11 0x"    ax_cxx_compile_cxx11_required=false
+     ax_cxx_compile_alternatives="11 0x"    ax_cxx_compile_cxx11_required=true
   ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -16523,18 +16535,11 @@ $as_echo "#define HAVE_CXX11 1" >>confdefs.h
   fi
 
 
-   if test "$HAVE_CXX11 == 1"; then
-     ac_enable_cxx11="yes"
+   if test "$HAVE_CXX11" != 1; then
+     ac_enable_cxx11="no"
    fi
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable C++11 support" >&5
 $as_echo_n "checking whether to enable C++11 support... " >&6; }
-   ;;
-
-  *)
-   ac_enable_cxx11="no"
-   ;;
-  esac
-
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_cxx11" >&5

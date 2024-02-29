@@ -1595,7 +1595,7 @@ AC_ARG_ENABLE(builtin-oficonv,
 
 
 dnl -------------------------------------------------------
-dnl Include config test code from config/tests
+dnl Enable/Disable C++11 support
 dnl -------------------------------------------------------
 
 ac_enable_cxx11="yes"
@@ -1605,12 +1605,7 @@ AC_ARG_ENABLE(cxx11,
   --disable-cxx11         do not use C++11],
 [ case "$enableval" in
   yes)
-   AC_MSG_RESULT()
-   AX_CXX_COMPILE_STDCXX([11], [noext], [optional])
-   if test "$HAVE_CXX11 == 1"; then
-     ac_enable_cxx11="yes"
-   fi
-   AC_MSG_CHECKING(whether to enable C++11 support)
+   ac_enable_cxx11="yes"
    ;;
 
   *)
@@ -1618,11 +1613,21 @@ AC_ARG_ENABLE(cxx11,
    ;;
   esac ]
 )
+
+if test "$ac_enable_cxx11" = "yes"; then
+   AC_MSG_RESULT()
+   AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
+   if test "$HAVE_CXX11" != 1; then
+     ac_enable_cxx11="no"
+   fi
+   AC_MSG_CHECKING(whether to enable C++11 support)
+fi
+
 AC_MSG_RESULT($ac_enable_cxx11)
 
 
 dnl -------------------------------------------------------
-dnl Enable/disable STL support
+dnl Enable/Disable STL support
 dnl -------------------------------------------------------
 
 ac_enable_stl="no"
