@@ -194,14 +194,12 @@ dnl -------------------------------------------------------
 
 AC_AIX
 AC_ISC_POSIX
-AC_SYS_LONG_FILE_NAMES
 
 dnl ----------------------------------------------------------
 dnl Perform some tests with the C compiler, needed for dcmjpeg
 dnl ----------------------------------------------------------
 
 AC_MY_C_INLINE
-AC_MY_C_CONST
 AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
@@ -327,10 +325,6 @@ dnl -------------------------------------------------------
 
 AC_LANG(C++)
 
-AC_CXX_CONST_CAST
-AC_CXX_DYNAMIC_CAST
-AC_CXX_REINTERPRET_CAST
-AC_CXX_STATIC_CAST
 AC_CXX_STD_NOTHROW
 AC_CXX_NOTHROW_DELETE
 AC_CXX_STATIC_ASSERT
@@ -488,61 +482,31 @@ dnl -------------------------------------------------------
 dnl Check for header files
 dnl -------------------------------------------------------
 
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
 AC_CHECK_HEADERS(arpa/inet.h)
-AC_CHECK_HEADERS(assert.h)
-AC_CHECK_HEADERS(ctype.h)
-AC_CHECK_HEADERS(errno.h)
 AC_CHECK_HEADERS(fcntl.h)
+AC_CHECK_HEADERS(fenv.h)
 AC_CHECK_HEADERS(float.h)
 AC_CHECK_HEADERS(fnmatch.h)
-AC_CHECK_HEADERS(fstream)
-AC_CHECK_HEADERS(fstream.h)
 AC_CHECK_HEADERS(grp.h)
 AC_CHECK_HEADERS(ieeefp.h)
 AC_CHECK_HEADERS(io.h)
-AC_CHECK_HEADERS(iomanip)
-AC_CHECK_HEADERS(iomanip.h)
 AC_CHECK_HEADERS(iostream)
-AC_CHECK_HEADERS(iostream.h)
-AC_CHECK_HEADERS(iso646.h)
 AC_CHECK_HEADERS(libc.h)
-AC_CHECK_HEADERS(limits.h)
-AC_CHECK_HEADERS(climits)
-AC_CHECK_HEADERS(locale.h)
 AC_CHECK_HEADERS(malloc.h)
-AC_CHECK_HEADERS(math.h)
-AC_CHECK_HEADERS(cmath)
 AC_CHECK_HEADERS(mqueue.h)
 AC_CHECK_HEADERS(new)
-AC_CHECK_HEADERS(new.h)
 AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(pthread.h)
 AC_CHECK_HEADERS(pwd.h)
 AC_CHECK_HEADERS(semaphore.h)
-AC_CHECK_HEADERS(setjmp.h)
-AC_CHECK_HEADERS(signal.h)
-AC_CHECK_HEADERS(sstream)
-AC_CHECK_HEADERS(sstream.h)
 AC_CHECK_HEADERS(stat.h)
-AC_CHECK_HEADERS(cstdarg)
-AC_CHECK_HEADERS(stdarg.h)
-AC_CHECK_HEADERS(stddef.h)
 AC_CHECK_HEADERS(cstddef)
-AC_CHECK_HEADERS(cstdio)
-AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdint.h)
-AC_CHECK_HEADERS(stdlib.h)
-AC_CHECK_HEADERS(streambuf.h)
-AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
-AC_CHECK_HEADERS(strstrea.h)
-AC_CHECK_HEADERS(strstream)
-AC_CHECK_HEADERS(strstream.h)
 AC_CHECK_HEADERS(synch.h)
 AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
@@ -561,13 +525,11 @@ AC_CHECK_HEADERS(sys/un.h)
 AC_CHECK_HEADERS(sys/utime.h)
 AC_CHECK_HEADERS(sys/utsname.h)
 AC_CHECK_HEADERS(thread.h)
-AC_CHECK_HEADERS(time.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
 AC_CHECK_HEADERS(wchar.h)
 AC_CHECK_HEADERS(wctype.h)
-AC_CHECK_HEADERS(fenv.h)
 AC_CHECK_HEADER(iterator,
     [AC_DEFINE([HAVE_ITERATOR_HEADER], 1, [Define to 1 if you have the <iterator> header file.])]
 )
@@ -866,7 +828,6 @@ AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(vsnprintf, stdio.h stdarg.h)
 AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
-AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h sys/utime.h)
 AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
 AC_CHECK_OLD_READDIR_R
 AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
@@ -887,7 +848,6 @@ AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
 AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
   [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 
-
 AC_CHECK_STD_NAMESPACE
 AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
 AC_CHECK_IOS_NOCREATE(std::ios, fstream)
@@ -896,11 +856,6 @@ AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
 AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
   [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 
-AC_CHECK_CLASS_TEMPLATE
-AC_CHECK_STATIC_TEMPLATE_METHOD
-AC_CHECK_FUNCTION_TEMPLATE
-AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
-AC_CHECK_CXX_VOLATILE
 AC_CXX_TYPENAME
 AC_STDIO_NAMESPACE
 
@@ -1268,10 +1223,8 @@ AS_HELP_STRING([--without-libwrap], [don't include libwrap support])],
     [#ifdef __cplusplus
     extern "C" {
     #endif
-    #ifdef HAVE_STDIO_H
     /* on some platforms, tcpd.h needs stdio.h */
     #include <stdio.h>
-    #endif
     #ifdef HAVE_SYS_TYPES_H
     /* on some platforms, tcpd.h needs sys/types.h */
     #include <sys/types.h>

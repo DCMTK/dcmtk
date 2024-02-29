@@ -108,9 +108,6 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Define to 1 if you have the <assert.h> header file. */
-#undef HAVE_ASSERT_H
-
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
 
@@ -142,38 +139,17 @@
    instead of int. */
 #undef HAVE_CHARP_STRERROR_R
 
-/* Define if your C++ compiler can work with class templates. */
-#undef HAVE_CLASS_TEMPLATE
-
-/* Define to 1 if you have the <climits> header file. */
-#undef HAVE_CLIMITS
-
-/* Define to 1 if you have the <cmath> header file. */
-#undef HAVE_CMATH
-
 /* Define to 1 if you have the `connect' function. */
 #undef HAVE_CONNECT
 
-/* Define if the compiler supports const_cast<>. */
-#undef HAVE_CONST_CAST
-
 /* Define if the contiguous iterator category is supported. */
 #undef HAVE_CONTIGUOUS_ITERATOR_CATEGORY
-
-/* Define to 1 if you have the <cstdarg> header file. */
-#undef HAVE_CSTDARG
 
 /* Define to 1 if you have the <cstddef> header file. */
 #undef HAVE_CSTDDEF
 
 /* Define to 1 if you have the <cstdint> header file. */
 #undef HAVE_CSTDINT
-
-/* Define to 1 if you have the <cstdio> header file. */
-#undef HAVE_CSTDIO
-
-/* Define to 1 if you have the <ctype.h> header file. */
-#undef HAVE_CTYPE_H
 
 /* Define to 1 if you have the `cuserid' function. */
 #undef HAVE_CUSERID
@@ -187,12 +163,6 @@
 /* Define if the compiler supports [[deprecated("message")]]. */
 #undef HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG
 
-/* Define if volatile is a known keyword. */
-#undef HAVE_CXX_VOLATILE
-
-/* Define if "const" is supported by the C compiler. */
-#undef HAVE_C_CONST
-
 /* Define if your system has a declaration for socklen_t in sys/types.h
    sys/socket.h . */
 #undef HAVE_DECLARATION_SOCKLEN_T
@@ -200,10 +170,6 @@
 /* Define if your system has a declaration for std::ios_base::openmode in
    iostream. */
 #undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
-
-/* Define if your system has a declaration for struct utimbuf in sys/types.h
-   utime.h sys/utime.h . */
-#undef HAVE_DECLARATION_STRUCT_UTIMBUF
 
 /* Define if the compiler supports __declspec(deprecated). */
 #undef HAVE_DECLSPEC_DEPRECATED
@@ -222,24 +188,14 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
-/* Define if the compiler supports dynamic_cast<>. */
-#undef HAVE_DYNAMIC_CAST
-
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
 /* #undef HAVE_EMPTY_ARGC_ARGV */
 
 /* Define if your system provides ENAMETOOLONG errno value. */
 #undef HAVE_ENAMETOOLONG
 
-/* Define to 1 if you have the <errno.h> header file. */
-#undef HAVE_ERRNO_H
-
 /* Define to 1 if you have the <err.h> header file. */
 #undef HAVE_ERR_H
-
-/* Define if your C++ compiler supports the explicit template specialization
-   syntax. */
-#undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
 /* Define to 1 if you have the `fcntl' function. */
 #undef HAVE_FCNTL
@@ -277,17 +233,8 @@
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
 
-/* Define to 1 if you have the <fstream> header file. */
-#undef HAVE_FSTREAM
-
-/* Define to 1 if you have the <fstream.h> header file. */
-#undef HAVE_FSTREAM_H
-
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
-
-/* Define if your C++ compiler can work with function templates. */
-#undef HAVE_FUNCTION_TEMPLATE
 
 /* Define to 1 if you have the `getaddrinfo' function. */
 #undef HAVE_GETADDRINFO
@@ -391,17 +338,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the <iomanip> header file. */
-#undef HAVE_IOMANIP
-
-/* Define to 1 if you have the <iomanip.h> header file. */
-#undef HAVE_IOMANIP_H
-
 /* Define to 1 if you have the <iostream> header file. */
 #undef HAVE_IOSTREAM
-
-/* Define to 1 if you have the <iostream.h> header file. */
-#undef HAVE_IOSTREAM_H
 
 /* Define if your system defines ios::nocreate in iostream.h. */
 #undef HAVE_IOS_NOCREATE
@@ -414,9 +352,6 @@
 
 /* Define to 1 if you have the `isnan' function. */
 #undef HAVE_ISNAN
-
-/* Define to 1 if you have the <iso646.h> header file. */
-#undef HAVE_ISO646_H
 
 /* Define to 1 if you have the <iterator> header file. */
 #undef HAVE_ITERATOR_HEADER
@@ -442,14 +377,8 @@
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #undef HAVE_LIBSOCKET
 
-/* Define to 1 if you have the <limits.h> header file. */
-#undef HAVE_LIMITS_H
-
 /* Define to 1 if you have the `listen' function. */
 #undef HAVE_LISTEN
-
-/* Define to 1 if you have the <locale.h> header file. */
-#undef HAVE_LOCALE_H
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
@@ -459,9 +388,6 @@
 
 /* Define to 1 if the system has the type `longlong'. */
 #undef HAVE_LONGLONG
-
-/* Define to 1 if you support file names longer than 14 characters. */
-#undef HAVE_LONG_FILE_NAMES
 
 /* Define to 1 if the system has the type `long long'. */
 #undef HAVE_LONG_LONG
@@ -474,9 +400,6 @@
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
-
-/* Define to 1 if you have the <math.h> header file. */
-#undef HAVE_MATH_H
 
 /* Define to 1 if you have the `mbstowcs' function. */
 #undef HAVE_MBSTOWCS
@@ -525,9 +448,6 @@
 
 /* Define to 1 if you have the <new> header file. */
 #undef HAVE_NEW
-
-/* Define to 1 if you have the <new.h> header file. */
-#undef HAVE_NEW_H
 
 /* Define if the compiler supports operator delete (std::nothrow). */
 #undef HAVE_NOTHROW_DELETE
@@ -819,9 +739,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `readdir_r' function. */
 #undef HAVE_READDIR_R
 
-/* Define if the compiler supports reinterpret_cast<>. */
-#undef HAVE_REINTERPRET_CAST
-
 /* Define to 1 if you have the `rindex' function. */
 #undef HAVE_RINDEX
 
@@ -830,9 +747,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <semaphore.h> header file. */
 #undef HAVE_SEMAPHORE_H
-
-/* Define to 1 if you have the <setjmp.h> header file. */
-#undef HAVE_SETJMP_H
 
 /* Define to 1 if you have the `setsockopt' function. */
 #undef HAVE_SETSOCKOPT
@@ -843,20 +757,11 @@ typedef unsigned short ushort;
 /* Define to 1 if the system has the type `sigjmp_buf'. */
 #undef HAVE_SIGJMP_BUF
 
-/* Define to 1 if you have the <signal.h> header file. */
-#undef HAVE_SIGNAL_H
-
 /* Define to 1 if you have the `sleep' function. */
 #undef HAVE_SLEEP
 
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
-
-/* Define to 1 if you have the <sstream> header file. */
-#undef HAVE_SSTREAM
-
-/* Define to 1 if you have the <sstream.h> header file. */
-#undef HAVE_SSTREAM_H
 
 /* Define to 1 if you have the `stat' function. */
 #undef HAVE_STAT
@@ -864,30 +769,14 @@ typedef unsigned short ushort;
 /* Define if the compiler supports static_assert. */
 #undef HAVE_STATIC_ASSERT
 
-/* Define if the compiler supports static_cast<>. */
-#undef HAVE_STATIC_CAST
-
-/* Define if your C++ compiler can work with static methods in class
-   templates. */
-#undef HAVE_STATIC_TEMPLATE_METHOD
-
 /* Define to 1 if you have the <stat.h> header file. */
 #undef HAVE_STAT_H
-
-/* Define to 1 if you have the <stdarg.h> header file. */
-#undef HAVE_STDARG_H
 
 /* Define to 1 if you have the <stdbool.h> header file. */
 #undef HAVE_STDBOOL_H
 
-/* Define to 1 if you have the <stddef.h> header file. */
-#undef HAVE_STDDEF_H
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
-
-/* Define to 1 if you have the <stdio.h> header file. */
-#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -937,9 +826,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `strdup' function. */
 #undef HAVE_STRDUP
 
-/* Define to 1 if you have the <streambuf.h> header file. */
-#undef HAVE_STREAMBUF_H
-
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
 
@@ -957,15 +843,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `strstr' function. */
 #undef HAVE_STRSTR
-
-/* Define to 1 if you have the <strstream> header file. */
-#undef HAVE_STRSTREAM
-
-/* Define to 1 if you have the <strstream.h> header file. */
-#undef HAVE_STRSTREAM_H
-
-/* Define to 1 if you have the <strstrea.h> header file. */
-#undef HAVE_STRSTREA_H
 
 /* Define to 1 if you have the `strtoul' function. */
 #undef HAVE_STRTOUL
@@ -1058,9 +935,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <thread.h> header file. */
 #undef HAVE_THREAD_H
-
-/* Define to 1 if you have the <time.h> header file. */
-#undef HAVE_TIME_H
 
 /* Define to 1 if you have the `tmpnam' function. */
 #undef HAVE_TMPNAM
