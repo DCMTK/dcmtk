@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2022, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,9 +82,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
-#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -182,11 +180,7 @@ typedef bool OFBool;
 #define OFTrue true
 #define OFFalse false
 
-#if defined(HAVE_TYPENAME)
 #define OFTypename typename
-#else
-#define OFTypename
-#endif
 
 #ifndef DOXYGEN
 struct DCMTK_OFSTD_EXPORT OFnullptr_t

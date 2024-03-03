@@ -87,9 +87,7 @@
 #define DCMTK_LOG4CPLUS_HAVE_ERRNO_H
 
 /* */
-#ifdef HAVE_WCHAR_H
 #define DCMTK_LOG4CPLUS_HAVE_WCHAR_H
-#endif
 
 /* */
 #define DCMTK_LOG4CPLUS_HAVE_LIMITS_H
@@ -328,14 +326,10 @@
 #endif
 
 /* Define to 1 if you have the `mbstowcs' function. */
-#ifdef HAVE_MBSTOWCS
 #define DCMTK_LOG4CPLUS_HAVE_MBSTOWCS
-#endif
 
 /* Define to 1 if you have the `wcstombs' function. */
-#ifdef HAVE_WCSTOMBS
 #define DCMTK_LOG4CPLUS_HAVE_WCSTOMBS
-#endif
 
 /* Define to 1 if you have Linux style syscall(SYS_gettid). */
 #if defined(HAVE_SYS_SYSCALL_H) && defined(HAVE_SYS_GETTID)

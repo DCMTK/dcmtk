@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2023, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,15 +56,7 @@ class OFBitmanipTemplate
                         T *dest,
                         const size_t count)
     {
-#ifdef HAVE_MEMCPY
         memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
-#else
-        size_t i;
-        const T *p = src;
-        T *q = dest;
-        for (i = count; i != 0; --i)
-            *q++ = *p++;
-#endif
     }
 
 
@@ -81,7 +73,7 @@ class OFBitmanipTemplate
                         T *dest,
                         const size_t count)
     {
-#if defined(HAVE_MEMMOVE) && !defined(PTRDIFF_MAX)
+#if !defined(PTRDIFF_MAX)
         // some platforms have memmove() but not PTRDIFF_MAX.
         // In this case, just call memmove().
         memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), count * sizeof(T));
@@ -95,7 +87,6 @@ class OFBitmanipTemplate
 #include DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW
 #include DCMTK_DIAGNOSTIC_IGNORE_RESTRICT
 
-#ifdef HAVE_MEMMOVE
         // On some platforms (such as MinGW), memmove cannot move buffers
         // larger than PTRDIFF_MAX. In the rare case of such huge buffers,
         // fall back to our own implementation.
@@ -105,7 +96,6 @@ class OFBitmanipTemplate
             memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), c);
             return;
         }
-#endif /* HAVE_MEMMOVE */
 
         if (src == dest)
             return;
@@ -142,11 +132,9 @@ class OFBitmanipTemplate
                        const T value,
                        const size_t count)
     {
-#ifdef HAVE_MEMSET
         if ((value == 0) || (sizeof(T) == sizeof(unsigned char)))
             memset(OFstatic_cast(void *, dest), OFstatic_cast(int, value), count * sizeof(T));
         else
-#endif
         {
             size_t i;
             T *q = dest;

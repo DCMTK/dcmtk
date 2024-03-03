@@ -25,10 +25,8 @@
 //       before this program is used.
 #include "../math.cc"
 
-#ifdef HAVE_FENV_H
 // For controlling floating point exceptions on Unix like systems.
 #include <fenv.h>
-#endif
 
 #ifdef HAVE_IEEEFP_H
 // For controlling floating point exceptions on Unix like systems
@@ -334,7 +332,7 @@ static void provoke_snan()
     _controlfp( _controlfp(0,0) & ~_EM_INVALID, _MCW_EM );
 #elif defined(__APPLE__) && !defined(__aarch64__)
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() & ~_MM_MASK_INVALID );
-#elif defined(HAVE_FENV_H) && defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
+#elif defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
     feenableexcept( FE_INVALID );
 #elif defined(HAVE_IEEEFP_H) && !defined(__CYGWIN__)
     // Cygwin unfortunately seems to have <ieeefp.h> but no implementation of fgetmask/fpsetmask
@@ -376,11 +374,11 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
 #ifdef HAVE_WINDOWS_H
     _clearfp();
     _controlfp( _controlfp(0,0) | _EM_INVALID, _MCW_EM );
-#elif defined(HAVE_FENV_H)
+#else /* ! HAVE_WINDOWS_H */
     feclearexcept( FE_INVALID );
 #if defined(__APPLE__) && !defined(__aarch64__)
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() | _MM_MASK_INVALID );
-#elif defined(HAVE_FENV_H) && defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
+#elif defined(HAVE_PROTOTYPE_FEENABLEEXCEPT)
     fedisableexcept( FE_INVALID );
 #elif defined(HAVE_IEEEFP_H) && !defined(__CYGWIN__)
     // Cygwin unfortunately seems to have <ieeefp.h> but no implementation of fgetmask/fpsetmask
@@ -388,17 +386,18 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     fp_except_t cw = fpgetmask();
 #else
     fp_except cw = fpgetmask();
-#endif
+#endif /* HAVE_DECLARATION_FP_EXCEPT_T */
 
 #ifdef FP_X_DX
     // on some systems, the devide-by-zero flag is called FP_X_DX
     fpsetmask(cw & ~(FP_X_INV | FP_X_DX | FP_X_OFL));
 #else
     fpsetmask(cw & ~(FP_X_INV | FP_X_DZ | FP_X_OFL));
-#endif
+#endif /* FP_X_DX */
 
 #endif
-#endif
+#endif /* ! HAVE_WINDOWS_H */
+
     // Print and return the result
     print_flag
     (
@@ -475,7 +474,7 @@ static void test_tinyness_before( STD_NAMESPACE ostream& out, const char* name )
 
 #ifdef HAVE_WINDOWS_H
     _clearfp();
-#elif defined(HAVE_FENV_H)
+#else
     feclearexcept( FE_ALL_EXCEPT );
 #endif
 
@@ -487,10 +486,8 @@ static void test_tinyness_before( STD_NAMESPACE ostream& out, const char* name )
         out,
 #ifdef HAVE_WINDOWS_H
         _statusfp() & _EM_UNDERFLOW,
-#elif defined(HAVE_FENV_H)
-        fetestexcept( FE_UNDERFLOW ),
 #else
-        0,
+        fetestexcept( FE_UNDERFLOW ),
 #endif
         "TINYNESS_BEFORE",
         name,
@@ -505,7 +502,7 @@ static void test_denorm_loss( STD_NAMESPACE ostream& out, const char* name )
 
 #ifdef HAVE_WINDOWS_H
     _clearfp();
-#elif defined(HAVE_FENV_H)
+#else
     feclearexcept( FE_ALL_EXCEPT );
 #endif
 
@@ -516,10 +513,8 @@ static void test_denorm_loss( STD_NAMESPACE ostream& out, const char* name )
         out,
 #ifdef HAVE_WINDOWS_H
         _statusfp() & _EM_UNDERFLOW,
-#elif defined(HAVE_FENV_H)
-        fetestexcept( FE_UNDERFLOW ),
 #else
-        0,
+        fetestexcept( FE_UNDERFLOW ),
 #endif
         "HAS_DENORM_LOSS",
         name,

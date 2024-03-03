@@ -128,9 +128,6 @@
 /* Define to 1 if you have the `finite' function. */
 #cmakedefine HAVE_FINITE @HAVE_FINITE@
 
-/* Define to 1 if you have the <float.h> header file. */
-#cmakedefine HAVE_FLOAT_H @HAVE_FLOAT_H@
-
 /* Define to 1 if you have the `flock' function. */
 #cmakedefine HAVE_FLOCK @HAVE_FLOCK@
 
@@ -148,9 +145,6 @@
 
 /* Define to 1 if you have the `getaddrinfo' function. */
 #cmakedefine HAVE_GETADDRINFO @HAVE_GETADDRINFO@
-
-/* Define to 1 if you have the `getenv' function. */
-#cmakedefine HAVE_GETENV @HAVE_GETENV@
 
 /* Define to 1 if you have the `geteuid' function. */
 #cmakedefine HAVE_GETEUID @HAVE_GETEUID@
@@ -230,17 +224,8 @@
    struct fd_set * */
 #cmakedefine HAVE_INTP_SELECT @HAVE_INTP_SELECT@
 
-/* Define to 1 if you have the <inttypes.h> header file. */
-#cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
-
 /* Define to 1 if you have the <io.h> header file. */
 #cmakedefine HAVE_IO_H @HAVE_IO_H@
-
-/* Define to 1 if you have the `isinf' function. */
-#cmakedefine HAVE_ISINF @HAVE_ISINF@
-
-/* Define to 1 if you have the `isnan' function. */
-#cmakedefine HAVE_ISNAN @HAVE_ISNAN@
 
 /* Define to 1 if you have the `itoa' function. */
 #cmakedefine HAVE_ITOA @HAVE_ITOA@
@@ -281,21 +266,6 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 #cmakedefine HAVE_MALLOC_H @HAVE_MALLOC_H@
 
-/* Define to 1 if you have the `mbstowcs' function. */
-#cmakedefine HAVE_MBSTOWCS @HAVE_MBSTOWCS@
-
-/* Define to 1 if you have the `memcmp' function. */
-#cmakedefine HAVE_MEMCMP @HAVE_MEMCMP@
-
-/* Define to 1 if you have the `memcpy' function. */
-#cmakedefine HAVE_MEMCPY @HAVE_MEMCPY@
-
-/* Define to 1 if you have the `memmove' function. */
-#cmakedefine HAVE_MEMMOVE @HAVE_MEMMOVE@
-
-/* Define to 1 if you have the `memset' function. */
-#cmakedefine HAVE_MEMSET @HAVE_MEMSET@
-
 /* Define to 1 if you have the `mkstemp' function. */
 #cmakedefine HAVE_MKSTEMP @HAVE_MKSTEMP@
 
@@ -320,14 +290,8 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #cmakedefine HAVE_NETINET_TCP_H @HAVE_NETINET_TCP_H@
 
-/* Define to 1 if you have the <fenv.h> header file. */
-#cmakedefine HAVE_FENV_H @HAVE_FENV_H@
-
 /* Define to 1 if you have the <sys/systeminfo.h> header file. */
 #cmakedefine HAVE_SYS_SYSTEMINFO_H @HAVE_SYS_SYSTEMINFO_H@
-
-/* Define to 1 if you have the <iterator> header file. */
-#cmakedefine HAVE_ITERATOR_HEADER @HAVE_ITERATOR_HEADER@
 
 /* Define to 1 if you have readdir_r */
 #cmakedefine HAVE_READDIR_R @HAVE_READDIR_R@
@@ -394,12 +358,6 @@
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h */
 #cmakedefine HAVE_PROTOTYPE_GETTIMEOFDAY @HAVE_PROTOTYPE_GETTIMEOFDAY@
-
-/* Define if your system has a prototype for isinf in math.h */
-#cmakedefine HAVE_PROTOTYPE_ISINF @HAVE_PROTOTYPE_ISINF@
-
-/* Define if your system has a prototype for isnan in math.h */
-#cmakedefine HAVE_PROTOTYPE_ISNAN @HAVE_PROTOTYPE_ISNAN@
 
 /* Define if your system has a prototype for std::isinf in cmath */
 #cmakedefine HAVE_PROTOTYPE_STD__ISINF @HAVE_PROTOTYPE_STD__ISINF@
@@ -510,29 +468,14 @@
 /* Define to 1 if you have the <stat.h> header file. */
 #cmakedefine HAVE_STAT_H @HAVE_STAT_H@
 
-/* Define to 1 if you have the <stdbool.h> header file. */
-#cmakedefine HAVE_STDBOOL_H @HAVE_STDBOOL_H@
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
 
 /* Define to 1 if you have the <cstdint> header file. */
 #cmakedefine HAVE_CSTDINT @HAVE_CSTDINT@
 
-/* Define if ANSI standard C++ includes use std namespace */
-/* defined below */
-
-/* Define if the compiler supports std::nothrow */
-/* defined below */
-
-/* Define to 1 if you have the `strchr' function. */
-#cmakedefine HAVE_STRCHR @HAVE_STRCHR@
-
 /* Define to 1 if you have the `strdup' function. */
 #cmakedefine HAVE_STRDUP @HAVE_STRDUP@
-
-/* Define to 1 if you have the `strerror' function. */
-#cmakedefine HAVE_STRERROR @HAVE_STRERROR@
 
 /* Define to 1 if `strerror_r' returns a char*. */
 #cmakedefine HAVE_CHARP_STRERROR_R @HAVE_CHARP_STRERROR_R@
@@ -545,12 +488,6 @@
 
 /* Define to 1 if you have the `strlcpy' function. */
 #cmakedefine HAVE_STRLCPY @HAVE_STRLCPY@
-
-/* Define to 1 if you have the `strstr' function. */
-#cmakedefine HAVE_STRSTR @HAVE_STRSTR@
-
-/* Define to 1 if you have the `strtoul' function. */
-#cmakedefine HAVE_STRTOUL @HAVE_STRTOUL@
 
 /* Define to 1 if you have the <synch.h> header file. */
 #cmakedefine HAVE_SYNCH_H @HAVE_SYNCH_H@
@@ -636,17 +573,8 @@
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #cmakedefine HAVE_SYS_WAIT_H @HAVE_SYS_WAIT_H@
 
-/* Define to 1 if you have the `tempnam' function. */
-#cmakedefine HAVE_TEMPNAM @HAVE_TEMPNAM@
-
 /* Define to 1 if you have the <thread.h> header file. */
 #cmakedefine HAVE_THREAD_H @HAVE_THREAD_H@
-
-/* Define to 1 if you have the `tmpnam' function. */
-#cmakedefine HAVE_TMPNAM @HAVE_TMPNAM@
-
-/* define if the compiler recognizes typename */
-#cmakedefine HAVE_TYPENAME @HAVE_TYPENAME@
 
 /* Define to 1 if you have the `uname' function. */
 #cmakedefine HAVE_UNAME @HAVE_UNAME@
@@ -662,9 +590,6 @@
 
 /* Define to 1 if you have the <utime.h> header file. */
 #cmakedefine HAVE_UTIME_H @HAVE_UTIME_H@
-
-/* Define to 1 if you have the `vprintf' function. */
-#cmakedefine HAVE_VPRINTF @HAVE_VPRINTF@
 
 /* Define to 1 if you have the `_vsnprintf_s' function. */
 #cmakedefine HAVE__VSNPRINTF_S @HAVE__VSNPRINTF_S@
@@ -683,15 +608,6 @@
 
 /* Define to 1 if you have the `waitpid' function. */
 #cmakedefine HAVE_WAITPID @HAVE_WAITPID@
-
-/* Define to 1 if you have the <wchar.h> header file. */
-#cmakedefine HAVE_WCHAR_H @HAVE_WCHAR_H@
-
-/* Define to 1 if you have the `wcstombs' function. */
-#cmakedefine HAVE_WCSTOMBS @HAVE_WCSTOMBS@
-
-/* Define to 1 if you have the <wctype.h> header file. */
-#cmakedefine HAVE_WCTYPE_H @HAVE_WCTYPE_H@
 
 /* Define to 1 if you have the `_findfirst' function. */
 #cmakedefine HAVE__FINDFIRST @HAVE__FINDFIRST@
@@ -762,9 +678,6 @@
 
 /* Select LFS mode (defined above) that shall be used or don't define it */
 #cmakedefine DCMTK_ENABLE_LFS @DCMTK_LFS_MODE@
-
-/* The size of a `char', as computed by sizeof. */
-#cmakedefine SIZEOF_CHAR @SIZEOF_CHAR@
 
 /* The size of a `double', as computed by sizeof. */
 #cmakedefine SIZEOF_DOUBLE @SIZEOF_DOUBLE@
@@ -1099,21 +1012,6 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 #cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
 
 /* Define if the input iterator category is supported */
-#cmakedefine HAVE_INPUT_ITERATOR_CATEGORY @HAVE_INPUT_ITERATOR_CATEGORY@
-
-/* Define if the input iterator category is supported */
-#cmakedefine HAVE_OUTPUT_ITERATOR_CATEGORY @HAVE_OUTPUT_ITERATOR_CATEGORY@
-
-/* Define if the input iterator category is supported */
-#cmakedefine HAVE_FORWARD_ITERATOR_CATEGORY @HAVE_FORWARD_ITERATOR_CATEGORY@
-
-/* Define if the input iterator category is supported */
-#cmakedefine HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY @HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY@
-
-/* Define if the input iterator category is supported */
-#cmakedefine HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY @HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY@
-
-/* Define if the input iterator category is supported */
 #cmakedefine HAVE_CONTIGUOUS_ITERATOR_CATEGORY @HAVE_CONTIGUOUS_ITERATOR_CATEGORY@
 
 /* Feature Tests for the OpenSSL Library */
@@ -1161,6 +1059,7 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 
 #if defined(POISON_DEPRECATED_FEATURE_MACROS) && defined(__GNUC__)
 #pragma GCC poison HAVE_ASSERT_H
+#pragma GCC poison HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
 #pragma GCC poison HAVE_CLASS_TEMPLATE
 #pragma GCC poison HAVE_CLIMITS
 #pragma GCC poison HAVE_CMATH
@@ -1175,15 +1074,33 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 #pragma GCC poison HAVE_DYNAMIC_CAST
 #pragma GCC poison HAVE_ERRNO_H
 #pragma GCC poison HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#pragma GCC poison HAVE_FENV_H
+#pragma GCC poison HAVE_FLOAT_H
+#pragma GCC poison HAVE_FORWARD_ITERATOR_CATEGORY
 #pragma GCC poison HAVE_FSTREAM
 #pragma GCC poison HAVE_FUNCTION_TEMPLATE
+#pragma GCC poison HAVE_GETENV
+#pragma GCC poison HAVE_INPUT_ITERATOR_CATEGORY
+#pragma GCC poison HAVE_INTTYPES_H
 #pragma GCC poison HAVE_IOMANIP
 #pragma GCC poison HAVE_IOSTREAM
+#pragma GCC poison HAVE_ISINF
+#pragma GCC poison HAVE_ISNAN
 #pragma GCC poison HAVE_ISO646_H
+#pragma GCC poison HAVE_ITERATOR_HEADER
 #pragma GCC poison HAVE_LIMITS_H
 #pragma GCC poison HAVE_LOCALE_H
 #pragma GCC poison HAVE_LONG_FILE_NAMES
 #pragma GCC poison HAVE_MATH_H
+#pragma GCC poison HAVE_MBSTOWCS
+#pragma GCC poison HAVE_MEMCMP
+#pragma GCC poison HAVE_MEMCPY
+#pragma GCC poison HAVE_MEMMOVE
+#pragma GCC poison HAVE_MEMSET
+#pragma GCC poison HAVE_OUTPUT_ITERATOR_CATEGORY
+#pragma GCC poison HAVE_PROTOTYPE_ISINF
+#pragma GCC poison HAVE_PROTOTYPE_ISNAN
+#pragma GCC poison HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY
 #pragma GCC poison HAVE_REINTERPRET_CAST
 #pragma GCC poison HAVE_SETJMP_H
 #pragma GCC poison HAVE_SIGNAL_H
@@ -1191,17 +1108,31 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 #pragma GCC poison HAVE_STATIC_CAST
 #pragma GCC poison HAVE_STATIC_TEMPLATE_METHOD
 #pragma GCC poison HAVE_STDARG_H
+#pragma GCC poison HAVE_STDBOOL_H
 #pragma GCC poison HAVE_STDDEF_H
 #pragma GCC poison HAVE_STDIO_H
 #pragma GCC poison HAVE_STDLIB_H
+#pragma GCC poison HAVE_STRCHR
+#pragma GCC poison HAVE_STRERROR
 #pragma GCC poison HAVE_STRING_H
+#pragma GCC poison HAVE_STRSTR
 #pragma GCC poison HAVE_STRSTREAM
+#pragma GCC poison HAVE_STRTOUL
+#pragma GCC poison HAVE_TEMPNAM
 #pragma GCC poison HAVE_TIME_H
+#pragma GCC poison HAVE_TMPNAM
+#pragma GCC poison HAVE_TYPENAME
+#pragma GCC poison HAVE_VPRINTF
+#pragma GCC poison HAVE_WCHAR_H
+#pragma GCC poison HAVE_WCSTOMBS
+#pragma GCC poison HAVE_WCTYPE_H
+#pragma GCC poison SIZEOF_CHAR
 #pragma GCC poison STDC_HEADERS
 #endif
 
 #if !defined(POISON_DEPRECATED_FEATURE_MACROS) || !defined(__GNUC__)
 #define HAVE_ASSERT_H 1
+#define HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY 1
 #define HAVE_CLASS_TEMPLATE 1
 #define HAVE_CLIMITS 1
 #define HAVE_CMATH 1
@@ -1216,15 +1147,33 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 #define HAVE_DYNAMIC_CAST 1
 #define HAVE_ERRNO_H 1
 #define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
+#define HAVE_FENV_H 1
+#define HAVE_FLOAT_H 1
+#define HAVE_FORWARD_ITERATOR_CATEGORY 1
 #define HAVE_FSTREAM 1
 #define HAVE_FUNCTION_TEMPLATE 1
+#define HAVE_GETENV 1
+#define HAVE_INPUT_ITERATOR_CATEGORY 1
+#define HAVE_INTTYPES_H 1
 #define HAVE_IOMANIP 1
 #define HAVE_IOSTREAM 1
+#define HAVE_ISINF 1
+#define HAVE_ISNAN 1
 #define HAVE_ISO646_H 1
+#define HAVE_ITERATOR_HEADER 1
 #define HAVE_LIMITS_H 1
 #define HAVE_LOCALE_H 1
 #define HAVE_LONG_FILE_NAMES 1
 #define HAVE_MATH_H 1
+#define HAVE_MBSTOWCS 1
+#define HAVE_MEMCMP 1
+#define HAVE_MEMCPY 1
+#define HAVE_MEMMOVE 1
+#define HAVE_MEMSET 1
+#define HAVE_OUTPUT_ITERATOR_CATEGORY 1
+#define HAVE_PROTOTYPE_ISINF 1
+#define HAVE_PROTOTYPE_ISNAN 1
+#define HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY 1
 #define HAVE_REINTERPRET_CAST 1
 #define HAVE_SETJMP_H 1
 #define HAVE_SIGNAL_H 1
@@ -1232,12 +1181,25 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 #define HAVE_STATIC_CAST 1
 #define HAVE_STATIC_TEMPLATE_METHOD 1
 #define HAVE_STDARG_H 1
+#define HAVE_STDBOOL_H 1
 #define HAVE_STDDEF_H 1
 #define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
+#define HAVE_STRCHR 1
+#define HAVE_STRERROR 1
 #define HAVE_STRING_H 1
+#define HAVE_STRSTR 1
 #define HAVE_STRSTREAM 1
+#define HAVE_STRTOUL 1
+#define HAVE_TEMPNAM 1
 #define HAVE_TIME_H 1
+#define HAVE_TMPNAM 1
+#define HAVE_TYPENAME 1
+#define HAVE_VPRINTF 1
+#define HAVE_WCHAR_H 1
+#define HAVE_WCSTOMBS 1
+#define HAVE_WCTYPE_H 1
+#define SIZEOF_CHAR 1
 #define STDC_HEADERS 1
 #endif
 

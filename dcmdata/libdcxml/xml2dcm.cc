@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,7 @@ extern "C" void xml2dcm_errorFunction(void * /* ctx */, const char *msg, ...)
 
         pos = buffer.find('\n');
     }
-#elif defined(HAVE_VPRINTF)
+#else
     // No vsnprint, but at least vfprintf. Output the messages directly to stderr.
     va_list ap;
     va_start(ap, msg);
@@ -92,9 +92,6 @@ extern "C" void xml2dcm_errorFunction(void * /* ctx */, const char *msg, ...)
     vfprintf(stderr, msg, ap);
 #endif
     va_end(ap);
-#else
-    // We can only show the most basic part of the message, this will look bad :(
-    printf("%s", msg);
 #endif
 }
 

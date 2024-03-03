@@ -69,9 +69,7 @@
 
 #else
 
-#ifdef HAVE_ITERATOR_HEADER
 #include <iterator>
-#endif
 
 // #define INCLUDE_CASSERT
 // #define INCLUDE_CSTDDEF
@@ -186,10 +184,8 @@ public:
     /// member typedef for T&
     typedef T& reference;
 
-#ifdef HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
     /// member typedef declaring the category
     typedef STD_NAMESPACE bidirectional_iterator_tag iterator_category;
-#endif
 
     /** default constructor. Creates an iterator referencing nothing.
      *  In general, iterators should always be copy-constructed

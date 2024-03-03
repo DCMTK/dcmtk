@@ -1708,13 +1708,7 @@ static long gethostid(void)
       DCMDATA_FATAL("sysinfo: " << OFStandard::getLastSystemErrorCode().message());
       exit(1);
     }
-#ifdef HAVE_STRTOUL
     return(strtoul(buf, NULL, 0));
-#else
-    long result;
-    sscanf(buf, "%ld", &result);
-    return result;
-#endif
 }
 
 #else // !HAVE_SYSINFO
