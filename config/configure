@@ -750,7 +750,6 @@ enable_cxx11
 enable_stl
 enable_stl_vector
 enable_stl_algorithm
-enable_stl_limits
 enable_stl_list
 enable_stl_map
 enable_stl_memory
@@ -1416,8 +1415,6 @@ Optional Features:
   --disable-stl-vector    do not use C++ STL vector
   --enable-stl-algorithm  use C++ STL algorithm
   --disable-stl-algorithm do not use C++ STL algorithm
-  --enable-stl-limits     use C++ STL limits
-  --disable-stl-limits    do not use C++ STL limits
   --enable-stl-list       use C++ STL list
   --disable-stl-list      do not use C++ STL list
   --enable-stl-map        use C++ STL map
@@ -11876,7 +11873,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 11879 "configure"
+#line 11876 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -12126,7 +12123,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 12129 "configure"
+#line 12126 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -15223,52 +15220,6 @@ fi
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_algorithm" >&5
 $as_echo "$ac_enable_stl_algorithm" >&6; }
-
-ac_enable_stl_limits="auto"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable STL limits support" >&5
-$as_echo_n "checking whether to enable STL limits support... " >&6; }
-# Check whether --enable-stl-limits was given.
-if test "${enable_stl_limits+set}" = set; then :
-  enableval=$enable_stl_limits;  case "$enableval" in
-  yes)
-   ac_enable_stl_limits="yes"
-   ;;
-
-  *)
-    ac_enable_stl_limits="no"
-    ;;
-  esac
-
-fi
-
-if test "$ac_enable_stl_limits" = "auto"; then
-  ac_enable_stl_limits="$ac_enable_stl"
-fi
-if test "$ac_enable_stl_limits" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/limits.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
-
-$as_echo "#define HAVE_STL_LIMITS 1" >>confdefs.h
-
-else
-  ac_enable_stl_limits="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_limits" >&5
-$as_echo "$ac_enable_stl_limits" >&6; }
 
 ac_enable_stl_list="auto"
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable STL list support" >&5

@@ -730,9 +730,6 @@ typedef unsigned short ushort;
 /* Define if STL's algorithm should be used. */
 #undef HAVE_STL_ALGORITHM
 
-/* Define if STL's limits should be used. */
-#undef HAVE_STL_LIMITS
-
 /* Define if STL's list should be used. */
 #undef HAVE_STL_LIST
 
