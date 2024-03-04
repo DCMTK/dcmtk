@@ -180,16 +180,16 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
         /* indicate that C++11 is used */
         (*output) << " cxx11";
 #endif
-#if defined(HAVE_STL_ALGORITHM) && defined(HAVE_STL_LIMITS) && defined(HAVE_STL_LIST) && \
-    defined(HAVE_STL_MAP) && defined(HAVE_STL_MEMORY) && defined(HAVE_STL_STACK) && \
-    defined(HAVE_STL_STRING) && defined(HAVE_STL_SYSTEM_ERROR) && defined(HAVE_STL_TUPLE) && \
-    defined(HAVE_STL_TYPE_TRAITS) && defined(HAVE_STL_VECTOR)
+#if defined(HAVE_STL_ALGORITHM) && defined(HAVE_STL_LIST) &&  defined(HAVE_STL_MAP) && \
+    defined(HAVE_STL_MEMORY) && defined(HAVE_STL_STACK) && defined(HAVE_STL_STRING) && \
+    defined(HAVE_STL_SYSTEM_ERROR) && defined(HAVE_STL_TUPLE) && defined(HAVE_STL_TYPE_TRAITS) && \
+    defined(HAVE_STL_VECTOR)
         /* indicate that the C++ STL is used */
         (*output) << " stl";
-#elif defined(HAVE_STL_ALGORITHM) || defined(HAVE_STL_LIMITS) || defined(HAVE_STL_LIST) || \
-    defined(HAVE_STL_MAP) || defined(HAVE_STL_MEMORY) || defined(HAVE_STL_STACK) || \
-    defined(HAVE_STL_STRING) || defined(HAVE_STL_SYSTEM_ERROR) || defined(HAVE_STL_TUPLE) || \
-    defined(HAVE_STL_TYPE_TRAITS) || defined(HAVE_STL_VECTOR)
+#elif defined(HAVE_STL_ALGORITHM) || defined(HAVE_STL_LIST) || defined(HAVE_STL_MAP) || \
+    defined(HAVE_STL_MEMORY) || defined(HAVE_STL_STACK) || defined(HAVE_STL_STRING) || \
+    defined(HAVE_STL_SYSTEM_ERROR) || defined(HAVE_STL_TUPLE) || defined(HAVE_STL_TYPE_TRAITS) || \
+    defined(HAVE_STL_VECTOR)
         /* indicate that parts of the C++ STL are used */
         (*output) << " (stl)";
 #endif

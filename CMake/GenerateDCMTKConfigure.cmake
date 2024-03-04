@@ -1322,49 +1322,6 @@ int main()
     endif()
 endif()
 
-# Compile config/tests/arith.cc and generate config/arith.h
-function(INSPECT_FUNDAMENTAL_ARITHMETIC_TYPES)
-  set(ARITH_H_FILE "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h")
-  if("${DCMTK_SOURCE_DIR}/config/tests/arith.cc" IS_NEWER_THAN "${ARITH_H_FILE}")
-    if(CMAKE_CROSSCOMPILING)
-      if(WIN32)
-        UNIX_TO_WINE_PATH(ARITH_H_FILE "${ARITH_H_FILE}")
-        string(REPLACE "\\" "\\\\" ARITH_H_FILE "${ARITH_H_FILE}")
-      elseif(ANDROID)
-        set(ARITH_H_DESTINATION "${ARITH_H_FILE}")
-        set(ARITH_H_FILE "${ANDROID_TEMPORARY_FILES_LOCATION}/arith.h")
-      endif()
-    endif()
-    if(NOT DEFINED DCMTK_NO_TRY_RUN)
-      DCMTK_TRY_RUN(
-        RESULT COMPILED
-        "${DCMTK_BINARY_DIR}/CMakeTmp/Arith"
-        "${DCMTK_SOURCE_DIR}/config/tests/arith.cc"
-        COMPILE_DEFINITIONS -I"${DCMTK_BINARY_DIR}/config/include" -I"${DCMTK_SOURCE_DIR}/ofstd/include" -I"${DCMTK_SOURCE_DIR}/ofstd/libsrc"
-        RUN_OUTPUT_VARIABLE OUTPUT
-        COMPILE_OUTPUT_VARIABLE CERR
-        ARGS "\\\"${ARITH_H_FILE}\\\""
-      )
-      if(COMPILED)
-        if(NOT RESULT)
-          message(STATUS "${OUTPUT}")
-          if(CMAKE_CROSSCOMPILING)
-            if(ANDROID)
-              DCMTK_ANDROID_PULL(DCMTK_ANDROID_EMULATOR_INSTANCE "${ARITH_H_FILE}" DESTINATION "${ARITH_H_DESTINATION}")
-            endif()
-          endif()
-        else()
-          message(FATAL_ERROR "${OUTPUT}")
-        endif()
-      else()
-        message(FATAL_ERROR "${CERR}")
-      endif()
-    else()
-      message("Be sure to copy arith.h to ${ARITH_H_FILE} before build")
-    endif()
-  endif() # file needs update
-endfunction()
-
 function(DCMTK_CHECK_CXX_STANDARD STANDARD)
   set(RESULT 0)
   if(DEFINED HAVE_CXX${STANDARD}_TEST_RESULT)
@@ -1487,7 +1444,6 @@ endif()
 DCMTK_TEST_ENABLE_CXX11()
 DCMTK_TEST_ENABLE_STL_FEATURE("vector")
 DCMTK_TEST_ENABLE_STL_FEATURE("algorithm" "algo")
-DCMTK_TEST_ENABLE_STL_FEATURE("limits")
 DCMTK_TEST_ENABLE_STL_FEATURE("list")
 DCMTK_TEST_ENABLE_STL_FEATURE("map")
 DCMTK_TEST_ENABLE_STL_FEATURE("memory")

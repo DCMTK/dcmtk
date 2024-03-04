@@ -984,9 +984,6 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 /* Define if we are supposed to use STL's algorithms */
 #cmakedefine HAVE_STL_ALGORITHM @HAVE_STL_ALGORITHM@
 
-/* Define if we are supposed to use STL's limit */
-#cmakedefine HAVE_STL_LIMITS @HAVE_STL_LIMITS@
-
 /* Define if we are supposed to use STL's list */
 #cmakedefine HAVE_STL_LIST @HAVE_STL_LIST@
 
