@@ -35,7 +35,6 @@ using OFnumeric_limits = std::numeric_limits<T>;
 template<typename T>
 struct OFnumeric_limits : std::numeric_limits<T>
 {
-    static const int max_digits10 = 0;
     static inline T lowest() { return (std::numeric_limits<T>::min)(); }
 };
 template<>
