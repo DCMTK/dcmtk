@@ -374,7 +374,7 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
 #ifdef HAVE_WINDOWS_H
     _clearfp();
     _controlfp( _controlfp(0,0) | _EM_INVALID, _MCW_EM );
-#else /* ! HAVE_WINDOWS_H */
+#else /* HAVE_WINDOWS_H */
     feclearexcept( FE_INVALID );
 #if defined(__APPLE__) && !defined(__aarch64__)
     _MM_SET_EXCEPTION_MASK( _MM_GET_EXCEPTION_MASK() | _MM_MASK_INVALID );
@@ -384,20 +384,19 @@ static int test_snan( STD_NAMESPACE ostream& out, const char* name )
     // Cygwin unfortunately seems to have <ieeefp.h> but no implementation of fgetmask/fpsetmask
 #ifdef HAVE_DECLARATION_FP_EXCEPT_T
     fp_except_t cw = fpgetmask();
-#else
+#else /* HAVE_DECLARATION_FP_EXCEPT_T */
     fp_except cw = fpgetmask();
 #endif /* HAVE_DECLARATION_FP_EXCEPT_T */
 
 #ifdef FP_X_DX
     // on some systems, the devide-by-zero flag is called FP_X_DX
     fpsetmask(cw & ~(FP_X_INV | FP_X_DX | FP_X_OFL));
-#else
+#else /* FP_X_DX */
     fpsetmask(cw & ~(FP_X_INV | FP_X_DZ | FP_X_OFL));
 #endif /* FP_X_DX */
 
-#endif
-#endif /* ! HAVE_WINDOWS_H */
-
+#endif /* defined(__APPLE__) */
+#endif /* HAVE_WINDOWS_H */
     // Print and return the result
     print_flag
     (
