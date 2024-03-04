@@ -126,9 +126,6 @@
 /* Define to 1 if you have the `bcopy' function. */
 #undef HAVE_BCOPY
 
-/* Define if the bidirectional iterator category is supported. */
-#undef HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
-
 /* Define to 1 if you have the `bind' function. */
 #undef HAVE_BIND
 
@@ -185,9 +182,6 @@
    */
 #undef HAVE_DIRENT_H
 
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#undef HAVE_DOPRNT
-
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
 /* #undef HAVE_EMPTY_ARGC_ARGV */
 
@@ -203,17 +197,11 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
-/* Define to 1 if you have the <fenv.h> header file. */
-#undef HAVE_FENV_H
-
 /* Define to 1 if you have the `fgetln' function. */
 #undef HAVE_FGETLN
 
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
-
-/* Define to 1 if you have the <float.h> header file. */
-#undef HAVE_FLOAT_H
 
 /* Define to 1 if you have the `flock' function. */
 #undef HAVE_FLOCK
@@ -223,9 +211,6 @@
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
-
-/* Define if the forward iterator category is supported. */
-#undef HAVE_FORWARD_ITERATOR_CATEGORY
 
 /* Define to 1 if the system has the type `fpos64_t'. */
 #undef HAVE_FPOS64_T
@@ -238,9 +223,6 @@
 
 /* Define to 1 if you have the `getaddrinfo' function. */
 #undef HAVE_GETADDRINFO
-
-/* Define to 1 if you have the `getenv' function. */
-#undef HAVE_GETENV
 
 /* Define to 1 if you have the `geteuid' function. */
 #undef HAVE_GETEUID
@@ -317,9 +299,6 @@
 /* Define to 1 if you have the `index' function. */
 #undef HAVE_INDEX
 
-/* Define if the input iterator category is supported. */
-#undef HAVE_INPUT_ITERATOR_CATEGORY
-
 /* Define to 1 if the system has the type `int64_t'. */
 #undef HAVE_INT64_T
 
@@ -346,15 +325,6 @@
 
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
-
-/* Define to 1 if you have the `isinf' function. */
-#undef HAVE_ISINF
-
-/* Define to 1 if you have the `isnan' function. */
-#undef HAVE_ISNAN
-
-/* Define to 1 if you have the <iterator> header file. */
-#undef HAVE_ITERATOR_HEADER
 
 /* Define to 1 if you have the `itoa' function. */
 #undef HAVE_ITOA
@@ -401,23 +371,8 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
-/* Define to 1 if you have the `mbstowcs' function. */
-#undef HAVE_MBSTOWCS
-
-/* Define to 1 if you have the `memcmp' function. */
-#undef HAVE_MEMCMP
-
-/* Define to 1 if you have the `memcpy' function. */
-#undef HAVE_MEMCPY
-
-/* Define to 1 if you have the `memmove' function. */
-#undef HAVE_MEMMOVE
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the `memset' function. */
-#undef HAVE_MEMSET
 
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
@@ -579,9 +534,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <openssl/x509.h> header file. */
 #undef HAVE_OPENSSL_X509_H
 
-/* Define if the output iterator category is supported. */
-#undef HAVE_OUTPUT_ITERATOR_CATEGORY
-
 /* Define if passwd::pw_gecos is available. */
 #undef HAVE_PASSWD_GECOS
 
@@ -646,12 +598,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h. */
 #undef HAVE_PROTOTYPE_GETTIMEOFDAY
-
-/* Define if your system has a prototype for isinf in math.h. */
-#undef HAVE_PROTOTYPE_ISINF
-
-/* Define if your system has a prototype for isnan in math.h. */
-#undef HAVE_PROTOTYPE_ISNAN
 
 /* Define if your system has a prototype for listen in sys/types.h
    sys/socket.h. */
@@ -733,9 +679,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
 
-/* Define if the random_access iterator category is supported. */
-#undef HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY
-
 /* Define to 1 if you have the `readdir_r' function. */
 #undef HAVE_READDIR_R
 
@@ -771,9 +714,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <stat.h> header file. */
 #undef HAVE_STAT_H
-
-/* Define to 1 if you have the <stdbool.h> header file. */
-#undef HAVE_STDBOOL_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -820,14 +760,8 @@ typedef unsigned short ushort;
 /* Define if STL's vector should be used. */
 #undef HAVE_STL_VECTOR
 
-/* Define to 1 if you have the `strchr' function. */
-#undef HAVE_STRCHR
-
 /* Define to 1 if you have the `strdup' function. */
 #undef HAVE_STRDUP
-
-/* Define to 1 if you have the `strerror' function. */
-#undef HAVE_STRERROR
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -840,12 +774,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
-
-/* Define to 1 if you have the `strstr' function. */
-#undef HAVE_STRSTR
-
-/* Define to 1 if you have the `strtoul' function. */
-#undef HAVE_STRTOUL
 
 /* Define to 1 if you have the <synch.h> header file. */
 #undef HAVE_SYNCH_H
@@ -930,17 +858,8 @@ typedef unsigned short ushort;
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
 
-/* Define to 1 if you have the `tempnam' function. */
-#undef HAVE_TEMPNAM
-
 /* Define to 1 if you have the <thread.h> header file. */
 #undef HAVE_THREAD_H
-
-/* Define to 1 if you have the `tmpnam' function. */
-#undef HAVE_TMPNAM
-
-/* Define if typename is a known keyword. */
-#undef HAVE_TYPENAME
 
 /* Define to 1 if the system has the type `uint64_t'. */
 #undef HAVE_UINT64_T
@@ -969,9 +888,6 @@ typedef unsigned short ushort;
 /* Define if variable-length arrays are supported in C. */
 #undef HAVE_VLA
 
-/* Define to 1 if you have the `vprintf' function. */
-#undef HAVE_VPRINTF
-
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
@@ -981,15 +897,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `waitpid' function. */
 #undef HAVE_WAITPID
-
-/* Define to 1 if you have the <wchar.h> header file. */
-#undef HAVE_WCHAR_H
-
-/* Define to 1 if you have the `wcstombs' function. */
-#undef HAVE_WCSTOMBS
-
-/* Define to 1 if you have the <wctype.h> header file. */
-#undef HAVE_WCTYPE_H
 
 /* Define to 1 if you have the `_findfirst' function. */
 #undef HAVE__FINDFIRST
@@ -1047,9 +954,6 @@ typedef unsigned short ushort;
 
 /* Define if signal handlers need ellipse (...) parameters. */
 #undef SIGNAL_HANDLER_WITH_ELLIPSE
-
-/* The size of `char', as computed by sizeof. */
-#undef SIZEOF_CHAR
 
 /* The size of `double', as computed by sizeof. */
 #undef SIZEOF_DOUBLE

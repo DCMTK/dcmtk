@@ -222,8 +222,7 @@ dnl File access stuff
 AC_CHECK_TYPES(fpos64_t)
 AC_CHECK_TYPES(off64_t)
 
-dnl stdbool.h and stdint.h are only defined in ANSI C, not in C++
-AC_CHECK_HEADERS(stdbool.h)
+dnl stdint.h is only defined in ANSI C, not in C++
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(cstdint)
 
@@ -239,16 +238,15 @@ dnl Check for libc library functions
 dnl -------------------------------------------------------
 
 AC_FUNC_MEMCMP
-AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
 AC_FUNC_WAIT3
 AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
-AC_CHECK_FUNCS(strchr strstr strtoul itoa atoll)
-AC_CHECK_FUNCS(memcpy memset memmove memcmp bcopy bcmp)
-AC_CHECK_FUNCS(getpid mktemp tempnam tmpnam getenv mkstemp)
+AC_CHECK_FUNCS(itoa atoll)
+AC_CHECK_FUNCS(bcopy bcmp)
+AC_CHECK_FUNCS(getpid mktemp mkstemp)
 AC_CHECK_FUNCS(stat)
 AC_CHECK_FUNCS(malloc_debug)
-AC_CHECK_FUNCS(strerror strdup index rindex access)
+AC_CHECK_FUNCS(strdup index rindex access)
 AC_CHECK_FUNCS(uname cuserid getlogin getlogin_r)
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(flock lockf)
@@ -264,7 +262,6 @@ AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
 AC_CHECK_FUNCS(vsnprintf)
-AC_CHECK_FUNCS(mbstowcs wcstombs)
 AC_CHECK_FUNCS(popen pclose)
 AC_CHECK_FUNCS(readdir_r)
 AC_FUNC_FSEEKO
@@ -316,7 +313,7 @@ dnl -------------------------------------------------------
 
 SAVELIBS="$LIBS"
 LIBS="$LIBS -lm"
-AC_CHECK_FUNCS(finite isinf isnan)
+AC_CHECK_FUNCS(finite)
 LIBS="$SAVELIBS"
 
 dnl -------------------------------------------------------
@@ -488,8 +485,6 @@ AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
 AC_CHECK_HEADERS(arpa/inet.h)
 AC_CHECK_HEADERS(fcntl.h)
-AC_CHECK_HEADERS(fenv.h)
-AC_CHECK_HEADERS(float.h)
 AC_CHECK_HEADERS(fnmatch.h)
 AC_CHECK_HEADERS(grp.h)
 AC_CHECK_HEADERS(ieeefp.h)
@@ -528,11 +523,6 @@ AC_CHECK_HEADERS(thread.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
-AC_CHECK_HEADERS(wchar.h)
-AC_CHECK_HEADERS(wctype.h)
-AC_CHECK_HEADER(iterator,
-    [AC_DEFINE([HAVE_ITERATOR_HEADER], 1, [Define to 1 if you have the <iterator> header file.])]
-)
 
 AC_CHECK_POLL_H
 
@@ -763,7 +753,6 @@ AC_TYPEDEF(size_t, unsigned)
 AC_TYPEDEF(ssize_t, long)
 AC_TYPEDEF(pid_t, int)
 AC_C_CHAR_UNSIGNED
-AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long)
@@ -792,8 +781,6 @@ fi
 AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(finite, math.h)
-AC_CHECK_PROTOTYPE(isinf, math.h)
-AC_CHECK_PROTOTYPE(isnan, math.h)
 AC_CHECK_PROTOTYPE(std::finite, cmath)
 AC_CHECK_PROTOTYPE(std::isinf, cmath)
 AC_CHECK_PROTOTYPE(std::isnan, cmath)
@@ -856,7 +843,6 @@ AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
 AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
   [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 
-AC_CXX_TYPENAME
 AC_STDIO_NAMESPACE
 
 
@@ -1912,11 +1898,6 @@ dnl -------------------------------------------------------
 dnl Test for defined iterator categories
 dnl -------------------------------------------------------
 
-AC_CHECK_ITERATOR_CATEGORY([input],[HAVE_INPUT_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([output],[HAVE_OUTPUT_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([forward],[HAVE_FORWARD_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([bidirectional],[HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([random_access],[HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY])
 AC_CHECK_ITERATOR_CATEGORY([contiguous],[HAVE_CONTIGUOUS_ITERATOR_CATEGORY])
 
 
