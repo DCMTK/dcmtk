@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2018, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,9 @@ template<typename T>
 static void checkMinMax()
 {
     volatile T max_plus_one( OFnumeric_limits<T>::max() );
-    volatile T lowest_minus_one( OFnumeric_limits<T>::lowest() );
+    volatile T lowest;
+    if (OFnumeric_limits<T>::is_integer) lowest = OFnumeric_limits<T>::min(); else lowest = -OFnumeric_limits<T>::max();
+    volatile T lowest_minus_one(lowest);
     ++max_plus_one;
     --lowest_minus_one;
     OFCHECK
@@ -52,10 +54,9 @@ static void checkMinMax()
     );
     OFCHECK
     (
-        OFnumeric_limits<T>::lowest() <= lowest_minus_one ||
+        lowest <= lowest_minus_one ||
         ( OFnumeric_limits<T>::has_infinity && OFMath::isinf( lowest_minus_one ) )
     );
-    OFCHECK( ( OFnumeric_limits<T>::lowest() == OFnumeric_limits<T>::min() ) || !OFnumeric_limits<T>::is_integer );
 }
 #include DCMTK_DIAGNOSTIC_POP
 
