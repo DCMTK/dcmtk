@@ -30,7 +30,7 @@
 #include "dcmtk/ofstd/ofmath.h"   // for isinf and isnan
 
 // On some platforms, such as OpenIndiana, isinf is defined as a macro,
-// and that inteferes with the OFMath function of the same name.
+// and that interferes with the OFMath function of the same name.
 #ifdef isinf
 #undef isinf
 #endif
@@ -38,6 +38,7 @@
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
 #include DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION
+#include DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS
 template<typename T>
 static void checkMinMax()
 {
