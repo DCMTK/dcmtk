@@ -83,7 +83,6 @@ include(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
 
 # Install global headers
 install(FILES "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/osconfig.h"
-              "${DCMTK_BINARY_DIR}/config/include/dcmtk/config/arith.h"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dcmtk/config"
         COMPONENT include)
 
