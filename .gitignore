@@ -12,7 +12,6 @@ Makefile
 config.status
 config.log
 config/Makefile.def
-config/include/dcmtk/config/arith.h
 config/include/dcmtk/config/osconfig.h
 
 # Ignore files and directories created by Autoconf
@@ -38,7 +37,6 @@ doxygen/dcmtk.tag
 
 # Ignore built binary files
 */tests/tests
-config/arith
 config/lzwtest.tif
 dcmdata/apps/cda2dcm
 dcmdata/apps/dcm2cda
