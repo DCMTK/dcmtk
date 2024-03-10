@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -294,17 +294,6 @@ END_EXTERN_C
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
 DCMTK_DCMNET_EXPORT int waitpid(pid_t pid, int *statusp, int options);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_WAIT3
-#ifdef HAVE_WAIT3
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int wait3(int *statusp, int options, struct rusage *rusage);
 END_EXTERN_C
 #else
 /* don't know how to emulate */

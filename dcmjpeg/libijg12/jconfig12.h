@@ -51,7 +51,7 @@
 #define RIGHT_SHIFT_IS_UNSIGNED
 #endif
 
-#define INLINE C_INLINE
+#define INLINE __inline
 
 /* These are for configuring the JPEG memory manager. */
 #undef DEFAULT_MAX_MEM

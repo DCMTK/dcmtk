@@ -113,16 +113,12 @@ typedef double          Float64;    /* 64 Bit Floating Point Double */
 #define OFlonglong long long
 #elif defined(_WIN32)
 #define OFlonglong __int64
-#elif defined(HAVE_LONGLONG)
-#define OFlonglong longlong
 #endif
 
 #ifdef HAVE_UNSIGNED_LONG_LONG
 #define OFulonglong unsigned long long
 #elif defined(_WIN32)
 #define OFulonglong unsigned __int64
-#elif defined(HAVE_ULONGLONG)
-#define OFulonglong ulonglong
 #endif
 
 #ifdef HAVE_INT64_T

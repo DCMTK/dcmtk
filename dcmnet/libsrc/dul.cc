@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -104,11 +104,7 @@ BEGIN_EXTERN_C
 int dcmtk_hosts_access(struct request_info *req);
 #endif
 /* declare extern "C" typedef for signal handler function pointer */
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-typedef void(*mySIG_TYP)(...);
-#else
 typedef void(*mySIG_TYP)(int);
-#endif
 END_EXTERN_C
 
 #ifdef DCMTK_HAVE_POLL
@@ -1630,17 +1626,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #ifdef DCMTK_HAVE_POLL
             nfound = poll(pfd, 1, timeout_val.tv_sec*1000+(timeout_val.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-            nfound = select(
-              OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
-                           (int *)(&fdset), NULL, NULL, &timeout_val);
-#else
             // On Win32, it is safe to cast the first parameter to int
             // because Windows ignores this parameter anyway.
             nfound = select(
               OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                            &fdset, NULL, NULL, &timeout_val);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL*/
 
             if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -1681,17 +1671,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #ifdef DCMTK_HAVE_POLL
                 nfound = poll(pfd, 1, timeout_val.tv_sec*1000+(timeout_val.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-                nfound = select(
-                  OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
-                                (int *)(&fdset), NULL, NULL, &timeout_val);
-#else
                 // On Win32, it is safe to cast the first parameter to int
                 // because Windows ignores this parameter anyway.
                 nfound = select(
                   OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                                 &fdset, NULL, NULL, &timeout_val);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
                 if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
                 {

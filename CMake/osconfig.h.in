@@ -40,10 +40,6 @@
 /* Define if char is unsigned on the C compiler */
 #cmakedefine C_CHAR_UNSIGNED @C_CHAR_UNSIGNED@
 
-/* Define to the inline keyword supported by the C compiler, if any, or to the
-   empty string */
-#define C_INLINE __inline
-
 /* Define if >> is unsigned on the C compiler */
 /* #undef C_RIGHTSHIFT_UNSIGNED */
 
@@ -81,9 +77,6 @@
 /* Define to 1 if you have the `bcmp' function. */
 #cmakedefine HAVE_BCMP @HAVE_BCMP@
 
-/* Define to 1 if you have the `bcopy' function. */
-#cmakedefine HAVE_BCOPY @HAVE_BCOPY@
-
 /* Define to 1 if you have the `bind' function. */
 #cmakedefine HAVE_BIND @HAVE_BIND@
 
@@ -103,21 +96,11 @@
    sys/socket.h */
 #cmakedefine HAVE_DECLARATION_SOCKLEN_T @HAVE_DECLARATION_SOCKLEN_T@
 
-/* Define if your system has a declaration for std::ios_base::openmode in
-   <iostream> */
-#cmakedefine HAVE_DECLARATION_STD__IOS_BASE__OPENMODE @HAVE_DECLARATION_STD__IOS_BASE__OPENMODE@
-
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
 #cmakedefine HAVE_DIRENT_H @HAVE_DIRENT_H@
 
 /* Define to 1 if you have the <err.h> header file. */
 #cmakedefine HAVE_ERR_H @HAVE_ERR_H@
-
-/* Define to 1 if you have the `_doprnt' function. */
-#cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
-
-/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
-/* #undef HAVE_EMPTY_ARGC_ARGV */
 
 /* Define to 1 if <errno.h> defined ENAMETOOLONG. */
 #cmakedefine HAVE_ENAMETOOLONG @HAVE_ENAMETOOLONG@
@@ -220,10 +203,6 @@
    of size_t * or socklen_t */
 #cmakedefine HAVE_INTP_GETSOCKOPT @HAVE_INTP_GETSOCKOPT@
 
-/* Define if your system declares argument 2-4 of select() as int * instead of
-   struct fd_set * */
-#cmakedefine HAVE_INTP_SELECT @HAVE_INTP_SELECT@
-
 /* Define to 1 if you have the <io.h> header file. */
 #cmakedefine HAVE_IO_H @HAVE_IO_H@
 
@@ -235,9 +214,6 @@
 
 /* Define to 1 if you have the <libc.h> header file. */
 #cmakedefine HAVE_LIBC_H @HAVE_LIBC_H@
-
-/* Define to 1 if you have the `iostream' library (-liostream). */
-#cmakedefine HAVE_LIBIOSTREAM @HAVE_LIBIOSTREAM@
 
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #cmakedefine HAVE_LIBNSL @HAVE_LIBNSL@
@@ -275,9 +251,6 @@
 /* Define to 1 if you have the <mqueue.h> header file. */
 #cmakedefine HAVE_MQUEUE_H @HAVE_MQUEUE_H@
 
-/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
-#cmakedefine HAVE_NDIR_H @HAVE_NDIR_H@
-
 /* Define to 1 if you have the <netdb.h> header file. */
 #cmakedefine HAVE_NETDB_H @HAVE_NETDB_H@
 
@@ -295,11 +268,6 @@
 
 /* Define to 1 if you have readdir_r */
 #cmakedefine HAVE_READDIR_R @HAVE_READDIR_R@
-
-/* Define if your system supports readdir_r with the obsolete Posix 1.c draft
-   6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
-   arguments. */
-#cmakedefine HAVE_OLD_READDIR_R @HAVE_OLD_READDIR_R@
 
 /* Define if your system has a prototype for feenableexcept in fenv.h */
 #cmakedefine HAVE_PROTOTYPE_FEENABLEEXCEPT @HAVE_PROTOTYPE_FEENABLEEXCEPT@
@@ -320,9 +288,6 @@
 
 /* Define to 1 if your has a prototype for `TryAcquireSRWLockShared' in windows.h (Win32 only). */
 #cmakedefine HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED @HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED@
-
-/* Define if your system has a prototype for std::finite in cmath */
-#cmakedefine HAVE_PROTOTYPE_STD__FINITE @HAVE_PROTOTYPE_STD__FINITE@
 
 /* Define if your system has a prototype for flock in sys/file.h */
 #cmakedefine HAVE_PROTOTYPE_FLOCK @HAVE_PROTOTYPE_FLOCK@
@@ -418,10 +383,6 @@
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_USLEEP @HAVE_PROTOTYPE_USLEEP@
 
-/* Define if your system has a prototype for wait3 in libc.h sys/wait.h
-   sys/time.h sys/resource.h */
-#cmakedefine HAVE_PROTOTYPE_WAIT3 @HAVE_PROTOTYPE_WAIT3@
-
 /* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
    sys/resource.h */
 #cmakedefine HAVE_PROTOTYPE_WAITPID @HAVE_PROTOTYPE_WAITPID@
@@ -464,9 +425,6 @@
 
 /* Define to 1 if you have the `stat' function. */
 #cmakedefine HAVE_STAT @HAVE_STAT@
-
-/* Define to 1 if you have the <stat.h> header file. */
-#cmakedefine HAVE_STAT_H @HAVE_STAT_H@
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
@@ -521,9 +479,6 @@
 
 /* Define to 1 if you have the <sys/file.h> header file. */
 #cmakedefine HAVE_SYS_FILE_H @HAVE_SYS_FILE_H@
-
-/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.*/
-#cmakedefine HAVE_SYS_NDIR_H @HAVE_SYS_NDIR_H@
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #cmakedefine HAVE_SYS_MMAN_H @HAVE_SYS_MMAN_H@
@@ -603,9 +558,6 @@
 /* Define to 1 if you have the `vsprintf_s' function. */
 #cmakedefine HAVE_VSPRINTF_S @HAVE_VSPRINTF_S@
 
-/* Define to 1 if you have the `wait3' function. */
-#cmakedefine HAVE_WAIT3 @HAVE_WAIT3@
-
 /* Define to 1 if you have the `waitpid' function. */
 #cmakedefine HAVE_WAITPID @HAVE_WAITPID@
 
@@ -623,12 +575,6 @@
 
 /* Define to 1 if you have the `nanosleep' function. */
 #cmakedefine HAVE_NANOSLEEP @HAVE_NANOSLEEP@
-
-/* Define if libc.h should be treated as a C++ header */
-#cmakedefine INCLUDE_LIBC_H_AS_CXX @INCLUDE_LIBC_H_AS_CXX@
-
-/* Define if <math.h> fails if included extern "C" */
-#cmakedefine INCLUDE_MATH_H_AS_CXX @INCLUDE_MATH_H_AS_CXX@
 
 /* Define to 1 if you have variable length arrays. */
 #cmakedefine HAVE_VLA @HAVE_VLA@
@@ -666,12 +612,6 @@
 /* Define path separator */
 #define PATH_SEPARATOR '@PATH_SEPARATOR@'
 
-/* Define as the return type of signal handlers (`int' or `void'). */
-#define RETSIGTYPE void
-
-/* Define if signal handlers need ellipse (...) parameters */
-/* #undef SIGNAL_HANDLER_WITH_ELLIPSE */
-
 /* LFS mode constants. */
 #define DCMTK_LFS 1
 #define DCMTK_LFS64 2
@@ -702,9 +642,6 @@
 
 /* The size of a `off_t', as computed by sizeof. */
 #cmakedefine SIZEOF_OFF_T @SIZEOF_OFF_T@
-
-/* Define to 1 if your <sys/time.h> declares `struct tm'. */
-/* #undef TM_IN_SYS_TIME */
 
 /* Define if we are compiling with libiconv support. */
 #cmakedefine WITH_LIBICONV
@@ -773,21 +710,10 @@
 /* #undef _ALL_SOURCE */
 #endif
 
-/* Define to 1 if type `char' is unsigned and you are not using gcc. */
-#ifndef __CHAR_UNSIGNED__
-/* #undef __CHAR_UNSIGNED__ */
-#endif
-
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_PID_T
 #ifdef HAVE_NO_TYPEDEF_PID_T
 #define pid_t int
-#endif
-
-/* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_SIZE_T
-#ifdef HAVE_NO_TYPEDEF_SIZE_T
-#define size_t unsigned
 #endif
 
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
@@ -819,10 +745,6 @@ typedef unsigned long ulong;
 
 #cmakedefine HAVE_LONG_LONG
 #cmakedefine HAVE_UNSIGNED_LONG_LONG
-
-/* evaluated by JasPer */
-#cmakedefine HAVE_LONGLONG
-#cmakedefine HAVE_ULONGLONG
 
 #cmakedefine HAVE_INT64_T @HAVE_INT64_T@
 #cmakedefine HAVE_UINT64_T @HAVE_UINT64_T@
@@ -876,9 +798,6 @@ typedef unsigned long ulong;
 #endif /* _MSC_VER >= 1400 */
 #endif /* _MSC_VER */
 
-/* Define if your system defines ios::nocreate in <iostream> */
-#cmakedefine HAVE_IOS_NOCREATE @HAVE_IOS_NOCREATE@
-
 /* Define if ANSI standard C++ includes use std namespace */
 #cmakedefine HAVE_STD_NAMESPACE @HAVE_STD_NAMESPACE@
 
@@ -926,9 +845,6 @@ typedef unsigned long ulong;
 
 /* Define if your system provides sigjmp_buf as conditional jmp_buf alternative */
 #cmakedefine HAVE_SIGJMP_BUF @HAVE_SIGJMP_BUF@
-
-/* Always define STDIO_NAMESPACE to ::, because MSVC6 gets mad if you don't. */
-#define STDIO_NAMESPACE ::
 
 /* Define if we can use C++11 */
 #cmakedefine HAVE_CXX11 @HAVE_CXX11@
@@ -1048,6 +964,7 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 
 /* Define if we have the <openssl/provider.h> header file*/
 #cmakedefine HAVE_OPENSSL_PROVIDER_H @HAVE_OPENSSL_PROVIDER_H@
+
 
 /* Historical C/C++ language features and APIs that are guaranteed by C++98,
  * C89, or POSIX.1-2001 for Posix platforms, and thus not tested anymore.
@@ -1200,31 +1117,72 @@ DCMTK was configured to use C++17 features, but your compiler does not or was no
 #define STDC_HEADERS 1
 #endif
 
-/* Historical pre-C++98 header files that are not used in DCMTK anymore,
+/* Historical feature tests that are not used in DCMTK anymore,
  * and are thus not tested for anymore.
  */
 
 #if defined(POISON_DEPRECATED_FEATURE_MACROS) && defined(__GNUC__)
+#pragma GCC poison C_INLINE
+#pragma GCC poison HAVE_BCOPY
+#pragma GCC poison HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
+#pragma GCC poison HAVE_DOPRNT
+#pragma GCC poison HAVE_EMPTY_ARGC_ARGV
 #pragma GCC poison HAVE_FSTREAM_H
 #pragma GCC poison HAVE_IOMANIP_H
 #pragma GCC poison HAVE_IOSTREAM_H
+#pragma GCC poison HAVE_IOS_NOCREATE
+#pragma GCC poison HAVE_LIBIOSTREAM
+#pragma GCC poison HAVE_LONGLONG
 #pragma GCC poison HAVE_MEMORY_H
+#pragma GCC poison HAVE_NDIR_H
 #pragma GCC poison HAVE_NEW_H
+#pragma GCC poison HAVE_OLD_READDIR_R
+#pragma GCC poison HAVE_PROTOTYPE_STD__FINITE
+#pragma GCC poison HAVE_PROTOTYPE_WAIT3
 #pragma GCC poison HAVE_SSTREAM_H
+#pragma GCC poison HAVE_STAT_H
 #pragma GCC poison HAVE_STREAMBUF_H
 #pragma GCC poison HAVE_STRSTREAM_H
 #pragma GCC poison HAVE_STRSTREA_H
+#pragma GCC poison HAVE_SYS_NDIR_H
+#pragma GCC poison HAVE_ULONGLONG
+#pragma GCC poison HAVE_WAIT3
+#pragma GCC poison INCLUDE_LIBC_H_AS_CXX
+#pragma GCC poison INCLUDE_MATH_H_AS_CXX
+#pragma GCC poison RETSIGTYPE
+#pragma GCC poison TM_IN_SYS_TIME
 #endif
 
+/* #undef C_INLINE */
+/* #undef HAVE_BCOPY */
+/* #undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE */
+/* #undef HAVE_DOPRNT */
+/* #undef HAVE_EMPTY_ARGC_ARGV */
 /* #undef HAVE_FSTREAM_H */
 /* #undef HAVE_IOMANIP_H */
 /* #undef HAVE_IOSTREAM_H */
+/* #undef HAVE_IOS_NOCREATE */
+/* #undef HAVE_LIBIOSTREAM */
+/* #undef HAVE_LONGLONG */
 /* #undef HAVE_MEMORY_H */
+/* #undef HAVE_NDIR_H */
 /* #undef HAVE_NEW_H */
+/* #undef HAVE_OLD_READDIR_R */
+/* #undef HAVE_PROTOTYPE_STD__FINITE */
+/* #undef HAVE_PROTOTYPE_WAIT3 */
 /* #undef HAVE_SSTREAM_H */
+/* #undef HAVE_STAT_H */
 /* #undef HAVE_STREAMBUF_H */
 /* #undef HAVE_STRSTREAM_H */
 /* #undef HAVE_STRSTREA_H */
+/* #undef HAVE_SYS_NDIR_H */
+/* #undef HAVE_ULONGLONG */
+/* #undef HAVE_WAIT3 */
+/* #undef INCLUDE_LIBC_H_AS_CXX */
+/* #undef INCLUDE_MATH_H_AS_CXX */
+/* #undef RETSIGTYPE */
+/* #undef TM_IN_SYS_TIME */
+/* #undef __CHAR_UNSIGNED__ */
 
 
 /* Historical OpenSSL feature tests that are not required anymore for OpenSSL 1.1.1 and newer.

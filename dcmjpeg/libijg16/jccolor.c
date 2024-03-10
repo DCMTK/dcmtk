@@ -20,8 +20,6 @@ typedef long jccolor_sint64;
 typedef __int64 jccolor_sint64;
 #elif defined(HAVE_LONG_LONG)
 typedef long long jccolor_sint64;
-#elif defined (HAVE_LONGLONG)
-typedef longlong jccolor_sint64;
 #else
 #define JCCOLOR_NO_SINT64
 #endif

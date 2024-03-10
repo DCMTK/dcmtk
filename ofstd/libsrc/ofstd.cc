@@ -132,14 +132,8 @@ BEGIN_EXTERN_C
 #include <dirent.h>      /* for opendir() and closedir() */
 #else
 #define dirent direct
-#ifdef HAVE_SYS_NDIR_H
-#include <sys/ndir.h>
-#endif
 #ifdef HAVE_SYS_DIR_H
 #include <sys/dir.h>
-#endif
-#ifdef HAVE_NDIR_H
-#include <ndir.h>
 #endif
 #endif
 #ifdef HAVE_FNMATCH_H
@@ -370,7 +364,7 @@ const char *OFStandard::strerror(const int errnum,
                                  const size_t /*buflen*/)
 {
     // we only have strerror() which is thread unsafe on Posix platforms, but thread safe on Windows
-    return STDIO_NAMESPACE strerror(errnum);
+    return :: strerror(errnum);
 }
 #endif
 

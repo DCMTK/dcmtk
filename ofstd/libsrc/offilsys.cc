@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2021, OFFIS e.V.
+ *  Copyright (C) 2021-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -468,11 +468,7 @@ OFBool OFdirectory_iterator::NativeDirectoryEntry::next()
     return !::_findnext( m_hFile, &m_FileData );
 #else // HAVE__FINDFIRST
 #if defined(HAVE_READDIR_R) && !defined(READDIR_IS_THREADSAFE)
-#ifdef HAVE_OLD_READDIR_R
-    return (m_pDirent = ::readdir_r( m_pDIR, OFreinterpret_cast(dirent*, m_Buffer ) ) );
-#else // HAVE_OLD_READDIR_R
     return !::readdir_r( m_pDIR, OFreinterpret_cast(dirent*, m_Buffer ), &m_pDirent ) && m_pDirent;
-#endif // HAVE_OLD_READDIR_R
 #else // HAVE_READDIR_R && !READDIR_IS_THREADSAFE
     return (m_pDirent = ::readdir( m_pDIR ) );
 #endif // HAVE_READDIR_R && !READDIR_IS_THREADSAFE

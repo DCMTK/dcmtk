@@ -969,38 +969,7 @@ void WlmActivityManager::CleanChildren()
       RemoveProcessFromTable( child );
     }
   }
-
-#elif defined(HAVE_WAIT3)                                     // PLATFORMS THAT HAVE wait3()
-  int status;
-  int options = WNOHANG;
-  struct rusage rusage;
-  int child = 1;
-
-  while( child > 0 )
-  {
-    // determine status for child processes
-    child = wait3( &status, options, &rusage );
-    if( child < 0 )
-    {
-      if( errno == ECHILD )
-      {
-        // no children
-      }
-      else
-      {
-        DCMWLM_WARN("WlmActivityManager::CleanChildren: Wait for child failed");
-      }
-    }
-    else if( child > 0 )
-    {
-      // dump some information if required
-      DCMWLM_INFO("Cleaned up after child (" << child << ")");
-
-      // remove item from process table
-      RemoveProcessFromTable( child );
-    }
-  }
-#else                                                         // OTHER PLATFORMS
+#else
 // for other platforms without waitpid() and without wait3() we
 // don't know how to cleanup after children. Dump an error message.
   DCMWLM_WARN("WlmActivityManager::CleanChildren: Cannot wait for child processes");

@@ -66,21 +66,11 @@ static void cleanChildren()
 {
 #ifdef HAVE_WAITPID
     int stat_loc;
-#elif defined(HAVE_WAIT3)
-    struct rusage rusage;
-    int        status;
-#endif
-
-#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
     int child = 1;
     int options = WNOHANG;
     while (child > 0)
     {
-#ifdef HAVE_WAITPID
         child = (int)(waitpid(-1, &stat_loc, options));
-#elif defined(HAVE_WAIT3)
-        child = wait3(&status, options, &rusage);
-#endif
         if (child < 0)
         {
             if (errno != ECHILD)

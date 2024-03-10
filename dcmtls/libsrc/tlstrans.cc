@@ -257,12 +257,8 @@ OFBool DcmTLSConnection::networkDataAvailable(int timeout)
   };
   nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-  nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
   // This is safe because on Windows the first select() parameter is ignored anyway
   nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
 
   if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))

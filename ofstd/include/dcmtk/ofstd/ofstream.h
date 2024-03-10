@@ -77,13 +77,6 @@ typedef STD_NAMESPACE istringstream OFIStringStream;
 #define OFSTRINGSTREAM_FREESTR(chptr) \
 }
 
-// Define OFopenmode_in_nocreate as a macro that either expands
-// to ios::in or to ios::in|ios::nocreate, if the historic
-// nocreate flag is supported on the platform.
-#if defined(HAVE_IOS_NOCREATE) && (__cplusplus < 201103L)
-#define OFopenmode_in_nocreate STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate
-#else
 #define OFopenmode_in_nocreate STD_NAMESPACE ios::in
-#endif
 
 #endif /* OFSTREAM_H */

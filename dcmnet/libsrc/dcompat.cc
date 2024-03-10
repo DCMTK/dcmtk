@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -88,27 +88,12 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmnet/diutil.h"
 
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
-#endif
-#ifdef HAVE_FCNTL_H
-#include <fcntl.h>
-#endif
-
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
-#ifdef HAVE_STAT_H
-#include <stat.h>
 #endif
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>

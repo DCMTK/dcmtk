@@ -178,11 +178,7 @@ OFBool             opt_execSync = OFFalse;            // default: execute in bac
 /** signal handler for SIGCHLD signals that immediately cleans up
  *  terminated children.
  */
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-extern "C" void sigChildHandler(...)
-#else
 extern "C" void sigChildHandler(int)
-#endif
 {
   int status = 0;
   waitpid( -1, &status, WNOHANG );
@@ -2487,8 +2483,6 @@ static void executeCommand( const OFString &cmd )
 
 #ifdef HAVE_WAITPID
 static void cleanChildren(pid_t pid, OFBool synch)
-#elif defined(HAVE_WAIT3)
-static void cleanChildren(pid_t /* pid */, OFBool synch)
 #else
 static void cleanChildren(pid_t /* pid */, OFBool /* synch */)
 #endif
@@ -2499,21 +2493,11 @@ static void cleanChildren(pid_t /* pid */, OFBool /* synch */)
 {
 #ifdef HAVE_WAITPID
   int stat_loc;
-#elif defined(HAVE_WAIT3)
-  struct rusage rusage;
-  int        status;
-#endif
-
-#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
   int child = 1;
   int options = synch ? 0 : WNOHANG;
   while (child > 0)
   {
-#ifdef HAVE_WAITPID
     child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
-#elif defined(HAVE_WAIT3)
-    child = wait3(&status, options, &rusage);
-#endif
     if (child < 0)
     {
       if (errno != ECHILD)

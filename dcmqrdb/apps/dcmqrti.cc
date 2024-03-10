@@ -60,11 +60,7 @@ DcmQueryRetrieveTelnetInitiator conf(config);
  * We only really need to make sure that the display is clear
  * before quitting.
  */
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-extern "C" void TI_signalHandler(...)
-#else
 extern "C" void TI_signalHandler(int)
-#endif
 {
   conf.TI_detachAssociation(OFTrue);
   exit( 1 );

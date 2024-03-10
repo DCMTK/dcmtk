@@ -80,14 +80,6 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
-#endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif

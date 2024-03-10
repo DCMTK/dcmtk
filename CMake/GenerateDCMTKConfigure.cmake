@@ -310,14 +310,12 @@ endif()
   CHECK_INCLUDE_FILE_CXX("libc.h" HAVE_LIBC_H)
   CHECK_INCLUDE_FILE_CXX("malloc.h" HAVE_MALLOC_H)
   CHECK_INCLUDE_FILE_CXX("mqueue.h" HAVE_MQUEUE_H)
-  CHECK_INCLUDE_FILE_CXX("ndir.h" HAVE_NDIR_H)
   CHECK_INCLUDE_FILE_CXX("netdb.h" HAVE_NETDB_H)
   CHECK_INCLUDE_FILE_CXX("png.h" HAVE_PNG_H)
   CHECK_INCLUDE_FILE_CXX("process.h" HAVE_PROCESS_H)
   CHECK_INCLUDE_FILE_CXX("pthread.h" HAVE_PTHREAD_H)
   CHECK_INCLUDE_FILE_CXX("pwd.h" HAVE_PWD_H)
   CHECK_INCLUDE_FILE_CXX("semaphore.h" HAVE_SEMAPHORE_H)
-  CHECK_INCLUDE_FILE_CXX("stat.h" HAVE_STAT_H)
   CHECK_INCLUDE_FILE_CXX("stdint.h" HAVE_STDINT_H)
   CHECK_INCLUDE_FILE_CXX("strings.h" HAVE_STRINGS_H)
   CHECK_INCLUDE_FILE_CXX("synch.h" HAVE_SYNCH_H)
@@ -326,7 +324,6 @@ endif()
   CHECK_INCLUDE_FILE_CXX("sys/file.h" HAVE_SYS_FILE_H)
   CHECK_INCLUDE_FILE_CXX("sys/mman.h" HAVE_SYS_MMAN_H)
   CHECK_INCLUDE_FILE_CXX("sys/msg.h" HAVE_SYS_MSG_H)
-  CHECK_INCLUDE_FILE_CXX("sys/ndir.h" HAVE_SYS_NDIR_H)
   CHECK_INCLUDE_FILE_CXX("sys/param.h" HAVE_SYS_PARAM_H)
   CHECK_INCLUDE_FILE_CXX("sys/queue.h" HAVE_SYS_QUEUE_H)
   CHECK_INCLUDE_FILE_CXX("sys/resource.h" HAVE_SYS_RESOURCE_H)
@@ -389,7 +386,6 @@ endif()
     set(HAVE_NO_TYPEDEF_PID_T TRUE)
   else()
     set(HAVE_NO_TYPEDEF_PID_T FALSE)
-    set(HAVE_NO_TYPEDEF_SIZE_T FALSE)
     if(NOT ${HAVE_SYS_TYPES_H})
       set(HAVE_NO_TYPEDEF_SSIZE_T TRUE)
     endif()
@@ -536,13 +532,11 @@ endif()
     endmacro()
   endif()
 
-  CHECK_FUNCTION_EXISTS(_doprnt HAVE_DOPRNT)
   CHECK_FUNCTION_EXISTS(_findfirst HAVE__FINDFIRST)
   CHECK_FUNCTION_EXISTS(accept HAVE_ACCEPT)
   CHECK_FUNCTION_EXISTS(access HAVE_ACCESS)
   CHECK_FUNCTION_EXISTS(atoll HAVE_ATOLL)
   CHECK_FUNCTION_EXISTS(bcmp HAVE_BCMP)
-  CHECK_FUNCTION_EXISTS(bcopy HAVE_BCOPY)
   CHECK_FUNCTION_EXISTS(bind HAVE_BIND)
   CHECK_FUNCTION_EXISTS(connect HAVE_CONNECT)
   CHECK_FUNCTION_EXISTS(cuserid HAVE_CUSERID)
@@ -593,7 +587,6 @@ endif()
   CHECK_FUNCTION_EXISTS(sysinfo HAVE_SYSINFO)
   CHECK_FUNCTION_EXISTS(uname HAVE_UNAME)
   CHECK_FUNCTION_EXISTS(usleep HAVE_USLEEP)
-  CHECK_FUNCTION_EXISTS(wait3 HAVE_WAIT3)
   CHECK_FUNCTION_EXISTS(waitpid HAVE_WAITPID)
 
   CHECK_SYMBOL_EXISTS(strcasestr "string.h" HAVE_PROTOTYPE_STRCASESTR)
@@ -602,7 +595,6 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS(finite "${HEADERS}" HAVE_PROTOTYPE_FINITE)
   CHECK_FUNCTIONWITHHEADER_EXISTS("std::isinf(0.)" "${CXXHEADERS}" HAVE_PROTOTYPE_STD__ISINF)
   CHECK_FUNCTIONWITHHEADER_EXISTS("std::isnan(0.)" "${CXXHEADERS}" HAVE_PROTOTYPE_STD__ISNAN)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(std::finite "${HEADERS}" HAVE_PROTOTYPE_STD__FINITE)
   CHECK_FUNCTIONWITHHEADER_EXISTS(flock "${HEADERS}" HAVE_PROTOTYPE_FLOCK)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gethostbyname "${HEADERS}" HAVE_PROTOTYPE_GETHOSTBYNAME)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gethostbyname_r "${HEADERS}" HAVE_PROTOTYPE_GETHOSTBYNAME_R)
@@ -610,7 +602,6 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS(gethostid "${HEADERS}" HAVE_PROTOTYPE_GETHOSTID)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gethostname "${HEADERS}" HAVE_PROTOTYPE_GETHOSTNAME)
   CHECK_FUNCTIONWITHHEADER_EXISTS(waitpid "${HEADERS}" HAVE_PROTOTYPE_WAITPID)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(wait3 "${HEADERS}" HAVE_PROTOTYPE_WAIT3)
   CHECK_FUNCTIONWITHHEADER_EXISTS(usleep "${HEADERS}" HAVE_PROTOTYPE_USLEEP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(accept "${HEADERS}" HAVE_PROTOTYPE_ACCEPT)
   CHECK_FUNCTIONWITHHEADER_EXISTS(bind "${HEADERS}" HAVE_PROTOTYPE_BIND)
@@ -640,8 +631,6 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS(strncasecmp "${HEADERS}" HAVE_PROTOTYPE_STRNCASECMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strerror_r "${HEADERS}" HAVE_PROTOTYPE_STRERROR_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS(SYS_gettid "${HEADERS}" HAVE_SYS_GETTID)
-  # "definition" is an (exchangeable) identifier that is needed for successful compile test
-  CHECK_FUNCTIONWITHHEADER_EXISTS("std::ios_base::openmode definition" "${CXXHEADERS}" HAVE_DECLARATION_STD__IOS_BASE__OPENMODE)
   CHECK_FUNCTIONWITHHEADER_EXISTS(pthread_rwlock_init "${HEADERS}" HAVE_PTHREAD_RWLOCK)
   CHECK_FUNCTIONWITHHEADER_EXISTS("__sync_add_and_fetch((int*)0,0)" "${HEADERS}" HAVE_SYNC_ADD_AND_FETCH)
   CHECK_FUNCTIONWITHHEADER_EXISTS("__sync_sub_and_fetch((int*)0,0)" "${HEADERS}" HAVE_SYNC_SUB_AND_FETCH)
@@ -655,6 +644,7 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
   CHECK_FUNCTIONWITHHEADER_EXISTS("&passwd::pw_gecos" "${HEADERS}" HAVE_PASSWD_GECOS)
   CHECK_FUNCTIONWITHHEADER_EXISTS("TryAcquireSRWLockShared((PSRWLOCK)0)" "${HEADERS}" HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED)
+  # "definition" is an (exchangeable) identifier that is needed for successful compile test
   CHECK_FUNCTIONWITHHEADER_EXISTS("fp_except_t definition" "${HEADERS}" HAVE_DECLARATION_FP_EXCEPT_T)
 
   # Check for some type definitions needed by JasPer and defines them if necessary
@@ -664,8 +654,6 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS("ushort definition" "${HEADERS}" HAVE_USHORT_TYPEDEF)
   CHECK_FUNCTIONWITHHEADER_EXISTS("uint definition" "${HEADERS}" HAVE_UINT_TYPEDEF)
   CHECK_FUNCTIONWITHHEADER_EXISTS("ulong definition" "${HEADERS}" HAVE_ULONG_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("longlong definition" "${HEADERS}" HAVE_LONGLONG)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("ulonglong definition" "${HEADERS}" HAVE_ULONGLONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("long long definition" "${HEADERS}" HAVE_LONG_LONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("unsigned long long definition" "${HEADERS}" HAVE_UNSIGNED_LONG_LONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("int64_t definition" "${HEADERS}" HAVE_INT64_T)
@@ -705,42 +693,6 @@ if(DEFINED DCMTK_NO_TRY_RUN)
   set(DCMTK_NO_TRY_RUN DDCMTK_NO_TRY_RUN CACHE INTERNAL "Disable compile try as part of config")
 endif()
 
-if(HAVE_LIBC_H)
-  # checks if <libc.h> and <math.h> cause a problem if libc.h is included extern "C"
-  # and math.h is not. This is the case on QNX 6.2.x and 6.5.x.
-  DCMTK_TRY_COMPILE(INCLUDE_LIBC_H_AS_EXTERN_C "<libc.h> can be included as extern \"C\""
-  "extern \"C\" {
-#include <libc.h>
-}
-#include <math.h>
-int main()
-{
-    int i = 0;
-    return 0;
-}")
-  if(INCLUDE_LIBC_H_AS_EXTERN_C)
-    set(INCLUDE_LIBC_H_AS_CXX 0 CACHE INTERNAL "libc.h should be treated as a C++ header")
-  else()
-    set(INCLUDE_LIBC_H_AS_CXX 1 CACHE INTERNAL "libc.h should be treated as a C++ header")
-  endif()
-endif()
-
-  # checks if <math.h> must be included as a C++ include file (i.e. without extern "C").
-  # Some systems (Win32, HP/UX 10) use C++ language features in <math.h>.
-  DCMTK_TRY_COMPILE(INCLUDE_MATH_H_AS_EXTERN_C "<math.h> can be included as extern \"C\""
-  "extern \"C\" {
-#include <math.h>
-}
-int main()
-{
-    int i = 0;
-    return 0;
-}")
-if(INCLUDE_MATH_H_AS_EXTERN_C)
-  set(INCLUDE_MATH_H_AS_CXX 0 CACHE INTERNAL "math.h should be treated as a C++ header")
-else()
-  set(INCLUDE_MATH_H_AS_CXX 1 CACHE INTERNAL "math.h should be treated as a C++ header")
-endif()
 
 if(NOT DEFINED C_CHAR_UNSIGNED)
    message(STATUS "Checking signedness of char")
@@ -816,18 +768,6 @@ DCMTK_TRY_COMPILE(HAVE_VLA "variable length arrays are supported"
     int n = 42;
     int foo[n];
     return 0;
-}")
-
-# Check if std::ios::nocreate exists
-DCMTK_TRY_COMPILE(HAVE_IOS_NOCREATE "std::ios::nocreate exists"
-    "#include <fstream>
-
-using namespace std;
-
-int main()
-{
-  std::ifstream file(\"name\", std::ios::nocreate);
-  return 0;
 }")
 
 # do try compile to detect lfs and flags
@@ -1045,7 +985,6 @@ if(WIN32)
   # we could use tests for these. Until then, here is what would be the result:
   set(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
   set(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-  set(HAVE_INTP_SELECT 0 CACHE INTERNAL "Set if select() accepts an int* argument")
 else()
   # Check if socket functions accept an int*
   DCMTK_TRY_COMPILE(HAVE_INTP_SOCKET, "socket functions accept an int* argument"
@@ -1082,33 +1021,6 @@ int main()
     set(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
     set(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
   endif()
-
-  # Check if select() accepts an int*
-  DCMTK_TRY_COMPILE(HAVE_INTP_SELECT "select() accepts an int* argument"
-      "
-#ifdef __cplusplus
-extern \"C\" {
-#endif
-#ifdef _WIN32
-/* Windows is pure evil */
-#include <windows.h>
-#else
-#include <sys/socket.h>
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-int main()
-{
-    int i;
-    int fds = 0;
-
-    i = select(1, &fds, &fds, &fds, 0);
-
-    return 0;
-}
-")
 endif()
 
 # Check for alignment query / specifier support

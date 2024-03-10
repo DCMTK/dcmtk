@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,15 +32,6 @@
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcspchrs.h"
-
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
-#endif
 
 
 // ********************************

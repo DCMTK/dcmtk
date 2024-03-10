@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2022, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -249,12 +249,8 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
 #ifdef DCMTK_HAVE_POLL
     int nfound = poll(&pfd[0], pfd.size(), t.tv_sec*1000+(t.tv_usec/1000));
 #else /* DCMTK_HAVE_POLL */
-#ifdef HAVE_INTP_SELECT
-    int nfound = select(OFstatic_cast(int, maxsocketfd + 1), (int *)(&fdset), NULL, NULL, &t);
-#else /* HAVE_INTP_SELECT */
     // This is safe because on Win32 the first parameter of select() is ignored anyway
     int nfound = select(OFstatic_cast(int, maxsocketfd + 1), &fdset, NULL, NULL, &t);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
 
     if (nfound == 0) return OFFalse; // a regular timeout
@@ -430,12 +426,8 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   };
   nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-      nfound = select(OFstatic_cast(int, getSocket() + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
       // This is safe because on Win32 the first parameter of select() is ignored anyway
       nfound = select(OFstatic_cast(int, getSocket() + 1), &fdset, NULL, NULL, &t);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
 
       if (nfound < 0)

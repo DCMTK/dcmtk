@@ -197,12 +197,8 @@ int main(int argc, char *argv[])
       t.tv_sec = 10;  // 10 seconds timeout
       t.tv_usec = 0;
 
-#ifdef HAVE_INTP_SELECT
-      nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
       // the typecast is safe because Windows ignores the first select() parameter anyway
       nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
-#endif
 
       if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
       {

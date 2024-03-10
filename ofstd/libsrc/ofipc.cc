@@ -133,11 +133,7 @@ public:
 #ifdef DCMTK_HAVE_POLL
       nfound = poll(pfd, 1, OFIPC_POLL_INTERVAL_USEC/1000);
 #else
-#ifdef HAVE_INTP_SELECT
-      nfound = select(queue_socket_+1, (int *)(&fdset), NULL, NULL, &t);
-#else
       nfound = select(queue_socket_+1, &fdset, NULL, NULL, &t);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
 
       if (nfound > 0)
@@ -238,11 +234,7 @@ extern void closeAllMessageQueues()
   }
 }
 
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-extern "C" void OFIPCMessageQueueServerSIGINTHandler(...)
-#else
 extern "C" void OFIPCMessageQueueServerSIGINTHandler(int)
-#endif
 {
   // globally close all message queues
   closeAllMessageQueues();
@@ -252,11 +244,7 @@ extern "C" void OFIPCMessageQueueServerSIGINTHandler(int)
   raise(SIGINT);
 }
 
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-extern "C" void OFIPCMessageQueueServerSIGTERMHandler(...)
-#else
 extern "C" void OFIPCMessageQueueServerSIGTERMHandler(int)
-#endif
 {
   // globally close all message queues
   closeAllMessageQueues();

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2023, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,14 +30,8 @@ BEGIN_EXTERN_C
 #else
 #define dirent direct
 #define NAMELEN(dirent) (dirent)->d_namlen
-#ifdef HAVE_SYS_NDIR_H
-#include <sys/ndir.h>
-#endif
 #ifdef HAVE_SYS_DIR_H
 #include <sys/dir.h>
-#endif
-#ifdef HAVE_NDIR_H
-#include <ndir.h>
 #endif
 #endif
 #ifdef HAVE_IO_H

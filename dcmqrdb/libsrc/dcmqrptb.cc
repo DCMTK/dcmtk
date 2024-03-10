@@ -182,24 +182,12 @@ OFBool DcmQueryRetrieveProcessTable::haveProcessWithWriteAccess(const char *call
 
 void DcmQueryRetrieveProcessTable::cleanChildren()
 {
-#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
-
-    /* declare local variables for waitpid/wait3 */
 #ifdef HAVE_WAITPID
     int stat_loc;
-#else
-    int status;
-    struct rusage rusage;
-#endif
-
     int child = 1;
     while (child > 0)
     {
-#ifdef HAVE_WAITPID
       child = OFstatic_cast(int, waitpid(-1, &stat_loc, WNOHANG));
-#else
-      child = wait3(&status, WNOHANG, &rusage);
-#endif
       if (child < 0)
       {
         if (errno == ECHILD)
@@ -220,7 +208,5 @@ void DcmQueryRetrieveProcessTable::cleanChildren()
         removeProcessFromTable(child);
       }
     }
-#else
-    /* cannot wait for child processes */
 #endif
 }
