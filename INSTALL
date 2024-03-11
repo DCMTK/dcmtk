@@ -1,3 +1,13 @@
+-------------------------------------------------------------------------------
+ IMPORTANT NOTE FOR CURRENT DEVELOPMENT VERSION 3.6.8+DEV
+-------------------------------------------------------------------------------
+ Please note that most sections of this document refer to the official release
+ DCMTK 3.6.8, i.e. they have not yet been updated to reflect the changes in
+ the latest development version.  This will be done for the next release at
+ the latest, which will probably be called version 3.6.9.
+-------------------------------------------------------------------------------
+
+
 ==================================
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
@@ -27,8 +37,8 @@ Microsoft Windows
 The DCMTK software can be compiled under a native Microsoft Windows environment
 (see section "Microsoft Windows with CMake" below for more information).
 
-The current (minor) release successfully compiles on the following operating
-system / hardware / compiler combinations:
+The current DCMTK software release 3.6.8 successfully compiles on the following
+operating system / hardware / compiler combinations:
 
    Windows 7       / Intel x86    / Microsoft Visual C++ 2015 Community (VS 14)
    Windows 7       / Intel x86    / Microsoft Visual C++ 2017 Community (VS 15)
@@ -52,7 +62,7 @@ system / hardware / compiler combinations:
 Unix (or lookalikes)
 --------------------
 
-The current DCMTK software release successfully compiles on the following
+The current DCMTK software release 3.6.8 successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
@@ -462,8 +472,8 @@ directories.  In detail, these "CMakeLists.txt" files will serve as an input to
 CMake which will generate suitable build files for all of DCMTK's projects from
 these files.
 
-DCMTK 3.6.8 requires CMake version 3.0.0 or later.  We recommend using the
-latest stable release of CMake (currently version 3.27.7) since newer versions
+DCMTK 3.6.8+DEV requires CMake version 3.1.0 or later.  We recommend using the
+latest stable release of CMake (currently version 3.28.3) since newer versions
 of CMake often provide better output in case of errors and are generally easier
 to use (for example, by providing better support for detecting the availability
 of third-party libraries).  If possible, use the CMake version your operating
@@ -1111,4 +1121,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, J. Schlamelcher
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-02-24 (Riesmeier)
+Last revised: 2024-03-11 (Riesmeier)
