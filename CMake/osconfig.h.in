@@ -870,6 +870,14 @@ DCMTK was configured to use C++14 features, but your compiler does not or was no
 DCMTK was configured to use C++17 features, but your compiler does not or was not configured to provide them.
 #endif
 
+/* Define if we can use C++20 */
+#cmakedefine HAVE_CXX20 @HAVE_CXX20@
+
+#if defined(HAVE_CXX20) && defined(__cplusplus) && __cplusplus < 202002L
+#error \
+DCMTK was configured to use C++20 features, but your compiler does not or was not configured to provide them.
+#endif
+
 /* Define if the compiler supports __alignof__ */
 #cmakedefine HAVE_GNU_ALIGNOF @HAVE_GNU_ALIGNOF@
 

@@ -589,7 +589,7 @@ define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS
   BRIEF_DOCS "Modern C++ standards DCMTK knows about."
   FULL_DOCS "The list of C++ standards since C++11 that DCMTK currently has configuration tests for. "
 )
-set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS 11 14 17)
+set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS 11 14 17 20)
 
 #-----------------------------------------------------------------------------
 # Enable various warnings by default

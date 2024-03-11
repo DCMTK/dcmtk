@@ -5,7 +5,7 @@
 #
 
 # Restore the required settings of the CMake configuration step
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 set(CMAKE_COMMAND "@CMAKE_COMMAND@")
 set(CMAKE_BINARY_DIR "@CMAKE_BINARY_DIR@")
 set(CMAKE_CURRENT_BINARY_DIR "@CMAKE_BINARY_DIR@")
