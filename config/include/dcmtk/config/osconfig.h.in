@@ -29,13 +29,6 @@
 /* Define the canonical host system type as a string constant. */
 #undef CANONICAL_HOST_TYPE
 
-/* Define if char is unsigned on the C compiler. */
-#undef C_CHAR_UNSIGNED
-
-/* Define to the inline keyword supported by the C compiler, if any, or to the
-   empty string. */
-#undef C_INLINE
-
 /* Define if >> is unsigned on the C compiler. */
 #undef C_RIGHTSHIFT_UNSIGNED
 
@@ -123,9 +116,6 @@
 /* Define to 1 if you have the `bcmp' function. */
 #undef HAVE_BCMP
 
-/* Define to 1 if you have the `bcopy' function. */
-#undef HAVE_BCOPY
-
 /* Define to 1 if you have the `bind' function. */
 #undef HAVE_BIND
 
@@ -164,10 +154,6 @@
    sys/socket.h . */
 #undef HAVE_DECLARATION_SOCKLEN_T
 
-/* Define if your system has a declaration for std::ios_base::openmode in
-   iostream. */
-#undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
-
 /* Define if the compiler supports __declspec(deprecated). */
 #undef HAVE_DECLSPEC_DEPRECATED
 
@@ -181,9 +167,6 @@
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H
-
-/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
-/* #undef HAVE_EMPTY_ARGC_ARGV */
 
 /* Define if your system provides ENAMETOOLONG errno value. */
 #undef HAVE_ENAMETOOLONG
@@ -310,18 +293,11 @@
    of size_t * or socklen_t. */
 #undef HAVE_INTP_GETSOCKOPT
 
-/* Define if your system declares argument 2-4 of select() as int * instead of
-   struct fd_set *. */
-#undef HAVE_INTP_SELECT
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
 /* Define to 1 if you have the <iostream> header file. */
 #undef HAVE_IOSTREAM
-
-/* Define if your system defines ios::nocreate in iostream.h. */
-#undef HAVE_IOS_NOCREATE
 
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
@@ -334,9 +310,6 @@
 
 /* Define to 1 if you have the <libc.h> header file. */
 #undef HAVE_LIBC_H
-
-/* Define to 1 if you have the `iostream' library (-liostream). */
-#undef HAVE_LIBIOSTREAM
 
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
@@ -355,9 +328,6 @@
 
 /* Define to 1 if you have the `lockf' function. */
 #undef HAVE_LOCKF
-
-/* Define to 1 if the system has the type `longlong'. */
-#undef HAVE_LONGLONG
 
 /* Define to 1 if the system has the type `long long'. */
 #undef HAVE_LONG_LONG
@@ -414,13 +384,6 @@
 typedef int pid_t;
 #endif
 
-/* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
-#undef HAVE_NO_TYPEDEF_SIZE_T
-
-#ifdef HAVE_NO_TYPEDEF_SIZE_T
-typedef unsigned size_t;
-#endif
-
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
 #undef HAVE_NO_TYPEDEF_SSIZE_T
 
@@ -464,11 +427,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if the system has the type `off64_t'. */
 #undef HAVE_OFF64_T
-
-/* Define if your system supports readdir_r with the obsolete Posix 1.c draft
-   6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
-   arguments. */
-#undef HAVE_OLD_READDIR_R
 
 /* Define to 1 if you have the <openssl/asn1.h> header file. */
 #undef HAVE_OPENSSL_ASN1_H
@@ -611,10 +569,6 @@ typedef unsigned short ushort;
    stdlib.h. */
 #undef HAVE_PROTOTYPE_MKTEMP
 
-/* Define if your system has a prototype for select in sys/select.h
-   sys/types.h sys/socket.h sys/time.h. */
-#undef HAVE_PROTOTYPE_SELECT
-
 /* Define if your system has a prototype for setsockopt in sys/types.h
    sys/socket.h. */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
@@ -622,9 +576,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for socket in sys/types.h
    sys/socket.h. */
 #undef HAVE_PROTOTYPE_SOCKET
-
-/* Define if your system has a prototype for std::finite in cmath. */
-#undef HAVE_PROTOTYPE_STD__FINITE
 
 /* Define if your system has a prototype for std::isinf in cmath. */
 #undef HAVE_PROTOTYPE_STD__ISINF
@@ -658,10 +609,6 @@ typedef unsigned short ushort;
 
 /* Define if your system has a prototype for vsnprintf in stdio.h stdarg.h. */
 #undef HAVE_PROTOTYPE_VSNPRINTF
-
-/* Define if your system has a prototype for wait3 in libc.h sys/wait.h
-   sys/time.h sys/resource.h. */
-#undef HAVE_PROTOTYPE_WAIT3
 
 /* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
    sys/resource.h. */
@@ -711,9 +658,6 @@ typedef unsigned short ushort;
 
 /* Define if the compiler supports static_assert. */
 #undef HAVE_STATIC_ASSERT
-
-/* Define to 1 if you have the <stat.h> header file. */
-#undef HAVE_STAT_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -861,9 +805,6 @@ typedef unsigned short ushort;
 /* Define to 1 if the system has the type `uint64_t'. */
 #undef HAVE_UINT64_T
 
-/* Define to 1 if the system has the type `ulonglong'. */
-#undef HAVE_ULONGLONG
-
 /* Define to 1 if you have the `uname' function. */
 #undef HAVE_UNAME
 
@@ -888,10 +829,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
-/* Define to 1 if you have the `wait3' system call. Deprecated, you should no
-   longer depend upon `wait3'. */
-#undef HAVE_WAIT3
-
 /* Define to 1 if you have the `waitpid' function. */
 #undef HAVE_WAITPID
 
@@ -906,12 +843,6 @@ typedef unsigned short ushort;
 
 /* Define if the compiler supports __func__. */
 #undef HAVE___func___MACRO
-
-/* Define if libc.h should be treated as a C++ header. */
-#undef INCLUDE_LIBC_H_AS_CXX
-
-/* Define if <math.h> fails if included extern "C". */
-#undef INCLUDE_MATH_H_AS_CXX
 
 /* Define if the second argument to iconv() is const. */
 #undef LIBICONV_SECOND_ARGUMENT_CONST
@@ -949,9 +880,6 @@ typedef unsigned short ushort;
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
-/* Define if signal handlers need ellipse (...) parameters. */
-#undef SIGNAL_HANDLER_WITH_ELLIPSE
-
 /* The size of `double', as computed by sizeof. */
 #undef SIZEOF_DOUBLE
 
@@ -972,9 +900,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
-
-/* Namespace for ANSI C functions in standard C++ headers. */
-#undef STDIO_NAMESPACE
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME

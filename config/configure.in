@@ -76,9 +76,6 @@ AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable pa
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif])
 
-AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
-/* #undef HAVE_EMPTY_ARGC_ARGV */])
-
 AH_TOP([#ifndef OSCONFIG_H
 #define OSCONFIG_H
 
@@ -199,8 +196,6 @@ dnl ----------------------------------------------------------
 dnl Perform some tests with the C compiler, needed for dcmjpeg
 dnl ----------------------------------------------------------
 
-AC_MY_C_INLINE
-AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
 dnl --------------------------------------------------------
@@ -212,8 +207,6 @@ AC_TYPEDEF(uchar, unsigned char)
 AC_TYPEDEF(ushort, unsigned short)
 AC_TYPEDEF(uint, unsigned int)
 AC_TYPEDEF(ulong, unsigned long)
-AC_CHECK_TYPES(longlong)
-AC_CHECK_TYPES(ulonglong)
 AC_CHECK_TYPES(long long)
 AC_CHECK_TYPES(unsigned long long)
 CHECK_VLA
@@ -239,10 +232,9 @@ dnl -------------------------------------------------------
 
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
-AC_FUNC_WAIT3
 AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
 AC_CHECK_FUNCS(itoa atoll)
-AC_CHECK_FUNCS(bcopy bcmp)
+AC_CHECK_FUNCS(bcmp)
 AC_CHECK_FUNCS(getpid mktemp mkstemp)
 AC_CHECK_FUNCS(stat)
 AC_CHECK_FUNCS(malloc_debug)
@@ -424,7 +416,7 @@ dnl Check for libraries
 dnl -------------------------------------------------------
 
 AC_CHECK_GXXLIB
-AC_CHECK_LIB(iostream, main)
+
 dnl Some C++ compilers have problems with recursive main calls
 dnl (e.g. Sun C++ 4.2). In this case we must test another function
 dnl to link.
@@ -498,7 +490,6 @@ AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(pthread.h)
 AC_CHECK_HEADERS(pwd.h)
 AC_CHECK_HEADERS(semaphore.h)
-AC_CHECK_HEADERS(stat.h)
 AC_CHECK_HEADERS(cstddef)
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(strings.h)
@@ -525,12 +516,6 @@ AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
 
 AC_CHECK_POLL_H
-
-if test $ac_cv_header_libc_h = yes ; then
-  if test $ac_cv_header_math_h = yes ; then
-    AC_CXX_LIBC_H_EXTERN_C
-  fi
-fi
 
 dnl --------------------------------------------------------
 dnl Tests for pointer vs. integer types
@@ -749,7 +734,6 @@ dnl ------------------------------------------------------------
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ------------------------------------------------------------
 
-AC_TYPEDEF(size_t, unsigned)
 AC_TYPEDEF(ssize_t, long)
 AC_TYPEDEF(pid_t, int)
 AC_C_CHAR_UNSIGNED
@@ -781,7 +765,6 @@ fi
 AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(finite, math.h)
-AC_CHECK_PROTOTYPE(std::finite, cmath)
 AC_CHECK_PROTOTYPE(std::isinf, cmath)
 AC_CHECK_PROTOTYPE(std::isnan, cmath)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
@@ -803,47 +786,24 @@ AC_CHECK_PROTOTYPE(gettimeofday, sys/time.h unistd.h)
 AC_CHECK_PROTOTYPE(listen, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(mkstemp, libc.h unistd.h stdlib.h)
-AC_CHECK_PROTOTYPE(select, sys/select.h sys/types.h sys/socket.h sys/time.h)
-if test $ac_cv_prototype_select = yes ; then
-AC_CHECK_INTP_SELECT(sys/select.h sys/types.h sys/socket.h sys/time.h)
-fi
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(strcasecmp, string.h)
 AC_CHECK_PROTOTYPE(strncasecmp, string.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(vsnprintf, stdio.h stdarg.h)
-AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
-AC_CHECK_OLD_READDIR_R
-AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
-if test $ac_cv_header_math_h = yes ; then
-AC_INCLUDE_MATH_H_AS_CXX
-fi
-
 
 dnl -------------------------------------------------------
 dnl Check for the usage of standard C++ headers
 dnl -------------------------------------------------------
 
 AC_CHECK_STD_NAMESPACE
-AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
-AC_CHECK_IOS_NOCREATE(std::ios, fstream)
 AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
   [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
 AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
   [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
-
-AC_CHECK_STD_NAMESPACE
-AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
-AC_CHECK_IOS_NOCREATE(std::ios, fstream)
-AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
-  [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
-AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
-  [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
-
-AC_STDIO_NAMESPACE
 
 
 dnl -------------------------------------------------------
