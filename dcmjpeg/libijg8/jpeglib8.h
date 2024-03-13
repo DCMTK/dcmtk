@@ -58,6 +58,16 @@
 #define D_MAX_DATA_UNITS_IN_MCU   10 /* decompressor's limit on data units/MCU */
 #endif
 
+#ifdef NEED_SHORT_EXTERNAL_NAMES
+#define jpeg_decompress_struct         jpeg8_decompress_struct
+#define jpeg_source_mgr                jpeg8_source_mgr
+#define jpeg_memory_mgr                jpeg8_memory_mgr
+#define jpeg_common_struct             jpeg8_common_struct
+#define jpeg_error_mgr                 jpeg8_error_mgr
+#define jpeg_compress_struct           jpeg8_compress_struct
+#define j_compress_ptr                 j8_compress_ptr
+#define jpeg_destination_mgr           jpeg8_destination_mgr
+#endif
 
 /* Data structures for images (arrays of samples and of DCT coefficients).
  * On 80x86 machines, the image arrays are too big for near pointers,
@@ -861,6 +871,7 @@ typedef JMETHOD(boolean, jpeg_marker_parser_method, (j_decompress_ptr cinfo));
 /* MAKE SURE THAT ALL FUNCTIONS DECLARED GLOBAL() ARE RE-DEFINED HERE! */
   
 #ifdef NEED_SHORT_EXTERNAL_NAMES
+#define jpeg_decompress_struct         jpeg8_decompress_struct
 #define jcopy_block_row                jcopy8_block_row
 #define jcopy_sample_rows              jcopy8_sample_rows
 #define jdiv_round_up                  jdiv8_round_up

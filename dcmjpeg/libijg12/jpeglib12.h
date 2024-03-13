@@ -58,6 +58,16 @@
 #define D_MAX_DATA_UNITS_IN_MCU   10 /* decompressor's limit on data units/MCU */
 #endif
 
+#ifdef NEED_SHORT_EXTERNAL_NAMES
+#define jpeg_decompress_struct         jpeg12_decompress_struct
+#define jpeg_source_mgr                jpeg12_source_mgr
+#define jpeg_memory_mgr                jpeg12_memory_mgr
+#define jpeg_common_struct             jpeg12_common_struct
+#define jpeg_error_mgr                 jpeg12_error_mgr
+#define jpeg_compress_struct           jpeg12_compress_struct
+#define j_compress_ptr                 j12_compress_ptr
+#define jpeg_destination_mgr           jpeg12_destination_mgr
+#endif
 
 /* Data structures for images (arrays of samples and of DCT coefficients).
  * On 80x86 machines, the image arrays are too big for near pointers,

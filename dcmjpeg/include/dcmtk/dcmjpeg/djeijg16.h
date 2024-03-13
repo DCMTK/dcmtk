@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2011, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,10 +28,10 @@
 
 extern "C"
 {
-  struct jpeg_compress_struct;
-  typedef struct jpeg_compress_struct * j_compress_ptr;
-  struct jpeg_decompress_struct;
-  typedef struct jpeg_decompress_struct * j_decompress_ptr;
+  struct jpeg16_compress_struct;
+  typedef struct jpeg16_compress_struct * j16_compress_ptr;
+//  struct jpeg16_decompress_struct;
+//  typedef struct jpeg16_decompress_struct * j_decompress_ptr;
 }
 
 class DJCodecParameter;
@@ -108,19 +108,19 @@ public:
    *  Internal use only, not to be called by client code.
    *  @param cinfo pointer to compress info
    */
-  void initDestination(jpeg_compress_struct *cinfo);
+  void initDestination(jpeg16_compress_struct *cinfo);
 
   /** callback for IJG compress destination manager.
    *  Internal use only, not to be called by client code.
    *  @param cinfo pointer to compress info
    */
-  int emptyOutputBuffer(jpeg_compress_struct *cinfo);
+  int emptyOutputBuffer(jpeg16_compress_struct *cinfo);
 
   /** callback for IJG compress destination manager.
    *  Internal use only, not to be called by client code.
    *  @param cinfo pointer to compress info
    */
-  void termDestination(jpeg_compress_struct *cinfo);
+  void termDestination(jpeg16_compress_struct *cinfo);
 
   /** callback function used to report warning messages and the like.
    *  Should not be called by user code directly.
