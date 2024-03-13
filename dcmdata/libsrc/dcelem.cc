@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -716,6 +716,13 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* function, we need to we need to delete this object here as well */
             if (isStreamNew)
                 delete readStream;
+        }
+        else
+        {
+            errorFlag = EC_InvalidStream; // incomplete dataset read from stream
+            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                << " larger (" << getLengthField() << ") than remaining bytes ("
+                << getTransferredBytes() << ") in file, premature end of stream");
         }
     }
     /* return result value */
