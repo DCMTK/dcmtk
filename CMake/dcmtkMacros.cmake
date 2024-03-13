@@ -65,6 +65,21 @@ macro(DCMTK_ADD_EXECUTABLE PROGRAM)
     endif()
 endmacro()
 
+macro(DCMTK_ADD_TEST_EXECUTABLE PROGRAM)
+    if(BUILD_APPS)
+        add_executable(${PROGRAM} ${ARGN})
+
+        # Make wildcard arguments work
+        if(WIN32 AND NOT MINGW)
+            set_target_properties(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
+        endif()
+
+        # Collect executable as part of global DCMTK_EXECUTABLE_TARGETS property
+        set_property(GLOBAL APPEND PROPERTY DCMTK_EXECUTABLE_TARGETS ${PROGRAM})
+
+    endif()
+endmacro()
+
 #
 # Setup a library
 #

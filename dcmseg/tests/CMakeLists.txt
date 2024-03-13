@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(dcmseg_tests
+DCMTK_ADD_TEST_EXECUTABLE(dcmseg_tests
   tbigdim.cc
   tests.cc
   tutils.cc

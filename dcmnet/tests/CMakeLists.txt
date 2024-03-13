@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(dcmnet_tests
+DCMTK_ADD_TEST_EXECUTABLE(dcmnet_tests
   tdimse.cc
   tdump.cc
   tests.cc

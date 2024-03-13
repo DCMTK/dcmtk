@@ -1,6 +1,6 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(mkreport mkreport.cc)
-DCMTK_ADD_EXECUTABLE(dcmsr_tests
+DCMTK_ADD_TEST_EXECUTABLE(mkreport mkreport.cc)
+DCMTK_ADD_TEST_EXECUTABLE(dcmsr_tests
   tests.cc
   tsrcmr.cc
   tsrcodvl.cc

@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(dcmiod_tests
+DCMTK_ADD_TEST_EXECUTABLE(dcmiod_tests
   tchecks.cc
   tcielabutil.cc
   tcodes.cc

@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(oficonv_tests
+DCMTK_ADD_TEST_EXECUTABLE(oficonv_tests
   tests.cc
   oficonv_tests.cc
   ticonv.cc

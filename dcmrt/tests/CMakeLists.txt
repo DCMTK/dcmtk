@@ -1,6 +1,6 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(drttest drttest.cc)
-DCMTK_ADD_EXECUTABLE(dcmrt_tests
+DCMTK_ADD_TEST_EXECUTABLE(drttest drttest.cc)
+DCMTK_ADD_TEST_EXECUTABLE(dcmrt_tests
   tests.cc
   tsearch.cc
   tcontour.cc

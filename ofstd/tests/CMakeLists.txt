@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(ofstd_tests
+DCMTK_ADD_TEST_EXECUTABLE(ofstd_tests
   tests.cc
   tatof.cc
   terror.cc
