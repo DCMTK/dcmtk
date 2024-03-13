@@ -49,15 +49,6 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
-DCMTK_UNDEF_SANITIZER
-  Affected: all modules
-  Type of modification: Toolkit customization
-  Explanation: When compiling with the GCC undefined behavior sanitizer
-    (-fsanitize=undefined), this macro must be defined to disable certain code
-    in config/tests/arith.cc that would otherwise trigger a runtime error to be
-    raised by the sanitizer and thus prevent the CMake configure phase from
-    completing.
-
 DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
   Affected: dcmnet
   Type of modification: Toolkit customization
