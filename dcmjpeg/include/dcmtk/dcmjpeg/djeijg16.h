@@ -30,8 +30,6 @@ extern "C"
 {
   struct jpeg16_compress_struct;
   typedef struct jpeg16_compress_struct * j16_compress_ptr;
-//  struct jpeg16_decompress_struct;
-//  typedef struct jpeg16_decompress_struct * j_decompress_ptr;
 }
 
 class DJCodecParameter;
