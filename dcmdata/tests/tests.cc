@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2023 OFFIS e.V.
+ *  Copyright (C) 2011-2024 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -120,4 +120,8 @@ OFTEST_REGISTER(dcmdata_attribute_filter);
 OFTEST_REGISTER(dcmdata_attribute_matching);
 OFTEST_REGISTER(dcmdata_newDicomElementPrivate);
 OFTEST_REGISTER(dcmdata_generateUniqueIdentifier);
+OFTEST_REGISTER(dcmdata_xferLookup_1);
+OFTEST_REGISTER(dcmdata_xferLookup_2);
+OFTEST_REGISTER(dcmdata_xferLookup_3);
+OFTEST_REGISTER(dcmdata_xferLookup_4);
 OFTEST_MAIN("dcmdata")

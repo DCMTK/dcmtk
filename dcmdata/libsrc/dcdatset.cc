@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -763,7 +763,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     // transfer syntax also uses a pixel data URL.
     if (tagExists(DCM_PixelDataProviderURL, OFTrue))
     {
-      if (! torep.isReferenced())
+      if (! torep.usesReferencedPixelData())
       {
         DCMDATA_ERROR("DcmDataset: Unable to compress image containing a pixel data provider URL, cannot change representation");
         l_error = EC_CannotChangeRepresentation;

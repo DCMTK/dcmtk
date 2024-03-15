@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Gerd Ehlers
+ *  Author:  Gerd Ehlers, Joerg Riesmeier
  *
  *  Purpose: Handling of transfer syntaxes
  *
@@ -35,11 +35,11 @@
 /** enumeration of all DICOM transfer syntaxes known to the toolkit
  */
 typedef enum {
-    /// unknown transfer syntax or dataset created in-memory
+    /// unknown transfer syntax or dataset created in memory
     EXS_Unknown = -1,
     /// Implicit VR Little Endian
     EXS_LittleEndianImplicit = 0,
-    /// Implicit VR Big Endian (pseudo transfer syntax that does not really exist)
+    /// Implicit VR Big Endian (does not really exist, only used internally)
     EXS_BigEndianImplicit = 1,
     /// Explicit VR Little Endian
     EXS_LittleEndianExplicit = 2,
@@ -147,15 +147,14 @@ typedef enum {
     EXS_PrivateGE_LEI_WithBigEndianPixelData = 53
 } E_TransferSyntax;
 
+
 /** enumeration of byte orders
  */
 typedef enum {
     /// unknown
     EBO_unknown = 0,
-
     /// little endian
     EBO_LittleEndian = 1,
-
     /// big endian
     EBO_BigEndian = 2
 } E_ByteOrder;
@@ -165,20 +164,35 @@ typedef enum {
 typedef enum {
     /// implicit VR encoding
     EVT_Implicit = 0,
-
     /// explicit VR encoding
     EVT_Explicit = 1
 } E_VRType;
 
-/** enumeration of pixel data encapsulation options
+/** enumeration of pixel data encoding options
  */
 typedef enum {
-    /// pixel data not encapsulated
-    EJE_NotEncapsulated = 0,
+    /// unknown (e.g. invalid value)
+    EPE_unknown = 0,
+    /// pixel data in native format (uncompressed)
+    EPE_Native = 1,
+    /// pixel data encapsulated (e.g. compressed)
+    EPE_Encapsulated = 2,
+    /// pixel data referenced (e.g. using a URL)
+    EPE_Referenced = 3
+} E_PixelDataEncoding;
 
-    /// pixel data encapsulated
-    EJE_Encapsulated = 1
-} E_JPEGEncapsulated;
+/** enumeration of pixel data compression options
+ */
+typedef enum {
+    /// unknown (e.g. referenced pixel data)
+    EPC_unknown = 0,
+    /// pixel data is uncompressed
+    EPC_Uncompressed = 1,
+    /// pixel data is compressed in a lossless manner
+    EPC_LosslessCompressed = 2,
+    /// pixel data is compressed in a lossy manner
+    EPC_LossyCompressed = 3
+} E_PixelDataCompression;
 
 /** enumeration of stream compression techniques
  */
@@ -195,6 +209,21 @@ typedef enum
 #endif
 } E_StreamCompression;
 
+/** validity of the transfer syntax definition
+ */
+typedef enum {
+    /// unknown (e.g. invalid value)
+    EXV_unknown = 0,
+    /// internal, not used outside DCMTK
+    EXV_Internal = 1,
+    /// defined in the DICOM standard
+    EXV_Standard = 2,
+    /// retired from the DICOM standard
+    EXV_Retired = 3,
+    /// private, non-standard definition
+    EXV_Private = 4
+} E_XferValidity;
+
 
 /** a class that allows for a lookup of Transfer Syntax properties and readable descriptions
  */
@@ -206,22 +235,32 @@ public:
      */
     DcmXfer(E_TransferSyntax xfer);
 
-    /** constructor
-     *  @param xferName_xferID transfer syntax name as string
+    /** constructor.
+     *  Performs a look-up based on the given transfer syntax name or identifier.
+     *  @param xferName_xferID transfer syntax name or identifier (UID)
      */
     DcmXfer(const char *xferName_xferID);
 
-    /// copy constructor
+    /** copy constructor
+     *  @param newXfer transfer syntax to be copied
+     */
     DcmXfer(const DcmXfer &newXfer);
 
-    /// destructor
+    /** destructor
+     */
     ~DcmXfer();
 
-    /// assignment operator for transfer syntax enum
-    DcmXfer & operator=(const E_TransferSyntax xfer);
+    /** assignment operator for transfer syntax enum
+     *  @param xfer transfer syntax enum
+     *  @return reference to this transfer syntax instance
+     */
+    DcmXfer &operator=(const E_TransferSyntax xfer);
 
-    /// copy assignment operator
-    DcmXfer & operator=(const DcmXfer &newXfer);
+    /** copy assignment operator
+     *  @param newXfer transfer syntax to be copied
+     *  @return reference to this transfer syntax instance
+     */
+    DcmXfer &operator=(const DcmXfer &newXfer);
 
     /** comparison operator
      *  @param xfer transfer syntax enum to compare with
@@ -259,79 +298,145 @@ public:
         return xferSyn != xfer.getXfer();
     }
 
-    /// return transfer syntax enum for this transfer syntax
+    /** check whether transfer syntax is valid, i.e.\ not unknown or uninitialized.
+     *  An unknown transfer syntax is usually the result of an unsuccessful look-up.
+     *  An uninitialized transfer syntax is typically intended by the user (passing
+     *  EXS_Unknown to the constructor of this class).
+     *  @return true if transfer syntax is valid, false otherwise
+     */
+    inline OFBool isValid() const
+    {
+        return xferSyn != EXS_Unknown;
+    }
+
+    /** get transfer syntax enum for this transfer syntax
+     *  @return transfer syntax enum for this transfer syntax
+     */
     inline E_TransferSyntax getXfer() const
     {
         return xferSyn;
     }
 
-    /// return byte order for this transfer syntax
+    /** get byte order for this transfer syntax
+     *  @return byte order for this transfer syntax
+     */
     inline E_ByteOrder getByteOrder() const
     {
         return byteOrder;
     }
 
-    /// return byte order for this transfer syntax
+    /** get pixel data byte order for this transfer syntax
+     *  @return pixel data byte order for this transfer syntax
+     */
     inline E_ByteOrder getPixelDataByteOrder() const
     {
         return pixelDataByteOrder;
     }
 
-    /// return name string for this transfer syntax
-    inline const char* getXferName() const
+    /** get DCMTK-specific name for this transfer syntax
+     *  @return name string for this transfer syntax, empty string if undefined
+     */
+    inline const char *getXferName() const
     {
         return xferName;
     }
 
-    /// return keyword string for this transfer syntax
-    const char* getXferKeyword() const;
+    /** get DICOM keyword for this transfer syntax
+     *  @return keyword string for this transfer syntax, empty string if undefined
+     */
+    const char *getXferKeyword() const;
 
-    /// return UID string for this transfer syntax
-    inline const char* getXferID() const
+    /** get identifier (UID) for this transfer syntax
+     *  @return UID string for this transfer syntax, empty string if undefined
+     */
+    inline const char *getXferID() const
     {
         return xferID;
     }
 
-    /// return true if transfer syntax is little endian, false otherwise
+    /** check whether transfer syntax uses little endian byte order
+     *  @return true if transfer syntax is little endian, false otherwise
+     */
     inline OFBool isLittleEndian() const
     {
         return byteOrder == EBO_LittleEndian;
     }
 
-    /// return true if transfer syntax is big endian, false otherwise
+    /** check whether transfer syntax uses big endian byte order
+     *  @return true if transfer syntax is big endian, false otherwise
+     */
     inline OFBool isBigEndian() const
     {
         return byteOrder == EBO_BigEndian;
     }
 
-    /// return true if transfer syntax is implicit VR, false otherwise
+    /** check whether transfer syntax uses implicit VR encoding
+     *  @return true if transfer syntax is implicit VR, false otherwise
+     */
     inline OFBool isImplicitVR() const
     {
         return vrType == EVT_Implicit;
     }
 
-    /// return true if transfer syntax is explicit VR, false otherwise
+    /** check whether transfer syntax uses explicit VR encoding
+     *  @return true if transfer syntax is explicit VR, false otherwise
+     */
     inline OFBool isExplicitVR() const
     {
         return vrType == EVT_Explicit;
     }
 
-    /// return true if transfer syntax is encapsulated, false otherwise
-    inline OFBool isEncapsulated() const
+    /** check whether transfer syntax uses native format for pixel data
+     *  @return true if transfer syntax uses native format, false otherwise
+     */
+    inline OFBool usesNativeFormat() const
     {
-        return encapsulated == EJE_Encapsulated;
+        return pixelDataEncoding == EPE_Native;
     }
 
-    /// return true if transfer syntax is native (non-encapsulated), false otherwise
+    /** check whether transfer syntax uses encapsulated format for pixel data
+     *  @return true if transfer syntax uses encapsulated format, false otherwise
+     */
+    inline OFBool usesEncapsulatedFormat() const
+    {
+        return pixelDataEncoding == EPE_Encapsulated;
+    }
+
+    /** check whether transfer syntax uses (0028,7FE0) Pixel Data Provider URL
+     *  to reference pixel data
+     *  @return true if transfer syntax uses URL reference to pixel data
+     */
+    inline OFBool usesReferencedPixelData() const
+    {
+        return pixelDataEncoding == EPE_Referenced;
+    }
+
+    /** check whether transfer syntax uses encapsulated format for pixel data
+     *  (and whether the pixel data is compressed)
+     *  @deprecated This method is deprecated and will be removed in the future.
+     *    Instead, please use usesEncapsulatedFormat() and/or isPixelDataCompressed().
+     *  @return true if transfer syntax uses encapsulated format, false otherwise
+     */
+    inline OFBool isEncapsulated() const
+    {
+        return usesEncapsulatedFormat() && isPixelDataCompressed();
+    }
+
+    /** check whether transfer syntax uses non-encapsulated format for pixel data
+     *  @deprecated This method is deprecated and will be removed in the future.
+     *    Please use usesNativeFormat() or ! usesEncapsulatedFormat() instead.
+     *    Also see usesReferencedPixelData().
+     *  @return true if transfer syntax uses non-encapsulated format, false otherwise
+     */
     inline OFBool isNotEncapsulated() const
     {
-        return encapsulated == EJE_NotEncapsulated;
+        return usesNativeFormat();
     }
 
     /** return 8-bit JPEG process ID for this transfer syntax.
-     *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes - 8 and 12 bits.
-     *  When called for a non-JPEG transfer syntax, returns 0.
-     *  @return 8-bit JPEG process ID
+     *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes:
+     *  8 and 12 bits.
+     *  @return 8-bit JPEG process ID, or 0 for a non-JPEG transfer syntax
      */
     inline Uint32 getJPEGProcess8Bit() const
     {
@@ -339,38 +444,79 @@ public:
     }
 
     /** return 12-bit JPEG process ID for this transfer syntax.
-     *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes - 8 and 12 bits.
-     *  When called for a non-JPEG transfer syntax, returns 0.
-     *  @return 12-bit JPEG process ID
+     *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes:
+     *  8 and 12 bits.
+     *  @return 12-bit JPEG process ID, or 0 for a non-JPEG transfer syntax
      */
     inline Uint32 getJPEGProcess12Bit() const
     {
         return JPEGProcess12;
     }
 
-    /** check whether transfer syntax uses a lossy compression
-     *  @return true if transfer syntax uses a lossy compression, false otherwise
+    /** check whether transfer syntax uses uncompressed pixel data
+     *  @return true if transfer syntax uses uncompressed pixel data, false otherwise
      */
-    inline OFBool isLossy() const
+    inline OFBool isPixelDataUncompressed() const
     {
-        return lossy;
+        return pixelDataCompression == EPC_Uncompressed;
     }
 
-    /** check whether transfer syntax uses a lossless compression or no compression
+    /** check whether transfer syntax uses compressed pixel data
+     *  @return true if transfer syntax uses compressed pixel data, false otherwise
+     */
+    inline OFBool isPixelDataCompressed() const
+    {
+        return isPixelDataLossyCompressed() || isPixelDataLosslessCompressed();
+    }
+
+    /** check whether transfer syntax uses a lossy compression for pixel data
+     *  @return true if transfer syntax uses a lossy compression, false otherwise
+     */
+    inline OFBool isPixelDataLossyCompressed() const
+    {
+        return pixelDataCompression == EPC_LossyCompressed;
+    }
+
+    /** check whether transfer syntax uses a lossless compression for pixel data
      *  @return true if transfer syntax uses a lossless compression or no compression,
      *    false otherwise
      */
-    inline OFBool isLossless() const
+    inline OFBool isPixelDataLosslessCompressed() const
     {
-        return !lossy;
+        return pixelDataCompression == EPC_LosslessCompressed;
     }
 
-    /** check whether transfer syntax is retired
+    /** check whether transfer syntax allows the encapsulated pixel stream of
+     *  encoded pixel data to be split into one or more fragments
+     *  @return true if transfer syntax supports fragmentable pixel data
+     */
+    inline OFBool isPixelDataFragmentable() const
+    {
+        return usesEncapsulatedFormat() && pixelDataFragmentable;
+    }
+
+    /** check whether transfer syntax is defined in the DICOM standard
+     *  @return true if transfer syntax is standard, false otherwise
+     */
+    inline OFBool isStandard() const
+    {
+        return xferValidity == EXV_Standard;
+    }
+
+    /** check whether transfer syntax has been retired from the DICOM standard
      *  @return true if transfer syntax is retired, false otherwise
      */
     inline OFBool isRetired() const
     {
-        return retired;
+        return xferValidity == EXV_Retired;
+    }
+
+    /** check whether transfer syntax is a private definition
+     *  @return true if transfer syntax is private, false otherwise
+     */
+    inline OFBool isPrivate() const
+    {
+        return xferValidity == EXV_Private;
     }
 
     /** get stream compression type for this transfer syntax
@@ -381,27 +527,27 @@ public:
         return streamCompression;
     }
 
-    /** check whether transfer syntax uses (0028,7FE0) Pixel Data Provider URL
-     *  to reference pixel data
-     *  @return true if transfer syntax uses URL reference to pixel data
+    /** check whether transfer syntax compresses the entire dataset.
+     *  This does not mean that the stream compression is actually supported.
+     *  @return true if transfer syntax compresses the dataset, false otherwise
      */
-    inline OFBool isReferenced() const
+    inline OFBool isDatasetCompressed() const
     {
-        return referenced;
+        return streamCompression != ESC_none;
     }
 
-    /** check whether transfer syntax allows the encapsulated pixel stream of
-     *  encoded pixel data to be split into one or more fragments
-     *  @return true if transfer syntax supports fragmentable pixel data
+    /** check whether transfer syntax uses any kind of lossless compression,
+     *  either for the pixel data or the entire dataset
+     *  @return true if transfer syntax uses any kind of lossless compression,
+     *    false otherwise
      */
-    inline OFBool isFragmentable() const
+    inline OFBool isLosslessCompressed() const
     {
-        return fragmentable;
+        return isPixelDataLosslessCompressed() || (streamCompression == ESC_zlib);
     }
 
-    /** return the number of bytes needed to describe the tag, length, VR
-     *  and any reserved fields for this transfer syntax when encoding the
-     *  specified VR.
+    /** get the number of bytes needed to describe the tag, length, VR and any
+     *  reserved fields for this transfer syntax when encoding the specified VR.
      *  @param evr value representation to be encoded in this transfer syntax
      *  @return number of bytes needed
      */
@@ -409,47 +555,43 @@ public:
 
 private:
     /// transfer syntax UID
-    const char          *xferID;
+    const char            *xferID;
 
     /// transfer syntax name
-    const char          *xferName;
+    const char            *xferName;
 
     /// transfer syntax enum
-    E_TransferSyntax    xferSyn;
+    E_TransferSyntax       xferSyn;
 
     /// transfer syntax byte order
-    E_ByteOrder         byteOrder;
+    E_ByteOrder            byteOrder;
 
     /// transfer syntax byte order for pixel data
-    E_ByteOrder         pixelDataByteOrder;
+    E_ByteOrder            pixelDataByteOrder;
 
-    /// transfer syntax VR encoding (implicit/explicit)
-    E_VRType            vrType;
+    /// transfer syntax VR encoding (implicit or explicit)
+    E_VRType               vrType;
 
-    /// transfer syntax encapsulated or native
-    E_JPEGEncapsulated  encapsulated;
+    /// transfer syntax encoding of pixel data (e.g. native, encapsulated, referenced)
+    E_PixelDataEncoding    pixelDataEncoding;
 
-    /// 8-bit lossy JPEG process ID for this transfer syntax, 0 if not applicable
-    Uint32              JPEGProcess8;
-
-    /// 12-bit lossy JPEG process ID for this transfer syntax, 0 if not applicable
-    Uint32              JPEGProcess12;
-
-    /// flag indicating whether this transfer syntax uses a lossy compression
-    OFBool              lossy;
-
-    /// flag indicating whether this transfer syntax has been retired from DICOM
-    OFBool              retired;
-
-    /// transfer syntax stream compression type
-    E_StreamCompression streamCompression;
-
-    /// flag indicating whether this transfer syntax uses a pixel data URL reference
-    OFBool              referenced;
+    /// transfer syntax compression of pixel data (e.g. uncompressed, lossless, lossy)
+    E_PixelDataCompression pixelDataCompression;
 
     /// flag indicating whether this transfer syntax supports fragmentable pixel data
-    OFBool              fragmentable;
+    OFBool                 pixelDataFragmentable;
 
+    /// 8-bit lossy JPEG process ID for this transfer syntax, 0 if not applicable
+    Uint32                 JPEGProcess8;
+
+    /// 12-bit lossy JPEG process ID for this transfer syntax, 0 if not applicable
+    Uint32                 JPEGProcess12;
+
+    /// transfer syntax stream compression type (e.g. zlib)
+    E_StreamCompression    streamCompression;
+
+    /// validity of the transfer syntax definition (e.g. standard, retired, private)
+    E_XferValidity         xferValidity;
 };
 
 /** global constant describing the byte order on the machine the application

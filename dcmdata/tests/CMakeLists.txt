@@ -28,6 +28,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tvrsv.cc
   tvrui.cc
   tvruv.cc
+  txfer.cc
 )
 
 # make sure executables are linked to the corresponding libraries

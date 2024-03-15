@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2023, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -638,13 +638,13 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                         status = EC_UnsupportedEncoding;
                     }
                     // check whether transfer syntax uses any kind of compression
-                    else if (xfer.isEncapsulated() || (xfer.getStreamCompression() != ESC_none))
+                    else if (xfer.isPixelDataCompressed() || xfer.isDatasetCompressed())
                     {
                         // create list of proposed transfer syntaxes
                         transferSyntaxes.clear();
                         transferSyntaxes.push_back((*transferEntry)->TransferSyntaxUID.c_str());
                         // check whether compression is lossless and we can decompress it
-                        if (xfer.isLossless())
+                        if (xfer.isLosslessCompressed())
                         {
                             if (DecompressionMode == DM_never)
                             {
@@ -663,7 +663,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                                     status = EC_UnsupportedEncoding;
                                 }
                             }
-                            else if ((xfer.getStreamCompression() != ESC_none) /* e.g. ZIP compression */ ||
+                            else if (xfer.isDatasetCompressed() /* e.g. ZIP compression */ ||
                                 DcmCodecList::canChangeCoding(xfer.getXfer(), EXS_LittleEndianExplicit))
                             {
                                 DCMNET_DEBUG("also propose the three uncompressed transfer syntaxes, "
@@ -691,7 +691,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                             // check whether we can decompress the lossy compression
                             if (DecompressionMode == DM_lossyAndLossless)
                             {
-                                if ((xfer.getStreamCompression() != ESC_none) /* is there any lossy stream compression? */ ||
+                                if (xfer.isDatasetCompressed() /* is there any lossy stream compression? */ ||
                                     DcmCodecList::canChangeCoding(xfer.getXfer(), EXS_LittleEndianExplicit))
                                 {
                                     DCMNET_DEBUG("also propose the three uncompressed transfer syntaxes, "
