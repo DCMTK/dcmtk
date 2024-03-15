@@ -543,7 +543,7 @@ public:
      */
     inline OFBool isLosslessCompressed() const
     {
-        return isPixelDataLosslessCompressed() || (streamCompression == ESC_zlib);
+        return isPixelDataLosslessCompressed() || isDatasetCompressed();
     }
 
     /** get the number of bytes needed to describe the tag, length, VR and any
