@@ -2371,17 +2371,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             // This could either mean success or an asynchronous error condition.
             // use getsockopt to check the socket status.
             int socketError = 0;
-
-#ifdef HAVE_DECLARATION_SOCKLEN_T
-            // some platforms (e.g. Solaris 7) declare socklen_t
             socklen_t socketErrorLen = sizeof(socketError);
-#elif defined(HAVE_INTP_GETSOCKOPT)
-            // some platforms (e.g. Solaris 2.5.1) prefer int
-            int socketErrorLen = (int) sizeof(socketError);
-#else
-            // some platforms (e.g. OSF1 4.0) prefer size_t
-            size_t socketErrorLen = sizeof(socketError);
-#endif
 
             // Solaris 2.5.1 expects a char * as argument 4 of getsockopt. Most other
             // platforms expect void *, so casting to a char * should be safe.

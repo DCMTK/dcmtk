@@ -1559,13 +1559,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     fd_set fdset;
 #endif
     struct timeval timeout_val;
-#ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-    int len;
-#else
-    size_t len;
-#endif
     int nfound, connected;
     struct sockaddr from;
     struct linger sockarg;
@@ -2164,13 +2158,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         (! processIsForkedChild))
     {
 
-#ifdef HAVE_DECLARATION_SOCKLEN_T
       socklen_t length;
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-      int length;
-#else
-      size_t length;
-#endif
 
 #ifdef _WIN32
       SOCKET sock;

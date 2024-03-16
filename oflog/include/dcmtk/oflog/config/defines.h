@@ -98,9 +98,7 @@
 #endif
 
 /* */
-#ifdef HAVE_GETADDRINFO
 #define DCMTK_LOG4CPLUS_HAVE_GETADDRINFO
-#endif
 
 /* */
 #ifdef HAVE_GETHOSTBYNAME_R
@@ -202,15 +200,6 @@
 /* Define for C99 compilers/standard libraries that support more than just the
    "C" locale. */
 #undef DCMTK_LOG4CPLUS_WORKING_C_LOCALE
-
-/* Define to int if undefined. */
-#if 0
-/* This block is handled by configure completely */
-#undef socklen_t
-#ifndef HAVE_DECLARATION_SOCKLEN_T
-#define socklen_t int
-#endif
-#endif
 
 /* Defined for --enable-debugging builds. */
 #ifdef DEBUG

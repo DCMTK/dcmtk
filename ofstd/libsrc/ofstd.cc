@@ -419,7 +419,7 @@ OFBool OFStandard::pathExists(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#if HAVE_ACCESS
+#ifdef HAVE_ACCESS
         /* check existence with "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -529,7 +529,7 @@ OFBool OFStandard::isReadable(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#if HAVE_ACCESS
+#ifdef HAVE_ACCESS
         /* check whether the path is readable using "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -554,7 +554,7 @@ OFBool OFStandard::isWriteable(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#if HAVE_ACCESS
+#ifdef HAVE_ACCESS
         /* check whether the path is writable using "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -2857,7 +2857,6 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 {
   OFString result;
 
-#ifdef HAVE_GETADDRINFO
   // We have getaddrinfo(). In this case we also presume that we have
   // getnameinfo(), since both functions were introduced together.
   // This is the preferred implementation, being thread-safe and protocol independent.
@@ -2894,33 +2893,6 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, nameinfo_len, hostname, 512, NULL, 0, 0);
   if ((err == 0) && (hostname[0] != '\0')) result = hostname;
 
-#elif defined(HAVE_GETHOSTBYADDR_R)
-  // We do not have getaddrinfo(), but we have a thread-safe gethostbyaddr_r()
-
-  unsigned size = 1024;
-  char *tmp = new char[size];
-  struct hostent *he = NULL;
-  hostent buf;
-  int err = 0;
-  while ((gethostbyaddr_r( addr, len, type, &buf, tmp, size, &he, &err ) == ERANGE) && (size < MAX_NAME))
-  {
-      // increase buffer size
-      delete[] tmp;
-      size *= 2;
-      tmp = new char[size];
-  }
-  if (he && he->h_name) result = he->h_name;
-  delete[] tmp;
-
-#else
-  // Default implementation using gethostbyaddr().
-  // This should work on all Posix systems, but is not thread safe
-  // (except on Windows, which allocates the result in thread-local storage)
-
-  struct hostent *he = gethostbyaddr( addr, len, type );
-  if (he && he->h_name) result = he->h_name;
-
-#endif
   return result;
 }
 
@@ -2930,7 +2902,6 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
   result.clear();
   if (NULL == name) return;
 
-#ifdef HAVE_GETADDRINFO
   struct addrinfo *result_list = NULL;
   int err = EAI_AGAIN;
   int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
@@ -2953,60 +2924,6 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
     }
     freeaddrinfo(result_list);
   }
-
-#else // HAVE_GETADDRINFO
-
-#ifdef HAVE_GETHOSTBYNAME_R
-  // We do not have getaddrinfo(), but we have a thread-safe gethostbyname_r()
-
-  struct hostent *he = NULL;
-  unsigned bufsize = 1024;
-  char *buf = new char[bufsize];
-  hostent ret;
-  int err = 0;
-  while ((gethostbyname_r( name, &ret, buf, bufsize, &he, &err ) == ERANGE) && (bufsize < MAX_NAME))
-  {
-      // increase buffer size
-      delete[] buf;
-      bufsize *= 2;
-      buf = new char[bufsize];
-  }
-
-#else // HAVE_GETHOSTBYNAME_R
-
-  // Default implementation using gethostbyname().
-  // This should work on all Posix systems, but is not thread safe
-  // (except on Windows, which allocates the result in thread-local storage)
-
-  struct hostent *he = gethostbyname(name);
-
-#endif // HAVE_GETHOSTBYNAME_R
-
-  if (he)
-  {
-    if (he->h_addrtype == AF_INET)
-    {
-      result.setFamily(AF_INET);
-      struct sockaddr_in *result_sa = result.getSockaddr_in();
-      // copy IP address into result struct
-      memcpy (&result_sa->sin_addr, he->h_addr, he->h_length);
-    }
-    else if (he->h_addrtype == AF_INET6)
-    {
-      result.setFamily(AF_INET6);
-      struct sockaddr_in6 *result_sa = result.getSockaddr_in6();
-      memcpy (&result_sa->sin6_addr, he->h_addr, he->h_length);
-    }
-    // else we have an unsupported protocol type
-    // and simply leave the result variable empty
-  }
-
-#ifdef HAVE_GETHOSTBYNAME_R
-  delete[] buf;
-#endif
-
-#endif // HAVE_GETADDRINFO
-
 }
 
 
@@ -3218,13 +3135,11 @@ OFString OFStandard::getHostName()
     struct utsname n;
     uname( &n );
     return n.nodename;
-#elif defined(HAVE_GETHOSTNAME)
+#else
     char buf[513];
     gethostname( buf, 512 );
     buf[512] = 0;
     return buf;
-#else
-    return "localhost";
 #endif
 }
 

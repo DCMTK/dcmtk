@@ -114,18 +114,7 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 
 
 #ifndef HAVE_FLOCK
-#ifdef macintosh
 
-// MacOS seems not to support file locking
-
-int dcmtk_flock(int fd, int operation)
-{
-  DCMNET_WARN("Unsupported flock(fd[" << fd << "],operation[0x"
-    << hex << operation << "])");
-  return 0;
-}
-
-#else /* macintosh */
 #ifdef _WIN32
 
 #ifndef USE__LOCKING
@@ -272,29 +261,8 @@ int dcmtk_flock(int fd, int operation)
 }
 
 #endif /* _WIN32 */
-#endif /* macintosh */
+
 #endif /* HAVE_FLOCK */
-
-#ifndef HAVE_GETHOSTNAME
-/*
-** Use the SYSV uname function (if we have it)
-*/
-#ifdef HAVE_UNAME
-int gethostname(char* name, int namelen)
-{
-    struct utsname uts;
-    int rc;
-
-    memset(&uts, 0, sizeof(uts));
-    rc = utsname(&uts);
-    if (rc >= 0) {
-	strncpy(name, uts.nodename, namelen);
-	rc = 0;
-    }
-    return rc;
-}
-#endif /* HAVE_UNAME */
-#endif /* ! HAVE_GETHOSTNAME */
 
 #ifndef HAVE_ACCESS
 
@@ -323,9 +291,5 @@ int access(const char* path, int /* amode */)
 
 DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s)
 {
-#if !defined(HAVE_FLOCK) && defined(macintosh)
-  DCMNET_ERROR(s << ": flock not implemented");
-#else
   DCMNET_ERROR(s << ": " << OFStandard::getLastSystemErrorCode().message());
-#endif
 }

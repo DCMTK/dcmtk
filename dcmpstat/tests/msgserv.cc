@@ -214,13 +214,8 @@ int main(int argc, char *argv[])
         int sock=0;
 #endif
         struct sockaddr from;
-#ifdef HAVE_DECLARATION_SOCKLEN_T
         socklen_t len = sizeof(from);
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-        int len = sizeof(from);
-#else
-        size_t len = sizeof(from);
-#endif
+
         do
         {
           sock = accept(s, &from, &len);

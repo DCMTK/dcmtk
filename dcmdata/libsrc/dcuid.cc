@@ -1717,7 +1717,6 @@ static long gethostid(void)
 ** There is no implementation of gethostid() and we cannot implement it in
 ** terms of sysinfo() so define a workaround.
 */
-#if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
 
 #ifdef _WIN32
 
@@ -1771,7 +1770,6 @@ static long gethostid(void)
 #endif
 {
     long result = 0;
-#if defined(HAVE_GETHOSTNAME) || defined(HAVE_WINDOWS_H)
     char name[1024];
 
     /*
@@ -1805,7 +1803,7 @@ static long gethostid(void)
     }
 
     OFStandard::shutdownNetwork();
-#endif /* defined(HAVE_GETHOSTNAME) */
+
 /* on Windows systems determine some system specific information (e.g. MAC address) */
 #ifdef HAVE_WINDOWS_H
     OFCRC32 crc;
@@ -1845,18 +1843,6 @@ static long gethostid(void)
     */
     return result;
 }
-
-#else // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
-/*
-** last chance workaround if there is no other way
-*/
-#ifdef HAVE_PROTOTYPE_GETHOSTID
-/* CW10 has a prototype but no implementation (gethostid() is already declared extern */
-long gethostid(void) { return 0; }
-#else
-static long gethostid(void) { return 0; }
-#endif
-#endif // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
 
 #endif // !HAVE_SYSINFO
 #else // HAVE_GETHOSTID

@@ -62,9 +62,6 @@
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR '@ENVIRONMENT_PATH_SEPARATOR@'
 
-/* Define to 1 if you have the `accept' function. */
-#cmakedefine HAVE_ACCEPT @HAVE_ACCEPT@
-
 /* Define to 1 if you have the `access' function. */
 #cmakedefine HAVE_ACCESS @HAVE_ACCESS@
 
@@ -77,12 +74,6 @@
 /* Define to 1 if you have the `bcmp' function. */
 #cmakedefine HAVE_BCMP @HAVE_BCMP@
 
-/* Define to 1 if you have the `bind' function. */
-#cmakedefine HAVE_BIND @HAVE_BIND@
-
-/* Define to 1 if you have the `connect' function. */
-#cmakedefine HAVE_CONNECT @HAVE_CONNECT@
-
 /* Define to 1 if you have the `cuserid' function. */
 #cmakedefine HAVE_CUSERID @HAVE_CUSERID@
 
@@ -91,10 +82,6 @@
 
 /* Define if your system has a declaration for fp_except_t in ieeefp.h */
 #cmakedefine HAVE_DECLARATION_FP_EXCEPT_T @HAVE_DECLARATION_FP_EXCEPT_T@
-
-/* Define if your system has a declaration for socklen_t in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_DECLARATION_SOCKLEN_T @HAVE_DECLARATION_SOCKLEN_T@
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.*/
 #cmakedefine HAVE_DIRENT_H @HAVE_DIRENT_H@
@@ -126,17 +113,11 @@
 /* Define to 1 if you have the `ftime' function. */
 #cmakedefine HAVE_FTIME @HAVE_FTIME@
 
-/* Define to 1 if you have the `getaddrinfo' function. */
-#cmakedefine HAVE_GETADDRINFO @HAVE_GETADDRINFO@
-
 /* Define to 1 if you have the `geteuid' function. */
 #cmakedefine HAVE_GETEUID @HAVE_GETEUID@
 
 /* Define to 1 if you have the `getgrnam' function. */
 #cmakedefine HAVE_GETGRNAM @HAVE_GETGRNAM@
-
-/* Define to 1 if you have the `gethostbyname' function. */
-#cmakedefine HAVE_GETHOSTBYNAME @HAVE_GETHOSTBYNAME@
 
 /* Define to 1 if you have the `gethostbyname_r' function. */
 #cmakedefine HAVE_GETHOSTBYNAME_R @HAVE_GETHOSTBYNAME_R@
@@ -153,9 +134,6 @@
 /* Define to 1 if you have the `gethostid' function. */
 #cmakedefine HAVE_GETHOSTID @HAVE_GETHOSTID@
 
-/* Define to 1 if you have the `gethostname' function. */
-#cmakedefine HAVE_GETHOSTNAME @HAVE_GETHOSTNAME@
-
 /* Define to 1 if you have the `getlogin' function. */
 #cmakedefine HAVE_GETLOGIN @HAVE_GETLOGIN@
 
@@ -170,12 +148,6 @@
 
 /* Define to 1 if you have the `getrusage' function. */
 #cmakedefine HAVE_GETRUSAGE @HAVE_GETRUSAGE@
-
-/* Define to 1 if you have the `getsockname' function. */
-#cmakedefine HAVE_GETSOCKNAME @HAVE_GETSOCKNAME@
-
-/* Define to 1 if you have the `getsockopt' function. */
-#cmakedefine HAVE_GETSOCKOPT @HAVE_GETSOCKOPT@
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #cmakedefine HAVE_GETTIMEOFDAY @HAVE_GETTIMEOFDAY@
@@ -272,17 +244,6 @@
 /* Define if your system has a prototype for feenableexcept in fenv.h */
 #cmakedefine HAVE_PROTOTYPE_FEENABLEEXCEPT @HAVE_PROTOTYPE_FEENABLEEXCEPT@
 
-/* Define if your system has a prototype for accept in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_ACCEPT @HAVE_PROTOTYPE_ACCEPT@
-
-/* Define if your system has a prototype for bind in sys/types.h sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_BIND @HAVE_PROTOTYPE_BIND@
-
-/* Define if your system has a prototype for connect in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_CONNECT @HAVE_PROTOTYPE_CONNECT@
-
 /* Define if your system has a prototype for finite in math.h */
 #cmakedefine HAVE_PROTOTYPE_FINITE @HAVE_PROTOTYPE_FINITE@
 
@@ -291,10 +252,6 @@
 
 /* Define if your system has a prototype for flock in sys/file.h */
 #cmakedefine HAVE_PROTOTYPE_FLOCK @HAVE_PROTOTYPE_FLOCK@
-
-/* Define if your system has a prototype for gethostbyname in libc.h unistd.h
-   stdlib.h netdb.h */
-#cmakedefine HAVE_PROTOTYPE_GETHOSTBYNAME @HAVE_PROTOTYPE_GETHOSTBYNAME@
 
 /* Define if your system has a prototype for gethostbyname_r in libc.h unistd.h
    stdlib.h netdb.h */
@@ -307,18 +264,6 @@
 /* Define if your system has a prototype for gethostid in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTID @HAVE_PROTOTYPE_GETHOSTID@
-
-/* Define if your system has a prototype for gethostname in unistd.h libc.h
-   stdlib.h netdb.h */
-#cmakedefine HAVE_PROTOTYPE_GETHOSTNAME @HAVE_PROTOTYPE_GETHOSTNAME@
-
-/* Define if your system has a prototype for getsockname in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_GETSOCKNAME @HAVE_PROTOTYPE_GETSOCKNAME@
-
-/* Define if your system has a prototype for getsockopt in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_GETSOCKOPT @HAVE_PROTOTYPE_GETSOCKOPT@
 
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h */
@@ -333,10 +278,6 @@
 /* Define if your system has a prototype for fpclassf in math.h */
 #cmakedefine HAVE_PROTOTYPE__FPCLASSF @HAVE_PROTOTYPE__FPCLASSF@
 
-/* Define if your system has a prototype for listen in sys/types.h
-  sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_LISTEN @HAVE_PROTOTYPE_LISTEN@
-
 /* Define if your system has a prototype for mkstemp in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_MKSTEMP @HAVE_PROTOTYPE_MKSTEMP@
@@ -344,18 +285,6 @@
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_MKTEMP @HAVE_PROTOTYPE_MKTEMP@
-
-/* Define if your system has a prototype for select in sys/select.h
-   sys/types.h sys/socket.h sys/time.h */
-#cmakedefine HAVE_PROTOTYPE_SELECT @HAVE_PROTOTYPE_SELECT@
-
-/* Define if your system has a prototype for setsockopt in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_SETSOCKOPT @HAVE_PROTOTYPE_SETSOCKOPT@
-
-/* Define if your system has a prototype for socket in sys/types.h
-   sys/socket.h */
-#cmakedefine HAVE_PROTOTYPE_SOCKET @HAVE_PROTOTYPE_SOCKET@
 
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF @HAVE_PROTOTYPE_STD__VFPRINTF@
@@ -405,23 +334,14 @@
 /* Define to 1 if you have the `rindex' function. */
 #cmakedefine HAVE_RINDEX @HAVE_RINDEX@
 
-/* Define to 1 if you have the `select' function. */
-#cmakedefine HAVE_SELECT @HAVE_SELECT@
-
 /* Define to 1 if you have the <semaphore.h> header file. */
 #cmakedefine HAVE_SEMAPHORE_H @HAVE_SEMAPHORE_H@
-
-/* Define to 1 if you have the `setsockopt' function. */
-#cmakedefine HAVE_SETSOCKOPT @HAVE_SETSOCKOPT@
 
 /* Define to 1 if you have the `setuid' function. */
 #cmakedefine HAVE_SETUID @HAVE_SETUID@
 
 /* Define to 1 if you have the `sleep' function. */
 #cmakedefine HAVE_SLEEP @HAVE_SLEEP@
-
-/* Define to 1 if you have the `socket' function. */
-#cmakedefine HAVE_SOCKET @HAVE_SOCKET@
 
 /* Define to 1 if you have the `stat' function. */
 #cmakedefine HAVE_STAT @HAVE_STAT@
@@ -1192,6 +1112,62 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* #undef TM_IN_SYS_TIME */
 /* #undef __CHAR_UNSIGNED__ */
 
+
+/* Historical feature tests for BSD socket functions, which exist on POSIX
+ * systems and on Windows. These are not tested anymore.
+ */
+
+#if defined(POISON_DEPRECATED_FEATURE_MACROS) && defined(__GNUC__)
+#pragma GCC poison HAVE_ACCEPT
+#pragma GCC poison HAVE_BIND
+#pragma GCC poison HAVE_CONNECT
+#pragma GCC poison HAVE_DECLARATION_SOCKLEN_T
+#pragma GCC poison HAVE_GETADDRINFO
+#pragma GCC poison HAVE_GETHOSTBYNAME
+#pragma GCC poison HAVE_GETHOSTNAME
+#pragma GCC poison HAVE_GETSOCKNAME
+#pragma GCC poison HAVE_GETSOCKOPT
+#pragma GCC poison HAVE_PROTOTYPE_ACCEPT
+#pragma GCC poison HAVE_PROTOTYPE_BIND
+#pragma GCC poison HAVE_PROTOTYPE_CONNECT
+#pragma GCC poison HAVE_PROTOTYPE_GETHOSTBYNAME
+#pragma GCC poison HAVE_PROTOTYPE_GETHOSTNAME
+#pragma GCC poison HAVE_PROTOTYPE_GETSOCKNAME
+#pragma GCC poison HAVE_PROTOTYPE_GETSOCKOPT
+#pragma GCC poison HAVE_PROTOTYPE_LISTEN
+#pragma GCC poison HAVE_PROTOTYPE_SELECT
+#pragma GCC poison HAVE_PROTOTYPE_SETSOCKOPT
+#pragma GCC poison HAVE_PROTOTYPE_SOCKET
+#pragma GCC poison HAVE_SELECT
+#pragma GCC poison HAVE_SETSOCKOPT
+#pragma GCC poison HAVE_SOCKET
+#endif
+
+#if !defined(POISON_DEPRECATED_FEATURE_MACROS) || !defined(__GNUC__)
+#define HAVE_ACCEPT 1
+#define HAVE_BIND 1
+#define HAVE_CONNECT 1
+#define HAVE_DECLARATION_SOCKLEN_T 1
+#define HAVE_GETADDRINFO 1
+#define HAVE_GETHOSTBYNAME 1
+#define HAVE_GETHOSTNAME 1
+#define HAVE_GETSOCKNAME 1
+#define HAVE_GETSOCKOPT 1
+#define HAVE_PROTOTYPE_ACCEPT 1
+#define HAVE_PROTOTYPE_BIND 1
+#define HAVE_PROTOTYPE_CONNECT 1
+#define HAVE_PROTOTYPE_GETHOSTBYNAME 1
+#define HAVE_PROTOTYPE_GETHOSTNAME 1
+#define HAVE_PROTOTYPE_GETSOCKNAME 1
+#define HAVE_PROTOTYPE_GETSOCKOPT 1
+#define HAVE_PROTOTYPE_LISTEN 1
+#define HAVE_PROTOTYPE_SELECT 1
+#define HAVE_PROTOTYPE_SETSOCKOPT 1
+#define HAVE_PROTOTYPE_SOCKET 1
+#define HAVE_SELECT 1
+#define HAVE_SETSOCKOPT 1
+#define HAVE_SOCKET 1
+#endif
 
 /* Historical OpenSSL feature tests that are not required anymore for OpenSSL 1.1.1 and newer.
  * We do not execute these tests and do not use these macros anymore inside DCMTK anymore.
