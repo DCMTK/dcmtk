@@ -89,9 +89,6 @@
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif
 
-/* Define to 1 if you have the `accept' function. */
-#undef HAVE_ACCEPT
-
 /* Define to 1 if you have the `access' function. */
 #undef HAVE_ACCESS
 
@@ -116,18 +113,12 @@
 /* Define to 1 if you have the `bcmp' function. */
 #undef HAVE_BCMP
 
-/* Define to 1 if you have the `bind' function. */
-#undef HAVE_BIND
-
 /* Define to 1 if the system has the type `char16_t'. */
 #undef HAVE_CHAR16_T
 
 /* Define if your system declares the return type of strerror_r as char *
    instead of int. */
 #undef HAVE_CHARP_STRERROR_R
-
-/* Define to 1 if you have the `connect' function. */
-#undef HAVE_CONNECT
 
 /* Define if the contiguous iterator category is supported. */
 #undef HAVE_CONTIGUOUS_ITERATOR_CATEGORY
@@ -149,10 +140,6 @@
 
 /* Define if the compiler supports [[deprecated("message")]]. */
 #undef HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG
-
-/* Define if your system has a declaration for socklen_t in sys/types.h
-   sys/socket.h . */
-#undef HAVE_DECLARATION_SOCKLEN_T
 
 /* Define if the compiler supports __declspec(deprecated). */
 #undef HAVE_DECLSPEC_DEPRECATED
@@ -204,9 +191,6 @@
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
-/* Define to 1 if you have the `getaddrinfo' function. */
-#undef HAVE_GETADDRINFO
-
 /* Define to 1 if you have the `geteuid' function. */
 #undef HAVE_GETEUID
 
@@ -219,17 +203,11 @@
 /* Define to 1 if you have the `gethostbyaddr_r' function. */
 #undef HAVE_GETHOSTBYADDR_R
 
-/* Define to 1 if you have the `gethostbyname' function. */
-#undef HAVE_GETHOSTBYNAME
-
 /* Define to 1 if you have the `gethostbyname_r' function. */
 #undef HAVE_GETHOSTBYNAME_R
 
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
-
-/* Define to 1 if you have the `gethostname' function. */
-#undef HAVE_GETHOSTNAME
 
 /* Define to 1 if you have the `getlogin' function. */
 #undef HAVE_GETLOGIN
@@ -248,12 +226,6 @@
 
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
-
-/* Define to 1 if you have the `getsockname' function. */
-#undef HAVE_GETSOCKNAME
-
-/* Define to 1 if you have the `getsockopt' function. */
-#undef HAVE_GETSOCKOPT
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
@@ -504,18 +476,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `popen' function. */
 #undef HAVE_POPEN
 
-/* Define if your system has a prototype for accept in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_ACCEPT
-
-/* Define if your system has a prototype for bind in sys/types.h sys/socket.h.
-   */
-#undef HAVE_PROTOTYPE_BIND
-
-/* Define if your system has a prototype for connect in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_CONNECT
-
 /* Define if your system has a prototype for feenableexcept in fenv.h. */
 #undef HAVE_PROTOTYPE_FEENABLEEXCEPT
 
@@ -529,10 +489,6 @@ typedef unsigned short ushort;
    unistd.h stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYADDR_R
 
-/* Define if your system has a prototype for gethostbyname in libc.h unistd.h
-   stdlib.h netdb.h. */
-#undef HAVE_PROTOTYPE_GETHOSTBYNAME
-
 /* Define if your system has a prototype for gethostbyname_r in libc.h
    unistd.h stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYNAME_R
@@ -541,25 +497,9 @@ typedef unsigned short ushort;
    stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTID
 
-/* Define if your system has a prototype for gethostname in unistd.h libc.h
-   stdlib.h netdb.h. */
-#undef HAVE_PROTOTYPE_GETHOSTNAME
-
-/* Define if your system has a prototype for getsockname in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_GETSOCKNAME
-
-/* Define if your system has a prototype for getsockopt in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_GETSOCKOPT
-
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h. */
 #undef HAVE_PROTOTYPE_GETTIMEOFDAY
-
-/* Define if your system has a prototype for listen in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_LISTEN
 
 /* Define if your system has a prototype for mkstemp in libc.h unistd.h
    stdlib.h. */
@@ -568,14 +508,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
    stdlib.h. */
 #undef HAVE_PROTOTYPE_MKTEMP
-
-/* Define if your system has a prototype for setsockopt in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_SETSOCKOPT
-
-/* Define if your system has a prototype for socket in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_SOCKET
 
 /* Define if your system has a prototype for std::isinf in cmath. */
 #undef HAVE_PROTOTYPE_STD__ISINF
@@ -632,14 +564,8 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `rindex' function. */
 #undef HAVE_RINDEX
 
-/* Define to 1 if you have the `select' function. */
-#undef HAVE_SELECT
-
 /* Define to 1 if you have the <semaphore.h> header file. */
 #undef HAVE_SEMAPHORE_H
-
-/* Define to 1 if you have the `setsockopt' function. */
-#undef HAVE_SETSOCKOPT
 
 /* Define to 1 if you have the `setuid' function. */
 #undef HAVE_SETUID
@@ -649,9 +575,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `sleep' function. */
 #undef HAVE_SLEEP
-
-/* Define to 1 if you have the `socket' function. */
-#undef HAVE_SOCKET
 
 /* Define to 1 if you have the `stat' function. */
 #undef HAVE_STAT

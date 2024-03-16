@@ -5663,7 +5663,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-for ac_func in gethostname gethostid socket sysinfo
+for ac_func in gethostid sysinfo
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -5779,43 +5779,29 @@ _ACEOF
 fi
 done
 
-for ac_func in listen connect setsockopt getsockopt select
+for ac_func in listen
 do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  ac_fn_c_check_func "$LINENO" "listen" "ac_cv_func_listen"
+if test "x$ac_cv_func_listen" = xyes; then :
   cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+#define HAVE_LISTEN 1
 _ACEOF
 
 fi
 done
 
-for ac_func in gethostbyname gethostbyname_r
+for ac_func in gethostbyname_r
 do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  ac_fn_c_check_func "$LINENO" "gethostbyname_r" "ac_cv_func_gethostbyname_r"
+if test "x$ac_cv_func_gethostbyname_r" = xyes; then :
   cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+#define HAVE_GETHOSTBYNAME_R 1
 _ACEOF
 
 fi
 done
 
 for ac_func in gethostbyaddr_r getgrnam_r getpwnam_r
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-for ac_func in bind accept getsockname getaddrinfo
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -9236,66 +9222,6 @@ else
 $as_echo "no" >&6; }
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for accept (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for accept (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo accept | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct accept(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_ACCEPT 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-if test $ac_cv_prototype_accept = yes ; then
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking if accept() needs int* parameters (in sys/types.h sys/socket.h)" >&5
 $as_echo_n "checking if accept() needs int* parameters (in sys/types.h sys/socket.h)... " >&6; }
 
@@ -9385,125 +9311,6 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for bind (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for bind (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo bind | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct bind(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_BIND 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for connect (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for connect (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo connect | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct connect(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_CONNECT 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for finite (in math.h)" >&5
@@ -9742,65 +9549,6 @@ else
 $as_echo "no" >&6; }
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for gethostbyname (in libc.h unistd.h stdlib.h netdb.h)" >&5
-$as_echo_n "checking prototype for gethostbyname (in libc.h unistd.h stdlib.h netdb.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in libc.h unistd.h stdlib.h netdb.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo gethostbyname | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct gethostbyname(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_GETHOSTBYNAME 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for gethostbyname_r (in libc.h unistd.h stdlib.h netdb.h)" >&5
 $as_echo_n "checking prototype for gethostbyname_r (in libc.h unistd.h stdlib.h netdb.h)... " >&6; }
 
@@ -9978,183 +9726,6 @@ else
 $as_echo "no" >&6; }
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for gethostname (in unistd.h libc.h stdlib.h netdb.h)" >&5
-$as_echo_n "checking prototype for gethostname (in unistd.h libc.h stdlib.h netdb.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in unistd.h libc.h stdlib.h netdb.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo gethostname | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct gethostname(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_GETHOSTNAME 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for getsockname (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for getsockname (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo getsockname | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct getsockname(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_GETSOCKNAME 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for getsockopt (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for getsockopt (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo getsockopt | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct getsockopt(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_GETSOCKOPT 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for strerror_r (in string.h)" >&5
 $as_echo_n "checking prototype for strerror_r (in string.h)... " >&6; }
 
@@ -10271,7 +9842,6 @@ $as_echo "no" >&6; }
 fi
 
 fi
-if test $ac_cv_prototype_getsockopt = yes ; then
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking if getsockopt() needs int* parameters (in sys/types.h sys/socket.h)" >&5
 $as_echo_n "checking if getsockopt() needs int* parameters (in sys/types.h sys/socket.h)... " >&6; }
 
@@ -10355,7 +9925,6 @@ $as_echo "no" >&6; }
 
 fi
 
-fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for gettimeofday (in sys/time.h unistd.h)" >&5
 $as_echo_n "checking prototype for gettimeofday (in sys/time.h unistd.h)... " >&6; }
 
@@ -10408,65 +9977,6 @@ if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
   $as_echo "#define HAVE_PROTOTYPE_GETTIMEOFDAY 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for listen (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for listen (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo listen | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct listen(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_LISTEN 1" >>confdefs.h
 
   :
 else
@@ -10585,124 +10095,6 @@ if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
   $as_echo "#define HAVE_PROTOTYPE_MKSTEMP 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for setsockopt (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for setsockopt (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo setsockopt | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct setsockopt(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_SETSOCKOPT 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking prototype for socket (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking prototype for socket (in sys/types.h sys/socket.h)... " >&6; }
-
-:
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-tmp_save_1=`echo socket | tr ' :' '__'`
-if eval \${ac_cv_prototype_$tmp_save_1+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-typedef union { int member; } dummyStruct;
-#ifdef __cplusplus
-extern "C"
-#endif
-dummyStruct socket(dummyStruct);
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "ac_cv_prototype_$tmp_save_1=no"
-else
-  eval "ac_cv_prototype_$tmp_save_1=yes"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_PROTOTYPE_SOCKET 1" >>confdefs.h
 
   :
 else
@@ -11006,67 +10398,6 @@ $as_echo "no" >&6; }
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking declaration for socklen_t (in sys/types.h sys/socket.h)" >&5
-$as_echo_n "checking declaration for socklen_t (in sys/types.h sys/socket.h)... " >&6; }
-
-ac_includes=""
-for ac_header in sys/types.h sys/socket.h
-do
-  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
-  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
-    ac_includes="$ac_includes
-#include<$ac_header>"
-  fi
-done
-
-ac_cpp_includes=""
-
-ac_cv_declaration=`echo 'ac_cv_declaration_socklen_t' | tr ' :' '__'`
-
-if eval \${$ac_cv_declaration+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-$ac_includes
-#ifdef __cplusplus
-}
-#endif
-$ac_cpp_includes
-socklen_t dummy;
-
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval "$ac_cv_declaration=yes"
-else
-  eval "$ac_cv_declaration=no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-if eval "test \"\$$ac_cv_declaration\" = yes"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-  $as_echo "#define HAVE_DECLARATION_SOCKLEN_T 1" >>confdefs.h
-
-  :
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-unset ac_cv_declaration
-
-
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ standard namespace" >&5
 $as_echo_n "checking for C++ standard namespace... " >&6; }
@@ -11076,7 +10407,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 11079 "configure"
+#line 10410 "configure"
 #include "confdefs.h"
 
 #include <iostream>
