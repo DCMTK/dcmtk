@@ -1,31 +1,32 @@
 # declare executables
 DCMTK_ADD_TEST_EXECUTABLE(ofstd_tests
-  tests.cc
   tatof.cc
+  tbase64.cc
+  tchrenc.cc
   terror.cc
-  tmap.cc
-  tvec.cc
+  tests.cc
   tfilsys.cc
   tftoa.cc
-  tthread.cc
-  tbase64.cc
+  tipc.cc
+  tlimits.cc
+  tlist.cc
+  tmap.cc
+  tmarkup.cc
+  tmem.cc
+  tofdatim.cc
+  toffile.cc
+  tofstd.cc
+  toption.cc
+  tstack.cc
+  tstl.cc
   tstring.cc
   tstrutl.cc
-  tlist.cc
-  tstack.cc
-  tofdatim.cc
-  tofstd.cc
-  tmarkup.cc
-  tchrenc.cc
-  txml.cc
-  tuuid.cc
-  toffile.cc
-  tmem.cc
-  toption.cc
+  tthread.cc
   ttuple.cc
-  tlimits.cc
+  tuuid.cc
   tvariant.cc
-  tipc.cc
+  tvec.cc
+  txml.cc
 )
 
 # make sure executables are linked to the corresponding libraries

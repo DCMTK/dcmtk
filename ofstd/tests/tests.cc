@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -93,5 +93,15 @@ OFTEST_REGISTER(ofstd_snprintf);
 OFTEST_REGISTER(ofstd_OFStringUtil_replace_all);
 OFTEST_REGISTER(ofstd_gethostnamebyaddress);
 OFTEST_REGISTER(ofstd_ipc);
+OFTEST_REGISTER(ofstd_std_algorithm);
+OFTEST_REGISTER(ofstd_std_limits);
+OFTEST_REGISTER(ofstd_std_list);
+OFTEST_REGISTER(ofstd_std_map);
+OFTEST_REGISTER(ofstd_std_memory);
+OFTEST_REGISTER(ofstd_std_stack);
+OFTEST_REGISTER(ofstd_std_string);
+OFTEST_REGISTER(ofstd_std_system_error);
+OFTEST_REGISTER(ofstd_std_tuple);
+OFTEST_REGISTER(ofstd_std_vector);
 
 OFTEST_MAIN("ofstd")
