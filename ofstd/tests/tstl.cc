@@ -65,11 +65,11 @@ OFTEST(ofstd_std_algorithm)
     int n = 0;
     X x;
     x.n = &n;
-    OF_ForEach(vec.begin(), vec.end(), x);
+    OFForEach(X, X, vec.begin(), vec.end(), x);
 
     OFCHECK(n == 2);
-    OFCHECK(OF_Find(vec.begin(), vec.end(), 44) == vec.end());
-    OFCHECK(OF_AdjacentFind(vec.begin(), vec.end()) == vec.end());
+    OFCHECK(OFFind(X, X, vec.begin(), vec.end(), 44) == vec.end());
+    OFCHECK(OFAdjacentFind(X, vec.begin(), vec.end()) == vec.end());
 }
 
 OFTEST(ofstd_std_limits)

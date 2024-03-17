@@ -935,29 +935,6 @@ In detail, these are the variables that need to be provided:
     This test determines if libiconv has a default encoding, i.e. if
     "iconv_open()" accepts "" as an argument.  Use FALSE as default.
 
-  The following variables are only used when compiling with DCMTK_ENABLE_STL
-  and can otherwise be set to 0:
-  - HAVE_STL_VECTOR_TEST_RESULT: 1 if the platform provides a working
-    <vector> implementation, 0 otherwise
-  - HAVE_STL_ALGORITHM_TEST_RESULT: 1 if the platform provides a working
-    <algorithm> implementation, 0 otherwise
-  - HAVE_STL_LIST_TEST_RESULT: 1 if the platform provides a working
-    <list> implementation, 0 otherwise
-  - HAVE_STL_MAP_TEST_RESULT: 1 if the platform provides a working
-    <map> implementation, 0 otherwise
-  - HAVE_STL_MEMORY_TEST_RESULT: 1 if the platform provides a working
-    <memory> implementation, 0 otherwise
-  - HAVE_STL_STACK_TEST_RESULT: 1 if the platform provides a working
-    <stack> implementation, 0 otherwise
-  - HAVE_STL_STRING_TEST_RESULT: 1 if the platform provides a working
-    <string> implementation, 0 otherwise
-  - HAVE_STL_TYPE_TRAITS_TEST_RESULT: 1 if the platform provides a working
-    <type_traits> implementation, 0 otherwise
-  - HAVE_STL_TUPLE_TEST_RESULT: 1 if the platform provides a working
-    <tuple> implementation, 0 otherwise
-  - HAVE_STL_SYSTEM_ERROR_TEST_RESULT: 1 if the platform provides a working
-    <system_error> implementation, 0 otherwise
-
 For further information on cross-compiling DCMTK, see:
 https://support.dcmtk.org/redmine/projects/dcmtk/wiki/Cross_Compiling
 

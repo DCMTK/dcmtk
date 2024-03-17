@@ -349,6 +349,9 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
 
+/* Define to 1 if you have the C++11 <system_error> header file. */
+#cmakedefine HAVE_SYSTEM_ERROR @HAVE_SYSTEM_ERROR@
+
 /* Define to 1 if you have the <cstdint> header file. */
 #cmakedefine HAVE_CSTDINT @HAVE_CSTDINT@
 
@@ -450,6 +453,12 @@
 
 /* Define to 1 if you have the <thread.h> header file. */
 #cmakedefine HAVE_THREAD_H @HAVE_THREAD_H@
+
+/* Define to 1 if you have the C++11 <tuple> header file. */
+#cmakedefine HAVE_TUPLE @HAVE_TUPLE@
+
+/* Define to 1 if you have the C++11 <type_traits> header file. */
+#cmakedefine HAVE_TYPE_TRAITS @HAVE_TYPE_TRAITS@
 
 /* Define to 1 if you have the `uname' function. */
 #cmakedefine HAVE_UNAME @HAVE_UNAME@
