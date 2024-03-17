@@ -123,7 +123,7 @@ ForwardIterator OF_AdjacentFind(ForwardIterator first, ForwardIterator last)
     ForwardIterator next(first);
     while (++next != last)
     {
-        if (*first == *next) return *first;
+        if (*first == *next) return first;
         ++first;
     }
     return last;
