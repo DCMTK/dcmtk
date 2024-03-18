@@ -50,7 +50,7 @@
 struct X {
     int *n;
 
-    void operator()(int x)
+    void operator()(int /* x */)
     {
         ++*n;
     }
@@ -75,8 +75,10 @@ OFTEST(ofstd_std_algorithm)
 OFTEST(ofstd_std_limits)
 {
     OFCHECK(OFnumeric_limits<signed char>::is_signed);
-    OFCHECK(OFnumeric_limits<float>::has_infinity || (!OFnumeric_limits<float>::is_iec559) );
-    OFCHECK(OFnumeric_limits<int>::max() == INT_MAX);
+    OFBool float_properties = OFnumeric_limits<float>::has_infinity || !OFnumeric_limits<float>::is_iec559;
+    OFCHECK(float_properties);
+    OFBool int_properties = OFnumeric_limits<int>::max() == INT_MAX;
+    OFCHECK(int_properties);
     OFCHECK(OFnumeric_limits<int>::digits == CHAR_BIT * sizeof(int) - 1);
 }
 
@@ -179,7 +181,11 @@ OFTEST(ofstd_std_system_error)
 
 OFTEST(ofstd_std_tuple)
 {
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
     auto tuple = OFmake_tuple(1, "TEST");
+#else
+    OFtuple<int, const char *> tuple = OFmake_tuple(1, "TEST");
+#endif
     OFCHECK(OFget<0>(tuple) == 1);
 
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
@@ -194,6 +200,7 @@ OFTEST(ofstd_std_tuple)
 
     // ensure OFtuple can take at least 50 template arguments
     OFtuple<int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int,int> t;
+    (void) t;
 }
 
 struct Recursive : OFVector<Recursive>
