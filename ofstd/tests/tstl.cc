@@ -42,6 +42,7 @@
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftuple.h"
 #include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include <climits>
 
 #define OFTEST_OFSTD_ONLY
@@ -74,12 +75,13 @@ OFTEST(ofstd_std_algorithm)
 
 OFTEST(ofstd_std_limits)
 {
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
     OFCHECK(OFnumeric_limits<signed char>::is_signed);
-    OFBool float_properties = OFnumeric_limits<float>::has_infinity || !OFnumeric_limits<float>::is_iec559;
-    OFCHECK(float_properties);
-    OFBool int_properties = OFnumeric_limits<int>::max() == INT_MAX;
-    OFCHECK(int_properties);
+    OFCHECK(OFnumeric_limits<float>::has_infinity || !OFnumeric_limits<float>::is_iec559);
+    OFCHECK(OFnumeric_limits<int>::max() == INT_MAX);
     OFCHECK(OFnumeric_limits<int>::digits == CHAR_BIT * sizeof(int) - 1);
+#include DCMTK_DIAGNOSTIC_POP
 }
 
 OFTEST(ofstd_std_list)
