@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -231,13 +231,17 @@ public:
 
     /** convert the given string to a DICOM tag value
      *  @param name name or tag of the attribute to be searched for.
-     *    If the name of the attribute is given the spelling has to be consistent
+     *    If the name of the attribute is given, the spelling has to be consistent
      *    with the spelling used in the data dictionary (e.g. "PatientName").
-     *    If the tag values are used the format is "gggg,eeee" (i.e. two hexa-
-     *    decimal numbers separated by a comma).
+     *    If the attribute tag is used, the format is "gggg,eeee" (i.e. two
+     *    hexadecimal numbers separated by a comma).
      *  @param value variable in which the resulting tag value is stored.
      *    If this functions fails to find the specified tag, this variable
      *    remains unchanged.
+     *  @note This method also searches for private tags, but always returns
+     *    the first entry that matches (if no standard attribute was found),
+     *    i.e. the private creator identifier is ignored (it cannot be specified
+     *    for this method).
      *  @return status, EC_Normal upon success, an error code otherwise
      */
     static OFCondition findTagFromName(const char *name,
@@ -247,6 +251,19 @@ public:
 
     using DcmTagKey::operator==;
     using DcmTagKey::operator!=;
+
+protected:
+
+    /** set the members of this tag
+     *  @param key attribute tag to be set
+     *  @param avr value representation (VR) to be set
+     *  @param tagName attribute name to be set
+     *  @param privCreator private creator identifier to be set (might be NULL)
+     */
+    void setTag(const DcmTagKey &key,
+                const DcmVR &avr,
+                const char *tagName,
+                const char *privCreator);
 
 private:
 

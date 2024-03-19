@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,7 +85,7 @@ public:
     /// returns the number of normal (non-repeating) tag entries
     int numberOfNormalTagEntries() const { return hashDict.size(); }
 
-    /// returns the number of repeating tag entries
+    /// returns the number of repeating groups tag entries
     int numberOfRepeatingTagEntries() const { return OFstatic_cast(int, repDict.size()); }
 
     /** returns the number of dictionary entries that were loaded
@@ -121,18 +121,19 @@ public:
     OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent = OFTrue);
 
     /** dictionary lookup for the given tag key and private creator identifier.
-     *  First the normal tag dictionary is searched.  If not found then the
-     *  repeating tag dictionary is searched.
-     *  @param key tag key
+     *  First, the normal tags data dictionary is searched.  If not found, the
+     *  repeating groups data dictionary is searched.
+     *  @param key tag key to search for
      *  @param privCreator private creator identifier, may be NULL
      */
     const DcmDictEntry* findEntry(const DcmTagKey& key, const char *privCreator) const;
 
     /** dictionary lookup for the given attribute name.
-     *  First the normal tag dictionary is searched.  If not found then the
-     *  repeating tag dictionary is searched.
-     *  Only considers standard attributes (i. e. without private creator).
-     *  @param name attribute name
+     *  First, the normal tags data dictionary is searched.  If not found, the
+     *  repeating groups data dictionary is searched.
+     *  Mainly considers standard attributes.  Private attributes are also
+     *  searched, but without their associated private creator identifier.
+     *  @param name attribute name to search for
      */
     const DcmDictEntry* findEntry(const char *name) const;
 
@@ -156,10 +157,10 @@ public:
     /// returns an iterator to the end of the normal (non-repeating) dictionary
     DcmHashDictIterator normalEnd() { return hashDict.end(); }
 
-    /// returns an iterator to the start of the repeating tag dictionary
+    /// returns an iterator to the start of the repeating groups data dictionary
     DcmDictEntryListIterator repeatingBegin() { return repDict.begin(); }
 
-    /// returns an iterator to the end of the repeating tag dictionary
+    /// returns an iterator to the end of the repeating groups data dictionary
     DcmDictEntryListIterator repeatingEnd() { return repDict.end(); }
 
 private:
@@ -178,8 +179,7 @@ private:
     OFBool loadExternalDictionaries();
 
     /** loads a builtin (compiled) data dictionary.
-     *  Depending on which code is in use, this function may not
-     *  do anything.
+     *  Depending on which code is in use, this function may not do anything.
      */
     void loadBuiltinDictionary();
 
@@ -204,7 +204,7 @@ private:
      */
     DcmHashDict hashDict;
 
-    /** dictionary of repeating tags
+    /** dictionary of repeating groups tags
      */
     DcmDictEntryList repDict;
 
@@ -219,7 +219,7 @@ private:
 };
 
 
-/** global singleton dicom dictionary that is used by DCMTK in order to lookup
+/** global singleton DICOM dictionary that is used by DCMTK in order to lookup
  *  attribute VR, tag names and so on.  The dictionary is internally populated
  *  on first use, if the user accesses it via rdlock() or wrlock().  The
  *  dictionary allows safe read (shared) and write (exclusive) access from
@@ -236,15 +236,13 @@ public:
    */
   ~GlobalDcmDataDictionary();
 
-  /** acquires a read lock and returns a const reference to
-   *  the dictionary.
+  /** acquires a read lock and returns a const reference to the dictionary.
    *  @return const reference to dictionary
    */
   const DcmDataDictionary& rdlock();
 
-  /** acquires a write lock and returns a non-const reference
-   *  to the dictionary.
-   *  @return non-const reference to dictionary.
+  /** acquires a write lock and returns a non-const reference to the dictionary.
+   *  @return non-const reference to dictionary
    */
   DcmDataDictionary& wrlock();
 
@@ -301,13 +299,11 @@ private:
 /** The Global DICOM Data Dictionary.
  *  Will be created before main() starts and gets populated on its first use.
  *  Tries to load a builtin data dictionary (if compiled in).
- *  Tries to load data dictionaries from files specified by
- *  the DCMDICTPATH environment variable.  If this environment
- *  variable does not exist then a default file is loaded (if
- *  it exists).
- *  It is possible that no data dictionary gets loaded.  This
- *  is likely to cause unexpected behaviour in the dcmdata
- *  toolkit classes.
+ *  Tries to load data dictionaries from files specified by the DCMDICTPATH
+ *  environment variable.  If this environment variable does not exist then a
+ *  default file is loaded (if it exists).
+ *  It is possible that no data dictionary gets loaded.  This is likely to
+ *  cause unexpected behavior in the dcmdata toolkit classes.
  */
 extern DCMTK_DCMDATA_EXPORT GlobalDcmDataDictionary dcmDataDict;
 
