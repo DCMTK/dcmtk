@@ -257,12 +257,12 @@ protected:
     /** set the members of this tag
      *  @param key attribute tag to be set
      *  @param avr value representation (VR) to be set
-     *  @param tagName attribute name to be set
+     *  @param name attribute name to be set
      *  @param privCreator private creator identifier to be set (might be NULL)
      */
     void setTag(const DcmTagKey &key,
                 const DcmVR &avr,
-                const char *tagName,
+                const char *name,
                 const char *privCreator);
 
 private:

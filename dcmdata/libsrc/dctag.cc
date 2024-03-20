@@ -294,13 +294,13 @@ void DcmTag::setPrivateCreator(const char *privCreator)
 
 void DcmTag::setTag(const DcmTagKey &key,
                     const DcmVR &avr,
-                    const char *tagName,
+                    const char *name,
                     const char *privCreator)
 {
     set(key);
     /* the following method also sets the errorFlag */
     setVR(avr);
-    updateTagName(tagName);
+    updateTagName(name);
     updatePrivateCreator(privCreator);
 }
 
