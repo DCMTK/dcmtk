@@ -115,6 +115,16 @@ int               cmove_status_code = EXITCODE_NO_ERROR;
 OFCmdUnsignedInt  opt_compressionLevel = 0;
 #endif
 
+// User Identity Negotiation
+static T_ASC_UserIdentityNegotiationMode opt_identMode = ASC_USER_IDENTITY_NONE;
+static OFString opt_user;
+static OFString opt_password;
+static OFString opt_identFile;
+// Denotes whether we ask for an explicit server response for
+// our identity negotiation request and only continue if this
+// positive response is provided by the SCP.
+static OFBool opt_identResponse = OFFalse;
+
 static T_ASC_Network *net = NULL; /* the global DICOM network */
 static DcmDataset *overrideKeys = NULL;
 static QuerySyntax querySyntax[3] = {
@@ -208,6 +218,13 @@ static OFCondition
 addPresentationContext(T_ASC_Parameters *params,
                         T_ASC_PresentationContextID pid,
                         const char *abstractSyntax);
+
+static OFCondition
+configureUserIdentityRequest(T_ASC_Parameters *params);
+
+static OFCondition
+checkUserIdentityResponse(T_ASC_Parameters *params);
+
 
 #define SHORTCOL 4
 #define LONGCOL 21
@@ -310,6 +327,19 @@ main(int argc, char *argv[])
       cmd.addOption("--pending-ignore",      "-pi",     "assume no dataset present (default)");
       cmd.addOption("--pending-read",        "-pr",     "read and ignore dataset");
 
+    cmd.addSubGroup("user identity negotiation:");
+      cmd.addOption("--user",                 "-usr", 1, "[u]ser name: string",
+                    "authenticate using user name u");
+      cmd.addOption("--password",             "-pwd", 1, "[p]assword: string (only with --user)",
+                    "authenticate using password p");
+      cmd.addOption("--empty-password",       "-epw",    "send empty password (only with --user)");
+      cmd.addOption("--kerberos",             "-kt",  1, "[f]ilename: string",
+                    "read kerberos ticket from file f");
+      cmd.addOption("--saml",                         1, "[f]ilename: string",
+                    "read SAML request from file f");
+      cmd.addOption("--jwt",                          1, "[f]ilename: string",
+                  "read JWT data from file f");
+      cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",             "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       cmd.addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
@@ -370,6 +400,7 @@ main(int argc, char *argv[])
       cmd.addOption("--compression-level",   "+cl",  1, "[l]evel: integer (default: 6)",
                                                         "0=uncompressed, 1=fastest, 9=best compression");
 #endif
+
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -701,6 +732,50 @@ main(int argc, char *argv[])
       }
 #endif
 
+      // User Identity Negotiation
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--user"))
+      {
+        app.checkValue(cmd.getValue(opt_user));
+        opt_identMode = ASC_USER_IDENTITY_USER;
+      }
+      if (cmd.findOption("--kerberos"))
+      {
+        app.checkValue(cmd.getValue(opt_identFile));
+        opt_identMode = ASC_USER_IDENTITY_KERBEROS;
+      }
+      if (cmd.findOption("--saml"))
+      {
+        app.checkValue(cmd.getValue(opt_identFile));
+        opt_identMode = ASC_USER_IDENTITY_SAML;
+      }
+      if (cmd.findOption("--jwt"))
+      {
+        app.checkValue(cmd.getValue(opt_identFile));
+        opt_identMode = ASC_USER_IDENTITY_JWT;
+      }
+      cmd.endOptionBlock();
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--password"))
+      {
+        app.checkDependence("--password", "--user", opt_identMode == ASC_USER_IDENTITY_USER);
+        app.checkValue(cmd.getValue(opt_password));
+        opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
+      }
+      if (cmd.findOption("--empty-password"))
+      {
+        app.checkDependence("--empty-password", "--user", opt_identMode == ASC_USER_IDENTITY_USER);
+        opt_password = "";
+        opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
+      }
+      cmd.endOptionBlock();
+      if (cmd.findOption("--pos-response"))
+      {
+        app.checkDependence("--pos-response", "--user, --kerberos, --saml or --jwt", opt_identMode != ASC_USER_IDENTITY_NONE);
+        opt_identResponse = OFTrue;
+      }
+
+
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
       const char *currentFilename = NULL;
@@ -789,6 +864,14 @@ main(int argc, char *argv[])
     sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
+    /* Configure User Identity Negotiation*/
+    if (opt_identMode != ASC_USER_IDENTITY_NONE)
+    {
+      cond = configureUserIdentityRequest(params);
+      if (cond.bad())
+        return 1;
+    }
+
     /*
      * We also add a presentation context for the corresponding
      * find sop class.
@@ -828,6 +911,13 @@ main(int argc, char *argv[])
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
         OFLOG_FATAL(movescuLogger, "No Acceptable Presentation Contexts");
         exit(EXITCODE_NO_PRESENTATION_CONTEXT);
+    }
+
+    cond = checkUserIdentityResponse(params);
+    if (cond.bad())
+    {
+      OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
+      return 1;
     }
 
     OFLOG_INFO(movescuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
@@ -1720,4 +1810,103 @@ cmove(T_ASC_Association *assoc, const char *fname)
     while (cond.good() && n--)
         cond = moveSCU(assoc, fname);
     return cond;
+}
+
+static OFCondition
+configureUserIdentityRequest(T_ASC_Parameters *params)
+{
+  OFCondition cond = EC_Normal;
+  switch (opt_identMode)
+  {
+  case ASC_USER_IDENTITY_USER:
+  {
+    cond = ASC_setIdentRQUserOnly(params, opt_user, opt_identResponse);
+    return cond;
+  }
+  case ASC_USER_IDENTITY_USER_PASSWORD:
+  {
+    cond = ASC_setIdentRQUserPassword(params, opt_user, opt_password, opt_identResponse);
+    return cond;
+  }
+  case ASC_USER_IDENTITY_KERBEROS:
+  case ASC_USER_IDENTITY_SAML:
+  case ASC_USER_IDENTITY_JWT:
+  {
+    OFFile identFile;
+    if (!identFile.fopen(opt_identFile.c_str(), "rb"))
+    {
+      OFString openerror;
+      identFile.getLastErrorString(openerror);
+      OFLOG_ERROR(movescuLogger, "Unable to open Kerberos, SAML or JWT file: " << openerror);
+      return EC_IllegalCall;
+    }
+    // determine file size
+    offile_off_t result = identFile.fseek(0, SEEK_END);
+    if (result != 0)
+      return EC_IllegalParameter;
+    offile_off_t filesize = identFile.ftell();
+    identFile.rewind();
+    if (filesize > 65535)
+    {
+      OFLOG_INFO(movescuLogger, "Kerberos, SAML or JWT file is larger than 65535 bytes, bytes after that position are ignored");
+      filesize = 65535;
+    }
+
+    char *buf = new char[OFstatic_cast(unsigned int, filesize)];
+    size_t bytesRead = identFile.fread(buf, 1, OFstatic_cast(size_t, filesize));
+    identFile.fclose();
+    if (bytesRead == 0)
+    {
+      OFLOG_ERROR(movescuLogger, "Unable to read Kerberos, SAML or JWT info from file: File empty?");
+      delete[] buf;
+      return EC_IllegalCall;
+    }
+    // Casting to Uint16 should be safe since it is checked above that file
+    // size does not exceed 65535 bytes.
+    if (opt_identMode == ASC_USER_IDENTITY_KERBEROS)
+      cond = ASC_setIdentRQKerberos(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
+    else if (opt_identMode == ASC_USER_IDENTITY_SAML)
+      cond = ASC_setIdentRQSaml(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
+    else // JWT
+      cond = ASC_setIdentRQJwt(params, buf, OFstatic_cast(Uint16,bytesRead), opt_identResponse);
+    delete[] buf;
+    break;
+  }
+  default:
+  {
+    cond = EC_IllegalCall;
+  }
+  }
+  if (cond.bad())
+  {
+    OFString temp_str;
+    OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
+  }
+  return cond;
+}
+
+static OFCondition
+checkUserIdentityResponse(T_ASC_Parameters *params)
+{
+  if (params == NULL)
+    return ASC_NULLKEY;
+
+  /* So far it is only checked whether a requested, positive response was
+     actually received */
+
+  // In case we sent no user identity request, there are no checks at all
+  if ((opt_identMode == ASC_USER_IDENTITY_NONE) || (!opt_identResponse))
+    return EC_Normal;
+
+  // If positive response was requested, we expect a corresponding response
+  if ((opt_identMode == ASC_USER_IDENTITY_USER) || (opt_identMode == ASC_USER_IDENTITY_USER_PASSWORD))
+  {
+    UserIdentityNegotiationSubItemAC *rsp = params->DULparams.ackUserIdentNeg;
+    if (rsp == NULL)
+    {
+      OFLOG_ERROR(movescuLogger, "User Identity Negotiation failed: Positive response requested but none received");
+      return ASC_USERIDENTIFICATIONFAILED;
+    }
+  }
+  return EC_Normal;
 }
