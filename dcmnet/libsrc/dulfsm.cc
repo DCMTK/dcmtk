@@ -116,6 +116,8 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/helpers.h"
 #include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
+#include "dcmtk/ofstd/oftimer.h"
+
 #include <ctime>
 #include <climits>
 
@@ -2305,34 +2307,47 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     if (rc < 0 && errno == EINPROGRESS)
 #endif
     {
+        rc = 0;
+        OFTimer connectTimer;
+        do {
 #ifndef DCMTK_HAVE_POLL
-        // we're in non-blocking mode. Prepare to wait for timeout.
-        fd_set fdSet;
-        FD_ZERO(&fdSet);
+            // we're in non-blocking mode. Prepare to wait for timeout.
+            fd_set fdSet;
+            FD_ZERO(&fdSet);
 #ifdef __MINGW32__
-        // on MinGW, FD_SET expects an unsigned first argument
-        FD_SET((unsigned int) s, &fdSet);
+            // on MinGW, FD_SET expects an unsigned first argument
+            FD_SET((unsigned int) s, &fdSet);
 #else
-        FD_SET(s, &fdSet);
+            FD_SET(s, &fdSet);
 #endif /* __MINGW32__ */
 #endif /* DCMTK_HAVE_POLL */
 
-        struct timeval timeout;
-        timeout.tv_sec = connectTimeout;
-        timeout.tv_usec = 0;
+            struct timeval timeout;
+            if (params->tcpPollInterval == -1)
+                timeout.tv_sec = connectTimeout;
+            else
+                timeout.tv_sec = params->tcpPollInterval;
+            timeout.tv_usec = 0;
 
-        do {
+            if (params->tcpConnectCanceled && params->tcpConnectCanceled(params->tcpCancelContext)) {
+                // TCP connect attempt was canceled. Flag connection as timed out
+                rc = 0; 
+                break;
+            }
+
+            do {
 #ifdef DCMTK_HAVE_POLL
-            struct pollfd pfd[] =
-            {
-                { s, POLLOUT, 0 }
-            };
-            rc = poll(pfd, 1, timeout.tv_sec*1000+(timeout.tv_usec/1000));
+                struct pollfd pfd[] =
+                {
+                    { s, POLLOUT, 0 }
+                };
+                rc = poll(pfd, 1, timeout.tv_sec*1000+(timeout.tv_usec/1000));
 #else
-            // the typecast is safe because Windows ignores the first select() parameter anyway
-            rc = select(OFstatic_cast(int, s + 1), NULL, &fdSet, NULL, &timeout);
+                // the typecast is safe because Windows ignores the first select() parameter anyway
+                rc = select(OFstatic_cast(int, s + 1), NULL, &fdSet, NULL, &timeout);
 #endif
-        } while (rc == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
+            } while (rc == -1 && OFStandard::getLastNetworkErrorCode().value() == DCMNET_EINTR);
+        } while (rc == 0 && connectTimer.getDiff() < connectTimeout);
 
         if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         {

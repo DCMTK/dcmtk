@@ -32,6 +32,15 @@
 #include <zlib.h> /* for zlibVersion() */
 #endif
 
+static bool CancelTcpConnect(void* context)
+{
+    if (!context)
+        return false;
+
+    const IDcmCancelToken* token = OFstatic_cast(const IDcmCancelToken*, context);
+    return token->IsCanceled();
+}
+
 DcmSCU::DcmSCU()
     : m_assoc(NULL)
     , m_net(NULL)
@@ -50,6 +59,7 @@ DcmSCU::DcmSCU()
     , m_dimseTimeout(0)
     , m_acseTimeout(30)
     , m_tcpConnectTimeout(dcmConnectionTimeout.get())
+    , m_tcpPollInterval(-1)
     , m_storageDir()
     , m_storageMode(DCMSCU_STORAGE_DISK)
     , m_verbosePCMode(OFFalse)
@@ -128,6 +138,9 @@ OFCondition DcmSCU::initNetwork()
         DCMNET_ERROR(DimseCondition::dump(tempStr, cond));
         return cond;
     }
+
+    m_params->DULparams.tcpPollInterval = m_tcpPollInterval;
+    m_params->DULparams.tcpConnectCanceled = CancelTcpConnect;
 
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values are "ANY-SCU" and "ANY-SCP". */
@@ -259,7 +272,7 @@ OFCondition DcmSCU::initNetwork()
     return cond;
 }
 
-OFCondition DcmSCU::negotiateAssociation()
+OFCondition DcmSCU::negotiateAssociation(IDcmCancelToken* tcpCancelToken)
 {
     /* Return error if SCU is already connected */
     if (isConnected())
@@ -271,6 +284,9 @@ OFCondition DcmSCU::negotiateAssociation()
         DCMNET_INFO("Request Parameters:" << OFendl << ASC_dumpParameters(tempStr, m_params, ASC_ASSOC_RQ));
     else
         DCMNET_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(tempStr, m_params, ASC_ASSOC_RQ));
+
+
+    m_params->DULparams.tcpCancelContext = tcpCancelToken;
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
@@ -2565,6 +2581,11 @@ void DcmSCU::setConnectionTimeout(const Sint32 connectionTimeout)
     m_tcpConnectTimeout = connectionTimeout;
 }
 
+void DcmSCU::setTcpPollInterval(const Sint32 pollInterval)
+{
+    m_tcpPollInterval = pollInterval;
+}
+
 void DcmSCU::setAssocConfigFileAndProfile(const OFString& filename, const OFString& profile)
 {
     m_assocConfigFilename = filename;
@@ -2651,6 +2672,11 @@ Uint32 DcmSCU::getACSETimeout() const
 Sint32 DcmSCU::getConnectionTimeout() const
 {
     return m_tcpConnectTimeout;
+}
+
+Sint32 DcmSCU::getTcpPollInterval() const
+{
+    return m_tcpPollInterval;
 }
 
 OFString DcmSCU::getStorageDir() const
