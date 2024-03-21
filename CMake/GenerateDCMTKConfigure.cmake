@@ -1212,6 +1212,7 @@ int main()
     endif()
 endif()
 
+# Check whether the compiler supports the given C++ standard version (11, 14, ...)
 function(DCMTK_CHECK_CXX_STANDARD STANDARD)
   set(RESULT 0)
   if(DEFINED HAVE_CXX${STANDARD}_TEST_RESULT)
@@ -1221,6 +1222,9 @@ function(DCMTK_CHECK_CXX_STANDARD STANDARD)
   else()
     set(MESSAGE "Checking whether the compiler supports C++${STANDARD}")
     message(STATUS "${MESSAGE}")
+    # Here we need to tell try_compile() to set the related CXX standard macro for VS.
+    # try_compile() also now support forwarding CMAKE_CXX_STANDARD to the compiler by setting "CXX_STANDARD <version>"
+    # but for some reason it does not seem to work. Thus we meanwhile set the macro manually.
     try_compile(COMPILE_RESULT "${CMAKE_BINARY_DIR}" "${DCMTK_SOURCE_DIR}/config/tests/cxx${STANDARD}.cc" COMPILE_DEFINITIONS ${FORCE_MSVC_CPLUSPLUS_MACRO})
     set(HAVE_CXX${STANDARD}_TEST_RESULT "${COMPILE_RESULT}" CACHE INTERNAL "Caches the configuration test result for C++${STANDARD} support.")
     if(COMPILE_RESULT)
@@ -1233,41 +1237,38 @@ function(DCMTK_CHECK_CXX_STANDARD STANDARD)
   set("ENABLE_CXX${STANDARD}" "${RESULT}" PARENT_SCOPE)
 endfunction()
 
-function(DCMTK_TEST_ENABLE_CXX11)
+
+# Loop through all C++ standard versions (11, 14, ...) up to requested CMAKE_CXX_STANDARD
+# whether the features of that version are actually available.
+# If yes, then various HAVE_CXX${STANDARD} variables are set to 1 for that version and
+# all versions below. osconfig.h will then contain C++ defines (with the same names)
+# used by DCMTK to enable/disable C++ version-related language features.
+function(DCMTK_TEST_LATEST_CXX_STANDARD)
   get_property(MODERN_CXX_STANDARDS GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS)
-  # loop through all standard versions (11, 14, ...) and reset
-  # ENABLE_CXX_... for this standard to 0 for the moment
+  # Define/reset all HAVE_CXX${STANDARD} to 0
   foreach(STANDARD ${MODERN_CXX_STANDARDS})
     set(ENABLE_CXX${STANDARD} 0)
   endforeach()
-  # DCMTK_CMAKE_HAS_CXX_STANDARD is true for CMake versions >= 3.1.3
-  get_property(DCMTK_CMAKE_HAS_CXX_STANDARD GLOBAL PROPERTY DCMTK_CMAKE_HAS_CXX_STANDARD)
-  if(DCMTK_CMAKE_HAS_CXX_STANDARD)
-    get_property(MODERN_CXX_STANDARD GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD)
-    if(MODERN_CXX_STANDARD AND DCMTK_ENABLE_CXX11)
-      dcmtk_upper_bound(MODERN_CXX_STANDARDS "${CMAKE_CXX_STANDARD}" N)
-      math(EXPR N "${N}-1")
-      foreach(I RANGE ${N})
-        list(GET MODERN_CXX_STANDARDS ${I} STANDARD)
-        dcmtk_check_cxx_standard("${STANDARD}")
-        if(NOT ENABLE_CXX${STANDARD})
-          break()
-        endif()
-      endforeach()
-    endif()
-  elseif(DCMTK_ENABLE_CXX11 AND NOT DCMTK_ENABLE_CXX11 STREQUAL "INFERRED")
-    # set C++11 compiler flags for the test, will automatically be removed by the function scope
-    string(FIND "${CMAKE_CXX_FLAGS}" "${DCMTK_CXX11_FLAGS}" INDEX)
-    if(INDEX EQUAL -1)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DCMTK_CXX11_FLAGS}" PARENT_SCOPE)
-    endif()
-    dcmtk_check_cxx_standard(11)
-    if(ENABLE_CXX11)
-      # push C++11 CXX-flags to the parent scope
-      set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} PARENT_SCOPE)
-    endif()
+  # Get list of modern C++ standards (>= 11) created in dcmtkPrepare.cmake
+  get_property(MODERN_CXX_STANDARD GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD)
+  # If we want to use C++11 or later, check if the compiler supports it
+  if(MODERN_CXX_STANDARD)
+    # Highest C++ standard version to tbe checked (all versions betwen C++11 and highest in MODERN_CXX_STANDARDS)
+    dcmtk_upper_bound(MODERN_CXX_STANDARDS "${CMAKE_CXX_STANDARD}" N)
+    math(EXPR N "${N}-1")
+    # Loop over C++ standards (11, 14, ...) up to highest to be checked
+    foreach(I RANGE ${N})
+      list(GET MODERN_CXX_STANDARDS ${I} STANDARD)
+      # Check whether given C++ standard is supported by the compiler
+      dcmtk_check_cxx_standard("${STANDARD}")
+      # If not, we are done (reached the highest supported C++ standard)
+      if(NOT ENABLE_CXX${STANDARD})
+        break()
+      endif()
+    endforeach()
   endif()
 
+  # Print message for each C++ standard version >11 whether it's supported or not
   foreach(STANDARD ${MODERN_CXX_STANDARDS})
     set(HAVE_CXX${STANDARD} "${ENABLE_CXX${STANDARD}}" CACHE INTERNAL "Set to 1 if the compiler supports C++${STANDARD} and it should be enabled.")
     if(HAVE_CXX${STANDARD})
@@ -1275,6 +1276,7 @@ function(DCMTK_TEST_ENABLE_CXX11)
     else()
       message(STATUS "Info: C++${STANDARD} features disabled")
     endif()
+
   endforeach()
 endfunction()
 
@@ -1312,6 +1314,8 @@ function(DCMTK_ENABLE_STL11_FEATURE NAME)
 endfunction()
 
 
+# This is used by function DCMTK_CHECK_CXX_STANDARD to enforce
+# language standard for VS in try_compile().
 # Visual Studio >= 2017 supports C++11 and later, but does not set
 # the __cplusplus macro with the supported C++ standard version.
 # /Zc:__cplusplus will enforce setting this macro in Visual Studio.
@@ -1323,20 +1327,6 @@ if(MSVC)
     set (FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
   endif()
 endif()
-
-# Check which modern C++ standards should be enabled
-DCMTK_TEST_ENABLE_CXX11()
-DCMTK_ENABLE_STL98_FEATURE("algorithm")
-DCMTK_ENABLE_STL98_FEATURE("list")
-DCMTK_ENABLE_STL98_FEATURE("map")
-DCMTK_ENABLE_STL98_FEATURE("memory")
-DCMTK_ENABLE_STL98_FEATURE("stack")
-DCMTK_ENABLE_STL98_FEATURE("string")
-DCMTK_ENABLE_STL98_FEATURE("vector")
-
-DCMTK_ENABLE_STL11_FEATURE("type_traits")
-DCMTK_ENABLE_STL11_FEATURE("tuple")
-DCMTK_ENABLE_STL11_FEATURE("system_error")
 
 # if at least one modern C++ standard should be supported,
 # add FORCE_MSVC_CPLUSPLUS_MACRO for MSVC to enforce setting
@@ -1350,6 +1340,21 @@ if(MSVC)
     endif()
   endforeach()
 endif()
+
+
+# Check which modern C++ standards can be enabled
+DCMTK_TEST_LATEST_CXX_STANDARD()
+DCMTK_ENABLE_STL98_FEATURE("algorithm")
+DCMTK_ENABLE_STL98_FEATURE("list")
+DCMTK_ENABLE_STL98_FEATURE("map")
+DCMTK_ENABLE_STL98_FEATURE("memory")
+DCMTK_ENABLE_STL98_FEATURE("stack")
+DCMTK_ENABLE_STL98_FEATURE("string")
+DCMTK_ENABLE_STL98_FEATURE("vector")
+
+DCMTK_ENABLE_STL11_FEATURE("type_traits")
+DCMTK_ENABLE_STL11_FEATURE("tuple")
+DCMTK_ENABLE_STL11_FEATURE("system_error")
 
 
 if(CMAKE_CROSSCOMPILING)

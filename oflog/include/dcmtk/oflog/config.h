@@ -112,10 +112,10 @@
 
 #if (defined (_MSC_VER) && _MSC_VER >= 1600) \
     || defined (__GXX_EXPERIMENTAL_CXX0X__)
-#  define DCMTK_LOG4CPLUS_HAVE_CXX11_SUPPORT
+#  define DCMTK_LOG4CPLUS_HAVE_modern_cxx_support
 #endif
 
-#if defined (DCMTK_LOG4CPLUS_HAVE_CXX11_SUPPORT) \
+#if defined (DCMTK_LOG4CPLUS_HAVE_modern_cxx_support) \
     || __has_feature (cxx_rvalue_references)
 #  define DCMTK_LOG4CPLUS_HAVE_RVALUE_REFS
 #endif

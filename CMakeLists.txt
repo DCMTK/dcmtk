@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.1.3...3.27.9 FATAL_ERROR)
 
 # Declare project
 project(DCMTK)
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11)
+endif()
 
 #-----------------------------------------------------------------------------
 # General project settings to configure DCMTK build process

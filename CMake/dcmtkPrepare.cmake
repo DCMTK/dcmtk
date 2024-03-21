@@ -141,19 +141,6 @@ else()
     set(WRAP_EXTRA_LIBS_STATIC)
 endif()
 
-# Gather information about the employed CMake version's behavior
-set(DCMTK_CMAKE_HAS_CXX_STANDARD FALSE)
-
-if(NOT CMAKE_VERSION VERSION_LESS "3.1.3")
-  set(DCMTK_CMAKE_HAS_CXX_STANDARD TRUE)
-endif()
-
-define_property(GLOBAL PROPERTY DCMTK_CMAKE_HAS_CXX_STANDARD
-  BRIEF_DOCS "TRUE iff the CXX_STANDARD property exists."
-  FULL_DOCS "TRUE for CMake versions since 3.1.3 that evaluate the CXX_STANDARD property and CMAKE_CXX_STANDARD variable."
-)
-set_property(GLOBAL PROPERTY DCMTK_CMAKE_HAS_CXX_STANDARD ${DCMTK_CMAKE_HAS_CXX_STANDARD})
-
 # General build options and settings
 option(BUILD_APPS "Build command line applications and test programs." ON)
 option(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
@@ -206,7 +193,6 @@ DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STRING "Enable use of STL string.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TYPE_TRAITS "Enable use of STL type traits.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_SYSTEM_ERROR "Enable use of STL system_error.")
-DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_CXX11 "Enable use of native C++11 features (eg. move semantics).")
 
 # On Windows, the built-in dictionary is default, on Unix the external one.
 # It is not possible to use both, built-in plus external default dictionary.
@@ -549,42 +535,31 @@ endif()
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
-# handle CMAKE_CXX_STANDARD and related variables
-if(DCMTK_CMAKE_HAS_CXX_STANDARD)
-  if(NOT DEFINED CMAKE_CXX_STANDARD)
-    if(DCMTK_ENABLE_CXX11 AND NOT DCMTK_ENABLE_CXX11 STREQUAL "INFERRED")
-      set(CMAKE_CXX_STANDARD 11)
-    endif()
-  endif()
-  if(NOT DEFINED CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$")
-    set(DCMTK_MODERN_CXX_STANDARD FALSE)
-  else()
-    set(DCMTK_MODERN_CXX_STANDARD TRUE)
-  endif()
-  define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD
-    BRIEF_DOCS "TRUE when compiling C++11 (or newer) code."
-    FULL_DOCS "TRUE when the compiler does support and is configured for C++11 or a later C++ standard."
-  )
-  set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD ${DCMTK_MODERN_CXX_STANDARD})
-  if(DEFINED DCMTK_CXX11_FLAGS)
-    message(WARNING "Legacy variable DCMTK_CXX11_FLAGS will be ignored since CMake now sets the flags based on the CMAKE_CXX_STANDARD variable automatically.")
-  endif()
-elseif(NOT DEFINED DCMTK_CXX11_FLAGS)
-  # determine which flags are required to enable C++11 features (if any)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-    set(DCMTK_CXX11_FLAGS "-std=c++11")
-  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    if(CMAKE_HOST_WIN32)
-      set(DCMTK_CXX11_FLAGS "/Qstd=c++11")
-    else()
-      set(DCMTK_CXX11_FLAGS "-std=c++11")
-    endif()
-  else()
-    set(DCMTK_CXX11_FLAGS "")
-  endif()
-  set(DCMTK_CXX11_FLAGS "${DCMTK_CXX11_FLAGS}" CACHE STRING "The flags to add to CMAKE_CXX_FLAGS for enabling C++11 (if any).")
-  mark_as_advanced(DCMTK_CXX11_FLAGS)
+# If desired C++ standard is at least C++11, set DCMTK_MODERN_CXX_STANDARD to true
+# and remember it in global property DCMTK_MODERN_CXX_STANDARD.
+# This is later evaluated in GenerateDCMTKConfigure.cmake in order to check
+# whether the compiler actually supports the required C++ standards up to the
+# version specified in CMAKE_CXX_STANDARD. Finally, the highest C++ version
+# (<= CMAKE_CXX_STANDARD) will be selected that the compiler actually supports.
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11)
+  set(DCMTK_MODERN_CXX_STANDARD TRUE)
+elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$")
+  set(DCMTK_MODERN_CXX_STANDARD FALSE)
+  message(WARNING "DCMTK will require C++11 or later in the future.")
+elseif(CMAKE_CXX_STANDARD GREATER 20)
+  MESSAGE(WARNING "DCMTK is only known to compile for C++ versions <= 20 (C++${CMAKE_CXX_STANDARD} requested).")
+  set(DCMTK_MODERN_CXX_STANDARD TRUE)
+else() # CMAKE_CXX_STANDARD is 11, 14, 17 or 20
+  set(DCMTK_MODERN_CXX_STANDARD TRUE)
 endif()
+define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD
+  BRIEF_DOCS "TRUE when compiling C++11 (or newer) code."
+  FULL_DOCS "TRUE when the compiler does support and is configured for C++11 or a later C++ standard."
+)
+# Remember globally that we use at least C++11
+set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD ${DCMTK_MODERN_CXX_STANDARD})
+# Build global list of all modern C++ standard versions supported so far
 define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS
   BRIEF_DOCS "Modern C++ standards DCMTK knows about."
   FULL_DOCS "The list of C++ standards since C++11 that DCMTK currently has configuration tests for. "

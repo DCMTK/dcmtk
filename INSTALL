@@ -436,21 +436,26 @@ SUPPORT FOR MODERN C++ STANDARDS
 
 DCMTK can be configured to use several features of modern C++ standards (e.g.
 C++11 move semantics, variadic templates and the like) instead of its own
-workarounds and fallback implementations.  This can be achieved using CMake's
-variables "CMAKE_CXX_STANDARD" and "CMAKE_CXX_STANDARD_REQUIRED".
-The previous mechanism only handled C++11 and is available on old versions of
-CMake (versions prior 3.1.3): set "DCMTK_ENABLE_CXX11" to "ON".  For Autoconf,
-the configure option "--enable-cxx11" is used by default (starting with DCMTK
-3.6.9, before is was disabled by default).  Both the "DCMTK_ENABLE_CXX11"
-variable and Autoconf support are deprecated and will be removed in a future
-release.
+workarounds and fallback implementations.  This can be achieved using the
+CMake variable "CMAKE_CXX_STANDARD".
 
-Enabling e.g. C++11 will change some parts of DCMTK's API, so a C++11 build of
-DCMTK is potentially incompatible with a classic build of DCMTK.  This setting
-is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and verified
+Per default, DCMTK will compile with "CMAKE_CXX_STANDARD" set 11 (CXX11).
+The user can choose to build with a newer C++ standard by setting
+"CMAKE_CXX_STANDARD" accordingly.  The following versions are supported:
+- 11 (CXX11)
+- 14 (CXX14)
+- 17 (CXX17)
+- 20 (CXX20)
+
+DCMTK will still compile with "CMAKE_CXX_STANDARD" set to 98 (CXX98) but
+support will be removed in future versions of DCMTK.
+
+Using C++11 or later will change some parts of DCMTK's API, so a C++11 build of
+DCMTK is potentially incompatible with a classic (C++98) build of DCMTK.  This
+setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and verified
 when compiling DCMTK itself or any program that includes it.
 
-Setting "CMAKE_CXX_STANDARD" to "11" or some newer C++ standard will not
+Having "CMAKE_CXX_STANDARD" set to "11" or some newer C++ standard will not
 forcibly enable DCMTK to use the respective features but instead trigger running
 some configuration tests and only truly enable the features that are really
 supported (e.g. "std::error_code" is still not implemented as intended on newer
@@ -794,7 +799,7 @@ important variables are:
     - DCMTK_DEFAULT_DICT: Activate the builtin, external or no DICOM data
       dictionary on DCMTK startup? Default: builtin on Windows, external on
       Linux/Posix.
-    - DCMTK_ENABLE_CXX11: Assume the compiler is C++11 compliant. Default: OFF.
+    - CMAKE_CXX_STANDARD: C++ language version to be used. Default: 11.
     - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by
       the STL classes std::string, std::list, std::vector etc. Default: OFF.
     - OPENSSL_ROOT_DIR: Directory where OpenSSL is installed.
@@ -1098,4 +1103,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-03-18 (Riesmeier)
+Last revised: 2024-04-20 (Onken)
