@@ -23,7 +23,13 @@
 
 #include "dcmtk/dcmdata/dcistrmf.h" /* for class DcmInputFileStream */
 #include "dcmtk/dcmdata/dcpath.h"
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcdicent.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "mdfdsman.h"
