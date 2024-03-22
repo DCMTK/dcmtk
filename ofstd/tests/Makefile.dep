@@ -137,7 +137,8 @@ tlimits.o: tlimits.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/oflimits.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
  ../include/dcmtk/ofstd/ofmath.h ../include/dcmtk/ofstd/diag/overflow.def \
- ../include/dcmtk/ofstd/diag/cnvrsn.def
+ ../include/dcmtk/ofstd/diag/cnvrsn.def \
+ ../include/dcmtk/ofstd/diag/unarymin.def
 tlist.o: tlist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
@@ -278,6 +279,28 @@ tstack.o: tstack.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/diag/useafree.def \
  ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/oflimits.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h
+tstl.o: tstl.cc ../../config/include/dcmtk/config/osconfig.h \
+ ../include/dcmtk/ofstd/ofalgo.h ../include/dcmtk/ofstd/oftypes.h \
+ ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
+ ../include/dcmtk/ofstd/ofexport.h ../include/dcmtk/ofstd/ofstdinc.h \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofstring.h \
+ ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/oflimits.h \
+ ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/ofstd/ofutil.h ../include/dcmtk/ofstd/oftraits.h \
+ ../include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../include/dcmtk/ofstd/ofmem.h ../include/dcmtk/ofstd/ofstack.h \
+ ../include/dcmtk/ofstd/oftuple.h ../include/dcmtk/ofstd/ofdiag.h \
+ ../include/dcmtk/ofstd/diag/push.def \
+ ../include/dcmtk/ofstd/diag/mmtag.def \
+ ../include/dcmtk/ofstd/variadic/tuplefrd.h \
+ ../include/dcmtk/ofstd/variadic/tuple.h \
+ ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/ofvector.h \
+ ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
+ ../include/dcmtk/ofstd/ofcmdln.h ../include/dcmtk/ofstd/ofexbl.h \
+ ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+ ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/ofstd.h \
+ ../include/dcmtk/ofstd/ofcond.h ../include/dcmtk/ofstd/diag/useafree.def \
+ ../include/dcmtk/ofstd/ofexit.h ../include/dcmtk/ofstd/diag/constexp.def
 tstring.o: tstring.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
