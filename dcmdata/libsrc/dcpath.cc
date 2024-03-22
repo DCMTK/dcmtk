@@ -157,7 +157,7 @@ OFBool DcmPath::containsGroup(const Uint16 groupNo) const
     return OFFalse;
 }
 
-// Checks whether a specific group number is used in the path's path nodes
+// Checks whether an invalid group number is used in the path's path nodes
 OFBool DcmPath::containsInvalidGroup() const
 {
     OFListConstIterator(DcmPathNode*) it        = m_path.begin();
