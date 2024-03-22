@@ -24,6 +24,7 @@
 #include "dcmtk/dcmdata/dcistrmf.h" /* for class DcmInputFileStream */
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "mdfdsman.h"
 
@@ -312,50 +313,18 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
     if (dfile == NULL)
         return makeOFCondition(OFM_dcmdata, 22, OF_error, "No file loaded yet!");
 
-    // find or create specified path
+    // Find or create path and perform basic validity checks
     DcmPathProcessor proc;
-    proc.checkPrivateReservations(!no_reservation_checks);
-    OFCondition result = proc.findOrCreatePath(dset, tag_path, !only_modify /*create if desired*/);
-    // if desired, handle tag not found as being not an error
-    if ((result == EC_TagNotFound) && only_modify && ignore_missing_tags)
-        return EC_Normal;
+    OFCondition result = findOrCreateValidPath(proc, tag_path, value, only_modify, ignore_missing_tags, no_reservation_checks);
     if (result.bad())
         return result;
-    OFList<DcmPath*> resultPaths;
-    Uint32 numResultPaths = proc.getResults(resultPaths);
-    if (numResultPaths == 0)
-        return EC_IllegalCall;
-
-    // general validity checking; must only be done for one result
-    OFListIterator(DcmPath*) resultPath = resultPaths.begin();
-    // verify that groups 0 (invalid) and 2 (meta header) were not used
-    if ((*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2))
-        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
-    // also - according to the standard -  groups 1,3,5,7,FF are illegal
-    if ((*resultPath)->containsInvalidGroup())
-        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
-
-    DcmPathNode* lastElement = (*resultPath)->back();
-    if (lastElement == NULL)
-        return EC_IllegalCall;
-    DcmObject* obj = lastElement->m_obj;
-    if (obj == NULL)
-        return EC_IllegalCall;
-    // if object at the end is not a leaf, the insertion is completed (or must fail)
-    if (!obj->isLeaf())
-    {
-        // if user specified a value to be inserted into non-leaf element, return error
-        if (!value.empty())
-            return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot put value into non-leaf elements!");
-        // non-leaf elements (items/sequences) cannot just be modified
-        if (only_modify)
-            return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot modify non-leaf elements!");
-        // we have inserted an item/sequence at the end -> job completed
-        return EC_Normal;
-    }
 
     // start modifying element value as desired
-    resultPath = resultPaths.begin();
+    OFList<DcmPath*> resultPaths;
+    proc.getResults(resultPaths);
+    OFListIterator(DcmPath*) resultPath = resultPaths.begin();
+    std::cout << "resultPaths.size() = " << resultPaths.size() << ": " << (*resultPath)->toString() << std::endl;
+    DcmPathNode* lastElement = NULL;
     while (resultPath != resultPaths.end())
     {
         lastElement = (*resultPath)->back();
@@ -399,41 +368,17 @@ OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
     if (!OFStandard::isReadable(filename))
         return makeOFCondition(OFM_dcmdata, 22, OF_error, "File to read value from is not readable!");
 
-    // find or create specified path
+    // Find or create path and perform basic validity checks
     DcmPathProcessor proc;
-    proc.checkPrivateReservations(!no_reservation_checks);
-    OFCondition result = proc.findOrCreatePath(dset, tag_path, !only_modify /*create if desired*/);
-    // if desired, handle tag not found as being not an error
-    if ((result == EC_TagNotFound) && only_modify && ignore_missing_tags)
-        return EC_Normal;
+    OFCondition result = findOrCreateValidPath(proc, tag_path, filename, only_modify, ignore_missing_tags, no_reservation_checks);
     if (result.bad())
         return result;
-    OFList<DcmPath*> resultPaths;
-    Uint32 numResultPaths = proc.getResults(resultPaths);
-    if (numResultPaths == 0)
-        return EC_IllegalCall;
-
-    // general validity checking; must only be done for one result
-    OFListIterator(DcmPath*) resultPath = resultPaths.begin();
-    // verify that groups 0 (invalid) and 2 (meta header) were not used
-    if ((*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2))
-        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
-    // also - according to the standard -  groups 1,3,5,7,FF are illegal
-    if ((*resultPath)->containsInvalidGroup())
-        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
-
-    DcmPathNode* lastElement = (*resultPath)->back();
-    if (lastElement == NULL)
-        return EC_IllegalCall;
-    DcmObject* obj = lastElement->m_obj;
-    if (obj == NULL)
-        return EC_IllegalCall;
-    // if object at the end is not a leaf, the insertion/modification fails
-    if (!obj->isLeaf())
-        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot put value into non-leaf elements!");
 
     // start modifying element value as desired
-    resultPath = resultPaths.begin();
+    OFList<DcmPath*> resultPaths;
+    proc.getResults(resultPaths);
+    OFListIterator(DcmPath*) resultPath = resultPaths.begin();
+    DcmPathNode* lastElement;
     while (resultPath != resultPaths.end())
     {
         lastElement = (*resultPath)->back();
@@ -777,6 +722,67 @@ OFCondition MdfDatasetManager::checkPixelDataInsertion(DcmElement* elem)
     }
     return EC_Normal;
 }
+
+
+OFCondition MdfDatasetManager::findOrCreateValidPath(DcmPathProcessor& proc,
+                                                     OFString tag_path,
+                                                     const OFString& value_or_filename,
+                                                     const OFBool only_modify,
+                                                     const OFBool ignore_missing_tags,
+                                                     const OFBool no_reservation_checks)
+{
+    // find or create specified path
+    proc.checkPrivateReservations(!no_reservation_checks);
+    OFCondition result = proc.findOrCreatePath(dset, tag_path, !only_modify /*create if desired*/);
+    // if desired, handle tag not found as being not an error
+    if ((result == EC_TagNotFound) && only_modify && ignore_missing_tags)
+        return EC_Normal;
+    if (result.bad())
+        return result;
+    OFList<DcmPath*> result_paths;
+    Uint32 numResultPaths = proc.getResults(result_paths);
+    if (numResultPaths == 0)
+        return EC_IllegalCall;
+
+    // general validity checking; must only be done for one result
+    OFListIterator(DcmPath*) resultPath = result_paths.begin();
+    // verify that groups 0 (invalid) and 2 (meta header) were not used
+    if ((*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2))
+        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
+    // also - according to the standard -  groups 1,3,5,7,FF are illegal
+    if ((*resultPath)->containsInvalidGroup())
+        return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
+
+    DcmPathNode* lastElement = (*resultPath)->back();
+    if (lastElement == NULL)
+        return EC_IllegalCall;
+    DcmObject* obj = lastElement->m_obj;
+    if (obj == NULL)
+        return EC_IllegalCall;
+    // if object at the end is not a leaf, the insertion is completed (or must fail)
+    if (!obj->isLeaf())
+    {
+        // if user specified a value to be inserted into non-leaf element, return error
+        if (!value_or_filename.empty())
+            return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot put value into non-leaf elements!");
+        // non-leaf elements (items/sequences) cannot just be modified
+        if (only_modify)
+            return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot modify non-leaf elements!");
+    }
+
+    OFListIterator(DcmPath*) path = result_paths.begin();
+    // iterate over path and check whether every element is valid (not NULL)
+    while (path != result_paths.end())
+    {
+        std::cout << (*path)->toString() << std::endl;
+        if ((*path)->back() == NULL)
+            return EC_IllegalCall;
+        path++;
+    }
+
+    return EC_Normal;
+}
+
 
 
 MdfDatasetManager::~MdfDatasetManager()
