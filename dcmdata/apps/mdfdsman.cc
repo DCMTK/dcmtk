@@ -329,7 +329,6 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
     OFList<DcmPath*> resultPaths;
     proc.getResults(resultPaths);
     OFListIterator(DcmPath*) resultPath = resultPaths.begin();
-    std::cout << "resultPaths.size() = " << resultPaths.size() << ": " << (*resultPath)->toString() << std::endl;
     DcmPathNode* lastElement = NULL;
     while (resultPath != resultPaths.end())
     {
@@ -774,16 +773,6 @@ OFCondition MdfDatasetManager::findOrCreateValidPath(DcmPathProcessor& proc,
         // non-leaf elements (items/sequences) cannot just be modified
         if (only_modify)
             return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot modify non-leaf elements!");
-    }
-
-    OFListIterator(DcmPath*) path = result_paths.begin();
-    // iterate over path and check whether every element is valid (not NULL)
-    while (path != result_paths.end())
-    {
-        std::cout << (*path)->toString() << std::endl;
-        if ((*path)->back() == NULL)
-            return EC_IllegalCall;
-        path++;
     }
 
     return EC_Normal;
