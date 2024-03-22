@@ -1,7 +1,7 @@
 dnl
 dnl Filename: aclocal.m4
 dnl
-dnl Purpose: additional M4 macros for GNU autoconf
+dnl Purpose: additional M4 macros for GNU Autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg, Joerg Riesmeier, Jan Schlamelcher
 dnl

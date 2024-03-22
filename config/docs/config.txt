@@ -2,7 +2,7 @@ The config directory
 ====================
 
 The "config" directory contains configuration files for the OFFIS DCMTK
-(DICOM ToolKit) to be used with GNU autoconf / configure.   See INSTALL file
+(DICOM ToolKit) to be used with GNU Autoconf / configure.   See INSTALL file
 in the root directory for details.
 
 
@@ -18,7 +18,7 @@ include directory:
 
 The "config/include" directory contains OS-specific configuration files.  The
 file "osconfig.h.in" is created by "configure.in" using "autoheader" from the
-GNU autoconf system.
+GNU Autoconf system.
 
 All your source files (*.h, *.c, *.cc) must contain the following #include-
 statement at the beginning (before everything else is defined):
@@ -26,7 +26,7 @@ statement at the beginning (before everything else is defined):
     #include "dcmtk/config/osconfig.h"
 
 The file "osconfig.h" is created during the configuration step using GNU
-autoconf.
+Autoconf.
 
 
 Programs in config/:
@@ -80,8 +80,8 @@ Makefiles of the various modules.  These configurations can be found in
 "confmod.in" (see "modules.txt").
 
 You can change configurations for different operating systems or compilers in
-these files.  Please consider the autoconf manual.  This part describes changes
-to the normal autoconf tests:
+these files.  Please consider the Autoconf manual.  This part describes changes
+to the normal Autoconf tests:
 
 Additional tests are defined in "aclocal.m4":
 

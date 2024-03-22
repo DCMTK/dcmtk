@@ -452,8 +452,8 @@ support will be removed in future versions of DCMTK.
 
 Using C++11 or later will change some parts of DCMTK's API, so a C++11 build of
 DCMTK is potentially incompatible with a classic (C++98) build of DCMTK.  This
-setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and verified
-when compiling DCMTK itself or any program that includes it.
+setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and
+verified when compiling DCMTK itself or any program that includes it.
 
 Having "CMAKE_CXX_STANDARD" set to "11" or some newer C++ standard will not
 forcibly enable DCMTK to use the respective features but instead trigger running
