@@ -1313,12 +1313,10 @@ function(DCMTK_ENABLE_STL11_FEATURE NAME)
   message(STATUS "Info: STL ${NAME} support ${TEXT_RESULT}")
 endfunction()
 
-
-# This is used by function DCMTK_CHECK_CXX_STANDARD to enforce
-# language standard for VS in try_compile().
-# Visual Studio >= 2017 supports C++11 and later, but does not set
-# the __cplusplus macro with the supported C++ standard version.
-# /Zc:__cplusplus will enforce setting this macro in Visual Studio.
+# This variable is used to force VS 2017 and above to explicitly
+# state the C++ standard version used in the __cplusplus macro
+# during compilation. This macro is checked when features from C++11
+# and about to be enabled.
 # VS Versions < 2017 do not support this switch.
 # See also https://learn.microsoft.com/de-de/cpp/build/reference/zc-cplusplus
 set(FORCE_MSVC_CPLUSPLUS_MACRO "")
@@ -1327,20 +1325,6 @@ if(MSVC)
     set (FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
   endif()
 endif()
-
-# if at least one modern C++ standard should be supported,
-# add FORCE_MSVC_CPLUSPLUS_MACRO for MSVC to enforce setting
-# of __cplusplus macro
-if(MSVC)
-  get_property(MODERN_CXX_STANDARDS GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS)
-  foreach(STANDARD ${MODERN_CXX_STANDARDS})
-    if(HAVE_CXX${STANDARD})
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FORCE_MSVC_CPLUSPLUS_MACRO}")
-      break()
-    endif()
-  endforeach()
-endif()
-
 
 # Check which modern C++ standards can be enabled
 DCMTK_TEST_LATEST_CXX_STANDARD()
@@ -1355,6 +1339,18 @@ DCMTK_ENABLE_STL98_FEATURE("vector")
 DCMTK_ENABLE_STL11_FEATURE("type_traits")
 DCMTK_ENABLE_STL11_FEATURE("tuple")
 DCMTK_ENABLE_STL11_FEATURE("system_error")
+
+# if at least one modern C++ standard should be supported,
+# enforce setting of __cplusplus macro in VS 2017 and above
+if(MSVC)
+  get_property(MODERN_CXX_STANDARDS GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARDS)
+  foreach(STANDARD ${MODERN_CXX_STANDARDS})
+    if(HAVE_CXX${STANDARD})
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FORCE_MSVC_CPLUSPLUS_MACRO}")
+      break()
+    endif()
+  endforeach()
+endif()
 
 
 if(CMAKE_CROSSCOMPILING)
