@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -332,8 +332,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
     if ((*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2))
         return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
     // also - according to the standard -  groups 1,3,5,7,FF are illegal
-    if ((*resultPath)->containsGroup(1) || (*resultPath)->containsGroup(3) || (*resultPath)->containsGroup(5)
-        || (*resultPath)->containsGroup(7) || (*resultPath)->containsGroup(0xffff))
+    if ((*resultPath)->containsInvalidGroup())
         return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
 
     DcmPathNode* lastElement = (*resultPath)->back();
@@ -420,8 +419,7 @@ OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
     if ((*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2))
         return makeOFCondition(OFM_dcmdata, 22, OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
     // also - according to the standard -  groups 1,3,5,7,FF are illegal
-    if ((*resultPath)->containsGroup(1) || (*resultPath)->containsGroup(3) || (*resultPath)->containsGroup(5)
-        || (*resultPath)->containsGroup(7) || (*resultPath)->containsGroup(0xffff))
+    if ((*resultPath)->containsInvalidGroup())
         return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
 
     DcmPathNode* lastElement = (*resultPath)->back();

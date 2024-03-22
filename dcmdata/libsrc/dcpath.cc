@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2023, OFFIS e.V.
+ *  Copyright (C) 2008-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -151,6 +151,23 @@ OFBool DcmPath::containsGroup(const Uint16 groupNo) const
         if ((node == NULL) || (node->m_obj == NULL))
             return OFFalse;
         if (node->m_obj->getGTag() == groupNo)
+            return OFTrue;
+        it++;
+    }
+    return OFFalse;
+}
+
+// Checks whether a specific group number is used in the path's path nodes
+OFBool DcmPath::containsInvalidGroup() const
+{
+    OFListConstIterator(DcmPathNode*) it        = m_path.begin();
+    OFListConstIterator(DcmPathNode*) endOfList = m_path.end();
+    while (it != endOfList)
+    {
+        DcmPathNode* node = *it;
+        if ((node == NULL) || (node->m_obj == NULL))
+            return OFFalse;
+        if (!node->m_obj->getTag().getTagKey().hasValidGroup())
             return OFTrue;
         it++;
     }

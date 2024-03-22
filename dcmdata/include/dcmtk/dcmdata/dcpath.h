@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2023, OFFIS e.V.
+ *  Copyright (C) 2008-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -155,6 +155,12 @@ public:
      *  @return OFTrue if group number is found in path, OFFalse otherwise
      */
     OFBool containsGroup(const Uint16 groupNo) const;
+
+    /** Returns whether the path contains tags with invalid group numbers
+     *  (groups 1, 3, 5, 7 and 0xFFFF are illegal in DICOM).
+     *  @return OFTrue if illegal group number is found in path, OFFalse otherwise
+     */
+    OFBool containsInvalidGroup() const;
 
     /** Returns a string representation of each path node separately.
      *  Tags are represented as numbers surrounded by braces "(gggg,eeee)",
