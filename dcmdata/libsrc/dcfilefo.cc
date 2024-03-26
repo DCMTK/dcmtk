@@ -728,6 +728,8 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
             {
                 // do read meta header not in given transfer syntax (always Little Endian Explicit)
                 errorFlag = metaInfo->read(inStream, EXS_Unknown, glenc, maxReadLength);
+	        if (errorFlag.bad())
+		    return errorFlag;
             }
 
             // bail out if the meta-header is still incomplete or an error occurred
