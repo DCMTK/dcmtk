@@ -230,6 +230,8 @@ void DicomImage::Init()
                 default:                                            // unknown or unsupported color model
                     if (DiRegisterBase::Pointer != NULL)
                         Image = DiRegisterBase::Pointer->createImage(Document, ImageStatus, PhotometricInterpretation);
+		    else
+                        DCMIMGLE_DEBUG("Color image not registered. Include <dcmtk/dcmimage/diregist.h>.");
                     if (Image == NULL)
                     {
                         if (PhotometricInterpretation == EPI_Unknown)
