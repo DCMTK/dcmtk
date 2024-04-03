@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4031_CommonAnatomicRegion
  *
- *  Generated automatically from DICOM PS 3.16-2023e
- *  File created on 2024-01-12 09:54:38 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024b
+ *  File created on 2024-04-03 11:12:37 by J. Riesmeier
  *
  */
 
