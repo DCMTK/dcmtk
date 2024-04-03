@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2024a
- *  File created on 2024-02-22 13:38:40 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024b
+ *  File created on 2024-04-03 10:40:42 by J. Riesmeier
  *
  */
 
@@ -51,7 +51,7 @@
 #define CODE_NCIt_IndexLesion                                              DSRBasicCodedEntry("C110961", "NCIt", "Index lesion")
 #define CODE_NCIt_EnhancingLesion                                          DSRBasicCodedEntry("C113842", "NCIt", "Enhancing Lesion")
 #define CODE_NCIt_RANO                                                     DSRBasicCodedEntry("C114879", "NCIt", "RANO")
-#define CODE_NCIt_DCFPyL_F18                                               DSRBasicCodedEntry("C116352", "NCIt", "DCFPyL F^18^")
+#define CODE_NCIt_Piflufolastat_F18                                        DSRBasicCodedEntry("C116352", "NCIt", "Piflufolastat F^18^")
 #define CODE_NCIt_Technetium99mTrofolastat                                 DSRBasicCodedEntry("C116887", "NCIt", "Technetium^99m Trofolastat")
 #define CODE_NCIt_PSMA11_Ga68                                              DSRBasicCodedEntry("C118961", "NCIt", "PSMA-11 Ga^68^")
 #define CODE_NCIt_Sarcosine_C11                                            DSRBasicCodedEntry("C122684", "NCIt", "Sarcosine C^11^")

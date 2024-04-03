@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2024a
- *  File created on 2024-02-22 13:38:39 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024b
+ *  File created on 2024-04-03 10:40:41 by J. Riesmeier
  *
  */
 

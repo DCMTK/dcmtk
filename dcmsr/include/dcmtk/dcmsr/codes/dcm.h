@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2024a
- *  File created on 2024-02-22 13:38:35 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024b
+ *  File created on 2024-04-03 10:40:38 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4718
-// - retired: 202
+// total number of codes: 4720
+// - retired: 204
 // - no name: 27
 // - not unique: 17
 
@@ -243,6 +243,7 @@
 #define CODE_DCM_DelayedRedistributionState                                DSRBasicCodedEntry("109094", "DCM", "Delayed Redistribution State")
 #define CODE_DCM_RETIRED_PeakStressState                                   DSRBasicCodedEntry("109095", "DCM", "Peak stress state")
 #define CODE_DCM_RETIRED_RecoveryState                                     DSRBasicCodedEntry("109096", "DCM", "Recovery state")
+#define CODE_DCM_SynthesizingEquipment                                     DSRBasicCodedEntry("109100", "DCM", "Synthesizing Equipment")
 #define CODE_DCM_AcquisitionEquipment                                      DSRBasicCodedEntry("109101", "DCM", "Acquisition Equipment")
 #define CODE_DCM_ProcessingEquipment                                       DSRBasicCodedEntry("109102", "DCM", "Processing Equipment")
 #define CODE_DCM_ModifyingEquipment                                        DSRBasicCodedEntry("109103", "DCM", "Modifying Equipment")
@@ -749,9 +750,9 @@
 #define CODE_DCM_PresentationRequired_RenderingDeviceIsExpectedToPresent   DSRBasicCodedEntry("111150", "DCM", "Presentation Required: Rendering device is expected to present")
 #define CODE_DCM_PresentationOptional_RenderingDeviceMayPresent            DSRBasicCodedEntry("111151", "DCM", "Presentation Optional: Rendering device may present")
 #define CODE_DCM_NotForPresentation_RenderingDeviceExpectedNotToPresent    DSRBasicCodedEntry("111152", "DCM", "Not for Presentation: Rendering device expected not to present")
-#define CODE_DCM_TargetContentItemsAreRelatedTemporally                    DSRBasicCodedEntry("111153", "DCM", "Target content items are related temporally")
-#define CODE_DCM_TargetContentItemsAreRelatedSpatially                     DSRBasicCodedEntry("111154", "DCM", "Target content items are related spatially")
-#define CODE_DCM_TargetContentItemsAreRelatedContraLaterally               DSRBasicCodedEntry("111155", "DCM", "Target content items are related contra-laterally")
+#define CODE_DCM_TargetContentItemsAreRelatedTemporally                    DSRBasicCodedEntry("111153", "DCM", "Target Content Items are related temporally")
+#define CODE_DCM_TargetContentItemsAreRelatedSpatially                     DSRBasicCodedEntry("111154", "DCM", "Target Content Items are related spatially")
+#define CODE_DCM_TargetContentItemsAreRelatedContraLaterally               DSRBasicCodedEntry("111155", "DCM", "Target Content Items are related contra-laterally")
 #define CODE_DCM_FeatureDetectedonTheOnlyImage                             DSRBasicCodedEntry("111156", "DCM", "Feature detected on the only image")
 #define CODE_DCM_FeatureDetectedonOnlyOneOfTheImages                       DSRBasicCodedEntry("111157", "DCM", "Feature detected on only one of the images")
 #define CODE_DCM_FeatureDetectedonMultipleImages                           DSRBasicCodedEntry("111158", "DCM", "Feature detected on multiple images")
@@ -1673,7 +1674,7 @@
 #define CODE_DCM_DegreeOfFreedomMinimumRotationalValue                     DSRBasicCodedEntry("112380", "DCM", "Degree of Freedom Minimum Rotational Value")
 #define CODE_DCM_DegreeOfFreedomMaximumRotationalValue                     DSRBasicCodedEntry("112381", "DCM", "Degree of Freedom Maximum Rotational Value")
 #define CODE_DCM_PeriOperativePhotographicImaging                          DSRBasicCodedEntry("112700", "DCM", "Peri-operative Photographic Imaging")
-#define CODE_DCM_GrossSpecimenImaging                                      DSRBasicCodedEntry("112701", "DCM", "Gross Specimen Imaging")
+#define CODE_DCM_RETIRED_GrossSpecimenImaging                              DSRBasicCodedEntry("112701", "DCM", "Gross Specimen Imaging")
 #define CODE_DCM_SlideMicroscopy_112702                                    DSRBasicCodedEntry("112702", "DCM", "Slide Microscopy")
 #define CODE_DCM_WholeSlideImaging                                         DSRBasicCodedEntry("112703", "DCM", "Whole Slide Imaging")
 #define CODE_DCM_WSI20XRGB                                                 DSRBasicCodedEntry("112704", "DCM", "WSI 20X RGB")
@@ -3211,6 +3212,7 @@
 #define CODE_DCM_EndorectalTransducer                                      DSRBasicCodedEntry("125264", "DCM", "Endorectal Transducer")
 #define CODE_DCM_IntravascularTransducer                                   DSRBasicCodedEntry("125265", "DCM", "Intravascular Transducer")
 #define CODE_DCM_EndocavitaryTransducer                                    DSRBasicCodedEntry("125266", "DCM", "Endocavitary Transducer")
+#define CODE_DCM_IntraoperativeTransducer                                  DSRBasicCodedEntry("125267", "DCM", "Intraoperative Transducer")
 #define CODE_DCM_LeftVentricleMassByAreaLength                             DSRBasicCodedEntry("125270", "DCM", "Left Ventricle Mass by Area Length")
 #define CODE_DCM_LeftVentricleMassByMMode_adjustedByHeight                 DSRBasicCodedEntry("125271", "DCM", "Left Ventricle Mass by M-mode - adjusted by Height")
 #define CODE_DCM_LeftVentricleMassByTruncatedEllipse_adjustedByHeight      DSRBasicCodedEntry("125272", "DCM", "Left Ventricle Mass by Truncated Ellipse - adjusted by Height")
@@ -3801,7 +3803,7 @@
 #define CODE_DCM_TableCore                                                 DSRBasicCodedEntry("128460", "DCM", "Table Core")
 #define CODE_DCM_TableOuterLiner                                           DSRBasicCodedEntry("128461", "DCM", "Table Outer Liner")
 #define CODE_DCM_TablePad                                                  DSRBasicCodedEntry("128462", "DCM", "Table Pad")
-#define CODE_DCM_RadiationDoseEstimationParameterType                      DSRBasicCodedEntry("128464", "DCM", "Radiation Dose Estimation Parameter Type")
+#define CODE_DCM_RETIRED_RadiationDoseEstimateParameterType                DSRBasicCodedEntry("128464", "DCM", "Radiation Dose Estimate Parameter Type")
 #define CODE_DCM_EquivalentAttenuatorMaterial                              DSRBasicCodedEntry("128465", "DCM", "Equivalent Attenuator Material")
 #define CODE_DCM_AttenuatorDescription                                     DSRBasicCodedEntry("128468", "DCM", "Attenuator Description")
 #define CODE_DCM_EquivalentAttenuatorThickness                             DSRBasicCodedEntry("128469", "DCM", "Equivalent Attenuator Thickness")
