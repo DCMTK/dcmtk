@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-02-21 19:12:09
+**   Date: 2024-04-03 10:10:36
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2024-02-21 19:12:09"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2024-04-03 10:10:36"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5088
+** Number of entries: 5097
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -128,6 +128,7 @@
 #define DCM_PyramidUID                           DcmTagKey(0x0008, 0x0019)
 #define DCM_RelatedGeneralSOPClassUID            DcmTagKey(0x0008, 0x001a)
 #define DCM_OriginalSpecializedSOPClassUID       DcmTagKey(0x0008, 0x001b)
+#define DCM_SyntheticData                        DcmTagKey(0x0008, 0x001c)
 #define DCM_StudyDate                            DcmTagKey(0x0008, 0x0020)
 #define DCM_SeriesDate                           DcmTagKey(0x0008, 0x0021)
 #define DCM_AcquisitionDate                      DcmTagKey(0x0008, 0x0022)
@@ -455,21 +456,28 @@
 #define DCM_ClinicalTrialSponsorName             DcmTagKey(0x0012, 0x0010)
 #define DCM_ClinicalTrialProtocolID              DcmTagKey(0x0012, 0x0020)
 #define DCM_ClinicalTrialProtocolName            DcmTagKey(0x0012, 0x0021)
+#define DCM_IssuerOfClinicalTrialProtocolID      DcmTagKey(0x0012, 0x0022)
+#define DCM_OtherClinicalTrialProtocolIDsSequence DcmTagKey(0x0012, 0x0023)
 #define DCM_ClinicalTrialSiteID                  DcmTagKey(0x0012, 0x0030)
 #define DCM_ClinicalTrialSiteName                DcmTagKey(0x0012, 0x0031)
+#define DCM_IssuerOfClinicalTrialSiteID          DcmTagKey(0x0012, 0x0032)
 #define DCM_ClinicalTrialSubjectID               DcmTagKey(0x0012, 0x0040)
+#define DCM_IssuerOfClinicalTrialSubjectID       DcmTagKey(0x0012, 0x0041)
 #define DCM_ClinicalTrialSubjectReadingID        DcmTagKey(0x0012, 0x0042)
+#define DCM_IssuerOfClinicalTrialSubjectReadingID DcmTagKey(0x0012, 0x0043)
 #define DCM_ClinicalTrialTimePointID             DcmTagKey(0x0012, 0x0050)
 #define DCM_ClinicalTrialTimePointDescription    DcmTagKey(0x0012, 0x0051)
 #define DCM_LongitudinalTemporalOffsetFromEvent  DcmTagKey(0x0012, 0x0052)
 #define DCM_LongitudinalTemporalEventType        DcmTagKey(0x0012, 0x0053)
 #define DCM_ClinicalTrialTimePointTypeCodeSequence DcmTagKey(0x0012, 0x0054)
+#define DCM_IssuerOfClinicalTrialTimePointID     DcmTagKey(0x0012, 0x0055)
 #define DCM_ClinicalTrialCoordinatingCenterName  DcmTagKey(0x0012, 0x0060)
 #define DCM_PatientIdentityRemoved               DcmTagKey(0x0012, 0x0062)
 #define DCM_DeidentificationMethod               DcmTagKey(0x0012, 0x0063)
 #define DCM_DeidentificationMethodCodeSequence   DcmTagKey(0x0012, 0x0064)
 #define DCM_ClinicalTrialSeriesID                DcmTagKey(0x0012, 0x0071)
 #define DCM_ClinicalTrialSeriesDescription       DcmTagKey(0x0012, 0x0072)
+#define DCM_IssuerOfClinicalTrialSeriesID        DcmTagKey(0x0012, 0x0073)
 #define DCM_ClinicalTrialProtocolEthicsCommitteeName DcmTagKey(0x0012, 0x0081)
 #define DCM_ClinicalTrialProtocolEthicsCommitteeApprovalNumber DcmTagKey(0x0012, 0x0082)
 #define DCM_ConsentForClinicalTrialUseSequence   DcmTagKey(0x0012, 0x0083)
@@ -1820,6 +1828,7 @@
 #define DCM_HorizontalFieldOfView                DcmTagKey(0x0022, 0x000c)
 #define DCM_PupilDilated                         DcmTagKey(0x0022, 0x000d)
 #define DCM_DegreeOfDilation                     DcmTagKey(0x0022, 0x000e)
+#define DCM_VertexDistance                       DcmTagKey(0x0022, 0x000f)
 #define DCM_StereoBaselineAngle                  DcmTagKey(0x0022, 0x0010)
 #define DCM_StereoBaselineDisplacement           DcmTagKey(0x0022, 0x0011)
 #define DCM_StereoHorizontalPixelOffset          DcmTagKey(0x0022, 0x0012)
@@ -3429,8 +3438,8 @@
 #define DCM_VolumetricPresentationInputIndex     DcmTagKey(0x0070, 0x1804)
 #define DCM_PresentationStateCompositorComponentSequence DcmTagKey(0x0070, 0x1805)
 #define DCM_WeightingTransferFunctionSequence    DcmTagKey(0x0070, 0x1806)
-#define DCM_WeightingLookupTableDescriptor       DcmTagKey(0x0070, 0x1807)
-#define DCM_WeightingLookupTableData             DcmTagKey(0x0070, 0x1808)
+#define DCM_RETIRED_WeightingLookupTableDescriptor DcmTagKey(0x0070, 0x1807)
+#define DCM_RETIRED_WeightingLookupTableData     DcmTagKey(0x0070, 0x1808)
 #define DCM_VolumetricAnnotationSequence         DcmTagKey(0x0070, 0x1901)
 #define DCM_ReferencedStructuredContextSequence  DcmTagKey(0x0070, 0x1903)
 #define DCM_ReferencedContentItem                DcmTagKey(0x0070, 0x1904)

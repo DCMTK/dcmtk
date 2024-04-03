@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2024a and PS 3.7-2024a.
-# File created on 2024-02-21 19:09:59 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2024b and PS 3.7-2024b.
+# File created on 2024-04-03 10:08:11 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -122,6 +122,7 @@
 (0008,0019)	UI	PyramidUID	1	DICOM
 (0008,001A)	UI	RelatedGeneralSOPClassUID	1-n	DICOM
 (0008,001B)	UI	OriginalSpecializedSOPClassUID	1	DICOM
+(0008,001C)	CS	SyntheticData	1	DICOM
 (0008,0020)	DA	StudyDate	1	DICOM
 (0008,0021)	DA	SeriesDate	1	DICOM
 (0008,0022)	DA	AcquisitionDate	1	DICOM
@@ -416,21 +417,28 @@
 (0012,0010)	LO	ClinicalTrialSponsorName	1	DICOM
 (0012,0020)	LO	ClinicalTrialProtocolID	1	DICOM
 (0012,0021)	LO	ClinicalTrialProtocolName	1	DICOM
+(0012,0022)	LO	IssuerOfClinicalTrialProtocolID	1	DICOM
+(0012,0023)	SQ	OtherClinicalTrialProtocolIDsSequence	1	DICOM
 (0012,0030)	LO	ClinicalTrialSiteID	1	DICOM
 (0012,0031)	LO	ClinicalTrialSiteName	1	DICOM
+(0012,0032)	LO	IssuerOfClinicalTrialSiteID	1	DICOM
 (0012,0040)	LO	ClinicalTrialSubjectID	1	DICOM
+(0012,0041)	LO	IssuerOfClinicalTrialSubjectID	1	DICOM
 (0012,0042)	LO	ClinicalTrialSubjectReadingID	1	DICOM
+(0012,0043)	LO	IssuerOfClinicalTrialSubjectReadingID	1	DICOM
 (0012,0050)	LO	ClinicalTrialTimePointID	1	DICOM
 (0012,0051)	ST	ClinicalTrialTimePointDescription	1	DICOM
 (0012,0052)	FD	LongitudinalTemporalOffsetFromEvent	1	DICOM
 (0012,0053)	CS	LongitudinalTemporalEventType	1	DICOM
 (0012,0054)	SQ	ClinicalTrialTimePointTypeCodeSequence	1	DICOM
+(0012,0055)	LO	IssuerOfClinicalTrialTimePointID	1	DICOM
 (0012,0060)	LO	ClinicalTrialCoordinatingCenterName	1	DICOM
 (0012,0062)	CS	PatientIdentityRemoved	1	DICOM
 (0012,0063)	LO	DeidentificationMethod	1-n	DICOM
 (0012,0064)	SQ	DeidentificationMethodCodeSequence	1	DICOM
 (0012,0071)	LO	ClinicalTrialSeriesID	1	DICOM
 (0012,0072)	LO	ClinicalTrialSeriesDescription	1	DICOM
+(0012,0073)	LO	IssuerOfClinicalTrialSeriesID	1	DICOM
 (0012,0081)	LO	ClinicalTrialProtocolEthicsCommitteeName	1	DICOM
 (0012,0082)	LO	ClinicalTrialProtocolEthicsCommitteeApprovalNumber	1	DICOM
 (0012,0083)	SQ	ConsentForClinicalTrialUseSequence	1	DICOM
@@ -1720,6 +1728,7 @@
 (0022,000C)	FL	HorizontalFieldOfView	1	DICOM
 (0022,000D)	CS	PupilDilated	1	DICOM
 (0022,000E)	FL	DegreeOfDilation	1	DICOM
+(0022,000F)	FD	VertexDistance	1	DICOM
 (0022,0010)	FL	StereoBaselineAngle	1	DICOM
 (0022,0011)	FL	StereoBaselineDisplacement	1	DICOM
 (0022,0012)	FL	StereoHorizontalPixelOffset	1	DICOM
@@ -3121,8 +3130,6 @@
 (0070,1804)	US	VolumetricPresentationInputIndex	1	DICOM
 (0070,1805)	SQ	PresentationStateCompositorComponentSequence	1	DICOM
 (0070,1806)	SQ	WeightingTransferFunctionSequence	1	DICOM
-(0070,1807)	US	WeightingLookupTableDescriptor	3	DICOM
-(0070,1808)	OB	WeightingLookupTableData	1	DICOM
 (0070,1901)	SQ	VolumetricAnnotationSequence	1	DICOM
 (0070,1903)	SQ	ReferencedStructuredContextSequence	1	DICOM
 (0070,1904)	UI	ReferencedContentItem	1	DICOM
@@ -5050,6 +5057,8 @@
 (0070,0051)	US	RETIRED_DisplayedAreaBottomRightHandCornerTrial	2	DICOM/retired
 (0070,0067)	US	RETIRED_GraphicLayerRecommendedDisplayRGBValue	3	DICOM/retired
 (0070,1206)	CS	RETIRED_CompositingMethod	1	DICOM/retired
+(0070,1807)	US	RETIRED_WeightingLookupTableDescriptor	3	DICOM/retired
+(0070,1808)	OB	RETIRED_WeightingLookupTableData	1	DICOM/retired
 (0074,1024)	IS	RETIRED_BeamOrderIndexTrial	1	DICOM/retired
 (0074,1038)	DS	RETIRED_DoubleExposureMetersetTrial	1	DICOM/retired
 (0074,103A)	DS	RETIRED_DoubleExposureFieldDeltaTrial	4	DICOM/retired
