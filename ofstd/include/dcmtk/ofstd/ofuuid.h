@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,6 +32,9 @@
 /** Helper class for generating and storing UUIDs, as specified in ITU-T X.667.
  *  A UUID is an Universally Unique IDentifier. If UUIDs are generated
  *  correctly, it's almost impossible that the same UUID is generated twice.
+ *  @warning The implementation of this class still contains a few "FIXME"
+ *    comments and should, therefore, not be used in productive environments
+ *    as long as these corrections have not yet been implemented.
  */
 class DCMTK_OFSTD_EXPORT OFUUID {
 public:
