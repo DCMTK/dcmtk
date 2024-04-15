@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -328,7 +328,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_RETIRED_FilmBoxContentSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_FilmBoxContentSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
@@ -362,7 +362,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
          // check referenced presentation LUT sequence
          // if there is any reference, it must refer to one of the presentation LUTs we are managing.
          stack.clear();
-         if (EC_Normal == item->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+         if (EC_Normal == item->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
          {
            seq=(DcmSequenceOfItems *)stack.top();
            if (seq->card() ==1)
@@ -445,7 +445,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_RETIRED_PrintManagementCapabilitiesSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_PrintManagementCapabilitiesSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       OFBool haveFilmBox = OFFalse;
       OFBool haveGrayscaleImageBox = OFFalse;
@@ -511,7 +511,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
     destination.clear();
     printerName.clear();
     stack.clear();
-    if (EC_Normal == dset.search(DCM_RETIRED_PrinterCharacteristicsSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_PrinterCharacteristicsSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq = (DcmSequenceOfItems *)stack.top();
       if (seq->card() > 0)
@@ -1536,7 +1536,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
     {
       // N-CREATE was successful, now evaluate Referenced Image Box SQ
       stack.clear();
-      if (EC_Normal == attributeListOut->search(DCM_ReferencedImageBoxSequence, stack, ESM_fromHere, OFFalse))
+      if (EC_Normal == attributeListOut->search(DCM_ReferencedImageBoxSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
       {
         seq=(DcmSequenceOfItems *)stack.top();
         numItems = (size_t)seq->card();
@@ -1559,7 +1559,7 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
       // evaluate Referenced Basic Annotation Box SQ if present
       stack.clear();
       annotationContentList.clearAnnotationSOPInstanceUIDs();
-      if (EC_Normal == attributeListOut->search(DCM_ReferencedBasicAnnotationBoxSequence, stack, ESM_fromHere, OFFalse))
+      if (EC_Normal == attributeListOut->search(DCM_ReferencedBasicAnnotationBoxSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
       {
         seq=(DcmSequenceOfItems *)stack.top();
         numItems = (size_t)seq->card();
@@ -2419,7 +2419,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
     {
       stack.clear();
 
-      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
       {
         DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
         if (seq->card() ==1)
@@ -2487,7 +2487,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
   {
     stack.clear();
 
-    if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedFilmSessionSequence, stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedFilmSessionSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
     {
       DcmUniqueIdentifier classUID(DCM_ReferencedSOPClassUID);
       DcmUniqueIdentifier instanceUID(DCM_ReferencedSOPInstanceUID);
@@ -2706,7 +2706,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)magnificationType.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)magnificationType.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       magnificationType = *((DcmCodeString *)(stack.top()));
       Uint32 numMagnifications = cfg.getTargetPrinterNumberOfMagnificationTypes(cfgname);
@@ -2739,7 +2739,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   {
 
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)smoothingType.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)smoothingType.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       smoothingType = *((DcmCodeString *)(stack.top()));
       Uint32 numSmoothings = cfg.getTargetPrinterNumberOfSmoothingTypes(cfgname);
@@ -2781,7 +2781,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   {
 
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)borderDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)borderDensity.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       borderDensity = *((DcmCodeString *)(stack.top()));
       Uint32 numBorderDensities = cfg.getTargetPrinterNumberOfBorderDensities(cfgname);
@@ -2832,7 +2832,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)emptyImageDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)emptyImageDensity.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       emptyImageDensity = *((DcmCodeString *)(stack.top()));
       Uint32 numEmptyImageDensities = cfg.getTargetPrinterNumberOfEmptyImageDensities(cfgname);
@@ -2883,7 +2883,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)maxDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)maxDensity.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       maxDensity = *((DcmUnsignedShort *)(stack.top()));
       // we don't check a max density set by the user (for now)
@@ -2895,7 +2895,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)minDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)minDensity.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       minDensity = *((DcmUnsignedShort *)(stack.top()));
       Uint32 numMinDensities = cfg.getTargetPrinterNumberOfMinDensities(cfgname);
@@ -2917,7 +2917,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)trim.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)trim.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       trim = *((DcmCodeString *)(stack.top()));
 
@@ -2945,7 +2945,7 @@ OFBool DVPSStoredPrint::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)configurationInformation.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)configurationInformation.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_ST))
     {
       configurationInformation = *((DcmShortText *)(stack.top()));
       Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);
@@ -2987,7 +2987,7 @@ OFBool DVPSStoredPrint::printSCPSet(
     if (result)
     {
       stack.clear();
-      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)illumination.getTag(), stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)illumination.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
       {
         illumination = *((DcmUnsignedShort *)(stack.top()));
         // we don't check illumination set by the user (for now)
@@ -2999,7 +2999,7 @@ OFBool DVPSStoredPrint::printSCPSet(
     if (result)
     {
       stack.clear();
-      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)reflectedAmbientLight.getTag(), stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)reflectedAmbientLight.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
       {
         reflectedAmbientLight = *((DcmUnsignedShort *)(stack.top()));
         // we don't check reflected ambient light set by the user (for now)
@@ -3012,7 +3012,7 @@ OFBool DVPSStoredPrint::printSCPSet(
     {
       stack.clear();
 
-      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
       {
         DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
         if (seq->card() ==1)

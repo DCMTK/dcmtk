@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -143,6 +143,11 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @return true if leaf node, false otherwise.
      */
     virtual OFBool isLeaf() const { return OFTrue; }
+
+    /** check if this element can be safely casted to DcmElement
+     *  @return true if DcmElement, false otherwise
+     */
+    virtual OFBool isElement() const { return OFTrue; }
 
     /** check if value of this element is loaded into main memory
      *  @return true if value is present in memory, false if value still resides in file

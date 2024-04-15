@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,7 +153,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_ReferencedImageSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_ReferencedImageSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
@@ -181,7 +181,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
     // check referenced presentation LUT sequence
     // if there is any reference, it must refer to one of the presentation LUTs we are managing.
     stack.clear();
-    if (EC_Normal == dset.search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
@@ -672,7 +672,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)imageBoxPosition.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)imageBoxPosition.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       imageBoxPosition = *((DcmUnsignedShort *)(stack.top()));
       // the image box position is checked elsewhere
@@ -688,7 +688,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)magnificationType.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)magnificationType.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       magnificationType = *((DcmCodeString *)(stack.top()));
       Uint32 numMagnifications = cfg.getTargetPrinterNumberOfMagnificationTypes(cfgname);
@@ -721,7 +721,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   {
 
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)smoothingType.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)smoothingType.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       smoothingType = *((DcmCodeString *)(stack.top()));
       Uint32 numSmoothings = cfg.getTargetPrinterNumberOfSmoothingTypes(cfgname);
@@ -761,7 +761,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)configurationInformation.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)configurationInformation.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_ST))
     {
       configurationInformation = *((DcmShortText *)(stack.top()));
       Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);
@@ -800,7 +800,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)polarity.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)polarity.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       polarity = *((DcmCodeString *)(stack.top()));
       OFString thePolarity;
@@ -820,7 +820,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)requestedImageSize.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)requestedImageSize.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_DS))
     {
       if (! cfg.getTargetPrinterSupportsRequestedImageSize(cfgname))
       {
@@ -841,7 +841,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)requestedDecimateCropBehavior.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)requestedDecimateCropBehavior.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       if (! cfg.getTargetPrinterSupportsDecimateCrop(cfgname))
       {
@@ -871,7 +871,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search(DCM_BasicGrayscaleImageSequence, stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search(DCM_BasicGrayscaleImageSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
     {
       DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
@@ -971,7 +971,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)samplesPerPixel.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)samplesPerPixel.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       samplesPerPixel = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -994,7 +994,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)rows.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)rows.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       rows = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -1017,7 +1017,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)columns.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)columns.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       columns = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -1042,7 +1042,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)bitsStored.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)bitsStored.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       bitsStored = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -1082,7 +1082,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)bitsAllocated.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)bitsAllocated.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       bitsAllocated = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -1105,7 +1105,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)highBit.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)highBit.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       highBit = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -1128,7 +1128,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)pixelRepresentation.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)pixelRepresentation.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
     {
       pixelRepresentation = *((DcmUnsignedShort *)(stack.top()));
       val = 0;
@@ -1151,7 +1151,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)photometricInterpretation.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)photometricInterpretation.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       photometricInterpretation = *((DcmCodeString *)(stack.top()));
       OFString theColorModel;
@@ -1175,7 +1175,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)pixelAspectRatio.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)pixelAspectRatio.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_IS))
     {
       pixelAspectRatio = *((DcmIntegerString *)(stack.top()));
       if (pixelAspectRatio.getVM() != 2)
@@ -1193,7 +1193,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search(DCM_PixelData, stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search(DCM_PixelData, stack, ESM_fromHere, OFFalse)) && stack.top()->isElement())
     {
       pixelData = new DcmPixelData(DCM_PixelData);
       if (pixelData)

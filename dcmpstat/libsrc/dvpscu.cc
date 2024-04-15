@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2020, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -80,14 +80,14 @@ OFCondition DVPSCurve::read(DcmItem &dset, Uint8 group)
 
   /* first we look for the Curve Data */
   DcmTagKey key(0x5000 + group,0x3000);
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_curveData = (DcmElement *)(stack.top());
   } else return EC_IllegalCall;
 
   key.setElement(0x0005); // Curve Dimensions
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_curveDimensions = (DcmElement *)(stack.top());
   } else return EC_IllegalCall;
@@ -101,42 +101,42 @@ OFCondition DVPSCurve::read(DcmItem &dset, Uint8 group)
 
   key.setElement(0x0010); // Number of Points
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_numberOfPoints = (DcmElement *)(stack.top());
   } else return EC_IllegalCall;
 
   key.setElement(0x0020); // Type of Data
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_typeOfData = (DcmElement *)(stack.top());
   } else return EC_IllegalCall;
 
   key.setElement(0x0103); // Data Value Representation
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_dataVR = (DcmElement *)(stack.top());
   } else return EC_IllegalCall;
 
   key.setElement(0x0022); // Curve Description
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_curveDescription = (DcmElement *)(stack.top());
   }
 
   key.setElement(0x0030); // Axis Units
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_axisUnits = (DcmElement *)(stack.top());
   }
 
   key.setElement(0x2500); // Curve Label
   stack.clear();
-  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
   {
     d_curveLabel = (DcmElement *)(stack.top());
   }

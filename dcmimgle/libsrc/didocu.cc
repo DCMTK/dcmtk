@@ -217,7 +217,7 @@ DcmElement *DiDocument::search(const DcmTagKey &tag,
         obj = Object;
     // only search on main dataset level
     if ((obj != NULL) && (obj->search(tag, stack, ESM_fromHere, OFFalse /* searchIntoSub */) == EC_Normal) &&
-        (stack.top()->getLength(Xfer) > 0))
+        (stack.top()->getLength(Xfer) > 0) && stack.top()->isElement())
     {
         return OFstatic_cast(DcmElement *, stack.top());
     }

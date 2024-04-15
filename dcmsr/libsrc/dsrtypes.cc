@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1178,7 +1178,7 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
     DcmStack stack;
     const DcmTagKey tagKey = delem.getTag();
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
+    if (result.good() && stack.top()->isElement())
     {
         /* copy object from search stack */
         result = delem.copyFrom(*stack.top());
@@ -1203,7 +1203,7 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
 {
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
+    if (result.good() && stack.top()->isElement())
     {
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         /* we need a reference to the original element in order to determine the SpecificCharacterSet */

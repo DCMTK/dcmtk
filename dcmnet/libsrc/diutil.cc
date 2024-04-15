@@ -148,23 +148,21 @@ DU_stripLeadingAndTrailingSpaces(char *s)
 OFBool
 DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s, size_t bufsize)
 {
-    DcmByteString *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
     char* aString;
 
-    ec = obj->search(t, stack);
-    elem = (DcmByteString*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    OFCondition ec = obj->search(t, stack);
+    if (ec.good() && (stack.top() != NULL) && stack.top()->isElement()) {
+        DcmElement *elem = (DcmElement *) stack.top();
         if (elem->getLength() == 0) {
             s[0] = '\0';
         } else {
             ec =  elem->getString(aString);
-            if (ec == EC_Normal)
+            if (ec.good())
                 OFStandard::strlcpy(s, aString, bufsize);
         }
     }
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -182,7 +180,7 @@ DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s)
         ec = obj->insert(e, OFTrue);
     }
 
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -190,15 +188,15 @@ DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
 {
     DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
 
-    ec = obj->search(t, stack);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        ec = elem->getUint16(*us, 0);
+    OFCondition ec = obj->search(t, stack);
+    if (ec.good() && stack.top()->isElement())
+    {
+        elem = (DcmElement*) stack.top();
+        if (elem) ec = elem->getUint16(*us, 0);
     }
 
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -215,7 +213,7 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
     if (ec == EC_Normal) {
         ec = obj->insert(e, OFTrue);
     }
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool

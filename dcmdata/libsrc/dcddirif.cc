@@ -433,7 +433,7 @@ static OFBool compareItems(DcmItem *item1,
             OFBool first = OFTrue;
             DcmStack stack1, stack2;
             /* check whether attributes are equal */
-            while (item1->nextObject(stack1, first).good() && item2->nextObject(stack2, first).good())
+            while (item1->nextObject(stack1, first).good() && item2->nextObject(stack2, first).good() && stack1.top()->isElement() && stack2.top()->isElement())
             {
                 if (!compareAttributes(OFstatic_cast(DcmElement *, stack1.top()), OFstatic_cast(DcmElement *, stack2.top()), fromSequence, i++, reason))
                     break;
@@ -5457,7 +5457,7 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
         OFBool first = OFTrue;
         DcmElement *delem = NULL;
         /* iterate over all record elements */
-        while (record->nextObject(stack, first).good() && (result || !abortCheck))
+        while (record->nextObject(stack, first).good() && (result || !abortCheck) && stack.top()->isElement())
         {
             delem = OFstatic_cast(DcmElement *, stack.top());
             if ((delem != NULL) && (delem->getLength() > 0))

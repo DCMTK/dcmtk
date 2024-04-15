@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2023, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -971,7 +971,7 @@ int main(int argc, char *argv[])
                     {
                         // search existing sequence
                         DcmStack stack;
-                        if (EC_Normal == dataset->search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+                        if (EC_Normal == dataset->search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
                             dseq=(DcmSequenceOfItems *)stack.top();
                     }
                     if (dseq == NULL)
@@ -992,7 +992,7 @@ int main(int argc, char *argv[])
                     {
                         // search existing sequence
                         DcmStack stack;
-                        if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
+                        if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
                             dseq=(DcmSequenceOfItems *)stack.top();
                     }
                     if (dseq == NULL)

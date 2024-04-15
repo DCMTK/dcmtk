@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -307,6 +307,11 @@ class DCMTK_DCMDATA_EXPORT DcmObject
      *  @return true if leaf node, false otherwise
      */
     virtual OFBool isLeaf() const = 0;
+
+    /** check if this element can be safely casted to DcmElement
+     *  @return true if DcmElement, false otherwise
+     */
+    virtual OFBool isElement() const { return OFFalse; }
 
     /** check if this element is nested in a sequence of items, i.e.\ not a
      *  top-level or stand-alone element

@@ -998,7 +998,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
             DCMDATA_ERROR("Internal ERROR in DcmDirectoryRecord::fillElementsAndReadSOP()");
         }
         uiP = new DcmUniqueIdentifier(refSOPClassTag);    // (0004,1510)
-        if (refFile->search(DCM_SOPClassUID, stack).good())
+        if (refFile->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
         {
             char *uid = NULL;
             OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -1011,7 +1011,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         insert(uiP, OFTrue);
 
         uiP = new DcmUniqueIdentifier(refSOPInstTag);     // (0004,1511)
-        if (refFile->search(DCM_SOPInstanceUID, stack).good() || refFile->search(DCM_MediaStorageSOPInstanceUID, stack).good())
+        if ((refFile->search(DCM_SOPInstanceUID, stack).good() || refFile->search(DCM_MediaStorageSOPInstanceUID, stack).good()) && (stack.top()->ident() == EVR_UI))
         {
             char *uid = NULL;
             OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -1024,7 +1024,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         insert(uiP, OFTrue);
 
         uiP = new DcmUniqueIdentifier(refFileXferTag);     // (0004,1512)
-        if (refFile->search(DCM_TransferSyntaxUID, stack).good())
+        if (refFile->search(DCM_TransferSyntaxUID, stack).good() && (stack.top()->ident() == EVR_UI))
         {
             char *uid = NULL;
             OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);

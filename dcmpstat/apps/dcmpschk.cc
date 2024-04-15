@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -652,7 +652,11 @@ static OFString printAttribute(
     OFOStringStream str;
 
     ec = dset->search(key, stack, ESM_fromHere, OFFalse);
-    elem = (DcmElement*) stack.top();
+    if (ec.good() && stack.top()->isElement())
+    {
+        elem = (DcmElement*) stack.top();
+    }
+
     if (elem)
         elem->print(str, DCMTypes::PF_shortenLongTagValues);
     else

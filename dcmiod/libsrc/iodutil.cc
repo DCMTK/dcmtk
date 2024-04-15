@@ -43,7 +43,7 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(
     DcmStack stack;
     const DcmTagKey tagKey = delem.getTag();
     OFCondition result     = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
+    if (result.good() && stack.top()->isElement())
     {
         /* copy object from search stack */
         result = delem.copyFrom(*stack.top());
@@ -76,7 +76,7 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(DcmItem& dataset,
 
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
+    if (result.good() && stack.top()->isElement())
     {
         /* copy object from search stack */
         delem = OFstatic_cast(DcmElement*, stack.top()->clone());

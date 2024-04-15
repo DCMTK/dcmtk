@@ -484,7 +484,7 @@ OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFFilename &filename,
         OFFilename dirName;
         OFStandard::getDirNameFromPath(dirName, filename, OFFalse /* assumeDirName */);
         // iterate over all items (directory records) where ReferencedFileID is present
-        while (dataset->search(DCM_ReferencedFileID, stack, ESM_afterStackTop, OFTrue).good())
+        while (dataset->search(DCM_ReferencedFileID, stack, ESM_afterStackTop, OFTrue).good() && stack.top()->isElement())
         {
             // make sure that the dataset and element pointer are there
             if (stack.card() > 1)

@@ -135,7 +135,7 @@ OFCondition SiCertificate::read(DcmItem& item)
   OFString aString;
   DcmStack stack;
   result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse);
-  if (result.good())
+  if (result.good() && stack.top()->isElement())
   {
     result = ((DcmElement *)(stack.top()))->getOFString(aString, 0);
     if (result.good())
@@ -144,7 +144,7 @@ OFCondition SiCertificate::read(DcmItem& item)
       {
         stack.clear();
         result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse);
-        if (result.good())
+        if (result.good() && stack.top()->isElement())
         {
           DcmElement *cert = (DcmElement *)stack.top();
           Uint8 *data = NULL;

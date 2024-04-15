@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -280,7 +280,7 @@ OFBool DVPSFilmSession::printSCPCreate(
     {
       stack.clear();
 
-      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
       {
         DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
         if (seq->card() ==1)
@@ -480,7 +480,7 @@ OFBool DVPSFilmSession::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)numberOfCopies.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)numberOfCopies.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_IS))
     {
       numberOfCopies = *((DcmIntegerString *)(stack.top()));
       Sint32 numCopies=0;
@@ -502,7 +502,7 @@ OFBool DVPSFilmSession::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)printPriority.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)printPriority.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       printPriority = *((DcmCodeString *)(stack.top()));
       OFString aString;
@@ -523,7 +523,7 @@ OFBool DVPSFilmSession::printSCPSet(
   {
     Uint32 numMediumTypes = cfg.getTargetPrinterNumberOfMediumTypes(cfgname);
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)mediumType.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)mediumType.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       mediumType = *((DcmCodeString *)(stack.top()));
       OFString theMedium;
@@ -555,7 +555,7 @@ OFBool DVPSFilmSession::printSCPSet(
   {
     Uint32 numFilmDestination = cfg.getTargetPrinterNumberOfFilmDestinations(cfgname);
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)filmDestination.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)filmDestination.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_CS))
     {
       filmDestination = *((DcmCodeString *)(stack.top()));
       OFString theDestination;
@@ -586,7 +586,7 @@ OFBool DVPSFilmSession::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)filmSessionLabel.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)filmSessionLabel.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_LO))
     {
       filmSessionLabel = *((DcmLongString *)(stack.top()));
       ADD_TO_PDATASET(DcmLongString, filmSessionLabel)
@@ -597,7 +597,7 @@ OFBool DVPSFilmSession::printSCPSet(
   if (result)
   {
     stack.clear();
-    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)ownerID.getTag(), stack, ESM_fromHere, OFFalse)))
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)ownerID.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SH))
     {
       ownerID = *((DcmShortString *)(stack.top()));
       ADD_TO_PDATASET(DcmShortString, ownerID)
@@ -611,7 +611,7 @@ OFBool DVPSFilmSession::printSCPSet(
     if (result)
     {
       stack.clear();
-      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)illumination.getTag(), stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)illumination.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
       {
         illumination = *((DcmUnsignedShort *)(stack.top()));
         // we don't check illumination set by the user (for now)
@@ -623,7 +623,7 @@ OFBool DVPSFilmSession::printSCPSet(
     if (result)
     {
       stack.clear();
-      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)reflectedAmbientLight.getTag(), stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)reflectedAmbientLight.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
       {
         reflectedAmbientLight = *((DcmUnsignedShort *)(stack.top()));
         // we don't check reflected ambient light set by the user (for now)
@@ -636,7 +636,7 @@ OFBool DVPSFilmSession::printSCPSet(
     {
       stack.clear();
 
-      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
       {
         DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
         if (seq->card() ==1)

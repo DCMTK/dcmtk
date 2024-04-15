@@ -163,7 +163,7 @@ OFBool DVPSHelper::haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *ui
   {
     item = seq.getItem(i);
     stack.clear();
-    if (EC_Normal == item->search(DCM_ReferencedSOPClassUID, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == item->search(DCM_ReferencedSOPClassUID, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_UI))
     {
       aString.clear();
       refuid = (DcmUniqueIdentifier *)(stack.top());

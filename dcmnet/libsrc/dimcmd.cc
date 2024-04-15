@@ -191,14 +191,16 @@ addString(DcmDataset *obj, DcmTagKey t, char *s, OFBool keepPadding)
 static OFCondition
 getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
     char* aString;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem != NULL) {
         if (elem->getLength() == 0) {
             s[0] = '\0';
         } else if (elem->getLength() > (Uint32)maxlen) {
@@ -266,17 +268,19 @@ addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
 static OFCondition
 getUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem != NULL) {
         ec = elem->getUint16(*us, 0);
     }
 
-    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
+    return (ec.good())?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 static OFCondition
@@ -317,17 +321,19 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
 static OFCondition
 getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem != NULL) {
         ec = elem->getUint32(*ul, 0);
     }
 
-    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
+    return (ec.good())?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 #if 0
@@ -378,15 +384,17 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *lst, int listCount)
 static OFCondition
 getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **lst, int *listCount)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
     Uint16 *aList = NULL;
     Uint32 nBytes = 0;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem) {
         nBytes = elem->getLength();
         *listCount = (int)(nBytes / sizeof(Uint16));
         if (*listCount > 0) {
@@ -398,7 +406,7 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **lst, int *listCount)
         }
     }
 
-    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
+    return (ec.good())?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 /*

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -362,7 +362,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             {
                 if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
                 {
-                    if (dataset->search(DCM_SOPClassUID, stack).good())
+                    if (dataset->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         char *uid = NULL;
                         l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -378,7 +378,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 else if (DCM_dcmdataLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                 {
                     // check whether UID in meta-header is identical to the one in the dataset
-                    if (dataset->search(DCM_SOPClassUID, stack).good())
+                    if (dataset->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         OFString uidDataset, uidMetaHeader;
                         OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getOFStringArray(uidDataset);
@@ -404,7 +404,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             {
                 if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
                 {
-                    if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                    if (dataset->search(DCM_SOPInstanceUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         char* uid = NULL;
                         l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -422,7 +422,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 else if (DCM_dcmdataLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                 {
                     // check whether UID in meta-header is identical to the one in the dataset
-                    if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                    if (dataset->search(DCM_SOPInstanceUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         OFString uidDataset, uidMetaHeader;
                         OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getOFStringArray(uidDataset);
@@ -633,7 +633,7 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
     /* check whether meta header is present (and non-empty, i.e. contains elements) */
     if (metainfo && !metainfo->isEmpty())
     {
-        if (metainfo->search(DCM_TransferSyntaxUID, stack).good())
+        if (metainfo->search(DCM_TransferSyntaxUID, stack).good() && (stack.top()->ident() == EVR_UI))
         {
             DcmUniqueIdentifier *xferUI = OFstatic_cast(DcmUniqueIdentifier *, stack.top());
             if (xferUI->getTag() == DCM_TransferSyntaxUID)

@@ -1417,14 +1417,14 @@ OFBool DVInterface::createPStateCache()
                                                                 if (reference != NULL)
                                                                 {
                                                                     DcmStack stack;
-                                                                    if (dataset->search(DCM_ContentDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                    if (dataset->search(DCM_ContentDescription, stack, ESM_fromHere, OFFalse) == EC_Normal && (stack.top()->ident() == EVR_LO))
                                                                     {
                                                                         char *value = NULL;
                                                                         if ((*OFstatic_cast(DcmLongString *, stack.top())).getString(value) == EC_Normal)
                                                                             reference->Description = value;
                                                                     }
                                                                     stack.clear();
-                                                                    if (dataset->search(DCM_ContentLabel, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                    if (dataset->search(DCM_ContentLabel, stack, ESM_fromHere, OFFalse) == EC_Normal && (stack.top()->ident() == EVR_LO))
                                                                     {
                                                                         char *value = NULL;
                                                                         if ((*OFstatic_cast(DcmLongString *, stack.top())).getString(value) == EC_Normal)
@@ -2835,12 +2835,12 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
   DcmDataset *dset = fileformat.getDataset();
   if (dset)
   {
-    if (EC_Normal == dset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
     {
       OFstatic_cast(DcmElement *, stack.top())->getString(instanceUID);
     }
     stack.clear();
-    if (EC_Normal == dset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse) && stack.top()->isElement())
     {
       OFstatic_cast(DcmElement *, stack.top())->getString(classUID);
     }
@@ -3756,7 +3756,7 @@ OFCondition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
                 DVPSPresentationLUT presentationLUT;
                 if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
                     result = dataset->search(sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
-                if (EC_Normal == result)
+                if (EC_Normal == result  && (stack.top()->ident() == EVR_UI))
                 {
                   char *sopclass = NULL;
                   sopclassuid = *OFstatic_cast(DcmUniqueIdentifier *, stack.top());

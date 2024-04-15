@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,7 +104,7 @@ OFCondition DcmSignature::getMACIDnumber(DcmItem &item, Uint16& macid)
   macid = 0xFFFF;
   DcmStack stack;
   OFCondition result = item.search(DCM_MACIDNumber, stack, ESM_fromHere, OFFalse);
-  if (result.good() && (stack.top()->isLeaf()))
+  if (result.good() && (stack.top()->isElement()))
   {
     result = ((DcmElement *)(stack.top()))->getUint16(macid);
   }
@@ -734,7 +734,7 @@ OFCondition DcmSignature::verifyCurrent()
   // read MAC Calculation Transfer Syntax UID
   if (result.good())
   {
-    if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
     {
       char *uid = NULL;
       if ((((DcmElement *)(stack.top()))->getString(uid)).good())
@@ -750,7 +750,7 @@ OFCondition DcmSignature::verifyCurrent()
   if (result.good())
   {
     stack.clear();
-    if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
     {
       OFString macidentifier;
       if ((((DcmElement *)(stack.top()))->getOFString(macidentifier, 0)).good())
@@ -783,7 +783,7 @@ OFCondition DcmSignature::verifyCurrent()
   if (result.good())
   {
     stack.clear();
-    if ((selectedSignatureItem->search(DCM_Signature, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    if ((selectedSignatureItem->search(DCM_Signature, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->ident() == EVR_OB))
     {
       signature = new DcmOtherByteOtherWord(*((DcmOtherByteOtherWord *)(stack.top())));
       if (signature == NULL) result = EC_MemoryExhausted;
@@ -960,7 +960,7 @@ OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)
   DcmStack stack;
 
   // read MAC Calculation Transfer Syntax UID
-  if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+  if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
   {
     char *uid = NULL;
     if ((((DcmElement *)(stack.top()))->getString(uid)).good() && uid)
@@ -1005,7 +1005,7 @@ OFCondition DcmSignature::getCurrentMacName(OFString& str)
   DcmStack stack;
 
   // read MAC Algorithm
-  if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+  if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
   {
     if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }
@@ -1020,7 +1020,7 @@ OFCondition DcmSignature::getCurrentSignatureUID(OFString& str)
   DcmStack stack;
 
   // read signature UID
-  if ((selectedSignatureItem->search(DCM_DigitalSignatureUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+  if ((selectedSignatureItem->search(DCM_DigitalSignatureUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
   {
     if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }
@@ -1048,7 +1048,7 @@ OFCondition DcmSignature::getCurrentSignatureDateTime(OFString& str)
   DcmStack stack;
 
   // read signature date/time
-  if ((selectedSignatureItem->search(DCM_DigitalSignatureDateTime, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+  if ((selectedSignatureItem->search(DCM_DigitalSignatureDateTime, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
   {
     if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }
@@ -1119,7 +1119,7 @@ OFCondition DcmSignature::verifySignatureProfile(SiSecurityProfile &sprof)
   // check MAC Calculation Transfer Syntax UID
   if (result.good())
   {
-    if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
     {
       char *uid = NULL;
       if ((((DcmElement *)(stack.top()))->getString(uid)).good())
@@ -1142,7 +1142,7 @@ OFCondition DcmSignature::verifySignatureProfile(SiSecurityProfile &sprof)
   {
     E_MACType mac = EMT_RIPEMD160;
     stack.clear();
-    if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
+    if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isElement()))
     {
       OFString macidentifier;
       if ((((DcmElement *)(stack.top()))->getOFString(macidentifier, 0)).good())

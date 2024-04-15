@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2023, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1135,6 +1135,12 @@ updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &val
   if (cond != EC_Normal) {
     OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot find: " << tag.getTagName()
          << " " << key << ": " << cond.text());
+    return OFFalse;
+  }
+
+  if (! stack.top()->isElement())
+  {
+    OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: not a DcmElement: " << tag.getTagName() << " " << key);
     return OFFalse;
   }
 

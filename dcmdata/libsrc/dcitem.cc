@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2332,7 +2332,7 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey &key,
     DcmStack stack;
     OFBool result = OFFalse;
 
-    if (search(key, stack, ESM_fromHere, searchIntoSub).good())
+    if (search(key, stack, ESM_fromHere, searchIntoSub).good() && stack.top()->isElement())
     {
         DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
         if (elem != NULL)
@@ -2355,7 +2355,7 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
     DcmStack stack;
     /* find the element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status.good())
+    if (status.good() && stack.top()->isElement())
     {
         element = OFstatic_cast(DcmElement *, stack.top());
         /* should never happen but ... */
@@ -2990,7 +2990,7 @@ OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
     DcmStack stack;
     /* find the element */
     OFCondition status = search(seqTagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status.good())
+    if (status.good() && stack.top()->isElement())
     {
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         /* should never happen but ... */
@@ -3027,7 +3027,7 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
     DcmStack stack;
     /* find sequence */
     OFCondition status = search(seqTagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (status.good())
+    if (status.good() && stack.top()->isElement())
     {
         /* get element */
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
@@ -3089,7 +3089,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
     OFCondition status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     DcmSequenceOfItems *sequence = NULL;
     /* sequence found? */
-    if (status.good())
+    if (status.good() && stack.top()->isElement())
     {
         /* get element */
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
@@ -3223,7 +3223,7 @@ OFCondition DcmItem::findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
     DcmStack stack;
     /* find sequence */
     OFCondition status = search(seqTagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (status.good())
+    if (status.good() && stack.top()->isElement())
     {
         /* get element */
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
@@ -4224,7 +4224,7 @@ OFCondition DcmItem::insertSequenceItem(const DcmTag &seqTag,
         status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
         DcmSequenceOfItems *sequence = NULL;
         /* sequence found? */
-        if (status.good())
+        if (status.good() && stack.top()->isElement())
         {
             /* get element */
             DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
