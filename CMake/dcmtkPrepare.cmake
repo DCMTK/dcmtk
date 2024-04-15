@@ -235,7 +235,8 @@ mark_as_advanced(CMAKE_DEBUG_POSTFIX)
 mark_as_advanced(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 mark_as_advanced(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
 mark_as_advanced(DCMTK_GENERATE_DOXYGEN_TAGFILE)
-mark_as_advanced(DCMTK_WITH_OPENJPEG) # only needed by DCMJP2K module
+mark_as_advanced(OpenJPEG_DIR DCMTK_WITH_OPENJPEG) # only needed by DCMJP2K module
+mark_as_advanced(ICU_INCLUDE_DIR) # support for ICU will be removed soon
 mark_as_advanced(DCMTK_TLS_LIBRARY_POSTFIX)
 
 if(NOT WIN32)

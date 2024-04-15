@@ -1,5 +1,6 @@
 # Locate the path to the xxd tool
 find_program(XXD_EXECUTABLE NAMES "xxd" "xxd.exe")
+mark_as_advanced(XXD_EXECUTABLE)
 
 if (TARGET mkcsmapper AND TARGET mkesdb)
   ADD_CUSTOM_TARGET(
