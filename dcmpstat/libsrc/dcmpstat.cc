@@ -384,12 +384,16 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       {
          item = seq->getItem(0);
          stack.clear();
-         // LUTDescriptor can be US or SS. For now we only handle US.
+
+         // LUTDescriptor can be US or SS
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTDescriptor.getTag(),
-           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
          {
-           modalityLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
+           // We explicitly use DcmElement::operator=(), which works for US and SS
+           DcmElement *mLUTDescriptor = &modalityLUTDescriptor;
+           mLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
          }
+
          stack.clear();
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTExplanation.getTag(),
            stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_LO))
@@ -400,9 +404,11 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
 
          // LUTData can be OW, US or SS. For now we only handle US.
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTData.getTag(),
-           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
          {
-           modalityLUTData = *((DcmUnsignedShort *)(stack.top()));
+           // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+           DcmElement *mdata = &modalityLUTData;
+           mdata->operator=(*(DcmElement *)(stack.top()));
          }
          stack.clear();
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTType.getTag(),
@@ -879,11 +885,13 @@ OFCondition DcmPresentationState::createFromImage(
       {
          item = seq->getItem(0);
          stack.clear();
-         // LUTDescriptor can be US or SS. For now we only handle US.
+         // LUTDescriptor can be US or SS
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTDescriptor.getTag(),
-           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
          {
-           modalityLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
+           // We explicitly use DcmElement::operator=(), which works for US and SS
+           DcmElement *mLUTDescriptor = &modalityLUTDescriptor;
+           mLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
          }
          stack.clear();
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTExplanation.getTag(),
@@ -895,9 +903,11 @@ OFCondition DcmPresentationState::createFromImage(
 
          // LUTData can be OW, US or SS. For now we only handle US.
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTData.getTag(),
-           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US))
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
          {
-           modalityLUTData = *((DcmUnsignedShort *)(stack.top()));
+           // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+           DcmElement *mdata = &modalityLUTData;
+           mdata->operator=(*(DcmElement *)(stack.top()));
          }
          stack.clear();
          if ((EC_Normal == item->search((DcmTagKey &)modalityLUTType.getTag(),
@@ -1247,10 +1257,16 @@ OFCondition DcmPresentationState::write(DcmItem &dset, OFBool replaceSOPInstance
         dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
         if (dseq)
         {
-          delem = new DcmUnsignedShort(modalityLUTDescriptor);
+          // we clone modalityLUTDescriptor in order to retain the VR (US or SS)
+          delem = OFstatic_cast(DcmElement *, modalityLUTDescriptor.clone());
           if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
-          delem = new DcmUnsignedShort(modalityLUTData);
+
+          // we write LUTData as OW in order to avoid the 64 kByte limit for US
+          delem = new DcmOtherByteOtherWord(DCM_LUTData);
+          delem->operator=(modalityLUTData);
+          OFstatic_cast(DcmOtherByteOtherWord *, delem)->setVR(EVR_OW);
           if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
+
           delem = new DcmLongString(modalityLUTType);
           if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
           if (modalityLUTExplanation.getLength() >0)

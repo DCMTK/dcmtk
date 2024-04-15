@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2023, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
-  if (EC_Normal == dset.search(DCM_SoftcopyVOILUTSequence, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(DCM_SoftcopyVOILUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
@@ -249,29 +249,36 @@ OFCondition DVPSSoftcopyVOI_PList::createFromImage(
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() > 0)
       {
          item = seq->getItem(0);
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(),
-           stack, ESM_fromHere, OFFalse))
+
+         // LUTDescriptor can be US or SS
+         if ((EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
          {
-           voiLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
+           // We explicitly use DcmElement::operator=(), which works for US and SS
+           DcmElement *vLUTDescriptor = &voiLUTDescriptor;
+           vLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
          }
+
          stack.clear();
          if (EC_Normal == item->search((DcmTagKey &)voiLUTExplanation.getTag(),
-           stack, ESM_fromHere, OFFalse))
+           stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_LO))
          {
            voiLUTExplanation = *((DcmLongString *)(stack.top()));
          }
          stack.clear();
          if (EC_Normal == item->search((DcmTagKey &)voiLUTData.getTag(),
-           stack, ESM_fromHere, OFFalse))
+           stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
          {
-           voiLUTData = *((DcmUnsignedShort *)(stack.top()));
+           // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+           DcmElement *vldata = &voiLUTData;
+           vldata->operator=(*(DcmElement *)(stack.top()));
          }
       } else result=EC_TagNotFound;
     }

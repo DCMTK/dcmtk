@@ -59,9 +59,24 @@ OFCondition DVPSVOILUT::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, voiLUTDescriptor)
+  // LUTDescriptor can be US or SS
+  if ((EC_Normal == dset.search((DcmTagKey &)voiLUTDescriptor.getTag(),
+    stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
+  {
+    // We explicitly use DcmElement::operator=(), which works for US and SS
+    DcmElement *vLUTDescriptor = &voiLUTDescriptor;
+    vLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
+  }
+
   READ_FROM_DATASET(DcmLongString, EVR_LO, voiLUTExplanation)
-  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, voiLUTData)
+
+  stack.clear();
+  if ((EC_Normal == dset.search((DcmTagKey &)voiLUTData.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
+  {
+    // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+    DcmElement *vldata = &voiLUTData;
+    vldata->operator=(*(DcmElement *)(stack.top()));
+  }
 
   if (EC_Normal == result)
   {
