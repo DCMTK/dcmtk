@@ -151,14 +151,14 @@ public:
 
     OFvariant( const OFvariant& rhs )
     : m_Content()
-    , m_Index( rhs.index() )
+    , m_Index( OFstatic_cast(index_type, rhs.index()) )
     {
         copy_construct( rhs );
     }
 
     OFvariant( OFvariant&& rhs )
     : m_Content()
-    , m_Index( rhs.index() )
+    , m_Index( OFstatic_cast(index_type, rhs.index()) )
     {
         move_construct( std::move( rhs ) );
     }
