@@ -29,11 +29,7 @@
 // charls will work correctly with 64 or 32 bit. 
 typedef long LONG;
 
-enum constants
-{
-  LONG_BITCOUNT = sizeof(LONG)*8
-};
-
+const int LONG_BITCOUNT = sizeof(LONG)*8;
 
 typedef unsigned char BYTE;
 typedef unsigned short USHORT;

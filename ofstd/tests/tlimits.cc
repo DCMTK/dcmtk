@@ -42,10 +42,10 @@
 template<typename T>
 static void checkMinMax()
 {
-    volatile T max_plus_one( OFnumeric_limits<T>::max() );
-    volatile T lowest;
+    T max_plus_one( OFnumeric_limits<T>::max() );
+    T lowest;
     if (OFnumeric_limits<T>::is_integer) lowest = OFnumeric_limits<T>::min(); else lowest = -OFnumeric_limits<T>::max();
-    volatile T lowest_minus_one(lowest);
+    T lowest_minus_one(lowest);
     ++max_plus_one;
     --lowest_minus_one;
     OFCHECK
