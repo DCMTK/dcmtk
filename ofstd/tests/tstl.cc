@@ -192,7 +192,8 @@ OFTEST(ofstd_std_tuple)
 
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
     // decltype is C++11
-    OFCHECK(OFtuple_size<decltype(tuple)>::value == 2);
+    constexpr bool tuple_size_is_two = OFtuple_size<decltype(tuple)>::value == 2;
+    OFCHECK(tuple_size_is_two);
 #endif
 
     int n;
