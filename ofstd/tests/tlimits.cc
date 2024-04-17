@@ -48,7 +48,7 @@ static void checkMinMax()
     volatile T max_( OFnumeric_limits<T>::max() );
     volatile T lowest;
     if (OFnumeric_limits<T>::is_integer) lowest = OFnumeric_limits<T>::min(); else lowest = -OFnumeric_limits<T>::max();
-    T max_plus_one = max_ + 1;
+    volatile T max_plus_one = max_ + 1;
     volatile T lowest_minus_one = lowest - 1;
     OFCHECK
     (
