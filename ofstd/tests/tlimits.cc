@@ -42,12 +42,14 @@
 template<typename T>
 static void checkMinMax()
 {
-    T max_plus_one( OFnumeric_limits<T>::max() );
-    T lowest;
+    // we need to declare some variables as volatile to prevent the
+    // Clang compiler from optimizing away everything, leading to a test failure:wq
+
+    volatile T max_( OFnumeric_limits<T>::max() );
+    volatile T lowest;
     if (OFnumeric_limits<T>::is_integer) lowest = OFnumeric_limits<T>::min(); else lowest = -OFnumeric_limits<T>::max();
-    T lowest_minus_one(lowest);
-    ++max_plus_one;
-    --lowest_minus_one;
+    T max_plus_one = max_ + 1;
+    volatile T lowest_minus_one = lowest - 1;
     OFCHECK
     (
         OFnumeric_limits<T>::max() >= max_plus_one ||
