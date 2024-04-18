@@ -580,7 +580,7 @@ void DcmTLSCiphersuiteHandler::getListOfCipherSuitesForOpenSSL(OFString& cslist,
     // We sort this list with the strongest ciphersuite first. Since the global list
     // of ciphersuites (globalCipherSuiteList) is already sorted by strength (weakest
     // ciphersuite first), we only have to sort the ciphersuite IDs in decreasing order.
-    qsort(&tempList[0], tempList.size(), sizeof(size_t), cipherSuiteComparison);
+    qsort(tempList.data(), tempList.size(), sizeof(size_t), cipherSuiteComparison);
   }
 
   for (OFVector<size_t>::const_iterator it = tempList.begin(); it != tempList.end(); ++it)
@@ -609,7 +609,7 @@ void DcmTLSCiphersuiteHandler::getListOfTLS13CipherSuitesForOpenSSL(OFString& cs
     // We sort this list with the strongest ciphersuite first. Since the global list
     // of ciphersuites (globalCipherSuiteList) is already sorted by strength (weakest
     // ciphersuite first), we only have to sort the ciphersuite IDs in decreasing order.
-    qsort(&tempList[0], tempList.size(), sizeof(size_t), cipherSuiteComparison);
+    qsort(tempList.data(), tempList.size(), sizeof(size_t), cipherSuiteComparison);
   }
 
   for (OFVector<size_t>::const_iterator it = tempList.begin(); it != tempList.end(); ++it)
