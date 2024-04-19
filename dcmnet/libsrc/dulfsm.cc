@@ -109,7 +109,6 @@ END_EXTERN_C
 #include "dulpriv.h"
 #include "dulfsm.h"
 #include "dcmtk/ofstd/ofbmanip.h"
-#include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmnet/assoc.h"    /* for ASC_MAXIMUMPDUSIZE */
 #include "dcmtk/dcmnet/dcmtrans.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
