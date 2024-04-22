@@ -1178,13 +1178,17 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
     DcmStack stack;
     const DcmTagKey tagKey = delem.getTag();
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good() && stack.top()->isElement())
+    if (result.good())
     {
-        /* copy object from search stack */
-        result = delem.copyFrom(*stack.top());
-        /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-        if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, acceptViolation))
-            result = SR_EC_InvalidValue;
+        if (stack.top()->isElement())
+        {
+            /* copy object from search stack */
+            result = delem.copyFrom(*stack.top());
+            /* we need a reference to the original element in order to determine the SpecificCharacterSet */
+            if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, acceptViolation))
+                result = SR_EC_InvalidValue;
+        } else
+            result = EC_CorruptedData;
     }
     /* the element could not be found in the dataset */
     else if (!checkElementValue(delem, vm, type, result, moduleName, acceptViolation))
@@ -1203,13 +1207,17 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
 {
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good() && stack.top()->isElement())
+    if (result.good())
     {
-        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
-        /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-        if (!checkElementValue(delem, tagKey, vm, type, result, moduleName, acceptViolation))
-            result = SR_EC_InvalidValue;
-        delem->getOFString(stringValue, 0);
+        if (stack.top()->isElement())
+        {
+            DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+            /* we need a reference to the original element in order to determine the SpecificCharacterSet */
+            if (!checkElementValue(delem, tagKey, vm, type, result, moduleName, acceptViolation))
+                result = SR_EC_InvalidValue;
+            delem->getOFString(stringValue, 0);
+        } else
+            result = EC_CorruptedData;
     } else {
         if ((type == "1") || (type == "2"))
         {

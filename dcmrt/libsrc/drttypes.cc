@@ -210,11 +210,11 @@ OFCondition DRTTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
 {
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good() && stack.top()->isElement())
+    if (result.good())
     {
-        DcmElement *element = OFstatic_cast(DcmElement *, stack.top());
-        if (element != NULL)
+        if (stack.top()->isElement())
         {
+            DcmElement *element = OFstatic_cast(DcmElement *, stack.top());
             if (checkElementValue(*element, vm, type, result, moduleName))
                 result = element->getOFString(stringValue, 0);
             else
