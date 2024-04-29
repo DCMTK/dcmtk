@@ -1140,20 +1140,22 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 #endif
     }
 
-    // clean-up association
-    OFCondition oldcond = cond;    /* store condition flag for later use */
-    cond = ASC_dropAssociation(assoc);
-    if (cond.bad())
+    // avoid double deletion of memory
+    if (cond != ASC_SHUTDOWNAPPLICATION)
     {
-        DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
-    }
-    cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad())
-    {
-        DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
+      // clean-up association
+      cond = ASC_dropAssociation(assoc);
+      if (cond.bad())
+      {
+          DCMQRDB_ERROR("Cannot Drop Association: " << DimseCondition::dump(temp_str, cond));
+      }
+      cond = ASC_destroyAssociation(&assoc);
+      if (cond.bad())
+      {
+          DCMQRDB_ERROR("Cannot Destroy Association: " << DimseCondition::dump(temp_str, cond));
+      }
     }
 
-    if (oldcond == ASC_SHUTDOWNAPPLICATION) cond = oldcond; /* abort flag is reported to top-level wait loop */
     return cond;
 }
 
