@@ -943,10 +943,10 @@ main(int argc, char *argv[])
       /* since dcmqrscp is usually terminated with SIGTERM or the like,
        * we write back an updated random seed after every association handled.
        */
-      cond = tlsOptions.writeRandomSeed();
-      if (cond.bad()) {
+      const OFCondition cond2 = tlsOptions.writeRandomSeed();
+      if (cond2.bad()) {
           // failure to write back the random seed is a warning, not an error
-          OFLOG_WARN(dcmqrscpLogger, DimseCondition::dump(temp_str, cond));
+          OFLOG_WARN(dcmqrscpLogger, DimseCondition::dump(temp_str, cond2));
       }
     }
 
