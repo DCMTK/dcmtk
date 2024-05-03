@@ -1358,6 +1358,7 @@ storeSCPCallback(
          /* create full path name for the output file */
          OFString ofname;
          OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, cbdata->imageFileName, OFTrue /* allowEmptyDirName */);
+         OFLOG_DEBUG(movescuLogger, "Saving to: " << ofname);
          if (OFStandard::fileExists(ofname))
          {
            OFLOG_WARN(movescuLogger, "DICOM file already exists, overwriting: " << ofname);
@@ -1437,6 +1438,11 @@ static OFCondition storeSCP(
         OFLOG_INFO(movescuLogger, "Received Store Request (MsgID " << req->MessageID << ", "
             << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
     }
+    
+    /* create full path name for the output file */
+    OFString ofname;
+    OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
+    OFLOG_DEBUG(movescuLogger, "Saving to: " << ofname);
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
@@ -1455,7 +1461,7 @@ static OFCondition storeSCP(
 
     if (opt_bitPreserving)
     {
-      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
+      cond = DIMSE_storeProvider(assoc, presID, req, ofname.c_str(), opt_useMetaheader,
         NULL, storeSCPCallback, OFreinterpret_cast(void*, &callbackData), opt_blockMode, opt_dimse_timeout);
     } else {
       cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader,
