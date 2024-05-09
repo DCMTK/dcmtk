@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djcodecd.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // dcmdata includes
 #include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */
@@ -341,7 +342,7 @@ OFCondition DJCodecDecoder::decode(
                   if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
                   {
                     char numBuf[20];
-                    sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+                    OFStandard::snprintf(numBuf, sizeof(numBuf), "%ld", OFstatic_cast(long, imageFrames));
                     result = OFreinterpret_cast(DcmItem*, dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
                   }
 
