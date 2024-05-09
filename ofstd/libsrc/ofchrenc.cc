@@ -129,7 +129,7 @@ class OFCharacterEncoding::Implementation
         OFString versionStr = "ICU, Version ";
         char buf[15];
         // extract major and minor version number
-        sprintf(buf, "%i.%i.%i", U_ICU_VERSION_MAJOR_NUM, U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
+        OFStandard::snprintf(buf, sizeof(buf), "%i.%i.%i", U_ICU_VERSION_MAJOR_NUM, U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
         versionStr.append(buf);
         return versionStr;
     }
@@ -381,7 +381,7 @@ class OFCharacterEncoding::Implementation
         OFString versionStr = "LIBICONV, Version ";
         char buf[10];
         // extract major and minor version number
-        sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
+        OFStandard::snprintf(buf, sizeof(buf), "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
         versionStr.append(buf);
         return versionStr;
 #elif defined(__GLIBC__)

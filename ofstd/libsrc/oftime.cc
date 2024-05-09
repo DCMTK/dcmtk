@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,6 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 
 
@@ -591,10 +592,10 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         char buf[32];
         /* format: HH:MM */
         if (showDelimiter)
-            sprintf(buf, "%02u:%02u", Hour, Minute);
+            OFStandard::snprintf(buf, sizeof(buf), "%02u:%02u", Hour, Minute);
         /* format: HHMM */
         else
-            sprintf(buf, "%02u%02u", Hour, Minute);
+            OFStandard::snprintf(buf, sizeof(buf), "%02u%02u", Hour, Minute);
         if (showSeconds)
         {
             if (showFraction)
@@ -607,12 +608,14 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
                     OFStandard::strlcat(buf, ":", sizeof(buf));
                 OFStandard::strlcat(buf, buf2, sizeof(buf));
             } else {
+                char buf2[12];
                 /* format: HH:MM:SS*/
                 if (showDelimiter)
-                    sprintf(strchr(buf, 0), ":%02u", OFstatic_cast(unsigned int, Second));
+                    OFStandard::snprintf(buf2, sizeof(buf2), ":%02u", OFstatic_cast(unsigned int, Second));
                 /* format: HHMMSS */
                 else
-                    sprintf(strchr(buf, 0), "%02u", OFstatic_cast(unsigned int, Second));
+                    OFStandard::snprintf(buf2, sizeof(buf2), "%02u", OFstatic_cast(unsigned int, Second));
+                OFStandard::strlcat(buf, buf2, sizeof(buf));
             }
         }
         /* copy converted part so far to the result variable */
@@ -628,11 +631,11 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             if (showDelimiter)
             {
                 formattedTime += timeZoneSeparator;
-                sprintf(buf, "%c%02u:%02u", zoneSign, zoneHour, zoneMinute);
+                OFStandard::snprintf(buf, sizeof(buf), "%c%02u:%02u", zoneSign, zoneHour, zoneMinute);
             }
             /* format: ...+HHMM or -HHMM */
             else
-                sprintf(buf, "%c%02u%02u",  zoneSign, zoneHour, zoneMinute);
+                OFStandard::snprintf(buf, sizeof(buf), "%c%02u%02u",  zoneSign, zoneHour, zoneMinute);
             /* append time zone part to the result variable */
             formattedTime += buf;
         }

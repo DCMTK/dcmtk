@@ -300,7 +300,7 @@ int OFStandard::vsnprintf(char *str, size_t size, const char *format, va_list ap
     return ::vsnprintf(str, size, format, ap);
 #else /* HAVE_VSNPRINTF */
 #ifdef DCMTK_ENABLE_UNSAFE_VSNPRINTF
-    // This implementation internally uses sprintf (which is inherently unsafe).
+    // This implementation internally uses vsprintf (which is inherently unsafe).
     // It allocates a buffer that is 1 kByte larger than "size",
     // formats the string into that buffer, and then uses strlcpy() to
     // copy the formatted string into the output buffer, truncating if necessary.
@@ -2212,8 +2212,8 @@ void OFStandard::ftoa(
   int width,
   int prec)
 {
-  // this version of the function uses sprintf to format the output string.
-  // Since we have to assemble the sprintf format string, this version might
+  // this version of the function uses snprintf to format the output string.
+  // Since we have to assemble the snprintf format string, this version might
   // even be slower than the alternative implementation.
 
   char buf[FTOA_BUFSIZE];
@@ -2255,17 +2255,17 @@ void OFStandard::ftoa(
   if (flags & FTOA_ZEROPAD) s += "0";
   if (width > 0)
   {
-    sprintf(buf, "%d", width);
+    OFStandard::snprintf(buf, sizeof(buf), "%d", width);
     s += buf;
   }
   if (prec >= 0)
   {
-    sprintf(buf, ".%d", prec);
+    OFStandard::snprintf(buf, sizeof(buf), ".%d", prec);
     s += buf;
   }
   s += fmtch;
 
-  sprintf(buf, s.c_str(), val);
+  OFStandard::snprintf(buf, sizeof(buf), s.c_str(), val);
   OFStandard::strlcpy(dst, buf, siz);
 }
 
