@@ -122,7 +122,7 @@ buildErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Build Failed: %s: Element: (%04x,%04x) %s",
+    OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Command Build Failed: %s: Element: (%04x,%04x) %s",
         msg, t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_BUILDFAILED, OF_error, buf);
 }
@@ -132,7 +132,7 @@ parseError(DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Parse Failed: Element: (%04x,%04x) %s",
+    OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Command Parse Failed: Element: (%04x,%04x) %s",
         t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
@@ -142,7 +142,7 @@ parseErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Parse Failed: %s: Element: (%04x,%04x) %s", msg,
+    OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Command Parse Failed: %s: Element: (%04x,%04x) %s", msg,
         t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
@@ -1842,7 +1842,7 @@ DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
     default:
         {
           char buf[256];
-          sprintf(buf, "DIMSE_buildCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
+          OFStandard::snprintf(buf, sizeof(buf), "DIMSE_buildCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
           cond = makeDcmnetCondition(DIMSEC_BADCOMMANDTYPE, OF_error, buf);
         }
         break;
@@ -1963,7 +1963,7 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     default:
         {
           char buf[256];
-          sprintf(buf, "DIMSE_parseCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
+          OFStandard::snprintf(buf, sizeof(buf), "DIMSE_parseCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
           cond = makeDcmnetCondition(DIMSEC_BADCOMMANDTYPE, OF_error, buf);
         }
         break;

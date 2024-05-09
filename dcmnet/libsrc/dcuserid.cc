@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/dcmnet/dcuserid.h"
 #include "dcmtk/dcmnet/dul.h"
 #include "dcmtk/dcmnet/dulstruc.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 /* ************************************************************************* */
 /*       Implementation of class UserIdentityNegotiationSubItem              */
@@ -241,7 +242,7 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   if (availData < 10)
   {
       char buffer[256];
-      sprintf(buffer, "DUL user identity rq length %ld. Need at least 10 bytes", availData);
+      OFStandard::snprintf(buffer, sizeof(buffer), "DUL user identity rq length %ld. Need at least 10 bytes", availData);
       return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
   }
 
@@ -257,7 +258,7 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   if (availData - 4 < itemLength)
   {
       char buffer[256];
-      sprintf(buffer, "DUL illegal user identify rq length %ld. Info claims to be %hd bytes.",
+      OFStandard::snprintf(buffer, sizeof(buffer), "DUL illegal user identify rq length %ld. Info claims to be %hd bytes.",
               availData, itemLength);
       return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
   }
@@ -286,7 +287,7 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   if (itemLength - 4 - 2 < m_primFieldLength)
   {
       char buffer[256];
-      sprintf(buffer, "DUL illegal user identify rq length %ld. Info claims to be %hd bytes. "
+      OFStandard::snprintf(buffer, sizeof(buffer), "DUL illegal user identify rq length %ld. Info claims to be %hd bytes. "
               "Primary field has %hd bytes.", availData, itemLength, m_primFieldLength);
       return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
   }
@@ -307,7 +308,7 @@ OFCondition UserIdentityNegotiationSubItemRQ::parseFromBuffer(unsigned char *rea
   if (itemLength - 6 - m_primFieldLength < m_secFieldLength)
   {
       char buffer[256];
-      sprintf(buffer, "DUL illegal user identify rq length %ld. Info claims to be %hd bytes. "
+      OFStandard::snprintf(buffer, sizeof(buffer), "DUL illegal user identify rq length %ld. Info claims to be %hd bytes. "
               "Primary field has %hd bytes. Secondary field has %hd bytes.",
               availData, itemLength, m_primFieldLength, m_secFieldLength);
       return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
@@ -530,7 +531,7 @@ OFCondition UserIdentityNegotiationSubItemAC::stream(unsigned char *targetBuffer
   if (OFstatic_cast(unsigned long, m_rspLength) + 2 > (unsigned long)65535 /* for response length field */)
   {
     char errbuf[500];
-    sprintf(errbuf, "Length of User Identity response (%lu bytes) exceeds upper limit of 65535 bytes", (unsigned long)m_rspLength + 2);
+    OFStandard::snprintf(errbuf, sizeof(errbuf), "Length of User Identity response (%lu bytes) exceeds upper limit of 65535 bytes", (unsigned long)m_rspLength + 2);
     return makeDcmnetCondition(ASCC_CODINGERROR, OF_error, errbuf);
   }
   // compute total length of item when streamed
@@ -561,7 +562,7 @@ OFCondition UserIdentityNegotiationSubItemAC::parseFromBuffer(unsigned char *rea
   if (availData < 6)
   {
       char buffer[256];
-      sprintf(buffer, "DUL illegal user identify ac length %ld. Need at least 6 bytes for"
+      OFStandard::snprintf(buffer, sizeof(buffer), "DUL illegal user identify ac length %ld. Need at least 6 bytes for"
               " user identify ac", availData);
       return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
   }
@@ -580,7 +581,7 @@ OFCondition UserIdentityNegotiationSubItemAC::parseFromBuffer(unsigned char *rea
   if (availData - 4 < itemLength || itemLength < 2 || itemLength - 2 < m_rspLength)
   {
       char buffer[256];
-      sprintf(buffer, "DUL illegal user identify ac length %ld. Info claims to be %hd bytes. "
+      OFStandard::snprintf(buffer, sizeof(buffer), "DUL illegal user identify ac length %ld. Info claims to be %hd bytes. "
               "Response claims to be %hd bytes.", availData, itemLength, m_rspLength);
       return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
   }

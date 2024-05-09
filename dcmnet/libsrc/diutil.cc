@@ -274,7 +274,7 @@ DU_cechoStatusString(Uint16 statusCode)
     if (statusCode == STATUS_Success)
         s = "Success";
     else {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -323,7 +323,7 @@ DU_cstoreStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -368,7 +368,7 @@ DU_cfindStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -419,7 +419,7 @@ DU_cmoveStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -467,7 +467,7 @@ DU_cgetStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -538,7 +538,7 @@ DU_ncreateStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -594,7 +594,7 @@ DU_ngetStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-          sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
           s = staticBuf;
     }
     return s;
@@ -659,7 +659,7 @@ DU_nsetStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -721,7 +721,7 @@ DU_nactionStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -774,7 +774,7 @@ DU_ndeleteStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -836,7 +836,7 @@ DU_neventReportStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;

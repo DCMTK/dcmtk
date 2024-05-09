@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
@@ -176,7 +177,7 @@ main(int argc, char *argv[])
       cmd.addOption("--call",           "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, maxXferSyntaxes));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, maxXferSyntaxes));
       opt5 += tempstr;
       opt5 += ")";
       cmd.addOption("--propose-ts",     "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
@@ -376,7 +377,7 @@ main(int argc, char *argv[])
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
-    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /* Set the presentation contexts which will be negotiated */

@@ -26,6 +26,7 @@
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/ofstd/ofmem.h" /* for OFunique_ptr */
+#include "dcmtk/ofstd/ofstd.h"
 
 
 #ifdef WITH_ZLIB
@@ -150,7 +151,7 @@ OFCondition DcmSCU::initNetwork()
         DCMNET_ERROR("Maximum length of local host name '" << localHost << "' is longer than maximum of 62 characters");
         return EC_IllegalCall; // TODO: need to find better error code
     }
-    sprintf(peerHost, "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort));
     ASC_setPresentationAddresses(m_params, localHost.c_str(), peerHost);
 
     /* Add presentation contexts */

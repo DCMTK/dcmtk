@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 #include "dcmtk/dcmnet/dcasccfg.h"  /* for class DcmAssociationConfiguration */
 #include "dcmtk/dcmdata/dcerror.h"  /* for EC_IllegalCall */
 #include "dcmtk/ofstd/ofconfig.h"   /* for class OFConfigFile */
+#include "dcmtk/ofstd/ofstd.h"
 
 /* config file keys for the association configuration */
 
@@ -111,7 +112,7 @@ OFCondition DcmAssociationConfigurationFile::parseTransferSyntaxes(
     found = OFTrue;
     while (found)
     {
-      sprintf(buf, "%s%u", L0_TRANSFERSYNTAX_X, ++counter);
+      OFStandard::snprintf(buf, sizeof(buf), "%s%u", L0_TRANSFERSYNTAX_X, ++counter);
       value = config.get_entry(buf);
       if (value)
       {
@@ -160,7 +161,7 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
     found = OFTrue;
     while (found)
     {
-      sprintf(buf, "%s%u", L0_PRESENTATIONCONTEXT_X, ++counter);
+      OFStandard::snprintf(buf, sizeof(buf), "%s%u", L0_PRESENTATIONCONTEXT_X, ++counter);
       value = config.get_entry(buf);
       if (value)
       {
@@ -230,7 +231,7 @@ OFCondition DcmAssociationConfigurationFile::parseRoleSelectionItems(
     found = OFTrue;
     while (found)
     {
-      sprintf(buf, "%s%u", L0_ROLE_X, ++counter);
+      OFStandard::snprintf(buf, sizeof(buf), "%s%u", L0_ROLE_X, ++counter);
       value = config.get_entry(buf);
       if (value)
       {
@@ -323,7 +324,7 @@ OFCondition DcmAssociationConfigurationFile::parseExtendedNegotiationItems(
     found = OFTrue;
     while (found)
     {
-      sprintf(buf, "%s%u", L0_EXTENDEDNEGOTIATION_X, ++counter);
+      OFStandard::snprintf(buf, sizeof(buf), "%s%u", L0_EXTENDEDNEGOTIATION_X, ++counter);
       value = config.get_entry(buf);
       if (value)
       {

@@ -164,14 +164,14 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());

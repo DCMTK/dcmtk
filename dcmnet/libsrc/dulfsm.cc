@@ -115,6 +115,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/helpers.h"
 #include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
+#include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 #include <climits>
 
@@ -728,19 +729,20 @@ DUL_InitializeFSM()
             for (idx2 = 0; idx2 < DIM_OF(FSM_FunctionTable) &&
                  stateEntries[l_index].actionFunction == NULL; idx2++)
                 if (stateEntries[l_index].action == FSM_FunctionTable[idx2].action) {
-                    stateEntries[l_index].actionFunction =
-                        FSM_FunctionTable[idx2].actionFunction;
-                    (void) sprintf(stateEntries[l_index].actionName, "%.*s",
-                                 (int)(sizeof(stateEntries[l_index].actionName) - 1),
-                                   FSM_FunctionTable[idx2].actionName);
+                    stateEntries[l_index].actionFunction = FSM_FunctionTable[idx2].actionFunction;
+                    OFStandard::snprintf(stateEntries[l_index].actionName, 
+                        sizeof(stateEntries[l_index].actionName), "%.*s",
+                        (int)(sizeof(stateEntries[l_index].actionName) - 1),
+                        FSM_FunctionTable[idx2].actionName);
                 }
         }
         for (idx2 = 0; idx2 < DIM_OF(Event_Table) &&
              strlen(stateEntries[l_index].eventName) == 0; idx2++) {
             if (stateEntries[l_index].event == Event_Table[idx2].event)
-                (void) sprintf(stateEntries[l_index].eventName, "%.*s",
-                               (int)(sizeof(stateEntries[l_index].eventName) - 1),
-                               Event_Table[idx2].eventName);
+                OFStandard::snprintf(stateEntries[l_index].eventName, 
+                    sizeof(stateEntries[l_index].eventName), "%.*s",
+                    (int)(sizeof(stateEntries[l_index].eventName) - 1),
+                    Event_Table[idx2].eventName);
         }
     }
 
@@ -781,7 +783,7 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     if (event < 0 || event >= DUL_NUMBER_OF_EVENTS)
     {
       char buf1[256];
-      sprintf(buf1, "DUL Finite State Machine Error: Bad event, state %d event %d", state, event);
+      OFStandard::snprintf(buf1, sizeof(buf1), "DUL Finite State Machine Error: Bad event, state %d event %d", state, event);
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 
@@ -789,7 +791,7 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     if (state < 1 || state > DUL_NUMBER_OF_STATES)
     {
       char buf1[256];
-      sprintf(buf1, "DUL Finite State Machine Error: Bad state, state %d event %d", state, event);
+      OFStandard::snprintf(buf1, sizeof(buf1), "DUL Finite State Machine Error: Bad state, state %d event %d", state, event);
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 
@@ -811,7 +813,7 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     else
     {
       char buf1[256];
-      sprintf(buf1, "DUL Finite State Machine Error: No action defined, state %d event %d", state, event);
+      OFStandard::snprintf(buf1, sizeof(buf1), "DUL Finite State Machine Error: No action defined, state %d event %d", state, event);
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 }
@@ -1005,7 +1007,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             if (prvCtx->transferSyntaxList == NULL)
             {
               char buf1[256];
-              sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+              OFStandard::snprintf(buf1, sizeof(buf1), "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
               free(userPresentationCtx);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
             }
@@ -1013,7 +1015,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             if ((prvCtx->result == DUL_PRESENTATION_ACCEPT) && (LST_Count(&prvCtx->transferSyntaxList) != 1))
             {
               char buf2[256];
-              sprintf(buf2, "DUL Peer supplied illegal number of transfer syntaxes (%ld)", LST_Count(&prvCtx->transferSyntaxList));
+              OFStandard::snprintf(buf2, sizeof(buf2), "DUL Peer supplied illegal number of transfer syntaxes (%ld)", LST_Count(&prvCtx->transferSyntaxList));
               free(userPresentationCtx);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf2);
             }
@@ -1446,7 +1448,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
         if (pdvLength < 2 || ULONG_MAX - pdvLength < 4 || length < 4 + pdvLength)
         {
            char buf[256];
-           sprintf(buf, "PDV with invalid length %lu encountered. This probably indicates a malformed P DATA PDU.", pdvLength);
+           OFStandard::snprintf(buf, sizeof(buf), "PDV with invalid length %lu encountered. This probably indicates a malformed P DATA PDU.", pdvLength);
            return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
         }
 
@@ -1460,7 +1462,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     if (length != 0)
     {
        char buf[256];
-       sprintf(buf, "PDV lengths don't add up correctly: %d PDVs. This probably indicates a malformed P-DATA PDU. PDU type is %02x.", (int)pdvCount, (unsigned int) pduType);
+       OFStandard::snprintf(buf, sizeof(buf), "PDV lengths don't add up correctly: %d PDVs. This probably indicates a malformed P-DATA PDU. PDU type is %02x.", (int)pdvCount, (unsigned int) pduType);
        return makeDcmnetCondition(DULC_ILLEGALPDU, OF_error, buf);
     }
 
@@ -1480,7 +1482,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
         /* Hence, return an error (see DICOM standard (year 2000) part 8, section 9.3.1, */
         /* figure 9-2) (or the corresponding section in a later version of the standard) */
        char buf[256];
-       sprintf(buf, "PDU without any PDVs encountered. In DT_2_IndicatePData.  This probably indicates a  malformed P DATA PDU." );
+       OFStandard::snprintf(buf, sizeof(buf), "PDU without any PDVs encountered. In DT_2_IndicatePData.  This probably indicates a  malformed P DATA PDU." );
        return makeDcmnetCondition(DULC_ILLEGALPDU, OF_error, buf);
     }
 
@@ -2257,7 +2259,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
     {
         char buf[1024];
-        sprintf(buf,"Illegal service parameter: %s", params->calledPresentationAddress);
+        OFStandard::snprintf(buf, sizeof(buf), "Illegal service parameter: %s", params->calledPresentationAddress);
         return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, buf);
     }
 
@@ -2281,7 +2283,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         if (server.getFamily() == 0)
         {
           char buf2[4095]; // node could be a long string
-          sprintf(buf2, "Attempt to connect to unknown host: %s", node);
+          OFStandard::snprintf(buf2, sizeof(buf2), "Attempt to connect to unknown host: %s", node);
           return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
         }
     }
@@ -2979,7 +2981,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     else if (maxLength < 14)
     {
        char buf[256];
-       sprintf(buf, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
+       OFStandard::snprintf(buf, sizeof(buf), "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
        cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
     }
     else maxLength -= 12;
@@ -3352,7 +3354,7 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
         if ((*PDUType == DUL_TYPEDATA) && (*PDULength > (*association)->maxPDVInput))
         {
           char buf1[256];
-          sprintf(buf1, "DUL Illegal PDU Length %ld.  Max expected %ld", *PDULength, (*association)->maxPDVInput);
+          OFStandard::snprintf(buf1, sizeof(buf1), "DUL Illegal PDU Length %ld.  Max expected %ld", *PDULength, (*association)->maxPDVInput);
           cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf1);
         }
     }
@@ -3496,7 +3498,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     if (!found)
     {
         char buf[256];
-        sprintf(buf, "Unrecognized PDU type: %2x", *type);
+        OFStandard::snprintf(buf, sizeof(buf), "Unrecognized PDU type: %2x", *type);
         return makeDcmnetCondition(DULC_UNRECOGNIZEDPDUTYPE, OF_error, buf);
     }
 
@@ -3878,7 +3880,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
         if (subItem == NULL)
         {
             char buf1[256];
-            sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+            OFStandard::snprintf(buf1, sizeof(buf1), "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
             free(userContext);
             return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
         }

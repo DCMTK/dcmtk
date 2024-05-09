@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2022, OFFIS e.V.
+ *  Copyright (C) 2005-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>
@@ -96,14 +97,14 @@ int main( int argc, char *argv[] )
     cmd.addOption("--call",    "-aec", 1, "[a]etitle: string", opt2.c_str());
    cmd.addSubGroup("other network options:");
     OFString opt3 = "set max receive pdu to n bytes (default: ";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
     opt3 += tempstr;
     opt3 += ")";
     OFString opt4 = "[n]umber of bytes: integer (";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
     opt4 += tempstr;
     opt4 += "..";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
     opt4 += tempstr;
     opt4 += ")";
     cmd.addOption("--max-pdu", "-pdu", 1, opt4.c_str(), opt3.c_str());
@@ -179,7 +180,7 @@ int main( int argc, char *argv[] )
 
   // figure out the presentation addresses and copy the
   // corresponding values into the association parameters.
-  sprintf( peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
+  OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
   ASC_setPresentationAddresses( params, OFStandard::getHostName().c_str(), peerHost );
 
   // set the presentation context which will be negotiated

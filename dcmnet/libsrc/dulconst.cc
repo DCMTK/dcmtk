@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -75,6 +75,7 @@
 #include "dcmtk/dcmnet/dulstruc.h"
 #include "dulpriv.h"
 #include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 static OFCondition
 constructSubItem(char *name, unsigned char type,
@@ -904,7 +905,7 @@ constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
     if (totalUserInfoLength > 65535)
     {
       char errbuf[500];
-      sprintf(errbuf, "Total length of user items (%lu bytes) exceeds upper limit of 65535 bytes", totalUserInfoLength);
+      OFStandard::snprintf(errbuf, sizeof(errbuf), "Total length of user items (%lu bytes) exceeds upper limit of 65535 bytes", totalUserInfoLength);
       return makeDcmnetCondition(ASCC_CODINGERROR, OF_error, errbuf);
     }
     else // now casting to unsigned short should be safe

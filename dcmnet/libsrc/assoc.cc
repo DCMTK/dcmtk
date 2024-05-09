@@ -657,7 +657,7 @@ ASC_addPresentationContext(
     if ((presentationContextID % 2) == 0)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context ID: %d", presentationContextID);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context ID: %d", presentationContextID);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTID, OF_error, buf);
     }
     /* see if a presentation context with this id already exists in list */
@@ -667,7 +667,7 @@ ASC_addPresentationContext(
     if (pc)
     {
       char buf[256];
-      sprintf(buf, "ASC Duplicate presentation context ID: %d", presentationContextID);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Duplicate presentation context ID: %d", presentationContextID);
       return makeDcmnetCondition(ASCC_DUPLICATEPRESENTATIONCONTEXTID, OF_error, buf);
     }
 
@@ -778,14 +778,14 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     if (params->DULparams.requestedPresentationContext == NULL)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context position: %d", listPosition);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context position: %d", listPosition);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTPOSITION, OF_error, buf);
     }
     l = &(params->DULparams.requestedPresentationContext);
     if (*l == NULL)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context position: %d", listPosition);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context position: %d", listPosition);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTPOSITION, OF_error, buf);
     }
     pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
@@ -799,7 +799,7 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     if (pc == NULL)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context position: %d", listPosition);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context position: %d", listPosition);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTPOSITION, OF_error, buf);
     }
 

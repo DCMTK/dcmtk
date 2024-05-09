@@ -102,7 +102,7 @@
 #include "dcmtk/dcmdata/dcdicent.h"    /* for class DcmDictEntry, needed for MSVC5 */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 #include "dcmtk/dcmdata/dcvrui.h"      /* for class DcmUniqueIdentifier */
-
+#include "dcmtk/ofstd/ofstd.h"
 
 /*
  * Global variables, mutex protected
@@ -173,13 +173,13 @@ static void saveDimseFragment(
   char filename[2048];
   if (isCommand)
   {
-    sprintf(filename, "dimse-cmd-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
+    OFStandard::snprintf(filename, sizeof(filename), "dimse-cmd-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
   } else {
     if (g_dimse_dataCounter < 2)
     {
-      sprintf(filename, "dimse-dat-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
+      OFStandard::snprintf(filename, sizeof(filename), "dimse-dat-%s-%04lu.dcm", transmission, g_dimse_commandCounter);
     } else {
-      sprintf(filename, "dimse-dat-%s-%04lu-%02lu.dcm", transmission, g_dimse_commandCounter, g_dimse_dataCounter);
+      OFStandard::snprintf(filename, sizeof(filename), "dimse-dat-%s-%04lu-%02lu.dcm", transmission, g_dimse_commandCounter, g_dimse_dataCounter);
     }
   }
 
@@ -368,7 +368,7 @@ getTransferSyntax(
         /* all other transfer syntaxes are not supported; hence, set the error indicator variable */
         {
           char buf[256];
-          sprintf(buf, "DIMSE Unsupported transfer syntax: %s", ts);
+          OFStandard::snprintf(buf, sizeof(buf), "DIMSE Unsupported transfer syntax: %s", ts);
           OFCondition subCond = makeDcmnetCondition(DIMSEC_UNSUPPORTEDTRANSFERSYNTAX, OF_error, buf);
           cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
         }
@@ -1143,7 +1143,7 @@ DIMSE_receiveCommand(
         {
             delete cmdSet;
             char buf1[256];
-            sprintf(buf1, "DIMSE: Different PresIDs inside Command Set: %d != %d", pid, pdv.presentationContextID);
+            OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Different PresIDs inside Command Set: %d != %d", pid, pdv.presentationContextID);
             OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
         }
@@ -1155,7 +1155,7 @@ DIMSE_receiveCommand(
         {
             /* This should NEVER happen.  See Part 7, Annex F. */
             char buf2[256];
-            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            OFStandard::snprintf(buf2, sizeof(buf2), "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
             break;
         }
@@ -1445,7 +1445,7 @@ DIMSE_receiveDataSetInFile(
           else if (pdv.presentationContextID != pid)
           {
             char buf1[256];
-            sprintf(buf1, "DIMSE: Different PresIDs inside data set: %d != %d", pid, pdv.presentationContextID);
+            OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Different PresIDs inside data set: %d != %d", pid, pdv.presentationContextID);
             OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
             last = OFTrue; // terminate loop
@@ -1458,7 +1458,7 @@ DIMSE_receiveDataSetInFile(
           {
             /* This should NEVER happen.  See Part 7, Annex F. */
             char buf2[256];
-            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            OFStandard::snprintf(buf2, sizeof(buf2), "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
             last = OFTrue; // terminate loop
           }
@@ -1600,7 +1600,7 @@ DIMSE_receiveDataSetInMemory(
             else if (pdv.presentationContextID != pid)
             {
                 char buf1[256];
-                sprintf(buf1, "DIMSE: Different PresIDs inside data set: %d != %d", pid, pdv.presentationContextID);
+                OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Different PresIDs inside data set: %d != %d", pid, pdv.presentationContextID);
                 OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
                 cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
                 last = OFTrue;
@@ -1615,7 +1615,7 @@ DIMSE_receiveDataSetInMemory(
             if ((pdv.fragmentLength % 2) != 0)
             {
                 char buf2[256];
-                sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+                OFStandard::snprintf(buf2, sizeof(buf2), "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
                 cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
                 last = OFTrue;
             }

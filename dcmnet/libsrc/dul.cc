@@ -1860,7 +1860,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 DWORD bytesWritten;
                 char buf[30];
                 // we pass the socket handle as a 64-bit unsigned integer, which should work for 32 and 64 bit Windows
-                sprintf(buf, "%llu", OFreinterpret_cast(unsigned __int64, childSocketHandle));
+                OFStandard::snprintf(buf, sizeof(buf), "%llu", OFreinterpret_cast(unsigned __int64, childSocketHandle));
                 if (!WriteFile(hChildStdInWriteDup, buf, OFstatic_cast(DWORD, strlen(buf) + 1), &bytesWritten, NULL))
                 {
                     CloseHandle(hChildStdInWriteDup);
@@ -1961,7 +1961,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     // create string containing numerical IP address.
     OFString client_dns_name;
     char client_ip_address[20];
-    sprintf(client_ip_address, "%-d.%-d.%-d.%-d",  // this code is ugly but thread safe
+    OFStandard::snprintf(client_ip_address, sizeof(client_ip_address), "%-d.%-d.%-d.%-d",  // this code is ugly but thread safe
        ((int) from.sa_data[2]) & 0xff,
        ((int) from.sa_data[3]) & 0xff,
        ((int) from.sa_data[4]) & 0xff,
@@ -2657,11 +2657,11 @@ dump_uid(const char *UID, const char *indent)
 
     if ((UID==NULL)||(UID[0] == '\0'))
     {
-        sprintf(buf, indent, " ");
+        OFStandard::snprintf(buf, sizeof(buf), indent, " ");
         return OFString(buf) + "No UID";
     } else {
         uidName = dcmFindNameOfUID(UID, "Unknown UID");
-        sprintf(buf, indent, " ");
+        OFStandard::snprintf(buf, sizeof(buf), indent, " ");
         return OFString(buf) + uidName;
     }
 }

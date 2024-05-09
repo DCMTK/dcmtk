@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -159,7 +159,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     if ((assoc->protocol & DUL_PROTOCOL) == 0)
     {
         char buffer[256];
-        sprintf(buffer, "DUL Unsupported peer protocol %04x; expected %04x in %s", assoc->protocol, DUL_PROTOCOL, "parseAssociate");
+        OFStandard::snprintf(buffer, sizeof(buffer), "DUL Unsupported peer protocol %04x; expected %04x in %s", assoc->protocol, DUL_PROTOCOL, "parseAssociate");
         return makeDcmnetCondition(DULC_UNSUPPORTEDPEERPROTOCOL, OF_error, buffer);
     }
     assoc->rsv2[0] = *buf++;
@@ -335,7 +335,7 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
     if (subItem->length > DICOM_UI_LENGTH)
     {
         char buffer[256];
-        sprintf(buffer, "DUL illegal subitem length %d. Maximum allowed size is %d.",
+        OFStandard::snprintf(buffer, sizeof(buffer), "DUL illegal subitem length %d. Maximum allowed size is %d.",
                subItem->length, DICOM_UI_LENGTH);
         return makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buffer);
     }

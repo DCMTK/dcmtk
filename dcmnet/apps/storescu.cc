@@ -723,7 +723,7 @@ int main(int argc, char *argv[])
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
-    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /* Configure User Identity Negotiation*/
@@ -1111,7 +1111,7 @@ static OFString
 intToString(int i)
 {
   char numbuf[32];
-  sprintf(numbuf, "%d", i);
+  OFStandard::snprintf(numbuf, sizeof(numbuf), "%d", i);
   return numbuf;
 }
 

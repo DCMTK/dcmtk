@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmnet/cond.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // #define INCLUDE_CSTDIO
 // #include "dcmtk/ofstd/ofstdinc.h"
@@ -97,7 +98,7 @@ makeOFConditionConst(NET_EC_AssociatePDUTooLarge,            OFM_dcmnet, 1079, O
 OFString& DimseCondition::dump(OFString& str, OFCondition cond)
 {
   char buf[16];
-  sprintf(buf,"%04x:%04x ", cond.module(), cond.code());
+  OFStandard::snprintf(buf, sizeof(buf), "%04x:%04x ", cond.module(), cond.code());
   str = buf;
   str += cond.text();
   return str;
@@ -122,7 +123,7 @@ OFCondition DimseCondition::push(
   /* declare variable outside the block structure of the OFSTRINGSTREAM_xxx macros */
   OFCondition cond;
   char buf[16];
-  sprintf(buf,"%04x:%04x ", subCondition.module(), subCondition.code());
+  OFStandard::snprintf(buf, sizeof(buf), "%04x:%04x ", subCondition.module(), subCondition.code());
   os << aText << OFendl << buf << subCondition.text() << OFStringStream_ends;
   OFSTRINGSTREAM_GETSTR(os, c)
   cond = makeOFCondition(aModule, aCode, aStatus, c);
