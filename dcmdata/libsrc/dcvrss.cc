@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrss.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 
 // ********************************
@@ -185,9 +185,9 @@ void DcmSignedShort::print(STD_NAMESPACE ostream &out,
                 {
                     /* check whether first value is printed (omit delimiter) */
                     if (i == 0)
-                        sprintf(buffer, "%hd", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%hd", *sintVals);
                     else
-                        sprintf(buffer, "\\%hd", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%hd", *sintVals);
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
                     if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
@@ -264,7 +264,7 @@ OFCondition DcmSignedShort::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%i", sintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%i", sintVal);
         /* assign result */
         stringVal = buffer;
     }

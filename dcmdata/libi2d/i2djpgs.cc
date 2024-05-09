@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,8 +19,10 @@
  *
  */
 
-#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
 #include "dcmtk/config/osconfig.h"
+
+#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
@@ -845,7 +847,7 @@ OFString I2DJpegSource::jpegMarkerToString(const E_JPGMARKER& marker, const OFBo
     }
     OFString msg = "UNKNOWN MARKER :";
     char hexNo[10];
-    sprintf(hexNo, "%x2", marker);
+    OFStandard::snprintf(hexNo, sizeof(hexNo), "%x2", marker);
     msg += hexNo;
     return msg;
 }

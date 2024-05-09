@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 {
     char rcsid[200];
     // print application header
-    sprintf(rcsid, "$dcmtk: %s v%s %s $", application_name, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
+    OFStandard::snprintf(rcsid, sizeof(rcsid), "$dcmtk: %s v%s %s $", application_name, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE);
 
     // the next lines describe commandline arguments/options
     app = new OFConsoleApplication(application_name, "Modify DICOM files", rcsid);

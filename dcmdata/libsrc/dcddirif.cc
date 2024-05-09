@@ -287,7 +287,7 @@ static OFString &constructTagName(DcmObject *object,
         if (compare(tagName, DcmTag_ERROR_TagName))
         {
             char buffer[32];
-            sprintf(buffer, "(0x%04x,0x%04x)", tag.getGTag(), tag.getETag());
+            OFStandard::snprintf(buffer, sizeof(buffer), "(0x%04x,0x%04x)", tag.getGTag(), tag.getETag());
             tagName = buffer;
         }
     } else
@@ -5936,10 +5936,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
             /* use at most 10 chars from prefix */
             OFStandard::strlcpy(buffer, prefix, 10 + 1);
             /* append a 6 digits number */
-            sprintf(buffer + strlen(buffer), "%06lu", number);
+            size_t txlen = strlen(buffer);
+            OFStandard::snprintf(buffer + txlen, sizeof(buffer) - txlen, "%06lu", number);
         } else {
             /* create a number string only */
-            sprintf(buffer, "%lu", number);
+            OFStandard::snprintf(buffer, sizeof(buffer), "%lu", number);
         }
         record->putAndInsertString(key, buffer);
         /* create warning message */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,7 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvruv.h"
-
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcjson.h"
 
@@ -186,17 +186,17 @@ void DcmUnsigned64bitVeryLong::print(STD_NAMESPACE ostream &out,
                     /* check whether first value is printed (omit delimiter) */
                     if (i == 0)
 #ifdef PRIu64
-                        sprintf(buffer, "%" PRIu64, *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRIu64, *uintVals);
                     else
-                        sprintf(buffer, "\\%" PRIu64, *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%" PRIu64, *uintVals);
 #elif SIZEOF_LONG == 8
-                        sprintf(buffer, "%lu", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%lu", *uintVals);
                     else
-                        sprintf(buffer, "\\%lu", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%lu", *uintVals);
 #else // assume "long long" is 64 bits
-                        sprintf(buffer, "%llu", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%llu", *uintVals);
                     else
-                        sprintf(buffer, "\\%llu", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%llu", *uintVals);
 #endif
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
@@ -276,11 +276,11 @@ OFCondition DcmUnsigned64bitVeryLong::getOFString(OFString &stringVal,
         /* ... and convert it to a character string */
         char buffer[32];
 #ifdef PRIu64
-        sprintf(buffer, "%" PRIu64, uintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRIu64, uintVal);
 #elif SIZEOF_LONG == 8
-        sprintf(buffer, "%lu", uintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%lu", uintVal);
 #else // assume "long long" is 64 bits
-        sprintf(buffer, "%llu", uintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%llu", uintVal);
 #endif
         /* assign result */
         stringVal = buffer;

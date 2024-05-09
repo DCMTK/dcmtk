@@ -1958,16 +1958,16 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
         addUIDComponent(uid, SITE_INSTANCE_UID_ROOT);
     }
 
-    sprintf(buf, ".%lu", hostIdentifier);
+    OFStandard::snprintf(buf, sizeof(buf), ".%lu", hostIdentifier);
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(OFStandard::getProcessID()));
+    OFStandard::snprintf(buf, sizeof(buf), ".%lu", forcePositive(OFStandard::getProcessID()));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
+    OFStandard::snprintf(buf, sizeof(buf), ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%u", counter);
+    OFStandard::snprintf(buf, sizeof(buf), ".%u", counter);
 
     addUIDComponent(uid, buf);
 

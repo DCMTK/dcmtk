@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/libi2d/i2d.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcfilefo.h"  /* for DcmFileFormat */
 #include "dcmtk/dcmdata/dcdeftag.h"  /* for DCM_ defines */
@@ -454,7 +455,7 @@ OFCondition Image2Dcm::incrementInstanceNumber(DcmDataset *targetDset)
     {
       instanceNumber++;
       char buf[100];
-      sprintf(buf, "%ld", OFstatic_cast(long, instanceNumber));
+      OFStandard::snprintf(buf, sizeof(buf), "%ld", OFstatic_cast(long, instanceNumber));
       OFCondition cond = targetDset->putAndInsertOFStringArray(DCM_InstanceNumber, buf);
       if (cond.bad())
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Instance Number to dataset");
@@ -686,7 +687,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
   if ( m_pixelAspectRatioH != m_pixelAspectRatioV )
   {
     char buf[200];
-    int err = sprintf(buf, "%u\\%u", m_pixelAspectRatioV, m_pixelAspectRatioH);
+    int err = OFStandard::snprintf(buf, sizeof(buf), "%u\\%u", m_pixelAspectRatioV, m_pixelAspectRatioH);
     if (err == -1) return EC_IllegalCall;
     cond = dset->putAndInsertOFStringArray(DCM_PixelAspectRatio, buf);
     if (cond.bad())

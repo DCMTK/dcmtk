@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrul.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 // ********************************
 
@@ -185,17 +185,17 @@ void DcmUnsignedLong::print(STD_NAMESPACE ostream &out,
                     /* check whether first value is printed (omit delimiter) */
                     if (i == 0)
 #ifdef PRIu32
-                        sprintf(buffer, "%" PRIu32, *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRIu32, *uintVals);
                     else
-                        sprintf(buffer, "\\%" PRIu32, *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%" PRIu32, *uintVals);
 #elif SIZEOF_LONG == 8
-                        sprintf(buffer, "%u", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%u", *uintVals);
                     else
-                        sprintf(buffer, "\\%u", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%u", *uintVals);
 #else
-                        sprintf(buffer, "%lu", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%lu", *uintVals);
                     else
-                        sprintf(buffer, "\\%lu", *uintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%lu", *uintVals);
 #endif
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
@@ -274,7 +274,7 @@ OFCondition DcmUnsignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%lu", OFstatic_cast(unsigned long, uintVal));
+        OFStandard::snprintf(buffer, sizeof(buffer), "%lu", OFstatic_cast(unsigned long, uintVal));
         /* assign result */
         stringVal = buffer;
     }

@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcrleccd.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // dcmdata includes
 #include "dcmtk/dcmdata/dcrlecp.h"   /* for class DcmRLECodecParameter */
@@ -432,7 +433,7 @@ OFCondition DcmRLECodecDecoder::decode(
           if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
           {
             char numBuf[20];
-            sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+            OFStandard::snprintf(numBuf, sizeof(numBuf), "%ld", OFstatic_cast(long, imageFrames));
             result = OFstatic_cast(DcmItem *, dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
           }
         }

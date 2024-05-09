@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,8 +21,9 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcjson.h"
 
 // ********************************
@@ -340,7 +341,7 @@ OFCondition DcmAttributeTag::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "(%4.4x,%4.4x)", tagVal.getGroup(), tagVal.getElement());
+        OFStandard::snprintf(buffer, sizeof(buffer), "(%4.4x,%4.4x)", tagVal.getGroup(), tagVal.getElement());
         /* assign result */
         stringVal = buffer;
     }
