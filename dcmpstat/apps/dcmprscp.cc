@@ -39,6 +39,7 @@ END_EXTERN_C
 #include "dcmtk/dcmpstat/dvpsprt.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"
 #include "dcmtk/oflog/fileap.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -448,7 +449,7 @@ int main(int argc, char *argv[])
       {
         aString = logfileprefix;
         aString += "_";
-        sprintf(logcounterbuf, "%04ld", ++logcounter);
+        OFStandard::snprintf(logcounterbuf, sizeof(logcounterbuf), "%04ld", ++logcounter);
         aString += logcounterbuf;
         aString += ".dcm";
         printSCP.setDimseLogPath(aString.c_str());

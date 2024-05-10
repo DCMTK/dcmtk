@@ -284,7 +284,8 @@ static OFCondition convertInputLUT(const unsigned int numberOfBits,
                                    const unsigned int order,
                                    Uint16 *outputData,
                                    OFString &header,
-                                   char *explanation)
+                                   char *explanation,
+                                   size_t explanation_len)
 {
     OFCondition result = EC_IllegalCall;
     if ((inputXData != NULL) && (inputYData != NULL) && (inputEntries > 0) && (inputYMax > 0) && (outputData != NULL))
@@ -294,7 +295,7 @@ static OFCondition convertInputLUT(const unsigned int numberOfBits,
         {
             if (strlen(explanation) == 0)
             {
-                sprintf(explanation, "LUT created from %u->%u bit data, descriptor %u/%ld/%u",
+                OFStandard::snprintf(explanation, explanation_len, "LUT created from %u->%u bit data, descriptor %u/%ld/%u",
                     DicomImageClass::tobits((int)inputXMax), DicomImageClass::tobits((int)inputYMax),
                     (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
             }
@@ -364,7 +365,8 @@ static void gammaLUT(const unsigned int numberOfBits,
                      const double gammaValue,
                      Uint16 *outputData,
                      OFString &header,
-                     char *explanation)
+                     char *explanation,
+                     size_t explanation_len)
 {
     if (outputData != NULL)
     {
@@ -376,8 +378,7 @@ static void gammaLUT(const unsigned int numberOfBits,
             {
                 char gammabuf[16];
                 OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
-
-                sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
+                OFStandard::snprintf(explanation, explanation_len, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                     (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
             }
             oss << "# " << explanation << OFendl;
@@ -893,7 +894,7 @@ int main(int argc, char *argv[])
         {
             char explStr[1024];
             if (opt_explanation != NULL)
-                OFStandard::strlcpy(explStr, opt_explanation, 1024);
+                OFStandard::strlcpy(explStr, opt_explanation, sizeof(explStr));
             else
                 explStr[0] = 0;
             OFString headerStr;
@@ -905,22 +906,22 @@ int main(int argc, char *argv[])
             if (readMapFile(opt_mapName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
             {
                 result = convertInputLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
-                    inputXMax, inputYMax, (unsigned int)opt_order, outputData, headerStr, explStr);
+                    inputXMax, inputYMax, (unsigned int)opt_order, outputData, headerStr, explStr, sizeof(explStr));
             }
             else if (readTextFile(opt_textName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
             {
                 result = convertInputLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
-                    inputXMax, inputYMax, (unsigned int)opt_order, outputData, headerStr, explStr);
+                    inputXMax, inputYMax, (unsigned int)opt_order, outputData, headerStr, explStr, sizeof(explStr));
             } else {
-                gammaLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_gammaValue, outputData, headerStr, explStr);
+                gammaLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_gammaValue, outputData, headerStr, explStr, sizeof(explStr));
             }
             if (result == EC_Normal)
             {
                 if (opt_inverseGSDF)
                     applyInverseGSDF((unsigned int)opt_bits, opt_entries, opt_byteAlign, (unsigned int)opt_minDensity, (unsigned int)opt_maxDensity,
-                        (unsigned int)opt_illumination, (unsigned int)opt_reflection, outputData, headerStr, explStr, 1024);
+                        (unsigned int)opt_illumination, (unsigned int)opt_reflection, outputData, headerStr, explStr, sizeof(explStr));
                 if (opt_randomCount > 0)
-                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (Uint32)opt_randomSeed, outputData, explStr, 1024);
+                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (Uint32)opt_randomSeed, outputData, explStr, sizeof(explStr));
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }

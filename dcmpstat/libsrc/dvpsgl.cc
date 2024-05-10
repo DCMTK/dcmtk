@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2022, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/dcmpstat/dvpsgl.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 #include "dcmtk/dcmiod/cielabutil.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 /* static helper functions */
 
@@ -191,7 +192,7 @@ void DVPSGraphicLayer::setGL(const char *gl)
 void DVPSGraphicLayer::setGLOrder(Sint32 glOrder)
 {
   char buf[100];
-  sprintf(buf, "%ld", (long)glOrder);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)glOrder);
   graphicLayerOrder.putString(buf);
   return;
 }

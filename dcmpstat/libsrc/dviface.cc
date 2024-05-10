@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/oflist.h"       /* for class OFList */
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmimgle/digsdfn.h"   /* for DiGSDFunction */
 #include "dcmtk/dcmimgle/diciefn.h"   /* for DiCIELABFunction */
@@ -196,7 +197,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     referenceTime = OFstatic_cast(unsigned long, time(NULL));
     /* initialize printJobIdentifier with a string comprising the current time */
     char buf[20];
-    sprintf(buf, "%lu", referenceTime);
+    OFStandard::snprintf(buf, sizeof(buf), "%lu", referenceTime);
     printJobIdentifier = buf;
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
@@ -2233,11 +2234,11 @@ OFCondition DVInterface::sendIOD(const char * targetID,
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
-  if (seriesUID && instanceUID) sprintf(commandline, "%s %s %s %s %s %s", sender_application, configPath.c_str(),
+  if (seriesUID && instanceUID) OFStandard::snprintf(commandline, sizeof(commandline), "%s %s %s %s %s %s", sender_application, configPath.c_str(),
       targetID, studyUID, seriesUID, instanceUID);
-  else if (seriesUID) sprintf(commandline, "%s %s %s %s %s", sender_application, configPath.c_str(), targetID,
+  else if (seriesUID) OFStandard::snprintf(commandline, sizeof(commandline), "%s %s %s %s %s", sender_application, configPath.c_str(), targetID,
       studyUID, seriesUID);
-  else sprintf(commandline, "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
+  else OFStandard::snprintf(commandline, sizeof(commandline), "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
 #ifdef DEBUG
   if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -2295,7 +2296,7 @@ OFCondition DVInterface::startReceiver()
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
-    sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), getTargetID(i, DVPSE_receiver));
+    OFStandard::snprintf(commandline, sizeof(commandline), "%s %s %s", receiver_application, configPath.c_str(), getTargetID(i, DVPSE_receiver));
 #ifdef DEBUG
     if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -2350,7 +2351,7 @@ OFCondition DVInterface::terminateReceiver()
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
-  sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), "--terminate");
+  OFStandard::snprintf(commandline, sizeof(commandline), "%s %s %s", receiver_application, configPath.c_str(), "--terminate");
 #ifdef DEBUG
   if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -2400,7 +2401,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
     if (timeout > 0)
     {
       char str_timeout[20];
-      sprintf(str_timeout, "%lu", OFstatic_cast(unsigned long, timeout));
+      OFStandard::snprintf(str_timeout, sizeof(str_timeout), "%lu", OFstatic_cast(unsigned long, timeout));
       execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown",
         "--timeout", str_timeout, OFreinterpret_cast(char *, 0));
     }
@@ -2426,12 +2427,12 @@ OFCondition DVInterface::startQueryRetrieveServer()
 
   if (timeout > 0)
   {
-    sprintf(commandline, "%s -c %s --allow-shutdown --timeout %lu",
+    OFStandard::snprintf(commandline, sizeof(commandline), "%s -c %s --allow-shutdown --timeout %lu",
       server_application, config_filename.c_str(), (unsigned long) timeout);
   }
   else
   {
-    sprintf(commandline, "%s -c %s --allow-shutdown", server_application, config_filename.c_str());
+    OFStandard::snprintf(commandline, sizeof(commandline), "%s -c %s --allow-shutdown", server_application, config_filename.c_str());
   }
 
 #ifdef DEBUG
@@ -2470,7 +2471,7 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
     if (cond.good())
     {
       ASC_setAPTitles(params, getNetworkAETitle(), getQueryRetrieveAETitle(), NULL);
-      sprintf(peerHost, "localhost:%d", OFstatic_cast(int, getQueryRetrievePort()));
+      OFStandard::snprintf(peerHost, sizeof(peerHost), "localhost:%d", OFstatic_cast(int, getQueryRetrievePort()));
       ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
       const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
@@ -2593,7 +2594,7 @@ OFCondition DVInterface::saveDICOMImage(
       if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_PixelRepresentation, 0);
       if ((EC_Normal==status)&&(aspectRatio != 1.0))
       {
-        sprintf(newuid, "%ld\\%ld", 1000L, OFstatic_cast(long, aspectRatio*1000.0));
+        OFStandard::snprintf(newuid, sizeof(newuid), "%ld\\%ld", 1000L, OFstatic_cast(long, aspectRatio*1000.0));
         status = DVPSHelper::putStringValue(dataset, DCM_PixelAspectRatio, newuid);
       }
       DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
@@ -2732,7 +2733,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_PixelRepresentation, 0);
       if ((EC_Normal==status)&&(aspectRatio != 1.0))
       {
-        sprintf(newuid, "%ld\\%ld", 1000L, OFstatic_cast(long, aspectRatio*1000.0));
+        OFStandard::snprintf(newuid, sizeof(newuid), "%ld\\%ld", 1000L, OFstatic_cast(long, aspectRatio*1000.0));
         status = DVPSHelper::putStringValue(dataset, DCM_PixelAspectRatio, newuid);
       }
 
@@ -2976,7 +2977,7 @@ OFCondition DVInterface::saveStoredPrint(
       }
       if (prependLighting)
       {
-        sprintf(buf, "%d/%d ", pPrint->getPrintIllumination(), pPrint->getPrintReflectedAmbientLight());
+        OFStandard::snprintf(buf, sizeof(buf), "%d/%d ", pPrint->getPrintIllumination(), pPrint->getPrintReflectedAmbientLight());
         text += buf;
       }
       text += annotationText;
@@ -3384,7 +3385,7 @@ OFCondition DVInterface::startPrintSpooler()
   unsigned long sleepingTime = getSpoolerSleep();
   if (sleepingTime==0) sleepingTime=1; // default
   char sleepStr[30];
-  sprintf(sleepStr, "%lu", sleepingTime);
+  OFStandard::snprintf(sleepStr, sizeof(sleepStr), "%lu", sleepingTime);
   OFBool detailedLog = getDetailedLog();
 
   OFCondition result = EC_Normal;
@@ -3434,10 +3435,10 @@ OFCondition DVInterface::startPrintSpooler()
     char commandline[4096];
     if (detailedLog)
     {
-      sprintf(commandline, "%s --verbose --dump --spool %s --printer %s --config %s --sleep %s", spooler_application,
+      OFStandard::snprintf(commandline, sizeof(commandline), "%s --verbose --dump --spool %s --printer %s --config %s --sleep %s", spooler_application,
         printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
     } else {
-      sprintf(commandline, "%s --spool %s --printer %s --config %s --sleep %s", spooler_application,
+      OFStandard::snprintf(commandline, sizeof(commandline), "%s --spool %s --printer %s --config %s --sleep %s", spooler_application,
         printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
     }
 #ifdef DEBUG
@@ -3461,7 +3462,7 @@ OFCondition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
   if (printer==NULL) return EC_IllegalCall;
   char buf[20];
 
-  sprintf(buf, "%04lu", printJobCounter++);
+  OFStandard::snprintf(buf, sizeof(buf), "%04lu", printJobCounter++);
   jobname =  getSpoolFolder();
   jobname += PATH_SEPARATOR;
   jobname += printJobIdentifier;
@@ -3569,9 +3570,9 @@ OFCondition DVInterface::startPrintServer()
     char commandline[4096];
     if (detailedLog)
     {
-      sprintf(commandline, "%s --logfile --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
+      OFStandard::snprintf(commandline, sizeof(commandline), "%s --logfile --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
     } else {
-      sprintf(commandline, "%s --logfile --printer %s --config %s", application, printer, configPath.c_str());
+      OFStandard::snprintf(commandline, sizeof(commandline), "%s --logfile --printer %s --config %s", application, printer, configPath.c_str());
     }
 #ifdef DEBUG
     if (0 == CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
@@ -3706,7 +3707,7 @@ OFCondition DVInterface::terminatePrintServer()
         }
 
         ASC_setAPTitles(params, getNetworkAETitle(), getTargetAETitle(target), NULL);
-        sprintf(peerHost, "%s:%d", getTargetHostname(target), OFstatic_cast(int, getTargetPort(target)));
+        OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", getTargetHostname(target), OFstatic_cast(int, getTargetPort(target)));
         ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
         if (cond.good()) cond = ASC_setTransportLayerType(params, useTLS);
@@ -3868,7 +3869,7 @@ OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
 
   if ((EC_Normal==result)&&(printerNumberOfCopies > 0))
   {
-    sprintf(buf, "%lu", printerNumberOfCopies);
+    OFStandard::snprintf(buf, sizeof(buf), "%lu", printerNumberOfCopies);
     delem = new DcmIntegerString(DCM_NumberOfCopies);
     if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
     if (EC_Normal==result) result = dset.insert(delem, OFTrue /*replaceOld*/);
@@ -3925,7 +3926,7 @@ OFCondition DVInterface::startExternalApplication(const char *application, const
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
-  sprintf(commandline, "%s %s", application, filename);
+  OFStandard::snprintf(commandline, sizeof(commandline), "%s %s", application, filename);
 #ifdef DEBUG
   if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2022, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1361,7 +1361,8 @@ OFCondition DcmPresentationState::addImageReference(
   {
     for (i=0; i<ofnumberOfFrames; i++)
     {
-        if (!aString.empty()) sprintf(buf, "\\%ld", (long)(i+1)); else sprintf(buf, "%ld", (long)(i+1));
+        if (!aString.empty()) OFStandard::snprintf(buf, sizeof(buf), "\\%ld", (long)(i+1));
+            else OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)(i+1));
         aString += buf;
     }
     result = addImageReference(ofstudyUID.c_str(), ofseriesUID.c_str(), ofsopclassUID.c_str(),
@@ -1601,7 +1602,7 @@ OFCondition DcmPresentationState::setPolyShutterOrigin(Sint32 x, Sint32 y)
   char buf[80];
   useShutterPolygonal = OFFalse;
   verticesOfThePolygonalShutter.clear();
-  sprintf(buf, "%ld\\%ld", (long)y, (long)x);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld\\%ld", (long)y, (long)x);
   return verticesOfThePolygonalShutter.putString(buf);
 }
 

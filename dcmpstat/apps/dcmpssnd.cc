@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2023, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -715,7 +715,7 @@ int main(int argc, char *argv[])
 
     ASC_setAPTitles(params, dvi.getNetworkAETitle(), targetAETitle, NULL);
 
-    sprintf(peerHost, "%s:%d", targetHostname, (int)targetPort);
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", targetHostname, (int)targetPort);
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     cond = addAllStoragePresentationContexts(params, targetImplicitOnly);

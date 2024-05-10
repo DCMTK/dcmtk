@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2022, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,11 +21,11 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
+#include "dcmtk/dcmpstat/dvpspr.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"
-#include "dcmtk/dcmpstat/dvpspr.h"
 
 /* --------------- class DVPSPrintMessageHandler --------------- */
 
@@ -154,7 +154,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
           if (response.CommandField != expectedResponse)
           {
             char buf1[256];
-            sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+            OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
             return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
           }
           T_DIMSE_DataSetType responseDataset = DIMSE_DATASET_NULL;
@@ -185,7 +185,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
             default:
               {
                 char buf1[256];
-                sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+                OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
                 return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
               }
               /* break; */
@@ -193,7 +193,7 @@ OFCondition DVPSPrintMessageHandler::sendNRequest(
           if (responseMessageID != expectedMessageID)
           {
             char buf1[256];
-            sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+            OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
             return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
           }
           rspDataset = NULL;
@@ -498,7 +498,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   if (cond.bad()) return cond;
 
   ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
-  sprintf(dnpeerHost, "%s:%d", peerHost, peerPort);
+  OFStandard::snprintf(dnpeerHost, sizeof(dnpeerHost), "%s:%d", peerHost, peerPort);
   ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), dnpeerHost);
 
   /* presentation contexts */

@@ -21,13 +21,14 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsril.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcsequen.h"
-#include "dcmtk/dcmpstat/dvpsril.h"
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
 #include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsdef.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
@@ -221,7 +222,7 @@ OFCondition DVPSReferencedImage_PList::addImageReference(
   char frameString[24];
   if (applicability==DVPSB_currentFrame)
   {
-    sprintf(frameString, "%ld", frame);
+    OFStandard::snprintf(frameString, sizeof(frameString), "%ld", frame);
     framenumber = frameString;
   }
   return addImageReference(sopclassUID, instanceUID, framenumber);

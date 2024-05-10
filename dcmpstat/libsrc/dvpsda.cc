@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsda.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmpstat/dvpsda.h"
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
 #include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
@@ -312,7 +312,7 @@ OFCondition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(const char *spacing)
 OFCondition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(double ratio)
 {
   char str[100];
-  sprintf(str, "10000\\%ld", (long)(ratio*10000.0));
+  OFStandard::snprintf(str, sizeof(str), "10000\\%ld", (long)(ratio*10000.0));
   return setDisplayedAreaPixelAspectRatio(str);
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,10 +21,11 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsri.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcitem.h"
-#include "dcmtk/dcmpstat/dvpsri.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants and macros */
+#include "dcmtk/ofstd/ofstd.h"
 
 /* --------------- class DVPSReferencedImage --------------- */
 
@@ -235,7 +236,8 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
     {
       if (frameCache[i] != (Sint32)frame) 
       {
-      	if (aString.size() ==0) sprintf(str, "%ld", (long)(frameCache[i])); else sprintf(str, "\\%ld", (long)(frameCache[i]));
+      	if (aString.size() ==0) OFStandard::snprintf(str, sizeof(str), "%ld", (long)(frameCache[i]));
+          else OFStandard::snprintf(str, sizeof(str), "\\%ld", (long)(frameCache[i]));
       	aString += str;
       }
     }
@@ -244,7 +246,8 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
     {
       if (i != frame)
       {
-      	if (aString.size() ==0) sprintf(str, "%ld", i); else sprintf(str, "\\%ld", i);
+      	if (aString.size() ==0) OFStandard::snprintf(str, sizeof(str), "%ld", i);
+          else OFStandard::snprintf(str, sizeof(str), "\\%ld", i);
       	aString += str;
       }
     }

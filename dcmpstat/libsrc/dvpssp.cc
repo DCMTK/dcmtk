@@ -45,6 +45,7 @@
 #include "dcmtk/dcmpstat/dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/ofstd/ofstd.h"
 
 #include <cmath>
 
@@ -928,7 +929,7 @@ OFCondition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsign
 {
   if ((columns==0)||(rows==0)) return EC_IllegalCall;
   char newFormat[80];
-  sprintf(newFormat, "STANDARD\\%lu,%lu", columns, rows);
+  OFStandard::snprintf(newFormat, sizeof(newFormat), "STANDARD\\%lu,%lu", columns, rows);
 
   OFCondition result = imageDisplayFormat.putString(newFormat);
   if (EC_Normal == result)
@@ -1717,7 +1718,7 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
         double aspectRatio = image.getWidthHeightRatio();
         if ((aspectRatio != 1.0)&&(aspectRatio != 0))
         {
-          sprintf(str, "10000\\%ld", (long)(aspectRatio*10000.0));
+          OFStandard::snprintf(str, sizeof(str), "10000\\%ld", (long)(aspectRatio*10000.0));
           if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_PixelAspectRatio, str);
         }
         if (transmitImagesIn12Bit)
@@ -1819,7 +1820,7 @@ const char *DVPSStoredPrint::getMaxDensity()
     if (EC_Normal == maxDensity.getUint16(density,0))
     {
       char buf[20];
-      sprintf(buf, "%hu", density);
+      OFStandard::snprintf(buf, sizeof(buf), "%hu", density);
       tempDensity = buf;
       return tempDensity.c_str();
     }
@@ -1835,7 +1836,7 @@ const char *DVPSStoredPrint::getMinDensity()
     if (EC_Normal == minDensity.getUint16(density,0))
     {
       char buf[20];
-      sprintf(buf, "%hu", density);
+      OFStandard::snprintf(buf, sizeof(buf), "%hu", density);
       tempDensity = buf;
       return tempDensity.c_str();
     }

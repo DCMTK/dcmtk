@@ -745,13 +745,13 @@ OFCondition DVPresentationState::setRectShutter(Sint32 lv, Sint32 rv, Sint32 uh,
   OFCondition result=EC_Normal;
   char buf[80];
 
-  sprintf(buf, "%ld", (long)lv);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)lv);
   result = shutterLeftVerticalEdge.putString(buf);
-  sprintf(buf, "%ld", (long)rv);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)rv);
   if (EC_Normal==result) result = shutterRightVerticalEdge.putString(buf);
-  sprintf(buf, "%ld", (long)uh);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)uh);
   if (EC_Normal==result) result = shutterUpperHorizontalEdge.putString(buf);
-  sprintf(buf, "%ld", (long)lh);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)lh);
   if (EC_Normal==result) result = shutterLowerHorizontalEdge.putString(buf);
   if ((EC_Normal==result)&&(shutterPresentationValue.getLength()==0))
       result = shutterPresentationValue.putUint16(0,0);
@@ -770,9 +770,9 @@ OFCondition DVPresentationState::setCircularShutter(Sint32 centerX, Sint32 cente
   OFCondition result=EC_Normal;
   char buf[80];
 
-  sprintf(buf, "%ld\\%ld", (long)centerY, (long)centerX);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld\\%ld", (long)centerY, (long)centerX);
   result = centerOfCircularShutter.putString(buf);
-  sprintf(buf, "%ld", (long)radius);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)radius);
   if (EC_Normal==result) result = radiusOfCircularShutter.putString(buf);
   if ((EC_Normal==result)&&(shutterPresentationValue.getLength()==0))
       result = shutterPresentationValue.putUint16(0,0);
@@ -794,7 +794,7 @@ OFCondition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
   if (result==EC_Normal)
   {
     char buf[80];
-    sprintf(buf, "\\%ld\\%ld", (long)y, (long)x);
+    OFStandard::snprintf(buf, sizeof(buf), "\\%ld\\%ld", (long)y, (long)x);
     aString += buf;
     result = verticesOfThePolygonalShutter.putOFStringArray(aString);
   }
@@ -1168,7 +1168,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         char gammabuf[16];
         OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
 
-        sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
+        OFStandard::snprintf(explanation, sizeof(explanation), "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
 
         lutExplanation = new DcmLongString(DCM_LUTExplanation);
