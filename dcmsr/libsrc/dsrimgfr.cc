@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,11 +22,10 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcmtk/dcmsr/dsrimgfr.h"
-
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcvris.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 template<>
@@ -125,11 +124,11 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset) const
         if (!tmpString.empty())
             tmpString += '\\';
 #ifdef PRId32
-        sprintf(buffer, "%" PRId32, *iterator);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRId32, *iterator);
 #elif SIZEOF_LONG == 8
-        sprintf(buffer, "%d", *iterator);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%d", *iterator);
 #else
-        sprintf(buffer, "%ld", *iterator);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%ld", *iterator);
 #endif
         tmpString += buffer;
         iterator++;

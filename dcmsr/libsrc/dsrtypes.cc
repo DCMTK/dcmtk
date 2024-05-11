@@ -1375,12 +1375,13 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
 
 
 const char *DSRTypes::numberToString(const size_t number,
-                                     char *stringValue)
+                                     char *stringValue,
+                                     size_t stringLength)
 {
     if (stringValue != NULL)
     {
         /* unsigned long */
-        sprintf(stringValue, "%lu", OFstatic_cast(unsigned long, number));
+        OFStandard::snprintf(stringValue, stringLength, "%lu", OFstatic_cast(unsigned long, number));
     }
     return stringValue;
 }

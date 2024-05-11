@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -971,7 +971,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
             OFString location = posString;
             if (!location.empty())
                 location += ".";
-            location += numberToString(OFstatic_cast(size_t, i + 1), buffer);
+            location += numberToString(OFstatic_cast(size_t, i + 1), buffer, sizeof(buffer));
             if (flags & RF_showCurrentlyProcessedItem)
                 DCMSR_INFO("Processing content item " << location);
             /* read RelationshipType */
