@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,11 +24,12 @@
 
 #ifdef WITH_LIBPNG
 
+#include "dcmtk/dcmimage/dipipng.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmimgle/diimage.h"
-#include "dcmtk/dcmimage/dipipng.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version */
 #include "dcmtk/ofstd/ofdiag.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_LIBPNG_PNG_H
@@ -222,12 +223,12 @@ OFString DiPNGPlugin::getLibraryVersionString()
   char cver[10];
   png_uint_32 ver = png_access_version_number();
   if( ver < 999999 ) {
-    sprintf( cver, "%li.%li.%li",
+    OFStandard::snprintf(cver, sizeof(cver), "%li.%li.%li",
                    OFstatic_cast(long int, (ver/10000)%100),
                    OFstatic_cast(long int, (ver/100)%100),
                    OFstatic_cast(long int, ver%100) );
   }else{
-    sprintf( cver, "unknown" );
+    OFStandard::snprintf(cver, sizeof(cver), "unknown" );
   }
   versionStr.append( cver );
   return versionStr;

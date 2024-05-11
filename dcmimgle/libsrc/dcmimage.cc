@@ -21,14 +21,15 @@
 
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimgle/dcmimage.h"
 
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/ofstd/ofstd.h"
 
-#include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmimgle/diovlimg.h"
 #include "dcmtk/dcmimgle/dimo1img.h"
 #include "dcmtk/dcmimgle/dimo2img.h"
@@ -650,7 +651,7 @@ int DicomImage::writePPM(const char *filename,
     if ((filename != NULL) && (Image != NULL))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "w");                // open text file for writing
         int ok = writePPM(stream, bits, frame);
@@ -694,7 +695,7 @@ int DicomImage::writeRawPPM(const char *filename,
     if ((filename != NULL) && (Image != NULL) && (Image->getBits(bits) <= MAX_RAWPPM_BITS))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "wb");               // open binary file for writing
         if (stream != NULL)
@@ -729,7 +730,7 @@ int DicomImage::writeBMP(const char *filename,
         ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24) || (bits == 32)))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "wb");               // open binary file for writing
         if (stream != NULL)
@@ -767,7 +768,7 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
     if ((plugin != NULL) && (filename != NULL) && (Image != NULL))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "wb");               // open binary file for writing
         if (stream != NULL)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021 OFFIS e.V.
+ *  Copyright (C) 1996-2024 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,10 +21,12 @@
 
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimgle/dimoimg.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/ofstd/ofstd.h"
 
-#include "dcmtk/dcmimgle/dimoimg.h"
 #include "dcmtk/dcmimgle/dimo2img.h"
 #include "dcmtk/dcmimgle/dimoipxt.h"
 #include "dcmtk/dcmimgle/dimocpt.h"
@@ -1986,11 +1988,11 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
             dataset.putAndInsertUint16(DCM_Columns, Columns);
             dataset.putAndInsertUint16(DCM_Rows, Rows);
 #ifdef PRIu32
-            sprintf(numBuf, "%" PRIu32, NumberOfFrames);
+            OFStandard::snprintf(numBuf, sizeof(numBuf), "%" PRIu32, NumberOfFrames);
 #elif SIZEOF_LONG == 8
-            sprintf(numBuf, "%u", NumberOfFrames);
+            OFStandard::snprintf(numBuf, sizeof(numBuf), "%u", NumberOfFrames);
 #else
-            sprintf(numBuf, "%lu", NumberOfFrames);
+            OFStandard::snprintf(numBuf, sizeof(numBuf), "%lu", NumberOfFrames);
 #endif
             dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
             dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);

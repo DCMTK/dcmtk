@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,12 +21,13 @@
 
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimgle/diimage.h"
+
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
 #include "dcmtk/dcmdata/dcuid.h"
 
-#include "dcmtk/dcmimgle/diimage.h"
 #include "dcmtk/dcmimgle/diinpxt.h"
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diutils.h"
@@ -773,9 +774,9 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
             dataset.tagExists(DCM_VOILUTSequence))
         {
             delete dataset.remove(DCM_VOILUTSequence);
-            sprintf(buffer, "%lu", DicomImageClass::maxval(bitsStored, 0) / 2);
+            OFStandard::snprintf(buffer, sizeof(buffer), "%lu", DicomImageClass::maxval(bitsStored, 0) / 2);
             dataset.putAndInsertString(DCM_WindowCenter, buffer);
-            sprintf(buffer, "%lu", DicomImageClass::maxval(bitsStored, 0));
+            OFStandard::snprintf(buffer, sizeof(buffer), "%lu", DicomImageClass::maxval(bitsStored, 0));
             dataset.putAndInsertString(DCM_WindowWidth, buffer);
         }
         delete dataset.remove(DCM_WindowCenterWidthExplanation);
