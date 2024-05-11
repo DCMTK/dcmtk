@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 
 
@@ -636,7 +637,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         ASC_destroyAssociationParameters(&params);
         return OFFalse;
     }
-    sprintf(presentationAddress, "%s:%d", peer, port);
+    OFStandard::snprintf(presentationAddress, sizeof(presentationAddress), "%s:%d", peer, port);
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), presentationAddress);
 
     cond = addPresentationContexts(params);
@@ -1736,7 +1737,7 @@ void DcmQueryRetrieveTelnetInitiator::TI_userInput()
 OFBool DcmQueryRetrieveTelnetInitiator::TI_dbReadable(const char *dbTitle)
 {
     char path[MAXPATHLEN+1];
-    sprintf(path, "%s%c%s", config.getStorageArea(dbTitle), PATH_SEPARATOR, DBINDEXFILE);
+    OFStandard::snprintf(path, sizeof(path), "%s%c%s", config.getStorageArea(dbTitle), PATH_SEPARATOR, DBINDEXFILE);
 
     return (access(path, R_OK) == 0);
 }
@@ -1746,7 +1747,7 @@ time_t DcmQueryRetrieveTelnetInitiator::TI_dbModifyTime(const char *dbTitle)
     char path[MAXPATHLEN+1];
     struct stat s;
 
-    sprintf(path, "%s%c%s", config.getStorageArea(dbTitle), PATH_SEPARATOR, DBINDEXFILE);
+    OFStandard::snprintf(path, sizeof(path), "%s%c%s", config.getStorageArea(dbTitle), PATH_SEPARATOR, DBINDEXFILE);
 
     if (stat(path, &s) < 0) {
         DCMQRDB_ERROR("cannot stat: " << path);

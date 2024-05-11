@@ -211,7 +211,7 @@ OFCondition DJLSDecoderBase::decode(
   if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
   {
     char numBuf[20];
-    sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+    OFStandard::snprintf(numBuf, sizeof(numBuf), "%ld", OFstatic_cast(long, imageFrames));
     result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
   }
 

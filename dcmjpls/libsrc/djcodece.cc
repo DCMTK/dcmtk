@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2023, OFFIS e.V.
+ *  Copyright (C) 2007-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -372,7 +372,7 @@ OFCondition DJLSEncoderBase::updateDerivationDescription(
   derivationDescription =  "near lossless JPEG-LS compression, factor ";
   OFStandard::ftoa(buf, sizeof(buf), ratio, OFStandard::ftoa_uppercase, 0, 5);
   derivationDescription += buf;
-  sprintf(buf, " (NEAR=%lu)", OFstatic_cast(unsigned long, djrp->getnearlosslessDeviation()));
+  OFStandard::snprintf(buf, sizeof(buf), " (NEAR=%lu)", OFstatic_cast(unsigned long, djrp->getnearlosslessDeviation()));
   derivationDescription += buf;
 
   // append old Derivation Description, if any

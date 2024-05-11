@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2023, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -3123,8 +3123,8 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
     }
 
     if (handle_) {
-        sprintf (handle_ -> storageArea,"%s", storageArea);
-        sprintf (handle_ -> indexFilename,"%s%c%s", storageArea, PATH_SEPARATOR, DBINDEXFILE);
+        OFStandard::snprintf(handle_->storageArea, sizeof(handle_->storageArea), "%s", storageArea);
+        OFStandard::snprintf(handle_->indexFilename, sizeof(handle_->indexFilename), "%s%c%s", storageArea, PATH_SEPARATOR, DBINDEXFILE);
 
         /* create index file if it does not already exist */
         FILE* f = fopen(handle_->indexFilename, "ab");
@@ -3183,7 +3183,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
                 // write magic word and version number to the buffer
                 // then write it to the file
                 char header[DBHEADERSIZE + 1];
-                sprintf( header, DBMAGIC "%.2X", DBVERSION );
+                OFStandard::snprintf(header, sizeof(header), DBMAGIC "%.2X", DBVERSION );
                 if ( write( handle_ -> pidx, header, DBHEADERSIZE ) != DBHEADERSIZE )
                 {
                     DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::getLastSystemErrorCode().message());
@@ -3255,7 +3255,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
 
     const char *m = dcmSOPClassUIDToModality(SOPClassUID);
     if (m==NULL) m = "XX";
-    sprintf(prefix, "%s_", m);
+    OFStandard::snprintf(prefix, sizeof(prefix), "%s_", m);
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
 
     // Make seed static so that multiple/concurrent calls to this method

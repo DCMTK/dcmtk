@@ -515,7 +515,7 @@ OFCondition DcmSignature::createSignature(
         char c[5];
         for (size_t i=0; i<digestLength; i++)
         {
-           sprintf(c, "%02hu", OFstatic_cast(unsigned short, digest[i]));
+           OFStandard::snprintf(c, sizeof(c), "%02hu", OFstatic_cast(unsigned short, digest[i]));
            logString += c;
         }
         DCMSIGN_DEBUG("DcmSignature::createSignature(): " << mac.getDefinedTerm() << " MAC = " << logString);
@@ -840,7 +840,7 @@ OFCondition DcmSignature::verifyCurrent()
               char c[5];
               for (size_t i=0; i<digestLength; i++)
               {
-                 sprintf(c, "%02hu", OFstatic_cast(unsigned short, digest[i]));
+                 OFStandard::snprintf(c, sizeof(c), "%02hu", OFstatic_cast(unsigned short, digest[i]));
                  logString += c;
               }
               DCMSIGN_DEBUG("DcmSignature::verifyCurrent(): " << mac->getDefinedTerm() << " MAC = " << logString);

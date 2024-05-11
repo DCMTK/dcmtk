@@ -22,6 +22,7 @@
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmtract/trcmeasurement.h"
 #include "dcmtk/dcmtract/trctypes.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // default constructor (protected, instance creation via create() function)
 TrcMeasurement::TrcMeasurement()
@@ -305,7 +306,7 @@ OFCondition TrcMeasurement::Values::get(const Float32*& dataValues,
   if ( numIndices != numValues)
   {
     char buf[200];
-    sprintf(buf, "Number of measurement values for track (%lu) differs from number of track data indices (%lu), using smaller value", numValues, numIndices);
+    OFStandard::snprintf(buf, sizeof(buf), "Number of measurement values for track (%lu) differs from number of track data indices (%lu), using smaller value", numValues, numIndices);
     DCMTRACT_WARN(buf);
     if (numValues > numIndices)
       numValues = numIndices;

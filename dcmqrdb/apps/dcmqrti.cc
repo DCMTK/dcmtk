@@ -39,6 +39,8 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
+
 #ifdef WITH_ZLIB
 #include <zlib.h>          /* for zlibVersion() */
 #endif
@@ -124,10 +126,10 @@ int main( int argc, char *argv[] )
     opt1 += ")";
     cmd.addOption( "--aetitle",                   "-aet", 1, "[a]etitle: string", opt1.c_str() );
     OFString opt2 = "[n]umber of bytes: integer (";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
     opt2 += tempstr;
     opt2 += "..";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
     opt2 += tempstr;
     opt2 += ")";
     cmd.addOption( "--max-pdu",                   "-pdu", 1, opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );

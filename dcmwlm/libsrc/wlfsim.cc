@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2023, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -340,7 +340,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
       {
         len = 20;
         value = new char[len];
-        sprintf( value, "%u", v );
+        OFStandard::snprintf(value, len, "%u", v );
       }
       else
       {

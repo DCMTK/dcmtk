@@ -29,6 +29,7 @@
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvruc.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // --------------------------- Code Sequence Macro ---------------------------
 
@@ -894,7 +895,7 @@ OFCondition ImageSOPInstanceReferenceMacro::addReferencedFrameNumber(const Uint1
         val += "\\";
     }
     char buf[10];
-    sprintf(buf, "%u", value);
+    OFStandard::snprintf(buf, sizeof(buf), "%u", value);
     val += buf;
     return ReferencedFrameNumber.putOFStringArray(val);
 }

@@ -58,6 +58,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmtls/tlsopt.h"       /* for DcmTLSOptions */
 
 #ifdef WITH_SQL_DATABASE
@@ -257,10 +258,10 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",          "-td",  1, "[s]econds: integer (default: unlimited)",
                                                            "timeout for DIMSE messages");
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(),

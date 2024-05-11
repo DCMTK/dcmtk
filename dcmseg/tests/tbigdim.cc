@@ -37,6 +37,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/oftempf.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 static const Uint8 NUM_ROWS             = 5;
 static const Uint8 NUM_COLS             = 5;
@@ -176,7 +177,7 @@ static void addSegments(DcmSegmentation* seg)
         CodeSequenceMacro category("85756007", "SCT", "Tissue");
         CodeSequenceMacro propType("51114001", "SCT", "Artery");
         char buf[100];
-        sprintf(buf, "SEGLABEL_%hu", s);
+        OFStandard::snprintf(buf, sizeof(buf), "SEGLABEL_%hu", s);
         OFCHECK(DcmSegment::create(segment, buf, category, propType, DcmSegTypes::SAT_AUTOMATIC, "OC_DUMMY")
                     .good());
         OFCHECK(segment != OFnullptr);
