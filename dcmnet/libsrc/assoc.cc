@@ -336,6 +336,9 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 
     (*params)->DULparams.useSecureLayer = OFFalse;
     (*params)->DULparams.tcpConnectTimeout = tcpConnectTimeout;
+    (*params)->DULparams.tcpPollInterval = -1;
+    (*params)->DULparams.tcpCancelContext = NULL;
+    (*params)->DULparams.tcpConnectCanceled = NULL;
     return EC_Normal;
 }
 

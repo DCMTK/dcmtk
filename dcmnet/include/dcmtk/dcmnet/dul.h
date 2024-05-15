@@ -202,7 +202,10 @@ typedef struct {
     UserIdentityNegotiationSubItemAC *ackUserIdentNeg;
 
     OFBool useSecureLayer;
-    Sint32 tcpConnectTimeout;
+    Sint32 tcpConnectTimeout;           // TCP connect timeout in seconds when requesting associations
+    Sint32 tcpPollInterval;             // Duration in seconds of each socket poll/select call during TCP connection phase. Maximum valid value is tcpConnectTimeout.
+    void*  tcpCancelContext;            // User defined data that is passed on to tcpConnectCancelled()
+    bool (*tcpConnectCanceled)(void*);  // Called after each socket poll/select attempt to enable canceling ongoing TCP connect before the TCP connect timeout has elapsed
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 /** Enum describing the possible role settings for role negotiation sub items.
