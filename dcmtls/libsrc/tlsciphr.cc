@@ -571,7 +571,7 @@ void DcmTLSCiphersuiteHandler::getListOfCipherSuitesForOpenSSL(OFString& cslist,
   const char *c = NULL;
   OFVector<size_t> tempList = ciphersuiteList;
 
-  if (isServer)
+  if (isServer && (tempList.size() > 1))
   {
     // When acting as a TLS server, we follow the recommendation of BCP 195
     // to select the strongest ciphersuite offered by the client. We do this by
@@ -600,7 +600,7 @@ void DcmTLSCiphersuiteHandler::getListOfTLS13CipherSuitesForOpenSSL(OFString& cs
   const char *c = NULL;
   OFVector<size_t> tempList = tls13ciphersuiteList;
 
-  if (isServer)
+  if (isServer && (tempList.size() > 1))
   {
     // When acting as a TLS server, we follow the recommendation of BCP 195
     // to select the strongest ciphersuite offered by the client. We do this by
