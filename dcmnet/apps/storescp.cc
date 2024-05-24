@@ -2006,10 +2006,7 @@ static OFCondition storeSCP(
   // if opt_ignore is set, the user requires that the data shall be received but not
   // stored. in this case, we want to create a corresponding temporary filename for
   // a file in which the data shall be stored temporarily. If this is not the case,
-  // create a real filename (consisting of path and filename) for a real file.
-    
-  OFString ofname; // store full path for the output file here
-         
+  // create a real filename (consisting of path and filename) for a real file.         
   if (opt_ignore)
   {
 #ifdef _WIN32
@@ -2086,8 +2083,9 @@ static OFCondition storeSCP(
   }
 
   // Combine file name and outdir into one path.
+  OFString ofname; // store full path for the output file here
   OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
-  OFLOG_INFO(movescuLogger, "Saving to: " << ofname);
+  OFLOG_DEBUG(storescpLogger, "Saving to: " << ofname);
 
   // dump some information if required
   OFString str;
@@ -2103,7 +2101,7 @@ static OFCondition storeSCP(
   // initialize some variables
   StoreCallbackData callbackData;
   callbackData.assoc = assoc;
-  callbackData.imageFileName = imageFileName;
+  callbackData.imageFileName = ofname.c_str();
   DcmFileFormat dcmff;
   callbackData.dcmff = &dcmff;
 
@@ -2140,14 +2138,14 @@ static OFCondition storeSCP(
     if (!opt_ignore)
     {
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-        OFStandard::deleteFile(imageFileName);
+        OFStandard::deleteFile(ofname.c_str());
     }
   }
 #ifdef _WIN32
   else if (opt_ignore)
   {
     if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-      OFStandard::deleteFile(imageFileName); // delete the temporary file
+      OFStandard::deleteFile(ofname.c_str()); // delete the temporary file
   }
 #endif
 
