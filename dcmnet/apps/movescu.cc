@@ -1429,6 +1429,11 @@ static OFCondition storeSCP(
         OFStandard::sanitizeFilename(imageFileName);
     }
 
+    // Generate target path to write data.
+    OFString ofname; // Store full path here
+    OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
+    OFLOG_DEBUG(movescuLogger, "Saving to: " << ofname);
+
     OFString temp_str;
     if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
@@ -1438,11 +1443,6 @@ static OFCondition storeSCP(
         OFLOG_INFO(movescuLogger, "Received Store Request (MsgID " << req->MessageID << ", "
             << dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "OT") << ")");
     }
-    
-    /* create full path name for the output file */
-    OFString ofname;
-    OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
-    OFLOG_DEBUG(movescuLogger, "Saving to: " << ofname);
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
