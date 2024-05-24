@@ -1285,7 +1285,7 @@ static OFCondition echoSCP(
 
 struct StoreCallbackData
 {
-    char *imageFileName;
+    const char *imageFileName;
     DcmFileFormat *dcmff;
     T_ASC_Association *assoc;
 };
@@ -1356,8 +1356,7 @@ storeSCPCallback(
        {
          StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData*, callbackData);
          /* create full path name for the output file */
-         OFString ofname;
-         OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, cbdata->imageFileName, OFTrue /* allowEmptyDirName */);
+         OFString ofname(cbdata->imageFileName);
          if (OFStandard::fileExists(ofname))
          {
            OFLOG_WARN(movescuLogger, "DICOM file already exists, overwriting: " << ofname);
@@ -1428,6 +1427,11 @@ static OFCondition storeSCP(
         OFStandard::sanitizeFilename(imageFileName);
     }
 
+    // Generate target path to write data.
+    OFString ofname; // Store full path here
+    OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
+    OFLOG_DEBUG(movescuLogger, "Saving to: " << ofname);
+
     OFString temp_str;
     if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
@@ -1440,7 +1444,7 @@ static OFCondition storeSCP(
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
-    callbackData.imageFileName = imageFileName;
+    callbackData.imageFileName = ofname.c_str();
     DcmFileFormat dcmff;
     callbackData.dcmff = &dcmff;
 
@@ -1455,7 +1459,7 @@ static OFCondition storeSCP(
 
     if (opt_bitPreserving)
     {
-      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
+      cond = DIMSE_storeProvider(assoc, presID, req, ofname.c_str(), opt_useMetaheader,
         NULL, storeSCPCallback, OFreinterpret_cast(void*, &callbackData), opt_blockMode, opt_dimse_timeout);
     } else {
       cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader,
@@ -1468,11 +1472,11 @@ static OFCondition storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName);
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(ofname.c_str());
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName); // delete the temporary file
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(ofname.c_str()); // delete the temporary file
 #endif
     }
 
