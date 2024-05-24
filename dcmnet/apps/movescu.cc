@@ -282,7 +282,7 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg4-2-3d",   "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",   "+xo",     "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
       cmd.addOption("--prefer-hevc",         "+x4",     "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--prefer-hevc10",       "+x5",     "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--prefer-hevc10",       "+x5",     "prefer HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--prefer-rle",          "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",     "+xd",     "prefer deflated explicit VR little endian TS");
