@@ -2007,6 +2007,9 @@ static OFCondition storeSCP(
   // stored. in this case, we want to create a corresponding temporary filename for
   // a file in which the data shall be stored temporarily. If this is not the case,
   // create a real filename (consisting of path and filename) for a real file.
+    
+  OFString ofname; // store full path for the output file here
+         
   if (opt_ignore)
   {
 #ifdef _WIN32
@@ -2017,13 +2020,13 @@ static OFCondition storeSCP(
   }
   else
   {
-    // 3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs
+    // 3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs           
     if (opt_uniqueFilenames)
     {
       // create unique filename by generating a temporary UID and using ".X." as an infix
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
-      sprintf(imageFileName, "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+      sprintf(imageFileName, "%s.X.%s%s", dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         buf, opt_fileNameExtension.c_str());
     }
     else if (opt_timeNames)
@@ -2056,7 +2059,7 @@ static OFCondition storeSCP(
         // if this is not the first run and the prospective filename is equal to the last written filename
         // generate one with a serial number (incremented by 1)
         timeNameCounter++;
-        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
+        sprintf(imageFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
@@ -2064,7 +2067,7 @@ static OFCondition storeSCP(
       else
       {
         // first run or filenames are different: create filename without serial number
-        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
+        sprintf(imageFileName, "%04u%02u%02u%02u%02u%02u%03u.%s%s", // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
@@ -2077,10 +2080,14 @@ static OFCondition storeSCP(
       // Use the SOP instance UID as found in the C-STORE request message as part of the filename
       OFString uid(OFSTRING_GUARD(req->AffectedSOPInstanceUID));
       OFStandard::sanitizeFilename(uid);
-      sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+      sprintf(imageFileName, "%s.%s%s", dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         uid.c_str(), opt_fileNameExtension.c_str());
     }
   }
+
+  // Combine file name and outdir into one path.
+  OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
+  OFLOG_INFO(movescuLogger, "Saving to: " << ofname);
 
   // dump some information if required
   OFString str;
@@ -2115,7 +2122,7 @@ static OFCondition storeSCP(
   // DIMSE_storeProvider must be called with certain parameters.
   if (opt_bitPreserving)
   {
-    cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
+    cond = DIMSE_storeProvider(assoc, presID, req, ofname.c_str(), opt_useMetaheader, NULL,
       storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
   }
   else
