@@ -323,8 +323,8 @@ parsers cannot process larger numbers.
 
 As required by the DICOM JSON encoding, \b dcm2json always creates output in
 Unicode UTF-8 encoding and converts DICOM datasets accordingly.  If this is not
-possible, for example because DCMTK has been compiled without either iconv or
-ICU library, an error is returned.
+possible, for example because DCMTK has been compiled without character set
+conversion support, an error is returned.
 
 \section dcm2json_logging LOGGING
 
@@ -423,6 +423,6 @@ replace any built-in tables.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

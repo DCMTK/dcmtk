@@ -206,7 +206,6 @@ DCMTK can make use of the following third-party libraries:
 - For character set support, either one of:
   - oficonv (default, and built into DCMTK)
   - libiconv (GNU, standalone or provided by the C standard library)
-  - libicu International Components for Unicode (ICU)
 
 Further information about each of the libraries can be found below.  These
 libraries are usually detected automatically on Unix-like operating systems
@@ -327,11 +326,10 @@ Character Set Conversion Support
 
 Starting with release 3.6.2, DCMTK supports the conversion between different
 character encodings, e.g. UTF-8 and ISO Latin-1.  In DCMTK 3.6.8 and newer,
-four implementations of character set conversion can be used:
+three implementations of character set conversion can be used:
 
 - oficonv, a DCMTK module based on the Citrus iconv code in FreeBSD 13.1
 - GNU libiconv
-- International Components for Unicode (ICU)
 - iconv support provided by the C standard library
 
 DCMTK selects the built-in module oficonv by default.  Other implementations
@@ -350,32 +348,6 @@ work as well.
 When using CMake, a compiled version of the libiconv and libcharset libraries
 and include files must be available during compilation of DCMTK.  See discussion
 on CMake below.
-
-
-ICU SUPPORT
-
-DCMTK supports the International Components for Unicode (ICU) library as an
-alternative to the above mentioned libiconv.  This release of DCMTK is known to
-compile with ICU releases 70.1 to 72.1, although other releases may work as
-well.
-
-The ICU may be easier to integrate on some more modern Linux distributions
-(e.g. Arch Linux) and Windows than the libiconv but (due to the way it is
-currently integrated) lacks support for converting the following character sets:
-
-  ISO 2022 IR 87 (JIS X0208)
-  ISO 2022 IR 159 (JIS X0212)
-
-Furthermore, the ICU-based implementation currently does not support
-transliteration.
-
-When using CMake, if support for character set conversion using ICU is desired,
-a compiled version of the ICU libraries and include files must be available
-during compilation of DCMTK.  See discussion on CMake below.
-
-Note: ICU support will be removed from DCMTK in the future since the built-in
-oficonv library provides more complete support for the character sets defined
-in DICOM.
 
 
 SUPPORT FOR ICONV PROVIDED IN THE C STANDARD LIBRARY
@@ -552,8 +524,8 @@ able to do so, perform the following steps to install CMake on your machine:
    Follow all install instructions appropriately.
 
 In order to manually configure the support for the above mentioned external
-libraries (OpenSSL, zlib, libtiff, libpng, libxml2 and libiconv or ICU), there
-are basically two ways:
+libraries (OpenSSL, zlib, libtiff, libpng, libxml2 and libiconv), there are
+basically two ways:
 
 a. Using the "DCMTK_SUPPORT_LIBRARIES_DIR" setting:
 
@@ -661,12 +633,6 @@ Through CMake, perform the following steps:
        "libchset_d.lib"    - debug version
        "libchset_o.lib"    - release version (optimized)
 
-   The ICU is integrated using CMake's "find_package()" mechanism, which is
-   somewhat different to the handmade scripts employed for the other libraries.
-   If you want to use the ICU instead of libiconv, you have to include it by
-   setting the appropriate variables for the "FindICU" module, see
-   https://cmake.org/cmake/help/latest/module/FindICU.html .
-
    The debug versions of all libraries must be compiled for the multithread
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
@@ -736,11 +702,10 @@ Unix with CMake
 ---------------
 
 One key difference when using CMake for building on Unix like systems is that we
-use the "find_package()" mechanism for all external libraries and not just the
-ICU.  Most Unix like systems provide a package manager or even if not at least
-have a consistent approach for where the libraries and include files are
-installed such that the CMake "find_package()" mechanism typically finds them
-out of the box.
+use the "find_package()" mechanism for all external libraries.  Most Unix-like
+systems provide a package manager or even if not at least have a consistent
+approach for where the libraries and include files are installed such that the
+CMake "find_package()" mechanism typically finds them out of the box.
 
 If that does not work or you want to use a different version of a library than
 the one in the default search paths, you should look at the documentation of
@@ -993,7 +958,7 @@ Configure will assume that the OpenSSL include files are installed in
 "/usr/local/apps/openssl-1.1.1w/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
-Support for zlib, libtiff, libpng, libxml2, libwrap, libiconv and/or ICU can be
+Support for zlib, libtiff, libpng, libxml2, libwrap, and/or libiconv can be
 enabled in a similar way (in case these libraries are not installed in the
 standard path), e.g.:
 
@@ -1004,8 +969,6 @@ standard path), e.g.:
                 --with-libxmlinc=/usr/local/apps/libxml2-2.11.5
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
                 --with-libiconvinc=/usr/local/apps/libiconv-1.17
-           <or>
-                --with-libicuinc=/usr/local/apps/icu-72.1
 
 Different configure options can be combined in any order.  "configure --help"
 will print a list of all existing configure options.  "configure --help=short"
@@ -1025,7 +988,7 @@ options are:
   --disable-private-tags  don't enable private tag dictionary (default)
   --disable-rpath         do not hardcode runtime library paths
   --enable-charconv=TYPE  enable character set conversion support
-                          (libiconv/libicu/stdlibc/oficonv=default)
+                          (libiconv/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support
   --enable-cxx11          use C++11 (default)
   --disable-cxx11         do not use C++11
@@ -1103,4 +1066,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-04-15 (Riesmeier)
+Last revised: 2024-05-25 (Riesmeier)
