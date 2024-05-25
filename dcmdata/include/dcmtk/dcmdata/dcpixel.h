@@ -363,7 +363,7 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
-    /** @copydoc DcmObject::calcElementLength()
+    /** @copydoc DcmPolymorphOBOW::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);

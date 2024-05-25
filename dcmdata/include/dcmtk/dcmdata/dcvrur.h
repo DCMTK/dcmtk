@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2019, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,7 +149,7 @@ class DCMTK_DCMDATA_EXPORT DcmUniversalResourceIdentifierOrLocator
                            const OFString& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
-    /// @copydoc DcmElement::isUniversalMatch()
+    /// @copydoc DcmByteString::isUniversalMatch()
     virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
                                     const OFBool enableWildCardMatching = OFTrue);
 

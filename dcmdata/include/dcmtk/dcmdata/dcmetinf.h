@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -131,7 +131,7 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
      */
     virtual void transferEnd();
 
-    /** @copydoc DcmObject::calcElementLength()
+    /** @copydoc DcmItem::calcElementLength()
      */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
