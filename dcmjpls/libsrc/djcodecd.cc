@@ -69,7 +69,7 @@ OFBool DJLSDecoderBase::canChangeCoding(
   // this codec only handles conversion from JPEG-LS to uncompressed.
 
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() && (oldRepType == supportedTransferSyntax()))
+  if (newRep.usesNativeFormat() && (oldRepType == supportedTransferSyntax()))
      return OFTrue;
 
   return OFFalse;

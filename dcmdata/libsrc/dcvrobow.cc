@@ -655,7 +655,8 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
                                            const E_TransferSyntax /*oldXfer*/)
 {
     DcmXfer newXferSyn(newXfer);
-    return (getTag() != DCM_PixelData) || !newXferSyn.isEncapsulated();
+    /* pixel data can only be written in native format */
+    return (getTag() != DCM_PixelData) || newXferSyn.usesNativeFormat();
 }
 
 

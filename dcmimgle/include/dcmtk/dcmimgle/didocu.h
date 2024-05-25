@@ -179,7 +179,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      */
     inline OFBool isCompressed() const
     {
-        return DcmXfer(Xfer).isEncapsulated();
+        return DcmXfer(Xfer).isPixelDataCompressed();
     }
 
     /** search for given tag

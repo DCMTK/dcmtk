@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -341,7 +341,7 @@ OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
 {
     DcmXfer newXferSyn(newXfer);
 
-    return newXferSyn.isEncapsulated() && newXfer == oldXfer && oldXfer == Xfer;
+    return newXferSyn.usesEncapsulatedFormat() && newXfer == oldXfer && oldXfer == Xfer;
 }
 
 

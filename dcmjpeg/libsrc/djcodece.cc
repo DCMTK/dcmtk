@@ -67,7 +67,8 @@ OFBool DJCodecEncoder::canChangeCoding(
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
   DcmXfer oldRep(oldRepType);
-  if (oldRep.isNotEncapsulated() && (newRepType == myXfer)) return OFTrue; // compress requested
+  if (oldRep.usesNativeFormat() && (newRepType == myXfer))
+    return OFTrue; // compress requested
 
   // we don't support re-coding for now
   return OFFalse;

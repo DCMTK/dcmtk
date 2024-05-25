@@ -603,8 +603,8 @@ OFCondition MdfDatasetManager::saveFile(const char* file_name,
     /* check whether transfer syntax is possible */
     if ((opt_xfer == EXS_Unknown) || (dfile->canWriteXfer(opt_xfer)))
     {
-        /* check whether pixel data is compressed */
-        if (opt_dataset && DcmXfer(opt_xfer).isEncapsulated())
+        /* check whether pixel data is encapsulated (e.g. compressed) */
+        if (opt_dataset && DcmXfer(opt_xfer).usesEncapsulatedFormat())
         {
             OFLOG_WARN(mdfdsmanLogger, "encapsulated pixel data requires file format, ignoring --write-dataset");
             opt_dataset = OFFalse;
@@ -714,7 +714,7 @@ OFCondition MdfDatasetManager::checkPixelDataInsertion(DcmElement* elem)
             const DcmRepresentationParameter* dontCare = NULL;
             pix->getCurrentRepresentationKey(ts, dontCare);
             DcmXfer xfer(ts);
-            if (xfer.isEncapsulated())
+            if (xfer.usesEncapsulatedFormat())
             {
                 OFLOG_ERROR(mdfdsmanLogger, "Cannot replace encapsulated Pixel Data (not implemented)");
                 return EC_IllegalParameter;

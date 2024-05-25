@@ -1225,9 +1225,9 @@ OFCondition EctEnhancedCT::decompress(DcmDataset& dset)
 {
     DcmXfer xfer = dset.getOriginalXfer();
     OFCondition result;
-    // If the original transfer is encapsulated and we do not already have an uncompressed version, decompress or reject
-    // the file
-    if (xfer.isEncapsulated())
+    // If the original transfer syntax refers to compressed pixel data and we do not
+    // already have an uncompressed version, decompress or reject the file
+    if (xfer.isPixelDataCompressed())
     {
         DCMECT_DEBUG("Enhanced CT object is compressed, converting to uncompressed transfer syntax first");
         result = DcmIODUtil::decompress(dset);

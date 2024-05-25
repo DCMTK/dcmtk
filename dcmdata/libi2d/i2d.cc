@@ -608,7 +608,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
   if (m_frameLength > 0) compressionRatio = uncompressedSize / m_frameLength;
 
   DcmXfer transport(outputTS);
-  if (transport.isEncapsulated())
+  if (transport.usesEncapsulatedFormat())
   {
     m_offsetList.clear();
     insertEncapsulatedPixelDataFirstFrame(dset, pixData, m_frameLength, outputTS);
@@ -786,7 +786,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataNextFrame(
     cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "Image2Dcm: value of vertical PixelAspectRatio not equal for all frames of the multi-frame image");
     return cond;
   }
-  if ((!transport.isEncapsulated()) && (next_frameLength != m_frameLength))
+  if (transport.isPixelDataUncompressed() && (next_frameLength != m_frameLength))
   {
     // in the case of uncompressed images, all frames must have exactly the same size.
     // for compressed images, where we store the compressed bitstream as a pixel item, this does not matter.
@@ -804,7 +804,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataNextFrame(
   // We will divide this by the number of frames later.
   m_compressionRatio += compressionRatio;
 
-  if (transport.isEncapsulated())
+  if (transport.usesEncapsulatedFormat())
   {
     cond = insertEncapsulatedPixelDataNextFrame(pixData, next_frameLength);
     delete[] pixData;

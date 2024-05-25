@@ -643,7 +643,7 @@ const DcmTagKey DcmIODUtil::parseTagKey(const OFString& keyString)
 OFCondition DcmIODUtil::decompress(DcmDataset& dset)
 {
     DcmXfer xfer = dset.getOriginalXfer();
-    if (xfer.isEncapsulated())
+    if (xfer.isPixelDataCompressed())
     {
         if (EC_Normal != dset.chooseRepresentation(EXS_LittleEndianExplicit, NULL))
         {

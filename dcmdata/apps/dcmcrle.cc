@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2022, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
     }
 
     DcmXfer original_xfer(dataset->getOriginalXfer());
-    if (original_xfer.isEncapsulated())
+    if (original_xfer.isPixelDataCompressed())
     {
       OFLOG_INFO(dcmcrleLogger, "DICOM file is already compressed, converting to uncompressed transfer syntax first");
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
             if (fileformat.canWriteXfer(opt_xfer))
             {
                 /* check whether pixel data is compressed */
-                if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).isEncapsulated())
+                if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).usesEncapsulatedFormat())
                 {
                     OFLOG_WARN(xml2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
                     opt_writeMode = EWM_fileformat;

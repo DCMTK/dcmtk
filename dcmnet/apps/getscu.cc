@@ -603,7 +603,7 @@ static void prepareTS(E_TransferSyntax ts,
 #endif
     default:
       DcmXfer xfer(ts);
-      if (xfer.isEncapsulated())
+      if (xfer.usesEncapsulatedFormat())
       {
         syntaxes.push_back(xfer.getXferID());
       }

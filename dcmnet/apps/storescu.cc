@@ -1333,11 +1333,11 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* figure out which of the accepted presentation contexts should be used */
   DcmXfer filexfer(dcmff.getDataset()->getOriginalXfer());
 
-  /* special case: if the file uses an unencapsulated transfer syntax (uncompressed
-   * or deflated explicit VR) and we prefer deflated explicit VR, then try
-   * to find a presentation context for deflated explicit VR first.
+  /* special case: if the file uses a transfer syntax with native format
+   * (uncompressed or deflated explicit VR) and we prefer deflated explicit VR,
+   * then try to find a presentation context for deflated explicit VR first.
    */
-  if (filexfer.isNotEncapsulated() &&
+  if (filexfer.usesNativeFormat() &&
     opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)
   {
     filexfer = EXS_DeflatedLittleEndianExplicit;
