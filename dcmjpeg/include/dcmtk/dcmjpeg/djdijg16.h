@@ -27,7 +27,7 @@
 
 extern "C"
 {
-  struct jpeg16_decompress_struct;
+  struct dcmtk_jpeg16_decompress_struct;
 }
 
 class DJCodecParameter;
@@ -109,7 +109,7 @@ private:
   const DJCodecParameter *cparam;
 
   /// decompression structure
-  jpeg16_decompress_struct *cinfo;
+  dcmtk_jpeg16_decompress_struct *cinfo;
 
   /// position of last suspend
   int suspension;

@@ -14,9 +14,9 @@
 /* Short forms of external names for systems with brain-damaged linkers. */
 
 #ifdef NEED_SHORT_EXTERNAL_NAMES
-#define jpeg_make_d_derived_tbl     jpeg16_make_d_derived_tbl
-#define jpeg_fill_bit_buffer        jpeg16_fill_bit_buffer
-#define jpeg_huff_decode        jpeg16_huff_decode
+#define jpeg_make_d_derived_tbl     dcmtk_jpeg16_make_d_derived_tbl
+#define jpeg_fill_bit_buffer        dcmtk_jpeg16_fill_bit_buffer
+#define jpeg_huff_decode            dcmtk_jpeg16_huff_decode
 #endif /* NEED_SHORT_EXTERNAL_NAMES */
 
 

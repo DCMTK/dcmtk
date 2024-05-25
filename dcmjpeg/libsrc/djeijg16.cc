@@ -186,7 +186,7 @@ OFCondition DJCompressIJG16Bit::encode(
   Uint32 & length)
 {
 
-  struct jpeg16_compress_struct cinfo;
+  struct dcmtk_jpeg16_compress_struct cinfo;
   struct DJEIJG16ErrorStruct jerr;
   cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.instance = this;
@@ -321,7 +321,7 @@ OFCondition DJCompressIJG16Bit::encode(
 
 #include DCMTK_DIAGNOSTIC_POP
 
-void DJCompressIJG16Bit::initDestination(jpeg16_compress_struct *cinfo)
+void DJCompressIJG16Bit::initDestination(dcmtk_jpeg16_compress_struct *cinfo)
 {
   cleanup(); // erase old list of compressed blocks, if any
 
@@ -339,7 +339,7 @@ void DJCompressIJG16Bit::initDestination(jpeg16_compress_struct *cinfo)
   }
 }
 
-int DJCompressIJG16Bit::emptyOutputBuffer(jpeg16_compress_struct *cinfo)
+int DJCompressIJG16Bit::emptyOutputBuffer(dcmtk_jpeg16_compress_struct *cinfo)
 {
   bytesInLastBlock = 0;
   unsigned char *newBlock = new unsigned char[IJGE16_BLOCKSIZE];
@@ -359,7 +359,7 @@ int DJCompressIJG16Bit::emptyOutputBuffer(jpeg16_compress_struct *cinfo)
 }
 
 
-void DJCompressIJG16Bit::termDestination(jpeg16_compress_struct *cinfo)
+void DJCompressIJG16Bit::termDestination(dcmtk_jpeg16_compress_struct *cinfo)
 {
   bytesInLastBlock = IJGE16_BLOCKSIZE - cinfo->dest->free_in_buffer;
 }

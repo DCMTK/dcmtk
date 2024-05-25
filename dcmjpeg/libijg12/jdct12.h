@@ -81,15 +81,15 @@ typedef FAST_FLOAT FLOAT_MULT_TYPE; /* preferred floating type */
 /* Short forms of external names for systems with brain-damaged linkers. */
 
 #ifdef NEED_SHORT_EXTERNAL_NAMES
-#define jpeg_fdct_islow		jpeg12_fdct_islow
-#define jpeg_fdct_ifast		jpeg12_fdct_ifast
-#define jpeg_fdct_float		jpeg12_fdct_float
-#define jpeg_idct_islow		jpeg12_idct_islow
-#define jpeg_idct_ifast		jpeg12_idct_ifast
-#define jpeg_idct_float		jpeg12_idct_float
-#define jpeg_idct_4x4		jpeg12_idct_4x4
-#define jpeg_idct_2x2		jpeg12_idct_2x2
-#define jpeg_idct_1x1		jpeg12_idct_1x1
+#define jpeg_fdct_islow		dcmtk_jpeg12_fdct_islow
+#define jpeg_fdct_ifast		dcmtk_jpeg12_fdct_ifast
+#define jpeg_fdct_float		dcmtk_jpeg12_fdct_float
+#define jpeg_idct_islow		dcmtk_jpeg12_idct_islow
+#define jpeg_idct_ifast		dcmtk_jpeg12_idct_ifast
+#define jpeg_idct_float		dcmtk_jpeg12_idct_float
+#define jpeg_idct_4x4		dcmtk_jpeg12_idct_4x4
+#define jpeg_idct_2x2		dcmtk_jpeg12_idct_2x2
+#define jpeg_idct_1x1		dcmtk_jpeg12_idct_1x1
 #endif /* NEED_SHORT_EXTERNAL_NAMES */
 
 /* Extern declarations for the forward and inverse DCT routines. */

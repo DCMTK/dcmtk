@@ -340,7 +340,7 @@ OFCondition DJCompressIJG12Bit::encode(
   Uint32 & length)
 {
 
-  struct jpeg12_compress_struct cinfo;
+  struct dcmtk_jpeg12_compress_struct cinfo;
   struct DJEIJG12ErrorStruct jerr;
   cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.instance = this;
@@ -484,7 +484,7 @@ OFCondition DJCompressIJG12Bit::encode(
 
 #include DCMTK_DIAGNOSTIC_POP
 
-void DJCompressIJG12Bit::initDestination(jpeg12_compress_struct *cinfo)
+void DJCompressIJG12Bit::initDestination(dcmtk_jpeg12_compress_struct *cinfo)
 {
   cleanup(); // erase old list of compressed blocks, if any
 
@@ -502,7 +502,7 @@ void DJCompressIJG12Bit::initDestination(jpeg12_compress_struct *cinfo)
   }
 }
 
-int DJCompressIJG12Bit::emptyOutputBuffer(jpeg12_compress_struct *cinfo)
+int DJCompressIJG12Bit::emptyOutputBuffer(dcmtk_jpeg12_compress_struct *cinfo)
 {
   bytesInLastBlock = 0;
   unsigned char *newBlock = new unsigned char[IJGE12_BLOCKSIZE];
@@ -522,7 +522,7 @@ int DJCompressIJG12Bit::emptyOutputBuffer(jpeg12_compress_struct *cinfo)
 }
 
 
-void DJCompressIJG12Bit::termDestination(jpeg12_compress_struct *cinfo)
+void DJCompressIJG12Bit::termDestination(dcmtk_jpeg12_compress_struct *cinfo)
 {
   bytesInLastBlock = IJGE12_BLOCKSIZE - cinfo->dest->free_in_buffer;
 }

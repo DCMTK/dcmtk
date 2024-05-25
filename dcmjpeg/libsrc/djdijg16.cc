@@ -202,7 +202,7 @@ OFCondition DJDecompressIJG16Bit::init()
   decompressedColorModel = EPI_Unknown;
   cleanup(); // prevent double initialization
 
-  cinfo = new jpeg16_decompress_struct();
+  cinfo = new dcmtk_jpeg16_decompress_struct();
   if (cinfo)
   {
     volatile DJDIJG16SourceManagerStruct *src = NULL;

@@ -28,8 +28,8 @@
 
 extern "C"
 {
-  struct jpeg16_compress_struct;
-  typedef struct jpeg16_compress_struct * j16_compress_ptr;
+  struct dcmtk_jpeg16_compress_struct;
+  typedef struct dcmtk_jpeg16_compress_struct * j16_compress_ptr;
 }
 
 class DJCodecParameter;
@@ -106,19 +106,19 @@ public:
    *  Internal use only, not to be called by client code.
    *  @param cinfo pointer to compress info
    */
-  void initDestination(jpeg16_compress_struct *cinfo);
+  void initDestination(dcmtk_jpeg16_compress_struct *cinfo);
 
   /** callback for IJG compress destination manager.
    *  Internal use only, not to be called by client code.
    *  @param cinfo pointer to compress info
    */
-  int emptyOutputBuffer(jpeg16_compress_struct *cinfo);
+  int emptyOutputBuffer(dcmtk_jpeg16_compress_struct *cinfo);
 
   /** callback for IJG compress destination manager.
    *  Internal use only, not to be called by client code.
    *  @param cinfo pointer to compress info
    */
-  void termDestination(jpeg16_compress_struct *cinfo);
+  void termDestination(dcmtk_jpeg16_compress_struct *cinfo);
 
   /** callback function used to report warning messages and the like.
    *  Should not be called by user code directly.
