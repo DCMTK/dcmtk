@@ -402,21 +402,6 @@ if(NOT DEFINED DCMTK_WITH_STDLIBC_ICONV)
   endif()
 endif()
 
-if(DCMTK_WITH_ICU)
-  find_package(ICU COMPONENTS uc data QUIET)
-  if(NOT ICU_FOUND)
-    message(STATUS "Warning: ICU support will be disabled because the ICU were not found.")
-    set(DCMTK_WITH_ICU OFF CACHE BOOL "" FORCE)
-    set(WITH_ICU "")
-  else()
-    message(STATUS "Info: DCMTK ICU support will be enabled")
-    set(WITH_ICU 1)
-    set(ICU_INCDIR ${ICU_INCLUDE_DIR})
-    set(ICU_LIBS ${ICU_LIBRARIES} ${ICU_EXTRA_LIBS_STATIC})
-    include_directories(${ICU_INCLUDE_DIR})
-  endif()
-endif()
-
 # Find doxygen
 if(DCMTK_WITH_DOXYGEN)
   find_package(Doxygen QUIET) # will set variable DOXYGEN_EXECUTABLE

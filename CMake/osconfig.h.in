@@ -578,11 +578,7 @@
 /* Define if the C standard library has iconv builtin. */
 #cmakedefine WITH_STDLIBC_ICONV
 
-/* Define if we are compiling with ICU support. */
-#cmakedefine WITH_ICU
-
 /* character set conversion constants. */
-#define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
 #define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
 #define DCMTK_CHARSET_CONVERSION_OFICONV 4

@@ -33,7 +33,6 @@
 #undef C_RIGHTSHIFT_UNSIGNED
 
 /* character set conversion constants. */
-#define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
 #define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
 #define DCMTK_CHARSET_CONVERSION_OFICONV 4
@@ -851,9 +850,6 @@ typedef unsigned short ushort;
 
 /* Define if we are compiling with libiconv support. */
 #undef WITH_LIBICONV
-
-/* Define if we are compiling with ICU support. */
-#undef WITH_LIBICU
 
 /* Define if we are compiling with libpng support. */
 #undef WITH_LIBPNG
