@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2023, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -244,7 +244,7 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
     else if (DestinationCharacterSet == "ISO_IR 203")   // Latin alphabet No. 9
         DestinationEncoding = "ISO-8859-15";
     else if (DestinationCharacterSet == "ISO_IR 13")    // Japanese
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
         DestinationEncoding = "JIS_X0201";              // - the name "ISO-IR-13" is not supported by libiconv
 #else
         DestinationEncoding = "Shift_JIS";              // - ICU and stdlibc iconv only know "Shift_JIS", which is a superset of JIS X0201
@@ -307,7 +307,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
     else if (SourceCharacterSet == "ISO_IR 203")    // Latin alphabet No. 9
         fromEncoding = "ISO-8859-15";
     else if (SourceCharacterSet == "ISO_IR 13")     // Japanese
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
         fromEncoding = "JIS_X0201";                 // - the name "ISO-IR-13" is not supported by libiconv
 #else
         fromEncoding = "Shift_JIS";                 // - ICU and stdlibc iconv only know "Shift_JIS", which is a superset of JIS X0201
@@ -421,7 +421,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         }
         else if (definedTerm == "ISO 2022 IR 13")       // Japanese
         {
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
             encodingName = "JIS_X0201";                 // - the name "ISO-IR-13" is not supported by libiconv
 #else
             encodingName = "Shift_JIS";                 // - ICU and stdlibc iconv only know "Shift_JIS", which is a superset of JIS X0201
