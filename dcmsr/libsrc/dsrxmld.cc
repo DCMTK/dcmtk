@@ -141,12 +141,21 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
     OFString tmpErrorString;
     /* first remove any possibly existing document from memory */
     clear();
+
+#if LIBXML_VERSION < 20703
+    /*
+     * the following settings have been deprecated in newer versions of libxml,
+     * or they are not needed any more:
+     */
+
     /* do not substitute entities (other than the standard ones) */
     xmlSubstituteEntitiesDefault(0);
     /* add line number to debug messages */
     xmlLineNumbersDefault(1);
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
+#endif
+
     xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
 
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");

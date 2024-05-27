@@ -122,6 +122,12 @@ void DcmXMLParseHelper::initLibrary()
     /* initialize the XML library (only required for MT-safety) */
     xmlInitParser();
 
+#if LIBXML_VERSION < 20703
+    /*
+     * the following settings have been deprecated in newer versions of libxml,
+     * or they are not needed any more:
+     */
+
     /* do not substitute entities (other than the standard ones) */
     xmlSubstituteEntitiesDefault(0);
 
@@ -130,10 +136,13 @@ void DcmXMLParseHelper::initLibrary()
 
     /* enable node indenting for tree output */
     xmlIndentTreeOutput = 1;
+
+    /* remove ignorable whitespace */
     xmlKeepBlanksDefault(0);
 
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
+#endif
 }
 
 
@@ -693,8 +702,11 @@ OFCondition DcmXMLParseHelper::readXmlFile(
     /*
      *  Starting with libxml version 2.7.3, the maximum length of XML element values
      *  is limited to 10 MB.  The following code disables this default limitation.
+     *
+     *  Other flags are now also passed to the function instead of using global
+     *  settings (some of them have been deprecated, see initLibrary()).
      */
-    xmlDocPtr doc = xmlReadFile(ifname, NULL /*encoding*/, XML_PARSE_HUGE);
+    xmlDocPtr doc = xmlReadFile(ifname, NULL /*encoding*/, XML_PARSE_HUGE | XML_PARSE_NOBLANKS);
 #else
     xmlDocPtr doc = xmlParseFile(ifname);
 #endif
