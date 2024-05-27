@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/ofstd/ofdeprec.h"     /* for OFdeprecated */
 
 // include this file in doxygen documentation
 
@@ -417,7 +418,7 @@ public:
      *    Instead, please use usesEncapsulatedFormat() and/or isPixelDataCompressed().
      *  @return true if transfer syntax uses encapsulated format, false otherwise
      */
-    inline OFBool isEncapsulated() const
+    OFdeprecated inline OFBool isEncapsulated() const
     {
         return usesEncapsulatedFormat() && isPixelDataCompressed();
     }
@@ -428,7 +429,7 @@ public:
      *    Also see usesReferencedPixelData().
      *  @return true if transfer syntax uses non-encapsulated format, false otherwise
      */
-    inline OFBool isNotEncapsulated() const
+    OFdeprecated inline OFBool isNotEncapsulated() const
     {
         return usesNativeFormat();
     }
