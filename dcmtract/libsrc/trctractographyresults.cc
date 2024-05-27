@@ -70,14 +70,6 @@ OFCondition TrcTractographyResults::loadDataset(
   DcmDataset& dataset,
   TrcTractographyResults*& tract)
 {
-  DcmXfer xfer = dataset.getOriginalXfer();
-  // If the original transfer syntax refers to compressed pixel data reject the file
-  if (xfer.isPixelDataCompressed())
-  {
-    DCMTRACT_ERROR("Cannot load dataset since it is compressed, transfer syntax: " << xfer.getXferName());
-    return IOD_EC_CannotDecompress;
-  }
-
   tract = new TrcTractographyResults();
   if (tract == NULL)
   {
