@@ -706,7 +706,7 @@ OFCondition DcmXMLParseHelper::readXmlFile(
      *  Other flags are now also passed to the function instead of using global
      *  settings (some of them have been deprecated, see initLibrary()).
      */
-    xmlDocPtr doc = xmlReadFile(ifname, NULL /*encoding*/, XML_PARSE_HUGE | XML_PARSE_NOBLANKS);
+    xmlDocPtr doc = xmlReadFile(ifname, NULL /*encoding*/, XML_PARSE_HUGE | XML_PARSE_NOBLANKS | XML_PARSE_NONET);
 #else
     xmlDocPtr doc = xmlParseFile(ifname);
 #endif
