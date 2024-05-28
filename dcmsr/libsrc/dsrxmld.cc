@@ -160,7 +160,12 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
 
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the given file */
+#if LIBXML_VERSION < 20703
+    /* xmlParseFile() is deprecated in newer versions of libxml */
     Document = xmlParseFile(filename.c_str());
+#else
+    Document = xmlReadFile(filename.c_str(), NULL /*encoding*/, XML_PARSE_NONET);
+#endif
     if (Document != NULL)
     {
         OFBool isValid = OFTrue;
