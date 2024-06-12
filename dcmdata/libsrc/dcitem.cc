@@ -1098,6 +1098,9 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* the VR in the dataset might be wrong, so the user can decide to ignore it */
         if (dcmPreferVRFromDataDictionary.get() && (newEVR != EVR_UNKNOWN) && (newEVR != EVR_UNKNOWN2B))
         {
+            /* resolve ambiguous VRs */
+            checkAndUpdateVR(*this, newTag);
+            newEVR = newTag.getEVR();
             if (newEVR != vr.getEVR())
             {
                 /* ignore explicit VR in dataset if tag is defined in data dictionary */
