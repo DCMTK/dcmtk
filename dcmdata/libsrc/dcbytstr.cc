@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -756,8 +756,10 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
                             << " bytes from the end of value " << vmNum);
                         /* erase excessive part of the string component */
                         value.erase(posStart + maxLength, excess);
-                        /* correct the position end marker */
-                        posEnd -= excess;
+                        /* correct the position of the end marker by the number of bytes
+                           we just cut off, if the end of the string is not already reached */
+                        if (posEnd != OFString_npos)
+                            posEnd -= excess;
                     }
                 }
                 posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
