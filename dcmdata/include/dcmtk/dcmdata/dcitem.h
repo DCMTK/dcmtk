@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1438,9 +1438,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  'US' depending on the value of PixelRepresentation.
      *  @param item dataset or item that can be used to lookup other element values
      *  @param tag tag of the element to be checked and updated (if required)
+     *  @return OFTrue if the VR has changed, OFFalse otherwise
      */
-    void checkAndUpdateVR(DcmItem &item,
-                          DcmTag &tag);
+    OFBool checkAndUpdateVR(DcmItem &item,
+                            DcmTag &tag);
 
     /** update the SpecificCharacterSet (0008,0005) element depending on the given
      *  parameters. The current value of this element is either replaced or a new

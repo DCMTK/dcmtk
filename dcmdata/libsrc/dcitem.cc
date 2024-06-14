@@ -349,9 +349,10 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream &inStream)
 // ********************************
 
 
-void DcmItem::checkAndUpdateVR(DcmItem &item,
-                               DcmTag &tag)
+OFBool DcmItem::checkAndUpdateVR(DcmItem &item,
+                                 DcmTag &tag)
 {
+    OFBool result = OFFalse;
     /* handle special cases where the VR can be determined by some other element values */
     if (((tag == DCM_WaveformData) || (tag == DCM_WaveformPaddingValue) ||
         (tag == DCM_ChannelMinimumValue) || (tag == DCM_ChannelMaximumValue)) && (tag.getEVR() == EVR_ox))
@@ -366,11 +367,13 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
                     << tag.getTagName() << " " << tag << " to 'OB' because WaveformBitsAllocated "
                     << DCM_WaveformBitsAllocated << " has a value of 8");
                 tag.setVR(EVR_OB);
+                result = OFTrue;
             } else {
                 DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
                     << tag.getTagName() << " " << tag << " to 'OW' because WaveformBitsAllocated "
                     << DCM_WaveformBitsAllocated << " has a value that is different from 8");
                 tag.setVR(EVR_OW);
+                result = OFTrue;
             }
         }
     }
@@ -392,11 +395,13 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
                     << " " << tag << " to 'SS' because PixelRepresentation "
                     << DCM_PixelRepresentation << " has a value of 1");
                 tag.setVR(EVR_SS);
+                result = OFTrue;
             } else {
                 DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of " << tag.getTagName()
                     << " " << tag << " to 'US' because PixelRepresentation "
                     << DCM_PixelRepresentation << " has a value that is different from 1");
                 tag.setVR(EVR_US);
+                result = OFTrue;
             }
         }
     }
@@ -406,6 +411,7 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
         DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
             << tag.getTagName() << " " << tag << " to 'OW'");
         tag.setVR(EVR_OW);
+        result = OFTrue;
     }
     else if ((tag.getBaseTag() == DCM_RETIRED_CurveData) && (tag.getEVR() == EVR_ox))
     {
@@ -413,6 +419,7 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
         DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
             << tag.getTagName() << " " << tag << " to 'OB'");
         tag.setVR(EVR_OB);
+        result = OFTrue;
     }
     /* currently unhandled:
      * - MappedPixelValue (0022,1452), US or SS
@@ -421,6 +428,7 @@ void DcmItem::checkAndUpdateVR(DcmItem &item,
      * - BluePaletteColorLookupTableDescriptor (0028,1103), US or SS
      * and some retired DICOM attributes as well as some DICONDE attributes
      */
+    return result;
 }
 
 
@@ -1098,6 +1106,10 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* the VR in the dataset might be wrong, so the user can decide to ignore it */
         if (dcmPreferVRFromDataDictionary.get() && (newEVR != EVR_UNKNOWN) && (newEVR != EVR_UNKNOWN2B))
         {
+            /* resolve ambiguous VRs, e.g. map the internal "ox" to either "OB" or "OW" */
+            if (checkAndUpdateVR(*this, newTag))
+                newEVR = newTag.getEVR();
+
             if (newEVR != vr.getEVR())
             {
                 /* ignore explicit VR in dataset if tag is defined in data dictionary */
