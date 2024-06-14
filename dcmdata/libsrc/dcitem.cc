@@ -405,7 +405,8 @@ OFBool DcmItem::checkAndUpdateVR(DcmItem &item,
             }
         }
     }
-    else if (((tag.getBaseTag() == DCM_OverlayData) || (tag == DCM_PixelData)) && (tag.getEVR() == EVR_ox))
+    else if (((tag.getBaseTag() == DCM_OverlayData) && (tag.getEVR() == EVR_ox)) ||
+        ((tag == DCM_PixelData) && (tag.getEVR() == EVR_px)))
     {
         /* case 3 (OverlayData and PixelData): see section 8.1.2 and 8.2 in PS 3.5 */
         DCMDATA_DEBUG("DcmItem::checkAndUpdateVR() setting undefined VR of "
