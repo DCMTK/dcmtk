@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -134,7 +134,7 @@ OFCondition DSRDateTimeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags);
     /* output time in ISO 8601 format */
-    DcmDateTime::getISOFormattedDateTimeFromString(getValue(), tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+    DcmDateTime::getISOFormattedDateTimeFromString(getValue(), tmpString, OFTrue /*seconds*/, OFTrue /*fraction*/,
         OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
     writeStringValueToXML(stream, tmpString, "value", (flags & XF_writeEmptyTags) > 0);
     writeXMLItemEnd(stream, flags);
@@ -188,10 +188,9 @@ OFString &DSRDateTimeTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &
             /* convert ISO to DICOM format */
             if (tmpDateTime.setISOFormattedDateTime(tmpString))
             {
-                /* example of XML date/time format with time zone: 2010-12-31T15:30:00+01:00 */
-                const OFBool hasTimeZone = (tmpString.length() >= 25);
+                /* example of XML date/time format with timezone: 2010-12-31T15:30:00.3333333+01:00 */
                 DcmDateTime::getDicomDateTimeFromOFDateTime(tmpDateTime, dateTimeValue,
-                    OFTrue /*seconds*/, OFFalse /*fraction*/, hasTimeZone /*timeZone*/);
+                    OFTrue /*seconds*/, OFTrue /*fraction*/, tmpDateTime.getTime().hasTimeZone());
             }
         }
     }

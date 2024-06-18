@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2025, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1398,7 +1398,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         writeStringFromElementToXML(stream, StudyID, "id", (flags & XF_writeEmptyTags) > 0);
         StudyDate.getISOFormattedDate(tmpString);
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
-        StudyTime.getISOFormattedTime(tmpString);
+        StudyTime.getISOFormattedTime(tmpString, 0 /*pos*/, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/);
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || !AccessionNumber.isEmpty())
         {
@@ -1413,7 +1413,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         writeStringFromElementToXML(stream, SeriesNumber, "number", (flags & XF_writeEmptyTags) > 0);
         SeriesDate.getISOFormattedDate(tmpString);
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
-        SeriesTime.getISOFormattedTime(tmpString);
+        SeriesTime.getISOFormattedTime(tmpString, 0 /*pos*/, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/);
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, ProtocolName, "protocol", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, SeriesDescription, "description", (flags & XF_writeEmptyTags) > 0);
@@ -1430,7 +1430,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             stream << ">" << OFendl;
             InstanceCreationDate.getISOFormattedDate(tmpString);
             writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
-            InstanceCreationTime.getISOFormattedTime(tmpString);
+            InstanceCreationTime.getISOFormattedTime(tmpString, 0 /*pos*/, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/);
             writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
             stream << "</creation>" << OFendl;
         }
@@ -1483,7 +1483,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
                 if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                 {
                     /* output time in ISO 8601 format */
-                    DcmDateTime::getISOFormattedDateTimeFromString(dateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+                    DcmDateTime::getISOFormattedDateTimeFromString(dateTime, tmpString, OFTrue /*seconds*/, OFTrue /*fraction*/,
                         OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
                     writeStringValueToXML(stream, tmpString, "datetime", (flags & XF_writeEmptyTags) > 0);
                     if (!obsName.empty() || (flags & XF_writeEmptyTags))
@@ -1522,7 +1522,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
         stream << "<content>" << OFendl;
         ContentDate.getISOFormattedDate(tmpString);
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
-        ContentTime.getISOFormattedTime(tmpString);
+        ContentTime.getISOFormattedTime(tmpString, 0 /*pos*/, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/);
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         result = DocumentTree.writeXML(stream, flags);
         stream << "</content>" << OFendl;

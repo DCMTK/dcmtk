@@ -381,7 +381,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
         if (!ObservationDateTime.empty())
         {
             /* output time in ISO 8601 format */
-            DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+            DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/, OFTrue /*fraction*/,
                 OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/);
             writeStringValueToXML(stream, tmpString, "datetime");
         }

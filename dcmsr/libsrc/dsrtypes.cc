@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2025, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1242,30 +1242,38 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
 
 const OFString &DSRTypes::currentDate(OFString &dateString)
 {
-    DcmDate::getCurrentDate(dateString);
+    if (DcmDate::getCurrentDate(dateString).bad())
+        DCMSR_WARN("Cannot determine current date, using \"" << dateString << "\" instead");
     return dateString;
 }
 
 
-const OFString &DSRTypes::currentTime(OFString &timeString)
+const OFString &DSRTypes::currentTime(OFString &timeString,
+                                      const OFBool fraction)
 {
-    DcmTime::getCurrentTime(timeString, OFTrue /*seconds*/, OFFalse /*fraction*/);
+    if (DcmTime::getCurrentTime(timeString, OFTrue /*seconds*/, fraction).bad())
+        DCMSR_WARN("Cannot determine current time, using \"" << timeString << "\" instead");
     return timeString;
 }
 
 
-const OFString &DSRTypes::currentDateTime(OFString &dateTimeString)
+const OFString &DSRTypes::currentDateTime(OFString &dateTimeString,
+                                          const OFBool fraction,
+                                          const OFBool timeZone)
 {
-    DcmDateTime::getCurrentDateTime(dateTimeString, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/);
+    if (DcmDateTime::getCurrentDateTime(dateTimeString, OFTrue /*seconds*/, fraction, timeZone).bad())
+        DCMSR_WARN("Cannot determine current date/time, using \"" << dateTimeString << "\" instead");
     return dateTimeString;
 }
 
 
 const OFString &DSRTypes::localTimezone(OFString &timezoneString)
 {
-    OFString dateTimeString;
-    DcmDateTime::getCurrentDateTime(dateTimeString, OFFalse /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/);
-    timezoneString.assign(dateTimeString.substr(8 /* YYYYMMDD */ + 4 /* HHMM */, 5 /* &ZZZZ */));
+    if (!OFTime::getCurrentTime().getISOFormattedTimeZone(timezoneString, OFFalse /*showDelimiter*/))
+    {
+        DCMSR_WARN("Cannot determine local timezone, using \"+0000\" (UTC) instead");
+        timezoneString.assign("+0000");
+    }
     return timezoneString;
 }
 
@@ -1281,7 +1289,7 @@ const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
 const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
                                               OFString &readableTime)
 {
-    DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*createMissingPart*/);
+    DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/);
     return readableTime;
 }
 
@@ -1289,7 +1297,8 @@ const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
 const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
                                                   OFString &readableDateTime)
 {
-    DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFFalse /*createMissingPart*/);
+    DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFTrue /*fraction*/,
+        OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, " " /*dateTimeSeparator*/, " " /*timeZoneSeparator*/);
     return readableDateTime;
 }
 

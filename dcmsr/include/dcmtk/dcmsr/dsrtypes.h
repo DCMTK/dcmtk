@@ -1170,25 +1170,29 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      */
     static const OFString &currentDate(OFString &dateString);
 
-    /** get current time in DICOM 'TM' format. (HHMMSS)
-     ** @param  timeString  string used to store the current time
-     *                      ('000000' if current time could not be retrieved)
+    /** get current time in DICOM 'TM' format. (HHMMSS[.FFFFFF])
+     ** @param  timeString  string used to store the current time.
+     *                      ('000000[.000000]' if current time could not be retrieved)
+     *  @param  fraction    optional flag indicating whether to add fraction of seconds
      ** @return resulting character string (see 'timeString')
      */
-    static const OFString &currentTime(OFString &timeString);
+    static const OFString &currentTime(OFString &timeString,
+                                       const OFBool fraction = OFFalse);
 
-    /** get current date and time in DICOM 'DT' format. (YYYYMMDDHHMMSS)
-     *  The optional UTC notation (e.g. +0100) as well as the optional fractional second
-     *  part are currently not supported.
-     ** @param  dateTimeString  string used to store the current date and time
-     *                          ('19000101000000' if current date/time could not
-     *                           be retrieved)
+    /** get current date and time in DICOM 'DT' format. (YYYYMMDDHHMMSS[.FFFFFF][&ZZZZ])
+     ** @param  dateTimeString  string used to store the current date and time.
+     *                          ('19000101000000[.000000][+0000]' if current date/time could
+     *                           not be retrieved)
+     *  @param  fraction        optional flag indicating whether to add fraction of seconds
+     *  @param  timeZone        optional flag indicating whether to add the time zone
      ** @return resulting character string (see 'dateTimeString')
      */
-    static const OFString &currentDateTime(OFString &dateTimeString);
+    static const OFString &currentDateTime(OFString &dateTimeString,
+                                           const OFBool fraction = OFFalse,
+                                           const OFBool timeZone = OFFalse);
 
     /** get local timezone in DICOM format. (&ZZXX)
-     ** @param  timezoneString  string used to store the local timezone
+     ** @param  timezoneString  string used to store the local timezone.
      *                          ('+0000' if timezone could not be retrieved)
      ** @return resulting character string (see 'timezoneString')
      */
@@ -1204,9 +1208,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                OFString &readableDate);
 
     /** convert DICOM time string to readable format.
-     *  The ISO format "HH:MM" or "HH:MM:SS" (if seconds are available) is used for the
-     *  readable format.
-     ** @param  dicomTime     time in DICOM TM format (HHMM or HHMMSS...)
+     *  The ISO format "HH:MM[:SS[.FFFFFF]]" is used for the readable format.
+     ** @param  dicomTime     time in DICOM TM format (HHMM[SS[.FFFFFF]])
      *  @param  readableTime  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
      */
@@ -1214,9 +1217,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                OFString &readableTime);
 
     /** convert DICOM date time string to readable format.
-     *  The format "YYYY-MM-DD, HH:MM" or "YYYY-MM-DD, HH:MM:SS" is used for the readable format.
-     ** @param  dicomDateTime     time in DICOM DT format (YYYYMMDDHHMMSS...). Possible suffixes
-     *                            (fractional second or UTC notation) are currently ignored.
+     *  The format "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" is used for the readable format.
+     ** @param  dicomDateTime     time in DICOM DT format (YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]).
      *  @param  readableDateTime  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
      */
