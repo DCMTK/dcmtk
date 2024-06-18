@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -405,6 +405,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
 
     /** get list of referenced SOP instances significantly related to the current SOP instance.
+     *  However, the same instances shall not be referenced in the Current Requested Procedure
+     *  Evidence Sequence, Pertinent Other Evidence Sequence, Predecessor Documents Sequence or
+     *  Identical Documents Sequence.
      *  The DICOM standard states: "Such referenced Instances may include equivalent documents or
      *  renderings of this document. [...] Required if the identity of a CDA Document equivalent
      *  to the current SOP Instance is known at the time of creation of this SOP instance. May be
