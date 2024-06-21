@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTReferencedTreatmentRecordSequenceInRTDoseModule
+ *  Header file for class DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,12 +19,11 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
-#include "dcmtk/dcmrt/seq/drtrbs2.h"   // for ReferencedBeamSequence
 
 
-/** Interface class for ReferencedTreatmentRecordSequence (3008,0030) in RTDoseModule
+/** Interface class for ReferencedTreatmentRecordSequence (3008,0030) in RTGeneralTreatmentRecordModule
  */
-class DCMTK_DCMRT_EXPORT DRTReferencedTreatmentRecordSequenceInRTDoseModule
+class DCMTK_DCMRT_EXPORT DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule
   : protected DRTTypes
 {
 
@@ -106,20 +105,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedTreatmentRecordSequenceInRTDoseModule
          */
         OFCondition getReferencedSOPInstanceUID(OFString &value, const signed long pos = 0) const;
 
-      // --- get DICOM sequence attributes ---
-
-        /** get ReferencedBeamSequence (300c,0004)
-         *  @return reference to sequence element
-         */
-        DRTReferencedBeamSequenceInRTDoseModule &getReferencedBeamSequence()
-            { return ReferencedBeamSequence; }
-
-        /** get ReferencedBeamSequence (300c,0004)
-         *  @return const reference to sequence element
-         */
-        const DRTReferencedBeamSequenceInRTDoseModule &getReferencedBeamSequence() const
-            { return ReferencedBeamSequence; }
-
       // --- set DICOM attribute values ---
 
         /** set ReferencedSOPClassUID (0008,1150)
@@ -141,8 +126,6 @@ class DCMTK_DCMRT_EXPORT DRTReferencedTreatmentRecordSequenceInRTDoseModule
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// ReferencedBeamSequence (300c,0004) vr=SQ, vm=1, type=1C
-        DRTReferencedBeamSequenceInRTDoseModule ReferencedBeamSequence;
         /// ReferencedSOPClassUID (0008,1150) vr=UI, vm=1, type=1
         DcmUniqueIdentifier ReferencedSOPClassUID;
         /// ReferencedSOPInstanceUID (0008,1155) vr=UI, vm=1, type=1
@@ -155,22 +138,22 @@ class DCMTK_DCMRT_EXPORT DRTReferencedTreatmentRecordSequenceInRTDoseModule
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTReferencedTreatmentRecordSequenceInRTDoseModule(const OFBool emptyDefaultSequence = OFFalse);
+    DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTReferencedTreatmentRecordSequenceInRTDoseModule(const DRTReferencedTreatmentRecordSequenceInRTDoseModule &copy);
+    DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule(const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule &copy);
 
     /** destructor
      */
-    virtual ~DRTReferencedTreatmentRecordSequenceInRTDoseModule();
+    virtual ~DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule();
 
     /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */
-    DRTReferencedTreatmentRecordSequenceInRTDoseModule &operator=(const DRTReferencedTreatmentRecordSequenceInRTDoseModule &copy);
+    DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule &operator=(const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule &copy);
 
   // --- general methods ---
 
@@ -256,13 +239,13 @@ class DCMTK_DCMRT_EXPORT DRTReferencedTreatmentRecordSequenceInRTDoseModule
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,6 +92,7 @@ static OFCondition evaluateFromFileOptions(
   }
 #endif
 
+  cmd.beginOptionBlock();
   if (cmd.findOption("--study-from"))
   {
     OFString tempStr;
@@ -111,6 +112,7 @@ static OFCondition evaluateFromFileOptions(
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to read value of --series-from option");
     converter.setSeriesFrom(tempStr);
   }
+  cmd.endOptionBlock();
 
   if (cmd.findOption("--instance-inc"))
     converter.setIncrementInstanceNumber(OFTrue);
@@ -123,7 +125,7 @@ static OFCondition evaluateFromFileOptions(
 static void addCmdLineOptions(OFCommandLine& cmd)
 {
   cmd.addParam("imgfile-in",  "image input filename", OFCmdParam::PM_MultiMandatory);
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -169,7 +171,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--transliterate",       "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
       cmd.addOption("--discard-illegal",     "-Cd",     "discard characters that cannot be represented\nin destination character set");
     cmd.addSubGroup("other processing options:");
-      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
+      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dict name=\"str\"",
                                                         "add further attribute");
 
   cmd.addGroup("output options:");

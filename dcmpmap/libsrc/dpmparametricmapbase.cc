@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2021, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,7 +23,7 @@
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmpmap/dpmtypes.h"
 #include "dcmtk/dcmpmap/dpmparametricmapbase.h"
-
+#include "dcmtk/dcmdata/dcuid.h"
 
 DPMParametricMapBase::DPMParametricMapBase()
 : DPMParametricMapBase::IODImage()

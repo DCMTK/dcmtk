@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,254 +49,28 @@ const unsigned int OFCharacterEncoding::CPC_UTF8   = CP_UTF8;
  *------------------*/
 
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
 
-// Workaround for ICU. Type char16_t is only supported since C++11.
-#ifndef HAVE_CHAR16_T
-#define UCHAR_TYPE uint16_t
-#endif
-
-// Another Workaround for ICU. DCMTK does not use exceptions.
-// If U_NOEXCEPT is not defined, ICU falls back to NOEXCEPT.
-#ifndef HAVE_CXX11
-#define U_NOEXCEPT
-#endif
-
-#include <unicode/ucnv.h>
-#include <unicode/ucnv_err.h>
-
-#define CONVERSION_BUFFER_SIZE 1024
-
-class OFCharacterEncoding::Implementation
-{
-
-  public:
-
-    static Implementation* create(const OFString& fromEncoding,
-                                  const OFString& toEncoding,
-                                  OFCondition& result)
-    {
-        UErrorCode icuResult = U_ZERO_ERROR;
-        UConverter* sourceConverter = ucnv_open(fromEncoding != "" ? fromEncoding.c_str() : OFnullptr, &icuResult);
-        if (!U_FAILURE(icuResult))
-        {
-            // set default behavior to AbortTranscodingOnIllegalSequence
-            ucnv_setToUCallBack(sourceConverter,
-                UCNV_TO_U_CALLBACK_STOP,
-                OFnullptr,
-                OFnullptr,
-                OFnullptr,
-                &icuResult);
-            if (!U_FAILURE(icuResult))
-            {
-                UConverter* targetConverter = ucnv_open(toEncoding != "" ? toEncoding.c_str() : OFnullptr, &icuResult);
-                if (!U_FAILURE(icuResult))
-                {
-                    // set default behavior to AbortTranscodingOnIllegalSequence
-                    ucnv_setFromUCallBack(targetConverter,
-                        UCNV_FROM_U_CALLBACK_STOP,
-                        OFnullptr,
-                        OFnullptr,
-                        OFnullptr,
-                        &icuResult);
-                    if (!U_FAILURE(icuResult))
-                    {
-                        if (Implementation* pImplementation = new Implementation(sourceConverter, targetConverter))
-                        {
-                            result = EC_Normal;
-                            return pImplementation;
-                        }
-                        else
-                        {
-                            ucnv_close(targetConverter);
-                            ucnv_close(sourceConverter);
-                            result = EC_MemoryExhausted;
-                            return OFnullptr;
-                        }
-                    }
-                    ucnv_close(targetConverter);
-                }
-            }
-            ucnv_close(sourceConverter);
-        }
-        result = makeOFCondition(0, EC_CODE_CannotOpenEncoding, OF_error,
-            (OFString("Cannot open character encoding, ICU error name: ") + u_errorName(icuResult)).c_str());
-        return OFnullptr;
-    }
-
-    static OFString getVersionString()
-    {
-        OFString versionStr = "ICU, Version ";
-        char buf[15];
-        // extract major and minor version number
-        sprintf(buf, "%i.%i.%i", U_ICU_VERSION_MAJOR_NUM, U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
-        versionStr.append(buf);
-        return versionStr;
-    }
-
-    static OFString getLocaleEncoding()
-    {
-        // open default encoder and retrieve its name
-        UErrorCode result = U_ZERO_ERROR;
-        UConverter* conv = ucnv_open(OFnullptr, &result);
-        if (U_FAILURE(result))
-            return OFString();
-        OFString name = ucnv_getName(conv, &result);
-        ucnv_close(conv);
-        if (U_FAILURE(result))
-            return OFString();
-        return name;
-    }
-
-    static OFBool supportsConversionFlags(const unsigned flags)
-    {
-        return flags == AbortTranscodingOnIllegalSequence
-            || flags == DiscardIllegalSequences;
-    }
-
-    unsigned getConversionFlags() const
-    {
-        UConverterFromUCallback flags;
-        const void* ctx;
-        ucnv_getFromUCallBack(targetConverter, &flags, &ctx);
-        if (flags == UCNV_FROM_U_CALLBACK_STOP)
-            return AbortTranscodingOnIllegalSequence;
-        if (flags == UCNV_FROM_U_CALLBACK_SKIP)
-            return DiscardIllegalSequences;
-        return 0;
-    }
-
-    OFBool setConversionFlags(const unsigned flags)
-    {
-        UErrorCode result = U_ZERO_ERROR;
-        switch (flags)
-        {
-            case AbortTranscodingOnIllegalSequence:
-                ucnv_setFromUCallBack(targetConverter,
-                    UCNV_FROM_U_CALLBACK_STOP,
-                    OFnullptr,
-                    OFnullptr,
-                    OFnullptr,
-                    &result);
-                if (U_FAILURE(result))
-                    return OFFalse;
-                ucnv_setToUCallBack(sourceConverter,
-                    UCNV_TO_U_CALLBACK_STOP,
-                    OFnullptr,
-                    OFnullptr,
-                    OFnullptr,
-                    &result);
-                return !U_FAILURE(result);
-            case DiscardIllegalSequences:
-                ucnv_setFromUCallBack(targetConverter,
-                    UCNV_FROM_U_CALLBACK_SKIP,
-                    OFnullptr,
-                    OFnullptr,
-                    OFnullptr,
-                    &result);
-                if (U_FAILURE(result))
-                    return OFFalse;
-                ucnv_setToUCallBack(sourceConverter,
-                    UCNV_TO_U_CALLBACK_SKIP,
-                    OFnullptr,
-                    OFnullptr,
-                    OFnullptr,
-                    &result);
-                return !U_FAILURE(result);
-            default:
-                return OFFalse;
-        }
-    }
-
-    OFCondition convert(OFString& target,
-                        const char* from,
-                        const size_t length)
-    {
-        // if the input string is empty or NULL, we are done
-        if (!from || !length)
-            return EC_Normal;
-        UErrorCode result = U_ZERO_ERROR;
-        char targetBuffer[CONVERSION_BUFFER_SIZE];
-        UChar pivotBuffer[CONVERSION_BUFFER_SIZE];
-        char* pTargetBuffer = targetBuffer;
-        UChar* pivotSource = pivotBuffer;
-        UChar* pivotTarget = pivotBuffer;
-        const char* const end = from + length;
-        // initialize conversion and convert the first number of chars
-        ucnv_convertEx(
-            targetConverter,
-            sourceConverter,
-            &pTargetBuffer,
-            targetBuffer + CONVERSION_BUFFER_SIZE,
-            &from,
-            end,
-            pivotBuffer,
-            &pivotSource,
-            &pivotTarget,
-            pivotBuffer + CONVERSION_BUFFER_SIZE,
-            OFTrue,  // initialize conversion = yes
-            OFTrue,
-            &result
-        );
-        // resume conversion as long as chars are left
-        while (result == U_BUFFER_OVERFLOW_ERROR)
-        {
-            target.append(targetBuffer, pTargetBuffer - targetBuffer);
-            pTargetBuffer = targetBuffer;
-            result = U_ZERO_ERROR;
-            ucnv_convertEx(
-                targetConverter,
-                sourceConverter,
-                &pTargetBuffer,
-                targetBuffer + CONVERSION_BUFFER_SIZE,
-                &from,
-                end,
-                pivotBuffer,
-                &pivotSource,
-                &pivotTarget,
-                pivotBuffer + CONVERSION_BUFFER_SIZE,
-                OFFalse,  // initialize conversion = no
-                OFTrue,
-                &result
-            );
-        }
-        if (U_FAILURE(result))
-            return makeOFCondition(0, EC_CODE_CannotConvertEncoding, OF_error,
-                (OFString("Cannot convert character encoding, ICU error name: ") + u_errorName(result)).c_str());
-        target.append(targetBuffer, pTargetBuffer - targetBuffer);
-        return EC_Normal;
-    }
-
-    ~Implementation()
-    {
-        ucnv_close(sourceConverter);
-        ucnv_close(targetConverter);
-    }
-
-  private:
-
-#include DCMTK_DIAGNOSTIC_PUSH
-#include DCMTK_DIAGNOSTIC_IGNORE_SHADOW
-    Implementation(UConverter* sourceConverter,
-                   UConverter* targetConverter)
-      : sourceConverter(sourceConverter),
-        targetConverter(targetConverter)
-    {
-
-    }
-#include DCMTK_DIAGNOSTIC_POP
-
-    UConverter* sourceConverter;
-    UConverter* targetConverter;
-};
-
-#elif DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV ||\
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV ||\
  DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV ||\
  DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV
 
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
 
 #include "dcmtk/oficonv/iconv.h"
+
+// helper class for cleanup up oficonv at application exit
+class OFiconvCleanupHelper
+{
+public:
+  ~OFiconvCleanupHelper()
+  {
+    OFiconv_cleanup();
+  }
+};
+
+// global helper object that will clean up the oficonv csmapper area buffer
+// at application exit and thus avoid reports about memory leaks
+OFiconvCleanupHelper cleanupHelper;
 
 #undef LIBICONV_SECOND_ARGUMENT_CONST
 #define iconv_open OFiconv_open
@@ -313,6 +87,9 @@ class OFCharacterEncoding::Implementation
 #include <iconv.h>
 #ifdef WITH_LIBICONV
 #include <localcharset.h>
+#endif
+#ifdef __GLIBC__
+#include <langinfo.h> // nl_langinfo / CODESET
 #endif
 
 #endif /* DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV */
@@ -364,7 +141,7 @@ class OFCharacterEncoding::Implementation
         OFString versionStr = "LIBICONV, Version ";
         char buf[10];
         // extract major and minor version number
-        sprintf(buf, "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
+        OFStandard::snprintf(buf, sizeof(buf), "%i.%i", (_LIBICONV_VERSION >> 8), (_LIBICONV_VERSION & 0xff));
         versionStr.append(buf);
         return versionStr;
 #elif defined(__GLIBC__)
@@ -388,6 +165,11 @@ class OFCharacterEncoding::Implementation
         // basically, the function below should always return a non-empty string
         // but older versions of libiconv might return NULL in certain cases
         return OFSTRING_GUARD(::locale_charset());
+#elif defined(__GLIBC__)
+        const char *oldlocale = setlocale(LC_ALL, "");
+        const char *codeset = nl_langinfo (CODESET);
+        setlocale(LC_ALL, oldlocale);
+        return OFSTRING_GUARD(codeset);
 #else
         return OFString();
 #endif

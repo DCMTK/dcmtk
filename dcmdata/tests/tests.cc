@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2020 OFFIS e.V.
+ *  Copyright (C) 2011-2024 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,6 +44,8 @@ OFTEST_REGISTER(dcmdata_other64bitVeryLong);
 OFTEST_REGISTER(dcmdata_signed64bitVeryLong);
 OFTEST_REGISTER(dcmdata_unsigned64bitVeryLong);
 OFTEST_REGISTER(dcmdata_VRCompare);
+OFTEST_REGISTER(dcmdata_compareTag);
+OFTEST_REGISTER(dcmdata_compareTagKey);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AE);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AS);
 OFTEST_REGISTER(dcmdata_elementLength_EVR_AT);
@@ -108,6 +110,7 @@ OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_defaultVR_dictLen);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_dictVR_defaultLen);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict);
 OFTEST_REGISTER(dcmdata_parser_undefinedLengthUNSequence);
+OFTEST_REGISTER(dcmdata_parser_handleAmbiguousVR_fromDictionary);
 OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
@@ -118,4 +121,8 @@ OFTEST_REGISTER(dcmdata_attribute_filter);
 OFTEST_REGISTER(dcmdata_attribute_matching);
 OFTEST_REGISTER(dcmdata_newDicomElementPrivate);
 OFTEST_REGISTER(dcmdata_generateUniqueIdentifier);
+OFTEST_REGISTER(dcmdata_xferLookup_1);
+OFTEST_REGISTER(dcmdata_xferLookup_2);
+OFTEST_REGISTER(dcmdata_xferLookup_3);
+OFTEST_REGISTER(dcmdata_xferLookup_4);
 OFTEST_MAIN("dcmdata")

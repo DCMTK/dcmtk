@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2017, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,9 +53,9 @@ OFTEST(ofstd_optional)
     OFCHECK( o1 && o2 );
     OFCHECK( *o1 == 7 && *o2 == 3 );
     OFCHECK( o0 < o2 && o2 <= o1 );
-    OFCHECK( o2 != o1 );
+    OFCHECK( o2.operator!=(o1) ); // this resolves operator ambiguity in C++20
     o1 = o2;
-    OFCHECK( o1 == o2 );
+    OFCHECK( o1.operator==(o2) ); // this resolves operator ambiguity in C++20
     OFCHECK( o0 == OFnullopt );
     OFCHECK( OFnullopt == o0 );
     OFCHECK( o2 == 3 );

@@ -20,11 +20,6 @@
 #include "jpeglib16.h"
 #include "jmemsys16.h"		/* import the system-dependent declarations */
 
-#ifndef HAVE_STDLIB_H		/* <stdlib.h> should declare malloc(),free() */
-extern void * malloc JPP((size_t size));
-extern void free JPP((void *ptr));
-#endif
-
 
 /*
  * Memory allocation and freeing are controlled by the regular library

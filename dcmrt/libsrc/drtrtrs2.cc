@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTReferencedTreatmentRecordSequenceInRTDoseModule
+ *  Source file for class DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,35 +19,32 @@
 
 // --- item class ---
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::Item(const OFBool emptyDefaultItem)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    ReferencedBeamSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedSOPClassUID(DCM_ReferencedSOPClassUID),
     ReferencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID)
 {
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::Item(const Item &copy)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    ReferencedBeamSequence(copy.ReferencedBeamSequence),
     ReferencedSOPClassUID(copy.ReferencedSOPClassUID),
     ReferencedSOPInstanceUID(copy.ReferencedSOPInstanceUID)
 {
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::~Item()
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::~Item()
 {
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::operator=(const Item &copy)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
-        ReferencedBeamSequence = copy.ReferencedBeamSequence;
         ReferencedSOPClassUID = copy.ReferencedSOPClassUID;
         ReferencedSOPInstanceUID = copy.ReferencedSOPInstanceUID;
     }
@@ -55,33 +52,31 @@ DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatment
 }
 
 
-void DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::clear()
+void DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
         ReferencedSOPClassUID.clear();
         ReferencedSOPInstanceUID.clear();
-        ReferencedBeamSequence.clear();
     }
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::isEmpty()
+OFBool DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::isEmpty()
 {
     return ReferencedSOPClassUID.isEmpty() &&
-           ReferencedSOPInstanceUID.isEmpty() &&
-           ReferencedBeamSequence.isEmpty();
+           ReferencedSOPInstanceUID.isEmpty();
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::isValid() const
+OFBool DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::read(DcmItem &item)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -90,14 +85,13 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::read(DcmIt
         clear();
         getAndCheckElementFromDataset(item, ReferencedSOPClassUID, "1", "1", "ReferencedTreatmentRecordSequence");
         getAndCheckElementFromDataset(item, ReferencedSOPInstanceUID, "1", "1", "ReferencedTreatmentRecordSequence");
-        ReferencedBeamSequence.read(item, "1-n", "1C", "ReferencedTreatmentRecordSequence");
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::write(DcmItem &item)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -105,13 +99,12 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::write(DcmI
         result = EC_Normal;
         addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPClassUID), "1", "1", "ReferencedTreatmentRecordSequence");
         addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedSOPInstanceUID), "1", "1", "ReferencedTreatmentRecordSequence");
-        if (result.good()) result = ReferencedBeamSequence.write(item, "1-n", "1C", "ReferencedTreatmentRecordSequence");
     }
     return result;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::getReferencedSOPClassUID(OFString &value, const signed long pos) const
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::getReferencedSOPClassUID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -120,7 +113,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::getReferen
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::getReferencedSOPInstanceUID(OFString &value, const signed long pos) const
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::getReferencedSOPInstanceUID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -129,7 +122,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::getReferen
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::setReferencedSOPClassUID(const OFString &value, const OFBool check)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::setReferencedSOPClassUID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -142,7 +135,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::setReferen
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::setReferencedSOPInstanceUID(const OFString &value, const OFBool check)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item::setReferencedSOPInstanceUID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -157,7 +150,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item::setReferen
 
 // --- sequence class ---
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::DRTReferencedTreatmentRecordSequenceInRTDoseModule(const OFBool emptyDefaultSequence)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -167,7 +160,7 @@ DRTReferencedTreatmentRecordSequenceInRTDoseModule::DRTReferencedTreatmentRecord
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::DRTReferencedTreatmentRecordSequenceInRTDoseModule(const DRTReferencedTreatmentRecordSequenceInRTDoseModule &copy)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule(const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -193,7 +186,7 @@ DRTReferencedTreatmentRecordSequenceInRTDoseModule::DRTReferencedTreatmentRecord
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule &DRTReferencedTreatmentRecordSequenceInRTDoseModule::operator=(const DRTReferencedTreatmentRecordSequenceInRTDoseModule &copy)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::operator=(const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule &copy)
 {
     if (this != &copy)
     {
@@ -221,13 +214,13 @@ DRTReferencedTreatmentRecordSequenceInRTDoseModule &DRTReferencedTreatmentRecord
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::~DRTReferencedTreatmentRecordSequenceInRTDoseModule()
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::~DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule()
 {
     clear();
 }
 
 
-void DRTReferencedTreatmentRecordSequenceInRTDoseModule::clear()
+void DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -246,25 +239,25 @@ void DRTReferencedTreatmentRecordSequenceInRTDoseModule::clear()
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequenceInRTDoseModule::isEmpty()
+OFBool DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTReferencedTreatmentRecordSequenceInRTDoseModule::isValid() const
+OFBool DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-size_t DRTReferencedTreatmentRecordSequenceInRTDoseModule::getNumberOfItems() const
+size_t DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoFirstItem()
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -276,19 +269,21 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoFirstItem()
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoNextItem()
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -308,7 +303,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoItem(const s
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -328,13 +323,13 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoItem(const s
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::gotoItem(const size_t num)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::getCurrentItem(Item *&item) const
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -346,7 +341,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::getCurrentItem(I
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::getCurrentItem()
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -355,7 +350,7 @@ DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatment
 }
 
 
-const DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::getCurrentItem() const
+const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -364,7 +359,7 @@ const DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTre
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::getItem(const size_t num, Item *&item)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -374,7 +369,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::getItem(const si
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::getItem(const size_t num)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -384,7 +379,7 @@ DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatment
 }
 
 
-const DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::getItem(const size_t num) const
+const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -394,19 +389,19 @@ const DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTre
 }
 
 
-DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::operator[](const size_t num)
+DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTReferencedTreatmentRecordSequenceInRTDoseModule::Item &DRTReferencedTreatmentRecordSequenceInRTDoseModule::operator[](const size_t num) const
+const DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::Item &DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::addItem(Item *&item)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -423,7 +418,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::addItem(Item *&i
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::insertItem(const size_t pos, Item *&item)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -446,7 +441,7 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::insertItem(const
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::removeItem(const size_t pos)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -464,10 +459,10 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::removeItem(const
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::read(DcmItem &dataset,
-                                                                     const OFString &card,
-                                                                     const OFString &type,
-                                                                     const char *moduleName)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::read(DcmItem &dataset,
+                                                                                       const OFString &card,
+                                                                                       const OFString &type,
+                                                                                       const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -514,10 +509,10 @@ OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::read(DcmItem &da
 }
 
 
-OFCondition DRTReferencedTreatmentRecordSequenceInRTDoseModule::write(DcmItem &dataset,
-                                                                      const OFString &card,
-                                                                      const OFString &type,
-                                                                      const char *moduleName)
+OFCondition DRTReferencedTreatmentRecordSequenceInRTGeneralTreatmentRecordModule::write(DcmItem &dataset,
+                                                                                        const OFString &card,
+                                                                                        const OFString &type,
+                                                                                        const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

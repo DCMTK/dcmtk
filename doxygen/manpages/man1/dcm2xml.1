@@ -1,4 +1,4 @@
-.TH "dcm2xml" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2xml \- Convert DICOM file and data set to XML
@@ -19,7 +19,7 @@ If \fBdcm2xml\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
 xmlfile-out  XML output filename (default: stdout)
 .fi
@@ -89,12 +89,12 @@ input transfer syntax:
 long tag values:
 
   +M    --load-all
-          load very long tag values (e.g. pixel data)
+          load very long tag values (e\&.g\&. pixel data)
 
   -M    --load-short
           do not load very long values (default)
 
-  +R    --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+  +R    --max-read-length  [k]bytes: integer (4\&.\&.4194302, default: 4)
           set threshold for long values to k kbytes
 .fi
 .PP
@@ -113,15 +113,17 @@ specific character set:
           check all data elements with string values
           (default: only PN, LO, LT, SH, ST, UC and UT)
 
-          # this option is only used for the mapping to an appropriate
-          # XML character encoding, but not for the conversion to UTF-8
+          # this option is only used for the extended check whether
+          # the Specific Character Set (0008,0005) attribute should be
+          # present, but not for the conversion of unaffected element
+          # values to UTF-8 (e\&.g\&. element values with a VR of CS)
 
   +U8   --convert-to-utf8
           convert all element values that are affected
           by Specific Character Set (0008,0005) to UTF-8
 
-          # requires support from an underlying character encoding library
-          # (see output of --version on which one is available)
+          # requires support from an underlying character encoding
+          # library (see output of --version on which one is available)
 .fi
 .PP
 .SS "output options"
@@ -148,7 +150,7 @@ DCMTK-specific format (not with --native-format):
 
   +Xf   --use-dtd-file  [f]ilename: string
           use specified DTD file (only with +Xe)
-          (default: /usr/local/share/dcmtk/dcm2xml.dtd)
+          (default: /usr/local/share/dcmtk-<VERSION>/dcm2xml\&.dtd)
 
   +Wn   --write-element-name
           write name of the DICOM data elements (default)
@@ -180,39 +182,39 @@ The basic structure of the DCMTK-specific XML output created from a DICOM file l
 .PP
 .PP
 .nf
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
-<file-format xmlns="http://dicom.offis.de/dcmtk">
-  <meta-header xfer="1.2.840.10008.1.2.1" name="Little Endian Explicit">
-    <element tag="0002,0000" vr="UL" vm="1" len="4"
-             name="MetaElementGroupLength">
+<?xml version='1\&.0' encoding='ISO-8859-1'?>
+<!DOCTYPE file-format SYSTEM 'dcm2xml\&.dtd'>
+<file-format xmlns='http://dicom\&.offis\&.de/dcmtk'>
+  <meta-header xfer='1\&.2\&.840\&.10008\&.1\&.2\&.1' name='Little Endian Explicit'>
+    <element tag='0002,0000' vr='UL' vm='1' len='4'
+             name='MetaElementGroupLength'>
       166
     </element>
-    ...
-    <element tag="0002,0013" vr="SH" vm="1" len="16"
-             name="ImplementationVersionName">
+    \&.\&.\&.
+    <element tag='0002,0013' vr='SH' vm='1' len='16'
+             name='ImplementationVersionName'>
       OFFIS_DCMTK_353
     </element>
   </meta-header>
-  <data-set xfer="1.2.840.10008.1.2" name="Little Endian Implicit">
-    <element tag="0008,0005" vr="CS" vm="1" len="10"
-             name="SpecificCharacterSet">
+  <data-set xfer='1\&.2\&.840\&.10008\&.1\&.2' name='Little Endian Implicit'>
+    <element tag='0008,0005' vr='CS' vm='1' len='10'
+             name='SpecificCharacterSet'>
       ISO_IR 100
     </element>
-    ...
-    <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
-      <item card="3">
-        <element tag="0028,3002" vr="xs" vm="3" len="6"
-                 name="LUTDescriptor">
-          256\0\8
+    \&.\&.\&.
+    <sequence tag='0028,3010' vr='SQ' card='2' name='VOILUTSequence'>
+      <item card='3'>
+        <element tag='0028,3002' vr='xs' vm='3' len='6'
+                 name='LUTDescriptor'>
+          256\\0\\8
         </element>
-        ...
+        \&.\&.\&.
       </item>
-      ...
+      \&.\&.\&.
     </sequence>
-    ...
-    <element tag="7fe0,0010" vr="OW" vm="1" len="262144"
-             name="PixelData" loaded="no" binary="hidden">
+    \&.\&.\&.
+    <element tag='7fe0,0010' vr='OW' vm='1' len='262144'
+             name='PixelData' loaded='no' binary='hidden'>
     </element>
   </data-set>
 </file-format>
@@ -225,59 +227,144 @@ Attributes with very large value fields (e\&.g\&. pixel data) are not loaded by 
 .PP
 Furthermore, binary data of OB and OW attributes are not written to the XML output file by default\&. These elements can be identified by the additional attribute 'binary' with a value of 'hidden' (default is 'no')\&. The command line option \fI--write-binary-data\fP causes also binary value fields to be printed (attribute value is 'yes' or 'base64')\&. But, be careful when using this option together with \fI--load-all\fP because of the large amounts of pixel data that might be printed to the output\&. Please note that in this context element values with a VR of OD, OF, OL and OV are not regarded as 'binary data'\&.
 .PP
-Multiple values (i\&.e\&. where the DICOM value multiplicity is greater than 1) are separated by a backslash '\\' (except for Base64 encoded data)\&. The 'len' attribute indicates the number of bytes for the particular value field as stored in the DICOM data set, i\&.e\&. it might deviate from the XML encoded value length e\&.g\&. because of non-significant padding that has been removed\&. If this attribute is missing in 'sequence' or 'item' start tags, the corresponding DICOM element has been stored with undefined length\&.
-.SH "Native DICOM Model Format"
+Multiple values (i\&.e\&. where the DICOM value multiplicity is greater than 1) are separated by a backslash '\\' (except for Base64 encoded data)\&.  The 'len'
+attribute indicates the number of bytes for the particular value field as
+stored in the DICOM data set, i\&.e\&. it might deviate from the XML encoded value
+length e\&.g\&. because of non-significant padding that has been removed\&.  If this
+attribute is missing in 'sequence' or 'item' start tags, the corresponding
+DICOM element has been stored with undefined length\&.
+
+@section dcm2xml_native_format Native DICOM Model Format
+
+The description of the Native DICOM Model format can be found in the DICOM
+standard, part 19 ('Application Hosting')\&.
+
+@subsection dcm2xml_bulk_data Bulk Data
+
+Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB
+or OW, as well as OD, OF, OL, OV and UN values are by default not written to the
+XML output because of their size\&.  Instead, for each element, a new Universally
+Unique Identifier (UUID) is being generated and written as an attribute of a
+\\<BulkData\\> XML element\&.  So far, there is no possibility to write an
+additional file to hold the binary data for each of the binary data chunks\&.
+This is not required by the standard, however, it might be useful for
+implementing an Application Hosting interface; thus this feature may be
+available in future versions of \\b dcm2xml\&.
+
+In addition, Supplement 163 (Store Over the Web by Representational State
+Transfer Services) introduces a new \\<InlineBinary\\> XML element that allows
+for encoding binary data as Base64\&.  Currently, the command line option
+\\e --encode-base64 enables this encoding for the following VRs: OB, OD, OF, OL,
+OV, OW and UN\&.
+
+@subsection dcm2xml_known_issues Known Issues
+
+In addition to what is written in the above section on 'Bulk Data', there are
+further known issues with the current implementation of the Native DICOM Model
+format\&.  For example, large element values with a VR other than OB, OD, OF, OL,
+OV, OW or UN are currently never written as bulk data, although it might be
+useful, e\&.g\&. for very long text elements (especially UT) or very long numeric
+fields (of various VRs)\&.
+
+@section dcm2xml_notes NOTES
+
+@subsection dcm2xml_character_encoding Character Encoding
+
+The XML character encoding is determined automatically from the DICOM attribute
+(0008,0005) 'Specific Character Set' using the following mapping:
+
+@verbatim
+ASCII         (ISO_IR 6)    =>  'UTF-8'
+UTF-8         'ISO_IR 192'  =>  'UTF-8'
+ISO Latin 1   'ISO_IR 100'  =>  'ISO-8859-1'
+ISO Latin 2   'ISO_IR 101'  =>  'ISO-8859-2'
+ISO Latin 3   'ISO_IR 109'  =>  'ISO-8859-3'
+ISO Latin 4   'ISO_IR 110'  =>  'ISO-8859-4'
+ISO Latin 5   'ISO_IR 148'  =>  'ISO-8859-9'
+ISO Latin 9   'ISO_IR 203'  =>  'ISO-8859-15'
+Cyrillic      'ISO_IR 144'  =>  'ISO-8859-5'
+Arabic        'ISO_IR 127'  =>  'ISO-8859-6'
+Greek         'ISO_IR 126'  =>  'ISO-8859-7'
+Hebrew        'ISO_IR 138'  =>  'ISO-8859-8'
+\\endverbatim
+
+If this DICOM attribute is missing in the input file, although needed, option
+\\e --charset-assume can be used to specify an appropriate character set
+manually (using one of the DICOM defined terms)\&.  For reasons of backward
+compatibility with previous versions of this tool, the following terms are also
+supported and mapped automatically to the associated DICOM defined terms:
+latin-1, latin-2, latin-3, latin-4, latin-5, latin-9, cyrillic, arabic, greek,
+hebrew\&.
+
+Multiple character sets using code extension techniques are not supported\&.  If
+needed, option \\e --convert-to-utf8 can be used to convert the DICOM file or
+data set to UTF-8 encoding prior to the conversion to XML format\&.  This is also
+useful for DICOMDIR files where each directory record can have a different
+character set\&.
+
+If no mapping is defined and option \\e --convert-to-utf8 is not used, non-ASCII
+characters and those below #32 are stored as '&#nnn;' where 'nnn' refers to the
+numeric character code\&.  This might lead to invalid character entity references
+(such as '&#27;' for ESC) and will cause most XML parsers to reject the document\&.
+
+@section dcm2xml_logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user\&.  By default, only errors and warnings
+are written to the standard error stream\&.  Using option \\e --verbose also
+informational messages like processing details are reported\&.  Option
+\\e --debug can be used to get more details on the internal activity, e\&.g\&. for
+debugging purposes\&.  Other logging levels can be selected using option
+\\e --log-level\&.  In \\e --quiet mode only fatal errors are reported\&.  In such
+very severe error events, the application will usually terminate\&.  For more
+details on the different logging levels, see documentation of module 'oflog'\&.
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \\e --log-config
+can be used\&.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated\&.  An example
+configuration file is provided in <em>\\<etcdir\\>/logger\&.cfg</em>\&.
+
+@section dcm2xml_command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values\&.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively\&.  Usually, order and position of command line options are
+arbitrary (i\&.e\&. they can appear anywhere)\&.  However, if options are mutually
+exclusive the rightmost appearance is used\&.  This behavior conforms to the
+standard evaluation rules of common Unix shells\&.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e\&.g\&. <em>\\@command\&.txt</em>)\&.  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation\&.  Please note that a command
+file cannot contain another command file\&.  This simple but effective approach
+allows one to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em>\\<datadir\\>/dumppat\&.txt</em>)\&.
+
+@section dcm2xml_environment ENVIRONMENT
+
+The \\b dcm2xml utility will attempt to load DICOM data dictionaries specified
+in the \\e DCMDICTPATH environment variable\&.  By default, i\&.e\&. if the
+\\e DCMDICTPATH environment variable is not set, the file
+<em>\\<datadir\\>/dicom\&.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows)\&.
+
+The default behavior should be preferred and the \\e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required\&.  The
+\\e DCMDICTPATH environment variable has the same format as the Unix shell
+\\e PATH variable in that a colon (':') separates entries\&.  On Windows systems,
+a semicolon (';") is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .PP
-The description of the Native DICOM Model format can be found in the DICOM standard, part 19 ('Application Hosting')\&.
-.SS "Bulk Data"
-Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OD, OF, OL, OV and UN values are by default not written to the XML output because of their size\&. Instead, for each element, a new Universally Unique Identifier (UUID) is being generated and written as an attribute of a <BulkData> XML element\&. So far, there is no possibility to write an additional file to hold the binary data for each of the binary data chunks\&. This is not required by the standard, however, it might be useful for implementing an Application Hosting interface; thus this feature may be available in future versions of \fBdcm2xml\fP\&.
+Depending on the command line options specified, the \fBdcm2xml\fP utility will attempt to load character set mapping tables\&. This happens when DCMTK was compiled with the oficonv library (which is the default) and the mapping tables are not built into the library (default when DCMTK uses shared libraries)\&.
 .PP
-In addition, Supplement 163 (Store Over the Web by Representational State Transfer Services) introduces a new <InlineBinary> XML element that allows for encoding binary data as Base64\&. Currently, the command line option \fI--encode-base64\fP enables this encoding for the following VRs: OB, OD, OF, OL, OV, OW and UN\&.
-.SS "Known Issues"
-In addition to what is written in the above section on 'Bulk Data', there are further known issues with the current implementation of the Native DICOM Model format\&. For example, large element values with a VR other than OB, OD, OF, OL, OV, OW or UN are currently never written as bulk data, although it might be useful, e\&.g\&. for very long text elements (especially UT) or very long numeric fields (of various VRs)\&.
-.SH "NOTES"
-.PP
-.SS "Character Encoding"
-The XML encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' using the following mapping:
-.PP
-.PP
-.nf
-ASCII         (ISO_IR 6)    =>  "UTF-8"
-UTF-8         "ISO_IR 192"  =>  "UTF-8"
-ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
-ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
-ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"
-ISO Latin 4   "ISO_IR 110"  =>  "ISO-8859-4"
-ISO Latin 5   "ISO_IR 148"  =>  "ISO-8859-9"
-Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
-Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
-Greek         "ISO_IR 126"  =>  "ISO-8859-7"
-Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
-.fi
-.PP
-.PP
-If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&. For reasons of backward compatibility with previous versions of this tool, the following terms are also supported and mapped automatically to the associated DICOM defined terms: latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew\&.
-.PP
-Multiple character sets using code extension techniques are not supported\&. If needed, option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the conversion to XML format\&. This is also useful for DICOMDIR files where each directory record can have a different character set\&.
-.PP
-If no mapping is defined and option \fI--convert-to-utf8\fP is not used, non-ASCII characters and those below #32 are stored as '&#nnn;' where 'nnn' refers to the numeric character code\&. This might lead to invalid character entity references (such as '&#27;' for ESC) and will cause most XML parsers to reject the document\&.
-.SH "LOGGING"
-.PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
-.PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
-.SH "COMMAND LINE"
-.PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
-.PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
-.PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
-.SH "ENVIRONMENT"
-.PP
-The \fBdcm2xml\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
-.PP
-The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "FILES"
 .PP
 \fI<datadir>/dcm2xml\&.dtd\fP - Document Type Definition (DTD) file
@@ -286,4 +373,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBxml2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

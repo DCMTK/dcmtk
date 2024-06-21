@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, OFFIS e.V.
+ *  Copyright (C) 2016-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -213,6 +213,39 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER <unspecified>
 
+/*! @brief A macro to disable warnings about an overflow in a string operation
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW <unspecified>
+
+/*! @brief A macro to disable warnings about a restrict-qualified parameter
+ *  that is aliased by another argument, or when copies between such objects overlap.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_RESTRICT <unspecified>
+
+/*! @brief A macro to disable warnings about the possible use of an
+ *  object after deallocation by a call to free().
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_USE_AFTER_FREE <unspecified>
+
+/*! @brief A macro to disable warnings about out-of bounds array indices.
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_ARRAY_BOUNDS <unspecified>
+
+/*! @brief A macro to disable warnings about the use of the unary minus
+ *  operator with an unsigned integer type
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -236,6 +269,11 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREACHABLE_CODE_WARNING "dcmtk/ofstd/diag/unreachb.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_ATTRIBUTE_REDECLARATION "dcmtk/ofstd/diag/ignrattr.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_UNREFERENCED_FORMAL_PARAMETER "dcmtk/ofstd/diag/unrefprm.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW "dcmtk/ofstd/diag/stringop.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_RESTRICT "dcmtk/ofstd/diag/restrict.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_USE_AFTER_FREE "dcmtk/ofstd/diag/useafree.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_ARRAY_BOUNDS "dcmtk/ofstd/diag/arrybnds.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS "dcmtk/ofstd/diag/unarymin.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

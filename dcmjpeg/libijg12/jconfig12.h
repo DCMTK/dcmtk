@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,18 +34,8 @@
 
 /* the following settings are derived from osconfig.h */
 
-#ifndef HAVE_C_CONST
-#define const
-#endif
-
 #ifdef C_CHAR_UNSIGNED
 #define CHAR_IS_UNSIGNED
-#endif
-
-#ifdef HAVE_STRINGS_H
-#ifndef HAVE_STRING_H
-#define NEED_BSD_STRINGS
-#endif
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -61,7 +51,7 @@
 #define RIGHT_SHIFT_IS_UNSIGNED
 #endif
 
-#define INLINE C_INLINE
+#define INLINE __inline
 
 /* These are for configuring the JPEG memory manager. */
 #undef DEFAULT_MAX_MEM

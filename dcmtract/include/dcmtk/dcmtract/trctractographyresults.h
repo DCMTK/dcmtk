@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,10 +24,10 @@
 
 #include "dcmtk/config/osconfig.h"              // include OS configuration first
 #include "dcmtk/ofstd/ofvector.h"               // for OFVector
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmiod/iodcommn.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmiod/modenhequipment.h"       // for Enhanced General Equipment Module
-#include "dcmtk/dcmtract/trctypes.h"            // for Tractography Results data types
 #include "dcmtk/dcmtract/trctrackset.h"         // for Track Set
 #include "dcmtk/dcmtract/trcmodtractresults.h"  // for Tractography Results Module
 #include "dcmtk/dcmtract/trcdef.h"

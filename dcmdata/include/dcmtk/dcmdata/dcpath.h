@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2022, OFFIS e.V.
+ *  Copyright (C) 2008-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -156,6 +156,12 @@ public:
      */
     OFBool containsGroup(const Uint16 groupNo) const;
 
+    /** Returns whether the path contains tags with invalid group numbers
+     *  (groups 1, 3, 5, 7 and 0xFFFF are illegal in DICOM).
+     *  @return OFTrue if illegal group number is found in path, OFFalse otherwise
+     */
+    OFBool containsInvalidGroup() const;
+
     /** Returns a string representation of each path node separately.
      *  Tags are represented as numbers surrounded by braces "(gggg,eeee)",
      *  not dictionary names. Items are represented by a number or wildcard
@@ -245,10 +251,10 @@ public:
      */
     void checkPrivateReservations(const OFBool doChecking);
 
-    /** Returns private creator string for given tag
+    /** Returns private creator identifier for given tag
      *  @param item   [in] The item to search in
      *  @param tagKey [in] The tag key for which a reservation should be looked up
-     *  @param privateCreator [out] The private creator string
+     *  @param privateCreator [out] The private creator identifier
      *  @return Return EC_Normal if reservation was found (can be empty, though),
      *          EC_TagNotFound if no private creator tag exists, error otherwise
      */
@@ -258,8 +264,8 @@ public:
      *  tag key exists.
      *  @param item   [in] The item to search in
      *  @param tagKey [in/out] The tag to be checked.
-     *  @param privateCreator [in] The private creator to check for (if known,
-     *                        can be left empty)
+     *  @param privateCreator [in] The private creator identifier to check for
+     *                        (if known, can be left empty)
      *  @return Return EC_Normal if reservation checking was successful.
      *          Otherwise an error code is returned.
      */
@@ -272,8 +278,8 @@ public:
      *  @param item [in] The item to search in
      *  @param tag [in/out] The tag to be checked. Will be updated with VR and
      *                      private creator.
-     *  @param privateCreator [in] The private creator to check for (if known,
-     *                        can be left empty)
+     *  @param privateCreator [in] The private creator identifier to check for
+     *                        (if known, can be left empty)
      *  @return Return EC_Normal if reservation checking and updating the
      *          tag was successful. Otherwise an error code is returned.
      */

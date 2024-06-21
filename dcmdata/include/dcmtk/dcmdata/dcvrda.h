@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -155,7 +155,7 @@ class DCMTK_DCMDATA_EXPORT DcmDate
                            const OFString& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
-    /// @copydoc DcmElement::combinationMatches()
+    /// @copydoc DcmByteString::combinationMatches()
     virtual OFBool combinationMatches(const DcmElement& keySecond,
                                       const DcmElement& candidateFirst,
                                       const DcmElement& candidateSecond) const;

@@ -1,4 +1,4 @@
-.TH "echoscu" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 echoscu \- DICOM verification (C-ECHO) SCU
@@ -66,10 +66,10 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..38)
+  -pts  --propose-ts  [n]umber: integer (1\&.\&.45)
           propose n transfer syntaxes
 
-  -ppc  --propose-pc  [n]umber: integer (1..128)
+  -ppc  --propose-pc  [n]umber: integer (1\&.\&.128)
           propose n presentation contexts
 
 other network options:
@@ -86,7 +86,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes (default: 16384)
 
         --repeat  [n]umber: integer
@@ -149,17 +149,28 @@ certification authority:
 
 security profile:
 
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile (default)
+          Non-downgrading BCP 195 TLS Profile (retired)
 
   +px   --profile-bcp195
-          BCP 195 TLS Profile
+          BCP 195 TLS Profile (retired)
 
   +pz   --profile-bcp195-ex
-          Extended BCP 195 TLS Profile
+          Extended BCP 195 TLS Profile (retired)
 
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
 
   +pa   --profile-aes
           AES TLS Secure Transport Connection Profile (retired)
@@ -175,6 +186,14 @@ ciphersuite:
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --request-sni  [s]erver name: string
+          request server name s
 
 pseudo random generator:
 
@@ -201,13 +220,13 @@ offline certificate verification:
           verify certificate against CA settings
 
           # Load a client certificate and check whether it would be accepted
-          # when received during a TLS handshake. Print result and exit.
+          # when received during a TLS handshake\&. Print result and exit\&.
 
   +rc   --is-root-cert  [f]ilename: string
           check if certificate is self-signed root CA
 
           # Load a client certificate and check whether it is a valid,
-          # self-signed root CA certificate. Print result and exit.
+          # self-signed root CA certificate\&. Print result and exit\&.
 .fi
 .PP
 .SH "NOTES"
@@ -217,15 +236,66 @@ The \fBechoscu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
-VerificationSOPClass                1.2.840.10008.1.1
+VerificationSOPClass                                1\&.2\&.840\&.10008\&.1\&.1
 .fi
 .PP
 .PP
-Unless the \fI--propose-ts\fP option is used, the echoscu application will only propose the transfer syntax
+By default, the \fBechoscu\fP application will only propose this transfer syntax:
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
+LittleEndianImplicitTransferSyntax                  1\&.2\&.840\&.10008\&.1\&.2
+.fi
+.PP
+.PP
+If the \fI--propose-ts\fP option is used, the following transfer syntaxes will also be proposed, depending on the numeric value 'n' that is passed to this option:
+.PP
+.PP
+.nf
+LittleEndianExplicitTransferSyntax                  1\&.2\&.840\&.10008\&.1\&.2\&.1
+BigEndianExplicitTransferSyntax                     1\&.2\&.840\&.10008\&.1\&.2\&.2
+JPEGProcess1TransferSyntax                          1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+JPEGProcess2_4TransferSyntax                        1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
+JPEGProcess3_5TransferSyntax                        1\&.2\&.840\&.10008\&.1\&.2\&.4\&.52
+JPEGProcess6_8TransferSyntax                        1\&.2\&.840\&.10008\&.1\&.2\&.4\&.53
+JPEGProcess7_9TransferSyntax                        1\&.2\&.840\&.10008\&.1\&.2\&.4\&.54
+JPEGProcess10_12TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
+JPEGProcess11_13TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.56
+JPEGProcess14TransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.57
+JPEGProcess15TransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.58
+JPEGProcess16_18TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.59
+JPEGProcess17_19TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.60
+JPEGProcess20_22TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.61
+JPEGProcess21_23TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.62
+JPEGProcess24_26TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.63
+JPEGProcess25_27TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.64
+JPEGProcess28TransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.65
+JPEGProcess29TransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.66
+JPEGProcess14SV1TransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.70
+RLELosslessTransferSyntax                           1\&.2\&.840\&.10008\&.1\&.2\&.5
+DeflatedExplicitVRLittleEndianTransferSyntax        1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99
+JPEGLSLosslessTransferSyntax                        1\&.2\&.840\&.10008\&.1\&.2\&.4\&.80
+JPEGLSLossyTransferSyntax                           1\&.2\&.840\&.10008\&.1\&.2\&.4\&.81
+JPEG2000LosslessOnlyTransferSyntax                  1\&.2\&.840\&.10008\&.1\&.2\&.4\&.90
+JPEG2000TransferSyntax                              1\&.2\&.840\&.10008\&.1\&.2\&.4\&.91
+JPEG2000Part2MulticomponentImageComp\&.LosslessOnlyT\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.92
+JPEG2000Part2MulticomponentImageComp\&.TransferSyntax 1\&.2\&.804\&.10008\&.1\&.2\&.4\&.93
+MPEG2MainProfileAtMainLevelTransferSyntax           1\&.2\&.840\&.10008\&.1\&.2\&.4\&.100
+MPEG2MainProfileAtHighLevelTransferSyntax           1\&.2\&.840\&.10008\&.1\&.2\&.4\&.101
+MPEG4HighProfileLevel4_1TransferSyntax              1\&.2\&.840\&.10008\&.1\&.2\&.4\&.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax  1\&.2\&.840\&.10008\&.1\&.2\&.4\&.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax        1\&.2\&.840\&.10008\&.1\&.2\&.4\&.106
+HEVCMainProfileLevel5_1TransferSyntax               1\&.2\&.840\&.10008\&.1\&.2\&.4\&.107
+HEVCMain10ProfileLevel5_1TransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.4\&.108
+FragmentableMPEG2MainProfileMainLevelTransferSyntax 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.100\&.1
+FragmentableMPEG2MainProfileHighLevelTransferSyntax 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.101\&.1
+FragmentableMPEG4HighProfileLevel4_1TransferSyntax  1\&.2\&.840\&.10008\&.1\&.2\&.4\&.102\&.1
+FragmentableMPEG4BDcompatibleHighProfileLevel4_1Tr\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.103\&.1
+FragmentableMPEG4HighProfileLevel4_2_For2DVideoTr\&.S 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.104\&.1
+FragmentableMPEG4HighProfileLevel4_2_For3DVideoTr\&.S 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.105\&.1
+FragmentableMPEG4StereoHighProfileLevel4_2TransferS 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.106\&.1
 .fi
 .PP
 .SH "LOGGING"
@@ -279,4 +349,4 @@ The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

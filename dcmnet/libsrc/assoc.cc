@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -305,7 +305,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     ASC_setAPTitles(*params,
                     "calling AP Title",
                     "called AP Title",
-                    "resp. AP Title");
+                    "");
 
     /* make sure max pdv length is even */
     if ((maxReceivePDUSize % 2) != 0)
@@ -657,7 +657,7 @@ ASC_addPresentationContext(
     if ((presentationContextID % 2) == 0)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context ID: %d", presentationContextID);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context ID: %d", presentationContextID);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTID, OF_error, buf);
     }
     /* see if a presentation context with this id already exists in list */
@@ -667,7 +667,7 @@ ASC_addPresentationContext(
     if (pc)
     {
       char buf[256];
-      sprintf(buf, "ASC Duplicate presentation context ID: %d", presentationContextID);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Duplicate presentation context ID: %d", presentationContextID);
       return makeDcmnetCondition(ASCC_DUPLICATEPRESENTATIONCONTEXTID, OF_error, buf);
     }
 
@@ -778,14 +778,14 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     if (params->DULparams.requestedPresentationContext == NULL)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context position: %d", listPosition);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context position: %d", listPosition);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTPOSITION, OF_error, buf);
     }
     l = &(params->DULparams.requestedPresentationContext);
     if (*l == NULL)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context position: %d", listPosition);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context position: %d", listPosition);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTPOSITION, OF_error, buf);
     }
     pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
@@ -799,7 +799,7 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     if (pc == NULL)
     {
       char buf[256];
-      sprintf(buf, "ASC Bad presentation context position: %d", listPosition);
+      OFStandard::snprintf(buf, sizeof(buf), "ASC Bad presentation context position: %d", listPosition);
       return makeDcmnetCondition(ASCC_BADPRESENTATIONCONTEXTPOSITION, OF_error, buf);
     }
 
@@ -1400,7 +1400,7 @@ void ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
 OFCondition ASC_setIdentAC(
     T_ASC_Parameters * params,
     const char* response,
-    const Uint16& length )
+    const Uint16 length )
 {
   if (params == NULL)
     return ASC_NULLKEY;
@@ -1704,12 +1704,8 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
     };
     nfound = poll(pfd, 1, t.tv_sec*1000+(t.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-    nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
     // the typecast is safe because Windows ignores the first select() parameter anyway
     nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
@@ -2273,4 +2269,9 @@ destroyDULParamPresentationContextList(LST_HEAD ** lst)
         free(pc);
     }
     LST_Destroy(lst);
+}
+
+void ASC_setParentProcessMode(T_ASC_Association *association)
+{
+  if (association) DUL_setParentProcessMode(association->DULassociation);
 }

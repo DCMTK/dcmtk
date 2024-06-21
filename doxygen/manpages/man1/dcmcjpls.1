@@ -1,4 +1,4 @@
-.TH "dcmcjpls" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpls" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpls \- Encode DICOM file to JPEG-LS transfer syntax
@@ -17,9 +17,9 @@ The \fBdcmcjpls\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP),
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -94,13 +94,13 @@ JPEG-LS process:
          encode JPEG-LS lossless only TS (default)
 
   # This options selects the JPEG-LS lossless only transfer syntax
-  # and performs a lossless compression.
+  # and performs a lossless compression\&.
 
   +en  --encode-nearlossless
          encode JPEG-LS near-lossless TS (NEAR: 2)
 
   # This options selects the JPEG-LS lossy transfer syntax
-  # and performs a near-lossless compression.
+  # and performs a near-lossless compression\&.
 
 JPEG-LS bit rate (near-lossless only):
 
@@ -108,23 +108,23 @@ JPEG-LS bit rate (near-lossless only):
          defines maximum deviation for an encoded pixel
 
   # This option specifies the maximum deviation for a single pixel from
-  # the original pixel value.
+  # the original pixel value\&.
 
 lossless compression:
 
   +pr  --prefer-raw
          prefer raw encoder mode (default)
 
-  # This option enables the raw encoder. The raw encoder encodes the
+  # This option enables the raw encoder\&. The raw encoder encodes the
   # complete pixel cell as it was read from the source image without
-  # performing any modifications.
+  # performing any modifications\&.
 
   +pc  --prefer-cooked
          prefer cooked encoder mode
 
-  # This option enables the cooked encoder. The cooked encoder moves
+  # This option enables the cooked encoder\&. The cooked encoder moves
   # overlay data to separate tags (60xx,3000) and only encodes the
-  # stored bits in each pixel.
+  # stored bits in each pixel\&.
 
 JPEG-LS compression:
 
@@ -138,7 +138,7 @@ JPEG-LS compression:
          set JPEG-LS encoding parameter threshold 3
 
   # By default, the values for T1, T2, T3 are computed based on
-  # the number of bits per sample.
+  # the number of bits per sample\&.
 
   +rs  --reset  [r]eset: integer (default: 64)
          set JPEG-LS encoding parameter reset
@@ -148,23 +148,23 @@ JPEG-LS interleave:
   +il  --interleave-line
          force line-interleaved JPEG-LS images (default)
 
-  # This flag forces line-interleaved mode for the resulting image.
+  # This flag forces line-interleaved mode for the resulting image\&.
   # In line-interleave mode each line from the source image is
   # compressed separately for each component and then the next line
-  # is encoded.
+  # is encoded\&.
 
   +is  --interleave-sample
          force sample-interleaved JPEG-LS images
 
-  # This flag forces sample-interleaved mode for the resulting image.
+  # This flag forces sample-interleaved mode for the resulting image\&.
   # In sample-interleave mode each pixel's components are encoded before
-  # the next pixel is encoded.
+  # the next pixel is encoded\&.
 
   +iv  --interleave-default
          use the fastest possible interleave mode
 
-  # This flag selects an interleave mode based on the source image's mode.
-  # If possible, the image is not converted to a different interleave mode.
+  # This flag selects an interleave mode based on the source image's mode\&.
+  # If possible, the image is not converted to a different interleave mode\&.
 
 JPEG-LS padding of odd-length bitstreams:
 
@@ -172,15 +172,15 @@ JPEG-LS padding of odd-length bitstreams:
          pad with extended EOI marker (default)
 
   # Pad odd-length JPEG-LS bitstreams by writing an extended end of image
-  # segment marker FF FF D9, as required by the DICOM standard.
+  # segment marker FF FF D9, as required by the DICOM standard\&.
 
   +pz  --padding-zero
          pad with zero byte (non-standard)
 
   # Pad odd-length JPEG-LS bitstreams by writing a zero byte after the
-  # end of image segment marker, i.e. FF D9 00. This is not DICOM conformant
+  # end of image segment marker, i\&.e\&. FF D9 00\&. This is not DICOM conformant
   # but required for interoperability with the HP LOCO reference implementation,
-  # which does not support extended JPEG-LS bitstreams.
+  # which does not support extended JPEG-LS bitstreams\&.
 .fi
 .PP
 .SS "encapsulated pixel data encoding options"
@@ -192,13 +192,13 @@ encapsulated pixel data fragmentation:
          encode each frame as one fragment (default)
 
   # This option causes the creation of one compressed fragment for each
-  # frame (recommended).
+  # frame (recommended)\&.
 
   +fs  --fragment-size  [s]ize: integer
          limit fragment size to s kbytes
 
   # This option limits the fragment size which may cause the creation of
-  # multiple fragments per frame.
+  # multiple fragments per frame\&.
 
 basic offset table encoding:
 
@@ -206,44 +206,44 @@ basic offset table encoding:
          create offset table (default)
 
   # This option causes the creation of a valid offset table for the
-  # compressed JPEG fragments.
+  # compressed JPEG fragments\&.
 
   -ot  --offset-table-empty
          leave offset table empty
 
   # This option causes the creation of an empty offset table
-  # for the compressed JPEG fragments.
+  # for the compressed JPEG fragments\&.
 
 SOP Class UID:
 
   +cd  --class-default
          keep SOP Class UID (default)
 
-  # Keep the SOP Class UID of the source image.
+  # Keep the SOP Class UID of the source image\&.
 
   +cs  --class-sc
          convert to Secondary Capture Image (implies --uid-always)
 
-  # Convert the image to Secondary Capture.  In addition to the SOP Class
+  # Convert the image to Secondary Capture\&.  In addition to the SOP Class
   # UID, all attributes required for a valid secondary capture image are
-  # added. A new SOP instance UID is always assigned.
+  # added\&. A new SOP instance UID is always assigned\&.
 
 SOP Instance UID:
 
   +ud  --uid-default
          assign new UID if lossy compression (default)
 
-  # Assigns a new SOP instance UID if the compression is lossy JPEG-LS.
+  # Assigns a new SOP instance UID if the compression is lossy JPEG-LS\&.
 
   +ua  --uid-always
          always assign new UID
 
-  # Unconditionally assigns a new SOP instance UID.
+  # Unconditionally assigns a new SOP instance UID\&.
 
   +un  --uid-never
          never assign new UID
 
-  # Never assigns a new SOP instance UID.
+  # Never assigns a new SOP instance UID\&.
 .fi
 .PP
 .SS "output options"
@@ -300,10 +300,10 @@ The user is responsible for making sure that the compressed images he creates ar
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .PP
@@ -313,8 +313,8 @@ BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 .PP
 .PP
 .nf
-JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
-JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
+JPEGLSLosslessTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.80
+JPEGLSLossyTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.81
 .fi
 .PP
 .SH "LOGGING"
@@ -339,4 +339,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpls\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2009-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2009-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

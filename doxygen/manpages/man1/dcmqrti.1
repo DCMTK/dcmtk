@@ -1,4 +1,4 @@
-.TH "dcmqrti" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrti" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmqrti \- The Terminal Initiator Telnet Client Program
@@ -7,7 +7,7 @@ dcmqrti \- The Terminal Initiator Telnet Client Program
 .PP
 .PP
 .nf
-dcmqrti [options] peer...
+dcmqrti [options] peer\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -54,7 +54,7 @@ peer  peer host name or symbolic name from cfg file
 
   -c    --config  [f]ilename: string
           use specific configuration file
-          (default: /usr/local/etc/dcmqrscp.cfg)
+          (default: /usr/local/etc/dcmtk-<VERSION>/dcmqrscp\&.cfg)
 .fi
 .PP
 .SS "network options"
@@ -75,7 +75,7 @@ peer  peer host name or symbolic name from cfg file
   -aet  --aetitle  [a]etitle: string
           set my AE title (default: TELNET_INITIATOR)
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes
           (default: use value from configuration file)
 .fi
@@ -184,11 +184,11 @@ The 'series' command with no argument lists the series in the current study\&. A
 .nf
 ------------------------------------------------------------
       Series Modality SeriesInstanceUID
-*  0) 1      MR       1.2.840.113654.2.3.1993.201
-   1) 2      MR       1.2.840.113654.2.3.1993.202
-   2) 3      MR       1.2.840.113654.2.3.1993.203
-   3) 4      MR       1.2.840.113654.2.3.1993.204
-   4) 5      MR       1.2.840.113654.2.3.1993.205
+*  0) 1      MR       1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.201
+   1) 2      MR       1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.202
+   2) 3      MR       1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.203
+   3) 4      MR       1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.204
+   4) 5      MR       1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.205
 
 5 Series in StudyID 05381,
   Patient: MONROE^JAMES^^^ (Database: COMMON)
@@ -206,19 +206,19 @@ The 'image' command with no argument lists the images in the current series\&. A
 .nf
 ------------------------------------------------------------
       Image ImageInstanceUID
-*  0) 1     1.2.840.113654.2.3.1993.9.123.6.2674
-   1) 2     1.2.840.113654.2.3.1993.9.123.6.2675
-   2) 3     1.2.840.113654.2.3.1993.9.123.6.2676
-   3) 4     1.2.840.113654.2.3.1993.9.123.6.2677
-   4) 5     1.2.840.113654.2.3.1993.9.123.6.2678
-   5) 6     1.2.840.113654.2.3.1993.9.123.6.2679
-   6) 7     1.2.840.113654.2.3.1993.9.123.6.2680
-   7) 8     1.2.840.113654.2.3.1993.9.123.6.2681
-   8) 9     1.2.840.113654.2.3.1993.9.123.6.2682
-   9) 10    1.2.840.113654.2.3.1993.9.123.6.2683
-  10) 11    1.2.840.113654.2.3.1993.9.123.6.2684
-  11) 12    1.2.840.113654.2.3.1993.9.123.6.2685
-  12) 13    1.2.840.113654.2.3.1993.9.123.6.2686
+*  0) 1     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2674
+   1) 2     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2675
+   2) 3     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2676
+   3) 4     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2677
+   4) 5     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2678
+   5) 6     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2679
+   6) 7     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2680
+   7) 8     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2681
+   8) 9     1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2682
+   9) 10    1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2683
+  10) 11    1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2684
+  11) 12    1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2685
+  12) 13    1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.2686
 
 13 Images in MR Series, StudyID 05381,
   Patient: MONROE^JAMES^^^ (Database: COMMON)
@@ -236,7 +236,7 @@ The 'send' command allows a complete study/series or individual image to be stor
 .PP
 .PP
 .nf
-The "send" command exists in three forms:
+The 'send' command exists in three forms:
 
         send study [#]
         send series [#]
@@ -254,7 +254,7 @@ New Association Started (swallow:2001,ACME1)
 [MsgID 1] Store,
   PatientName: JACKSON^ANDREW^^^, StudyID: 20001,
   Series: 2, Modality: CR, Image: 1,
-  Image UID: 1.2.840.113654.2.3.1993.9.123.6.1834
+  Image UID: 1\&.2\&.840\&.113654\&.2\&.3\&.1993\&.9\&.123\&.6\&.1834
   0%________25%_________50%__________75%________100%
   --------------------------------------------------
 [MsgID 1] Complete [Status: Success]
@@ -286,9 +286,9 @@ The \fBdcmqrti\fP application will propose presentation contexts for all of the 
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax  1.2.840.10008.1.2.1
-BigEndianExplicitTransferSyntax     1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax  1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax  1\&.2\&.840\&.10008\&.1\&.2\&.1
+BigEndianExplicitTransferSyntax     1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .PP
@@ -324,4 +324,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmqrscp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1993-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

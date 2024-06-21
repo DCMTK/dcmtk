@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -269,7 +269,7 @@ DIMSE_storeUser(
             if (rsp.CommandField != DIMSE_C_STORE_RSP)
             {
               char buf[256];
-              sprintf(buf, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+              OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
               return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf);
             }
 
@@ -280,7 +280,7 @@ DIMSE_storeUser(
             if (response->MessageIDBeingRespondedTo != request->MessageID)
             {
               char buf2[256];
-              sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, request->MessageID);
+              OFStandard::snprintf(buf2, sizeof(buf2), "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, request->MessageID);
               return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
             }
         }

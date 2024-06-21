@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *
  *  All rights reserved.  See COPYRIGHT file for details.
  *
@@ -24,10 +24,6 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/fgderimg.h"
-#include "dcmtk/dcmfg/fgfact.h"
-#include "dcmtk/dcmfg/fgfracon.h"
-#include "dcmtk/dcmfg/fgplanor.h"
-#include "dcmtk/dcmfg/fgplanpo.h"
 #include "dcmtk/dcmfg/fgseg.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmseg/segdoc.h"
@@ -1407,18 +1403,17 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
     // If the original transfer syntax could have been lossy, print warning
     if (dset.hasRepresentation(EXS_LittleEndianExplicit, NULL))
     {
-        if (xfer.isEncapsulated() && (xfer.getXfer() != EXS_RLELossless)
-            && (xfer.getXfer() != EXS_DeflatedLittleEndianExplicit))
+        if (xfer.isPixelDataCompressed() && (xfer != EXS_RLELossless))
         {
             DCMSEG_WARN("Dataset has been compressed using a (possibly) lossy compression scheme (ignored)");
         }
     }
-    // If the original transfer is encapsulated and we do not already have an uncompressed version, decompress or reject
-    // the file
-    else if (xfer.isEncapsulated())
+    // If the original transfer syntax refers to compressed pixel data and we do not
+    // already have an uncompressed version, decompress or reject the file
+    else if (xfer.isPixelDataCompressed())
     {
-        // RLE compression is fine (truly lossless). Deflated is handled internally by DCMTK.
-        if (xfer.getXfer() == EXS_RLELossless)
+        // RLE compression is fine (truly lossless)
+        if (xfer == EXS_RLELossless)
         {
             DCMSEG_DEBUG("DICOM file is RLE-compressed, converting to uncompressed transfer syntax first");
             result = DcmIODUtil::decompress(dset);

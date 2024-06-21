@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Andrew Hewett
+ *  Author:  Andrew Hewett, Joerg Riesmeier
  *
  *  Purpose:
  *  Definitions of "well known" DICOM Unique Identifiers,
@@ -31,6 +31,7 @@
 #endif
 
 BEGIN_EXTERN_C
+
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -77,524 +78,565 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofvector.h"
 #include "dcmtk/ofstd/ofsockad.h"
 
+/** struct for mapping UID values to keywords, names and properties
+ */
 struct UIDNameMap {
     const char* uid;
+    const char* keyword;
     const char* name;
+    DcmUIDProperties properties;
 };
 
-//
-// It is very important that the names of the UIDs may not use the following
-// characters: space  (  )  [  ], =  <  >
-
+/** UID mapping table.
+ *  It is very important that the DCMTK-specific names of the UIDs (column #3)
+ *  may not use the following characters: space ( ) [ ] , = < >
+ *  For the official keywords (column #2) according to DICOM PS3.6, the DICOM
+ *  standard already ensures this.
+ */
 static const UIDNameMap uidNameMap[] = {
+    // column #1: UID                                                            #2: DICOM keyword                                                     #3: DCMTK-specific name                                               #4: properties
 
-    { UID_StandardApplicationContext,                          "StandardApplicationContext" },
+    // Application Context
+    { UID_StandardApplicationContext,                                            "DICOMApplicationContext",                                            "StandardApplicationContext",                                         { EUS_DICOM, EUV_Standard, EUT_ApplicationContextName, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Transfer Syntax
-    { UID_LittleEndianImplicitTransferSyntax,                  "LittleEndianImplicit" },
-    { UID_LittleEndianExplicitTransferSyntax,                  "LittleEndianExplicit" },
-    { UID_BigEndianExplicitTransferSyntax,                     "BigEndianExplicit" },
-    { UID_JPEGProcess1TransferSyntax,                          "JPEGBaseline" },
-    { UID_JPEGProcess2_4TransferSyntax,                        "JPEGExtended:Process2+4" },
-    { UID_JPEGProcess3_5TransferSyntax,                        "JPEGExtended:Process3+5" },
-    { UID_JPEGProcess6_8TransferSyntax,                        "JPEGSpectralSelection:Non-hierarchical:Process6+8" },
-    { UID_JPEGProcess7_9TransferSyntax,                        "JPEGSpectralSelection:Non-hierarchical:Process7+9" },
-    { UID_JPEGProcess10_12TransferSyntax,                      "JPEGFullProgression:Non-hierarchical:Process10+12" },
-    { UID_JPEGProcess11_13TransferSyntax,                      "JPEGFullProgression:Non-hierarchical:Process11+13" },
-    { UID_JPEGProcess14TransferSyntax,                         "JPEGLossless:Non-hierarchical:Process14" },
-    { UID_JPEGProcess15TransferSyntax,                         "JPEGLossless:Non-hierarchical:Process15" },
-    { UID_JPEGProcess16_18TransferSyntax,                      "JPEGExtended:Hierarchical:Process16+18" },
-    { UID_JPEGProcess17_19TransferSyntax,                      "JPEGExtended:Hierarchical:Process17+19" },
-    { UID_JPEGProcess20_22TransferSyntax,                      "JPEGSpectralSelection:Hierarchical:Process20+22" },
-    { UID_JPEGProcess21_23TransferSyntax,                      "JPEGSpectralSelection:Hierarchical:Process21+23" },
-    { UID_JPEGProcess24_26TransferSyntax,                      "JPEGFullProgression:Hierarchical:Process24+26" },
-    { UID_JPEGProcess25_27TransferSyntax,                      "JPEGFullProgression:Hierarchical:Process25+27" },
-    { UID_JPEGProcess28TransferSyntax,                         "JPEGLossless:Hierarchical:Process28" },
-    { UID_JPEGProcess29TransferSyntax,                         "JPEGLossless:Hierarchical:Process29" },
-    { UID_JPEGProcess14SV1TransferSyntax,                      "JPEGLossless:Non-hierarchical-1stOrderPrediction" },
-    { UID_JPEGLSLosslessTransferSyntax,                        "JPEGLSLossless" },
-    { UID_JPEGLSLossyTransferSyntax,                           "JPEGLSLossy" },
-    { UID_RLELosslessTransferSyntax,                           "RLELossless" },
-    { UID_DeflatedExplicitVRLittleEndianTransferSyntax,        "DeflatedLittleEndianExplicit" },
-    { UID_JPEG2000LosslessOnlyTransferSyntax,                  "JPEG2000LosslessOnly" },
-    { UID_JPEG2000TransferSyntax,                              "JPEG2000" },
-    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax, "JPEG2000MulticomponentLosslessOnly" },
-    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,             "JPEG2000Multicomponent" },
-    { UID_JPIPReferencedTransferSyntax,                        "JPIPReferenced" },
-    { UID_JPIPReferencedDeflateTransferSyntax,                 "JPIPReferencedDeflate" },
-    { UID_MPEG2MainProfileAtMainLevelTransferSyntax,           "MPEG2MainProfile@MainLevel" },
-    { UID_MPEG2MainProfileAtHighLevelTransferSyntax,           "MPEG2MainProfile@HighLevel" },
-    { UID_MPEG4HighProfileLevel4_1TransferSyntax,              "MPEG4HighProfile/Level4.1" },
-    { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,  "MPEG4BDcompatibleHighProfile/Level4.1" },
-    { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,   "MPEG4HighProfile/Level4.2For2DVideo" },
-    { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,   "MPEG4HighProfile/Level4.2For3DVideo" },
-    { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,        "MPEG4StereoHighProfile/Level4.2" },
-    { UID_HEVCMainProfileLevel5_1TransferSyntax,               "HEVCMainProfile/Level5.1" },
-    { UID_HEVCMain10ProfileLevel5_1TransferSyntax,             "HEVCMain10Profile/Level5.1" },
-    { UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax, "SMPTEST2110-20:UncompressedProgressiveActiveVideo" },
-    { UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax, "SMPTEST2110-20:UncompressedInterlacedActiveVideo" },
-    { UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax,        "SMPTEST2110-30:PCMDigitalAudio" },
-    { UID_RFC2557MIMEEncapsulationTransferSyntax,              "RFC2557MIMEEncapsulation" },
-    { UID_XMLEncodingTransferSyntax,                           "XMLEncoding" },
-    { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,  "PrivateGELittleEndianImplicitWithBigEndianPixelData" },
+    { UID_LittleEndianImplicitTransferSyntax,                                    "ImplicitVRLittleEndian",                                             "LittleEndianImplicit",                                               { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LittleEndianExplicitTransferSyntax,                                    "ExplicitVRLittleEndian",                                             "LittleEndianExplicit",                                               { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_BigEndianExplicitTransferSyntax,                                       "ExplicitVRBigEndian",                                                "BigEndianExplicit",                                                  { EUS_DICOM, EUV_Retired,  EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess1TransferSyntax,                                            "JPEGBaseline8Bit",                                                   "JPEGBaseline",                                                       { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess2_4TransferSyntax,                                          "JPEGExtended12Bit",                                                  "JPEGExtended:Process2+4",                                            { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess3_5TransferSyntax,                                          "JPEGExtended35",                                                     "JPEGExtended:Process3+5",                                            { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess6_8TransferSyntax,                                          "JPEGSpectralSelectionNonHierarchical68",                             "JPEGSpectralSelection:Non-hierarchical:Process6+8",                  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess7_9TransferSyntax,                                          "JPEGSpectralSelectionNonHierarchical79",                             "JPEGSpectralSelection:Non-hierarchical:Process7+9",                  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess10_12TransferSyntax,                                        "JPEGFullProgressionNonHierarchical1012",                             "JPEGFullProgression:Non-hierarchical:Process10+12",                  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess11_13TransferSyntax,                                        "JPEGFullProgressionNonHierarchical1113",                             "JPEGFullProgression:Non-hierarchical:Process11+13",                  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess14TransferSyntax,                                           "JPEGLossless",                                                       "JPEGLossless:Non-hierarchical:Process14",                            { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess15TransferSyntax,                                           "JPEGLosslessNonHierarchical15",                                      "JPEGLossless:Non-hierarchical:Process15",                            { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess16_18TransferSyntax,                                        "JPEGExtendedHierarchical1618",                                       "JPEGExtended:Hierarchical:Process16+18",                             { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess17_19TransferSyntax,                                        "JPEGExtendedHierarchical1719",                                       "JPEGExtended:Hierarchical:Process17+19",                             { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess20_22TransferSyntax,                                        "JPEGSpectralSelectionHierarchical2022",                              "JPEGSpectralSelection:Hierarchical:Process20+22",                    { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess21_23TransferSyntax,                                        "JPEGSpectralSelectionHierarchical2123",                              "JPEGSpectralSelection:Hierarchical:Process21+23",                    { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess24_26TransferSyntax,                                        "JPEGFullProgressionHierarchical2426",                                "JPEGFullProgression:Hierarchical:Process24+26",                      { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess25_27TransferSyntax,                                        "JPEGFullProgressionHierarchical2527",                                "JPEGFullProgression:Hierarchical:Process25+27",                      { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess28TransferSyntax,                                           "JPEGLosslessHierarchical28",                                         "JPEGLossless:Hierarchical:Process28",                                { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess29TransferSyntax,                                           "JPEGLosslessHierarchical29",                                         "JPEGLossless:Hierarchical:Process29",                                { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGProcess14SV1TransferSyntax,                                        "JPEGLosslessSV1",                                                    "JPEGLossless:Non-hierarchical-1stOrderPrediction",                   { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGLSLosslessTransferSyntax,                                          "JPEGLSLossless",                                                     "JPEGLSLossless",                                                     { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEGLSLossyTransferSyntax,                                             "JPEGLSNearLossless",                                                 "JPEGLSLossy",                                                        { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RLELosslessTransferSyntax,                                             "RLELossless",                                                        "RLELossless",                                                        { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_DeflatedExplicitVRLittleEndianTransferSyntax,                          "DeflatedExplicitVRLittleEndian",                                     "DeflatedLittleEndianExplicit",                                       { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEG2000LosslessOnlyTransferSyntax,                                    "JPEG2000Lossless",                                                   "JPEG2000LosslessOnly",                                               { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEG2000TransferSyntax,                                                "JPEG2000",                                                           "JPEG2000",                                                           { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax, "JPEG2000MCLossless",                                                 "JPEG2000MulticomponentLosslessOnly",                                 { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,             "JPEG2000MC",                                                         "JPEG2000Multicomponent",                                             { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPIPReferencedTransferSyntax,                                          "JPIPReferenced",                                                     "JPIPReferenced",                                                     { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPIPReferencedDeflateTransferSyntax,                                   "JPIPReferencedDeflate",                                              "JPIPReferencedDeflate",                                              { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG2MainProfileAtMainLevelTransferSyntax,                             "MPEG2MPML",                                                          "MPEG2MainProfile@MainLevel",                                         { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax,                   "MPEG2MPMLF",                                                         "FragmentableMPEG2MainProfile/MainLevel",                             { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG2MainProfileAtHighLevelTransferSyntax,                             "MPEG2MPHL",                                                          "MPEG2MainProfile@HighLevel",                                         { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax,                   "MPEG2MPHLF",                                                         "FragmentableMPEG2MainProfile/HighLevel",                             { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG4HighProfileLevel4_1TransferSyntax,                                "MPEG4HP41",                                                          "MPEG4HighProfile/Level4.1",                                          { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax,                    "MPEG4HP41F",                                                         "FragmentableMPEG4HighProfile/Level4.1",                              { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,                    "MPEG4HP41BD",                                                        "MPEG4BDcompatibleHighProfile/Level4.1",                              { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,        "MPEG4HP41BDF",                                                       "FragmentableMPEG4BDcompatibleHighProfile/Level4.1",                  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,                     "MPEG4HP422D",                                                        "MPEG4HighProfile/Level4.2For2DVideo",                                { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,         "MPEG4HP422DF",                                                       "FragmentableMPEG4HighProfile/Level4.2For2DVideo",                    { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,                     "MPEG4HP423D",                                                        "MPEG4HighProfile/Level4.2For3DVideo",                                { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,         "MPEG4HP423DF",                                                       "FragmentableMPEG4HighProfile/Level4.2For3DVideo",                    { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,                          "MPEG4HP42STEREO",                                                    "MPEG4StereoHighProfile/Level4.2",                                    { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax,              "MPEG4HP42STEREOF",                                                   "FragmentableMPEG4StereoHighProfile/Level4.2",                        { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_HEVCMainProfileLevel5_1TransferSyntax,                                 "HEVCMP51",                                                           "HEVCMainProfile/Level5.1",                                           { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_HEVCMain10ProfileLevel5_1TransferSyntax,                               "HEVCM10P51",                                                         "HEVCMain10Profile/Level5.1",                                         { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,      "HTJ2KLossless",                                                      "HighThroughputJPEG2000ImageCompressionLosslessOnly",                 { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,  "HTJ2KLosslessRPCL",                                                  "HighThroughputJPEG2000withRPCLOptionsImageCompressionLosslessOnly",  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_HighThroughputJPEG2000ImageCompressionTransferSyntax,                  "HTJ2K",                                                              "HighThroughputJPEG2000ImageCompression",                             { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPIPHTJ2KReferencedTransferSyntax,                                     "JPIPHTJ2KReferenced",                                                "JPIPHTJ2KReferenced",                                                { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_JPIPHTJ2KReferencedDeflateTransferSyntax,                              "JPIPHTJ2KReferencedDeflate",                                         "JPIPHTJ2KReferencedDeflate",                                         { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax,       "SMPTEST211020UncompressedProgressiveActiveVideo",                    "SMPTEST2110-20:UncompressedProgressiveActiveVideo",                  { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax,        "SMPTEST211020UncompressedInterlacedActiveVideo",                     "SMPTEST2110-20:UncompressedInterlacedActiveVideo",                   { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax,                          "SMPTEST211030PCMDigitalAudio",                                       "SMPTEST2110-30:PCMDigitalAudio",                                     { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_RFC2557MIMEEncapsulationTransferSyntax,                        "RFC2557MIMEEncapsulation",                                           "RETIRED_RFC2557MIMEEncapsulation",                                   { EUS_DICOM, EUV_Retired,  EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_XMLEncodingTransferSyntax,                                     "XMLEncoding",                                                        "RETIRED_XMLEncoding",                                                { EUS_DICOM, EUV_Retired,  EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,                    NULL /* no official keyword */,                                       "PrivateGELittleEndianImplicitWithBigEndianPixelData",                { EUS_DICOM, EUV_Private,  EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Storage (DICOM)
-    { UID_AcquisitionContextSRStorage,                         "AcquisitionContextSRStorage" },
-    { UID_AdvancedBlendingPresentationStateStorage,            "AdvancedBlendingPresentationStateStorage" },
-    { UID_AmbulatoryECGWaveformStorage,                        "AmbulatoryECGWaveformStorage" },
-    { UID_ArterialPulseWaveformStorage,                        "ArterialPulseWaveformStorage" },
-    { UID_AutorefractionMeasurementsStorage,                   "AutorefractionMeasurementsStorage" },
-    { UID_BasicStructuredDisplayStorage,                       "BasicStructuredDisplayStorage" },
-    { UID_BasicTextSRStorage,                                  "BasicTextSRStorage" },
-    { UID_BasicVoiceAudioWaveformStorage,                      "BasicVoiceAudioWaveformStorage" },
-    { UID_BlendingSoftcopyPresentationStateStorage,            "BlendingSoftcopyPresentationStateStorage" },
-    { UID_BodyPositionWaveformStorage,                         "BodyPositionWaveformStorage" },
-    { UID_BreastProjectionXRayImageStorageForPresentation,     "BreastProjectionXRayImageStorageForPresentation" },
-    { UID_BreastProjectionXRayImageStorageForProcessing,       "BreastProjectionXRayImageStorageForProcessing" },
-    { UID_BreastTomosynthesisImageStorage,                     "BreastTomosynthesisImageStorage" },
-    { UID_CardiacElectrophysiologyWaveformStorage,             "CardiacElectrophysiologyWaveformStorage" },
-    { UID_CArmPhotonElectronRadiationRecordStorage,            "CArmPhotonElectronRadiationRecordStorage" },
-    { UID_CArmPhotonElectronRadiationStorage,                  "CArmPhotonElectronRadiationStorage" },
-    { UID_ChestCADSRStorage,                                   "ChestCADSRStorage" },
-    { UID_ColonCADSRStorage,                                   "ColonCADSRStorage" },
-    { UID_ColorPaletteStorage,                                 "ColorPaletteStorage" },
-    { UID_ColorSoftcopyPresentationStateStorage,               "ColorSoftcopyPresentationStateStorage" },
-    { UID_CompositingPlanarMPRVolumetricPresentationStateStorage, "CompositingPlanarMPRVolumetricPresentationStateStorage" },
-    { UID_Comprehensive3DSRStorage,                            "Comprehensive3DSRStorage" },
-    { UID_ComprehensiveSRStorage,                              "ComprehensiveSRStorage" },
-    { UID_ComputedRadiographyImageStorage,                     "ComputedRadiographyImageStorage" },
-    { UID_ContentAssessmentResultsStorage,                     "ContentAssessmentResultsStorage" },
-    { UID_CornealTopographyMapStorage,                         "CornealTopographyMapStorage" },
-    { UID_CTDefinedProcedureProtocolStorage,                   "CTDefinedProcedureProtocolStorage" },
-    { UID_CTImageStorage,                                      "CTImageStorage" },
-    { UID_CTPerformedProcedureProtocolStorage,                 "CTPerformedProcedureProtocolStorage" },
-    { UID_DeformableSpatialRegistrationStorage,                "DeformableSpatialRegistrationStorage" },
-    { UID_DermoscopicPhotographyImageStorage,                  "DermoscopicPhotographyImageStorage" },
-    { UID_DigitalIntraOralXRayImageStorageForPresentation,     "DigitalIntraOralXRayImageStorageForPresentation" },
-    { UID_DigitalIntraOralXRayImageStorageForProcessing,       "DigitalIntraOralXRayImageStorageForProcessing" },
-    { UID_DigitalMammographyXRayImageStorageForPresentation,   "DigitalMammographyXRayImageStorageForPresentation" },
-    { UID_DigitalMammographyXRayImageStorageForProcessing,     "DigitalMammographyXRayImageStorageForProcessing" },
-    { UID_DigitalXRayImageStorageForPresentation,              "DigitalXRayImageStorageForPresentation" },
-    { UID_DigitalXRayImageStorageForProcessing,                "DigitalXRayImageStorageForProcessing" },
-    { UID_ElectromyogramWaveformStorage,                       "ElectromyogramWaveformStorage" },
-    { UID_ElectrooculogramWaveformStorage,                     "ElectrooculogramWaveformStorage" },
-    { UID_EncapsulatedCDAStorage,                              "EncapsulatedCDAStorage" },
-    { UID_EncapsulatedMTLStorage,                              "EncapsulatedMTLStorage" },
-    { UID_EncapsulatedOBJStorage,                              "EncapsulatedOBJStorage" },
-    { UID_EncapsulatedPDFStorage,                              "EncapsulatedPDFStorage" },
-    { UID_EncapsulatedSTLStorage,                              "EncapsulatedSTLStorage" },
-    { UID_EnhancedCTImageStorage,                              "EnhancedCTImageStorage" },
-    { UID_EnhancedMRColorImageStorage,                         "EnhancedMRColorImageStorage" },
-    { UID_EnhancedMRImageStorage,                              "EnhancedMRImageStorage" },
-    { UID_EnhancedPETImageStorage,                             "EnhancedPETImageStorage" },
-    { UID_EnhancedSRStorage,                                   "EnhancedSRStorage" },
-    { UID_EnhancedUSVolumeStorage,                             "EnhancedUSVolumeStorage" },
-    { UID_EnhancedXAImageStorage,                              "EnhancedXAImageStorage" },
-    { UID_EnhancedXRayRadiationDoseSRStorage,                  "EnhancedXRayRadiationDoseSRStorage" },
-    { UID_EnhancedXRFImageStorage,                             "EnhancedXRFImageStorage" },
-    { UID_ExtensibleSRStorage,                                 "ExtensibleSRStorage" },
-    { UID_GeneralAudioWaveformStorage,                         "GeneralAudioWaveformStorage" },
-    { UID_GeneralECGWaveformStorage,                           "GeneralECGWaveformStorage" },
-    { UID_GenericImplantTemplateStorage,                       "GenericImplantTemplateStorage" },
-    { UID_GrayscalePlanarMPRVolumetricPresentationStateStorage, "GrayscalePlanarMPRVolumetricPresentationStateStorage" },
-    { UID_GrayscaleSoftcopyPresentationStateStorage,           "GrayscaleSoftcopyPresentationStateStorage" },
-    { UID_HangingProtocolStorage,                              "HangingProtocolStorage" },
-    { UID_HemodynamicWaveformStorage,                          "HemodynamicWaveformStorage" },
-    { UID_ImplantAssemblyTemplateStorage,                      "ImplantAssemblyTemplateStorage" },
-    { UID_ImplantationPlanSRDocumentStorage,                   "ImplantationPlanSRDocumentStorage" },
-    { UID_ImplantTemplateGroupStorage,                         "ImplantTemplateGroupStorage" },
-    { UID_IntraocularLensCalculationsStorage,                  "IntraocularLensCalculationsStorage" },
-    { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation, "IntravascularOpticalCoherenceTomographyImageStorageForPresentation" },
-    { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing, "IntravascularOpticalCoherenceTomographyImageStorageForProcessing" },
-    { UID_KeratometryMeasurementsStorage,                      "KeratometryMeasurementsStorage" },
-    { UID_KeyObjectSelectionDocumentStorage,                   "KeyObjectSelectionDocumentStorage" },
-    { UID_LegacyConvertedEnhancedCTImageStorage,               "LegacyConvertedEnhancedCTImageStorage" },
-    { UID_LegacyConvertedEnhancedMRImageStorage,               "LegacyConvertedEnhancedMRImageStorage" },
-    { UID_LegacyConvertedEnhancedPETImageStorage,              "LegacyConvertedEnhancedPETImageStorage" },
-    { UID_LensometryMeasurementsStorage,                       "LensometryMeasurementsStorage" },
-    { UID_MacularGridThicknessAndVolumeReportStorage,          "MacularGridThicknessAndVolumeReportStorage" },
-    { UID_MammographyCADSRStorage,                             "MammographyCADSRStorage" },
-    { UID_MediaStorageDirectoryStorage,                        "MediaStorageDirectoryStorage" },
-    { UID_MicroscopyBulkSimpleAnnotationsStorage,              "MicroscopyBulkSimpleAnnotationsStorage" },
-    { UID_MRImageStorage,                                      "MRImageStorage" },
-    { UID_MRSpectroscopyStorage,                               "MRSpectroscopyStorage" },
-    { UID_MultichannelRespiratoryWaveformStorage,              "MultichannelRespiratoryWaveformStorage" },
-    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "MultiframeGrayscaleByteSecondaryCaptureImageStorage" },
-    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "MultiframeGrayscaleWordSecondaryCaptureImageStorage" },
-    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "MultiframeSingleBitSecondaryCaptureImageStorage" },
-    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "MultiframeTrueColorSecondaryCaptureImageStorage" },
-    { UID_MultipleVolumeRenderingVolumetricPresentationStateStorage, "MultipleVolumeRenderingVolumetricPresentationStateStorage" },
-    { UID_NuclearMedicineImageStorage,                         "NuclearMedicineImageStorage" },
-    { UID_OphthalmicAxialMeasurementsStorage,                  "OphthalmicAxialMeasurementsStorage" },
-    { UID_OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage, "OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage" },
-    { UID_OphthalmicOpticalCoherenceTomographyEnFaceImageStorage, "OphthalmicOpticalCoherenceTomographyEnFaceImageStorage" },
-    { UID_OphthalmicPhotography16BitImageStorage,              "OphthalmicPhotography16BitImageStorage" },
-    { UID_OphthalmicPhotography8BitImageStorage,               "OphthalmicPhotography8BitImageStorage" },
-    { UID_OphthalmicThicknessMapStorage,                       "OphthalmicThicknessMapStorage" },
-    { UID_OphthalmicTomographyImageStorage,                    "OphthalmicTomographyImageStorage" },
-    { UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage, "OphthalmicVisualFieldStaticPerimetryMeasurementsStorage" },
-    { UID_ParametricMapStorage,                                "ParametricMapStorage" },
-    { UID_PatientRadiationDoseSRStorage,                       "PatientRadiationDoseSRStorage" },
-    { UID_PerformedImagingAgentAdministrationSRStorage,        "PerformedImagingAgentAdministrationSRStorage" },
-    { UID_PlannedImagingAgentAdministrationSRStorage,          "PlannedImagingAgentAdministrationSRStorage" },
-    { UID_PositronEmissionTomographyImageStorage,              "PositronEmissionTomographyImageStorage" },
-    { UID_ProcedureLogStorage,                                 "ProcedureLogStorage" },
-    { UID_ProtocolApprovalStorage,                             "ProtocolApprovalStorage" },
-    { UID_PseudoColorSoftcopyPresentationStateStorage,         "PseudoColorSoftcopyPresentationStateStorage" },
-    { UID_RadiopharmaceuticalRadiationDoseSRStorage,           "RadiopharmaceuticalRadiationDoseSRStorage" },
-    { UID_RawDataStorage,                                      "RawDataStorage" },
-    { UID_RealWorldValueMappingStorage,                        "RealWorldValueMappingStorage" },
-    { UID_RespiratoryWaveformStorage,                          "RespiratoryWaveformStorage" },
-    { UID_RoboticArmRadiationStorage,                          "RoboticArmRadiationStorage" },
-    { UID_RoboticRadiationRecordStorage,                       "RoboticRadiationRecordStorage" },
-    { UID_RoutineScalpElectroencephalogramWaveformStorage,     "RoutineScalpElectroencephalogramWaveformStorage" },
-    { UID_RTBeamsDeliveryInstructionStorage,                   "RTBeamsDeliveryInstructionStorage" },
-    { UID_RTBeamsTreatmentRecordStorage,                       "RTBeamsTreatmentRecordStorage" },
-    { UID_RTBrachyApplicationSetupDeliveryInstructionStorage,  "RTBrachyApplicationSetupDeliveryInstructionStorage" },
-    { UID_RTBrachyTreatmentRecordStorage,                      "RTBrachyTreatmentRecordStorage" },
-    { UID_RTDoseStorage,                                       "RTDoseStorage" },
-    { UID_RTImageStorage,                                      "RTImageStorage" },
-    { UID_RTIonBeamsTreatmentRecordStorage,                    "RTIonBeamsTreatmentRecordStorage" },
-    { UID_RTIonPlanStorage,                                    "RTIonPlanStorage" },
-    { UID_RTPhysicianIntentStorage,                            "RTPhysicianIntentStorage" },
-    { UID_RTPlanStorage,                                       "RTPlanStorage" },
-    { UID_RTRadiationRecordSetStorage,                         "RTRadiationRecordSetStorage" },
-    { UID_RTRadiationSalvageRecordStorage,                     "RTRadiationSalvageRecordStorage" },
-    { UID_RTRadiationSetDeliveryInstructionStorage,            "RTRadiationSetDeliveryInstructionStorage" },
-    { UID_RTRadiationSetStorage,                               "RTRadiationSetStorage" },
-    { UID_RTSegmentAnnotationStorage,                          "RTSegmentAnnotationStorage" },
-    { UID_RTStructureSetStorage,                               "RTStructureSetStorage" },
-    { UID_RTTreatmentPreparationStorage,                       "RTTreatmentPreparationStorage" },
-    { UID_RTTreatmentSummaryRecordStorage,                     "RTTreatmentSummaryRecordStorage" },
-    { UID_SecondaryCaptureImageStorage,                        "SecondaryCaptureImageStorage" },
-    { UID_SegmentationStorage,                                 "SegmentationStorage" },
-    { UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage, "SegmentedVolumeRenderingVolumetricPresentationStateStorage" },
-    { UID_SimplifiedAdultEchoSRStorage,                        "SimplifiedAdultEchoSRStorage" },
-    { UID_SleepElectroencephalogramWaveformStorage,            "SleepElectroencephalogramWaveformStorage" },
-    { UID_SpatialFiducialsStorage,                             "SpatialFiducialsStorage" },
-    { UID_SpatialRegistrationStorage,                          "SpatialRegistrationStorage" },
-    { UID_SpectaclePrescriptionReportStorage,                  "SpectaclePrescriptionReportStorage" },
-    { UID_StereometricRelationshipStorage,                     "StereometricRelationshipStorage" },
-    { UID_SubjectiveRefractionMeasurementsStorage,             "SubjectiveRefractionMeasurementsStorage" },
-    { UID_SurfaceScanMeshStorage,                              "SurfaceScanMeshStorage" },
-    { UID_SurfaceScanPointCloudStorage,                        "SurfaceScanPointCloudStorage" },
-    { UID_SurfaceSegmentationStorage,                          "SurfaceSegmentationStorage" },
-    { UID_TomotherapeuticRadiationRecordStorage,               "TomotherapeuticRadiationRecordStorage" },
-    { UID_TomotherapeuticRadiationStorage,                     "TomotherapeuticRadiationStorage" },
-    { UID_TractographyResultsStorage,                          "TractographyResultsStorage" },
-    { UID_TwelveLeadECGWaveformStorage,                        "TwelveLeadECGWaveformStorage" },
-    { UID_UltrasoundImageStorage,                              "UltrasoundImageStorage" },
-    { UID_UltrasoundMultiframeImageStorage,                    "UltrasoundMultiframeImageStorage" },
-    { UID_VideoEndoscopicImageStorage,                         "VideoEndoscopicImageStorage" },
-    { UID_VideoMicroscopicImageStorage,                        "VideoMicroscopicImageStorage" },
-    { UID_VideoPhotographicImageStorage,                       "VideoPhotographicImageStorage" },
-    { UID_VisualAcuityMeasurementsStorage,                     "VisualAcuityMeasurementsStorage" },
-    { UID_VLEndoscopicImageStorage,                            "VLEndoscopicImageStorage" },
-    { UID_VLMicroscopicImageStorage,                           "VLMicroscopicImageStorage" },
-    { UID_VLPhotographicImageStorage,                          "VLPhotographicImageStorage" },
-    { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VLSlideCoordinatesMicroscopicImageStorage" },
-    { UID_VLWholeSlideMicroscopyImageStorage,                  "VLWholeSlideMicroscopyImageStorage" },
-    { UID_VolumeRenderingVolumetricPresentationStateStorage,   "VolumeRenderingVolumetricPresentationStateStorage" },
-    { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage, "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage" },
-    { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage, "WideFieldOphthalmicPhotography3DCoordinatesImageStorage" },
-    { UID_XADefinedProcedureProtocolStorage,                   "XADefinedProcedureProtocolStorage" },
-    { UID_XAPerformedProcedureProtocolStorage,                 "XAPerformedProcedureProtocolStorage" },
-    { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,      "XAXRFGrayscaleSoftcopyPresentationStateStorage" },
-    { UID_XRay3DAngiographicImageStorage,                      "XRay3DAngiographicImageStorage" },
-    { UID_XRay3DCraniofacialImageStorage,                      "XRay3DCraniofacialImageStorage" },
-    { UID_XRayAngiographicImageStorage,                        "XRayAngiographicImageStorage" },
-    { UID_XRayRadiationDoseSRStorage,                          "XRayRadiationDoseSRStorage" },
-    { UID_XRayRadiofluoroscopicImageStorage,                   "XRayRadiofluoroscopicImageStorage" },
+    { UID_AcquisitionContextSRStorage,                                           "AcquisitionContextSRStorage",                                        "AcquisitionContextSRStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_AdvancedBlendingPresentationStateStorage,                              "AdvancedBlendingPresentationStateStorage",                           "AdvancedBlendingPresentationStateStorage",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_AmbulatoryECGWaveformStorage,                                          "AmbulatoryECGWaveformStorage",                                       "AmbulatoryECGWaveformStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_ArterialPulseWaveformStorage,                                          "ArterialPulseWaveformStorage",                                       "ArterialPulseWaveformStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_AutorefractionMeasurementsStorage,                                     "AutorefractionMeasurementsStorage",                                  "AutorefractionMeasurementsStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_BasicStructuredDisplayStorage,                                         "BasicStructuredDisplayStorage",                                      "BasicStructuredDisplayStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_BasicTextSRStorage,                                                    "BasicTextSRStorage",                                                 "BasicTextSRStorage",                                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_BasicVoiceAudioWaveformStorage,                                        "BasicVoiceAudioWaveformStorage",                                     "BasicVoiceAudioWaveformStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_BlendingSoftcopyPresentationStateStorage,                              "BlendingSoftcopyPresentationStateStorage",                           "BlendingSoftcopyPresentationStateStorage",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_BodyPositionWaveformStorage,                                           "BodyPositionWaveformStorage",                                        "BodyPositionWaveformStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_BreastProjectionXRayImageStorageForPresentation,                       "BreastProjectionXRayImageStorageForPresentation",                    "BreastProjectionXRayImageStorageForPresentation",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_BreastProjectionXRayImageStorageForProcessing,                         "BreastProjectionXRayImageStorageForProcessing",                      "BreastProjectionXRayImageStorageForProcessing",                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_BreastTomosynthesisImageStorage,                                       "BreastTomosynthesisImageStorage",                                    "BreastTomosynthesisImageStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_CardiacElectrophysiologyWaveformStorage,                               "CardiacElectrophysiologyWaveformStorage",                            "CardiacElectrophysiologyWaveformStorage",                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_CArmPhotonElectronRadiationRecordStorage,                              "CArmPhotonElectronRadiationRecordStorage",                           "CArmPhotonElectronRadiationRecordStorage",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_CArmPhotonElectronRadiationStorage,                                    "CArmPhotonElectronRadiationStorage",                                 "CArmPhotonElectronRadiationStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_ChestCADSRStorage,                                                     "ChestCADSRStorage",                                                  "ChestCADSRStorage",                                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_ColonCADSRStorage,                                                     "ColonCADSRStorage",                                                  "ColonCADSRStorage",                                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_ColorSoftcopyPresentationStateStorage,                                 "ColorSoftcopyPresentationStateStorage",                              "ColorSoftcopyPresentationStateStorage",                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_CompositingPlanarMPRVolumetricPresentationStateStorage,                "CompositingPlanarMPRVolumetricPresentationStateStorage",             "CompositingPlanarMPRVolumetricPresentationStateStorage",             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_Comprehensive3DSRStorage,                                              "Comprehensive3DSRStorage",                                           "Comprehensive3DSRStorage",                                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_ComprehensiveSRStorage,                                                "ComprehensiveSRStorage",                                             "ComprehensiveSRStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_ComputedRadiographyImageStorage,                                       "ComputedRadiographyImageStorage",                                    "ComputedRadiographyImageStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_ConfocalMicroscopyImageStorage,                                        "ConfocalMicroscopyImageStorage",                                     "ConfocalMicroscopyImageStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_ConfocalMicroscopyTiledPyramidalImageStorage,                          "ConfocalMicroscopyTiledPyramidalImageStorage",                       "ConfocalMicroscopyTiledPyramidalImageStorage",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_ContentAssessmentResultsStorage,                                       "ContentAssessmentResultsStorage",                                    "ContentAssessmentResultsStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_CornealTopographyMapStorage,                                           "CornealTopographyMapStorage",                                        "CornealTopographyMapStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_CTDefinedProcedureProtocolStorage,                                     "CTDefinedProcedureProtocolStorage",                                  "CTDefinedProcedureProtocolStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NON_PATIENT | UID_PROP_NO_DIR_RECORD } },
+    { UID_CTImageStorage,                                                        "CTImageStorage",                                                     "CTImageStorage",                                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_CTPerformedProcedureProtocolStorage,                                   "CTPerformedProcedureProtocolStorage",                                "CTPerformedProcedureProtocolStorage",                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_DeformableSpatialRegistrationStorage,                                  "DeformableSpatialRegistrationStorage",                               "DeformableSpatialRegistrationStorage",                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_DermoscopicPhotographyImageStorage,                                    "DermoscopicPhotographyImageStorage",                                 "DermoscopicPhotographyImageStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_DigitalIntraOralXRayImageStorageForPresentation,                       "DigitalIntraOralXRayImageStorageForPresentation",                    "DigitalIntraOralXRayImageStorageForPresentation",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_DigitalIntraOralXRayImageStorageForProcessing,                         "DigitalIntraOralXRayImageStorageForProcessing",                      "DigitalIntraOralXRayImageStorageForProcessing",                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_DigitalMammographyXRayImageStorageForPresentation,                     "DigitalMammographyXRayImageStorageForPresentation",                  "DigitalMammographyXRayImageStorageForPresentation",                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_DigitalMammographyXRayImageStorageForProcessing,                       "DigitalMammographyXRayImageStorageForProcessing",                    "DigitalMammographyXRayImageStorageForProcessing",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_DigitalXRayImageStorageForPresentation,                                "DigitalXRayImageStorageForPresentation",                             "DigitalXRayImageStorageForPresentation",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_DigitalXRayImageStorageForProcessing,                                  "DigitalXRayImageStorageForProcessing",                               "DigitalXRayImageStorageForProcessing",                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_ElectromyogramWaveformStorage,                                         "ElectromyogramWaveformStorage",                                      "ElectromyogramWaveformStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_ElectrooculogramWaveformStorage,                                       "ElectrooculogramWaveformStorage",                                    "ElectrooculogramWaveformStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_EncapsulatedCDAStorage,                                                "EncapsulatedCDAStorage",                                             "EncapsulatedCDAStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Encapsulated,      UID_PROP_NONE } },
+    { UID_EncapsulatedMTLStorage,                                                "EncapsulatedMTLStorage",                                             "EncapsulatedMTLStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Encapsulated,      UID_PROP_NONE } },
+    { UID_EncapsulatedOBJStorage,                                                "EncapsulatedOBJStorage",                                             "EncapsulatedOBJStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Encapsulated,      UID_PROP_NONE } },
+    { UID_EncapsulatedPDFStorage,                                                "EncapsulatedPDFStorage",                                             "EncapsulatedPDFStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Encapsulated,      UID_PROP_NONE } },
+    { UID_EncapsulatedSTLStorage,                                                "EncapsulatedSTLStorage",                                             "EncapsulatedSTLStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Encapsulated,      UID_PROP_NONE } },
+    { UID_EnhancedContinuousRTImageStorage,                                      "EnhancedContinuousRTImageStorage",                                   "EnhancedContinuousRTImageStorage",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedCTImageStorage,                                                "EnhancedCTImageStorage",                                             "EnhancedCTImageStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedMRColorImageStorage,                                           "EnhancedMRColorImageStorage",                                        "EnhancedMRColorImageStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedMRImageStorage,                                                "EnhancedMRImageStorage",                                             "EnhancedMRImageStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedPETImageStorage,                                               "EnhancedPETImageStorage",                                            "EnhancedPETImageStorage",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedRTImageStorage,                                                "EnhancedRTImageStorage",                                             "EnhancedRTImageStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedSRStorage,                                                     "EnhancedSRStorage",                                                  "EnhancedSRStorage",                                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_EnhancedUSVolumeStorage,                                               "EnhancedUSVolumeStorage",                                            "EnhancedUSVolumeStorage",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedXAImageStorage,                                                "EnhancedXAImageStorage",                                             "EnhancedXAImageStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_EnhancedXRayRadiationDoseSRStorage,                                    "EnhancedXRayRadiationDoseSRStorage",                                 "EnhancedXRayRadiationDoseSRStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_EnhancedXRFImageStorage,                                               "EnhancedXRFImageStorage",                                            "EnhancedXRFImageStorage",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_ExtensibleSRStorage,                                                   "ExtensibleSRStorage",                                                "ExtensibleSRStorage",                                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_General32BitECGWaveformStorage,                                        "General32bitECGWaveformStorage",                                     "General32BitECGWaveformStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_GeneralAudioWaveformStorage,                                           "GeneralAudioWaveformStorage",                                        "GeneralAudioWaveformStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_GeneralECGWaveformStorage,                                             "GeneralECGWaveformStorage",                                          "GeneralECGWaveformStorage",                                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_GrayscalePlanarMPRVolumetricPresentationStateStorage,                  "GrayscalePlanarMPRVolumetricPresentationStateStorage",               "GrayscalePlanarMPRVolumetricPresentationStateStorage",               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_GrayscaleSoftcopyPresentationStateStorage,                             "GrayscaleSoftcopyPresentationStateStorage",                          "GrayscaleSoftcopyPresentationStateStorage",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_HemodynamicWaveformStorage,                                            "HemodynamicWaveformStorage",                                         "HemodynamicWaveformStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_ImplantationPlanSRStorage,                                             "ImplantationPlanSRStorage",                                          "ImplantationPlanSRStorage",                                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    // the following line is needed for reasons of backward compatibility (name of SOP Class changed, see the previous line)
+    { UID_ImplantationPlanSRStorage,                                             NULL /* see above */,                                                 "ImplantationPlanSRDocumentStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_IntraocularLensCalculationsStorage,                                    "IntraocularLensCalculationsStorage",                                 "IntraocularLensCalculationsStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,    "IntravascularOpticalCoherenceTomographyImageStorageForPresentation", "IntravascularOpticalCoherenceTomographyImageStorageForPresentation", { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,      "IntravascularOpticalCoherenceTomographyImageStorageForProcessing",   "IntravascularOpticalCoherenceTomographyImageStorageForProcessing",   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_KeratometryMeasurementsStorage,                                        "KeratometryMeasurementsStorage",                                     "KeratometryMeasurementsStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_KeyObjectSelectionDocumentStorage,                                     "KeyObjectSelectionDocumentStorage",                                  "KeyObjectSelectionDocumentStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_LegacyConvertedEnhancedCTImageStorage,                                 "LegacyConvertedEnhancedCTImageStorage",                              "LegacyConvertedEnhancedCTImageStorage",                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_LegacyConvertedEnhancedMRImageStorage,                                 "LegacyConvertedEnhancedMRImageStorage",                              "LegacyConvertedEnhancedMRImageStorage",                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_LegacyConvertedEnhancedPETImageStorage,                                "LegacyConvertedEnhancedPETImageStorage",                             "LegacyConvertedEnhancedPETImageStorage",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_LensometryMeasurementsStorage,                                         "LensometryMeasurementsStorage",                                      "LensometryMeasurementsStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_MacularGridThicknessAndVolumeReportStorage,                            "MacularGridThicknessAndVolumeReportStorage",                         "MacularGridThicknessAndVolumeReportStorage",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_MammographyCADSRStorage,                                               "MammographyCADSRStorage",                                            "MammographyCADSRStorage",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_MediaStorageDirectoryStorage,                                          "MediaStorageDirectoryStorage",                                       "MediaStorageDirectoryStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_MicroscopyBulkSimpleAnnotationsStorage,                                "MicroscopyBulkSimpleAnnotationsStorage",                             "MicroscopyBulkSimpleAnnotationsStorage",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_MRImageStorage,                                                        "MRImageStorage",                                                     "MRImageStorage",                                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_MRSpectroscopyStorage,                                                 "MRSpectroscopyStorage",                                              "MRSpectroscopyStorage",                                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_MultichannelRespiratoryWaveformStorage,                                "MultichannelRespiratoryWaveformStorage",                             "MultichannelRespiratoryWaveformStorage",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,                   "MultiFrameGrayscaleByteSecondaryCaptureImageStorage",                "MultiframeGrayscaleByteSecondaryCaptureImageStorage",                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,                   "MultiFrameGrayscaleWordSecondaryCaptureImageStorage",                "MultiframeGrayscaleWordSecondaryCaptureImageStorage",                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,                       "MultiFrameSingleBitSecondaryCaptureImageStorage",                    "MultiframeSingleBitSecondaryCaptureImageStorage",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,                       "MultiFrameTrueColorSecondaryCaptureImageStorage",                    "MultiframeTrueColorSecondaryCaptureImageStorage",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_MultipleVolumeRenderingVolumetricPresentationStateStorage,             "MultipleVolumeRenderingVolumetricPresentationStateStorage",          "MultipleVolumeRenderingVolumetricPresentationStateStorage",          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_NuclearMedicineImageStorage,                                           "NuclearMedicineImageStorage",                                        "NuclearMedicineImageStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_OphthalmicAxialMeasurementsStorage,                                    "OphthalmicAxialMeasurementsStorage",                                 "OphthalmicAxialMeasurementsStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage,        "OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage",     "OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage",     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_OphthalmicOpticalCoherenceTomographyEnFaceImageStorage,                "OphthalmicOpticalCoherenceTomographyEnFaceImageStorage",             "OphthalmicOpticalCoherenceTomographyEnFaceImageStorage",             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_OphthalmicPhotography16BitImageStorage,                                "OphthalmicPhotography16BitImageStorage",                             "OphthalmicPhotography16BitImageStorage",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_OphthalmicPhotography8BitImageStorage,                                 "OphthalmicPhotography8BitImageStorage",                              "OphthalmicPhotography8BitImageStorage",                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_OphthalmicThicknessMapStorage,                                         "OphthalmicThicknessMapStorage",                                      "OphthalmicThicknessMapStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_OphthalmicTomographyImageStorage,                                      "OphthalmicTomographyImageStorage",                                   "OphthalmicTomographyImageStorage",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_OphthalmicVisualFieldStaticPerimetryMeasurementsStorage,               "OphthalmicVisualFieldStaticPerimetryMeasurementsStorage",            "OphthalmicVisualFieldStaticPerimetryMeasurementsStorage",            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_ParametricMapStorage,                                                  "ParametricMapStorage",                                               "ParametricMapStorage",                                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_ENHANCED_MF } },
+    { UID_PatientRadiationDoseSRStorage,                                         "PatientRadiationDoseSRStorage",                                      "PatientRadiationDoseSRStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_PerformedImagingAgentAdministrationSRStorage,                          "PerformedImagingAgentAdministrationSRStorage",                       "PerformedImagingAgentAdministrationSRStorage",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_PhotoacousticImageStorage,                                             "PhotoacousticImageStorage",                                          "PhotoacousticImageStorage",                                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_PlannedImagingAgentAdministrationSRStorage,                            "PlannedImagingAgentAdministrationSRStorage",                         "PlannedImagingAgentAdministrationSRStorage",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_PositronEmissionTomographyImageStorage,                                "PositronEmissionTomographyImageStorage",                             "PositronEmissionTomographyImageStorage",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_ProcedureLogStorage,                                                   "ProcedureLogStorage",                                                "ProcedureLogStorage",                                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_ProtocolApprovalStorage,                                               "ProtocolApprovalStorage",                                            "ProtocolApprovalStorage",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NON_PATIENT | UID_PROP_NO_DIR_RECORD } },
+    { UID_PseudoColorSoftcopyPresentationStateStorage,                           "PseudoColorSoftcopyPresentationStateStorage",                        "PseudoColorSoftcopyPresentationStateStorage",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_RadiopharmaceuticalRadiationDoseSRStorage,                             "RadiopharmaceuticalRadiationDoseSRStorage",                          "RadiopharmaceuticalRadiationDoseSRStorage",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_RawDataStorage,                                                        "RawDataStorage",                                                     "RawDataStorage",                                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RealWorldValueMappingStorage,                                          "RealWorldValueMappingStorage",                                       "RealWorldValueMappingStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RespiratoryWaveformStorage,                                            "RespiratoryWaveformStorage",                                         "RespiratoryWaveformStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_RoboticArmRadiationStorage,                                            "RoboticArmRadiationStorage",                                         "RoboticArmRadiationStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RoboticRadiationRecordStorage,                                         "RoboticRadiationRecordStorage",                                      "RoboticRadiationRecordStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RoutineScalpElectroencephalogramWaveformStorage,                       "RoutineScalpElectroencephalogramWaveformStorage",                    "RoutineScalpElectroencephalogramWaveformStorage",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_RTBeamsDeliveryInstructionStorage,                                     "RTBeamsDeliveryInstructionStorage",                                  "RTBeamsDeliveryInstructionStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTBeamsTreatmentRecordStorage,                                         "RTBeamsTreatmentRecordStorage",                                      "RTBeamsTreatmentRecordStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTBrachyApplicationSetupDeliveryInstructionStorage,                    "RTBrachyApplicationSetupDeliveryInstructionStorage",                 "RTBrachyApplicationSetupDeliveryInstructionStorage",                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTBrachyTreatmentRecordStorage,                                        "RTBrachyTreatmentRecordStorage",                                     "RTBrachyTreatmentRecordStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTDoseStorage,                                                         "RTDoseStorage",                                                      "RTDoseStorage",                                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTImageStorage,                                                        "RTImageStorage",                                                     "RTImageStorage",                                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_RTIonBeamsTreatmentRecordStorage,                                      "RTIonBeamsTreatmentRecordStorage",                                   "RTIonBeamsTreatmentRecordStorage",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTIonPlanStorage,                                                      "RTIonPlanStorage",                                                   "RTIonPlanStorage",                                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTPatientPositionAcquisitionInstructionStorage,                        "RTPatientPositionAcquisitionInstructionStorage",                     "RTPatientPositionAcquisitionInstructionStorage",                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTPhysicianIntentStorage,                                              "RTPhysicianIntentStorage",                                           "RTPhysicianIntentStorage",                                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTPlanStorage,                                                         "RTPlanStorage",                                                      "RTPlanStorage",                                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTRadiationRecordSetStorage,                                           "RTRadiationRecordSetStorage",                                        "RTRadiationRecordSetStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTRadiationSalvageRecordStorage,                                       "RTRadiationSalvageRecordStorage",                                    "RTRadiationSalvageRecordStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTRadiationSetDeliveryInstructionStorage,                              "RTRadiationSetDeliveryInstructionStorage",                           "RTRadiationSetDeliveryInstructionStorage",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTRadiationSetStorage,                                                 "RTRadiationSetStorage",                                              "RTRadiationSetStorage",                                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTSegmentAnnotationStorage,                                            "RTSegmentAnnotationStorage",                                         "RTSegmentAnnotationStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTStructureSetStorage,                                                 "RTStructureSetStorage",                                              "RTStructureSetStorage",                                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTTreatmentPreparationStorage,                                         "RTTreatmentPreparationStorage",                                      "RTTreatmentPreparationStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_RTTreatmentSummaryRecordStorage,                                       "RTTreatmentSummaryRecordStorage",                                    "RTTreatmentSummaryRecordStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SecondaryCaptureImageStorage,                                          "SecondaryCaptureImageStorage",                                       "SecondaryCaptureImageStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_SegmentationStorage,                                                   "SegmentationStorage",                                                "SegmentationStorage",                                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage,            "SegmentedVolumeRenderingVolumetricPresentationStateStorage",         "SegmentedVolumeRenderingVolumetricPresentationStateStorage",         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_SimplifiedAdultEchoSRStorage,                                          "SimplifiedAdultEchoSRStorage",                                       "SimplifiedAdultEchoSRStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_SleepElectroencephalogramWaveformStorage,                              "SleepElectroencephalogramWaveformStorage",                           "SleepElectroencephalogramWaveformStorage",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_SpatialFiducialsStorage,                                               "SpatialFiducialsStorage",                                            "SpatialFiducialsStorage",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SpatialRegistrationStorage,                                            "SpatialRegistrationStorage",                                         "SpatialRegistrationStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SpectaclePrescriptionReportStorage,                                    "SpectaclePrescriptionReportStorage",                                 "SpectaclePrescriptionReportStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_StereometricRelationshipStorage,                                       "StereometricRelationshipStorage",                                    "StereometricRelationshipStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SubjectiveRefractionMeasurementsStorage,                               "SubjectiveRefractionMeasurementsStorage",                            "SubjectiveRefractionMeasurementsStorage",                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SurfaceScanMeshStorage,                                                "SurfaceScanMeshStorage",                                             "SurfaceScanMeshStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SurfaceScanPointCloudStorage,                                          "SurfaceScanPointCloudStorage",                                       "SurfaceScanPointCloudStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_SurfaceSegmentationStorage,                                            "SurfaceSegmentationStorage",                                         "SurfaceSegmentationStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_TomotherapeuticRadiationRecordStorage,                                 "TomotherapeuticRadiationRecordStorage",                              "TomotherapeuticRadiationRecordStorage",                              { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_TomotherapeuticRadiationStorage,                                       "TomotherapeuticRadiationStorage",                                    "TomotherapeuticRadiationStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_TractographyResultsStorage,                                            "TractographyResultsStorage",                                         "TractographyResultsStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_TwelveLeadECGWaveformStorage,                                          "TwelveLeadECGWaveformStorage",                                       "TwelveLeadECGWaveformStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform,          UID_PROP_NONE } },
+    { UID_UltrasoundImageStorage,                                                "UltrasoundImageStorage",                                             "UltrasoundImageStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_UltrasoundMultiframeImageStorage,                                      "UltrasoundMultiFrameImageStorage",                                   "UltrasoundMultiframeImageStorage",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VariableModalityLUTSoftcopyPresentationStateStorage,                   "VariableModalityLUTSoftcopyPresentationStateStorage",                "VariableModalityLUTSoftcopyPresentationStateStorage",                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_VideoEndoscopicImageStorage,                                           "VideoEndoscopicImageStorage",                                        "VideoEndoscopicImageStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VideoMicroscopicImageStorage,                                          "VideoMicroscopicImageStorage",                                       "VideoMicroscopicImageStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VideoPhotographicImageStorage,                                         "VideoPhotographicImageStorage",                                      "VideoPhotographicImageStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VisualAcuityMeasurementsStorage,                                       "VisualAcuityMeasurementsStorage",                                    "VisualAcuityMeasurementsStorage",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_VLEndoscopicImageStorage,                                              "VLEndoscopicImageStorage",                                           "VLEndoscopicImageStorage",                                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VLMicroscopicImageStorage,                                             "VLMicroscopicImageStorage",                                          "VLMicroscopicImageStorage",                                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VLPhotographicImageStorage,                                            "VLPhotographicImageStorage",                                         "VLPhotographicImageStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VLSlideCoordinatesMicroscopicImageStorage,                             "VLSlideCoordinatesMicroscopicImageStorage",                          "VLSlideCoordinatesMicroscopicImageStorage",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_VLWholeSlideMicroscopyImageStorage,                                    "VLWholeSlideMicroscopyImageStorage",                                 "VLWholeSlideMicroscopyImageStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_VolumeRenderingVolumetricPresentationStateStorage,                     "VolumeRenderingVolumetricPresentationStateStorage",                  "VolumeRenderingVolumetricPresentationStateStorage",                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,     "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage",  "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage",  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,               "WideFieldOphthalmicPhotography3DCoordinatesImageStorage",            "WideFieldOphthalmicPhotography3DCoordinatesImageStorage",            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_XADefinedProcedureProtocolStorage,                                     "XADefinedProcedureProtocolStorage",                                  "XADefinedProcedureProtocolStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NON_PATIENT | UID_PROP_NO_DIR_RECORD } },
+    { UID_XAPerformedProcedureProtocolStorage,                                   "XAPerformedProcedureProtocolStorage",                                "XAPerformedProcedureProtocolStorage",                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NONE } },
+    { UID_XAXRFGrayscaleSoftcopyPresentationStateStorage,                        "XAXRFGrayscaleSoftcopyPresentationStateStorage",                     "XAXRFGrayscaleSoftcopyPresentationStateStorage",                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_XRay3DAngiographicImageStorage,                                        "XRay3DAngiographicImageStorage",                                     "XRay3DAngiographicImageStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_XRay3DCraniofacialImageStorage,                                        "XRay3DCraniofacialImageStorage",                                     "XRay3DCraniofacialImageStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
+    { UID_XRayAngiographicImageStorage,                                          "XRayAngiographicImageStorage",                                       "XRayAngiographicImageStorage",                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
+    { UID_XRayRadiationDoseSRStorage,                                            "XRayRadiationDoseSRStorage",                                         "XRayRadiationDoseSRStorage",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_XRayRadiofluoroscopicImageStorage,                                     "XRayRadiofluoroscopicImageStorage",                                  "XRayRadiofluoroscopicImageStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
     // Storage (retired)
-    { UID_RETIRED_HardcopyColorImageStorage,                   "RETIRED_HardcopyColorImageStorage" },
-    { UID_RETIRED_HardcopyGrayscaleImageStorage,               "RETIRED_HardcopyGrayscaleImageStorage" },
-    { UID_RETIRED_NuclearMedicineImageStorage,                 "RETIRED_NuclearMedicineImageStorage" },
-    { UID_RETIRED_StandaloneCurveStorage,                      "RETIRED_StandaloneCurveStorage" },
-    { UID_RETIRED_StandaloneModalityLUTStorage,                "RETIRED_StandaloneModalityLUTStorage" },
-    { UID_RETIRED_StandaloneOverlayStorage,                    "RETIRED_StandaloneOverlayStorage" },
-    { UID_RETIRED_StandalonePETCurveStorage,                   "RETIRED_StandalonePETCurveStorage" },
-    { UID_RETIRED_StandaloneVOILUTStorage,                     "RETIRED_StandaloneVOILUTStorage" },
-    { UID_RETIRED_StoredPrintStorage,                          "RETIRED_StoredPrintStorage" },
-    { UID_RETIRED_UltrasoundImageStorage,                      "RETIRED_UltrasoundImageStorage" },
-    { UID_RETIRED_UltrasoundMultiframeImageStorage,            "RETIRED_UltrasoundMultiframeImageStorage" },
-    { UID_RETIRED_VLImageStorage,                              "RETIRED_VLImageStorage" },
-    { UID_RETIRED_VLMultiframeImageStorage,                    "RETIRED_VLMultiframeImageStorage" },
-    { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,         "RETIRED_XRayAngiographicBiPlaneImageStorage" },
+    { UID_RETIRED_HardcopyColorImageStorage,                                     "HardcopyColorImageStorage",                                          "RETIRED_HardcopyColorImageStorage",                                  { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_HardcopyGrayscaleImageStorage,                                 "HardcopyGrayscaleImageStorage",                                      "RETIRED_HardcopyGrayscaleImageStorage",                              { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_NuclearMedicineImageStorage,                                   "NuclearMedicineImageStorageRetired",                                 "RETIRED_NuclearMedicineImageStorage",                                { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_StandaloneCurveStorage,                                        "StandaloneCurveStorage",                                             "RETIRED_StandaloneCurveStorage",                                     { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StandaloneModalityLUTStorage,                                  "StandaloneModalityLUTStorage",                                       "RETIRED_StandaloneModalityLUTStorage",                               { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StandaloneOverlayStorage,                                      "StandaloneOverlayStorage",                                           "RETIRED_StandaloneOverlayStorage",                                   { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StandalonePETCurveStorage,                                     "StandalonePETCurveStorage",                                          "RETIRED_StandalonePETCurveStorage",                                  { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StandaloneVOILUTStorage,                                       "StandaloneVOILUTStorage",                                            "RETIRED_StandaloneVOILUTStorage",                                    { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StoredPrintStorage,                                            "StoredPrintStorage",                                                 "RETIRED_StoredPrintStorage",                                         { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_UltrasoundImageStorage,                                        "UltrasoundImageStorageRetired",                                      "RETIRED_UltrasoundImageStorage",                                     { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_UltrasoundMultiframeImageStorage,                              "UltrasoundMultiFrameImageStorageRetired",                            "RETIRED_UltrasoundMultiframeImageStorage",                           { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_VLImageStorage,                                                "VLImageStorageTrial",                                                "RETIRED_VLImageStorage",                                             { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_VLMultiframeImageStorage,                                      "VLMultiFrameImageStorageTrial",                                      "RETIRED_VLMultiframeImageStorage",                                   { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,                           "XRayAngiographicBiPlaneImageStorage",                                "RETIRED_XRayAngiographicBiPlaneImageStorage",                        { EUS_DICOM, EUV_Retired, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
     // Storage (DICOS)
-    { UID_DICOS_CTImageStorage,                                "DICOS_CTImageStorage" },
-    { UID_DICOS_DigitalXRayImageStorageForPresentation,        "DICOS_DigitalXRayImageStorageForPresentation" },
-    { UID_DICOS_DigitalXRayImageStorageForProcessing,          "DICOS_DigitalXRayImageStorageForProcessing" },
-    { UID_DICOS_ThreatDetectionReportStorage,                  "DICOS_ThreatDetectionReportStorage" },
-    { UID_DICOS_2DAITStorage,                                  "DICOS_2DAITStorage" },
-    { UID_DICOS_3DAITStorage,                                  "DICOS_3DAITStorage" },
-    { UID_DICOS_QuadrupoleResonanceStorage,                    "DICOS_QuadrupoleResonanceStorage" },
+    { UID_DICOS_CTImageStorage,                                                  "DICOSCTImageStorage",                                                "DICOS_CTImageStorage",                                               { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICOS_DigitalXRayImageStorageForPresentation,                          "DICOSDigitalXRayImageStorageForPresentation",                        "DICOS_DigitalXRayImageStorageForPresentation",                       { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICOS_DigitalXRayImageStorageForProcessing,                            "DICOSDigitalXRayImageStorageForProcessing",                          "DICOS_DigitalXRayImageStorageForProcessing",                         { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICOS_ThreatDetectionReportStorage,                                    "DICOSThreatDetectionReportStorage",                                  "DICOS_ThreatDetectionReportStorage",                                 { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NO_DIR_RECORD } },
+    { UID_DICOS_2DAITStorage,                                                    "DICOS2DAITStorage",                                                  "DICOS_2DAITStorage",                                                 { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NO_DIR_RECORD } },
+    { UID_DICOS_3DAITStorage,                                                    "DICOS3DAITStorage",                                                  "DICOS_3DAITStorage",                                                 { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NO_DIR_RECORD } },
+    { UID_DICOS_QuadrupoleResonanceStorage,                                      "DICOSQuadrupoleResonanceStorage",                                    "DICOS_QuadrupoleResonanceStorage",                                   { EUS_DICOS, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other, UID_PROP_NO_DIR_RECORD } },
     // Storage (DICONDE)
-    { UID_DICONDE_EddyCurrentImageStorage,                     "DICONDE_EddyCurrentImageStorage" },
-    { UID_DICONDE_EddyCurrentMultiframeImageStorage,           "DICONDE_EddyCurrentMultiframeImageStorage" },
+    { UID_DICONDE_EddyCurrentImageStorage,                                       "EddyCurrentImageStorage",                                            "DICONDE_EddyCurrentImageStorage",                                    { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICONDE_EddyCurrentMultiframeImageStorage,                             "EddyCurrentMultiFrameImageStorage",                                  "DICONDE_EddyCurrentMultiframeImageStorage",                          { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
 
     // Query/Retrieve
-    { UID_FINDPatientRootQueryRetrieveInformationModel,              "FINDPatientRootQueryRetrieveInformationModel" },
-    { UID_FINDStudyRootQueryRetrieveInformationModel,                "FINDStudyRootQueryRetrieveInformationModel" },
-    { UID_GETPatientRootQueryRetrieveInformationModel,               "GETPatientRootQueryRetrieveInformationModel" },
-    { UID_GETStudyRootQueryRetrieveInformationModel,                 "GETStudyRootQueryRetrieveInformationModel" },
-    { UID_MOVEPatientRootQueryRetrieveInformationModel,              "MOVEPatientRootQueryRetrieveInformationModel" },
-    { UID_MOVEStudyRootQueryRetrieveInformationModel,                "MOVEStudyRootQueryRetrieveInformationModel" },
-    { UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel, "RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_GETCompositeInstanceRetrieveWithoutBulkData,               "GETCompositeInstanceRetrieveWithoutBulkData" },
-    { UID_GETCompositeInstanceRootRetrieve,                          "GETCompositeInstanceRootRetrieve" },
-    { UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel,  "RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel" },
-    { UID_MOVECompositeInstanceRootRetrieve,                         "MOVECompositeInstanceRootRetrieve" },
-    { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel, "RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel" },
+    { UID_FINDPatientRootQueryRetrieveInformationModel,                          "PatientRootQueryRetrieveInformationModelFind",                       "FINDPatientRootQueryRetrieveInformationModel",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_FINDStudyRootQueryRetrieveInformationModel,                            "StudyRootQueryRetrieveInformationModelFind",                         "FINDStudyRootQueryRetrieveInformationModel",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETPatientRootQueryRetrieveInformationModel,                           "PatientRootQueryRetrieveInformationModelGet",                        "GETPatientRootQueryRetrieveInformationModel",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETStudyRootQueryRetrieveInformationModel,                             "StudyRootQueryRetrieveInformationModelGet",                          "GETStudyRootQueryRetrieveInformationModel",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEPatientRootQueryRetrieveInformationModel,                          "PatientRootQueryRetrieveInformationModelMove",                       "MOVEPatientRootQueryRetrieveInformationModel",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEStudyRootQueryRetrieveInformationModel,                            "StudyRootQueryRetrieveInformationModelMove",                         "MOVEStudyRootQueryRetrieveInformationModel",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel,             "PatientStudyOnlyQueryRetrieveInformationModelFind",                  "RETIRED_FINDPatientStudyOnlyQueryRetrieveInformationModel",          { EUS_DICOM, EUV_Retired,  EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETCompositeInstanceRetrieveWithoutBulkData,                           "CompositeInstanceRetrieveWithoutBulkDataGet",                        "GETCompositeInstanceRetrieveWithoutBulkData",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETCompositeInstanceRootRetrieve,                                      "CompositeInstanceRootRetrieveGet",                                   "GETCompositeInstanceRootRetrieve",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel,              "PatientStudyOnlyQueryRetrieveInformationModelGet",                   "RETIRED_GETPatientStudyOnlyQueryRetrieveInformationModel",           { EUS_DICOM, EUV_Retired,  EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVECompositeInstanceRootRetrieve,                                     "CompositeInstanceRootRetrieveMove",                                  "MOVECompositeInstanceRootRetrieve",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel,             "PatientStudyOnlyQueryRetrieveInformationModelMove",                  "RETIRED_MOVEPatientStudyOnlyQueryRetrieveInformationModel",          { EUS_DICOM, EUV_Retired,  EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
 
     // Modality Worklist
-    { UID_FINDModalityWorklistInformationModel,                "FINDModalityWorklistInformationModel" },
+    { UID_FINDModalityWorklistInformationModel,                                  "ModalityWorklistInformationModelFind",                               "FINDModalityWorklistInformationModel",                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Worklist, EUIT_other, UID_PROP_NONE } },
 
-    // General Purpose Worklist
-    { UID_RETIRED_FINDGeneralPurposeWorklistInformationModel,   "RETIRED_FINDGeneralPurposeWorklistInformationModel" },
-    { UID_RETIRED_GeneralPurposePerformedProcedureStepSOPClass, "RETIRED_GeneralPurposePerformedProcedureStepSOPClass" },
-    { UID_RETIRED_GeneralPurposeScheduledProcedureStepSOPClass, "RETIRED_GeneralPurposeScheduledProcedureStepSOPClass" },
-    { UID_RETIRED_GeneralPurposeWorklistManagementMetaSOPClass, "RETIRED_GeneralPurposeWorklistManagementMetaSOPClass" },
+    // General Purpose Worklist (retired)
+    { UID_RETIRED_FINDGeneralPurposeWorklistInformationModel,                    "GeneralPurposeWorklistInformationModelFind",                         "RETIRED_FINDGeneralPurposeWorklistInformationModel",                 { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_Worklist, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_GeneralPurposePerformedProcedureStepSOPClass,                  "GeneralPurposePerformedProcedureStep",                               "RETIRED_GeneralPurposePerformedProcedureStepSOPClass",               { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_Worklist, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_GeneralPurposeScheduledProcedureStepSOPClass,                  "GeneralPurposeScheduledProcedureStep",                               "RETIRED_GeneralPurposeScheduledProcedureStepSOPClass",               { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_Worklist, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_GeneralPurposeWorklistManagementMetaSOPClass,                  "GeneralPurposeWorklistManagementMeta",                               "RETIRED_GeneralPurposeWorklistManagementMetaSOPClass",               { EUS_DICOM, EUV_Retired, EUT_MetaSOPClass, EUST_Worklist, EUIT_other, UID_PROP_NONE } },
 
     // MPPS
-    { UID_ModalityPerformedProcedureStepNotificationSOPClass,  "ModalityPerformedProcedureStepNotificationSOPClass" },
-    { UID_ModalityPerformedProcedureStepRetrieveSOPClass,      "ModalityPerformedProcedureStepRetrieveSOPClass" },
-    { UID_ModalityPerformedProcedureStepSOPClass,              "ModalityPerformedProcedureStepSOPClass" },
+    { UID_ModalityPerformedProcedureStepNotificationSOPClass,                    "ModalityPerformedProcedureStepNotification",                         "ModalityPerformedProcedureStepNotificationSOPClass",                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_ModalityPerformedProcedureStepRetrieveSOPClass,                        "ModalityPerformedProcedureStepRetrieve",                             "ModalityPerformedProcedureStepRetrieveSOPClass",                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_ModalityPerformedProcedureStepSOPClass,                                "ModalityPerformedProcedureStep",                                     "ModalityPerformedProcedureStepSOPClass",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Radiotherapy
-    { UID_RTConventionalMachineVerification,                   "RTConventionalMachineVerification" },
-    { UID_RTIonMachineVerification,                            "RTIonMachineVerification" },
+    { UID_RTConventionalMachineVerification,                                     "RTConventionalMachineVerification",                                  "RTConventionalMachineVerification",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RTIonMachineVerification,                                              "RTIonMachineVerification",                                           "RTIonMachineVerification",                                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Unified Worklist and Procedure Step
-    { UID_UnifiedWorklistAndProcedureStepServiceClass,         "UnifiedWorklistAndProcedureStepServiceClass" },
-    { UID_UnifiedProcedureStepPushSOPClass,                    "UnifiedProcedureStepPushSOPClass" },
-    { UID_UnifiedProcedureStepWatchSOPClass,                   "UnifiedProcedureStepWatchSOPClass" },
-    { UID_UnifiedProcedureStepPullSOPClass,                    "UnifiedProcedureStepPullSOPClass" },
-    { UID_UnifiedProcedureStepEventSOPClass,                   "UnifiedProcedureStepEventSOPClass" },
-    { UID_UnifiedProcedureStepQuerySOPClass,                   "UnifiedProcedureStepQuerySOPClass" },
-    { UID_UPSGlobalSubscriptionSOPInstance,                    "UPSGlobalSubscriptionSOPInstance" },
-    { UID_UPSFilteredGlobalSubscriptionSOPInstance,            "UPSFilteredGlobalSubscriptionSOPInstance" },
+    { UID_UnifiedWorklistAndProcedureStepServiceClass,                           "UnifiedWorklistAndProcedureStep",                                    "UnifiedWorklistAndProcedureStepServiceClass",                        { EUS_DICOM, EUV_Standard, EUT_ServiceClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UnifiedProcedureStepPushSOPClass,                                      "UnifiedProcedureStepPush",                                           "UnifiedProcedureStepPushSOPClass",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UnifiedProcedureStepWatchSOPClass,                                     "UnifiedProcedureStepWatch",                                          "UnifiedProcedureStepWatchSOPClass",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UnifiedProcedureStepPullSOPClass,                                      "UnifiedProcedureStepPull",                                           "UnifiedProcedureStepPullSOPClass",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UnifiedProcedureStepEventSOPClass,                                     "UnifiedProcedureStepEvent",                                          "UnifiedProcedureStepEventSOPClass",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UnifiedProcedureStepQuerySOPClass,                                     "UnifiedProcedureStepQuery",                                          "UnifiedProcedureStepQuerySOPClass",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UPSGlobalSubscriptionSOPInstance,                                      "UPSGlobalSubscriptionInstance",                                      "UPSGlobalSubscriptionSOPInstance",                                   { EUS_DICOM, EUV_Standard, EUT_SOPInstance,  EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_UPSFilteredGlobalSubscriptionSOPInstance,                              "UPSFilteredGlobalSubscriptionInstance",                              "UPSFilteredGlobalSubscriptionSOPInstance",                           { EUS_DICOM, EUV_Standard, EUT_SOPInstance,  EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Storage Commitment
-    { UID_RETIRED_StorageCommitmentPullModelSOPClass,          "RETIRED_StorageCommitmentPullModelSOPClass" },
-    { UID_RETIRED_StorageCommitmentPullModelSOPInstance,       "RETIRED_StorageCommitmentPullModelSOPInstance" },
-    { UID_StorageCommitmentPushModelSOPClass,                  "StorageCommitmentPushModelSOPClass" },
-    { UID_StorageCommitmentPushModelSOPInstance,               "StorageCommitmentPushModelSOPInstance" },
+    { UID_RETIRED_StorageCommitmentPullModelSOPClass,                            "StorageCommitmentPullModel",                                         "RETIRED_StorageCommitmentPullModelSOPClass",                         { EUS_DICOM, EUV_Retired,  EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StorageCommitmentPullModelSOPInstance,                         "StorageCommitmentPullModelInstance",                                 "RETIRED_StorageCommitmentPullModelSOPInstance",                      { EUS_DICOM, EUV_Retired,  EUT_SOPInstance, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_StorageCommitmentPushModelSOPClass,                                    "StorageCommitmentPushModel",                                         "StorageCommitmentPushModelSOPClass",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_StorageCommitmentPushModelSOPInstance,                                 "StorageCommitmentPushModelInstance",                                 "StorageCommitmentPushModelSOPInstance",                              { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_other, EUIT_other, UID_PROP_NONE } },
 
-    // Hanging Protocols
-    { UID_FINDHangingProtocolInformationModel,                 "FINDHangingProtocolInformationModel" },
-    { UID_MOVEHangingProtocolInformationModel,                 "MOVEHangingProtocolInformationModel" },
+    // Hanging Protocol Storage and Query/Retrieve
+    { UID_HangingProtocolStorage,                                                "HangingProtocolStorage",                                             "HangingProtocolStorage",                                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage,       EUIT_other, UID_PROP_NON_PATIENT } },
+    { UID_FINDHangingProtocolInformationModel,                                   "HangingProtocolInformationModelFind",                                "FINDHangingProtocolInformationModel",                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEHangingProtocolInformationModel,                                   "HangingProtocolInformationModelMove",                                "MOVEHangingProtocolInformationModel",                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETHangingProtocolInformationModel,                                    "HangingProtocolInformationModelGet",                                 "GETHangingProtocolInformationModel",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
 
     // Relevant Patient Information Query
-    { UID_BreastImagingRelevantPatientInformationQuery,        "BreastImagingRelevantPatientInformationQuery" },
-    { UID_CardiacRelevantPatientInformationQuery,              "CardiacRelevantPatientInformationQuery" },
-    { UID_GeneralRelevantPatientInformationQuery,              "GeneralRelevantPatientInformationQuery" },
+    { UID_BreastImagingRelevantPatientInformationQuery,                          "BreastImagingRelevantPatientInformationQuery",                       "BreastImagingRelevantPatientInformationQuery",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_CardiacRelevantPatientInformationQuery,                                "CardiacRelevantPatientInformationQuery",                             "CardiacRelevantPatientInformationQuery",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GeneralRelevantPatientInformationQuery,                                "GeneralRelevantPatientInformationQuery",                             "GeneralRelevantPatientInformationQuery",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
 
-    // Color Palette Query/Retrieve
-    { UID_FINDColorPaletteInformationModel,                    "FINDColorPaletteInformationModel" },
-    { UID_MOVEColorPaletteInformationModel,                    "MOVEColorPaletteInformationModel" },
-    { UID_GETColorPaletteInformationModel,                     "GETColorPaletteInformationModel" },
+    // Color Palette Storage and Query/Retrieve
+    { UID_ColorPaletteStorage,                                                   "ColorPaletteStorage",                                                "ColorPaletteStorage",                                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage,       EUIT_other, UID_PROP_NON_PATIENT } },
+    { UID_FINDColorPaletteInformationModel,                                      "ColorPaletteQueryRetrieveInformationModelFind",                      "FINDColorPaletteInformationModel",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEColorPaletteInformationModel,                                      "ColorPaletteQueryRetrieveInformationModelMove",                      "MOVEColorPaletteInformationModel",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETColorPaletteInformationModel,                                       "ColorPaletteQueryRetrieveInformationModelGet",                       "GETColorPaletteInformationModel",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
 
-    // Implant Template Query/Retrieve
-    { UID_FINDGenericImplantTemplateInformationModel,          "FINDGenericImplantTemplateInformationModel" },
-    { UID_MOVEGenericImplantTemplateInformationModel,          "MOVEGenericImplantTemplateInformationModel" },
-    { UID_GETGenericImplantTemplateInformationModel,           "GETGenericImplantTemplateInformationModel" },
-    { UID_FINDImplantAssemblyTemplateInformationModel,         "FINDImplantAssemblyTemplateInformationModel" },
-    { UID_MOVEImplantAssemblyTemplateInformationModel,         "MOVEImplantAssemblyTemplateInformationModel" },
-    { UID_GETImplantAssemblyTemplateInformationModel,          "GETImplantAssemblyTemplateInformationModel" },
-    { UID_FINDImplantTemplateGroupInformationModel,            "FINDImplantTemplateGroupInformationModel" },
-    { UID_MOVEImplantTemplateGroupInformationModel,            "MOVEImplantTemplateGroupInformationModel" },
-    { UID_GETImplantTemplateGroupInformationModel,             "GETImplantTemplateGroupInformationModel" },
+    // Implant Template Storage and Query/Retrieve
+    { UID_GenericImplantTemplateStorage,                                         "GenericImplantTemplateStorage",                                      "GenericImplantTemplateStorage",                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage,       EUIT_other, UID_PROP_NON_PATIENT } },
+    { UID_FINDGenericImplantTemplateInformationModel,                            "GenericImplantTemplateInformationModelFind",                         "FINDGenericImplantTemplateInformationModel",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEGenericImplantTemplateInformationModel,                            "GenericImplantTemplateInformationModelMove",                         "MOVEGenericImplantTemplateInformationModel",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETGenericImplantTemplateInformationModel,                             "GenericImplantTemplateInformationModelGet",                          "GETGenericImplantTemplateInformationModel",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_ImplantAssemblyTemplateStorage,                                        "ImplantAssemblyTemplateStorage",                                     "ImplantAssemblyTemplateStorage",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage,       EUIT_other, UID_PROP_NON_PATIENT } },
+    { UID_FINDImplantAssemblyTemplateInformationModel,                           "ImplantAssemblyTemplateInformationModelFind",                        "FINDImplantAssemblyTemplateInformationModel",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEImplantAssemblyTemplateInformationModel,                           "ImplantAssemblyTemplateInformationModelMove",                        "MOVEImplantAssemblyTemplateInformationModel",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETImplantAssemblyTemplateInformationModel,                            "ImplantAssemblyTemplateInformationModelGet",                         "GETImplantAssemblyTemplateInformationModel",                         { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_ImplantTemplateGroupStorage,                                           "ImplantTemplateGroupStorage",                                        "ImplantTemplateGroupStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage,       EUIT_other, UID_PROP_NON_PATIENT } },
+    { UID_FINDImplantTemplateGroupInformationModel,                              "ImplantTemplateGroupInformationModelFind",                           "FINDImplantTemplateGroupInformationModel",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEImplantTemplateGroupInformationModel,                              "ImplantTemplateGroupInformationModelMove",                           "MOVEImplantTemplateGroupInformationModel",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETImplantTemplateGroupInformationModel,                               "ImplantTemplateGroupInformationModelGet",                            "GETImplantTemplateGroupInformationModel",                            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
 
     // Defined Procedure Protocol Query/Retrieve
-    { UID_FINDDefinedProcedureProtocolInformationModel,        "FINDDefinedProcedureProtocolInformationModel" },
-    { UID_MOVEDefinedProcedureProtocolInformationModel,        "MOVEDefinedProcedureProtocolInformationModel" },
-    { UID_GETDefinedProcedureProtocolInformationModel,         "GETDefinedProcedureProtocolInformationModel" },
+    { UID_FINDDefinedProcedureProtocolInformationModel,                          "DefinedProcedureProtocolInformationModelFind",                       "FINDDefinedProcedureProtocolInformationModel",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEDefinedProcedureProtocolInformationModel,                          "DefinedProcedureProtocolInformationModelMove",                       "MOVEDefinedProcedureProtocolInformationModel",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETDefinedProcedureProtocolInformationModel,                           "DefinedProcedureProtocolInformationModelGet",                        "GETDefinedProcedureProtocolInformationModel",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
 
     // Protocol Approval Query/Retrieve
-    { UID_FINDProtocolApprovalInformationModel,                "FINDProtocolApprovalInformationModel" },
-    { UID_MOVEProtocolApprovalInformationModel,                "MOVEProtocolApprovalInformationModel" },
-    { UID_GETProtocolApprovalInformationModel,                 "GETProtocolApprovalInformationModel" },
+    { UID_FINDProtocolApprovalInformationModel,                                  "ProtocolApprovalInformationModelFind",                               "FINDProtocolApprovalInformationModel",                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEProtocolApprovalInformationModel,                                  "ProtocolApprovalInformationModelMove",                               "MOVEProtocolApprovalInformationModel",                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETProtocolApprovalInformationModel,                                   "ProtocolApprovalInformationModelGet",                                "GETProtocolApprovalInformationModel",                                { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+
+    // Inventory Storage, Query/Retrieve, and related Services
+    { UID_InventoryStorage,                                                      "InventoryStorage",                                                   "InventoryStorage",                                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_Storage,       EUIT_other, UID_PROP_NON_PATIENT } },
+    { UID_FINDInventory,                                                         "InventoryFind",                                                      "FINDInventory",                                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_MOVEInventory,                                                         "InventoryMove",                                                      "MOVEInventory",                                                      { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_GETInventory,                                                          "InventoryGet",                                                       "GETInventory",                                                       { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
+    { UID_InventoryCreation,                                                     "InventoryCreation",                                                  "InventoryCreation",                                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other,         EUIT_other, UID_PROP_NONE } },
+    { UID_RepositoryQuery,                                                       "RepositoryQuery",                                                    "RepositoryQuery",                                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other,         EUIT_other, UID_PROP_NONE } },
+    { UID_StorageManagementSOPInstance,                                          "StorageManagementInstance",                                          "StorageManagementSOPInstance",                                       { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_other,         EUIT_other, UID_PROP_NONE } },
 
     // Print
-    { UID_BasicAnnotationBoxSOPClass,                          "BasicAnnotationBoxSOPClass" },
-    { UID_BasicColorImageBoxSOPClass,                          "BasicColorImageBoxSOPClass" },
-    { UID_BasicColorPrintManagementMetaSOPClass,               "BasicColorPrintManagementMetaSOPClass" },
-    { UID_BasicFilmBoxSOPClass,                                "BasicFilmBoxSOPClass" },
-    { UID_BasicFilmSessionSOPClass,                            "BasicFilmSessionSOPClass" },
-    { UID_BasicGrayscaleImageBoxSOPClass,                      "BasicGrayscaleImageBoxSOPClass" },
-    { UID_BasicGrayscalePrintManagementMetaSOPClass,           "BasicGrayscalePrintManagementMetaSOPClass" },
-    { UID_PresentationLUTSOPClass,                             "PresentationLUTSOPClass" },
-    { UID_PrintJobSOPClass,                                    "PrintJobSOPClass" },
-    { UID_PrinterConfigurationRetrievalSOPClass,               "PrinterConfigurationRetrievalSOPClass" },
-    { UID_PrinterConfigurationRetrievalSOPInstance,            "PrinterConfigurationRetrievalSOPInstance" },
-    { UID_PrinterSOPClass,                                     "PrinterSOPClass" },
-    { UID_PrinterSOPInstance,                                  "PrinterSOPInstance" },
-    { UID_RETIRED_BasicPrintImageOverlayBoxSOPClass,           "RETIRED_BasicPrintImageOverlayBoxSOPClass" },
-    { UID_RETIRED_ImageOverlayBoxSOPClass,                     "RETIRED_ImageOverlayBoxSOPClass" },
-    { UID_RETIRED_PrintQueueManagementSOPClass,                "RETIRED_PrintQueueManagementSOPClass" },
-    { UID_RETIRED_PrintQueueSOPInstance,                       "RETIRED_PrintQueueSOPInstance" },
-    { UID_RETIRED_PullPrintRequestSOPClass,                    "RETIRED_PullPrintRequestSOPClass" },
-    { UID_RETIRED_PullStoredPrintManagementMetaSOPClass,       "RETIRED_PullStoredPrintManagementMetaSOPClass" },
-    { UID_RETIRED_ReferencedColorPrintManagementMetaSOPClass,  "RETIRED_ReferencedColorPrintManagementMetaSOPClass" },
-    { UID_RETIRED_ReferencedGrayscalePrintManagementMetaSOPClass, "RETIRED_ReferencedGrayscalePrintManagementMetaSOPClass" },
-    { UID_RETIRED_ReferencedImageBoxSOPClass,                  "RETIRED_ReferencedImageBoxSOPClass" },
-    { UID_VOILUTBoxSOPClass,                                   "VOILUTBoxSOPClass" },
+    { UID_BasicAnnotationBoxSOPClass,                                            "BasicAnnotationBox",                                                 "BasicAnnotationBoxSOPClass",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_BasicColorImageBoxSOPClass,                                            "BasicColorImageBox",                                                 "BasicColorImageBoxSOPClass",                                         { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_BasicColorPrintManagementMetaSOPClass,                                 "BasicColorPrintManagementMeta",                                      "BasicColorPrintManagementMetaSOPClass",                              { EUS_DICOM, EUV_Standard, EUT_MetaSOPClass, EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_BasicFilmBoxSOPClass,                                                  "BasicFilmBox",                                                       "BasicFilmBoxSOPClass",                                               { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_BasicFilmSessionSOPClass,                                              "BasicFilmSession",                                                   "BasicFilmSessionSOPClass",                                           { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_BasicGrayscaleImageBoxSOPClass,                                        "BasicGrayscaleImageBox",                                             "BasicGrayscaleImageBoxSOPClass",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_BasicGrayscalePrintManagementMetaSOPClass,                             "BasicGrayscalePrintManagementMeta",                                  "BasicGrayscalePrintManagementMetaSOPClass",                          { EUS_DICOM, EUV_Standard, EUT_MetaSOPClass, EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_PresentationLUTSOPClass,                                               "PresentationLUT",                                                    "PresentationLUTSOPClass",                                            { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_PrintJobSOPClass,                                                      "PrintJob",                                                           "PrintJobSOPClass",                                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_PrinterConfigurationRetrievalSOPClass,                                 "PrinterConfigurationRetrieval",                                      "PrinterConfigurationRetrievalSOPClass",                              { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_PrinterConfigurationRetrievalSOPInstance,                              "PrinterConfigurationRetrievalInstance",                              "PrinterConfigurationRetrievalSOPInstance",                           { EUS_DICOM, EUV_Standard, EUT_SOPInstance,  EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_PrinterSOPClass,                                                       "Printer",                                                            "PrinterSOPClass",                                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_PrinterSOPInstance,                                                    "PrinterInstance",                                                    "PrinterSOPInstance",                                                 { EUS_DICOM, EUV_Standard, EUT_SOPInstance,  EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_BasicPrintImageOverlayBoxSOPClass,                             "BasicPrintImageOverlayBox",                                          "RETIRED_BasicPrintImageOverlayBoxSOPClass",                          { EUS_DICOM, EUV_Retired,  EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_ImageOverlayBoxSOPClass,                                       "ImageOverlayBox",                                                    "RETIRED_ImageOverlayBoxSOPClass",                                    { EUS_DICOM, EUV_Retired,  EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_PrintQueueManagementSOPClass,                                  "PrintQueueManagement",                                               "RETIRED_PrintQueueManagementSOPClass",                               { EUS_DICOM, EUV_Retired,  EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_PrintQueueSOPInstance,                                         "PrintQueue",                                                         "RETIRED_PrintQueueSOPInstance",                                      { EUS_DICOM, EUV_Retired,  EUT_SOPInstance,  EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_PullPrintRequestSOPClass,                                      "PullPrintRequest",                                                   "RETIRED_PullPrintRequestSOPClass",                                   { EUS_DICOM, EUV_Retired,  EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_PullStoredPrintManagementMetaSOPClass,                         "PullStoredPrintManagementMeta",                                      "RETIRED_PullStoredPrintManagementMetaSOPClass",                      { EUS_DICOM, EUV_Retired,  EUT_MetaSOPClass, EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_ReferencedColorPrintManagementMetaSOPClass,                    "ReferencedColorPrintManagementMeta",                                 "RETIRED_ReferencedColorPrintManagementMetaSOPClass",                 { EUS_DICOM, EUV_Retired,  EUT_MetaSOPClass, EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_ReferencedGrayscalePrintManagementMetaSOPClass,                "ReferencedGrayscalePrintManagementMeta",                             "RETIRED_ReferencedGrayscalePrintManagementMetaSOPClass",             { EUS_DICOM, EUV_Retired,  EUT_MetaSOPClass, EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_ReferencedImageBoxSOPClass,                                    "ReferencedImageBox",                                                 "RETIRED_ReferencedImageBoxSOPClass",                                 { EUS_DICOM, EUV_Retired,  EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
+    { UID_VOILUTBoxSOPClass,                                                     "VOILUTBox",                                                          "VOILUTBoxSOPClass",                                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass,     EUST_PrintManagement, EUIT_other, UID_PROP_NONE } },
 
-    // Detached Management
-    { UID_RETIRED_DetachedInterpretationManagementSOPClass,    "RETIRED_DetachedInterpretationManagementSOPClass" },
-    { UID_RETIRED_DetachedPatientManagementMetaSOPClass,       "RETIRED_DetachedPatientManagementMetaSOPClass" },
-    { UID_RETIRED_DetachedPatientManagementSOPClass,           "RETIRED_DetachedPatientManagementSOPClass" },
-    { UID_RETIRED_DetachedResultsManagementMetaSOPClass,       "RETIRED_DetachedResultsManagementMetaSOPClass" },
-    { UID_RETIRED_DetachedResultsManagementSOPClass,           "RETIRED_DetachedResultsManagementSOPClass" },
-    { UID_RETIRED_DetachedStudyManagementMetaSOPClass,         "RETIRED_DetachedStudyManagementMetaSOPClass" },
-    { UID_RETIRED_DetachedStudyManagementSOPClass,             "RETIRED_DetachedStudyManagementSOPClass" },
-    { UID_RETIRED_DetachedVisitManagementSOPClass,             "RETIRED_DetachedVisitManagementSOPClass" },
+    // Detached Management (retired)
+    { UID_RETIRED_DetachedInterpretationManagementSOPClass,                      "DetachedInterpretationManagement",                                   "RETIRED_DetachedInterpretationManagementSOPClass",                   { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedPatientManagementMetaSOPClass,                         "DetachedPatientManagementMeta",                                      "RETIRED_DetachedPatientManagementMetaSOPClass",                      { EUS_DICOM, EUV_Retired, EUT_MetaSOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedPatientManagementSOPClass,                             "DetachedPatientManagement",                                          "RETIRED_DetachedPatientManagementSOPClass",                          { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedResultsManagementMetaSOPClass,                         "DetachedResultsManagementMeta",                                      "RETIRED_DetachedResultsManagementMetaSOPClass",                      { EUS_DICOM, EUV_Retired, EUT_MetaSOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedResultsManagementSOPClass,                             "DetachedResultsManagement",                                          "RETIRED_DetachedResultsManagementSOPClass",                          { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedStudyManagementMetaSOPClass,                           "DetachedStudyManagementMeta",                                        "RETIRED_DetachedStudyManagementMetaSOPClass",                        { EUS_DICOM, EUV_Retired, EUT_MetaSOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedStudyManagementSOPClass,                               "DetachedStudyManagement",                                            "RETIRED_DetachedStudyManagementSOPClass",                            { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_DetachedVisitManagementSOPClass,                               "DetachedVisitManagement",                                            "RETIRED_DetachedVisitManagementSOPClass",                            { EUS_DICOM, EUV_Retired, EUT_SOPClass,     EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Procedure Log
-    { UID_ProceduralEventLoggingSOPClass,                      "ProceduralEventLoggingSOPClass" },
-    { UID_ProceduralEventLoggingSOPInstance,                   "ProceduralEventLoggingSOPInstance" },
+    { UID_ProceduralEventLoggingSOPClass,                                        "ProceduralEventLogging",                                             "ProceduralEventLoggingSOPClass",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_ProceduralEventLoggingSOPInstance,                                     "ProceduralEventLoggingInstance",                                     "ProceduralEventLoggingSOPInstance",                                  { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Substance Administration
-    { UID_SubstanceAdministrationLoggingSOPClass,              "SubstanceAdministrationLoggingSOPClass" },
-    { UID_SubstanceAdministrationLoggingSOPInstance,           "SubstanceAdministrationLoggingSOPInstance" },
-    { UID_ProductCharacteristicsQuerySOPClass,                 "ProductCharacteristicsQuerySOPClass" },
-    { UID_SubstanceApprovalQuerySOPClass,                      "SubstanceApprovalQuerySOPClass" },
+    { UID_SubstanceAdministrationLoggingSOPClass,                                "SubstanceAdministrationLogging",                                     "SubstanceAdministrationLoggingSOPClass",                             { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SubstanceAdministrationLoggingSOPInstance,                             "SubstanceAdministrationLoggingInstance",                             "SubstanceAdministrationLoggingSOPInstance",                          { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_ProductCharacteristicsQuerySOPClass,                                   "ProductCharacteristicsQuery",                                        "ProductCharacteristicsQuerySOPClass",                                { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SubstanceApprovalQuerySOPClass,                                        "SubstanceApprovalQuery",                                             "SubstanceApprovalQuerySOPClass",                                     { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Media Creation
-    { UID_MediaCreationManagementSOPClass,                     "MediaCreationManagementSOPClass" },
+    { UID_MediaCreationManagementSOPClass,                                       "MediaCreationManagement",                                            "MediaCreationManagementSOPClass",                                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // SOP Class Relationship Negotiation
-    { UID_StorageServiceClass,                                 "StorageServiceClass" },
+    { UID_StorageServiceClass,                                                   "Storage",                                                            "StorageServiceClass",                                                { EUS_DICOM, EUV_Standard, EUT_ServiceClass, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Instance Availability Notification
-    { UID_InstanceAvailabilityNotificationSOPClass,            "InstanceAvailabilityNotificationSOPClass" },
+    { UID_InstanceAvailabilityNotificationSOPClass,                              "InstanceAvailabilityNotification",                                   "InstanceAvailabilityNotificationSOPClass",                           { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Application Hosting
-    { UID_NativeDICOMModel,                                    "NativeDICOMModel" },
-    { UID_AbstractMultiDimensionalImageModel,                  "AbstractMultiDimensionalImageModel" },
+    { UID_NativeDICOMModel,                                                      "NativeDICOMModel",                                                   "NativeDICOMModel",                                                   { EUS_DICOM, EUV_Standard, EUT_ApplicationHosting, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_AbstractMultiDimensionalImageModel,                                    "AbstractMultiDimensionalImageModel",                                 "AbstractMultiDimensionalImageModel",                                 { EUS_DICOM, EUV_Standard, EUT_ApplicationHosting, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Communication of Display Parameters
-    { UID_DisplaySystemSOPClass,                               "DisplaySystemSOPClass" },
-    { UID_DisplaySystemSOPInstance,                            "DisplaySystemSOPInstance" },
+    { UID_DisplaySystemSOPClass,                                                 "DisplaySystem",                                                      "DisplaySystemSOPClass",                                              { EUS_DICOM, EUV_Standard, EUT_SOPClass,    EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_DisplaySystemSOPInstance,                                              "DisplaySystemInstance",                                              "DisplaySystemSOPInstance",                                           { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Real-Time Video
-    { UID_VideoEndoscopicImageRealTimeCommunication,           "VideoEndoscopicImageRealTimeCommunication" },
-    { UID_VideoPhotographicImageRealTimeCommunication,         "VideoPhotographicImageRealTimeCommunication" },
-    { UID_AudioWaveformRealTimeCommunication,                  "AudioWaveformRealTimeCommunication" },
-    { UID_RenditionSelectionDocumentRealTimeCommunication,     "RenditionSelectionDocumentRealTimeCommunication" },
+    { UID_VideoEndoscopicImageRealTimeCommunication,                             "VideoEndoscopicImageRealTimeCommunication",                          "VideoEndoscopicImageRealTimeCommunication",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other,            UID_PROP_NONE } },
+    { UID_VideoPhotographicImageRealTimeCommunication,                           "VideoPhotographicImageRealTimeCommunication",                        "VideoPhotographicImageRealTimeCommunication",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other,            UID_PROP_NONE } },
+    { UID_AudioWaveformRealTimeCommunication,                                    "AudioWaveformRealTimeCommunication",                                 "AudioWaveformRealTimeCommunication",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other,            UID_PROP_NONE } },
+    { UID_RenditionSelectionDocumentRealTimeCommunication,                       "RenditionSelectionDocumentRealTimeCommunication",                    "RenditionSelectionDocumentRealTimeCommunication",                    { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_StructuredReport, UID_PROP_NONE } },
 
     // Other
-    { UID_RETIRED_BasicStudyContentNotificationSOPClass,       "RETIRED_BasicStudyContentNotificationSOPClass" },
-    { UID_RETIRED_StudyComponentManagementSOPClass,            "RETIRED_StudyComponentManagementSOPClass" },
-    { UID_VerificationSOPClass,                                "VerificationSOPClass" },
+    { UID_RETIRED_BasicStudyContentNotificationSOPClass,                         "BasicStudyContentNotification",                                      "RETIRED_BasicStudyContentNotificationSOPClass",                      { EUS_DICOM, EUV_Retired,  EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_RETIRED_StudyComponentManagementSOPClass,                              "StudyComponentManagement",                                           "RETIRED_StudyComponentManagementSOPClass",                           { EUS_DICOM, EUV_Retired,  EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_VerificationSOPClass,                                                  "Verification",                                                       "VerificationSOPClass",                                               { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Mapping Resources
-    { UID_DICOMContentMappingResource,                         "DICOMContentMappingResource" },
+    { UID_DICOMContentMappingResource,                                           "DICOMContentMappingResource",                                        "DICOMContentMappingResource",                                        { EUS_DICOM, EUV_Standard, EUT_MappingResource, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Coding Schemes
-    { UID_DICOMControlledTerminologyCodingScheme,              "DICOMControlledTerminologyCodingScheme" },
-    { UID_DICOMUIDRegistryCodingScheme,                        "DICOMUIDRegistryCodingScheme" },
+    { UID_DICOMControlledTerminologyCodingScheme,                                "DCM",                                                                "DICOMControlledTerminologyCodingScheme",                             { EUS_DICOM, EUV_Standard, EUT_CodingScheme, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_DICOMUIDRegistryCodingScheme,                                          "DCMUID",                                                             "DICOMUIDRegistryCodingScheme",                                       { EUS_DICOM, EUV_Standard, EUT_CodingScheme, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Configuration Management LDAP UIDs
-    { UID_LDAP_dicomAETitle,                                   "LDAP_dicomAETitle" },
-    { UID_LDAP_dicomApplicationCluster,                        "LDAP_dicomApplicationCluster" },
-    { UID_LDAP_dicomAssociationAcceptor,                       "LDAP_dicomAssociationAcceptor" },
-    { UID_LDAP_dicomAssociationInitiator,                      "LDAP_dicomAssociationInitiator" },
-    { UID_LDAP_dicomAuthorizedNodeCertificateReference,        "LDAP_dicomAuthorizedNodeCertificateReference" },
-    { UID_LDAP_dicomConfigurationRoot,                         "LDAP_dicomConfigurationRoot" },
-    { UID_LDAP_dicomDescription,                               "LDAP_dicomDescription" },
-    { UID_LDAP_dicomDevice,                                    "LDAP_dicomDevice" },
-    { UID_LDAP_dicomDeviceName,                                "LDAP_dicomDeviceName" },
-    { UID_LDAP_dicomDeviceSerialNumber,                        "LDAP_dicomDeviceSerialNumber" },
-    { UID_LDAP_dicomDevicesRoot,                               "LDAP_dicomDevicesRoot" },
-    { UID_LDAP_dicomHostname,                                  "LDAP_dicomHostname" },
-    { UID_LDAP_dicomInstalled,                                 "LDAP_dicomInstalled" },
-    { UID_LDAP_dicomInstitutionAddress,                        "LDAP_dicomInstitutionAddress" },
-    { UID_LDAP_dicomInstitutionDepartmentName,                 "LDAP_dicomInstitutionDepartmentName" },
-    { UID_LDAP_dicomInstitutionName,                           "LDAP_dicomInstitutionName" },
-    { UID_LDAP_dicomIssuerOfPatientID,                         "LDAP_dicomIssuerOfPatientID" },
-    { UID_LDAP_dicomManufacturer,                              "LDAP_dicomManufacturer" },
-    { UID_LDAP_dicomManufacturerModelName,                     "LDAP_dicomManufacturerModelName" },
-    { UID_LDAP_dicomNetworkAE,                                 "LDAP_dicomNetworkAE" },
-    { UID_LDAP_dicomNetworkConnection,                         "LDAP_dicomNetworkConnection" },
-    { UID_LDAP_dicomNetworkConnectionReference,                "LDAP_dicomNetworkConnectionReference" },
-    { UID_LDAP_dicomPort,                                      "LDAP_dicomPort" },
-    { UID_LDAP_dicomPreferredCalledAETitle,                    "LDAP_dicomPreferredCalledAETitle" },
-    { UID_LDAP_dicomPreferredCallingAETitle,                   "LDAP_dicomPreferredCallingAETitle" },
-    { UID_LDAP_dicomPrimaryDeviceType,                         "LDAP_dicomPrimaryDeviceType" },
-    { UID_LDAP_dicomRelatedDeviceReference,                    "LDAP_dicomRelatedDeviceReference" },
-    { UID_LDAP_dicomSOPClass,                                  "LDAP_dicomSOPClass" },
-    { UID_LDAP_dicomSoftwareVersion,                           "LDAP_dicomSoftwareVersion" },
-    { UID_LDAP_dicomStationName,                               "LDAP_dicomStationName" },
-    { UID_LDAP_dicomSupportedCharacterSet,                     "LDAP_dicomSupportedCharacterSet" },
-    { UID_LDAP_dicomTLSCyphersuite,                            "LDAP_dicomTLSCyphersuite" },
-    { UID_LDAP_dicomThisNodeCertificateReference,              "LDAP_dicomThisNodeCertificateReference" },
-    { UID_LDAP_dicomTransferCapability,                        "LDAP_dicomTransferCapability" },
-    { UID_LDAP_dicomTransferRole,                              "LDAP_dicomTransferRole" },
-    { UID_LDAP_dicomTransferSyntax,                            "LDAP_dicomTransferSyntax" },
-    { UID_LDAP_dicomUniqueAETitle,                             "LDAP_dicomUniqueAETitle" },
-    { UID_LDAP_dicomUniqueAETitlesRegistryRoot,                "LDAP_dicomUniqueAETitlesRegistryRoot" },
-    { UID_LDAP_dicomVendorData,                                "LDAP_dicomVendorData" },
+    { UID_LDAP_dicomAETitle,                                                     "dicomAETitle",                                                       "LDAP_dicomAETitle",                                                  { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomApplicationCluster,                                          "dicomApplicationCluster",                                            "LDAP_dicomApplicationCluster",                                       { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomAssociationAcceptor,                                         "dicomAssociationAcceptor",                                           "LDAP_dicomAssociationAcceptor",                                      { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomAssociationInitiator,                                        "dicomAssociationInitiator",                                          "LDAP_dicomAssociationInitiator",                                     { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomAuthorizedNodeCertificateReference,                          "dicomAuthorizedNodeCertificateReference",                            "LDAP_dicomAuthorizedNodeCertificateReference",                       { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomConfigurationRoot,                                           "dicomConfigurationRoot",                                             "LDAP_dicomConfigurationRoot",                                        { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomDescription,                                                 "dicomDescription",                                                   "LDAP_dicomDescription",                                              { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomDevice,                                                      "dicomDevice",                                                        "LDAP_dicomDevice",                                                   { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomDeviceName,                                                  "dicomDeviceName",                                                    "LDAP_dicomDeviceName",                                               { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomDeviceSerialNumber,                                          "dicomDeviceSerialNumber",                                            "LDAP_dicomDeviceSerialNumber",                                       { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomDevicesRoot,                                                 "dicomDevicesRoot",                                                   "LDAP_dicomDevicesRoot",                                              { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomHostname,                                                    "dicomHostname",                                                      "LDAP_dicomHostname",                                                 { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomInstalled,                                                   "dicomInstalled",                                                     "LDAP_dicomInstalled",                                                { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomInstitutionAddress,                                          "dicomInstitutionAddress",                                            "LDAP_dicomInstitutionAddress",                                       { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomInstitutionDepartmentName,                                   "dicomInstitutionDepartmentName",                                     "LDAP_dicomInstitutionDepartmentName",                                { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomInstitutionName,                                             "dicomInstitutionName",                                               "LDAP_dicomInstitutionName",                                          { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomIssuerOfPatientID,                                           "dicomIssuerOfPatientID",                                             "LDAP_dicomIssuerOfPatientID",                                        { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomManufacturer,                                                "dicomManufacturer",                                                  "LDAP_dicomManufacturer",                                             { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomManufacturerModelName,                                       "dicomManufacturerModelName",                                         "LDAP_dicomManufacturerModelName",                                    { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomNetworkAE,                                                   "dicomNetworkAE",                                                     "LDAP_dicomNetworkAE",                                                { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomNetworkConnection,                                           "dicomNetworkConnection",                                             "LDAP_dicomNetworkConnection",                                        { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomNetworkConnectionReference,                                  "dicomNetworkConnectionReference",                                    "LDAP_dicomNetworkConnectionReference",                               { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomPort,                                                        "dicomPort",                                                          "LDAP_dicomPort",                                                     { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomPreferredCalledAETitle,                                      "dicomPreferredCalledAETitle",                                        "LDAP_dicomPreferredCalledAETitle",                                   { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomPreferredCallingAETitle,                                     "dicomPreferredCallingAETitle",                                       "LDAP_dicomPreferredCallingAETitle",                                  { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomPrimaryDeviceType,                                           "dicomPrimaryDeviceType",                                             "LDAP_dicomPrimaryDeviceType",                                        { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomRelatedDeviceReference,                                      "dicomRelatedDeviceReference",                                        "LDAP_dicomRelatedDeviceReference",                                   { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomSOPClass,                                                    "dicomSOPClass",                                                      "LDAP_dicomSOPClass",                                                 { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomSoftwareVersion,                                             "dicomSoftwareVersion",                                               "LDAP_dicomSoftwareVersion",                                          { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomStationName,                                                 "dicomStationName",                                                   "LDAP_dicomStationName",                                              { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomSupportedCharacterSet,                                       "dicomSupportedCharacterSet",                                         "LDAP_dicomSupportedCharacterSet",                                    { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomTLSCyphersuite,                                              "dicomTLSCyphersuite",                                                "LDAP_dicomTLSCyphersuite",                                           { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomThisNodeCertificateReference,                                "dicomThisNodeCertificateReference",                                  "LDAP_dicomThisNodeCertificateReference",                             { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomTransferCapability,                                          "dicomTransferCapability",                                            "LDAP_dicomTransferCapability",                                       { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomTransferRole,                                                "dicomTransferRole",                                                  "LDAP_dicomTransferRole",                                             { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomTransferSyntax,                                              "dicomTransferSyntax",                                                "LDAP_dicomTransferSyntax",                                           { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomUniqueAETitle,                                               "dicomUniqueAETitle",                                                 "LDAP_dicomUniqueAETitle",                                            { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomUniqueAETitlesRegistryRoot,                                  "dicomUniqueAETitlesRegistryRoot",                                    "LDAP_dicomUniqueAETitlesRegistryRoot",                               { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LDAP_dicomVendorData,                                                  "dicomVendorData",                                                    "LDAP_dicomVendorData",                                               { EUS_DICOM, EUV_Standard, EUT_LDAP, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Well-known Frame of References
-    { UID_ICBM452T1FrameOfReference,                           "ICBM452T1FrameOfReference" },
-    { UID_ICBMSingleSubjectMRIFrameOfReference,                "ICBMSingleSubjectMRIFrameOfReference" },
-    { UID_IEC61217FixedCoordinateSystemFrameOfReference,       "IEC61217FixedCoordinateSystemFrameOfReference" },
-    { UID_IEC61217TableTopCoordinateSystemFrameOfReference,    "IEC61217TableTopCoordinateSystemFrameOfReference" },
-    { UID_SPM2AVG152PDFrameOfReference,                        "SPM2AVG152PDFrameOfReference" },
-    { UID_SPM2AVG152T1FrameOfReference,                        "SPM2AVG152T1FrameOfReference" },
-    { UID_SPM2AVG152T2FrameOfReference,                        "SPM2AVG152T2FrameOfReference" },
-    { UID_SPM2AVG305T1FrameOfReference,                        "SPM2AVG305T1FrameOfReference" },
-    { UID_SPM2BRAINMASKFrameOfReference,                       "SPM2BRAINMASKFrameOfReference" },
-    { UID_SPM2CSFFrameOfReference,                             "SPM2CSFFrameOfReference" },
-    { UID_SPM2EPIFrameOfReference,                             "SPM2EPIFrameOfReference" },
-    { UID_SPM2FILT1FrameOfReference,                           "SPM2FILT1FrameOfReference" },
-    { UID_SPM2GRAYFrameOfReference,                            "SPM2GRAYFrameOfReference" },
-    { UID_SPM2PDFrameOfReference,                              "SPM2PDFrameOfReference" },
-    { UID_SPM2PETFrameOfReference,                             "SPM2PETFrameOfReference" },
-    { UID_SPM2SINGLESUBJT1FrameOfReference,                    "SPM2SINGLESUBJT1FrameOfReference" },
-    { UID_SPM2SPECTFrameOfReference,                           "SPM2SPECTFrameOfReference" },
-    { UID_SPM2T1FrameOfReference,                              "SPM2T1FrameOfReference" },
-    { UID_SPM2T2FrameOfReference,                              "SPM2T2FrameOfReference" },
-    { UID_SPM2TRANSMFrameOfReference,                          "SPM2TRANSMFrameOfReference" },
-    { UID_SPM2WHITEFrameOfReference,                           "SPM2WHITEFrameOfReference" },
-    { UID_StandardRoboticCoordinateSystemFrameOfReference,     "StandardRoboticCoordinateSystemFrameOfReference" },
-    { UID_TalairachBrainAtlasFrameOfReference,                 "TalairachBrainAtlasFrameOfReference" },
-    { UID_SRI24FrameOfReference,                               "SRI24FrameOfReferenc" },
-    { UID_Colin27FrameOfReference,                             "Colin27FrameOfReference" },
-    { UID_LPBA40AIRFrameOfReference,                           "LPBA40AIRFrameOfReference" },
-    { UID_LPBA40FLIRTFrameOfReference,                         "LPBA40FLIRTFrameOfReference" },
-    { UID_LPBA40SPM5FrameOfReference,                          "LPBA40SPM5FrameOfReference" },
+    { UID_ICBM452T1FrameOfReference,                                             "ICBM452T1",                                                          "ICBM452T1FrameOfReference",                                          { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_ICBMSingleSubjectMRIFrameOfReference,                                  "ICBMSingleSubjectMRI",                                               "ICBMSingleSubjectMRIFrameOfReference",                               { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_IEC61217FixedCoordinateSystemFrameOfReference,                         "IEC61217FixedCoordinateSystem",                                      "IEC61217FixedCoordinateSystemFrameOfReference",                      { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_IEC61217TableTopCoordinateSystemFrameOfReference,                      "IEC61217TableTopCoordinateSystem",                                   "IEC61217TableTopCoordinateSystemFrameOfReference",                   { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2AVG152PDFrameOfReference,                                          "SPM2AVG152PD",                                                       "SPM2AVG152PDFrameOfReference",                                       { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2AVG152T1FrameOfReference,                                          "SPM2AVG152T1",                                                       "SPM2AVG152T1FrameOfReference",                                       { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2AVG152T2FrameOfReference,                                          "SPM2AVG152T2",                                                       "SPM2AVG152T2FrameOfReference",                                       { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2AVG305T1FrameOfReference,                                          "SPM2AVG305T1",                                                       "SPM2AVG305T1FrameOfReference",                                       { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2BRAINMASKFrameOfReference,                                         "SPM2BRAINMASK",                                                      "SPM2BRAINMASKFrameOfReference",                                      { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2CSFFrameOfReference,                                               "SPM2CSF",                                                            "SPM2CSFFrameOfReference",                                            { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2EPIFrameOfReference,                                               "SPM2EPI",                                                            "SPM2EPIFrameOfReference",                                            { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2FILT1FrameOfReference,                                             "SPM2FILT1",                                                          "SPM2FILT1FrameOfReference",                                          { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2GRAYFrameOfReference,                                              "SPM2GRAY",                                                           "SPM2GRAYFrameOfReference",                                           { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2PDFrameOfReference,                                                "SPM2PD",                                                             "SPM2PDFrameOfReference",                                             { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2PETFrameOfReference,                                               "SPM2PET",                                                            "SPM2PETFrameOfReference",                                            { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2SINGLESUBJT1FrameOfReference,                                      "SINGLESUBJT1",                                                       "SPM2SINGLESUBJT1FrameOfReference",                                   { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2SPECTFrameOfReference,                                             "SPM2SPECT",                                                          "SPM2SPECTFrameOfReference",                                          { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2T1FrameOfReference,                                                "SPM2T1",                                                             "SPM2T1FrameOfReference",                                             { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2T2FrameOfReference,                                                "SPM2T2",                                                             "SPM2T2FrameOfReference",                                             { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2TRANSMFrameOfReference,                                            "SPM2TRANSM",                                                         "SPM2TRANSMFrameOfReference",                                         { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SPM2WHITEFrameOfReference,                                             "SPM2WHITE",                                                          "SPM2WHITEFrameOfReference",                                          { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_StandardRoboticArmCoordinateSystemFrameOfReference,                    "StandardRoboticArmCoordinateSystem",                                 "StandardRoboticArmCoordinateSystemFrameOfReference",                 { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_TalairachBrainAtlasFrameOfReference,                                   "TalairachBrainAtlas",                                                "TalairachBrainAtlasFrameOfReference",                                { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_SRI24FrameOfReference,                                                 "SRI24",                                                              "SRI24FrameOfReference",                                              { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_Colin27FrameOfReference,                                               "Colin27",                                                            "Colin27FrameOfReference",                                            { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LPBA40AIRFrameOfReference,                                             "LPBA40AIR",                                                          "LPBA40AIRFrameOfReference",                                          { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LPBA40FLIRTFrameOfReference,                                           "LPBA40FLIRT",                                                        "LPBA40FLIRTFrameOfReference",                                        { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_LPBA40SPM5FrameOfReference,                                            "LPBA40SPM5",                                                         "LPBA40SPM5FrameOfReference",                                         { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // UTC Synchronization Frame of Reference
-    { UID_UniversalCoordinatedTimeSynchronizationFrameOfReference, "UniversalCoordinatedTimeSynchronizationFrameOfReference" },
+    { UID_UniversalCoordinatedTimeSynchronizationFrameOfReference,               "UTC",                                                                "UniversalCoordinatedTimeSynchronizationFrameOfReference",            { EUS_DICOM, EUV_Standard, EUT_FrameOfReference, EUST_other, EUIT_other, UID_PROP_NONE } },
 
     // Well-known SOP Instances for Color Palettes
-    { UID_HotIronColorPaletteSOPInstance,                      "HotIronColorPaletteSOPInstance" },
-    { UID_HotMetalBlueColorPaletteSOPInstance,                 "HotMetalBlueColorPaletteSOPInstance" },
-    { UID_PET20StepColorPaletteSOPInstance,                    "PET20StepColorPaletteSOPInstance" },
-    { UID_PETColorPaletteSOPInstance,                          "PETColorPaletteSOPInstance" },
-    { UID_SpringColorPaletteSOPInstance,                       "SpringColorPaletteSOPInstance" },
-    { UID_SummerColorPaletteSOPInstance,                       "SummerColorPaletteSOPInstance" },
-    { UID_FallColorPaletteSOPInstance,                         "FallColorPaletteSOPInstance" },
-    { UID_WinterColorPaletteSOPInstance,                       "WinterColorPaletteSOPInstance" },
+    { UID_HotIronColorPaletteSOPInstance,                                        "HotIronPalette",                                                     "HotIronColorPaletteSOPInstance",                                     { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_HotMetalBlueColorPaletteSOPInstance,                                   "HotMetalBluePalette",                                                "HotMetalBlueColorPaletteSOPInstance",                                { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_PET20StepColorPaletteSOPInstance,                                      "PET20StepPalette",                                                   "PET20StepColorPaletteSOPInstance",                                   { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_PETColorPaletteSOPInstance,                                            "PETPalette",                                                         "PETColorPaletteSOPInstance",                                         { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_SpringColorPaletteSOPInstance,                                         "SpringPalette",                                                      "SpringColorPaletteSOPInstance",                                      { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_SummerColorPaletteSOPInstance,                                         "SummerPalette",                                                      "SummerColorPaletteSOPInstance",                                      { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_FallColorPaletteSOPInstance,                                           "FallPalette",                                                        "FallColorPaletteSOPInstance",                                        { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
+    { UID_WinterColorPaletteSOPInstance,                                         "WinterPalette",                                                      "WinterColorPaletteSOPInstance",                                      { EUS_DICOM, EUV_Standard, EUT_SOPInstance, EUST_ColorPalette, EUIT_other, UID_PROP_NONE } },
 
     // Draft Supplements
-    { UID_DRAFT_RTBeamsDeliveryInstructionStorage,             "DRAFT_RTBeamsDeliveryInstructionStorage" },
-    { UID_DRAFT_RTConventionalMachineVerification,             "DRAFT_RTConventionalMachineVerification" },
-    { UID_DRAFT_RTIonMachineVerification,                      "DRAFT_RTIonMachineVerification" },
-    { UID_DRAFT_SRAudioStorage,                                "DRAFT_SRAudioStorage" },
-    { UID_DRAFT_SRComprehensiveStorage,                        "DRAFT_SRComprehensiveStorage" },
-    { UID_DRAFT_SRDetailStorage,                               "DRAFT_SRDetailStorage" },
-    { UID_DRAFT_SRTextStorage,                                 "DRAFT_SRTextStorage" },
-    { UID_DRAFT_WaveformStorage,                               "DRAFT_WaveformStorage" },
-    { UID_DRAFT_UnifiedWorklistAndProcedureStepServiceClass,   "DRAFT_UnifiedWorklistAndProcedureStepServiceClass" },
-    { UID_DRAFT_UnifiedProcedureStepPushSOPClass,              "DRAFT_UnifiedProcedureStepPushSOPClass" },
-    { UID_DRAFT_UnifiedProcedureStepWatchSOPClass,             "DRAFT_UnifiedProcedureStepWatchSOPClass" },
-    { UID_DRAFT_UnifiedProcedureStepPullSOPClass,              "DRAFT_UnifiedProcedureStepPullSOPClass" },
-    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,             "DRAFT_UnifiedProcedureStepEventSOPClass" },
+    { UID_DRAFT_RTBeamsDeliveryInstructionStorage,                               "RTBeamsDeliveryInstructionStorageTrial",                             "DRAFT_RTBeamsDeliveryInstructionStorage",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_Storage, EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_RTConventionalMachineVerification,                               "RTConventionalMachineVerificationTrial",                             "DRAFT_RTConventionalMachineVerification",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_RTIonMachineVerification,                                        "RTIonMachineVerificationTrial",                                      "DRAFT_RTIonMachineVerification",                                     { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_SRAudioStorage,                                                  "AudioSRStorageTrial",                                                "DRAFT_SRAudioStorage",                                               { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_Storage, EUIT_StructuredReport, UID_PROP_NONE } },
+    { UID_DRAFT_SRComprehensiveStorage,                                          "ComprehensiveSRStorageTrial",                                        "DRAFT_SRComprehensiveStorage",                                       { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_Storage, EUIT_StructuredReport, UID_PROP_NONE } },
+    { UID_DRAFT_SRDetailStorage,                                                 "DetailSRStorageTrial",                                               "DRAFT_SRDetailStorage",                                              { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_Storage, EUIT_StructuredReport, UID_PROP_NONE } },
+    { UID_DRAFT_SRTextStorage,                                                   "TextSRStorageTrial",                                                 "DRAFT_SRTextStorage",                                                { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_Storage, EUIT_StructuredReport, UID_PROP_NONE } },
+    { UID_DRAFT_WaveformStorage,                                                 "WaveformStorageTrial",                                               "DRAFT_WaveformStorage",                                              { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_Storage, EUIT_Waveform,         UID_PROP_NONE } },
+    { UID_DRAFT_UnifiedWorklistAndProcedureStepServiceClass,                     "UnifiedWorklistAndProcedureStepTrial",                               "DRAFT_UnifiedWorklistAndProcedureStepServiceClass",                  { EUS_DICOM, EUV_Draft, EUT_ServiceClass, EUST_other,   EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_UnifiedProcedureStepPushSOPClass,                                "UnifiedProcedureStepPushTrial",                                      "DRAFT_UnifiedProcedureStepPushSOPClass",                             { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_UnifiedProcedureStepWatchSOPClass,                               "UnifiedProcedureStepWatchTrial",                                     "DRAFT_UnifiedProcedureStepWatchSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_UnifiedProcedureStepPullSOPClass,                                "UnifiedProcedureStepPullTrial",                                      "DRAFT_UnifiedProcedureStepPullSOPClass",                             { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
+    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,                               "UnifiedProcedureStepEventTrial",                                     "DRAFT_UnifiedProcedureStepEventSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
 
-    { NULL, NULL }
+    // end of the list
+    { NULL, NULL, NULL, { EUS_other, EUV_other, EUT_other, EUST_other, EUIT_other, UID_PROP_NONE } }
 };
 
 static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeof(UIDNameMap));
@@ -634,6 +676,8 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_Comprehensive3DSRStorage,
     UID_ComprehensiveSRStorage,
     UID_ComputedRadiographyImageStorage,
+    UID_ConfocalMicroscopyImageStorage,
+    UID_ConfocalMicroscopyTiledPyramidalImageStorage,
     UID_ContentAssessmentResultsStorage,
     UID_CornealTopographyMapStorage,
     UID_CTImageStorage,
@@ -653,22 +697,25 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_EncapsulatedOBJStorage,
     UID_EncapsulatedPDFStorage,
     UID_EncapsulatedSTLStorage,
+    UID_EnhancedContinuousRTImageStorage,
     UID_EnhancedCTImageStorage,
     UID_EnhancedMRColorImageStorage,
     UID_EnhancedMRImageStorage,
     UID_EnhancedPETImageStorage,
+    UID_EnhancedRTImageStorage,
     UID_EnhancedSRStorage,
     UID_EnhancedUSVolumeStorage,
     UID_EnhancedXAImageStorage,
     UID_EnhancedXRayRadiationDoseSRStorage,
     UID_EnhancedXRFImageStorage,
     UID_ExtensibleSRStorage,
+    UID_General32BitECGWaveformStorage,
     UID_GeneralAudioWaveformStorage,
     UID_GeneralECGWaveformStorage,
     UID_GrayscalePlanarMPRVolumetricPresentationStateStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HemodynamicWaveformStorage,
-    UID_ImplantationPlanSRDocumentStorage,
+    UID_ImplantationPlanSRStorage,
     UID_IntraocularLensCalculationsStorage,
     UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
     UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
@@ -702,6 +749,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_PatientRadiationDoseSRStorage,
     UID_PerformedImagingAgentAdministrationSRStorage,
     UID_PlannedImagingAgentAdministrationSRStorage,
+    UID_PhotoacousticImageStorage,
     UID_PositronEmissionTomographyImageStorage,
     UID_ProcedureLogStorage,
     UID_PseudoColorSoftcopyPresentationStateStorage,
@@ -720,6 +768,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_RTImageStorage,
     UID_RTIonBeamsTreatmentRecordStorage,
     UID_RTIonPlanStorage,
+    UID_RTPatientPositionAcquisitionInstructionStorage,
     UID_RTPhysicianIntentStorage,
     UID_RTPlanStorage,
     UID_RTRadiationRecordSetStorage,
@@ -749,6 +798,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
     UID_UltrasoundMultiframeImageStorage,
+    UID_VariableModalityLUTSoftcopyPresentationStateStorage,
     UID_VideoEndoscopicImageStorage,
     UID_VideoMicroscopicImageStorage,
     UID_VideoPhotographicImageStorage,
@@ -821,6 +871,7 @@ const char* dcmNonPatientStorageSOPClassUIDs[] = {
     UID_HangingProtocolStorage,
     UID_ImplantAssemblyTemplateStorage,
     UID_ImplantTemplateGroupStorage,
+    UID_InventoryStorage,
     UID_ProtocolApprovalStorage,
     UID_XADefinedProcedureProtocolStorage,
     // end marker (important!)
@@ -873,7 +924,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
     UID_GeneralECGWaveformStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HemodynamicWaveformStorage,
-    UID_ImplantationPlanSRDocumentStorage,
+    UID_ImplantationPlanSRStorage,
     UID_IntraocularLensCalculationsStorage,
     UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
     UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
@@ -951,6 +1002,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_CArmPhotonElectronRadiationRecordStorage,
 //  UID_CArmPhotonElectronRadiationStorage,
 //  UID_CompositingPlanarMPRVolumetricPresentationStateStorage,
+//  UID_ConfocalMicroscopyImageStorage,
+//  UID_ConfocalMicroscopyTiledPyramidalImageStorage,
 //  UID_ContentAssessmentResultsStorage,
 //  UID_CornealTopographyMapStorage,
 //  UID_CTPerformedProcedureProtocolStorage,
@@ -960,8 +1013,11 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_EncapsulatedMTLStorage,
 //  UID_EncapsulatedOBJStorage,
 //  UID_EncapsulatedSTLStorage,
+//  UID_EnhancedContinuousRTImageStorage,
+//  UID_EnhancedRTImageStorage,
 //  UID_EnhancedXRayRadiationDoseSRStorage,
 //  UID_ExtensibleSRStorage,
+//  UID_General32BitECGWaveformStorage,
 //  UID_GrayscalePlanarMPRVolumetricPresentationStateStorage,
 //  UID_MicroscopyBulkSimpleAnnotationsStorage,
 //  UID_MultichannelRespiratoryWaveformStorage,
@@ -971,12 +1027,14 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_ParametricMapStorage,
 //  UID_PatientRadiationDoseSRStorage,
 //  UID_PerformedImagingAgentAdministrationSRStorage,
+//  UID_PhotoacousticImageStorage,
 //  UID_PlannedImagingAgentAdministrationSRStorage,
 //  UID_RadiopharmaceuticalRadiationDoseSRStorage,
 //  UID_RoboticArmRadiationStorage,
 //  UID_RoboticRadiationRecordStorage,
 //  UID_RoutineScalpElectroencephalogramWaveformStorage,
 //  UID_RTBrachyApplicationSetupDeliveryInstructionStorage,
+//  UID_RTPatientPositionAcquisitionInstructionStorage,
 //  UID_RTPhysicianIntentStorage,
 //  UID_RTRadiationRecordSetStorage,
 //  UID_RTRadiationSalvageRecordStorage,
@@ -990,6 +1048,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_TomotherapeuticRadiationRecordStorage,
 //  UID_TomotherapeuticRadiationStorage,
 //  UID_TractographyResultsStorage,
+//  UID_VariableModalityLUTSoftcopyPresentationStateStorage,
 //  UID_VolumeRenderingVolumetricPresentationStateStorage,
 //  UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
 //  UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
@@ -1001,6 +1060,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_HangingProtocolStorage,
 //  UID_ImplantAssemblyTemplateStorage,
 //  UID_ImplantTemplateGroupStorage,
+//  UID_InventoryStorage,
 //  UID_ProtocolApprovalStorage,
 //  UID_XADefinedProcedureProtocolStorage,
     // retired
@@ -1146,6 +1206,8 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_BreastProjectionXRayImageStorageForProcessing,
     UID_BreastTomosynthesisImageStorage,
     UID_ComputedRadiographyImageStorage,
+    UID_ConfocalMicroscopyImageStorage,
+    UID_ConfocalMicroscopyTiledPyramidalImageStorage,
     UID_CTImageStorage,
     UID_CornealTopographyMapStorage,
     UID_DermoscopicPhotographyImageStorage,
@@ -1155,10 +1217,12 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_DigitalMammographyXRayImageStorageForProcessing,
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
+    UID_EnhancedContinuousRTImageStorage,
     UID_EnhancedCTImageStorage,
     UID_EnhancedMRColorImageStorage,
     UID_EnhancedMRImageStorage,
     UID_EnhancedPETImageStorage,
+    UID_EnhancedRTImageStorage,
     UID_EnhancedUSVolumeStorage,
     UID_EnhancedXAImageStorage,
     UID_EnhancedXRFImageStorage,
@@ -1180,9 +1244,11 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_OphthalmicThicknessMapStorage,
     UID_OphthalmicTomographyImageStorage,
     UID_ParametricMapStorage,
+    UID_PhotoacousticImageStorage,
     UID_PositronEmissionTomographyImageStorage,
     UID_RTImageStorage,
     UID_SecondaryCaptureImageStorage,
+    UID_SegmentationStorage,
     UID_UltrasoundImageStorage,
     UID_UltrasoundMultiframeImageStorage,
     UID_VideoEndoscopicImageStorage,
@@ -1260,6 +1326,8 @@ static const DcmModalityTable modalities[] = {
     { UID_Comprehensive3DSRStorage,                                "SR3",  4096 },
     { UID_ComprehensiveSRStorage,                                  "SRc",  4096 },
     { UID_ComputedRadiographyImageStorage,                         "CR",   2048 * 2048 * 2 },
+    { UID_ConfocalMicroscopyImageStorage,                          "CFm",  1024 * 1024 },
+    { UID_ConfocalMicroscopyTiledPyramidalImageStorage,            "CFt",  1024 * 1024 * 10 },
     { UID_ContentAssessmentResultsStorage,                         "AS",   4096 },
     { UID_CornealTopographyMapStorage,                             "CM",   512 * 512 },
     { UID_CTDefinedProcedureProtocolStorage,                       "PPcd", 4096 },  /* was PPd */
@@ -1280,16 +1348,19 @@ static const DcmModalityTable modalities[] = {
     { UID_EncapsulatedOBJStorage,                                  "OBJ",  4096 },
     { UID_EncapsulatedPDFStorage,                                  "PDF",  1024 * 1024 },
     { UID_EncapsulatedSTLStorage,                                  "STL",  4096 },
+    { UID_EnhancedContinuousRTImageStorage,                        "RIc",  4096 },
     { UID_EnhancedCTImageStorage,                                  "CTe",  256 * 512 * 512 },
     { UID_EnhancedMRColorImageStorage,                             "MRc",  256 * 512 * 512 * 3 },
     { UID_EnhancedMRImageStorage,                                  "MRe",  256 * 512 * 512 },
     { UID_EnhancedPETImageStorage,                                 "PIe",  512 * 512 * 2 },
+    { UID_EnhancedRTImageStorage,                                  "RIe",  4096 },
     { UID_EnhancedSRStorage,                                       "SRe",  4096 },
     { UID_EnhancedUSVolumeStorage,                                 "USe",  512 * 512 },
     { UID_EnhancedXAImageStorage,                                  "XAe",  256 * 512 * 512 },
     { UID_EnhancedXRayRadiationDoseSRStorage,                      "SRde", 4096 },
     { UID_EnhancedXRFImageStorage,                                 "RFe",  256 * 512 * 512 },
     { UID_ExtensibleSRStorage,                                     "SRx",  4096 },
+    { UID_General32BitECGWaveformStorage,                          "ECGh", 4096 },
     { UID_GeneralAudioWaveformStorage,                             "AUG",  4096 },
     { UID_GeneralECGWaveformStorage,                               "ECG",  4096 },
     { UID_GenericImplantTemplateStorage,                           "IT",   4096 },
@@ -1298,11 +1369,12 @@ static const DcmModalityTable modalities[] = {
     { UID_HangingProtocolStorage,                                  "HP",   4096 },
     { UID_HemodynamicWaveformStorage,                              "WVh",  4096 },
     { UID_ImplantAssemblyTemplateStorage,                          "ITa",  4096 },
-    { UID_ImplantationPlanSRDocumentStorage,                       "SRi",  4096 },
+    { UID_ImplantationPlanSRStorage,                               "SRi",  4096 },
     { UID_ImplantTemplateGroupStorage,                             "ITg",  4096 },
     { UID_IntraocularLensCalculationsStorage,                      "OPc",  4096 },
     { UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation, "OCt", 512 * 512 },
     { UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing, "OCp", 512 * 512 },
+    { UID_InventoryStorage,                                        "INV",  4096 },
     { UID_KeratometryMeasurementsStorage,                          "OPk",  4096 },
     { UID_KeyObjectSelectionDocumentStorage,                       "KO",   4096 },
     { UID_LegacyConvertedEnhancedCTImageStorage,                   "CTl",  512 * 512 * 2 },
@@ -1332,13 +1404,14 @@ static const DcmModalityTable modalities[] = {
     { UID_ParametricMapStorage,                                    "PM",   256 * 256 * 4 },
     { UID_PatientRadiationDoseSRStorage,                           "SRq",  4096 },
     { UID_PerformedImagingAgentAdministrationSRStorage,            "SRi",  4096 },
+    { UID_PhotoacousticImageStorage,                               "PA",   256 * 512 * 512 },
     { UID_PlannedImagingAgentAdministrationSRStorage,              "SRj",  4096 },
     { UID_PositronEmissionTomographyImageStorage,                  "PI",   512 * 512 * 2 },
     { UID_ProcedureLogStorage,                                     "SRp",  4096 },
-    { UID_ProtocolApprovalStorage,                                 "PA",   4096 },
+    { UID_ProtocolApprovalStorage,                                 "PAp",  4096 },  /* was PA */
     { UID_PseudoColorSoftcopyPresentationStateStorage,             "PSp",  4096 },
     { UID_RadiopharmaceuticalRadiationDoseSRStorage,               "SRr",  4096 },
-    { UID_RawDataStorage,                                          "RAW",  512 * 512 * 256 },
+    { UID_RawDataStorage,                                          "RAW",  256 * 512 * 512 },
     { UID_RealWorldValueMappingStorage,                            "RWM",  4096 },
     { UID_RespiratoryWaveformStorage,                              "WVr",  4096 },
     { UID_RoboticArmRadiationStorage,                              "Rra",  4096 },  /* was RRr */
@@ -1352,6 +1425,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RTImageStorage,                                          "RI",   4096 },
     { UID_RTIonBeamsTreatmentRecordStorage,                        "RTi",  4096 },
     { UID_RTIonPlanStorage,                                        "RPi",  4096 },
+    { UID_RTPatientPositionAcquisitionInstructionStorage,          "RPp",  4096 },
     { UID_RTPlanStorage,                                           "RP" ,  4096 },
     { UID_RTPhysicianIntentStorage,                                "RIp",  4096 },
     { UID_RTRadiationRecordSetStorage,                             "RSr",  4096 },
@@ -1363,7 +1437,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RTTreatmentPreparationStorage,                           "RTp",  4096 },
     { UID_RTTreatmentSummaryRecordStorage,                         "RTs",  4096 },
     { UID_SecondaryCaptureImageStorage,                            "SC",   512 * 512 * 2 },
-    { UID_SegmentationStorage,                                     "SG",   4096 },
+    { UID_SegmentationStorage,                                     "SG",   512 * 512 },
     { UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage, "VPs", 4096 },
     { UID_SimplifiedAdultEchoSRStorage,                            "SRu",  4096 },
     { UID_SleepElectroencephalogramWaveformStorage,                "WVs",  4096 },
@@ -1381,6 +1455,7 @@ static const DcmModalityTable modalities[] = {
     { UID_TwelveLeadECGWaveformStorage,                            "TLE",  4096 },
     { UID_UltrasoundImageStorage,                                  "US",   512 * 512 },
     { UID_UltrasoundMultiframeImageStorage,                        "USm",  512 * 512 },
+    { UID_VariableModalityLUTSoftcopyPresentationStateStorage,     "PSv",  4096 },
     { UID_VideoEndoscopicImageStorage,                             "VVe",  768 * 576 * 3 },
     { UID_VideoMicroscopicImageStorage,                            "VVm",  768 * 576 * 3 },
     { UID_VideoPhotographicImageStorage,                           "VVp",  768 * 576 * 3 },
@@ -1475,12 +1550,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 
 
 /*
-** dcmFindNameOfUID(const char* uid)
+** dcmFindNameOfUID(const char* uid, const char* defaultValue)
 ** Return the name of a UID.
 ** Performs a table lookup and returns a pointer to a read-only string.
-** Returns defaultValue of the UID is not known.
+** Returns defaultValue if the UID is not known.
 */
-
 const char*
 dcmFindNameOfUID(const char* uid, const char* defaultValue)
 {
@@ -1493,13 +1567,12 @@ dcmFindNameOfUID(const char* uid, const char* defaultValue)
     return defaultValue;
 }
 
-//
-// dcmFindUIDFromName(const char* name)
-// Return the UID of a name.
-// Performs a table lookup and returns a pointer to a read-only string.
-// Returns NULL of the name is not known.
-//
-
+/*
+** dcmFindUIDFromName(const char* name)
+** Return the UID of a name.
+** Performs a table lookup and returns a pointer to a read-only string.
+** Returns NULL if the name is not known.
+*/
 const char*
 dcmFindUIDFromName(const char* name)
 {
@@ -1510,6 +1583,65 @@ dcmFindUIDFromName(const char* name)
         return uidNameMap[i].uid;
     }
     return NULL;
+}
+
+
+/*
+** dcmFindKeywordOfUID(const char* uid, const char* defaultValue)
+** Return the keyword of a UID.
+** Performs a table lookup and returns a pointer to a read-only string.
+** Returns defaultValue if the UID is not known.
+*/
+const char*
+dcmFindKeywordOfUID(const char* uid, const char* defaultValue)
+{
+    if (uid == NULL) return defaultValue;
+    for (int i = 0; i < uidNameMap_size; i++) {
+      if (uidNameMap[i].uid != NULL && strcmp(uid, uidNameMap[i].uid) == 0) {
+        return uidNameMap[i].keyword;
+      }
+    }
+    return defaultValue;
+}
+
+/*
+** dcmFindUIDFromKeyword(const char* keyword)
+** Return the UID of a keyword.
+** Performs a table lookup and returns a pointer to a read-only string.
+** Returns NULL if the keyword is not known.
+*/
+const char*
+dcmFindUIDFromKeyword(const char* keyword)
+{
+    if (keyword == NULL) return NULL;
+    for(int i = 0; i < uidNameMap_size; i++)
+    {
+      if (uidNameMap[i].keyword != NULL && strcmp(keyword, uidNameMap[i].keyword) == 0)
+        return uidNameMap[i].uid;
+    }
+    return NULL;
+}
+
+
+/*
+** dcmGetPropertiesOfUID(const char* uid, DcmUIDProperties &properties)
+** Return the properties of a UID.
+** Performs a table lookup and fills a given struct with the properties.
+** Returns true if UID was found, false otherwise.
+*/
+OFBool
+dcmGetPropertiesOfUID(const char* uid, DcmUIDProperties &properties)
+{
+    if (uid != NULL)
+    {
+      for (int i = 0; i < uidNameMap_size; i++) {
+        if (uidNameMap[i].uid != NULL && strcmp(uid, uidNameMap[i].uid) == 0) {
+          properties = uidNameMap[i].properties;
+          return OFTrue;
+        }
+      }
+    }
+    return OFFalse;
 }
 
 
@@ -1576,13 +1708,7 @@ static long gethostid(void)
       DCMDATA_FATAL("sysinfo: " << OFStandard::getLastSystemErrorCode().message());
       exit(1);
     }
-#ifdef HAVE_STRTOUL
     return(strtoul(buf, NULL, 0));
-#else
-    long result;
-    sscanf(buf, "%ld", &result);
-    return result;
-#endif
 }
 
 #else // !HAVE_SYSINFO
@@ -1591,7 +1717,6 @@ static long gethostid(void)
 ** There is no implementation of gethostid() and we cannot implement it in
 ** terms of sysinfo() so define a workaround.
 */
-#if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
 
 #ifdef _WIN32
 
@@ -1645,7 +1770,6 @@ static long gethostid(void)
 #endif
 {
     long result = 0;
-#if defined(HAVE_GETHOSTNAME) || defined(HAVE_WINDOWS_H)
     char name[1024];
 
     /*
@@ -1679,7 +1803,7 @@ static long gethostid(void)
     }
 
     OFStandard::shutdownNetwork();
-#endif /* defined(HAVE_GETHOSTNAME) */
+
 /* on Windows systems determine some system specific information (e.g. MAC address) */
 #ifdef HAVE_WINDOWS_H
     OFCRC32 crc;
@@ -1719,18 +1843,6 @@ static long gethostid(void)
     */
     return result;
 }
-
-#else // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
-/*
-** last chance workaround if there is no other way
-*/
-#ifdef HAVE_PROTOTYPE_GETHOSTID
-/* CW10 has a prototype but no implementation (gethostid() is already declared extern */
-long gethostid(void) { return 0; }
-#else
-static long gethostid(void) { return 0; }
-#endif
-#endif // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
 
 #endif // !HAVE_SYSINFO
 #else // HAVE_GETHOSTID
@@ -1846,16 +1958,16 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
         addUIDComponent(uid, SITE_INSTANCE_UID_ROOT);
     }
 
-    sprintf(buf, ".%lu", hostIdentifier);
+    OFStandard::snprintf(buf, sizeof(buf), ".%lu", hostIdentifier);
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(OFStandard::getProcessID()));
+    OFStandard::snprintf(buf, sizeof(buf), ".%lu", forcePositive(OFStandard::getProcessID()));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
+    OFStandard::snprintf(buf, sizeof(buf), ".%lu", forcePositive(OFstatic_cast(long, time(NULL))));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%u", counter);
+    OFStandard::snprintf(buf, sizeof(buf), ".%u", counter);
 
     addUIDComponent(uid, buf);
 

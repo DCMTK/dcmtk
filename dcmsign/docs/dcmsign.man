@@ -20,19 +20,19 @@ object to an output file (\e dcmfile-out).
 
 Five digital signature operations are supported:
 
-\li verification of all signatures in the DICOM file
-\li creation of a new digital signature located in the main dataset,
-\li creation of a new digital signature in an item of a sequence embedded
-    within the dataset,
-\li removal of a single digital signature from the DICOM file, and
-\li removal of all digital signatures from the DICOM file.
+- verification of all signatures in the DICOM file
+- creation of a new digital signature located in the main dataset,
+- creation of a new digital signature in an item of a sequence embedded within
+  the dataset,
+- removal of a single digital signature from the DICOM file, and
+- removal of all digital signatures from the DICOM file.
 
 \section dcmsign_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be processed
+dcmfile-in   DICOM input filename to be processed ("-" for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section dcmsign_options OPTIONS
@@ -582,6 +582,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmsign_copyright COPYRIGHT
 
-Copyright (C) 2000-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

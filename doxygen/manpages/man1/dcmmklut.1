@@ -1,4 +1,4 @@
-.TH "dcmmklut" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmklut" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmklut \- Create DICOM look-up tables
@@ -21,7 +21,7 @@ In addition to the DICOM output file the LUT data can also be exported to a tabb
 .PP
 .PP
 .nf
-dcmimg-out  DICOM output filename
+dcmimg-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -82,7 +82,7 @@ LUT placement:
 LUT content:
 
   +Cg  --gamma  [g]amma: float
-         use gamma value (default: 1.0)
+         use gamma value (default: 1\&.0)
 
   +Cm  --map-file  [f]ilename: string
          read input data from MAP file
@@ -95,28 +95,28 @@ LUT options:
   +Og  --inverse-gsdf
          apply inverse GSDF (print presentation LUT in OD)
 
-       --min-density  [v]alue: integer (0..65535, default: 20)
+       --min-density  [v]alue: integer (0\&.\&.65535, default: 20)
          set min density to v (in hundreds of OD)
 
-       --max-density  [v]alue: integer (0..65535, default: 300)
+       --max-density  [v]alue: integer (0\&.\&.65535, default: 300)
          set max density to v (in hundreds of OD)
 
-  +Oi  --illumination  [v]alue: integer (0..65535, default: 2000)
+  +Oi  --illumination  [v]alue: integer (0\&.\&.65535, default: 2000)
          set illumination to v (in cd/m^2)
 
-  +Or  --reflection  [v]alue: integer (0..65535, default: 10)
+  +Or  --reflection  [v]alue: integer (0\&.\&.65535, default: 10)
          set reflected ambient light to v (in cd/m^2)
 
 LUT structure:
 
   -b   --bits  [n]umber: integer
-         create LUT with n bit values (8..16, default: 16)
+         create LUT with n bit values (8\&.\&.16, default: 16)
 
   -e   --entries  [n]umber: integer
-         create LUT with n entries (1..65536, default: 256)
+         create LUT with n entries (1\&.\&.65536, default: 256)
 
   -f   --first-mapped  [n]umber: integer
-         first input value mapped (-31768..65535, default: 0)
+         first input value mapped (-31768\&.\&.65535, default: 0)
 
   -r   --random  [n]umber: unsigned integer
          perform n randomly selected permutations on the LUT
@@ -127,7 +127,7 @@ LUT structure:
 
   -o   --order  [n]umber: integer
          use polynomial curve fitting algorithm with order n
-         (0..99, default: 5)
+         (0\&.\&.99, default: 5)
 
   -E   --explanation  [n]ame: string
          LUT explanation (default: automatically created)
@@ -189,4 +189,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fI<datadir>/philips\&.lut\fP - sample LUT in text format
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1998-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

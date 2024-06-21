@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTRTROIObservationsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,11 +19,15 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtars.h"    // for AnatomicRegionSequence
+#include "dcmtk/dcmrt/seq/drtpass.h"   // for PrimaryAnatomicStructureSequence
 #include "dcmtk/dcmrt/seq/drtrpps.h"   // for ROIPhysicalPropertiesSequence
 #include "dcmtk/dcmrt/seq/drtrics.h"   // for RTROIIdentificationCodeSequence
 #include "dcmtk/dcmrt/seq/drtrrs.h"    // for RTRelatedROISequence
 #include "dcmtk/dcmrt/seq/drtrrros.h"  // for RelatedRTROIObservationsSequence
 #include "dcmtk/dcmrt/seq/drtspccs.h"  // for SegmentedPropertyCategoryCodeSequence
+#include "dcmtk/dcmrt/seq/drttrccs.h"  // for TherapeuticRoleCategoryCodeSequence
+#include "dcmtk/dcmrt/seq/drttrtcs.h"  // for TherapeuticRoleTypeCodeSequence
 
 
 /** Interface class for RTROIObservationsSequence (3006,0080)
@@ -124,20 +128,6 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
          */
         OFCondition getROIInterpreter(OFString &value, const signed long pos = 0) const;
 
-        /** get ROIObservationDescription (3006,0088)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIObservationDescription(OFString &value, const signed long pos = 0) const;
-
-        /** get ROIObservationLabel (3006,0085)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getROIObservationLabel(OFString &value, const signed long pos = 0) const;
-
         /** get RTROIInterpretedType (3006,00a4)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -160,6 +150,30 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         OFCondition getReferencedROINumber(Sint32 &value, const unsigned long pos = 0) const;
 
       // --- get DICOM sequence attributes ---
+
+        /** get AnatomicRegionSequence (0008,2218)
+         *  @return reference to sequence element
+         */
+        DRTAnatomicRegionSequence &getAnatomicRegionSequence()
+            { return AnatomicRegionSequence; }
+
+        /** get AnatomicRegionSequence (0008,2218)
+         *  @return const reference to sequence element
+         */
+        const DRTAnatomicRegionSequence &getAnatomicRegionSequence() const
+            { return AnatomicRegionSequence; }
+
+        /** get PrimaryAnatomicStructureSequence (0008,2228)
+         *  @return reference to sequence element
+         */
+        DRTPrimaryAnatomicStructureSequence &getPrimaryAnatomicStructureSequence()
+            { return PrimaryAnatomicStructureSequence; }
+
+        /** get PrimaryAnatomicStructureSequence (0008,2228)
+         *  @return const reference to sequence element
+         */
+        const DRTPrimaryAnatomicStructureSequence &getPrimaryAnatomicStructureSequence() const
+            { return PrimaryAnatomicStructureSequence; }
 
         /** get ROIPhysicalPropertiesSequence (3006,00b0)
          *  @return reference to sequence element
@@ -221,6 +235,30 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         const DRTSegmentedPropertyCategoryCodeSequence &getSegmentedPropertyCategoryCodeSequence() const
             { return SegmentedPropertyCategoryCodeSequence; }
 
+        /** get TherapeuticRoleCategoryCodeSequence (3010,0064)
+         *  @return reference to sequence element
+         */
+        DRTTherapeuticRoleCategoryCodeSequence &getTherapeuticRoleCategoryCodeSequence()
+            { return TherapeuticRoleCategoryCodeSequence; }
+
+        /** get TherapeuticRoleCategoryCodeSequence (3010,0064)
+         *  @return const reference to sequence element
+         */
+        const DRTTherapeuticRoleCategoryCodeSequence &getTherapeuticRoleCategoryCodeSequence() const
+            { return TherapeuticRoleCategoryCodeSequence; }
+
+        /** get TherapeuticRoleTypeCodeSequence (3010,0065)
+         *  @return reference to sequence element
+         */
+        DRTTherapeuticRoleTypeCodeSequence &getTherapeuticRoleTypeCodeSequence()
+            { return TherapeuticRoleTypeCodeSequence; }
+
+        /** get TherapeuticRoleTypeCodeSequence (3010,0065)
+         *  @return const reference to sequence element
+         */
+        const DRTTherapeuticRoleTypeCodeSequence &getTherapeuticRoleTypeCodeSequence() const
+            { return TherapeuticRoleTypeCodeSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set MaterialID (300a,00e1)
@@ -244,20 +282,6 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
          */
         OFCondition setROIInterpreter(const OFString &value, const OFBool check = OFTrue);
 
-        /** set ROIObservationDescription (3006,0088)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIObservationDescription(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ROIObservationLabel (3006,0085)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setROIObservationLabel(const OFString &value, const OFBool check = OFTrue);
-
         /** set RTROIInterpretedType (3006,00a4)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
@@ -277,16 +301,16 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
+        /// AnatomicRegionSequence (0008,2218) vr=SQ, vm=1, type=3
+        DRTAnatomicRegionSequence AnatomicRegionSequence;
         /// MaterialID (300a,00e1) vr=SH, vm=1, type=3
         DcmShortString MaterialID;
         /// ObservationNumber (3006,0082) vr=IS, vm=1, type=1
         DcmIntegerString ObservationNumber;
+        /// PrimaryAnatomicStructureSequence (0008,2228) vr=SQ, vm=1, type=3
+        DRTPrimaryAnatomicStructureSequence PrimaryAnatomicStructureSequence;
         /// ROIInterpreter (3006,00a6) vr=PN, vm=1, type=2
         DcmPersonName ROIInterpreter;
-        /// ROIObservationDescription (3006,0088) vr=ST, vm=1, type=3
-        DcmShortText ROIObservationDescription;
-        /// ROIObservationLabel (3006,0085) vr=SH, vm=1, type=3
-        DcmShortString ROIObservationLabel;
         /// ROIPhysicalPropertiesSequence (3006,00b0) vr=SQ, vm=1, type=3
         DRTROIPhysicalPropertiesSequence ROIPhysicalPropertiesSequence;
         /// RTROIIdentificationCodeSequence (3006,0086) vr=SQ, vm=1, type=3
@@ -301,6 +325,10 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
         DRTRelatedRTROIObservationsSequence RelatedRTROIObservationsSequence;
         /// SegmentedPropertyCategoryCodeSequence (0062,0003) vr=SQ, vm=1, type=3
         DRTSegmentedPropertyCategoryCodeSequence SegmentedPropertyCategoryCodeSequence;
+        /// TherapeuticRoleCategoryCodeSequence (3010,0064) vr=SQ, vm=1, type=3
+        DRTTherapeuticRoleCategoryCodeSequence TherapeuticRoleCategoryCodeSequence;
+        /// TherapeuticRoleTypeCodeSequence (3010,0065) vr=SQ, vm=1, type=3
+        DRTTherapeuticRoleTypeCodeSequence TherapeuticRoleTypeCodeSequence;
 
     };
 
@@ -410,13 +438,13 @@ class DCMTK_DCMRT_EXPORT DRTRTROIObservationsSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

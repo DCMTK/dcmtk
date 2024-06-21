@@ -1,4 +1,4 @@
-.TH "dcmcrle" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcrle" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcrle \- Encode DICOM file to RLE transfer syntax
@@ -17,9 +17,9 @@ The \fBdcmcrle\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP), 
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -174,10 +174,10 @@ Please note that the DICOM standard does not allow for storing the pixel data wi
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .PP
@@ -187,7 +187,7 @@ BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 .PP
 .PP
 .nf
-RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+RLELosslessTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.5
 .fi
 .PP
 .SH "LOGGING"
@@ -212,4 +212,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdrle\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

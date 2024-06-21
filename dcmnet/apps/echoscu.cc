@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,6 +31,7 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
@@ -101,7 +102,17 @@ static const char* transferSyntaxes[] = {
       UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
       UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
       UID_HEVCMainProfileLevel5_1TransferSyntax,
-      UID_HEVCMain10ProfileLevel5_1TransferSyntax
+      UID_HEVCMain10ProfileLevel5_1TransferSyntax,
+      UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax,
+      UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax,
+      UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax,
+      UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
+      UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
+      UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
+      UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax,
+      UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,
+      UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,
+      UID_HighThroughputJPEG2000ImageCompressionTransferSyntax
 };
 
 // ********************************************
@@ -166,7 +177,7 @@ main(int argc, char *argv[])
       cmd.addOption("--call",           "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, maxXferSyntaxes));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, maxXferSyntaxes));
       opt5 += tempstr;
       opt5 += ")";
       cmd.addOption("--propose-ts",     "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
@@ -366,7 +377,7 @@ main(int argc, char *argv[])
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
-    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /* Set the presentation contexts which will be negotiated */

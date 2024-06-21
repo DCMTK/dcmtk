@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2021, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,14 +30,8 @@ BEGIN_EXTERN_C
 #else
 #define dirent direct
 #define NAMELEN(dirent) (dirent)->d_namlen
-#ifdef HAVE_SYS_NDIR_H
-#include <sys/ndir.h>
-#endif
 #ifdef HAVE_SYS_DIR_H
 #include <sys/dir.h>
-#endif
-#ifdef HAVE_NDIR_H
-#include <ndir.h>
 #endif
 #endif
 #ifdef HAVE_IO_H
@@ -623,7 +617,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("dcmfile-in", "stored print file(s) to be spooled", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("dcmfile-in", "stored print file(s) to be spooled (\"-\" for stdin)", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -882,8 +876,10 @@ int main(int argc, char *argv[])
       OFString profileName;
       const char *profileNamePtr = dvi.getTargetTLSProfile(opt_printer);
       if (profileNamePtr) profileName = profileNamePtr;
-      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
-      if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
+      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP_195_RFC_8996;  // default
+      if (profileName == "BCP195-RFC8996") tlsProfile = TSP_Profile_BCP_195_RFC_8996;
+      else if (profileName == "BCP195-RFC8996-MOD") tlsProfile = TSP_Profile_BCP_195_RFC_8996_Modified;
+      else if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
       else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
       else if (profileName == "BCP195-EX") tlsProfile = TSP_Profile_BCP195_Extended;
       else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
@@ -924,7 +920,7 @@ int main(int argc, char *argv[])
           OFLOG_FATAL(dcmprscuLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
           return 1;
         }
-        if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat).bad())
+        if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat, tlsProfile).bad())
         {
           OFLOG_FATAL(dcmprscuLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
           return 1;

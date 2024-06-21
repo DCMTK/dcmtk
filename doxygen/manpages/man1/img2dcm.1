@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -7,19 +7,19 @@ img2dcm \- Convert standard image formats into DICOM format
 .PP
 .PP
 .nf
-img2dcm [options] imgfile-in... dcmfile-out
+img2dcm [options] imgfile-in\&.\&.\&. dcmfile-out
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format like JPEG or BMP to DICOM\&. Different output SOP Classes can be selected\&. The additional information (regarding patients, series, etc\&.) stored in the DICOM output file can be extracted from other DICOM files which serve as a 'template' for the resulting DICOM object\&. \fBimg2dcm\fP can also be configured to invent missing DICOM type 1 and type 2 attributes to work even without any template dataset\&.
+The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format like JPEG (including JPEG-LS) or BMP to DICOM\&. Different output SOP Classes can be selected\&. The additional information (regarding patients, series, etc\&.) stored in the DICOM output file can be extracted from other DICOM files which serve as a 'template' for the resulting DICOM object\&. \fBimg2dcm\fP can also be configured to invent missing DICOM type 1 and type 2 attributes to work even without any template dataset\&.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 imgfile-in   image input filename
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -141,7 +141,7 @@ character set conversion of study/series file:
 
 other processing options:
 
-  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+  -k    --key  [k]ey: gggg,eeee='str', path or dictionary name='str'
           add further attribute
 .fi
 .PP
@@ -204,17 +204,10 @@ data set trailing padding (not with --write-dataset):
 .SS "Attribute Sources"
 For converting a general image format into DICOM format, the \fBimg2dcm\fP application may be fed with some additional input for filling mandatory (and optional) attributes in the new DICOM file like patient, study and series information\&. This information can be collected using different approaches, which can be combined and are applied to the result file in the following order:
 .PP
-.PD 0
 .IP "\(bu" 2
-Using the \fI--dataset-from\fP option \fBimg2dcm\fP is forced to import attributes from an existing DICOM file\&. The given DICOM file is fully imported and serves as the basis for all further export operations\&. As an exception, the SOP Instance UID is not copied by this option\&. Also image related data like Rows, Columns etc\&. is exchanged during conversion\&. Note that \fBimg2dcm\fP does not check any other attribute values for validity, e\&.g\&. it does not look into sequences to adapt any attributes to the new object (referenced images etc\&.)\&. Therefore, it is recommended to use the templates in the data directory for (old) SC and VLP objects\&. See also section 'Input Templates'\&.
-.PP
-.PD 0
+Using the \fI--dataset-from\fP option \fBimg2dcm\fP is forced to import attributes from an existing DICOM file\&. The given DICOM file is fully imported and serves as the basis for all further export operations\&. As an exception, the SOP Instance UID is not copied by this option\&. Also image related data like Rows, Columns etc\&. is exchanged during conversion\&. Note that \fBimg2dcm\fP does not check any other attribute values for validity, e\&.g\&. it does not look into sequences to adapt any attributes to the new object (referenced images etc\&.)\&. Therefore, it is recommended to use the templates in the data directory for (old) SC and VLP objects\&. See also section 'Input Templates'\&. As an alternative to option \fI--dataset-from\fP the mutually exclusive option \fI--dataset-from-xml\fP can be used\&. In this case, however, the file must contain XML data in the format as produced by \fBdcm2xml\fP\&.
 .IP "\(bu" 2
-Using the \fI--dataset-from-xml\fP option \fBimg2dcm\fP is also forced to import attributes from an existing file\&. In this case, however, the file must contain XML data in the format as produced by \fBdcm2xml\fP\&.
-.PP
-.PD 0
-.IP "\(bu" 2
-The \fI--study-from\fP and \fI--series-from\fP options (mutually exclusive) can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. The following attributes are taken over:
+The \fI--study-from\fP and \fI--series-from\fP options can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. Using \fI--study-from\fP and \fI--series-from\fP at the same time does make sense\&. If both options are provided on the command line, the rightmost option wins\&. The following attributes are taken over:
 .PP
 .nf
       Patient Level:
@@ -239,23 +232,21 @@ The \fI--study-from\fP and \fI--series-from\fP options (mutually exclusive) can 
 .fi
 .PP
 
-.PP
-.PD 0
 .IP "\(bu" 2
 With the \fI--insert-type2\fP and \fI--invent-type1\fP options (both enabled per default), missing attributes (type 2 attributes) and/or missing attribute values (for type 1 attributes) are automatically added and invented by \fBimg2dcm\fP\&. Please note that these options are only evaluated if option \fI--do-checks\fP is enabled (default)\&. If the \fI--no-checks\fP options is enabled, no automatic attribute insertion will take place\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 The \fI--key\fP option can be used to add further attributes to the DICOM output file\&. It is also possible to specify sequences, items and nested attributes using the \fI--key\fP option\&. In these cases, a special 'path' notation has to be used\&. Details on this path notation can be found in the documentation of \fBdcmodify\fP\&. The \fI--key\fP option can be present more than once\&. The value part (after the '=') may be absent causing the attribute to be set with zero length\&. Please be advised that the \fI--key\fP option is applied at the very end, just before saving the DICOM file, so there is no value checking whatsoever\&.
 .PP
 .SS "UIDs"
-New Study and Series Instance UIDs are generated \fBif necessary\fP after applying the \fI--study-from\fP and \fI--series\fP options\&. If Study Instance UID or Series Instance UID are not present after these steps, they are newly generated, independently from each other\&. A contrary behavior is chosen for the SOP Instance UID that one could expect to be taken over when using the \fI--dataset-from\fP option\&. This is \fBnot\fP the case, the SOP Instance UID is \fBnot\fP copied to the new object\&. This should be the desirable behavior for most use cases\&. However, if a certain SOP Instance UID should be inserted into the new object, the \fI--key\fP option should be used\&.
+New Study and Series Instance UIDs are generated \fBif necessary\fP after applying the \fI--study-from\fP and \fI--series-from\fP options\&. If Study Instance UID or Series Instance UID are not present after these steps, they are newly generated, independently from each other\&.
+.PP
+A contrary behavior is chosen for the SOP Instance UID that one could expect to be taken over when using the \fI--dataset-from\fP or \fI--dataset-from-xml\fP option\&. This is \fBnot\fP the case, the SOP Instance UID is \fBnot\fP copied to the new object\&. This should be the desirable behavior for most use cases\&. However, if a certain SOP Instance UID should be inserted into the new object, the \fI--key\fP option should be used\&.
 .SS "Input Templates"
 For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defined templates which can be used for the \fI--dataset-from\fP option (see sample files \fISC\&.dump\fP and \fIVLP\&.dump\fP)\&. These templates should be filled with the desired values and then must be dumped (converted) to a DICOM file before actually being used with \fBimg2dcm\fP\&. Use \fBdump2dcm\fP to convert the dump to DICOM\&. Example:
 .PP
+.PP
 .nf
-  dump2dcm SC.dump SC.dcm
-
+  dump2dcm SC\&.dump SC\&.dcm
 .fi
 .PP
 .PP
@@ -263,23 +254,33 @@ For Ophthalmic Photography images, XML templates are provided (see sample file \
 .PP
 It is possible to use any DICOM file as a template\&. Please note that the complete DICOM dataset is imported; hence, it should be assured that only attributes are present which should be part of the constructed DICOM object\&. The SOP Class UID and the Pixel Data attributes (including attributes like Rows, Columns etc\&.) are not copied but replaced by \fBimg2dcm\fP during conversion\&.
 .SS "Character Sets"
-When an input template is loaded using \fI--dataset-from\fP or \fI--dataset-from-xml\fP, the specific character set of that template is used for the generated DICOM file\&. If the \fI--study-from\fP or \fI--series-from\fP options are used additionally, img2dcm will try to convert the character set of these attributes to that of the template, and will report an error if that is not possible\&. If the \fI--study-from\fP or \fI--series-from\fP options are used without a template, the specific character set of this source is used for the generated DICOM file\&. Any keys specified on the command line with the \fI--key\fP option are treated as raw bytes and override any attributes that may already be present due to a template or study/series file\&. Therefore, care should be taken to not specify a specific character set on the command line if one might be loaded from another file\&. It is also the user's responsibility to ensure that attribute values specified on the command line use the correct encoding, as no conversion will take place before the values are stored in the DICOM file\&.
+When an input template is loaded using \fI--dataset-from\fP or \fI--dataset-from-xml\fP, the specific character set of that template is used for the generated DICOM file\&. If the \fI--study-from\fP or \fI--series-from\fP options are used additionally, \fBimg2dcm\fP will try to convert the character set of these attributes to that of the template, and will report an error if that is not possible\&.
+.PP
+If the \fI--study-from\fP or \fI--series-from\fP options are used without a template, the specific character set of this source is used for the generated DICOM file\&. Any keys specified on the command line with the \fI--key\fP option are treated as raw bytes and override any attributes that may already be present due to a template or study/series file\&. Therefore, care should be taken to not specify a specific character set on the command line if one might be loaded from another file\&. It is also the user's responsibility to ensure that attribute values specified on the command line use the correct encoding, as no conversion will take place before the values are stored in the DICOM file\&.
 .SS "Input Plugins"
 The \fBimg2dcm\fP application currently supports the JPEG and the BMP image format as input\&.
 .SS "JPEG Input Plugin"
 For JPEG, the original JPEG from the source file is not decoded but extracted and slightly transformed (e\&.g\&. JFIF header is cut off) to allow fast conversion of even big JPEG files without the need of decoding and re-encoding\&. The JPEG plugin chooses the necessary output transfer syntax automatically depending on the actual encoding of the data inside the JPEG file\&. Therefore, the following Transfer Syntaxes (and their corresponding JPEG encodings) are used by the JPEG plugin:
 .PP
-.PD 0
 .IP "\(bu" 2
-JPEG Coding Process 1 Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit SOP Class = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+JPEG Coding Process 1
+.br
+ Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
+.br
+ Transfer Syntax UID = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+.IP "\(bu" 2
+JPEG Coding Process 2 (8-bit) and 4 (12-bit)
+.br
+ Extended, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8/12 Bit
+.br
+ Transfer Syntax UID = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
+.IP "\(bu" 2
+JPEG Coding Process 10 (8-bit) and 12 (12-bit)
+.br
+ Full Progression, lossy, Non-Hierarch\&., Progressive, DCT, Huffman, 8/12 Bit
+.br
+ Transfer Syntax UID = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
 .PP
-.PD 0
-.IP "\(bu" 2
-JPEG Coding Process 2 (8-bit) and 4 (12-bit) Extended, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8/12 Bit SOP Class = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
-.PP
-.PD 0
-.IP "\(bu" 2
-JPEG Coding Process 10 (8-bit) and 12 (12-bit) Full Progression, lossy, Non-Hierarch\&., Progressive, DCT, Huffman, 8/12 Bit SOP Class = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
 .PP
 Color and grayscale images are supported\&.
 .PP
@@ -290,59 +291,66 @@ JPEG lossless encoding as well as any arithmetic or hierarchical JPEG encoding m
 JFIF (JPEG File Interchange Format) information facilitates optional APPn markers in a JPEG file\&. Many digital cameras do not integrate such JFIF information into the JPEG output they create\&. For example, JFIF contains information about the pixel aspect ratio of the compressed image\&. If you want the \fBimg2dcm\fP application to insist on a JFIF header in the JPEG stream, you can use the option \fI--insist-on-jfif\fP which will abort if no JFIF information can be found\&. By default, missing JFIF information is ignored\&.
 .PP
 For DICOM it is kind of a 'gray zone', whether the integration of JFIF (or any other APPn) data into the DICOM object's internal JPEG stream is allowed or not\&. However, the most reliable approach is to cut those markers and their information off the JPEG stream\&. This approach is also taken by the \fBimg2dcm\fP application\&. By default, all APPn markers are cut off from the original JPEG stream\&. However, if you want to keep other APPn markers than JFIF (e\&.g\&. EXIF information) inside the DICOM stream, the option \fI--keep-appn\fP does the trick\&. It should also be slightly faster than cutting off APPn information, because it is not necessary to scan the whole JPEG stream for such data\&. As stated before, JFIF information is always removed by \fBimg2dcm\fP\&. However, when using this option, the APP2 marker is retained, but \fBimg2dcm\fP does not create an equivalent ICC Profile (0028,2000) attribute\&.
+.SS "JPEG-LS Input Plugin"
+The JPEG-LS plugin has been integrated directly into the main JPEG plugin\&. There is no need for the user to explicitly state in advance if input is JPEG or JPEG-LS\&.
+.PP
+For JPEGL-LS, the original JPEG-LS from the source file is not decoded but extracted and slightly transformed (e\&. g\&. APP8 marker is cut off) to allow fast conversion of even big JPEG-LS files without the need of decoding and re-encoding\&.
+.PP
+The JPEG-LS plugin chooses the necessary output transfer syntax automatically depending on the actual encoding of the data inside the JPEG-LS file\&. Therefore, the following Transfer Syntaxes (and there corresponding JPEG-LS encodings) are used by the JPEG-LS plugin:
+.PP
+.IP "\(bu" 2
+JPEG-LS Lossless Image Compression
+.br
+ Transfer Syntax UID = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.80
+.IP "\(bu" 2
+JPEG-LS Lossy (Near-Lossless) Image Compression
+.br
+ Transfer Syntax UID = 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.81
+.PP
+.PP
+Color and grayscale images are supported\&. CP-1843 enforce that the value of Planar Configuration (0028,0006) is irrelevant since the manner of encoding components is specified in the JPEG-LS bit stream as component, line or sample interleaved, hence it shall be set to 0\&. Since no color transformation specific for JPEG-LS is currently defined in DICOM, it is assumed that the JPEG-LS stream is encoded in RGB color space\&.
+.PP
+For DICOM it is clear that SPIFF header should not be present in the DICOM object's internal JPEG-LS stream\&. The plugin will simply rejects any input JPEG-LS file containing a SPIFF header at marker APP8\&.
+.PP
+By default, all APPn markers are cut off from the original JPEG-LS stream\&. However, if you want to keep APPn markers (e\&.g\&. APP8/HP color transform information, aka 'mrfx') inside the DICOM stream, the option \fI--keep-appn\fP does the trick\&. Pay attention that the plugin will check the actual color transform specified in the APP8/HP marker\&. Since DICOM does not allow any color transform to be specified in the APP8 marker, only a value of \fC0\fP (no color transform) is accepted\&.
 .SS "BMP Input Plugin"
 \fBimg2dcm\fP supports BMP as input format\&. However, so far only the most common BMP images are supported\&. In particular, BMP images which use bit fields or run length encoding will be rejected\&. Such images are uncommon\&. Input images will either be converted into a DICOM image with RGB color model and a bit depth of 24, or into an image with MONOCHROME2 color model an 8 bits per pixel\&. There are no specific options for fine-tuning BMP format conversion\&.
 .SS "Output Plugins"
-The desired output SOP Class can be selected on the command line\&. Currently, export plugins for the Secondary Capture Image SOP class (default, option \fI-sc\fP), the Multiframe Secondary Capture Image SOP classes (option \fI-nsc\fP), Visible Light Photographic Image SOP class (option \fI-vl\fP), and the Ophthalmic Photography Image SOP Classes (option \fI-oph\fP) are available\&. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported\&. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes\&.
+The desired output SOP Class can be selected on the command line\&. Currently, export plugins for the Secondary Capture Image SOP Class (default, option \fI-sc\fP), the Multiframe Secondary Capture Image SOP Classes (option \fI-nsc\fP), Visible Light Photographic Image SOP Class (option \fI-vl\fP), and the Ophthalmic Photography Image SOP Classes (option \fI-oph\fP) are available\&. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported\&. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes\&.
 .PP
-For the new Secondary Capture SOP classes, it is not possible to specify which specific SOP class should be used for output\&. That is because these new SOP classes are differentiated from each other by color depth (1/8/16) and the fact whether the image is black/white or color\&. That is why \fBimg2dcm\fP decides during conversion, which output SOP class is suitable for a given source image\&.
+For the new Secondary Capture SOP Classes, it is not possible to specify which specific SOP Class should be used for output\&. That is because these new SOP classes are differentiated from each other by color depth (1/8/16) and the fact whether the image is black/white or color\&. That is why \fBimg2dcm\fP decides during conversion, which output SOP Class is suitable for a given source image\&.
 .SH "EXAMPLES"
 .PP
 Here are some examples that show how the \fBimg2dcm\fP application can be used\&.
 .PP
-.PD 0
 .IP "1." 4
 img2dcm image\&.jpg out\&.dcm
 .br
-Read JPEG file 'image\&.jpg', convert to the old Secondary Capture SOP class and save the result to DICOM file 'out\&.dcm'\&. This is the easiest way of using \fBimg2dcm\fP\&. Any type 1 and type 2 attributes required for writing valid objects of this SOP class are inserted automatically\&.
-.PP
-
+ Read JPEG file 'image\&.jpg', convert to the old Secondary Capture SOP Class and save the result to DICOM file 'out\&.dcm'\&. This is the easiest way of using \fBimg2dcm\fP\&. Any type 1 and type 2 attributes required for writing valid objects of this SOP Class are inserted automatically\&.
 .IP "2." 4
 img2dcm -i BMP image\&.bmp out\&.dcm
 .br
-Same as above but tells img2dcm to read a BMP file instead of JPEG\&.
-.PP
-
+ Same as above but tells \fBimg2dcm\fP to read a BMP file instead of JPEG\&.
 .IP "3." 4
 img2dcm image\&.jpg out\&.dcm -vlp -k 'PatientName=Bond^James'
 .br
-Same as first example, but writes Visible Light Photographic Image object to 'out\&.dcm' and sets PatientName to 'Bond^James' which otherwise would be left empty\&.
-.PP
-
+ Same as first example, but writes Visible Light Photographic Image object to 'out\&.dcm' and sets PatientName to 'Bond^James' which otherwise would be left empty\&.
 .IP "4." 4
 img2dcm image\&.jpg out\&.dcm --series-from template\&.dcm -k 'PatientName=Bond^James'
 .br
-Same as 1), but imports patient/study/series information from DICOM file 'template\&.dcm'\&. Please note that attribute PatientName will contain 'Bond^James' at the end, any value from 'template\&.dcm' will be overwritten\&. That is, because the -k option is applied at the very end of the conversion pipeline (see above)\&.
-.PP
-
+ Same as 1), but imports patient/study/series information from DICOM file 'template\&.dcm'\&. Please note that attribute PatientName will contain 'Bond^James' at the end, any value from 'template\&.dcm' will be overwritten\&. That is, because the -k option is applied at the very end of the conversion pipeline (see above)\&.
 .IP "5." 4
 img2dcm image\&.jpg out\&.dcm --no-checks
 .br
-Same as 1), but does not perform any attribute checking and no type 1 and type 2 attribute insertion! So in this case, an invalid DICOM object would be generated\&. This can be interesting if the output file is not meant to be completed but will undergo further transformations, e\&.g\&. adding attributes using \fBdcmodify\fP\&. Only use option \fI--no-checks\fP if you know what you are doing!
-.PP
-
+ Same as 1), but does not perform any attribute checking and no type 1 and type 2 attribute insertion! So in this case, an invalid DICOM object would be generated\&. This can be interesting if the output file is not meant to be completed but will undergo further transformations, e\&.g\&. adding attributes using \fBdcmodify\fP\&. Only use option \fI--no-checks\fP if you know what you are doing!
 .IP "6." 4
 img2dcm image\&.jpg out\&.dcm --no-type1-invent
 .br
-Same as 1), but does not insert missing type 1 attributes and/or their values\&. Type 2 attributes will be inserted\&. Note that in this case it must be assured that all type 1 attributes are provided by other means, i\&. e\&. by adding them with the \fI--key\fP option\&. Otherwise, \fBimg2dcm\fP will report an error and will stop converting\&.
-.PP
-
+ Same as 1), but does not insert missing type 1 attributes and/or their values\&. Type 2 attributes will be inserted\&. Note that in this case it must be assured that all type 1 attributes are provided by other means, i\&.e\&. by adding them with the \fI--key\fP option\&. Otherwise, \fBimg2dcm\fP will report an error and will stop converting\&.
 .IP "7." 4
 img2dcm image\&.jpg out\&.dcm --keep-appn --insist-on-jfif
 .br
-Same as 1), but takes over APPn information like EXIF into the DICOM object's resulting JPEG stream\&. Further, \fI--insist-on-jfif\fP will force \fBimg2dcm\fP to abort if no JFIF information is existent in the source file\&.
-.PP
-
+ Same as 1), but takes over APPn information like EXIF into the DICOM object's resulting JPEG stream\&. Further, \fI--insist-on-jfif\fP will force \fBimg2dcm\fP to abort if no JFIF information is existent in the source file\&.
 .PP
 .SH "LOGGING"
 .PP
@@ -373,4 +381,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1), \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

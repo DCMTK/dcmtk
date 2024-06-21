@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2014, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -95,7 +95,6 @@ public:
 
   /** Sets the input image file to read.
    *  @param filename - [in] The filename of the image input file
-   *  @return none
    */
   void setImageFile(const OFString& filename) { m_imageFile = filename; };
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,10 +24,9 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmfg/fgbase.h"
 #include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
 
 /** Class representing the "CT Image Frame Type" Functional Group Macro. Can only be
  *  used as per-frame functional group (never shared).

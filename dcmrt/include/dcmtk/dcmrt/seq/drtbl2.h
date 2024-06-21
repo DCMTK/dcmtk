@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Header file for class DRTBlockSequenceInRTBeamsModule
+ *  Header file for class DRTBlockSequenceInRTImageModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -21,9 +21,9 @@
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 
 
-/** Interface class for BlockSequence (300a,00f4) in RTBeamsModule
+/** Interface class for BlockSequence (300a,00f4) in RTImageModule
  */
-class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
+class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTImageModule
   : protected DRTTypes
 {
 
@@ -181,20 +181,6 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
          */
         OFCondition getBlockThickness(Float64 &value, const unsigned long pos = 0) const;
 
-        /** get BlockTransmission (300a,0102)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBlockTransmission(OFString &value, const signed long pos = 0) const;
-
-        /** get BlockTransmission (300a,0102)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getBlockTransmission(Float64 &value, const unsigned long pos = 0) const;
-
         /** get BlockTrayID (300a,00f5)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -295,13 +281,6 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
          */
         OFCondition setBlockThickness(const OFString &value, const OFBool check = OFTrue);
 
-        /** set BlockTransmission (300a,0102)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setBlockTransmission(const OFString &value, const OFBool check = OFTrue);
-
         /** set BlockTrayID (300a,00f5)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
@@ -356,10 +335,8 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
         DcmIntegerString BlockNumber;
         /// BlockNumberOfPoints (300a,0104) vr=IS, vm=1, type=2
         DcmIntegerString BlockNumberOfPoints;
-        /// BlockThickness (300a,0100) vr=DS, vm=1, type=2C
+        /// BlockThickness (300a,0100) vr=DS, vm=1, type=3
         DcmDecimalString BlockThickness;
-        /// BlockTransmission (300a,0102) vr=DS, vm=1, type=2C
-        DcmDecimalString BlockTransmission;
         /// BlockTrayID (300a,00f5) vr=SH, vm=1, type=3
         DcmShortString BlockTrayID;
         /// BlockType (300a,00f8) vr=CS, vm=1, type=1
@@ -378,22 +355,22 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
     /** (default) constructor
      *  @param emptyDefaultSequence internal flag used to mark the empty default sequence
      */
-    DRTBlockSequenceInRTBeamsModule(const OFBool emptyDefaultSequence = OFFalse);
+    DRTBlockSequenceInRTImageModule(const OFBool emptyDefaultSequence = OFFalse);
 
     /** copy constructor
      *  @param copy sequence object to be copied
      */
-    DRTBlockSequenceInRTBeamsModule(const DRTBlockSequenceInRTBeamsModule &copy);
+    DRTBlockSequenceInRTImageModule(const DRTBlockSequenceInRTImageModule &copy);
 
     /** destructor
      */
-    virtual ~DRTBlockSequenceInRTBeamsModule();
+    virtual ~DRTBlockSequenceInRTImageModule();
 
     /** assignment operator
      *  @param copy sequence object to be copied
      *  @return reference to this object
      */
-    DRTBlockSequenceInRTBeamsModule &operator=(const DRTBlockSequenceInRTBeamsModule &copy);
+    DRTBlockSequenceInRTImageModule &operator=(const DRTBlockSequenceInRTImageModule &copy);
 
   // --- general methods ---
 
@@ -479,13 +456,13 @@ class DCMTK_DCMRT_EXPORT DRTBlockSequenceInRTBeamsModule
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

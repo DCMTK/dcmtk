@@ -69,7 +69,7 @@ tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
 \section dcmodify_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename(s) to be modified
+dcmfile-in  DICOM input filename(s) to be modified ("-" for stdin/stdout)
 \endverbatim
 
 \section dcmodify_options OPTIONS
@@ -443,19 +443,19 @@ single elements (i.e. a single dictionary name or tag key).
        dcmodify -m "(0010,0010)=A Name" file.dcm
        Changes tag (0010,0010) on 1st level to "A Name".
 
-       This option also permits longer tag paths as demonstrated
-       above for -i. If the leaf element or any intermediate
-       part of the path does not exist, it is not inserted as it
-       would be if using the '-i' option.
+       This option also permits longer tag paths as demonstrated above
+       for -i. If the leaf element or any intermediate part of the path
+       does not exist, it is not inserted as it would be if using the
+       '-i' option.
 
        dcmodify -m "(0010,0010)=A Name" -imt file.dcm
-       Changes tag (0010,0010) on 1st level to "A Name". Due to the
-       given option '-imt', success is returned instead of "tag not found",
-       if the element/item (or any intermediate node in a longer path) does
+       Changes tag (0010,0010) on 1st level to "A Name". Due to the given
+       option '-imt', success is returned instead of "tag not found", if
+       the element/item (or any intermediate node in a longer path) does
        not exist.
 
-       Note that for the '-m' option the last node in the path must be
-       a leaf element, i.e. not a sequence or an item.
+       Note that for the '-m' option the last node in the path must be a
+       leaf element, i.e. not a sequence or an item.
 
 -mf  --modify-from-file:
        dcmodify -mf "PixelData=pixel.raw" file.dcm
@@ -477,9 +477,9 @@ single elements (i.e. a single dictionary name or tag key).
 
        dcmodify -e "(0010,0010)" -imt *.dcm
        Erases tag (0010,0010) in all *.dcm files at 1st level. Due to the
-       given option '-imt', success is returned instead of "tag not found",
-       if the element/item (or any intermediate node in a longer path) does
-       not exist.
+       given option '-imt', success is returned instead of "tag not
+       found", if the element/item (or any intermediate node in a longer
+       path) does not exist.
 
 -ea  --erase-all:
        dcmodify -ea "(0010,0010)" *.dcm
@@ -487,18 +487,18 @@ single elements (i.e. a single dictionary name or tag key).
 
 -ep  --erase-private:
        dcmodify -ep *.dcm
-       Deletes all private tags (i.e. tags having an odd group number) from
-       all files matching *.dcm in the current directory.
+       Deletes all private tags (i.e. tags having an odd group number)
+       from all files matching *.dcm in the current directory.
 
 -gst --gen-stud-uid:
        dcmodify -gst file.dcm
-       This generates a new value for the StudyInstanceUID
-       (0020,000d).  Other UIDs are not modified!
+       This generates a new value for the StudyInstanceUID (0020,000d).
+       Other UIDs are not modified!
 
 -gse --gen-ser-uid:
        dcmodify -gse file.dcm
-       This generates a new value for the SeriesInstanceUID
-       (0020,000e).  Other UIDs are not modified!
+       This generates a new value for the SeriesInstanceUID (0020,000e).
+       Other UIDs are not modified!
 
 -gin --gen-inst-uid:
        dcmodify -gin file.dcm
@@ -510,10 +510,9 @@ single elements (i.e. a single dictionary name or tag key).
 
 -nmu --no-meta-uid:
        dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
-       This will modify the SOPInstanceUID to the given [UID],
-       but -nmu avoids, that dcmodify adjusts the
-       MediaStorageSOPInstanceUID in the metaheader, too.
-
+       This will modify the SOPInstanceUID to the given [UID], but -nmu
+       avoids, that dcmodify adjusts the MediaStorageSOPInstanceUID in
+       the metaheader, too.
 \endverbatim
 
 \section dcmodify_error_handling ERROR HANDLING
@@ -590,6 +589,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmodify_copyright COPYRIGHT
 
-Copyright (C) 2003-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

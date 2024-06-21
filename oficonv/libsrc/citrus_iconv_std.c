@@ -471,7 +471,7 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
     _citrus_csid_t csid;
     _citrus_index_t idx;
     char *tmpin;
-    size_t inval, szrin, szrout;
+    size_t inval, in_mb_cur_min, szrin, szrout;
     int ret, state = 0;
 
     inval = 0;
@@ -503,6 +503,8 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
         return (0);
     }
 
+    in_mb_cur_min = _citrus_stdenc_get_mb_cur_min(is->is_src_encoding);
+
     /* normal case */
     for (;;) {
         if (*inbytes == 0) {
@@ -521,8 +523,21 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
         szrin = szrout = 0;
         ret = mbtocsx(&sc->sc_src_encoding, &csid, &idx, &tmpin,
             *inbytes, &szrin, cv->cv_shared->ci_hooks);
-        if (ret)
-            goto err;
+
+        if (ret != 0 && (ret != EILSEQ ||
+            !cv->cv_shared->ci_discard_ilseq)) {
+                goto err;
+        } else if (ret == EILSEQ) {
+                /*
+                 * If //IGNORE was specified, we'll just keep crunching
+                 * through invalid characters.
+                 */
+                *in += in_mb_cur_min;
+                *inbytes -= in_mb_cur_min;
+                restore_encoding_state(&sc->sc_src_encoding);
+                restore_encoding_state(&sc->sc_dst_encoding);
+                continue;
+        }
 
         if (szrin == (size_t)-2) {
             /* incompleted character */

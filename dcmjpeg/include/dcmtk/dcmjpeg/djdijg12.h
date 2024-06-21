@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2014, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,7 +27,7 @@
 
 extern "C"
 {
-  struct jpeg_decompress_struct;
+  struct dcmtk_jpeg12_decompress_struct;
 }
 
 class DJCodecParameter;
@@ -109,7 +109,7 @@ private:
   const DJCodecParameter *cparam;
 
   /// decompression structure
-  jpeg_decompress_struct *cinfo;
+  dcmtk_jpeg12_decompress_struct *cinfo;
 
   /// position of last suspend
   int suspension;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -56,18 +56,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define LIBXML_ATTR_FORMAT(fmt,args)
 #endif
 
-// The libxml library also uses unicode. So we have to reuse some
-// workarounds for the ICU library here as well.
-// The type char16_t is only supported since C++11.
-#ifndef HAVE_CHAR16_T
-#define UCHAR_TYPE uint16_t
-#endif
-
-//If U_NOEXCEPT is not defined, ICU falls back to NOEXCEPT.
-#ifndef HAVE_CXX11
-#define U_NOEXCEPT
-#endif
-
 #include <libxml/parser.h>
 
 
@@ -94,8 +82,8 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("xmlfile-in",   "XML input filename to be converted (stdin: \"-\")", OFCmdParam::PM_Mandatory);
-    cmd.addParam("dsrfile-out",  "DICOM SR output filename", OFCmdParam::PM_Mandatory);
+    cmd.addParam("xmlfile-in",   "XML input filename to be converted\n(\"-\" for stdin)", OFCmdParam::PM_Mandatory);
+    cmd.addParam("dsrfile-out",  "DICOM SR output filename\n(\"-\" for stdout)", OFCmdParam::PM_Mandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);

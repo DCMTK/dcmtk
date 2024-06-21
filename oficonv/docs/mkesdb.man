@@ -20,7 +20,7 @@ important characteristics, such as the decoder module to use.
 \section mkesdb_parameters PARAMETERS
 
 \verbatim
-infile   input file (from oficonv/datasrc/esdb) to be converted
+infile  input file (from oficonv/datasrc/esdb) to be converted
 \endverbatim
 
 \section mkesdb_options OPTIONS
@@ -29,7 +29,7 @@ infile   input file (from oficonv/datasrc/esdb) to be converted
 \verbatim
   -d    debug mode, print debug information
 
-  -m    process directory catalog or alias file, 
+  -m    process directory catalog or alias file,
         instead of an encoding description
 
   -o    [f]ilename: string
@@ -38,7 +38,7 @@ infile   input file (from oficonv/datasrc/esdb) to be converted
 
 \section mkesdb_exit_status EXIT STATUS
 
-The mkesdb utility exits 0 on success, and >0 if an error occurs.
+The \b mkesdb utility exits 0 on success, and >0 if an error occurs.
 
 \section mkesdb_see_also SEE ALSO
 
@@ -46,6 +46,7 @@ The mkesdb utility exits 0 on success, and >0 if an error occurs.
 
 \section mkesdb_copyright COPYRIGHT
 
-This man page is derived from the FreeBSD mkesdb man page, Copyright (C) 2009 Gabor Kovesdan <gabor@FreeBSD.org>
+This man page is derived from the FreeBSD mkesdb man page,
+Copyright (C) 2009 Gabor Kovesdan <gabor@FreeBSD.org>
 
 */

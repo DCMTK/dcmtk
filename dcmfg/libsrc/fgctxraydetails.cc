@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,7 +24,6 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmfg/fgctxraydetails.h"
 #include "dcmtk/dcmfg/fgtypes.h"
-#include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmiod/iodutil.h"
 
 // Constructor

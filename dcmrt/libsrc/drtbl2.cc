@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTBlockSequenceInRTBeamsModule
+ *  Source file for class DRTBlockSequenceInRTImageModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,7 +19,7 @@
 
 // --- item class ---
 
-DRTBlockSequenceInRTBeamsModule::Item::Item(const OFBool emptyDefaultItem)
+DRTBlockSequenceInRTImageModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     AccessoryCode(DCM_AccessoryCode),
     BlockData(DCM_BlockData),
@@ -29,7 +29,6 @@ DRTBlockSequenceInRTBeamsModule::Item::Item(const OFBool emptyDefaultItem)
     BlockNumber(DCM_BlockNumber),
     BlockNumberOfPoints(DCM_BlockNumberOfPoints),
     BlockThickness(DCM_BlockThickness),
-    BlockTransmission(DCM_BlockTransmission),
     BlockTrayID(DCM_BlockTrayID),
     BlockType(DCM_BlockType),
     MaterialID(DCM_MaterialID),
@@ -39,7 +38,7 @@ DRTBlockSequenceInRTBeamsModule::Item::Item(const OFBool emptyDefaultItem)
 }
 
 
-DRTBlockSequenceInRTBeamsModule::Item::Item(const Item &copy)
+DRTBlockSequenceInRTImageModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     AccessoryCode(copy.AccessoryCode),
     BlockData(copy.BlockData),
@@ -49,7 +48,6 @@ DRTBlockSequenceInRTBeamsModule::Item::Item(const Item &copy)
     BlockNumber(copy.BlockNumber),
     BlockNumberOfPoints(copy.BlockNumberOfPoints),
     BlockThickness(copy.BlockThickness),
-    BlockTransmission(copy.BlockTransmission),
     BlockTrayID(copy.BlockTrayID),
     BlockType(copy.BlockType),
     MaterialID(copy.MaterialID),
@@ -59,12 +57,12 @@ DRTBlockSequenceInRTBeamsModule::Item::Item(const Item &copy)
 }
 
 
-DRTBlockSequenceInRTBeamsModule::Item::~Item()
+DRTBlockSequenceInRTImageModule::Item::~Item()
 {
 }
 
 
-DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::Item::operator=(const Item &copy)
+DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
@@ -77,7 +75,6 @@ DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::Item::op
         BlockNumber = copy.BlockNumber;
         BlockNumberOfPoints = copy.BlockNumberOfPoints;
         BlockThickness = copy.BlockThickness;
-        BlockTransmission = copy.BlockTransmission;
         BlockTrayID = copy.BlockTrayID;
         BlockType = copy.BlockType;
         MaterialID = copy.MaterialID;
@@ -88,7 +85,7 @@ DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::Item::op
 }
 
 
-void DRTBlockSequenceInRTBeamsModule::Item::clear()
+void DRTBlockSequenceInRTImageModule::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
@@ -104,14 +101,13 @@ void DRTBlockSequenceInRTBeamsModule::Item::clear()
         BlockName.clear();
         MaterialID.clear();
         BlockThickness.clear();
-        BlockTransmission.clear();
         BlockNumberOfPoints.clear();
         BlockData.clear();
     }
 }
 
 
-OFBool DRTBlockSequenceInRTBeamsModule::Item::isEmpty()
+OFBool DRTBlockSequenceInRTImageModule::Item::isEmpty()
 {
     return BlockTrayID.isEmpty() &&
            TrayAccessoryCode.isEmpty() &&
@@ -124,19 +120,18 @@ OFBool DRTBlockSequenceInRTBeamsModule::Item::isEmpty()
            BlockName.isEmpty() &&
            MaterialID.isEmpty() &&
            BlockThickness.isEmpty() &&
-           BlockTransmission.isEmpty() &&
            BlockNumberOfPoints.isEmpty() &&
            BlockData.isEmpty();
 }
 
 
-OFBool DRTBlockSequenceInRTBeamsModule::Item::isValid() const
+OFBool DRTBlockSequenceInRTImageModule::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::read(DcmItem &item)
+OFCondition DRTBlockSequenceInRTImageModule::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -153,8 +148,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, BlockNumber, "1", "1", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockName, "1", "3", "BlockSequence");
         getAndCheckElementFromDataset(item, MaterialID, "1", "2", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockThickness, "1", "2C", "BlockSequence");
-        getAndCheckElementFromDataset(item, BlockTransmission, "1", "2C", "BlockSequence");
+        getAndCheckElementFromDataset(item, BlockThickness, "1", "3", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockNumberOfPoints, "1", "2", "BlockSequence");
         getAndCheckElementFromDataset(item, BlockData, "2-2n", "2", "BlockSequence");
         result = EC_Normal;
@@ -163,7 +157,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::read(DcmItem &item)
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::write(DcmItem &item)
+OFCondition DRTBlockSequenceInRTImageModule::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -179,8 +173,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(BlockNumber), "1", "1", "BlockSequence");
         addElementToDataset(result, item, new DcmLongString(BlockName), "1", "3", "BlockSequence");
         addElementToDataset(result, item, new DcmShortString(MaterialID), "1", "2", "BlockSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BlockThickness), "1", "2C", "BlockSequence");
-        addElementToDataset(result, item, new DcmDecimalString(BlockTransmission), "1", "2C", "BlockSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BlockThickness), "1", "3", "BlockSequence");
         addElementToDataset(result, item, new DcmIntegerString(BlockNumberOfPoints), "1", "2", "BlockSequence");
         addElementToDataset(result, item, new DcmDecimalString(BlockData), "2-2n", "2", "BlockSequence");
     }
@@ -188,7 +181,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::write(DcmItem &item)
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getAccessoryCode(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getAccessoryCode(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -197,7 +190,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getAccessoryCode(OFString &va
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockData(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockData(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -206,7 +199,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockData(OFString &value,
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockData(Float64 &value, const unsigned long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockData(Float64 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -215,7 +208,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockData(Float64 &value, 
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockData(OFVector<Float64> &value) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockData(OFVector<Float64> &value) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -224,7 +217,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockData(OFVector<Float64
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockDivergence(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockDivergence(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -233,7 +226,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockDivergence(OFString &
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockMountingPosition(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockMountingPosition(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -242,7 +235,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockMountingPosition(OFSt
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockName(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockName(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -251,7 +244,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockName(OFString &value,
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumber(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockNumber(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -260,7 +253,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumber(OFString &valu
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumber(Sint32 &value, const unsigned long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockNumber(Sint32 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -269,7 +262,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumber(Sint32 &value,
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumberOfPoints(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockNumberOfPoints(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -278,7 +271,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumberOfPoints(OFStri
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumberOfPoints(Sint32 &value, const unsigned long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockNumberOfPoints(Sint32 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -287,7 +280,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockNumberOfPoints(Sint32
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockThickness(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockThickness(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -296,7 +289,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockThickness(OFString &v
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockThickness(Float64 &value, const unsigned long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockThickness(Float64 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -305,25 +298,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockThickness(Float64 &va
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockTransmission(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(BlockTransmission, value, pos);
-}
-
-
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockTransmission(Float64 &value, const unsigned long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return OFconst_cast(DcmDecimalString &, BlockTransmission).getFloat64(value, pos);
-}
-
-
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockTrayID(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockTrayID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -332,7 +307,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockTrayID(OFString &valu
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockType(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getBlockType(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -341,7 +316,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getBlockType(OFString &value,
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getMaterialID(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getMaterialID(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -350,7 +325,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getMaterialID(OFString &value
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getSourceToBlockTrayDistance(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getSourceToBlockTrayDistance(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -359,7 +334,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getSourceToBlockTrayDistance(
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getSourceToBlockTrayDistance(Float64 &value, const unsigned long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getSourceToBlockTrayDistance(Float64 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -368,7 +343,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getSourceToBlockTrayDistance(
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::getTrayAccessoryCode(OFString &value, const signed long pos) const
+OFCondition DRTBlockSequenceInRTImageModule::Item::getTrayAccessoryCode(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -377,7 +352,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::getTrayAccessoryCode(OFString
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setAccessoryCode(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setAccessoryCode(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -390,7 +365,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setAccessoryCode(const OFStri
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockData(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockData(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -403,7 +378,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockData(const OFString &
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockDivergence(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockDivergence(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -416,7 +391,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockDivergence(const OFSt
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockMountingPosition(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockMountingPosition(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -429,7 +404,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockMountingPosition(cons
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockName(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockName(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -442,7 +417,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockName(const OFString &
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockNumber(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockNumber(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -455,7 +430,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockNumber(const OFString
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockNumberOfPoints(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockNumberOfPoints(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -468,7 +443,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockNumberOfPoints(const 
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockThickness(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockThickness(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -481,20 +456,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockThickness(const OFStr
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockTransmission(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = BlockTransmission.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockTrayID(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockTrayID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -507,7 +469,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockTrayID(const OFString
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockType(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setBlockType(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -520,7 +482,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setBlockType(const OFString &
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setMaterialID(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setMaterialID(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -533,7 +495,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setMaterialID(const OFString 
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setSourceToBlockTrayDistance(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setSourceToBlockTrayDistance(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -546,7 +508,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setSourceToBlockTrayDistance(
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::Item::setTrayAccessoryCode(const OFString &value, const OFBool check)
+OFCondition DRTBlockSequenceInRTImageModule::Item::setTrayAccessoryCode(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -561,7 +523,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::Item::setTrayAccessoryCode(const OF
 
 // --- sequence class ---
 
-DRTBlockSequenceInRTBeamsModule::DRTBlockSequenceInRTBeamsModule(const OFBool emptyDefaultSequence)
+DRTBlockSequenceInRTImageModule::DRTBlockSequenceInRTImageModule(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -571,7 +533,7 @@ DRTBlockSequenceInRTBeamsModule::DRTBlockSequenceInRTBeamsModule(const OFBool em
 }
 
 
-DRTBlockSequenceInRTBeamsModule::DRTBlockSequenceInRTBeamsModule(const DRTBlockSequenceInRTBeamsModule &copy)
+DRTBlockSequenceInRTImageModule::DRTBlockSequenceInRTImageModule(const DRTBlockSequenceInRTImageModule &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -597,7 +559,7 @@ DRTBlockSequenceInRTBeamsModule::DRTBlockSequenceInRTBeamsModule(const DRTBlockS
 }
 
 
-DRTBlockSequenceInRTBeamsModule &DRTBlockSequenceInRTBeamsModule::operator=(const DRTBlockSequenceInRTBeamsModule &copy)
+DRTBlockSequenceInRTImageModule &DRTBlockSequenceInRTImageModule::operator=(const DRTBlockSequenceInRTImageModule &copy)
 {
     if (this != &copy)
     {
@@ -625,13 +587,13 @@ DRTBlockSequenceInRTBeamsModule &DRTBlockSequenceInRTBeamsModule::operator=(cons
 }
 
 
-DRTBlockSequenceInRTBeamsModule::~DRTBlockSequenceInRTBeamsModule()
+DRTBlockSequenceInRTImageModule::~DRTBlockSequenceInRTImageModule()
 {
     clear();
 }
 
 
-void DRTBlockSequenceInRTBeamsModule::clear()
+void DRTBlockSequenceInRTImageModule::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -650,25 +612,25 @@ void DRTBlockSequenceInRTBeamsModule::clear()
 }
 
 
-OFBool DRTBlockSequenceInRTBeamsModule::isEmpty()
+OFBool DRTBlockSequenceInRTImageModule::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTBlockSequenceInRTBeamsModule::isValid() const
+OFBool DRTBlockSequenceInRTImageModule::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-size_t DRTBlockSequenceInRTBeamsModule::getNumberOfItems() const
+size_t DRTBlockSequenceInRTImageModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::gotoFirstItem()
+OFCondition DRTBlockSequenceInRTImageModule::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -680,19 +642,21 @@ OFCondition DRTBlockSequenceInRTBeamsModule::gotoFirstItem()
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::gotoNextItem()
+OFCondition DRTBlockSequenceInRTImageModule::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
+OFCondition DRTBlockSequenceInRTImageModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -712,7 +676,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::gotoItem(const size_t num, OFListIt
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTBlockSequenceInRTImageModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -732,13 +696,13 @@ OFCondition DRTBlockSequenceInRTBeamsModule::gotoItem(const size_t num, OFListCo
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::gotoItem(const size_t num)
+OFCondition DRTBlockSequenceInRTImageModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::getCurrentItem(Item *&item) const
+OFCondition DRTBlockSequenceInRTImageModule::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -750,7 +714,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::getCurrentItem(Item *&item) const
 }
 
 
-DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::getCurrentItem()
+DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -759,7 +723,7 @@ DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::getCurre
 }
 
 
-const DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::getCurrentItem() const
+const DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -768,7 +732,7 @@ const DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::ge
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::getItem(const size_t num, Item *&item)
+OFCondition DRTBlockSequenceInRTImageModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -778,7 +742,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::getItem(const size_t num, Item *&it
 }
 
 
-DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::getItem(const size_t num)
+DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -788,7 +752,7 @@ DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::getItem(
 }
 
 
-const DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::getItem(const size_t num) const
+const DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -798,19 +762,19 @@ const DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::ge
 }
 
 
-DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::operator[](const size_t num)
+DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTBlockSequenceInRTBeamsModule::Item &DRTBlockSequenceInRTBeamsModule::operator[](const size_t num) const
+const DRTBlockSequenceInRTImageModule::Item &DRTBlockSequenceInRTImageModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::addItem(Item *&item)
+OFCondition DRTBlockSequenceInRTImageModule::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -827,7 +791,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::addItem(Item *&item)
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::insertItem(const size_t pos, Item *&item)
+OFCondition DRTBlockSequenceInRTImageModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -850,7 +814,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::insertItem(const size_t pos, Item *
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::removeItem(const size_t pos)
+OFCondition DRTBlockSequenceInRTImageModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -868,7 +832,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::removeItem(const size_t pos)
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::read(DcmItem &dataset,
+OFCondition DRTBlockSequenceInRTImageModule::read(DcmItem &dataset,
                                                   const OFString &card,
                                                   const OFString &type,
                                                   const char *moduleName)
@@ -918,7 +882,7 @@ OFCondition DRTBlockSequenceInRTBeamsModule::read(DcmItem &dataset,
 }
 
 
-OFCondition DRTBlockSequenceInRTBeamsModule::write(DcmItem &dataset,
+OFCondition DRTBlockSequenceInRTImageModule::write(DcmItem &dataset,
                                                    const OFString &card,
                                                    const OFString &type,
                                                    const char *moduleName)

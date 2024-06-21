@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcvrsl.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // ********************************
 
@@ -185,19 +185,19 @@ void DcmSignedLong::print(STD_NAMESPACE ostream &out,
                     /* check whether first value is printed (omit delimiter) */
 #ifdef PRId32
                     if (i == 0)
-                        sprintf(buffer, "%" PRId32, *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRId32, *sintVals);
                     else
-                        sprintf(buffer, "\\%" PRId32, *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%" PRId32, *sintVals);
 #elif SIZEOF_LONG == 8
                     if (i == 0)
-                        sprintf(buffer, "%d", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%d", *sintVals);
                     else
-                        sprintf(buffer, "\\%d", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%d", *sintVals);
 #else
                     if (i == 0)
-                        sprintf(buffer, "%ld", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%ld", *sintVals);
                     else
-                        sprintf(buffer, "\\%ld", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%ld", *sintVals);
 #endif
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
@@ -275,7 +275,7 @@ OFCondition DcmSignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%li", OFstatic_cast(long, sintVal));
+        OFStandard::snprintf(buffer, sizeof(buffer), "%li", OFstatic_cast(long, sintVal));
         /* assign result */
         stringVal = buffer;
     }

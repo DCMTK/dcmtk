@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2017, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,43 +79,17 @@
 #define OFFindIf(InputIterator_type, Predicate_type, first, last, pred) STD_NAMESPACE find_if((first), (last), (pred))
 #define OFAdjacentFind(ForwardIterator_type, first, last) STD_NAMESPACE adjacent_find((first), (last))
 #define OFAdjacentFindPred(ForwardIterator_type, BinaryPredicate_type, first, last, pred) STD_NAMESPACE adjacent_find((first), (last), (pred))
-#else
 
-#ifdef HAVE_FUNCTION_TEMPLATE
+#else
 
 #define OFForEach(InputIterator_type, Function_type, first, last, f) OF_ForEach((first), (last), (f))
-
 #define OFFind(InputIterator_type, T_type, first, last, value) OF_Find((first), (last), (value))
-
 #define OFFindIf(InputIterator_type, Predicate_type, first, last, pred) OF_FindIf((first), (last), (pred))
-
 #define OFAdjacentFind(ForwardIterator_type, first, last) OF_AdjacentFind((first), (last))
-
 #define OFAdjacentFindPred(ForwardIterator_type, BinaryPredicate_type, first, last, pred) OF_AdjacentFind((first), (last), (pred))
-
-#elif defined(HAVE_STATIC_TEMPLATE_METHOD)
-
-#define OFForEach(InputIterator_type, Function_type, first, last, f) OF_ForEachClass<InputIterator_type, Function_type>::OF_ForEach((first), (last), (f))
-
-#define OFFind(InputIterator_type, T_type, first, last, value) OF_FindClass<InputIterator_type, T_type>::OF_Find((first), (last), (value))
-
-#define OFFindIf(InputIterator_type, Predicate_type, first, last, pred) OF_FindIfClass<InputIterator_type, Predicate_type>::OF_FindIf((first), (last), (pred))
-
-#define OFAdjacentFind(ForwardIterator_type, first, last) OF_AdjacentFindClass<ForwardIterator_type, int>::OF_AdjacentFind((first), (last))
-
-#define OFAdjacentFindPred(ForwardIterator_type, BinaryPredicate_type, first, last, pred) OF_AdjacentFindPredClass<ForwardIterator_type, BinaryPredicate_type>::OF_AdjacentFind((first), (last), (pred))
-#else
-#error Your C++ Compiler is not capable of compiling this code
-#endif
 
 
 template <class InputIterator, class Function>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_ForEachClass
-{
-public:
-static
-#endif
 Function OF_ForEach(InputIterator first, InputIterator last, Function f)
 {
     while (first != last)
@@ -125,73 +99,37 @@ Function OF_ForEach(InputIterator first, InputIterator last, Function f)
     }
     return f;
 }
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 template <class InputIterator, class T>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_FindClass
-{
-public:
-static
-#endif
 InputIterator OF_Find(InputIterator first, InputIterator last, const T & value)
 {
     while (first != last && *first != value) ++ first;
     return first;
 }
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 
 template <class InputIterator, class Predicate>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_FindIfClass
-{
-public:
-static
-#endif
 InputIterator OF_FindIf(InputIterator first, InputIterator last,
                         Predicate pred)
 {
     while (first != last && !pred(*first)) ++first;
     return first;
 }
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 template <class ForwardIterator>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_AdjacentFindClass
-{
-public:
-static
-#endif
 ForwardIterator OF_AdjacentFind(ForwardIterator first, ForwardIterator last)
 {
     if (first == last) return last;
     ForwardIterator next(first);
     while (++next != last)
     {
-        if (*first == *next) return *first;
+        if (*first == *next) return first;
         ++first;
     }
     return last;
 }
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 template <class ForwardIterator, class BinaryPredicate>
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-class OF_AdjacentFindPredClass
-{
-public:
-static
-#endif
 ForwardIterator OF_AdjacentFind(ForwardIterator first, ForwardIterator last,
                                 BinaryPredicate pred)
 {
@@ -205,9 +143,6 @@ ForwardIterator OF_AdjacentFind(ForwardIterator first, ForwardIterator last,
     return last;
 }
 
-#if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
-};
-#endif
 
 #endif
 

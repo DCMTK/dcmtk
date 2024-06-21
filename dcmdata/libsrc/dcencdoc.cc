@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2021, OFFIS e.V.
+ *  Copyright (C) 2018-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofxml.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dccodec.h"
@@ -503,7 +504,7 @@ void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("cdafile-in", "CDA input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("override CDA data:");
@@ -520,7 +521,7 @@ void DcmEncapsulatedDocument::addPDFCommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("pdffile-in", "PDF input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   addOutputOptions(cmd);
@@ -532,7 +533,7 @@ void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("stlfile-in", "STL input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
   addGeneralOptions(cmd);
   addDocumentOptions(cmd);
   cmd.addSubGroup("enhanced general equipment:");
@@ -1382,7 +1383,7 @@ OFCondition DcmEncapsulatedDocument::createHeader(
   {
     if (result.good()) result = dataset->putAndInsertString(DCM_HL7InstanceIdentifier, hl7_InstanceIdentifier.c_str());
   }
-  sprintf(buf, "%ld", OFstatic_cast(long, opt_instance));
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", OFstatic_cast(long, opt_instance));
   if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber, buf);
   dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
   if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID, opt_studyUID.c_str());

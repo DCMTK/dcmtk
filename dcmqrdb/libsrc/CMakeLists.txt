@@ -13,4 +13,4 @@ DCMTK_ADD_LIBRARY(dcmqrdb
   dcmqrtis.cc
 )
 
-DCMTK_TARGET_LINK_MODULES(dcmqrdb ofstd dcmdata dcmnet)
+DCMTK_TARGET_LINK_MODULES(dcmqrdb ofstd dcmdata dcmnet dcmtls)

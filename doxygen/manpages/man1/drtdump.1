@@ -1,4 +1,4 @@
-.TH "drtdump" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "drtdump" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 drtdump \- Dump DICOM RT file and data set
@@ -7,7 +7,7 @@ drtdump \- Dump DICOM RT file and data set
 .PP
 .PP
 .nf
-drtdump [options] drtfile-in...
+drtdump [options] drtfile-in\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -19,7 +19,7 @@ If \fBdrtdump\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-drtfile-in  DICOM RT input filename to be dumped
+drtfile-in  DICOM RT input filename to be dumped ('-' for stdin)
 .fi
 .PP
 .SH "OPTIONS"
@@ -101,13 +101,13 @@ The \fBdrtdump\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-RTImageStorage                   1.2.840.10008.5.1.4.1.1.481.1
-RTDoseStorage                    1.2.840.10008.5.1.4.1.1.481.2
-RTStructureSetStorage            1.2.840.10008.5.1.4.1.1.481.3
-RTPlanStorage                    1.2.840.10008.5.1.4.1.1.481.5
-RTTreatmentSummaryRecordStorage  1.2.840.10008.5.1.4.1.1.481.7
-RTIonPlanStorage                 1.2.840.10008.5.1.4.1.1.481.8
-RTIonBeamsTreatmentRecordStorage 1.2.840.10008.5.1.4.1.1.481.9
+RTImageStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.1
+RTDoseStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.2
+RTStructureSetStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.3
+RTPlanStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.5
+RTTreatmentSummaryRecordStorage  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.7
+RTIonPlanStorage                 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.8
+RTIonBeamsTreatmentRecordStorage 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.9
 .fi
 .PP
 .SH "LOGGING"
@@ -132,4 +132,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmconv\fP(1), \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2010-2022 by OFFIS e\&.V\&. and ICSMED AG, Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2010-2023 by OFFIS e\&.V\&. and ICSMED AG, Escherweg 2, 26121 Oldenburg, Germany\&.

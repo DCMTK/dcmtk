@@ -727,6 +727,13 @@ ASC_closeTransportConnection(T_ASC_Association * association);
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association);
 
+/** this function sets a flag in the association that the current process
+ *  is the parent process after a fork() operation and that the association
+ *  will be handled by the child process. In the case of TLS connections,
+ *  this prevents the destructor from calling SSL_shutdown().
+ */
+DCMTK_DCMNET_EXPORT void ASC_setParentProcessMode(T_ASC_Association *association);
+
 /// @deprecated Please use OFString& ASC_printRejectParameters(OFString&, T_ASC_RejectParameters*) instead.
 OFdeprecated DCMTK_DCMNET_EXPORT void
 ASC_printRejectParameters(

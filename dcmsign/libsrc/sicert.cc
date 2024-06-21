@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,18 +39,6 @@ BEGIN_EXTERN_C
 #include <openssl/pem.h>
 #include <openssl/err.h>
 END_EXTERN_C
-
-#ifndef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTBEFORE
-#define X509_get0_notBefore(x) X509_get_notBefore(x)
-#endif
-
-#ifndef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTAFTER
-#define X509_get0_notAfter(x) X509_get_notAfter(x)
-#endif
-
-#ifndef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_ID
-#define EVP_PKEY_id(key) key->type
-#endif
 
 
 SiCertificate::SiCertificate()
@@ -147,7 +135,7 @@ OFCondition SiCertificate::read(DcmItem& item)
   OFString aString;
   DcmStack stack;
   result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse);
-  if (result.good())
+  if (result.good() && stack.top()->isElement())
   {
     result = ((DcmElement *)(stack.top()))->getOFString(aString, 0);
     if (result.good())
@@ -156,7 +144,7 @@ OFCondition SiCertificate::read(DcmItem& item)
       {
         stack.clear();
         result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse);
-        if (result.good())
+        if (result.good() && stack.top()->isElement())
         {
           DcmElement *cert = (DcmElement *)stack.top();
           Uint8 *data = NULL;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,8 +24,8 @@
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/concatenationloader.h"
 #include "dcmtk/dcmseg/segdoc.h"
-#include "dcmtk/dcmseg/segment.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 const OFString ATLAS_FILE          = "/home/michael/data/dcm/seg_atlas.dcm";
 const size_t NUM_FRAMES_PER_CONCAT = 24;

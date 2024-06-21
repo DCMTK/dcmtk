@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@
 #include "dcmtk/dcmsign/simdmac.h"
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_OPENSSL
 BEGIN_EXTERN_C
@@ -169,7 +170,7 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, STD_NAMESPA
           {
             if (sq->getItem(m) == elem)
             {
-              sprintf(buf, "[%lu]", m);
+              OFStandard::snprintf(buf, sizeof(buf), "[%lu]", m);
               os << buf;
               printed = OFTrue;
             }
@@ -183,7 +184,7 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, STD_NAMESPA
           tagname = currentTag.getTagName();
           if (tagname) os << tagname; else
           {
-            sprintf(buf, "(%04x,%04x)", elem->getTag().getGroup(), elem->getTag().getElement());
+            OFStandard::snprintf(buf, sizeof(buf), "(%04x,%04x)", elem->getTag().getGroup(), elem->getTag().getElement());
             os << buf;
             printed = OFTrue;
           }

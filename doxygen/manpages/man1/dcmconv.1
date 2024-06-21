@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -17,9 +17,9 @@ The \fBdcmconv\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs an enc
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename to write to
+dcmfile-out  DICOM output filename to write to ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -164,7 +164,7 @@ handling of VOI LUT Sequence with OW VR and explicit length:
   +vi  --illegal-voi-conv
          convert illegal VOI LUT to SQ
 
-handling of explicit length pixel data for encaps. transfer syntaxes:
+handling of explicit length pixel data for encaps\&. transfer syntaxes:
 
   -pe  --abort-expl-pixdata
          abort on explicit length pixel data (default)
@@ -182,7 +182,7 @@ general handling of parser errors:
 
 other parsing options:
 
-  +st  --stop-after-elem  [t]ag: "gggg,eeee" or dictionary name
+  +st  --stop-after-elem  [t]ag: 'gggg,eeee' or dictionary name
          stop parsing after element specified by t
 
 automatic data correction:
@@ -342,9 +342,13 @@ In addition, one or more command files can be specified using an '@' sign as a p
 The \fBdcmconv\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.PP
+Depending on the command line options specified, the \fBdcmconv\fP utility will attempt to load character set mapping tables\&. This happens when DCMTK was compiled with the oficonv library (which is the default) and the mapping tables are not built into the library (default when DCMTK uses shared libraries)\&.
+.PP
+The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "SEE ALSO"
 .PP
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

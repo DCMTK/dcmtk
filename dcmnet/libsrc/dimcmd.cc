@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -122,7 +122,7 @@ buildErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Build Failed: %s: Element: (%04x,%04x) %s",
+    OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Command Build Failed: %s: Element: (%04x,%04x) %s",
         msg, t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_BUILDFAILED, OF_error, buf);
 }
@@ -132,7 +132,7 @@ parseError(DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Parse Failed: Element: (%04x,%04x) %s",
+    OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Command Parse Failed: Element: (%04x,%04x) %s",
         t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
@@ -142,7 +142,7 @@ parseErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Parse Failed: %s: Element: (%04x,%04x) %s", msg,
+    OFStandard::snprintf(buf, sizeof(buf), "DIMSE: Command Parse Failed: %s: Element: (%04x,%04x) %s", msg,
         t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
@@ -191,36 +191,41 @@ addString(DcmDataset *obj, DcmTagKey t, char *s, OFBool keepPadding)
 static OFCondition
 getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
     char* aString;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem != NULL) {
         if (elem->getLength() == 0) {
             s[0] = '\0';
         } else if (elem->getLength() > (Uint32)maxlen) {
             return parseErrorWithMsg("dimcmd:getString: string too small", t);
         } else {
             ec =  elem->getString(aString);
-            strncpy(s, aString, maxlen);
-            if (spacePadded)
+            if (ec.good())
             {
-                /* before we remove leading and tailing spaces we want to know
-                 * whether the string is actually space padded. Required to communicate
-                 * with dumb peers which send space padded UIDs and fail if they
-                 * receive correct UIDs back.
-                 *
-                 * This test can only detect space padded strings if
-                 * dcmEnableAutomaticInputDataCorrection is false; otherwise the padding
-                 * has already been removed by dcmdata at this stage.
-                 */
-                size_t s_len = strlen(s);
-                if ((s_len > 0)&&(s[s_len-1] == ' ')) *spacePadded = OFTrue; else *spacePadded = OFFalse;
+                strncpy(s, aString, maxlen);
+                if (spacePadded)
+                {
+                    /* before we remove leading and tailing spaces we want to know
+                     * whether the string is actually space padded. Required to communicate
+                     * with dumb peers which send space padded UIDs and fail if they
+                     * receive correct UIDs back.
+                     *
+                     * This test can only detect space padded strings if
+                     * dcmEnableAutomaticInputDataCorrection is false; otherwise the padding
+                     * has already been removed by dcmdata at this stage.
+                     */
+                    size_t s_len = strlen(s);
+                    if ((s_len > 0)&&(s[s_len-1] == ' ')) *spacePadded = OFTrue; else *spacePadded = OFFalse;
+                }
+                DU_stripLeadingAndTrailingSpaces(s);
             }
-            DU_stripLeadingAndTrailingSpaces(s);
         }
     }
     return (ec.good())? ec : DIMSE_PARSEFAILED;
@@ -263,17 +268,19 @@ addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
 static OFCondition
 getUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem != NULL) {
         ec = elem->getUint16(*us, 0);
     }
 
-    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
+    return (ec.good())?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 static OFCondition
@@ -314,17 +321,19 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
 static OFCondition
 getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem != NULL) {
         ec = elem->getUint32(*ul, 0);
     }
 
-    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
+    return (ec.good())?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 #if 0
@@ -375,15 +384,17 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *lst, int listCount)
 static OFCondition
 getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **lst, int *listCount)
 {
-    DcmElement *elem;
+    DcmElement *elem = NULL;
     DcmStack stack;
     OFCondition ec = EC_Normal;
     Uint16 *aList = NULL;
     Uint32 nBytes = 0;
 
     ec = obj->search(t, stack);
-    elem = (DcmElement*)stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    if (ec.good() && stack.top()->isElement())
+        elem = (DcmElement*)stack.top();
+
+    if (elem) {
         nBytes = elem->getLength();
         *listCount = (int)(nBytes / sizeof(Uint16));
         if (*listCount > 0) {
@@ -395,7 +406,7 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **lst, int *listCount)
         }
     }
 
-    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
+    return (ec.good())?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 /*
@@ -1831,7 +1842,7 @@ DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
     default:
         {
           char buf[256];
-          sprintf(buf, "DIMSE_buildCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
+          OFStandard::snprintf(buf, sizeof(buf), "DIMSE_buildCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
           cond = makeDcmnetCondition(DIMSEC_BADCOMMANDTYPE, OF_error, buf);
         }
         break;
@@ -1952,7 +1963,7 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     default:
         {
           char buf[256];
-          sprintf(buf, "DIMSE_parseCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
+          OFStandard::snprintf(buf, sizeof(buf), "DIMSE_parseCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
           cond = makeDcmnetCondition(DIMSEC_BADCOMMANDTYPE, OF_error, buf);
         }
         break;

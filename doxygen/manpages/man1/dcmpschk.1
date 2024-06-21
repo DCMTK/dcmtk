@@ -1,4 +1,4 @@
-.TH "dcmpschk" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmpschk" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmpschk \- Checking tool for presentation states
@@ -7,22 +7,17 @@ dcmpschk \- Checking tool for presentation states
 .PP
 .PP
 .nf
-dcmpschk [options] [dcmfile-in...]
+dcmpschk [options] [dcmfile-in\&.\&.\&.]
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
 The \fBdcmpschk\fP utility checks DICOM Grayscale Softcopy Presentation State objects for conformance with the standard\&. The test is performed in three phases:
 .PP
-.PD 0
 .IP "\(bu" 2
 Phase 1 checks the Meta-header of the DICOM file\&. It is tested whether all required attributes are present, whether the SOP class and instance UIDs match the UIDs in the main object and whether the group length attribute contains a correct value\&. The Transfer Syntax of the Meta header is also checked\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 Phase 2 performs a syntactic check of the values, value representations and value multiplicities for each attribute in the object\&. The values present in the object under test are compared with the definitions of the DICOM data dictionary\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 Phase 3 performs a semantic check of the integrity of the Presentation State\&. This phase is omitted when objects of other SOP Classes are encountered\&. Phase 1 and 2 can also be applied to other DICOM objects of arbitrary SOP class\&. It should be noted that \fBdcmpschk\fP does not support Presentation States which contain the Mask Module\&. These will be rejected with a message that the Mask Module is not supported\&.
 .PP
@@ -83,4 +78,4 @@ The \fBdcmpschk\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

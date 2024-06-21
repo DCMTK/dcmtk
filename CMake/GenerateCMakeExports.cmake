@@ -28,7 +28,7 @@ export(TARGETS config ${DCMTK_LIBRARY_TARGETS} APPEND FILE "${CMAKE_BINARY_DIR}/
 # Add interface library for conveniently linking to all libraries via DCMTK::DCMTK
 export(TARGETS DCMTK APPEND FILE "${CMAKE_BINARY_DIR}/DCMTKTargets.cmake" NAMESPACE DCMTK::)
 
-# Create DCMTConfigVersion.cmake with basic DCMTK version information (build tree)
+# Create DCMTKConfigVersion.cmake with basic DCMTK version information (build tree)
 set(DCMTK_CONFIG_VERSION "${CMAKE_BINARY_DIR}/DCMTKConfigVersion.cmake")
 WRITE_BASIC_PACKAGE_VERSION_FILE(
     ${DCMTK_CONFIG_VERSION}

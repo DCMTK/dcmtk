@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,6 +37,7 @@
 #include "dcmtk/dcmdata/dcpixel.h"    /* for DcmPixelData */
 #include "dcmtk/dcmdata/dcsequen.h"   /* for DcmSequenceOfItems */
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmGenerateUniqueIdentifier() */
+#include "dcmtk/ofstd/ofstd.h"
 
 
 OFCondition DcmQuant::createPaletteColorImage(
@@ -181,8 +182,8 @@ OFCondition DcmQuant::createPaletteColorImage(
 
     if (frames > 1)
     {
-      char buf[20];
-      sprintf(buf, "%lu", frames);
+      char buf[32];
+      OFStandard::snprintf(buf, sizeof(buf), "%lu", frames);
       if (result.good()) result = target.putAndInsertString(DCM_NumberOfFrames, buf);
     }
 

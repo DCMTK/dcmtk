@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(dcmdata_tests
+DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tchval.cc
   tdict.cc
   telemlen.cc
@@ -17,6 +17,7 @@ DCMTK_ADD_EXECUTABLE(dcmdata_tests
   tsequen.cc
   tspchrs.cc
   tstrval.cc
+  ttag.cc
   tvrcomp.cc
   tvrdatim.cc
   tvrds.cc
@@ -27,6 +28,7 @@ DCMTK_ADD_EXECUTABLE(dcmdata_tests
   tvrsv.cc
   tvrui.cc
   tvruv.cc
+  txfer.cc
 )
 
 # make sure executables are linked to the corresponding libraries

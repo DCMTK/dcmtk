@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTIonControlPointDeliverySequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -22,10 +22,10 @@
 #include "dcmtk/dcmrt/seq/drtbldps.h"  // for BeamLimitingDevicePositionSequence
 #include "dcmtk/dcmrt/seq/drtcpas.h"   // for CorrectedParameterSequence
 #include "dcmtk/dcmrt/seq/drtiwps.h"   // for IonWedgePositionSequence
-#include "dcmtk/dcmrt/seq/drtlsds7.h"  // for LateralSpreadingDeviceSettingsSequence
+#include "dcmtk/dcmrt/seq/drtlsds2.h"  // for LateralSpreadingDeviceSettingsSequence
 #include "dcmtk/dcmrt/seq/drtos.h"     // for OverrideSequence
-#include "dcmtk/dcmrt/seq/drtrmss7.h"  // for RangeModulatorSettingsSequence
-#include "dcmtk/dcmrt/seq/drtrshs7.h"  // for RangeShifterSettingsSequence
+#include "dcmtk/dcmrt/seq/drtrmss2.h"  // for RangeModulatorSettingsSequence
+#include "dcmtk/dcmrt/seq/drtrshs2.h"  // for RangeShifterSettingsSequence
 
 
 /** Interface class for IonControlPointDeliverySequence (3008,0041) in RTIonBeamsSessionRecordModule
@@ -328,6 +328,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getScanSpotReordered(OFString &value, const signed long pos = 0) const;
+
+        /** get ScanSpotSizesDelivered (300a,0399)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getScanSpotSizesDelivered(Float32 &value, const unsigned long pos = 0) const;
 
         /** get ScanSpotTimeOffset (300a,038f)
          *  @param  value  reference to variable in which the value should be stored
@@ -697,6 +704,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
          */
         OFCondition setScanSpotReordered(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ScanSpotSizesDelivered (300a,0399)
+         *  @param  value  value to be set (should be valid for this VR)
+         *  @param  pos    index of the value to be set (0..vm-1), vm=2-2n
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setScanSpotSizesDelivered(const Float32 value, const unsigned long pos = 0);
+
         /** set ScanSpotTimeOffset (300a,038f)
          *  @param  value  value to be set (should be valid for this VR)
          *  @param  pos    index of the value to be set (0..vm-1), vm=1-n
@@ -858,6 +872,8 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
         DcmIntegerString ScanSpotPrescribedIndices;
         /// ScanSpotReordered (300a,0393) vr=CS, vm=1, type=3
         DcmCodeString ScanSpotReordered;
+        /// ScanSpotSizesDelivered (300a,0399) vr=FL, vm=2-2n, type=3
+        DcmFloatingPointSingle ScanSpotSizesDelivered;
         /// ScanSpotTimeOffset (300a,038f) vr=FL, vm=1-n, type=3
         DcmFloatingPointSingle ScanSpotTimeOffset;
         /// ScanSpotTuneID (300a,0390) vr=SH, vm=1, type=1C
@@ -995,13 +1011,13 @@ class DCMTK_DCMRT_EXPORT DRTIonControlPointDeliverySequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

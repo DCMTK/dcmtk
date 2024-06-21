@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -105,10 +105,10 @@ static OFCmdUnsignedInt opt_inventStudyCount = 50;
 static OFCmdUnsignedInt opt_inventSeriesCount = 100;
 static OFBool opt_inventSOPInstanceInformation = OFFalse;
 static OFBool opt_correctUIDPadding = OFFalse;
-static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (maximum 16 chars)
-static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
-static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
-static OFString accessionNumberPrefix;   // AccessionNumber is SH (maximum 16 chars)
+static OFString patientNamePrefix("OFFIS^TEST_PN_");  // PatientName is PN (maximum 16 chars)
+static OFString patientIDPrefix("PID_");              // PatientID is LO (maximum 64 chars)
+static OFString studyIDPrefix("SID_");                // StudyID is SH (maximum 16 chars)
+static OFString accessionNumberPrefix;                // AccessionNumber is SH (maximum 16 chars)
 static const char *opt_configFile = NULL;
 static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
@@ -125,6 +125,9 @@ static T_ASC_UserIdentityNegotiationMode opt_identMode = ASC_USER_IDENTITY_NONE;
 static OFString opt_user;
 static OFString opt_password;
 static OFString opt_identFile;
+// Denotes whether we ask for an explicit server response for
+// our identity negotiation request and only continue if this
+// positive response is provided by the SCP.
 static OFBool opt_identResponse = OFFalse;
 
 static OFCondition
@@ -240,7 +243,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-mpeg4-2-3d",   "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--propose-mpeg4-2-st",   "-xo",     "propose MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
       cmd.addOption("--propose-hevc",         "-x4",     "propose HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--propose-hevc10",       "-x5",     "propose HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--propose-hevc10",       "-x5",     "propose HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--propose-rle",          "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",     "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -555,13 +558,13 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--empty-password"))
       {
         app.checkDependence("--empty-password", "--user", opt_identMode == ASC_USER_IDENTITY_USER);
-        opt_password= "";
+        opt_password = "";
         opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
       }
       cmd.endOptionBlock();
       if (cmd.findOption("--pos-response"))
       {
-         app.checkDependence("--pos-response", "--user, --kerberos or --saml", opt_identMode != ASC_USER_IDENTITY_NONE);
+         app.checkDependence("--pos-response", "--user, --kerberos, --saml or --jwt", opt_identMode != ASC_USER_IDENTITY_NONE);
          opt_identResponse = OFTrue;
       }
    }
@@ -720,7 +723,7 @@ int main(int argc, char *argv[])
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
-    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /* Configure User Identity Negotiation*/
@@ -779,9 +782,6 @@ int main(int argc, char *argv[])
         return 1;
       }
     }
-
-    /* dump the connection parameters if in debug mode*/
-    OFLOG_DEBUG(storescuLogger, ASC_dumpConnectionParameters(temp_str, assoc));
 
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_showPresentationContexts)
@@ -1111,7 +1111,7 @@ static OFString
 intToString(int i)
 {
   char numbuf[32];
-  sprintf(numbuf, "%d", i);
+  OFStandard::snprintf(numbuf, sizeof(numbuf), "%d", i);
   return numbuf;
 }
 
@@ -1135,6 +1135,12 @@ updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &val
   if (cond != EC_Normal) {
     OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: cannot find: " << tag.getTagName()
          << " " << key << ": " << cond.text());
+    return OFFalse;
+  }
+
+  if (! stack.top()->isElement())
+  {
+    OFLOG_ERROR(storescuLogger, "updateStringAttributeValue: not a DcmElement: " << tag.getTagName() << " " << key);
     return OFFalse;
   }
 
@@ -1237,7 +1243,7 @@ progressCallback(void * /*callbackData*/,
   if (progress->state == DIMSE_StoreBegin)
   {
     OFString str;
-    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, *req, DIMSE_OUTGOING));
+    OFLOG_DEBUG(storescuLogger, DIMSE_dumpMessage(str, *req, DIMSE_OUTGOING /*, NULL, presID */));
   }
 
   // We can't use oflog for the pdu output, but we use a special logger for
@@ -1327,26 +1333,28 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* figure out which of the accepted presentation contexts should be used */
   DcmXfer filexfer(dcmff.getDataset()->getOriginalXfer());
 
-  /* special case: if the file uses an unencapsulated transfer syntax (uncompressed
-   * or deflated explicit VR) and we prefer deflated explicit VR, then try
-   * to find a presentation context for deflated explicit VR first.
+  /* special case: if the file uses a transfer syntax with native format
+   * (uncompressed or deflated explicit VR) and we prefer deflated explicit VR,
+   * then try to find a presentation context for deflated explicit VR first.
    */
-  if (filexfer.isNotEncapsulated() &&
+  if (filexfer.usesNativeFormat() &&
     opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)
   {
     filexfer = EXS_DeflatedLittleEndianExplicit;
   }
 
-  if (filexfer.getXfer() != EXS_Unknown)
+  if (filexfer != EXS_Unknown)
     presID = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
   else
     presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
   if (presID == 0)
   {
-    const char *modalityName = dcmSOPClassUIDToModality(sopClass);
-    if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
-    if (!modalityName) modalityName = "unknown SOP class";
-    OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
+    if (storescuLogger.isEnabledFor(OFLogger::ERROR_LOG_LEVEL))
+    {
+      const char *modalityName = dcmSOPClassUIDToModality(sopClass);
+      if (!modalityName) modalityName = dcmFindNameOfUID(sopClass, "unknown SOP class");
+      OFLOG_ERROR(storescuLogger, "No presentation context for: (" << modalityName << ") " << sopClass);
+    }
     renameFile(fname, ".bad");
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
@@ -1356,10 +1364,11 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   DcmXfer netTransfer(pc.acceptedTransferSyntax);
 
   /* if required, dump general information concerning transfer syntaxes */
-  if (storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
+  if ((netTransfer != dcmff.getDataset()->getOriginalXfer()) &&
+    storescuLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
-    DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
-    OFLOG_INFO(storescuLogger, "Converting transfer syntax: " << fileTransfer.getXferName()
+    DcmXfer origTransfer(dcmff.getDataset()->getOriginalXfer());
+    OFLOG_INFO(storescuLogger, "Converting transfer syntax: " << origTransfer.getXferName()
       << " -> " << netTransfer.getXferName());
   }
 
@@ -1384,6 +1393,14 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   /* if required, dump some more general information */
   OFLOG_INFO(storescuLogger, "Sending Store Request (MsgID " << msgId << ", "
     << dcmSOPClassUIDToModality(sopClass, "OT") << ")");
+  /* the following is needed, because the presentation context ID is not shown otherwise */
+  if (storescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+  {
+    const char *sopClassName = dcmFindKeywordOfUID(sopClass, sopClass /*defaultValue*/);
+    const char *netXferName = dcmFindKeywordOfUID(netTransfer.getXferID(), netTransfer.getXferID() /*defaultValue*/);
+    OFLOG_DEBUG(storescuLogger, "  using Presentation Context ID " << OFstatic_cast(int, presID)
+      << " = " << sopClassName << " with " << netXferName << " transfer syntax");
+  }
 
   /* finally conduct transmission of data */
   cond = DIMSE_storeUser(assoc, presID, &req,

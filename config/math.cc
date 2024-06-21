@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, OFFIS e.V.
+ *  Copyright (C) 2015-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,55 +42,11 @@
 #include <windows.h>
 #endif
 
-/* Some MacOS X versions define isinf() and isnan() in <math.h> but not in <cmath> */
-#if defined(__APPLE__) && defined(__MACH__) && !defined (__INTEL_COMPILER)
-#undef HAVE_PROTOTYPE_ISINF
-#undef HAVE_PROTOTYPE_ISNAN
-#endif
-
-
-// some systems don't properly define isnan()
-#ifdef HAVE_ISNAN
-#ifndef HAVE_PROTOTYPE_ISNAN
-extern "C"
-{
-  int isnan(double value);
-}
-#endif
-#endif
-
-
-// some systems don't properly define finite()
-#ifdef HAVE_FINITE
-#ifndef HAVE_PROTOTYPE_FINITE
-extern "C"
-{
-  int finite(double value);
-}
-#endif
-#endif
-
-#if !defined(HAVE_ISINF) && defined(HAVE_PROTOTYPE_ISINF)
-#   define HAVE_ISINF 1
-#endif
-
-// some systems don't properly define isinf()
-#ifdef HAVE_ISINF
-#ifndef HAVE_PROTOTYPE_ISINF
-extern "C"
-{
-  int isinf(double value);
-}
-#endif
-#endif /* HAVE_ISINF */
-
 struct dcmtk_config_math
 {
   static inline OFBool isnan( float f )
   {
-#ifdef HAVE_WINDOWS_H
-    return _isnan(f) != 0;
-#elif defined(HAVE_PROTOTYPE_STD__ISNAN)
+#ifdef HAVE_PROTOTYPE_STD__ISNAN
     return STD_NAMESPACE isnan(f);
 #else
     return ::isnan(f);
@@ -99,9 +55,7 @@ struct dcmtk_config_math
 
   static inline OFBool isnan( double d )
   {
-#ifdef HAVE_WINDOWS_H
-    return _isnan(d) != 0;
-#elif defined(HAVE_PROTOTYPE_STD__ISNAN)
+#ifdef HAVE_PROTOTYPE_STD__ISNAN
     return STD_NAMESPACE isnan(d);
 #else
     return ::isnan(d);
@@ -112,10 +66,8 @@ struct dcmtk_config_math
   {
 #ifdef HAVE_PROTOTYPE_STD__ISINF
     return STD_NAMESPACE isinf( f );
-#elif defined(HAVE_ISINF)
-    return ::isinf( f );
 #else
-    return dcmtk_config_math::isinf( OFstatic_cast( double, f ) );
+    return ::isinf( f );
 #endif
   }
 
@@ -123,15 +75,8 @@ struct dcmtk_config_math
   {
 #ifdef HAVE_PROTOTYPE_STD__ISINF
     return STD_NAMESPACE isinf( d );
-#elif defined(HAVE_ISINF)
+#else
     return ::isinf( d );
-#else
-#ifdef HAVE_WINDOWS_H
-    return (! _finite(d)) && (! _isnan(d));
-#else
-    // Solaris 2.5.1 has finite() and isnan() but not isinf().
-    return (! finite(d)) && (! isnan(d));
-#endif
 #endif
   }
 };

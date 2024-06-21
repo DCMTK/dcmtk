@@ -1,4 +1,4 @@
-.TH "dsr2html" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2html" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2html \- Render DICOM SR file and data set to HTML/XHTML
@@ -19,7 +19,7 @@ If \fBdsr2html\fP reads a raw data set (DICOM data without a file format meta-he
 .PP
 .PP
 .nf
-dsrfile-in    DICOM SR input filename to be rendered
+dsrfile-in    DICOM SR input filename to be rendered ('-' for stdin)
 
 htmlfile-out  HTML/XHTML output filename (default: stdout)
 .fi
@@ -102,17 +102,17 @@ error handling:
 
   -Ev  --invalid-item-value
          accept invalid content item value
-         (e.g. violation of VR or VM definition)
+         (e\&.g\&. violation of VR or VM definition)
 
   -Ec  --ignore-constraints
          ignore relationship content constraints
 
   -Ee  --ignore-item-errors
          do not abort on content item errors, just warn
-         (e.g. missing value type specific attributes)
+         (e\&.g\&. missing value type specific attributes)
 
   -Ei  --skip-invalid-items
-         skip invalid content items (incl. sub-tree)
+         skip invalid content items (incl\&. sub-tree)
 
   -Dv  --disable-vr-checker
          disable check for VR-conformant string values
@@ -129,16 +129,17 @@ specific character set:
          check all data elements with string values
          (default: only PN, LO, LT, SH, ST, UC and UT)
 
-         # this option is only used for the mapping to an appropriate
-         # HTML/XHTML character encoding, but not for the conversion
-         # to UTF-8
+         # this option is only used for the extended check whether
+         # the Specific Character Set (0008,0005) attribute should be
+         # present, but not for the conversion of unaffected element
+         # values to UTF-8 (e\&.g\&. element values with a VR of CS)
 
   +U8  --convert-to-utf8
          convert all element values that are affected
          by Specific Character Set (0008,0005) to UTF-8
 
-         # requires support from an underlying character encoding library
-         # (see output of --version on which one is available)
+         # requires support from an underlying character encoding
+         # library (see output of --version on which one is available)
 .fi
 .PP
 .SS "output options"
@@ -146,19 +147,19 @@ specific character set:
 .nf
 HTML/XHTML compatibility:
 
-  +H3  --html-3.2
-         use only HTML version 3.2 compatible features
+  +H3  --html-3\&.2
+         use only HTML version 3\&.2 compatible features
 
-  +H4  --html-4.0
-         allow all HTML version 4.01 features (default)
+  +H4  --html-4\&.0
+         allow all HTML version 4\&.01 features (default)
 
-  +X1  --xhtml-1.1
-         comply with XHTML version 1.1 specification
+  +X1  --xhtml-1\&.1
+         comply with XHTML version 1\&.1 specification
 
   +Hd  --add-document-type
          add reference to SGML document type definition
 
-cascading style sheet (CSS), not with HTML 3.2:
+cascading style sheet (CSS), not with HTML 3\&.2:
 
   +Sr  --css-reference  URL: string
          add reference to specified CSS to document
@@ -225,25 +226,25 @@ The \fBdsr2html\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-SpectaclePrescriptionReportStorage           1.2.840.10008.5.1.4.1.1.78.6
-MacularGridThicknessAndVolumeReportStorage   1.2.840.10008.5.1.4.1.1.79.1
-BasicTextSRStorage                           1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSRStorage                            1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSRStorage                       1.2.840.10008.5.1.4.1.1.88.33
-Comprehensive3DSRStorage                     1.2.840.10008.5.1.4.1.1.88.34
-ProcedureLogStorage                          1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSRStorage                      1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocumentStorage            1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSRStorage                   1.2.840.10008.5.1.4.1.1.88.67
-RadiopharmaceuticalRadiationDoseSRStorage    1.2.840.10008.5.1.4.1.1.88.68
-ColonCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage            1.2.840.10008.5.1.4.1.1.88.70
-AcquisitionContextSRStorage                  1.2.840.10008.5.1.4.1.1.88.71
-SimplifiedAdultEchoSRStorage                 1.2.840.10008.5.1.4.1.1.88.72
-PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
-PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
-PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
+SpectaclePrescriptionReportStorage           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.78\&.6
+MacularGridThicknessAndVolumeReportStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.79\&.1
+BasicTextSRStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.11
+EnhancedSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.22
+ComprehensiveSRStorage                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.33
+Comprehensive3DSRStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.34
+ProcedureLogStorage                          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.40
+MammographyCADSRStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.50
+KeyObjectSelectionDocumentStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.59
+ChestCADSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.65
+XRayRadiationDoseSRStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.67
+RadiopharmaceuticalRadiationDoseSRStorage    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.68
+ColonCADSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.69
+ImplantationPlanSRStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.70
+AcquisitionContextSRStorage                  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.71
+SimplifiedAdultEchoSRStorage                 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.72
+PatientRadiationDoseSRStorage                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.73
+PlannedImagingAgentAdministrationSRStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.74
+PerformedImagingAgentAdministrationSRStorage 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.75
 .fi
 .PP
 .SS "Character Encoding"
@@ -252,26 +253,27 @@ The HTML/XHTML encoding is determined automatically from the DICOM attribute (00
 .PP
 .nf
 ASCII         (ISO_IR 6)                       =>  (none)
-UTF-8         "ISO_IR 192"                     =>  "UTF-8"
-ISO Latin 1   "ISO_IR 100"                     =>  "ISO-8859-1"
-ISO Latin 2   "ISO_IR 101"                     =>  "ISO-8859-2"
-ISO Latin 3   "ISO_IR 109"                     =>  "ISO-8859-3"
-ISO Latin 4   "ISO_IR 110"                     =>  "ISO-8859-4"
-ISO Latin 5   "ISO_IR 148"                     =>  "ISO-8859-9"
-Cyrillic      "ISO_IR 144"                     =>  "ISO-8859-5"
-Arabic        "ISO_IR 127"                     =>  "ISO-8859-6"
-Greek         "ISO_IR 126"                     =>  "ISO-8859-7"
-Hebrew        "ISO_IR 138"                     =>  "ISO-8859-8"
-Thai          "ISO_IR 166"                     =>  "TIS-620"
-Japanese      "ISO 2022 IR 13\ISO 2022 IR 87"  =>  "ISO-2022-JP"
-Korean        "ISO 2022 IR 6\ISO 2022 IR 149"  =>  "ISO-2022-KR"
-Chinese       "ISO 2022 IR 6\ISO 2022 IR 58"   =>  "ISO-2022-CN"
-Chinese       "GB18030"                        =>  "GB18030"
-Chinese       "GBK"                            =>  "GBK"
+UTF-8         'ISO_IR 192'                     =>  'UTF-8'
+ISO Latin 1   'ISO_IR 100'                     =>  'ISO-8859-1'
+ISO Latin 2   'ISO_IR 101'                     =>  'ISO-8859-2'
+ISO Latin 3   'ISO_IR 109'                     =>  'ISO-8859-3'
+ISO Latin 4   'ISO_IR 110'                     =>  'ISO-8859-4'
+ISO Latin 5   'ISO_IR 148'                     =>  'ISO-8859-9'
+ISO Latin 9   'ISO_IR 203'                     =>  'ISO-8859-15'
+Cyrillic      'ISO_IR 144'                     =>  'ISO-8859-5'
+Arabic        'ISO_IR 127'                     =>  'ISO-8859-6'
+Greek         'ISO_IR 126'                     =>  'ISO-8859-7'
+Hebrew        'ISO_IR 138'                     =>  'ISO-8859-8'
+Thai          'ISO_IR 166'                     =>  'TIS-620'
+Japanese      'ISO 2022 IR 13\\ISO 2022 IR 87'  =>  'ISO-2022-JP'
+Korean        'ISO 2022 IR 6\\ISO 2022 IR 149'  =>  'ISO-2022-KR'
+Chinese       'ISO 2022 IR 6\\ISO 2022 IR 58'   =>  'ISO-2022-CN'
+Chinese       'GB18030'                        =>  'GB18030'
+Chinese       'GBK'                            =>  'GBK'
 .fi
 .PP
 .PP
-If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&. For reasons of backward compatibility with previous versions of this tool, the following terms are also supported and mapped automatically to the associated DICOM defined terms: latin-1, latin-2, latin-3, latin-4, latin-5, cyrillic, arabic, greek, hebrew\&.
+If this DICOM attribute is missing in the input file, although needed, option \fI--charset-assume\fP can be used to specify an appropriate character set manually (using one of the DICOM defined terms)\&. For reasons of backward compatibility with previous versions of this tool, the following terms are also supported and mapped automatically to the associated DICOM defined terms: latin-1, latin-2, latin-3, latin-4, latin-5, latin-9, cyrillic, arabic, greek, hebrew\&.
 .PP
 Option \fI--convert-to-utf8\fP can be used to convert the DICOM file or data set to UTF-8 encoding prior to the rendering to HTML/XHTML format\&.
 .SH "LOGGING"
@@ -291,6 +293,10 @@ In addition, one or more command files can be specified using an '@' sign as a p
 The \fBdsr2html\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.PP
+Depending on the command line options specified, the \fBdsr2html\fP utility will attempt to load character set mapping tables\&. This happens when DCMTK was compiled with the oficonv library (which is the default) and the mapping tables are not built into the library (default when DCMTK uses shared libraries)\&.
+.PP
+The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "FILES"
 .PP
 \fI<datadir>/report\&.css\fP - Sample Cascading Stylesheet file for HTML \fI<datadir>/reportx\&.css\fP - Sample Cascading Stylesheet file for XHTML
@@ -299,4 +305,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

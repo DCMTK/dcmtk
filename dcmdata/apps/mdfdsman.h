@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 
 #include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
 
+#include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmdata/dcxfer.h"
@@ -34,7 +35,8 @@
 class DcmDataset;
 class DcmFileFormat;
 class DcmElement;
-
+class DcmPathProcessor;
+class DcmPath;
 
 /** This class encapsulates data structures and operations for modifying
  *  DICOM files. Therefore it allows the process of load->modify->save to
@@ -207,6 +209,39 @@ public:
     void setModifyUNValues(OFBool modifyUNValues);
 
 protected:
+
+    /** Finds or inserts a path and performs some basic checks on the path:
+     *  - If the path is a private tag, it is checked whether the private creator
+     *    tag is present in the dataset. (disabled if no_reservation_checks is true).
+     *  - If the path contains tags with group numbers 0,1,2,3,5,7 or FF, an error
+     *    is returned.
+     *  - If a value is defined (via file or non-empty string), it is ensured that
+     *    the path does points to a leaf object (i.e. not a sequence or item).
+     *  - It is not possible to "only modify" a path that points to a non-leaf object
+     *  If the path has been created or found, the path processor contains at least
+     *  one valid path.
+     *
+     *  @param proc              path processor to be used
+     *  @param tag_path          path to item/element
+     *  @param value_or_filename denotes new value of tag or filename to read value from.
+     *                           Only used to determine whether a value should be applied
+     *                           (not in this method) to the target element or not.
+     *  @param only_modify if true, only existing tags are processed. If false,
+     *                     any not existing tag is inserted
+     *  @param ignore_missing_tags if true, tags that could not be found
+     *                             while modifying (only_modify must be true)
+     *                             are handled as non-errors
+     *  @param no_reservation_checks if true, any missing private reservation
+     *                               tags are ignored when inserting private
+     *                               tags. Only makes sense w/o only_modify
+     *  @return returns EC_Normal if everything is OK, else an error
+     */
+    OFCondition findOrCreateValidPath(DcmPathProcessor& proc,
+                                      OFString tag_path,
+                                      const OFString& value_or_filename,
+                                      const OFBool only_modify,
+                                      const OFBool ignore_missing_tags,
+                                      const OFBool no_reservation_checks);
 
     /** modifies element to a specific value
      *  @param elem element that should be changed

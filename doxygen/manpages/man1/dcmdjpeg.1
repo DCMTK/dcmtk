@@ -1,4 +1,4 @@
-.TH "dcmdjpeg" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdjpeg" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdjpeg \- Decode JPEG-compressed DICOM file
@@ -17,9 +17,9 @@ The \fBdcmdjpeg\fP utility reads a JPEG-compressed DICOM image (\fIdcmfile-in\fP
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -68,9 +68,9 @@ input file format:
           read data set without file meta information
 
   # This option allows one to decompress JPEG compressed DICOM objects that
-  # have been stored as dataset without meta-header. Such a thing should
+  # have been stored as dataset without meta-header\&. Such a thing should
   # not exist since the transfer syntax cannot be reliably determined,
-  # without meta-header but unfortunately it does.
+  # without meta-header but unfortunately it does\&.
 .fi
 .PP
 .SS "processing options"
@@ -82,39 +82,42 @@ color space conversion:
           convert if YCbCr photometric interpretation (default)
 
   # If the compressed image uses YBR_FULL or YBR_FULL_422 photometric
-  # interpretation, convert to RGB during decompression.
+  # interpretation, convert to RGB during decompression\&.
 
   +cl   --conv-lossy
           convert YCbCr to RGB if lossy JPEG
 
   # If the compressed image is encoded in lossy JPEG, assume YCbCr
-  # color model and convert to RGB.
+  # color model and convert to RGB\&.
 
   +cg   --conv-guess
           convert to RGB if YCbCr is guessed by library
 
-  # If the underlying JPEG library "guesses" the color space of the
-  # compressed image to be YCbCr, convert to RGB.
+  # If the underlying JPEG library 'guesses' the color space of the
+  # compressed image to be YCbCr, convert to RGB\&.
 
   +cgl  --conv-guess-lossy
           convert to RGB if lossy JPEG and YCbCr is
           guessed by the underlying JPEG library
 
   # If the compressed image is encoded in lossy JPEG and the underlying
-  # JPEG library "guesses" the color space to be YCbCr, convert to RGB.
+  # JPEG library 'guesses' the color space to be YCbCr, convert to RGB\&.
 
   +ca   --conv-always
           always convert YCbCr to RGB
 
   # If the compressed image is a color image, assume YCbCr color model
-  # and convert to RGB.
+  # and convert to RGB\&. Warning: This will lead to an incorrectly decoded
+  # image if the color space is in fact RGB\&. Images compressed with lossless
+  # JPEG are almost never encoded in YCbCr, this option should thus be used
+  # with care on such images\&.
 
   +cn   --conv-never
           never convert YCbCr to RGB
 
-  # Never convert color space from YCbCr to RGB during decompression.
+  # Never convert color space from YCbCr to RGB during decompression\&.
   # Note that a conversion from YBR_FULL_422 to YBR_FULL will still take
-  # place if the source images has been compressed with subsampling.
+  # place if the source images has been compressed with subsampling\&.
 
 planar configuration:
 
@@ -124,34 +127,34 @@ planar configuration:
 
   # If the compressed image is a color image, store in color-by-plane
   # planar configuration if required by the SOP class and photometric
-  # interpretation. Hardcopy Color images are always stored color-by-
+  # interpretation\&. Hardcopy Color images are always stored color-by-
   # plane, and the revised Ultrasound image objects are stored color-by-
-  # plane if the color model is YBR_FULL.  Everything else is stored
-  # color-by-pixel.
+  # plane if the color model is YBR_FULL\&.  Everything else is stored
+  # color-by-pixel\&.
 
   +px   --color-by-pixel
           always store color-by-pixel
 
   # If the compressed image is a color image, store in color-by-pixel
-  # planar configuration.
+  # planar configuration\&.
 
   +pl   --color-by-plane
           always store color-by-plane
 
   # If the compressed image is a color image, store in color-by-plane
-  # planar configuration.
+  # planar configuration\&.
 
 SOP Instance UID:
 
   +ud   --uid-default
           keep same SOP Instance UID (default)
 
-  #  Never assigns a new SOP instance UID.
+  #  Never assigns a new SOP instance UID\&.
 
   +ua   --uid-always
           always assign new UID
 
-  # Always assigns a new SOP instance UID.
+  # Always assigns a new SOP instance UID\&.
 
 workaround options for incorrect JPEG encodings:
 
@@ -159,31 +162,31 @@ workaround options for incorrect JPEG encodings:
           enable workaround for JPEG lossless images
           with overflow in predictor 6
 
-  # DICOM images with 16 bits/pixel have been observed "in the wild"
+  # DICOM images with 16 bits/pixel have been observed 'in the wild'
   # that are compressed with lossless JPEG and need special handling
   # because the encoder produced an 16-bit integer overflow in predictor
-  # 6, which needs to be compensated (reproduced) during decompression.
+  # 6, which needs to be compensated (reproduced) during decompression\&.
   # This flag enables a correct decompression of such faulty images, but
   # at the same time will cause an incorrect decompression of correctly
-  # compressed images. Use with care.
+  # compressed images\&. Use with care\&.
 
   +wi   --workaround-incpl
           enable workaround for incomplete JPEG data
 
   # This option causes dcmjpeg to ignore incomplete JPEG data
   # at the end of a compressed fragment and to start decompressing
-  # the next frame from the next fragment (if any). This permits
-  # images with incomplete JPEG data to be decoded.
+  # the next frame from the next fragment (if any)\&. This permits
+  # images with incomplete JPEG data to be decoded\&.
 
   +wc   --workaround-cornell
           enable workaround for 16-bit JPEG lossless
           Cornell images with Huffman table overflow
 
   # One of the first open-source implementations of lossless JPEG
-  # compression, the "Cornell" library, has a well-known bug that leads
+  # compression, the 'Cornell' library, has a well-known bug that leads
   # to invalid values in the Huffmann table when images with 16 bit/sample
-  # are compressed. This flag enables a workaround that permits such
-  # images to be decoded correctly..fi
+  # are compressed\&. This flag enables a workaround that permits such
+  # images to be decoded correctly\&..fi
 .PP
 .SS "output options"
 .PP
@@ -253,16 +256,16 @@ data set trailing padding (not with --write-dataset):
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
-JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
-JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
-JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
-JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
-JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
-JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
+JPEGProcess1TransferSyntax                     1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+JPEGProcess2_4TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
+JPEGProcess6_8TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.53
+JPEGProcess10_12TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
+JPEGProcess14TransferSyntax                    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.57
+JPEGProcess14SV1TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.70
 .fi
 .PP
 .PP
@@ -272,9 +275,9 @@ JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .SH "LOGGING"
@@ -299,4 +302,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmcjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

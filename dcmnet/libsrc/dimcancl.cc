@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -88,6 +88,7 @@
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"		/* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 OFCondition
 DIMSE_sendCancelRequest(T_ASC_Association * assoc,
@@ -121,13 +122,13 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
         if (msg.CommandField != DIMSE_C_CANCEL_RQ)
         {
             char buf1[256];
-            sprintf(buf1, "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: Cmd=0x%x", msg.CommandField);
+            OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: Cmd=0x%x", msg.CommandField);
             return makeDcmnetCondition(DIMSEC_UNEXPECTEDREQUEST, OF_error, buf1);
         }
         if (msg.msg.CCancelRQ.MessageIDBeingRespondedTo != msgId)
         {
             char buf2[256];
-            sprintf(buf2, "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: msgId=%d", msg.msg.CCancelRQ.MessageIDBeingRespondedTo);
+            OFStandard::snprintf(buf2, sizeof(buf2), "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: msgId=%d", msg.msg.CCancelRQ.MessageIDBeingRespondedTo);
             return makeDcmnetCondition(DIMSEC_UNEXPECTEDREQUEST, OF_error, buf2);
         }
     }

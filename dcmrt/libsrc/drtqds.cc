@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTQuantityDefinitionSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -23,12 +23,14 @@ DRTQuantityDefinitionSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
     ConceptCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ConceptNameCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    ContentItemModifierSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     Date(DCM_Date),
     DateTime(DCM_DateTime),
     FloatingPointValue(DCM_FloatingPointValue),
     MeasurementUnitsCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     NumericValue(DCM_NumericValue),
     ObservationDateTime(DCM_ObservationDateTime),
+    ObservationStartDateTime(DCM_ObservationStartDateTime),
     PersonName(DCM_PersonName),
     RationalDenominatorValue(DCM_RationalDenominatorValue),
     RationalNumeratorValue(DCM_RationalNumeratorValue),
@@ -45,12 +47,14 @@ DRTQuantityDefinitionSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
     ConceptCodeSequence(copy.ConceptCodeSequence),
     ConceptNameCodeSequence(copy.ConceptNameCodeSequence),
+    ContentItemModifierSequence(copy.ContentItemModifierSequence),
     Date(copy.Date),
     DateTime(copy.DateTime),
     FloatingPointValue(copy.FloatingPointValue),
     MeasurementUnitsCodeSequence(copy.MeasurementUnitsCodeSequence),
     NumericValue(copy.NumericValue),
     ObservationDateTime(copy.ObservationDateTime),
+    ObservationStartDateTime(copy.ObservationStartDateTime),
     PersonName(copy.PersonName),
     RationalDenominatorValue(copy.RationalDenominatorValue),
     RationalNumeratorValue(copy.RationalNumeratorValue),
@@ -75,12 +79,14 @@ DRTQuantityDefinitionSequence::Item &DRTQuantityDefinitionSequence::Item::operat
         EmptyDefaultItem = copy.EmptyDefaultItem;
         ConceptCodeSequence = copy.ConceptCodeSequence;
         ConceptNameCodeSequence = copy.ConceptNameCodeSequence;
+        ContentItemModifierSequence = copy.ContentItemModifierSequence;
         Date = copy.Date;
         DateTime = copy.DateTime;
         FloatingPointValue = copy.FloatingPointValue;
         MeasurementUnitsCodeSequence = copy.MeasurementUnitsCodeSequence;
         NumericValue = copy.NumericValue;
         ObservationDateTime = copy.ObservationDateTime;
+        ObservationStartDateTime = copy.ObservationStartDateTime;
         PersonName = copy.PersonName;
         RationalDenominatorValue = copy.RationalDenominatorValue;
         RationalNumeratorValue = copy.RationalNumeratorValue;
@@ -101,6 +107,7 @@ void DRTQuantityDefinitionSequence::Item::clear()
         /* clear all DICOM attributes */
         ValueType.clear();
         ObservationDateTime.clear();
+        ObservationStartDateTime.clear();
         ConceptNameCodeSequence.clear();
         DateTime.clear();
         Date.clear();
@@ -115,6 +122,7 @@ void DRTQuantityDefinitionSequence::Item::clear()
         RationalDenominatorValue.clear();
         MeasurementUnitsCodeSequence.clear();
         ReferencedSOPSequence.clear();
+        ContentItemModifierSequence.clear();
     }
 }
 
@@ -123,6 +131,7 @@ OFBool DRTQuantityDefinitionSequence::Item::isEmpty()
 {
     return ValueType.isEmpty() &&
            ObservationDateTime.isEmpty() &&
+           ObservationStartDateTime.isEmpty() &&
            ConceptNameCodeSequence.isEmpty() &&
            DateTime.isEmpty() &&
            Date.isEmpty() &&
@@ -136,7 +145,8 @@ OFBool DRTQuantityDefinitionSequence::Item::isEmpty()
            RationalNumeratorValue.isEmpty() &&
            RationalDenominatorValue.isEmpty() &&
            MeasurementUnitsCodeSequence.isEmpty() &&
-           ReferencedSOPSequence.isEmpty();
+           ReferencedSOPSequence.isEmpty() &&
+           ContentItemModifierSequence.isEmpty();
 }
 
 
@@ -155,6 +165,7 @@ OFCondition DRTQuantityDefinitionSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, ValueType, "1", "1", "QuantityDefinitionSequence");
         getAndCheckElementFromDataset(item, ObservationDateTime, "1", "3", "QuantityDefinitionSequence");
+        getAndCheckElementFromDataset(item, ObservationStartDateTime, "1", "3", "QuantityDefinitionSequence");
         ConceptNameCodeSequence.read(item, "1-n", "1", "QuantityDefinitionSequence");
         getAndCheckElementFromDataset(item, DateTime, "1", "1C", "QuantityDefinitionSequence");
         getAndCheckElementFromDataset(item, Date, "1", "1C", "QuantityDefinitionSequence");
@@ -169,6 +180,7 @@ OFCondition DRTQuantityDefinitionSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, RationalDenominatorValue, "1-n", "1C", "QuantityDefinitionSequence");
         MeasurementUnitsCodeSequence.read(item, "1-n", "1C", "QuantityDefinitionSequence");
         ReferencedSOPSequence.read(item, "1-n", "1C", "QuantityDefinitionSequence");
+        ContentItemModifierSequence.read(item, "1-n", "3", "QuantityDefinitionSequence");
         result = EC_Normal;
     }
     return result;
@@ -183,6 +195,7 @@ OFCondition DRTQuantityDefinitionSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmCodeString(ValueType), "1", "1", "QuantityDefinitionSequence");
         addElementToDataset(result, item, new DcmDateTime(ObservationDateTime), "1", "3", "QuantityDefinitionSequence");
+        addElementToDataset(result, item, new DcmDateTime(ObservationStartDateTime), "1", "3", "QuantityDefinitionSequence");
         if (result.good()) result = ConceptNameCodeSequence.write(item, "1-n", "1", "QuantityDefinitionSequence");
         addElementToDataset(result, item, new DcmDateTime(DateTime), "1", "1C", "QuantityDefinitionSequence");
         addElementToDataset(result, item, new DcmDate(Date), "1", "1C", "QuantityDefinitionSequence");
@@ -197,6 +210,7 @@ OFCondition DRTQuantityDefinitionSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmUnsignedLong(RationalDenominatorValue), "1-n", "1C", "QuantityDefinitionSequence");
         if (result.good()) result = MeasurementUnitsCodeSequence.write(item, "1-n", "1C", "QuantityDefinitionSequence");
         if (result.good()) result = ReferencedSOPSequence.write(item, "1-n", "1C", "QuantityDefinitionSequence");
+        if (result.good()) result = ContentItemModifierSequence.write(item, "1-n", "3", "QuantityDefinitionSequence");
     }
     return result;
 }
@@ -262,6 +276,15 @@ OFCondition DRTQuantityDefinitionSequence::Item::getObservationDateTime(OFString
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ObservationDateTime, value, pos);
+}
+
+
+OFCondition DRTQuantityDefinitionSequence::Item::getObservationStartDateTime(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ObservationStartDateTime, value, pos);
 }
 
 
@@ -384,6 +407,19 @@ OFCondition DRTQuantityDefinitionSequence::Item::setObservationDateTime(const OF
         result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ObservationDateTime.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTQuantityDefinitionSequence::Item::setObservationStartDateTime(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDateTime::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ObservationStartDateTime.putOFStringArray(value);
     }
     return result;
 }
@@ -596,10 +632,12 @@ OFCondition DRTQuantityDefinitionSequence::gotoFirstItem()
 OFCondition DRTQuantityDefinitionSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

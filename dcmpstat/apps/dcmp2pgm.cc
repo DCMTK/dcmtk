@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -352,7 +353,7 @@ static void dumpPresentationState(DVPresentationState &ps)
       {
         oss << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
             << overlayLeft << " top=" << overlayTop << OFendl;
-        sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
+        OFStandard::snprintf(overlayfile, sizeof(overlayfile), "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
         oss << "        filename=\"" << overlayfile << "\"";
 
         ofile = fopen(overlayfile, "wb");
@@ -432,7 +433,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("dcmfile-in", "input DICOM image");
+    cmd.addParam("dcmfile-in", "input DICOM image (\"-\" for stdin)");
     cmd.addParam("bitmap-out", "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:");

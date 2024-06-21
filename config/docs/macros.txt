@@ -49,14 +49,27 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
-DCMTK_UNDEF_SANITIZER
-  Affected: all modules
+DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
+  Affected: dcmnet
   Type of modification: Toolkit customization
-  Explanation: When compiling with the GCC undefined behavior sanitizer
-    (-fsanitize=undefined), this macro must be defined to disable certain code
-    in config/tests/arith.cc that would otherwise trigger a runtime error to be
-    raised by the sanitizer and thus prevent the CMake configure phase from
-    completing.
+  Explanation: In DCMTK releases before 3.6.8, some tools incorrectly compare
+    DataSetType for equality with DIMSE_DATASET_PRESENT, instead of checking
+    whether DataSetType is different from DIMSE_DATASET_NULL.  These tools will
+    fail if a different value than 0x0001 is used for this constant.  See DCMTK
+    issue #1045.  The DICOM standard, on the other hand, recommends the value
+    0x0102 if backwards compatibility with ACR-NEMA is desired.  If this is
+    important, compile with this macro enabled.
+
+DCMTK_ENABLE_ICONV_PASSTHROUGH
+  Affected: oficonv
+  Type of modification: Activates feature
+  Explanation: If compiled with this macro, the oficonv library will simply
+    copy input to output during a character set conversion if input and output
+    encoding are the same.  This is more efficient, but means that invalid byte
+    sequences in the source will remain undetected and copied to the target,
+    whereas the default behavior would detect this and stop the conversion.  It
+    is also incompatible with the behavior of the GNU iconv library.
+    In DCMTK 3.6.8, this feature was always enabled.
 
 DCMTK_ENABLE_STRICT_HUFFMAN_TABLE_CHECK
   Affected: dcmjpeg
@@ -93,6 +106,24 @@ DCMTK_GUI
     them to the user or store them in a log file.  See comments in
     ofstd/include/dcmtk/ofstd/ofconsol.h.
 
+DCMTK_IGNORE_BCP195M_CAMELLIA_GCM_REQUIREMENT
+  Affected: dcmtls
+  Type of modification: Enables experimental feature
+  Explanation: Starting with release 3.6.8, DCMTK contains a feature-complete
+    implementation of the "Modified BCP 195 RFC 8996 TLS Secure Transport
+    Connection Profile". Unfortunately, this profile cannot be implemented
+    with any current version of OpenSSL or LibreSSL because the DICOM committee
+    has declared support for the TLS 1.2 Camellia ciphersuites in GCM mode
+    mandatory, and these are not supported in either OpenSSL or LibreSSL.
+    This macro will enable the support for this profile on library and
+    command line tool level, but in a manner that is not fully DICOM compliant
+    (i.e. without the Camellia GCM ciphersuites).
+    Should OpenSSL/LibreSSL add support for these ciphersuites in the
+    future, support for the TLS profile will automatically be enabled
+    when compiling DCMTK against such a future release, because there is
+    a configure test that checks the availability of this feature.
+    This macro is primarily intended for testing purposes.
+
 DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
   Affected: oflog
   Type of modification: Disables feature
@@ -116,6 +147,19 @@ DCMTK_MERGE_STDERR_TO_STDOUT
     mixed into the DICOM file.  The old behavior can be re-activated by
     compiling with this macro.  In this case, DICOM files should never be
     written to stdout as this will be unreliable.
+
+DCMTK_USE_UNIX_SOCKET_QUEUE
+  Affected: ofstd
+  Type of modification: Selects implementation variant
+  Explanation: The implementation of message queues for inter-process
+    communication in DCMTK can either use Windows mailslots, Posix message
+    queues, System V message queues, or a solution based on Unix Domain sockets
+    and a separate thread that handles incoming connections in the message
+    queue server.  When this macro is defined, the implementation based on Unix
+    Domain sockets is preferred when possible (i.e. Unix Domain sockets and
+    threads are available).  This macro can be used on platforms where the use
+    of the other IPC mechanisms causes problems, e.g. because of platform
+    specific limitations to the number of queues permitted system-wide.
 
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
@@ -153,16 +197,6 @@ DISABLE_NAGLE_ALGORITHM
     The default behavior can be changed by setting the environment variable
     TCP_NODELAY accordingly (see config/docs/envvars.txt or
     /usr/local/share/doc/dcmtk-<VERSION>/envvars.txt).
-
-DISABLE_OFSTD_ATOF
-  Affected: all modules
-  Type of modification: Disables feature
-  Explanation: By default, DCMTK uses its own implementation of atof() to
-    convert strings to double numbers in a locale-independent manner.
-    This flag forces DCMTK to use the standard sscanf() function instead, which
-    is normally much faster and gives a higher precision than DCMTK's built in
-    code, but is locale dependent, i.e. cannot be used with locales such as
-    German since DICOM decimal strings always use the Posix locale.
 
 DISABLE_OFSTD_FTOA
   Affected: all modules
@@ -238,6 +272,18 @@ ENABLE_DCMJPLS_INTERLEAVE_NONE
     DCMTK has been ported to CharLS 2.x, another branch of the JPEG-LS library
     that requires a C++14 compiler, however.
 
+ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Re-activates behavior of earlier DCMTK releases
+  Explanation: DCMTK provides an implementation of atof() in class OFStandard
+    that converts strings to double numbers in a locale-independent manner,
+    whereas std::atof(), std::strtod() etc. depend on the global setting of the
+    locale for the current process and may expect a decimal point character
+    other than the period character.
+    The implementation used in DCMTK 3.5.2 to 3.6.8 was found to produce
+    rounding errors in certain cases and has thus been replaced by an
+    iostream-based implementation.
+
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm
   Type of modification: Activates experimental or rarely used feature
@@ -312,6 +358,19 @@ PIXELSTACK_MEMORY_LEAK_WORKAROUND
   Explanation: On certain platforms there seems to be a memory leak in
     DcmDataset::chooseRepresentation().  The work-around activated by this macro
     should solve this issue.
+
+POISON_DEPRECATED_FEATURE_MACROS
+  Affected: all modules
+  Type of modification: Declares deprecated feature macros as "poisoned"
+  Explanation: The osconfig.h file generated by DCMTK at configure time
+    contains a number of deprecated feature macros that are neither used
+    nor tested anymore in DCMTK and will be removed in a future version.
+    When compiling with gcc or clang, this macro will cause the compilation
+    of user code that relies on one of these macros to generate an error.
+    This prevents the use of feature macros that may not be present
+    anymore and thus unintended behavior. Unfortunately, this functionality
+    is not available for MSVC users, since MSVC's "#pragma deprecated(NAME)"
+    does not catch the use of a macro in an #if statement like "#ifdef NAME".
 
 PRINT_REPLACED_DICTIONARY_ENTRIES
   Affected: dcmdata

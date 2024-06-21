@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2019, OFFIS e.V.
+ *  Copyright (C) 1996-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -470,7 +470,7 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
 
     // depending on what kind of supported sequence attribute
     // was passed, we have to insert different attributes
-    DcmTagKey key = element->getTag().getXTag();
+    const DcmTagKey key(element->getTag());
     if( key == DCM_ScheduledProcedureStepSequence )
     {
       newElement = new DcmApplicationEntity( DcmTag( DCM_ScheduledStationAETitle ) );      if( item->insert( newElement ) != EC_Normal ) delete newElement;
@@ -960,11 +960,11 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
   DcmTagKey elementKey, supSequenceElementKey;
 
   // determine the current element's tag
-  elementKey = element->getTag().getXTag();
+  elementKey = element->getTag();
 
   // determine the sequence element's tag, if there is one
   if( supSequenceElement != NULL )
-    supSequenceElementKey = supSequenceElement->getTag().getXTag();
+    supSequenceElementKey = supSequenceElement->getTag();
 
   // initialize result variable
   OFBool isSupportedMatchingKeyAttribute = OFFalse;
@@ -1076,6 +1076,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_AdditionalPatientHistory                          (0010,21b0)  LT  O  3  (from the Patient Medical Module)
 //                   DCM_LastMenstrualDate                                 (0010,21d0)  DA  O  3  (from the Patient Medical Module)
 //                   DCM_InstitutionAddress                                (0008,0081)  ST  O  3  (from the Visit Identification Module)
+//                   DCM_InstitutionalDepartmentName                       (0008,1040)  LO  O  3  (from the Visit Identification Module)
 //                   DCM_OtherPatientNames                                 (0010,1001)  PN  O  3  (from the Patient Identification Module)
 //                   DCM_PatientAddress                                    (0010,1040)  LO  O  3  (from the Patient Demographic Module)
 //                   DCM_MilitaryRank                                      (0010,1080)  LO  O  3  (from the Patient Demographic Module)
@@ -1111,11 +1112,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
   DcmTagKey elementKey, supSequenceElementKey;
 
   // determine the current element's tag
-  elementKey = element->getTag().getXTag();
+  elementKey = element->getTag();
 
   // determine the sequence element's tag, if there is one
   if( supSequenceElement != NULL )
-    supSequenceElementKey = supSequenceElement->getTag().getXTag();
+    supSequenceElementKey = supSequenceElement->getTag();
 
   // initialize result variable
   OFBool isSupportedReturnKeyAttribute = OFFalse;
@@ -1199,6 +1200,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_AdditionalPatientHistory                          ||
         elementKey == DCM_LastMenstrualDate                                 ||
         elementKey == DCM_InstitutionAddress                                ||
+        elementKey == DCM_InstitutionalDepartmentName                       ||
         elementKey == DCM_OtherPatientNames                                 ||
         elementKey == DCM_PatientAddress                                    ||
         elementKey == DCM_MilitaryRank                                      ||

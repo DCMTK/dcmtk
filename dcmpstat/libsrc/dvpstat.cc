@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -578,14 +578,14 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
       currentImageSelectedFrame = 1; // default: first frame
 
       // get Modality
-      if (EC_Normal == dataset->search(DCM_Modality, stack, ESM_fromHere, OFFalse))
+      if (EC_Normal == dataset->search(DCM_Modality, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_CS))
       {
         currentImageModality = *((DcmCodeString *)(stack.top()));
       }
       stack.clear();
 
       // determine default Presentation LUT Shape
-      if (EC_Normal == dataset->search(DCM_PhotometricInterpretation, stack, ESM_fromHere, OFFalse))
+      if (EC_Normal == dataset->search(DCM_PhotometricInterpretation, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_CS))
       {
          DcmCodeString *photometricInterpretation = (DcmCodeString *)(stack.top());
          if (photometricInterpretation->getVM() == 1)
@@ -598,12 +598,12 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
       stack.clear();
 
       // get SOP class UID and SOP instance UID.
-      if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse)))
+      if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_UI))
       {
         result = ((DcmUniqueIdentifier *)(stack.top()))->getString(currentImageSOPClassUID);
       }
       stack.clear();
-      if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse)))
+      if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_UI))
       {
         result = ((DcmUniqueIdentifier *)(stack.top()))->getString(currentImageSOPInstanceUID);
       }
@@ -745,13 +745,13 @@ OFCondition DVPresentationState::setRectShutter(Sint32 lv, Sint32 rv, Sint32 uh,
   OFCondition result=EC_Normal;
   char buf[80];
 
-  sprintf(buf, "%ld", (long)lv);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)lv);
   result = shutterLeftVerticalEdge.putString(buf);
-  sprintf(buf, "%ld", (long)rv);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)rv);
   if (EC_Normal==result) result = shutterRightVerticalEdge.putString(buf);
-  sprintf(buf, "%ld", (long)uh);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)uh);
   if (EC_Normal==result) result = shutterUpperHorizontalEdge.putString(buf);
-  sprintf(buf, "%ld", (long)lh);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)lh);
   if (EC_Normal==result) result = shutterLowerHorizontalEdge.putString(buf);
   if ((EC_Normal==result)&&(shutterPresentationValue.getLength()==0))
       result = shutterPresentationValue.putUint16(0,0);
@@ -770,9 +770,9 @@ OFCondition DVPresentationState::setCircularShutter(Sint32 centerX, Sint32 cente
   OFCondition result=EC_Normal;
   char buf[80];
 
-  sprintf(buf, "%ld\\%ld", (long)centerY, (long)centerX);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld\\%ld", (long)centerY, (long)centerX);
   result = centerOfCircularShutter.putString(buf);
-  sprintf(buf, "%ld", (long)radius);
+  OFStandard::snprintf(buf, sizeof(buf), "%ld", (long)radius);
   if (EC_Normal==result) result = radiusOfCircularShutter.putString(buf);
   if ((EC_Normal==result)&&(shutterPresentationValue.getLength()==0))
       result = shutterPresentationValue.putUint16(0,0);
@@ -794,7 +794,7 @@ OFCondition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
   if (result==EC_Normal)
   {
     char buf[80];
-    sprintf(buf, "\\%ld\\%ld", (long)y, (long)x);
+    OFStandard::snprintf(buf, sizeof(buf), "\\%ld\\%ld", (long)y, (long)x);
     aString += buf;
     result = verticesOfThePolygonalShutter.putOFStringArray(aString);
   }
@@ -1124,40 +1124,36 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         numEntries16 = (Uint16)numberOfEntries;
 
       /* LUT Descriptor */
-      DcmElement *lutDescriptor = NULL;
-      if (firstMapped < 0)
+      DcmUnsignedShort *lutDescriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
+      if (lutDescriptor == NULL) status = EC_MemoryExhausted;
+      else
       {
-        // LUT Descriptor is SS
-        lutDescriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
-        if (lutDescriptor != NULL)
+        if (firstMapped < 0)
         {
-            status = lutDescriptor->putSint16((Sint16)numEntries16, 0);
-            if (EC_Normal == status)
-              status = lutDescriptor->putSint16((Sint16)firstMapped, 1);
-            if (EC_Normal == status)
-              status = lutDescriptor->putSint16((Sint16)numberOfBits, 2);
-        } else
-          status = EC_MemoryExhausted;
-      } else {
-        // LUT Descriptor is US
-        lutDescriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
-        if (lutDescriptor != NULL)
-        {
-            status = lutDescriptor->putUint16(numEntries16, 0);
-            if (EC_Normal == status)
-              status = lutDescriptor->putUint16((Uint16)firstMapped, 1);
-            if (EC_Normal == status)
-              status = lutDescriptor->putUint16((Uint16)numberOfBits, 2);
-        } else
-            status = EC_MemoryExhausted;
+          // LUT Descriptor is SS
+          DcmSignedShort ldesc(DcmTag(DCM_LUTDescriptor, EVR_SS));
+          status = ldesc.putSint16((Sint16)numEntries16, 0);
+          if (EC_Normal == status) status = ldesc.putSint16((Sint16)firstMapped, 1);
+          if (EC_Normal == status) status = ldesc.putSint16((Sint16)numberOfBits, 2);
+          if (EC_Normal == status)
+          {
+            // copy content of SS element into DcmUnsignedShort using DcmElement::operator=
+            DcmElement *ld = lutDescriptor;
+            ld->operator=(ldesc);
+          }
+        } else {
+          // LUT Descriptor is US
+          status = lutDescriptor->putUint16(numEntries16, 0);
+          if (EC_Normal == status) status = lutDescriptor->putUint16((Uint16)firstMapped, 1);
+          if (EC_Normal == status) status = lutDescriptor->putUint16((Uint16)numberOfBits, 2);
+        }
       }
 
       /* LUT Data */
-      DcmElement *lutData = NULL;
+      DcmUnsignedShort *lutData = NULL;
       if (status == EC_Normal)
       {
-        // LUT Data as OW, because of max size = 64K
-        lutData = new DcmOtherByteOtherWord(DcmTag(DCM_LUTData, EVR_OW));
+        lutData = new DcmUnsignedShort(DcmTag(DCM_LUTData, EVR_US));
         if (lutData != NULL)
           status = lutData->putUint16Array(data, numberOfEntries);
         else
@@ -1172,7 +1168,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         char gammabuf[16];
         OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
 
-        sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
+        OFStandard::snprintf(explanation, sizeof(explanation), "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
 
         lutExplanation = new DcmLongString(DCM_LUTExplanation);
@@ -1186,15 +1182,14 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       if (status == EC_Normal)
       {
         if ((lutDescriptor != NULL) && (lutData != NULL) && (lutExplanation !=  NULL))
-          status = setVOILUT(*(DcmUnsignedShort *)lutDescriptor, *(DcmUnsignedShort *)lutData, *lutExplanation, applicability);
+          status = setVOILUT(*lutDescriptor, *lutData, *lutExplanation, applicability);
       }
 
       /* delete temporary dcmtk structures */
       delete lutDescriptor;
       delete lutData;
       delete lutExplanation;
-    } else
-      status = EC_MemoryExhausted;
+    } else status = EC_MemoryExhausted;
     delete[] data;
   }
   return status;

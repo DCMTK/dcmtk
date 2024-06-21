@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,10 +19,10 @@
  *
  */
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmtract/trctrack.h"
 #include "dcmtk/dcmtract/trctypes.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcelem.h"
 
 // default constructor (protected, instance creation via create() function)
 TrcTrack::TrcTrack()

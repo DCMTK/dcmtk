@@ -1,4 +1,4 @@
-.TH "dcm2pnm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pnm" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
@@ -17,7 +17,7 @@ The \fBdcm2pnm\fP utility reads a DICOM image, converts the pixel data according
 .PP
 .PP
 .nf
-dcmfile-in  DICOM input filename to be converted
+dcmfile-in  DICOM input filename to be converted ('-' for stdin)
 
 bitmap-out  output filename to be written (default: stdout)
 .fi
@@ -130,7 +130,7 @@ scaling:
           ignore pixel aspect ratio when scaling
 
   +i    --interpolate  [n]umber of algorithm: integer
-          use interpolation when scaling (1..4, default: 1)
+          use interpolation when scaling (1\&.\&.4, default: 1)
 
   -i    --no-interpolation
           no interpolation when scaling
@@ -210,30 +210,30 @@ overlay:
           do not display overlays
 
   +O    --display-overlay  [n]umber: integer
-          display overlay n (0..16, 0=all, default: +O 0)
+          display overlay n (0\&.\&.16, 0=all, default: +O 0)
 
   +Omr  --ovl-replace
-          use overlay mode "Replace"
+          use overlay mode 'Replace'
           (default for Graphic overlays)
 
   +Omt  --ovl-threshold
-          use overlay mode "Threshold Replace"
+          use overlay mode 'Threshold Replace'
 
   +Omc  --ovl-complement
-          use overlay mode "Complement"
+          use overlay mode 'Complement'
 
   +Omv  --ovl-invert
-          use overlay mode "Invert Bitmap"
+          use overlay mode 'Invert Bitmap'
 
   +Omi  --ovl-roi
-          use overlay mode "Region of Interest"
+          use overlay mode 'Region of Interest'
           (default for ROI overlays)
 
   +Osf  --set-foreground  [d]ensity: float
-          set overlay foreground density (0..1, default: 1)
+          set overlay foreground density (0\&.\&.1, default: 1)
 
   +Ost  --set-threshold  [d]ensity: float
-          set overlay threshold density (0..1, default: 0.5)
+          set overlay threshold density (0\&.\&.1, default: 0\&.5)
 
 display LUT transformation:
 
@@ -365,7 +365,7 @@ image format:
           write 16-bit ASCII PGM/PPM
 
   +opn  --write-n-bit-pnm  [n]umber: integer
-          write n-bit ASCII PGM/PPM (1..32)
+          write n-bit ASCII PGM/PPM (1\&.\&.32)
 
   +ob   --write-bmp
           write 8-bit (monochrome) or 24-bit (color) BMP
@@ -393,7 +393,6 @@ image format:
 .PP
 The following preferred interpolation algorithms can be selected using the \fI--interpolate\fP option:
 .PP
-.PD 0
 .IP "\(bu" 2
 1 = free scaling algorithm with interpolation from pbmplus toolkit
 .IP "\(bu" 2
@@ -402,6 +401,7 @@ The following preferred interpolation algorithms can be selected using the \fI--
 3 = magnification algorithm with bilinear interpolation from Eduard Stanescu
 .IP "\(bu" 2
 4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
+.PP
 .PP
 The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library\&. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration\&.
 .PP
@@ -412,11 +412,11 @@ The \fI--write-png\fP option is only available when DCMTK has been configured an
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
-RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
+RLELosslessTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.5
 .fi
 .PP
 .PP
@@ -452,4 +452,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmj2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1998-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

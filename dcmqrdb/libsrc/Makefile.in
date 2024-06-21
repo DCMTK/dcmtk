@@ -16,9 +16,10 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
+dcmtlsdir = $(top_srcdir)/../dcmtls
 
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
-	-I$(ofstddir)/include -I$(oflogdir)/include
+	-I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmtlsdir)/include
 LOCALDEFS =
 
 objs = dcmqrcbf.o dcmqrcbg.o dcmqrcbm.o dcmqrcbs.o dcmqrcnf.o dcmqrdbi.o  \

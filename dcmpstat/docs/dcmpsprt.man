@@ -24,7 +24,7 @@ which performs communication with the printer.
 \section dcmpsprt_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM image file(s) to be printed
+dcmfile-in  DICOM image file(s) to be printed ("-" for stdin)
 \endverbatim
 
 \section dcmpsprt_options OPTIONS
@@ -304,7 +304,8 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpsprt_files FILES
 
-<em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample configuration files
+<em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample
+configuration files
 
 \section dcmpsprt_see_also SEE ALSO
 
@@ -312,6 +313,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpsprt_copyright COPYRIGHT
 
-Copyright (C) 1999-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

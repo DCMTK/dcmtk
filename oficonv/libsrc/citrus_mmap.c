@@ -70,7 +70,7 @@ void *lookup_builtin_data_file(const char *path, size_t *len)
     const char *current_path;
     size_t default_path_len;
 #ifdef HAVE_WINDOWS_H
-    char buf[PATH_MAX+1];
+    char buf[OFICONV_PATH_MAX+1];
 #endif
 
     /* check if we are trying to load from the default location */
@@ -92,7 +92,11 @@ void *lookup_builtin_data_file(const char *path, size_t *len)
       if ((current_path[0] == PATH_SEPARATOR) || (current_path[0] == '/')) current_path++;
 
       /* check if the filename starts with csmapper */
+#ifdef HAVE_WINDOWS_H
+      if (0 == strncmp(current_path, "csmapper\\", 9) || 0 == strncmp(current_path, "csmapper/", 9))
+#else
       if (0 == strncmp(current_path, "csmapper/", 9))
+#endif
       {
         current_path += 9;
 
@@ -152,7 +156,11 @@ void *lookup_builtin_data_file(const char *path, size_t *len)
         oficonv_log(1 /* debug */, "oficonv data file '", path, "' not present in built-in library.");
       }
       /* check if the filename starts with esdb */
+#ifdef HAVE_WINDOWS_H
+      else if (0 == strncmp(current_path, "esdb/", 5) || 0 == strncmp(current_path, "esdb\\", 5))
+#else
       else if (0 == strncmp(current_path, "esdb/", 5))
+#endif
       {
         current_path += 5;
 

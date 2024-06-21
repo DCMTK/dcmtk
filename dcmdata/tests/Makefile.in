@@ -18,7 +18,7 @@ oflogdir = $(top_srcdir)/../oflog
 
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(top_srcdir)/libi2d -L$(ofstddir)/libsrc \
-	-L$(oflogdir)/libsrc -L$(top_srcdir)/libdcxml -L$(oficonvdir)/libsrc 
+	-L$(oflogdir)/libsrc -L$(top_srcdir)/libdcxml -L$(oficonvdir)/libsrc
 LOCALLIBS = -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) $(XMLLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 I2DLIBS = -li2d
 LIBDCMXML = -ldcmxml
@@ -26,7 +26,7 @@ LIBDCMXML = -ldcmxml
 objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o tparser.o \
 	tdict.o tvrds.o tvrfd.o tvrui.o tvrol.o tvrov.o tvrsv.o tvruv.o tstrval.o \
 	tspchrs.o tvrpn.o tparent.o tfilter.o tvrcomp.o tmatch.o tnewdcme.o \
-	tgenuid.o tsequen.o titem.o
+	tgenuid.o tsequen.o titem.o ttag.o txfer.o
 
 progs = tests
 

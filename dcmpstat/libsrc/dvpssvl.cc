@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2021, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,7 +42,7 @@ DVPSSoftcopyVOI_PList::DVPSSoftcopyVOI_PList(const DVPSSoftcopyVOI_PList &arg)
   OFListConstIterator(DVPSSoftcopyVOI *) first = arg.list_.begin();
   OFListConstIterator(DVPSSoftcopyVOI *) last = arg.list_.end();
   while (first != last)
-  {     
+  {
     list_.push_back((*first)->clone());
     ++first;
   }
@@ -58,7 +58,7 @@ void DVPSSoftcopyVOI_PList::clear()
   OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
   OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
   while (first != last)
-  {     
+  {
     delete (*first);
     first = list_.erase(first);
   }
@@ -71,8 +71,8 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
   DVPSSoftcopyVOI *newImage = NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
-  
-  if (EC_Normal == dset.search(DCM_SoftcopyVOILUTSequence, stack, ESM_fromHere, OFFalse))
+
+  if (EC_Normal == dset.search(DCM_SoftcopyVOILUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
@@ -85,12 +85,13 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
         if (newImage && ditem)
         {
           result = newImage->read(*ditem);
+          if (result.bad()) return result;
           list_.push_back(newImage);
-        } else result = EC_MemoryExhausted;
+        } else return EC_MemoryExhausted;
       }
     }
-  }    
-  
+  }
+
   return result;
 }
 
@@ -140,13 +141,13 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::findSoftcopyVOI(const char *instanceUID,
 
 DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
     DVPSReferencedSeries_PList& allReferences,
-    const char *sopclassUID, 
-    const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    const char *sopclassUID,
+    const char *instanceUID,
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability)
 {
-  
+
   DVPSSoftcopyVOI *oldArea = findSoftcopyVOI(instanceUID, frame);
   DVPSSoftcopyVOI *newArea = NULL;
   if (oldArea == NULL) newArea = new DVPSSoftcopyVOI();
@@ -178,7 +179,7 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
         break;
       case DVPSB_allImages:
         clear(); // delete all softcopy VOI LUT items
-        break;  
+        break;
     }
   }
 
@@ -192,9 +193,9 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
 
 void DVPSSoftcopyVOI_PList::removeSoftcopyVOI(
     DVPSReferencedSeries_PList& allReferences,
-    const char *instanceUID, 
-    unsigned long frame, 
-    unsigned long numberOfFrames, 
+    const char *instanceUID,
+    unsigned long frame,
+    unsigned long numberOfFrames,
     DVPSObjectApplicability applicability)
 {
   OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
@@ -215,20 +216,20 @@ void DVPSSoftcopyVOI_PList::removeSoftcopyVOI(
       break;
     case DVPSB_allImages:
       clear(); // delete all softcopy VOI LUT items
-      break;  
+      break;
   }
   return;
 }
 
 OFCondition DVPSSoftcopyVOI_PList::createFromImage(
-    DcmItem &dset, 
+    DcmItem &dset,
     DVPSReferencedSeries_PList& allReferences,
-    const char *sopclassUID, 
-    const char *instanceUID, 
+    const char *sopclassUID,
+    const char *instanceUID,
     DVPSVOIActivation voiActivation)
 {
   if (voiActivation == DVPSV_ignoreVOI) return EC_Normal;
-  
+
   OFCondition result = EC_Normal;
   DcmStack stack;
   DcmSequenceOfItems *seq;
@@ -248,29 +249,36 @@ OFCondition DVPSSoftcopyVOI_PList::createFromImage(
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() > 0)
       {
          item = seq->getItem(0);
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(), 
-           stack, ESM_fromHere, OFFalse))
+
+         // LUTDescriptor can be US or SS
+         if ((EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
          {
-           voiLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
+           // We explicitly use DcmElement::operator=(), which works for US and SS
+           DcmElement *vLUTDescriptor = &voiLUTDescriptor;
+           vLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
          }
+
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTExplanation.getTag(), 
-           stack, ESM_fromHere, OFFalse))
+         if (EC_Normal == item->search((DcmTagKey &)voiLUTExplanation.getTag(),
+           stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_LO))
          {
            voiLUTExplanation = *((DcmLongString *)(stack.top()));
          }
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTData.getTag(), 
-           stack, ESM_fromHere, OFFalse))
+         if (EC_Normal == item->search((DcmTagKey &)voiLUTData.getTag(),
+           stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
          {
-           voiLUTData = *((DcmUnsignedShort *)(stack.top()));
+           // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+           DcmElement *vldata = &voiLUTData;
+           vldata->operator=(*(DcmElement *)(stack.top()));
          }
       } else result=EC_TagNotFound;
     }
@@ -278,7 +286,7 @@ OFCondition DVPSSoftcopyVOI_PList::createFromImage(
 
   OFBool haveWindow = ((windowCenter.getVM() > 0) && (windowWidth.getVM() > 0));
   OFBool haveLUT = ((voiLUTDescriptor.getVM() == 3) && (voiLUTData.getLength() > 0));
-  
+
   if (result==EC_Normal)
   {
     DVPSSoftcopyVOI *voi = NULL;

@@ -31,7 +31,7 @@ Beginning with release 3.0 (1996), the software package was renamed to DCMTK
 (DiCoM ToolKit).  It contains a number of improvements over the "European CTN"
 software previously available from OFFIS/Oldenburg University, the most
 important being:
-  - configuration using GNU autoconf
+  - configuration using GNU Autoconf
   - a modality worklist SCP and SCU
   - a new C++ encoding/decoding library
   - support for offline media

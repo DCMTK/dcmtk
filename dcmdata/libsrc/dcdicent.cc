@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -136,16 +136,16 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& 
 
     char tagBuf[16];
 
-    sprintf(tagBuf, "(%04x", e.getGroup());
+    OFStandard::snprintf(tagBuf, sizeof(tagBuf), "(%04x", e.getGroup());
     s << tagBuf;
     if (e.isRepeatingGroup()) {
-        sprintf(tagBuf, "-%04x", e.getUpperGroup());
+        OFStandard::snprintf(tagBuf, sizeof(tagBuf), "-%04x", e.getUpperGroup());
         s << tagBuf;
     }
-    sprintf(tagBuf, ",%04x", e.getElement());
+    OFStandard::snprintf(tagBuf, sizeof(tagBuf), ",%04x", e.getElement());
     s << tagBuf;
     if (e.isRepeatingElement()) {
-        sprintf(tagBuf, "-%04x", e.getUpperElement());
+        OFStandard::snprintf(tagBuf, sizeof(tagBuf), "-%04x", e.getUpperElement());
         s << tagBuf;
     }
     s << ")";

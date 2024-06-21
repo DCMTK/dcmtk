@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,7 +27,6 @@
 #include "dcmtk/dcmiod/ioddef.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofvector.h"
 
 /** Class for managing sets of DICOM attributes (e.g.\ macros and modules).
  *  The data is hold in a container (DcmItem) that can be shared with other
@@ -87,9 +86,11 @@ public:
     void clearData();
 
     /** Set missing values by inventing "default values". Automatically
-     *  called during write() in IODComponent; does nothing in this base
-     *  class implementation but can be overwritten by derived classes if
-     *  default values are desired.
+     *  called during write() in IODComponent. In this bas class implementation,
+     *  this method checks for every rule of this component whether it has a default
+     *  value, and if, invents the attribute if it is not present in the data,
+     *  i.e. creating it with the default value or setting it to the default value
+     *  if no value is present. This happens independently of the requirement type.
      */
     virtual void inventMissing();
 
@@ -179,9 +180,26 @@ public:
      *          for these attributes
      *  @param  destination The destination to write to
      *  @param  componentName The name of the module/component to write
+     *  @param  checkValue If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
+     *          any errors are ignored.
      *  @result EC_Normal if reading was successful, error otherwise
      */
-    static OFCondition write(DcmItem& source, IODRules& rules, DcmItem& destination, const OFString& componentName);
+    static OFCondition write(DcmItem& source, IODRules& rules, DcmItem& destination, const OFString& componentName, const OFBool checkValue);
+
+    /** Get whether attribute value errors will be handled as errors on writing.
+     *  @return OFTrue if attribute value errors are handled as errors on writing, OFFalse otherwise.
+     */
+    virtual bool getValueCheckOnWrite() const;
+
+    /** Set whether attribute values should be checked on writing, i.e. if writing
+     *  should fail if attribute values violate their VR, VM, character set or value length.
+     *  A missing but required value is always considered an error, independent of this setting.
+     *  If set to OFFalse, writing will always succeed, even if attribute value constraints
+     *  are violated. A warning instead of an error will be printed to the logger.
+     *  @param  checkValue If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
+     *          any errors are ignored.
+     */
+    virtual void setValueCheckOnWrite(const OFBool checkValue);
 
 protected:
     /// Shared pointer to the data handled by this class. The item may contain
@@ -193,6 +211,14 @@ protected:
 
     /// The parent component (may be NULL) of this class
     IODComponent* m_Parent;
+
+    /// Denotes whether attribute values should be checked on writing, i.e. if writing
+    /// should fail if attribute values violate their VR, VM, character set or value length.
+    /// A missing but required value is always considered an error, independent of this setting.
+    /// If set to OFFalse, writing will always succeed, even if attribute values constraints
+    /// are violated. A warning instead of an error will be printed to the logger.
+    /// OFTrue if attribute value errors are handled as errors on writing, OFFalse otherwise.
+    OFBool m_CheckValueOnWrite;
 };
 
 /** The class IODModule is an IODComponent without parent component since

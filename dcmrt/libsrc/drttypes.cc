@@ -1,14 +1,12 @@
 /*
  *
- *  Copyright (c) 2008-2021, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (c) 2008-2024, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (C) 2013-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTTypes
  *
  *  Generated manually based on dsrtypes.cc
- *  File created on 2008-12-05
- *  Last modified on 2016-02-12 by Riesmeier
  *
  */
 
@@ -214,9 +212,9 @@ OFCondition DRTTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
     {
-        DcmElement *element = OFstatic_cast(DcmElement *, stack.top());
-        if (element != NULL)
+        if (stack.top()->isElement())
         {
+            DcmElement *element = OFstatic_cast(DcmElement *, stack.top());
             if (checkElementValue(*element, vm, type, result, moduleName))
                 result = element->getOFString(stringValue, 0);
             else

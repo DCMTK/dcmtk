@@ -40,8 +40,8 @@ typedef struct {
 /* Short forms of external names for systems with brain-damaged linkers. */
 
 #ifdef NEED_SHORT_EXTERNAL_NAMES
-#define jpeg_make_c_derived_tbl		jpeg12_make_c_derived_tbl
-#define jpeg_gen_optimal_table		jpeg12_gen_optimal_table
+#define jpeg_make_c_derived_tbl		dcmtk_jpeg12_make_c_derived_tbl
+#define jpeg_gen_optimal_table		dcmtk_jpeg12_gen_optimal_table
 #endif /* NEED_SHORT_EXTERNAL_NAMES */
 
 /* Expand a Huffman table definition into the derived format */

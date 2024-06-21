@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, Open Connections GmbH
+ *  Copyright (C) 2017-2023, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -60,7 +60,7 @@ OFTEST(dcmdata_newDicomElementPrivate)
   // Check whether creation as well as tag and value assignment are correct
   OFCHECK(elem);
   OFCHECK(elem->putOFStringArray(PRIVATE_STRING_VALUE).good());
-  OFCHECK(elem->getTag().getXTag() == DcmTagKey(PRIVATE_ELEMENT_STRINGELEM));
+  OFCHECK(elem->getTag() == DcmTagKey(PRIVATE_ELEMENT_STRINGELEM));
   OFCHECK(elem->getVR() == EVR_LO);
   OFCHECK(elem->putOFStringArray(PRIVATE_STRING_VALUE).good());
   char *charVal = NULL;
@@ -72,7 +72,7 @@ OFTEST(dcmdata_newDicomElementPrivate)
   DcmElement* elem2 = NULL;
   // Check whether creation as well as tag and value assignment are correct
   OFCHECK(DcmItem::newDicomElement(elem2, DcmTagKey(PRIVATE_ELEMENT_STRINGELEM), PRIVATE_CREATOR_NAME).good());
-  OFCHECK(elem2->getTag().getXTag() == DcmTagKey(PRIVATE_ELEMENT_STRINGELEM));
+  OFCHECK(elem2->getTag() == DcmTagKey(PRIVATE_ELEMENT_STRINGELEM));
   OFCHECK(elem->getVR() == EVR_LO);
   OFCHECK(elem2->putOFStringArray(PRIVATE_STRING_VALUE).good());
   OFCHECK(elem2->getString(charVal).good());
@@ -88,7 +88,7 @@ OFTEST(dcmdata_newDicomElementPrivate)
   DcmElement *elem_un = NULL;
   elem_un = DcmItem::newDicomElement(DcmTagKey(PRIVATE_ELEMENT_NOTINDICT), PRIVATE_CREATOR_NAME);
   OFCHECK(elem_un);
-  OFCHECK(elem_un->getTag().getXTag() == DcmTagKey(PRIVATE_ELEMENT_NOTINDICT));
+  OFCHECK(elem_un->getTag() == DcmTagKey(PRIVATE_ELEMENT_NOTINDICT));
   OFCHECK(elem_un->getVR() == EVR_UNKNOWN);
   delete elem_un;
 

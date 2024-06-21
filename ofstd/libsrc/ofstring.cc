@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,6 +37,7 @@
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 static const char* verify_string(const char *s)
 {
@@ -410,7 +411,11 @@ OFString::reserve (size_t res_arg)
                 OFBitmanipTemplate<char>::copyMem(this->theCString, newstr, len);
                 usedSpace = len;
             }
+// suppress spurious gcc 12 warning
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW
             OFBitmanipTemplate<char>::zeroMem(newstr + usedSpace, res_arg - usedSpace);
+#include DCMTK_DIAGNOSTIC_POP
             char* oldstr = this->theCString;
             this->theCString = newstr;
             delete[] oldstr;
@@ -805,7 +810,11 @@ STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFString& s)
 
 STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s)
 {
+// suppress spurious gcc 12 warning
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_STRINGOP_OVERFLOW
     s.resize(0);
+#include DCMTK_DIAGNOSTIC_POP
     char c = '\0';
     size_t n = s.max_size();
     if (i.width() > 0) {

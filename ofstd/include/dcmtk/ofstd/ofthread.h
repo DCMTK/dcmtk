@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -239,10 +239,7 @@ public:
 private:
 
   /** thread specific data key resource */
-#ifdef HAVE_CXX_VOLATILE
-  volatile
-#endif
-  void *theKey;
+  volatile void *theKey;
 
   /** unimplemented private copy constructor */
   OFThreadSpecificData(const OFThreadSpecificData& arg);
@@ -311,10 +308,7 @@ public:
 
 private:
   /** semaphore resource */
-#ifdef HAVE_CXX_VOLATILE
-  volatile
-#endif
-  void * theSemaphore;
+  volatile void * theSemaphore;
 
   /** unimplemented private copy constructor */
   OFSemaphore(const OFSemaphore& arg);
@@ -386,10 +380,7 @@ public:
 
 private:
   /** mutex resource */
-#ifdef HAVE_CXX_VOLATILE
-  volatile
-#endif
-  void * theMutex;
+  volatile void * theMutex;
 
   /** unimplemented private copy constructor */
   OFMutex(const OFMutex& arg);
@@ -485,10 +476,7 @@ public:
 
 private:
   /** read/write lock resource */
-#ifdef HAVE_CXX_VOLATILE
-  volatile
-#endif
-  void * theLock;
+  volatile void * theLock;
 
   /** unimplemented private copy constructor */
   OFReadWriteLock(const OFReadWriteLock& arg);

@@ -340,7 +340,7 @@ _citrus_mapper_std_mapper_init(struct _citrus_mapper_area * ma ,
     struct _citrus_mapper_traits * mt, size_t lenmt)
 {
     struct _citrus_mapper_std *ms;
-    char path[PATH_MAX];
+    char path[OFICONV_PATH_MAX];
     const char *type;
     int id, ret;
     (void) ma;

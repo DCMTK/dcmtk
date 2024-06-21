@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2022, OFFIS e.V.
+ *  Copyright (C) 2002-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1128,6 +1128,18 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
                                               const OFString &referencedFileID,
                                               const OFFilename &sourceFilename);
 
+    /** create or update inventory record and copy required values from dataset
+     *  @param record record to be updated, use NULL to create a new one
+     *  @param fileformat DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new or updated record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildInventoryRecord(DcmDirectoryRecord *record,
+                                             DcmFileFormat *fileformat,
+                                             const OFString &referencedFileID,
+                                             const OFFilename &sourceFilename);
+
     /** create or update image record and copy required values from dataset
      *  @param record record to be updated, use NULL to create a new one
      *  @param fileformat DICOM dataset of the current file
@@ -1231,7 +1243,9 @@ class DCMTK_DCMDATA_EXPORT DicomDirInterface
      */
     void inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent);
 
-    /** invent missing type 1 attributes for all child records (from instance level)
+    /** invent missing type 1 attributes for all child records (from instance level).
+     *  This method is currently limited to the identifying instance-level attributes
+     *  such as Instance Number (0020,0013) or Overlay Number (0020,0022).
      *  @param parent invent missing attributes for all children of this record
      */
     void inventMissingInstanceLevelAttributes(DcmDirectoryRecord *parent);

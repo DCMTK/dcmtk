@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,9 +19,10 @@
  *
  */
 
-#include "dcmtk/dcmiod/modcommoninstanceref.h"
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmiod/modcommoninstanceref.h"
 #include "dcmtk/dcmiod/iodutil.h" // for static helpers
+#include "dcmtk/dcmdata/dcvrui.h"
 
 const OFString IODCommonInstanceReferenceModule::m_ComponentName = "CommonInstanceReferenceModule";
 const OFString IODCommonInstanceReferenceModule::StudiesOtherInstancesItem::m_ComponentName

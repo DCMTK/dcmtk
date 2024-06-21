@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -28,6 +28,7 @@ DRTIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     BeamType(DCM_BeamType),
     DepthDoseParametersSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     DeviceSerialNumber(DCM_DeviceSerialNumber),
+    EntityLongLabel(DCM_EntityLongLabel),
     FinalCumulativeMetersetWeight(DCM_FinalCumulativeMetersetWeight),
     FixationEye(DCM_FixationEye),
     FixationLightAzimuthalAngle(DCM_FixationLightAzimuthalAngle),
@@ -36,6 +37,7 @@ DRTIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     InstitutionAddress(DCM_InstitutionAddress),
     InstitutionName(DCM_InstitutionName),
     InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     IonBeamLimitingDeviceSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     IonBlockSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     IonControlPointSequence(emptyDefaultItem /*emptyDefaultSequence*/),
@@ -89,6 +91,7 @@ DRTIonBeamSequence::Item::Item(const Item &copy)
     BeamType(copy.BeamType),
     DepthDoseParametersSequence(copy.DepthDoseParametersSequence),
     DeviceSerialNumber(copy.DeviceSerialNumber),
+    EntityLongLabel(copy.EntityLongLabel),
     FinalCumulativeMetersetWeight(copy.FinalCumulativeMetersetWeight),
     FixationEye(copy.FixationEye),
     FixationLightAzimuthalAngle(copy.FixationLightAzimuthalAngle),
@@ -97,6 +100,7 @@ DRTIonBeamSequence::Item::Item(const Item &copy)
     InstitutionAddress(copy.InstitutionAddress),
     InstitutionName(copy.InstitutionName),
     InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(copy.InstitutionalDepartmentTypeCodeSequence),
     IonBeamLimitingDeviceSequence(copy.IonBeamLimitingDeviceSequence),
     IonBlockSequence(copy.IonBlockSequence),
     IonControlPointSequence(copy.IonControlPointSequence),
@@ -158,6 +162,7 @@ DRTIonBeamSequence::Item &DRTIonBeamSequence::Item::operator=(const Item &copy)
         BeamType = copy.BeamType;
         DepthDoseParametersSequence = copy.DepthDoseParametersSequence;
         DeviceSerialNumber = copy.DeviceSerialNumber;
+        EntityLongLabel = copy.EntityLongLabel;
         FinalCumulativeMetersetWeight = copy.FinalCumulativeMetersetWeight;
         FixationEye = copy.FixationEye;
         FixationLightAzimuthalAngle = copy.FixationLightAzimuthalAngle;
@@ -166,6 +171,7 @@ DRTIonBeamSequence::Item &DRTIonBeamSequence::Item::operator=(const Item &copy)
         InstitutionAddress = copy.InstitutionAddress;
         InstitutionName = copy.InstitutionName;
         InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
+        InstitutionalDepartmentTypeCodeSequence = copy.InstitutionalDepartmentTypeCodeSequence;
         IonBeamLimitingDeviceSequence = copy.IonBeamLimitingDeviceSequence;
         IonBlockSequence = copy.IonBlockSequence;
         IonControlPointSequence = copy.IonControlPointSequence;
@@ -218,6 +224,7 @@ void DRTIonBeamSequence::Item::clear()
         /* clear all DICOM attributes */
         BeamNumber.clear();
         BeamName.clear();
+        EntityLongLabel.clear();
         BeamDescription.clear();
         BeamType.clear();
         RadiationType.clear();
@@ -231,6 +238,7 @@ void DRTIonBeamSequence::Item::clear()
         InstitutionName.clear();
         InstitutionAddress.clear();
         InstitutionalDepartmentName.clear();
+        InstitutionalDepartmentTypeCodeSequence.clear();
         ManufacturerModelName.clear();
         DeviceSerialNumber.clear();
         PrimaryDosimeterUnit.clear();
@@ -279,6 +287,7 @@ OFBool DRTIonBeamSequence::Item::isEmpty()
 {
     return BeamNumber.isEmpty() &&
            BeamName.isEmpty() &&
+           EntityLongLabel.isEmpty() &&
            BeamDescription.isEmpty() &&
            BeamType.isEmpty() &&
            RadiationType.isEmpty() &&
@@ -292,6 +301,7 @@ OFBool DRTIonBeamSequence::Item::isEmpty()
            InstitutionName.isEmpty() &&
            InstitutionAddress.isEmpty() &&
            InstitutionalDepartmentName.isEmpty() &&
+           InstitutionalDepartmentTypeCodeSequence.isEmpty() &&
            ManufacturerModelName.isEmpty() &&
            DeviceSerialNumber.isEmpty() &&
            PrimaryDosimeterUnit.isEmpty() &&
@@ -350,6 +360,7 @@ OFCondition DRTIonBeamSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, BeamNumber, "1", "1", "IonBeamSequence");
         getAndCheckElementFromDataset(item, BeamName, "1", "1", "IonBeamSequence");
+        getAndCheckElementFromDataset(item, EntityLongLabel, "1", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, BeamDescription, "1", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, BeamType, "1", "1", "IonBeamSequence");
         getAndCheckElementFromDataset(item, RadiationType, "1", "1", "IonBeamSequence");
@@ -363,6 +374,7 @@ OFCondition DRTIonBeamSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, InstitutionName, "1", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, InstitutionAddress, "1", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, InstitutionalDepartmentName, "1", "3", "IonBeamSequence");
+        InstitutionalDepartmentTypeCodeSequence.read(item, "1-n", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, ManufacturerModelName, "1", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, DeviceSerialNumber, "1", "3", "IonBeamSequence");
         getAndCheckElementFromDataset(item, PrimaryDosimeterUnit, "1", "1", "IonBeamSequence");
@@ -417,6 +429,7 @@ OFCondition DRTIonBeamSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(BeamNumber), "1", "1", "IonBeamSequence");
         addElementToDataset(result, item, new DcmLongString(BeamName), "1", "1", "IonBeamSequence");
+        addElementToDataset(result, item, new DcmLongString(EntityLongLabel), "1", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmShortText(BeamDescription), "1", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(BeamType), "1", "1", "IonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(RadiationType), "1", "1", "IonBeamSequence");
@@ -430,6 +443,7 @@ OFCondition DRTIonBeamSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(InstitutionName), "1", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmShortText(InstitutionAddress), "1", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmLongString(InstitutionalDepartmentName), "1", "3", "IonBeamSequence");
+        if (result.good()) result = InstitutionalDepartmentTypeCodeSequence.write(item, "1-n", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmLongString(ManufacturerModelName), "1", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmLongString(DeviceSerialNumber), "1", "3", "IonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(PrimaryDosimeterUnit), "1", "1", "IonBeamSequence");
@@ -526,6 +540,15 @@ OFCondition DRTIonBeamSequence::Item::getDeviceSerialNumber(OFString &value, con
         return EC_IllegalCall;
     else
         return getStringValueFromElement(DeviceSerialNumber, value, pos);
+}
+
+
+OFCondition DRTIonBeamSequence::Item::getEntityLongLabel(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(EntityLongLabel, value, pos);
 }
 
 
@@ -1021,6 +1044,19 @@ OFCondition DRTIonBeamSequence::Item::setDeviceSerialNumber(const OFString &valu
         result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = DeviceSerialNumber.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTIonBeamSequence::Item::setEntityLongLabel(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = EntityLongLabel.putOFStringArray(value);
     }
     return result;
 }
@@ -1577,10 +1613,12 @@ OFCondition DRTIonBeamSequence::gotoFirstItem()
 OFCondition DRTIonBeamSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

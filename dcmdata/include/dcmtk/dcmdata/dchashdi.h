@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,7 +92,7 @@ public:
 
     /** find an entry in the set
      *  @param key tag key of the entry to be searched for
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      *  @return pointer to entry (if found), otherwise NULL
      */
     DcmDictEntry *find(const DcmTagKey& key, const char *privCreator);
@@ -224,14 +224,14 @@ public:
 
     /** hash table lookup for the given tag key and private creator name
      *  @param key tag key of the entry to be searched for
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      *  @return pointer to entry (if found), otherwise NULL
      */
     const DcmDictEntry* get(const DcmTagKey& key, const char *privCreator) const;
 
-    /** deletes the entry for the given tag and private creator
+    /** deletes the entry for the given tag and private creator identifier
      *  @param key tag key of the entry to be deleted
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      */
     void del(const DcmTagKey& key, const char *privCreator);
 
@@ -264,7 +264,7 @@ private:
 
     /** compute hash value for given tag key
      *  @param key pointer to tag key
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      *  @return hash value
      */
     int hash(const DcmTagKey* key, const char *privCreator) const;
@@ -276,18 +276,18 @@ private:
      */
     DcmDictEntry* insertInList(DcmDictEntryList& lst, DcmDictEntry* entry);
 
-    /** removes the entry for the given tag and private creator
+    /** removes the entry for the given tag and private creator identifier
      *  @param lst list to remove from
      *  @param key tag key of the entry to be removed
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      *  @return pointer to removed element, if any
      */
     DcmDictEntry* removeInList(DcmDictEntryList& lst, const DcmTagKey& key, const char *privCreator);
 
-    /** searches entry for the given tag and private creator
+    /** searches entry for the given tag and private creator identifier
      *  @param lst list to search in
      *  @param key tag key of the entry to be searched for
-     *  @param privCreator private creator name, may be NULL
+     *  @param privCreator private creator identifier, may be NULL
      *  @return pointer to found element, NULL if not found
      */
     DcmDictEntry* findInList(DcmDictEntryList& lst, const DcmTagKey& key, const char *privCreator) const;

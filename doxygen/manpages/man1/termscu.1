@@ -1,4 +1,4 @@
-.TH "termscu" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "termscu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 termscu \- DICOM termination SCU
@@ -66,7 +66,7 @@ application entity titles:
 
 other network options:
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes (default: 16384)
 .fi
 .PP
@@ -77,7 +77,7 @@ The \fBtermscu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
-PrivateShutdownSOPClass  1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
+PrivateShutdownSOPClass  1\&.2\&.276\&.0\&.7230010\&.3\&.4\&.1915765545\&.18030\&.917282194\&.0
 .fi
 .PP
 .SH "LOGGING"
@@ -99,4 +99,4 @@ The \fBtermscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2005-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2005-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

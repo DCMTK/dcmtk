@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,7 +37,8 @@ END_EXTERN_C
 
 DcmFileConsumer::DcmFileConsumer(const OFFilename &filename)
 : DcmConsumer()
-, file_()
+, file_container_()
+, file_(file_container_)
 , status_(EC_Normal)
 {
   if (!file_.fopen(filename, "wb"))
@@ -49,6 +50,15 @@ DcmFileConsumer::DcmFileConsumer(const OFFilename &filename)
 
 DcmFileConsumer::DcmFileConsumer(FILE *file)
 : DcmConsumer()
+, file_container_(file)
+, file_(file_container_)
+, status_(EC_Normal)
+{
+}
+
+DcmFileConsumer::DcmFileConsumer(OFFile &file)
+: DcmConsumer()
+, file_container_()
 , file_(file)
 , status_(EC_Normal)
 {
@@ -84,7 +94,7 @@ offile_off_t DcmFileConsumer::avail() const
 offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
 {
   offile_off_t result = 0;
-  if (status_.good() && file_.open() && buf && buflen)
+  if (buflen && buf && status_.good() && file_.open())
   {
 #ifdef WRITE_VERY_LARGE_CHUNKS
     /* This is the old behaviour prior to DCMTK 3.5.5 */
@@ -133,6 +143,12 @@ DcmOutputFileStream::DcmOutputFileStream(const OFFilename &filename)
 }
 
 DcmOutputFileStream::DcmOutputFileStream(FILE *file)
+: DcmOutputStream(&consumer_) // safe because DcmOutputStream only stores pointer
+, consumer_(file)
+{
+}
+
+DcmOutputFileStream::DcmOutputFileStream(OFFile& file)
 : DcmOutputStream(&consumer_) // safe because DcmOutputStream only stores pointer
 , consumer_(file)
 {

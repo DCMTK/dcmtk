@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2018, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 #include "dcmtk/ofstd/ofmath.h"   // for isinf and isnan
 
 // On some platforms, such as OpenIndiana, isinf is defined as a macro,
-// and that inteferes with the OFMath function of the same name.
+// and that interferes with the OFMath function of the same name.
 #ifdef isinf
 #undef isinf
 #endif
@@ -38,13 +38,18 @@
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
 #include DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION
+#include DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS
 template<typename T>
 static void checkMinMax()
 {
-    volatile T max_plus_one( OFnumeric_limits<T>::max() );
-    volatile T lowest_minus_one( OFnumeric_limits<T>::lowest() );
-    ++max_plus_one;
-    --lowest_minus_one;
+    // we need to declare some variables as volatile to prevent the
+    // Clang compiler from optimizing away everything, leading to a test failure:wq
+
+    volatile T max_( OFnumeric_limits<T>::max() );
+    volatile T lowest;
+    if (OFnumeric_limits<T>::is_integer) lowest = OFnumeric_limits<T>::min(); else lowest = -OFnumeric_limits<T>::max();
+    volatile T max_plus_one = max_ + 1;
+    volatile T lowest_minus_one = lowest - 1;
     OFCHECK
     (
         OFnumeric_limits<T>::max() >= max_plus_one ||
@@ -52,10 +57,9 @@ static void checkMinMax()
     );
     OFCHECK
     (
-        OFnumeric_limits<T>::lowest() <= lowest_minus_one ||
+        lowest <= lowest_minus_one ||
         ( OFnumeric_limits<T>::has_infinity && OFMath::isinf( lowest_minus_one ) )
     );
-    OFCHECK( ( OFnumeric_limits<T>::lowest() == OFnumeric_limits<T>::min() ) || !OFnumeric_limits<T>::is_integer );
 }
 #include DCMTK_DIAGNOSTIC_POP
 

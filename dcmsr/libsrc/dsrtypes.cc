@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -333,7 +333,7 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_EnhancedXRayRadiationDoseSR,           UID_EnhancedXRayRadiationDoseSRStorage,              EM_EnhancedEquipment,                                             "SR", "Enhanced X-Ray Radiation Dose SR"},
     {DSRTypes::DT_SpectaclePrescriptionReport,           UID_SpectaclePrescriptionReportStorage,              EM_EnhancedEquipment,                                             "SR", "Spectacle Prescription Report"},
     {DSRTypes::DT_MacularGridThicknessAndVolumeReport,   UID_MacularGridThicknessAndVolumeReportStorage,      EM_EnhancedEquipment,                                             "SR", "Macular Grid Thickness and Volume Report"},
-    {DSRTypes::DT_ImplantationPlanSRDocument,            UID_ImplantationPlanSRDocumentStorage,               EM_EnhancedEquipment,                                             "SR", "Implantation Plan SR Document"},
+    {DSRTypes::DT_ImplantationPlanSRDocument,            UID_ImplantationPlanSRStorage,                       EM_EnhancedEquipment,                                             "SR", "Implantation Plan SR Document"},
     {DSRTypes::DT_Comprehensive3DSR,                     UID_Comprehensive3DSRStorage,                        0,                                                                "SR", "Comprehensive 3D SR"},
     {DSRTypes::DT_RadiopharmaceuticalRadiationDoseSR,    UID_RadiopharmaceuticalRadiationDoseSRStorage,       EM_EnhancedEquipment,                                             "SR", "Radiopharmaceutical Radiation Dose SR"},
     {DSRTypes::DT_ExtensibleSR,                          UID_ExtensibleSRStorage,                             EM_EnhancedEquipment,                                             "SR", "Extensible SR"},
@@ -397,7 +397,8 @@ static const S_PresentationStateTypeNameMap PresentationStateTypeNameMap[] =
     {DSRTypes::PT_AdvancedBlending,         UID_AdvancedBlendingPresentationStateStorage,                   "ABPS"},
     {DSRTypes::PT_VolumeRendering,          UID_VolumeRenderingVolumetricPresentationStateStorage,          "VR-VPS"},
     {DSRTypes::PT_SegmentedVolumeRendering, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage, "SVR-VPS"},
-    {DSRTypes::PT_MultipleVolumeRendering,  UID_MultipleVolumeRenderingVolumetricPresentationStateStorage,  "MVR-VPS"}
+    {DSRTypes::PT_MultipleVolumeRendering,  UID_MultipleVolumeRenderingVolumetricPresentationStateStorage,  "MVR-VPS"},
+    {DSRTypes::PT_VariableModalityLUT,      UID_VariableModalityLUTSoftcopyPresentationStateStorage,        "VML-SPS"}
 };
 
 
@@ -1179,11 +1180,15 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
     {
-        /* copy object from search stack */
-        result = delem.copyFrom(*stack.top());
-        /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-        if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, acceptViolation))
-            result = SR_EC_InvalidValue;
+        if (stack.top()->isElement())
+        {
+            /* copy object from search stack */
+            result = delem.copyFrom(*stack.top());
+            /* we need a reference to the original element in order to determine the SpecificCharacterSet */
+            if (!checkElementValue(OFstatic_cast(DcmElement *, stack.top()), tagKey, vm, type, result, moduleName, acceptViolation))
+                result = SR_EC_InvalidValue;
+        } else
+            result = EC_CorruptedData;
     }
     /* the element could not be found in the dataset */
     else if (!checkElementValue(delem, vm, type, result, moduleName, acceptViolation))
@@ -1204,11 +1209,15 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
     {
-        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
-        /* we need a reference to the original element in order to determine the SpecificCharacterSet */
-        if (!checkElementValue(delem, tagKey, vm, type, result, moduleName, acceptViolation))
-            result = SR_EC_InvalidValue;
-        delem->getOFString(stringValue, 0);
+        if (stack.top()->isElement())
+        {
+            DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+            /* we need a reference to the original element in order to determine the SpecificCharacterSet */
+            if (!checkElementValue(delem, tagKey, vm, type, result, moduleName, acceptViolation))
+                result = SR_EC_InvalidValue;
+            delem->getOFString(stringValue, 0);
+        } else
+            result = EC_CorruptedData;
     } else {
         if ((type == "1") || (type == "2"))
         {
@@ -1366,12 +1375,13 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
 
 
 const char *DSRTypes::numberToString(const size_t number,
-                                     char *stringValue)
+                                     char *stringValue,
+                                     size_t stringLength)
 {
     if (stringValue != NULL)
     {
         /* unsigned long */
-        sprintf(stringValue, "%lu", OFstatic_cast(unsigned long, number));
+        OFStandard::snprintf(stringValue, stringLength, "%lu", OFstatic_cast(unsigned long, number));
     }
     return stringValue;
 }

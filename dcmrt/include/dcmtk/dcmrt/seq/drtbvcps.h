@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTBeamDoseVerificationControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -112,6 +112,20 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
          */
         OFCondition getBeamDosePointSSD(Float32 &value, const unsigned long pos = 0) const;
 
+        /** get BeamDosePointSourceToExternalContourDistance (300a,0094)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBeamDosePointSourceToExternalContourDistance(OFString &value, const signed long pos = 0) const;
+
+        /** get BeamDosePointSourceToExternalContourDistance (300a,0094)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1)
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getBeamDosePointSourceToExternalContourDistance(Float64 &value, const unsigned long pos = 0) const;
+
         /** get CumulativeMetersetWeight (300a,0134)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -163,6 +177,13 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
          */
         OFCondition setBeamDosePointSSD(const Float32 value, const unsigned long pos = 0);
 
+        /** set BeamDosePointSourceToExternalContourDistance (300a,0094)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setBeamDosePointSourceToExternalContourDistance(const OFString &value, const OFBool check = OFTrue);
+
         /** set CumulativeMetersetWeight (300a,0134)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -188,6 +209,8 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
         DcmFloatingPointSingle BeamDosePointEquivalentDepth;
         /// BeamDosePointSSD (300a,008a) vr=FL, vm=1, type=1C
         DcmFloatingPointSingle BeamDosePointSSD;
+        /// BeamDosePointSourceToExternalContourDistance (300a,0094) vr=DS, vm=1, type=3
+        DcmDecimalString BeamDosePointSourceToExternalContourDistance;
         /// CumulativeMetersetWeight (300a,0134) vr=DS, vm=1, type=1
         DcmDecimalString CumulativeMetersetWeight;
         /// ReferencedControlPointIndex (300c,00f0) vr=IS, vm=1, type=1C
@@ -301,13 +324,13 @@ class DCMTK_DCMRT_EXPORT DRTBeamDoseVerificationControlPointSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

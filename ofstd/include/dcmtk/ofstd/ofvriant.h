@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2021, OFFIS e.V.
+ *  Copyright (C) 2016-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,12 +132,15 @@ public:
         new (m_Content) typename traits::first_alternative;
     }
 
-    template<typename T,index_type Index = index_of<T>()>
-    OFvariant( T&& t )
+    // index_of<T>* = nullptr is used as a workaround for VS 2017 when
+    // compiling with HAVE_CXX11 enabled.
+    template<typename T>
+    OFvariant( T&& t, index_of<T>* = nullptr )
     : m_Content()
-    , m_Index( Index )
+    , m_Index( index_of<T>::value )
     {
-        new (m_Content) typename OFvariant_alternative<Index,OFvariant>::type( std::forward<T>( t ) );
+      new (m_Content) typename
+      OFvariant_alternative<index_of<T>::value,OFvariant>::type( std::forward<T>( t ) );
     }
 
     OFvariant( OFvariant& rhs )
@@ -148,14 +151,14 @@ public:
 
     OFvariant( const OFvariant& rhs )
     : m_Content()
-    , m_Index( rhs.index() )
+    , m_Index( OFstatic_cast(index_type, rhs.index()) )
     {
         copy_construct( rhs );
     }
 
     OFvariant( OFvariant&& rhs )
     : m_Content()
-    , m_Index( rhs.index() )
+    , m_Index( OFstatic_cast(index_type, rhs.index()) )
     {
         move_construct( std::move( rhs ) );
     }

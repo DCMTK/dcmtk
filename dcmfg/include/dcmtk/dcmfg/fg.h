@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,8 +24,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dcsequen.h"
-#include "dcmtk/dcmdata/dctagkey.h"
 #include "dcmtk/dcmfg/fgbase.h"
 #include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/ofstd/ofmap.h"

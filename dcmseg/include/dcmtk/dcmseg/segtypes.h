@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmseg/segdef.h"
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmdata/dcvrst.h"
 
 /*
  * *  Logging

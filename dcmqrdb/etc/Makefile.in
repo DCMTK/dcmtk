@@ -11,7 +11,7 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-files = dcmqrscp.cfg
+files = dcmqrscp.cfg dcmqrprf.cfg
 
 
 all:

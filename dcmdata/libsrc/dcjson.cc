@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, OFFIS e.V.
+ *  Copyright (C) 2016-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,11 +76,13 @@ void DcmJsonFormat::escapeControlCharacters(STD_NAMESPACE ostream &out, const OF
 void DcmJsonFormat::normalizeDecimalString(OFString &value)
 {
     // remove all plus characters that may occur in the string.
-    // These are permitted in DICOM but not in Json.
+    // These are permitted in DICOM but not in JSON.
     size_t pos;
     while (OFString_npos != (pos = value.find('+')))
       value.erase(pos,1);
 
+    // check if the first character is a minus sign.
+    // if so, remove it and set "minus" to true
     OFBool minus = OFFalse;
 
     if (value.length() > 0 && value[0] == '-')
@@ -89,20 +91,41 @@ void DcmJsonFormat::normalizeDecimalString(OFString &value)
         minus = OFTrue;
     }
 
+    // remove leading zeroes from the significand
     pos = value.find_first_not_of("0");
 
     if (pos == OFString_npos)
         value = "0";
     else
     {
+        // make sure that the significand does not start
+        // with a period, in this case, prepend a zero
         if (value[pos] == '.')
             value = '0' + value.substr(pos);
         else
             value = value.substr(pos);
     }
 
+    // add back any minus sign
     if (minus)
         value = '-' + value;
+
+    // make sure that the significand does not end
+    // with a period
+    if (OFString_npos != (pos = value.find('.')))
+    {
+      if (pos == value.length() -1)
+      {
+        // number ends with a period. Add a zero
+        value.append("0");
+      }
+      else if ((value[pos+1] < '0') || (value[pos+1] > '9'))
+      {
+        // no digit after period. Insert a zero
+        value.insert(pos+1, "0");
+      }
+    }
+
 }
 
 // Formats the number to JSON standard as IntegerString

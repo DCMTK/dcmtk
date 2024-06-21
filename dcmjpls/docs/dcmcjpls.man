@@ -22,9 +22,9 @@ transfer syntax) and writes the converted image to an output file
 \section dcmcjpls_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ("-" for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section dcmcjpls_options OPTIONS
@@ -387,6 +387,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcjpls_copyright COPYRIGHT
 
-Copyright (C) 2009-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2009-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

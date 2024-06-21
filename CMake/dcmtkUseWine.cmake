@@ -65,11 +65,7 @@ endfunction()
 #
 function(WINE_DETACHED VAR OUTPUT_VAR ERROR_VAR)
     # Prefix to prevent collision of output capturing files
-    if(CMAKE_VERSION VERSION_LESS 2.8.7)
-        string(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" PREFIX)
-    else()
-        string(MD5 PREFIX "${ARGN}")
-    endif()
+    string(MD5 PREFIX "${ARGN}")
     set(OUTPUT_FILE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${PREFIX}_output")
     if(OUTPUT_VAR STREQUAL ERROR_VAR)
         set(ERROR_FILE "${OUTPUT_FILE}")

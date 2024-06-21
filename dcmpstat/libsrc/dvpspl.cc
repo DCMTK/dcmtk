@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2018, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmpstat/dvpspl.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 #include "dcmtk/dcmnet/dimse.h"
@@ -79,29 +80,36 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
       {
          item = seq->getItem(0);
          stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)presentationLUTDescriptor.getTag(), 
-           stack, ESM_fromHere, OFFalse))
+
+         // LUTDescriptor can be US or SS
+         if ((EC_Normal == item->search((DcmTagKey &)presentationLUTDescriptor.getTag(),
+           stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
          {
-           presentationLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
+           // We explicitly use DcmElement::operator=(), which works for US and SS
+           DcmElement *pLUTDescriptor = &presentationLUTDescriptor;
+           pLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
          }
+
          stack.clear();
          if (EC_Normal == item->search((DcmTagKey &)presentationLUTExplanation.getTag(), 
-           stack, ESM_fromHere, OFFalse))
+           stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_LO))
          {
            presentationLUTExplanation = *((DcmLongString *)(stack.top()));
          }
          stack.clear();
          if (EC_Normal == item->search((DcmTagKey &)presentationLUTData.getTag(), 
-           stack, ESM_fromHere, OFFalse))
+           stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
          {
-           presentationLUTData = *((DcmUnsignedShort *)(stack.top()));
+           // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+           DcmElement *pldata = &presentationLUTData;
+           pldata->operator=(*(DcmElement *)(stack.top()));
          }
       } else {
         result=EC_TagNotFound;
@@ -187,10 +195,16 @@ OFCondition DVPSPresentationLUT::write(DcmItem &dset, OFBool withSOPInstance)
         dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
         if (dseq)
         {
-          delem = new DcmUnsignedShort(presentationLUTDescriptor);
+          // we clone presentationLUTDescriptor in order to retain the VR (US or SS)
+          delem = OFstatic_cast(DcmElement *, presentationLUTDescriptor.clone());
           if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
-          delem = new DcmUnsignedShort(presentationLUTData);
+
+          // we write LUTData as OW in order to avoid the 64 kByte limit for US
+          delem = new DcmOtherByteOtherWord(DCM_LUTData);
+          delem->operator=(presentationLUTData);
+          OFstatic_cast(DcmOtherByteOtherWord *, delem)->setVR(EVR_OW);
           if (delem) ditem->insert(delem, OFTrue /*replaceOld*/); else result=EC_MemoryExhausted;
+
           if (presentationLUTExplanation.getLength() >0)
           {
             delem = new DcmLongString(presentationLUTExplanation);

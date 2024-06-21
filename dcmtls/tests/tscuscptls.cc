@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, OFFIS e.V.
+ *  Copyright (C) 2019-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -315,7 +315,7 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
     scpTlsLayer.setPrivateKeyPasswd(PRIVATE_KEY_PWD);
     result = scpTlsLayer.setPrivateKeyFile(PRIVATE_KEY_FILENAME, DCF_Filetype_PEM);
     OFCHECK(result.good());
-    result = scpTlsLayer.setCertificateFile(PUBLIC_SELFSIGNED_CERT_FILENAME, DCF_Filetype_PEM);
+    result = scpTlsLayer.setCertificateFile(PUBLIC_SELFSIGNED_CERT_FILENAME, DCF_Filetype_PEM, TSP_Profile_BCP_195_RFC_8996);
     OFCHECK(result.good());
     OFCHECK(scpTlsLayer.checkPrivateKeyMatchesCertificate());
     scpTlsLayer.setCertificateVerification(DCV_ignoreCertificate);
@@ -397,7 +397,7 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     scpTlsLayer.setPrivateKeyPasswd(PRIVATE_KEY_PWD);
     result = scpTlsLayer.setPrivateKeyFile(PRIVATE_KEY_FILENAME, DCF_Filetype_PEM);
     OFCHECK(result.good());
-    result = scpTlsLayer.setCertificateFile(PUBLIC_SELFSIGNED_CERT_FILENAME, DCF_Filetype_PEM);
+    result = scpTlsLayer.setCertificateFile(PUBLIC_SELFSIGNED_CERT_FILENAME, DCF_Filetype_PEM, TSP_Profile_BCP_195_RFC_8996);
     OFCHECK(result.good());
     OFCHECK(scpTlsLayer.checkPrivateKeyMatchesCertificate());
     scpTlsLayer.setCertificateVerification(DCV_ignoreCertificate);

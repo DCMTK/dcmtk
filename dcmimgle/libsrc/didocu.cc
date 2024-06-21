@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,7 +23,6 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/ofstd/ofstring.h"
 
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diutils.h"
@@ -33,7 +32,7 @@
  *  constructors  *
  *----------------*/
 
-DiDocument::DiDocument(const char *filename,
+DiDocument::DiDocument(const OFFilename &filename,
                        const unsigned long flags,
                        const unsigned long fstart,
                        const unsigned long fcount)
@@ -127,16 +126,16 @@ void DiDocument::convertPixelData()
             if (pobject->ident() == EVR_PixelData)
             {
                 PixelData = OFstatic_cast(DcmPixelData *, pobject);
-                // check for a special (faulty) case where the original pixel data is uncompressed and
-                // the transfer syntax of the dataset refers to encapsulated format (i.e. compression)
+                // check for a special (faulty) case where the original pixel data is uncompressed in
+                // native format and the transfer syntax of the dataset refers to encapsulated format
                 if (Object->ident() == EVR_dataset)
                 {
                     E_TransferSyntax repType = EXS_Unknown;
                     const DcmRepresentationParameter *repParam = NULL;
                     PixelData->getOriginalRepresentationKey(repType, repParam);
-                    if (xfer.isEncapsulated() && !DcmXfer(repType).isEncapsulated())
+                    if (xfer.usesEncapsulatedFormat() && DcmXfer(repType).usesNativeFormat())
                     {
-                        DCMIMGLE_WARN("pixel data is stored in uncompressed format, although "
+                        DCMIMGLE_WARN("pixel data is stored in native format, although "
                             << "the transfer syntax of the dataset refers to encapsulated format");
                     }
                 }
@@ -161,8 +160,8 @@ void DiDocument::convertPixelData()
                     }
                     if (status.good())
                     {
-                        // set transfer syntax to unencapsulated/uncompressed
-                        if (xfer.isEncapsulated())
+                        // set transfer syntax to native format (uncompressed pixel data)
+                        if (xfer.usesEncapsulatedFormat())
                         {
                             Xfer = EXS_LittleEndianExplicit;
                             DCMIMGLE_DEBUG("decompressed complete pixel data in memory: " << PixelData->getLength(Xfer) << " bytes");
@@ -218,7 +217,7 @@ DcmElement *DiDocument::search(const DcmTagKey &tag,
         obj = Object;
     // only search on main dataset level
     if ((obj != NULL) && (obj->search(tag, stack, ESM_fromHere, OFFalse /* searchIntoSub */) == EC_Normal) &&
-        (stack.top()->getLength(Xfer) > 0))
+        (stack.top()->getLength(Xfer) > 0) && stack.top()->isElement())
     {
         return OFstatic_cast(DcmElement *, stack.top());
     }

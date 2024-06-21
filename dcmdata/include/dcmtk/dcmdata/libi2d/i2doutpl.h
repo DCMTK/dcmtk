@@ -43,6 +43,7 @@ extern DCMTK_I2D_EXPORT OFLogger DCM_dcmdataLibi2dLogger;
 class DcmDataset;
 class DcmTagKey;
 
+/** img2dcm output plugin interface serving as a base class for specific output plugins */
 class DCMTK_I2D_EXPORT I2DOutputPlug
 {
 
@@ -63,7 +64,6 @@ public:
 
   /** Virtual function that returns the Storage SOP class UID, the plugin writes.
    *  @param suppSOPs - [out] List containing supported output SOP classes
-   *  @return String containing the Storage SOP class UID
    */
   virtual void supportedSOPClassUIDs(OFList<OFString>& suppSOPs) = 0;
 
@@ -103,7 +103,6 @@ public:
    *         attributes are inserted automatically with a predefined
    *         value (if possible). An existing empty type 1 attribute is
    *         assigned a value, too.
-   *  @return none
    */
   virtual void setValidityChecking(OFBool doChecks,
                                    OFBool insertMissingType2 = OFTrue,
@@ -137,7 +136,9 @@ protected:
    *  (if enabled) and default values are inserted.
    *  @param key - [in] The code sequence tag to be checked/inserted
    *  @param targetDset - [in/out] The dataset to search (and insert) in
-   *  @param defaultValue - [in] The default value to set
+   *  @param codeValue - [in] Code Value to be used
+   *  @param codeMeaning - [in] Code Meaning to be used
+   *  @param codingSchemeDesignator - [in] Coding Scheme Designator to be used
    *  @return Error string, which is empty if no error occurs.
    */
   virtual OFString checkAndInventType1CodeSQ(
@@ -151,6 +152,7 @@ protected:
    *  If not, the tag is inserted (if enabled) with empty value.
    *  @param key - [in] The tag to be checked/inserted
    *  @param targetDset - [in/out] The dataset to search (and insert) in
+   *  @param defaultValue - [in] The default value to set
    *  @return Error string, which is empty if no error occurs.
    */
   virtual OFString checkAndInventType2Attrib(const DcmTagKey& key,

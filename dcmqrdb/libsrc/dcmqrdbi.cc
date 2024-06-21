@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2761,7 +2761,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                    (strcmp(SOPClassUID, UID_EnhancedXRayRadiationDoseSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_SpectaclePrescriptionReportStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ImplantationPlanSRDocumentStorage) == 0) ||
+                   (strcmp(SOPClassUID, UID_ImplantationPlanSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_AcquisitionContextSRStorage) == 0) ||
                    (strcmp(SOPClassUID, UID_SimplifiedAdultEchoSRStorage) == 0) ||
@@ -2808,11 +2808,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     /* is dataset digitally signed? */
     if (strlen(idxRec.InstanceDescription) + 9 < DESCRIPTION_MAX_LENGTH)
     {
-        DcmStack stack;
-        if (dset->search(DCM_DigitalSignaturesSequence, stack, ESM_fromHere, OFTrue /* searchIntoSub */) == EC_Normal)
+        DcmSequenceOfItems *signature_sequence = NULL;
+        if (dset->findAndGetSequence(DCM_DigitalSignaturesSequence, signature_sequence, OFTrue /* searchIntoSub */).good() && signature_sequence)
         {
             /* in principle it should be checked whether there is _any_ non-empty digital signatures sequence, but ... */
-            if (((DcmSequenceOfItems *)stack.top())->card() > 0)
+            if (signature_sequence->card() > 0)
             {
                 if (strlen(idxRec.InstanceDescription) > 0)
                     OFStandard::strlcat(idxRec.InstanceDescription, " (Signed)", DESCRIPTION_MAX_LENGTH+1);
@@ -3123,8 +3123,8 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
     }
 
     if (handle_) {
-        sprintf (handle_ -> storageArea,"%s", storageArea);
-        sprintf (handle_ -> indexFilename,"%s%c%s", storageArea, PATH_SEPARATOR, DBINDEXFILE);
+        OFStandard::snprintf(handle_->storageArea, sizeof(handle_->storageArea), "%s", storageArea);
+        OFStandard::snprintf(handle_->indexFilename, sizeof(handle_->indexFilename), "%s%c%s", storageArea, PATH_SEPARATOR, DBINDEXFILE);
 
         /* create index file if it does not already exist */
         FILE* f = fopen(handle_->indexFilename, "ab");
@@ -3183,7 +3183,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
                 // write magic word and version number to the buffer
                 // then write it to the file
                 char header[DBHEADERSIZE + 1];
-                sprintf( header, DBMAGIC "%.2X", DBVERSION );
+                OFStandard::snprintf(header, sizeof(header), DBMAGIC "%.2X", DBVERSION );
                 if ( write( handle_ -> pidx, header, DBHEADERSIZE ) != DBHEADERSIZE )
                 {
                     DCMQRDB_ERROR(handle_->indexFilename << ": " << OFStandard::getLastSystemErrorCode().message());
@@ -3255,9 +3255,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
 
     const char *m = dcmSOPClassUIDToModality(SOPClassUID);
     if (m==NULL) m = "XX";
-    sprintf(prefix, "%s_", m);
+    OFStandard::snprintf(prefix, sizeof(prefix), "%s_", m);
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
-    unsigned int seed = (unsigned int)time(NULL);
+
+    // Make seed static so that multiple/concurrent calls to this method
+    // will not use a seed that is initialized by the same time. Instead,
+    // rely on a seed that is updated by each call to makeFilename below, thus
+    // resulting in more "randomness" when called within the same second.
+    static unsigned int seed = (unsigned int)time(NULL);
     newImageFileName[0]=0; // return empty string in case of error
     if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename))
         return QR_EC_IndexDatabaseError;

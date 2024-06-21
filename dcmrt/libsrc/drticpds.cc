@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTIonControlPointDeliverySequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -50,6 +50,7 @@ DRTIonControlPointDeliverySequence::Item::Item(const OFBool emptyDefaultItem)
     ScanSpotPositionMap(DCM_ScanSpotPositionMap),
     ScanSpotPrescribedIndices(DCM_ScanSpotPrescribedIndices),
     ScanSpotReordered(DCM_ScanSpotReordered),
+    ScanSpotSizesDelivered(DCM_ScanSpotSizesDelivered),
     ScanSpotTimeOffset(DCM_ScanSpotTimeOffset),
     ScanSpotTuneID(DCM_ScanSpotTuneID),
     ScanningSpotSize(DCM_ScanningSpotSize),
@@ -99,6 +100,7 @@ DRTIonControlPointDeliverySequence::Item::Item(const Item &copy)
     ScanSpotPositionMap(copy.ScanSpotPositionMap),
     ScanSpotPrescribedIndices(copy.ScanSpotPrescribedIndices),
     ScanSpotReordered(copy.ScanSpotReordered),
+    ScanSpotSizesDelivered(copy.ScanSpotSizesDelivered),
     ScanSpotTimeOffset(copy.ScanSpotTimeOffset),
     ScanSpotTuneID(copy.ScanSpotTuneID),
     ScanningSpotSize(copy.ScanningSpotSize),
@@ -156,6 +158,7 @@ DRTIonControlPointDeliverySequence::Item &DRTIonControlPointDeliverySequence::It
         ScanSpotPositionMap = copy.ScanSpotPositionMap;
         ScanSpotPrescribedIndices = copy.ScanSpotPrescribedIndices;
         ScanSpotReordered = copy.ScanSpotReordered;
+        ScanSpotSizesDelivered = copy.ScanSpotSizesDelivered;
         ScanSpotTimeOffset = copy.ScanSpotTimeOffset;
         ScanSpotTuneID = copy.ScanSpotTuneID;
         ScanningSpotSize = copy.ScanningSpotSize;
@@ -206,6 +209,7 @@ void DRTIonControlPointDeliverySequence::Item::clear()
         ScanSpotMetersetsDelivered.clear();
         ScanSpotTimeOffset.clear();
         ScanningSpotSize.clear();
+        ScanSpotSizesDelivered.clear();
         NumberOfPaintings.clear();
         ScanSpotReordered.clear();
         ScanSpotPrescribedIndices.clear();
@@ -255,6 +259,7 @@ OFBool DRTIonControlPointDeliverySequence::Item::isEmpty()
            ScanSpotMetersetsDelivered.isEmpty() &&
            ScanSpotTimeOffset.isEmpty() &&
            ScanningSpotSize.isEmpty() &&
+           ScanSpotSizesDelivered.isEmpty() &&
            NumberOfPaintings.isEmpty() &&
            ScanSpotReordered.isEmpty() &&
            ScanSpotPrescribedIndices.isEmpty() &&
@@ -314,6 +319,7 @@ OFCondition DRTIonControlPointDeliverySequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ScanSpotMetersetsDelivered, "1-n", "1C", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanSpotTimeOffset, "1-n", "3", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanningSpotSize, "2", "3", "IonControlPointDeliverySequence");
+        getAndCheckElementFromDataset(item, ScanSpotSizesDelivered, "2-2n", "3", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, NumberOfPaintings, "1", "1C", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanSpotReordered, "1", "3", "IonControlPointDeliverySequence");
         getAndCheckElementFromDataset(item, ScanSpotPrescribedIndices, "1-n", "1C", "IonControlPointDeliverySequence");
@@ -369,6 +375,7 @@ OFCondition DRTIonControlPointDeliverySequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotMetersetsDelivered), "1-n", "1C", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotTimeOffset), "1-n", "3", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(ScanningSpotSize), "2", "3", "IonControlPointDeliverySequence");
+        addElementToDataset(result, item, new DcmFloatingPointSingle(ScanSpotSizesDelivered), "2-2n", "3", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmIntegerString(NumberOfPaintings), "1", "1C", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmCodeString(ScanSpotReordered), "1", "3", "IonControlPointDeliverySequence");
         addElementToDataset(result, item, new DcmIntegerString(ScanSpotPrescribedIndices), "1-n", "1C", "IonControlPointDeliverySequence");
@@ -685,6 +692,15 @@ OFCondition DRTIonControlPointDeliverySequence::Item::getScanSpotReordered(OFStr
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ScanSpotReordered, value, pos);
+}
+
+
+OFCondition DRTIonControlPointDeliverySequence::Item::getScanSpotSizesDelivered(Float32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmFloatingPointSingle &, ScanSpotSizesDelivered).getFloat32(value, pos);
 }
 
 
@@ -1112,6 +1128,15 @@ OFCondition DRTIonControlPointDeliverySequence::Item::setScanSpotReordered(const
 }
 
 
+OFCondition DRTIonControlPointDeliverySequence::Item::setScanSpotSizesDelivered(const Float32 value, const unsigned long pos)
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return ScanSpotSizesDelivered.putFloat32(value, pos);
+}
+
+
 OFCondition DRTIonControlPointDeliverySequence::Item::setScanSpotTimeOffset(const Float32 value, const unsigned long pos)
 {
     if (EmptyDefaultItem)
@@ -1398,10 +1423,12 @@ OFCondition DRTIonControlPointDeliverySequence::gotoFirstItem()
 OFCondition DRTIonControlPointDeliverySequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

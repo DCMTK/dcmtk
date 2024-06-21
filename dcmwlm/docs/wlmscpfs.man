@@ -252,6 +252,7 @@ automatically deleted by \b wlmscpfs.
 If request files are enabled, \b wlmscpfs must automatically create file names
 within the given directory.  By default, the format is \<timestamp\>.dump where
 \<timestamp\> is in the format YYYYMMDDhhmmssffffff where:
+
 - YYYY is the current year
 - MM is the current month
 - DD is the current day
@@ -357,6 +358,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
+(0008,1040) InstitutionalDepartmentName
 (0008,0090) ReferringPhysicianName
 (0008,1080) AdmittingDiagnosesDescription
 (0008,1110) ReferencedStudySequence
@@ -513,6 +515,6 @@ It is an error if no data dictionary can be loaded.
 
 \section wlmscpfs_copyright COPYRIGHT
 
-Copyright (C) 1996-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

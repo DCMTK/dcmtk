@@ -30,7 +30,7 @@ with a particular transfer syntax.
 \section drtdump_parameters PARAMETERS
 
 \verbatim
-drtfile-in  DICOM RT input filename to be dumped
+drtfile-in  DICOM RT input filename to be dumped ("-" for stdin)
 \endverbatim
 
 \section drtdump_options OPTIONS
@@ -181,7 +181,7 @@ It is an error if no data dictionary can be loaded.
 
 \section drtdump_copyright COPYRIGHT
 
-Copyright (C) 2010-2022 by OFFIS e.V. and ICSMED AG, Escherweg 2, 26121
+Copyright (C) 2010-2023 by OFFIS e.V. and ICSMED AG, Escherweg 2, 26121
 Oldenburg, Germany.
 
 */

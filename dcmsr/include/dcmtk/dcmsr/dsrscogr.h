@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2015, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ class DCMTK_DCMSR_EXPORT DSRGraphicDataItem
 
     /** comparison operator
      ** @param  item  item with which the (column,row) pair should be compared
-     ** @return true if not equal, false if equal
+     ** @return OFTrue if not equal, OFFalse if equal
      */
     inline OFBool operator!=(const DSRGraphicDataItem &item) const
     {
@@ -71,7 +71,7 @@ class DCMTK_DCMSR_EXPORT DSRGraphicDataItem
 
     /** comparison operator
      ** @param  item  item with which the (column,row) pair should be compared
-     ** @return true if smaller. Row takes precedence over column.
+     ** @return OFTrue if smaller. Row takes precedence over column.
      */
     inline OFBool operator<(const DSRGraphicDataItem &item) const
     {
@@ -80,7 +80,7 @@ class DCMTK_DCMSR_EXPORT DSRGraphicDataItem
 
     /** comparison operator
      ** @param  item  item with which the (column,row) pair should be compared
-     ** @return true if greater. Row takes precedence over column.
+     ** @return OFTrue if greater. Row takes precedence over column.
      */
     inline OFBool operator>(const DSRGraphicDataItem &item) const
     {

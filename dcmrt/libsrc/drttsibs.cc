@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTTreatmentSessionIonBeamSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -31,11 +31,13 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     DeliveredPrimaryMeterset(DCM_DeliveredPrimaryMeterset),
     DeliveredSecondaryMeterset(DCM_DeliveredSecondaryMeterset),
     DeliveredTreatmentTime(DCM_DeliveredTreatmentTime),
+    EntityLongLabel(DCM_EntityLongLabel),
     FixationEye(DCM_FixationEye),
     FixationLightAzimuthalAngle(DCM_FixationLightAzimuthalAngle),
     FixationLightPolarAngle(DCM_FixationLightPolarAngle),
     GeneralAccessorySequence(emptyDefaultItem /*emptyDefaultSequence*/),
     IonControlPointDeliverySequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    MachineSpecificTreatmentTerminationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ModulatedScanModeType(DCM_ModulatedScanModeType),
     NumberOfBlocks(DCM_NumberOfBlocks),
     NumberOfBoli(DCM_NumberOfBoli),
@@ -48,6 +50,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     PatientSupportAccessoryCode(DCM_PatientSupportAccessoryCode),
     PatientSupportID(DCM_PatientSupportID),
     PatientSupportType(DCM_PatientSupportType),
+    RTTreatmentTerminationReasonCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RadiationAtomicNumber(DCM_RadiationAtomicNumber),
     RadiationChargeState(DCM_RadiationChargeState),
     RadiationMassNumber(DCM_RadiationMassNumber),
@@ -71,7 +74,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const OFBool emptyDefaultItem)
     SpecifiedSecondaryMeterset(DCM_SpecifiedSecondaryMeterset),
     SpecifiedTreatmentTime(DCM_SpecifiedTreatmentTime),
     TreatmentDeliveryType(DCM_TreatmentDeliveryType),
-    TreatmentTerminationCode(DCM_TreatmentTerminationCode),
+    TreatmentTerminationDescription(DCM_TreatmentTerminationDescription),
     TreatmentTerminationStatus(DCM_TreatmentTerminationStatus),
     TreatmentVerificationStatus(DCM_TreatmentVerificationStatus)
 {
@@ -90,11 +93,13 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const Item &copy)
     DeliveredPrimaryMeterset(copy.DeliveredPrimaryMeterset),
     DeliveredSecondaryMeterset(copy.DeliveredSecondaryMeterset),
     DeliveredTreatmentTime(copy.DeliveredTreatmentTime),
+    EntityLongLabel(copy.EntityLongLabel),
     FixationEye(copy.FixationEye),
     FixationLightAzimuthalAngle(copy.FixationLightAzimuthalAngle),
     FixationLightPolarAngle(copy.FixationLightPolarAngle),
     GeneralAccessorySequence(copy.GeneralAccessorySequence),
     IonControlPointDeliverySequence(copy.IonControlPointDeliverySequence),
+    MachineSpecificTreatmentTerminationCodeSequence(copy.MachineSpecificTreatmentTerminationCodeSequence),
     ModulatedScanModeType(copy.ModulatedScanModeType),
     NumberOfBlocks(copy.NumberOfBlocks),
     NumberOfBoli(copy.NumberOfBoli),
@@ -107,6 +112,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const Item &copy)
     PatientSupportAccessoryCode(copy.PatientSupportAccessoryCode),
     PatientSupportID(copy.PatientSupportID),
     PatientSupportType(copy.PatientSupportType),
+    RTTreatmentTerminationReasonCodeSequence(copy.RTTreatmentTerminationReasonCodeSequence),
     RadiationAtomicNumber(copy.RadiationAtomicNumber),
     RadiationChargeState(copy.RadiationChargeState),
     RadiationMassNumber(copy.RadiationMassNumber),
@@ -130,7 +136,7 @@ DRTTreatmentSessionIonBeamSequence::Item::Item(const Item &copy)
     SpecifiedSecondaryMeterset(copy.SpecifiedSecondaryMeterset),
     SpecifiedTreatmentTime(copy.SpecifiedTreatmentTime),
     TreatmentDeliveryType(copy.TreatmentDeliveryType),
-    TreatmentTerminationCode(copy.TreatmentTerminationCode),
+    TreatmentTerminationDescription(copy.TreatmentTerminationDescription),
     TreatmentTerminationStatus(copy.TreatmentTerminationStatus),
     TreatmentVerificationStatus(copy.TreatmentVerificationStatus)
 {
@@ -157,11 +163,13 @@ DRTTreatmentSessionIonBeamSequence::Item &DRTTreatmentSessionIonBeamSequence::It
         DeliveredPrimaryMeterset = copy.DeliveredPrimaryMeterset;
         DeliveredSecondaryMeterset = copy.DeliveredSecondaryMeterset;
         DeliveredTreatmentTime = copy.DeliveredTreatmentTime;
+        EntityLongLabel = copy.EntityLongLabel;
         FixationEye = copy.FixationEye;
         FixationLightAzimuthalAngle = copy.FixationLightAzimuthalAngle;
         FixationLightPolarAngle = copy.FixationLightPolarAngle;
         GeneralAccessorySequence = copy.GeneralAccessorySequence;
         IonControlPointDeliverySequence = copy.IonControlPointDeliverySequence;
+        MachineSpecificTreatmentTerminationCodeSequence = copy.MachineSpecificTreatmentTerminationCodeSequence;
         ModulatedScanModeType = copy.ModulatedScanModeType;
         NumberOfBlocks = copy.NumberOfBlocks;
         NumberOfBoli = copy.NumberOfBoli;
@@ -174,6 +182,7 @@ DRTTreatmentSessionIonBeamSequence::Item &DRTTreatmentSessionIonBeamSequence::It
         PatientSupportAccessoryCode = copy.PatientSupportAccessoryCode;
         PatientSupportID = copy.PatientSupportID;
         PatientSupportType = copy.PatientSupportType;
+        RTTreatmentTerminationReasonCodeSequence = copy.RTTreatmentTerminationReasonCodeSequence;
         RadiationAtomicNumber = copy.RadiationAtomicNumber;
         RadiationChargeState = copy.RadiationChargeState;
         RadiationMassNumber = copy.RadiationMassNumber;
@@ -197,7 +206,7 @@ DRTTreatmentSessionIonBeamSequence::Item &DRTTreatmentSessionIonBeamSequence::It
         SpecifiedSecondaryMeterset = copy.SpecifiedSecondaryMeterset;
         SpecifiedTreatmentTime = copy.SpecifiedTreatmentTime;
         TreatmentDeliveryType = copy.TreatmentDeliveryType;
-        TreatmentTerminationCode = copy.TreatmentTerminationCode;
+        TreatmentTerminationDescription = copy.TreatmentTerminationDescription;
         TreatmentTerminationStatus = copy.TreatmentTerminationStatus;
         TreatmentVerificationStatus = copy.TreatmentVerificationStatus;
     }
@@ -212,6 +221,7 @@ void DRTTreatmentSessionIonBeamSequence::Item::clear()
         /* clear all DICOM attributes */
         ReferencedBeamNumber.clear();
         BeamName.clear();
+        EntityLongLabel.clear();
         BeamDescription.clear();
         BeamType.clear();
         RadiationType.clear();
@@ -252,7 +262,9 @@ void DRTTreatmentSessionIonBeamSequence::Item::clear()
         CurrentFractionNumber.clear();
         TreatmentDeliveryType.clear();
         TreatmentTerminationStatus.clear();
-        TreatmentTerminationCode.clear();
+        RTTreatmentTerminationReasonCodeSequence.clear();
+        MachineSpecificTreatmentTerminationCodeSequence.clear();
+        TreatmentTerminationDescription.clear();
         TreatmentVerificationStatus.clear();
         SpecifiedPrimaryMeterset.clear();
         SpecifiedSecondaryMeterset.clear();
@@ -271,6 +283,7 @@ OFBool DRTTreatmentSessionIonBeamSequence::Item::isEmpty()
 {
     return ReferencedBeamNumber.isEmpty() &&
            BeamName.isEmpty() &&
+           EntityLongLabel.isEmpty() &&
            BeamDescription.isEmpty() &&
            BeamType.isEmpty() &&
            RadiationType.isEmpty() &&
@@ -311,7 +324,9 @@ OFBool DRTTreatmentSessionIonBeamSequence::Item::isEmpty()
            CurrentFractionNumber.isEmpty() &&
            TreatmentDeliveryType.isEmpty() &&
            TreatmentTerminationStatus.isEmpty() &&
-           TreatmentTerminationCode.isEmpty() &&
+           RTTreatmentTerminationReasonCodeSequence.isEmpty() &&
+           MachineSpecificTreatmentTerminationCodeSequence.isEmpty() &&
+           TreatmentTerminationDescription.isEmpty() &&
            TreatmentVerificationStatus.isEmpty() &&
            SpecifiedPrimaryMeterset.isEmpty() &&
            SpecifiedSecondaryMeterset.isEmpty() &&
@@ -340,6 +355,7 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, ReferencedBeamNumber, "1", "1", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, BeamName, "1", "1", "TreatmentSessionIonBeamSequence");
+        getAndCheckElementFromDataset(item, EntityLongLabel, "1", "3", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, BeamDescription, "1", "3", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, BeamType, "1", "1", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, RadiationType, "1", "1", "TreatmentSessionIonBeamSequence");
@@ -380,7 +396,9 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, CurrentFractionNumber, "1", "2", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, TreatmentDeliveryType, "1", "2", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, TreatmentTerminationStatus, "1", "1", "TreatmentSessionIonBeamSequence");
-        getAndCheckElementFromDataset(item, TreatmentTerminationCode, "1", "3", "TreatmentSessionIonBeamSequence");
+        RTTreatmentTerminationReasonCodeSequence.read(item, "1-n", "3", "TreatmentSessionIonBeamSequence");
+        MachineSpecificTreatmentTerminationCodeSequence.read(item, "1-n", "3", "TreatmentSessionIonBeamSequence");
+        getAndCheckElementFromDataset(item, TreatmentTerminationDescription, "1", "3", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, TreatmentVerificationStatus, "1", "2", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, SpecifiedPrimaryMeterset, "1", "3", "TreatmentSessionIonBeamSequence");
         getAndCheckElementFromDataset(item, SpecifiedSecondaryMeterset, "1", "3", "TreatmentSessionIonBeamSequence");
@@ -405,6 +423,7 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedBeamNumber), "1", "1", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmLongString(BeamName), "1", "1", "TreatmentSessionIonBeamSequence");
+        addElementToDataset(result, item, new DcmLongString(EntityLongLabel), "1", "3", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmShortText(BeamDescription), "1", "3", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(BeamType), "1", "1", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(RadiationType), "1", "1", "TreatmentSessionIonBeamSequence");
@@ -445,7 +464,9 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(CurrentFractionNumber), "1", "2", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(TreatmentDeliveryType), "1", "2", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(TreatmentTerminationStatus), "1", "1", "TreatmentSessionIonBeamSequence");
-        addElementToDataset(result, item, new DcmShortString(TreatmentTerminationCode), "1", "3", "TreatmentSessionIonBeamSequence");
+        if (result.good()) result = RTTreatmentTerminationReasonCodeSequence.write(item, "1-n", "3", "TreatmentSessionIonBeamSequence");
+        if (result.good()) result = MachineSpecificTreatmentTerminationCodeSequence.write(item, "1-n", "3", "TreatmentSessionIonBeamSequence");
+        addElementToDataset(result, item, new DcmShortText(TreatmentTerminationDescription), "1", "3", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmCodeString(TreatmentVerificationStatus), "1", "2", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(SpecifiedPrimaryMeterset), "1", "3", "TreatmentSessionIonBeamSequence");
         addElementToDataset(result, item, new DcmDecimalString(SpecifiedSecondaryMeterset), "1", "3", "TreatmentSessionIonBeamSequence");
@@ -557,6 +578,15 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::getDeliveredTreatmentTime(
         return EC_IllegalCall;
     else
         return OFconst_cast(DcmDecimalString &, DeliveredTreatmentTime).getFloat64(value, pos);
+}
+
+
+OFCondition DRTTreatmentSessionIonBeamSequence::Item::getEntityLongLabel(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(EntityLongLabel, value, pos);
 }
 
 
@@ -947,12 +977,12 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::getTreatmentDeliveryType(O
 }
 
 
-OFCondition DRTTreatmentSessionIonBeamSequence::Item::getTreatmentTerminationCode(OFString &value, const signed long pos) const
+OFCondition DRTTreatmentSessionIonBeamSequence::Item::getTreatmentTerminationDescription(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
     else
-        return getStringValueFromElement(TreatmentTerminationCode, value, pos);
+        return getStringValueFromElement(TreatmentTerminationDescription, value, pos);
 }
 
 
@@ -1060,6 +1090,19 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::setDeliveredTreatmentTime(
         result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = DeliveredTreatmentTime.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTTreatmentSessionIonBeamSequence::Item::setEntityLongLabel(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = EntityLongLabel.putOFStringArray(value);
     }
     return result;
 }
@@ -1404,14 +1447,14 @@ OFCondition DRTTreatmentSessionIonBeamSequence::Item::setTreatmentDeliveryType(c
 }
 
 
-OFCondition DRTTreatmentSessionIonBeamSequence::Item::setTreatmentTerminationCode(const OFString &value, const OFBool check)
+OFCondition DRTTreatmentSessionIonBeamSequence::Item::setTreatmentTerminationDescription(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
+        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
         if (result.good())
-            result = TreatmentTerminationCode.putOFStringArray(value);
+            result = TreatmentTerminationDescription.putOFStringArray(value);
     }
     return result;
 }
@@ -1567,10 +1610,12 @@ OFCondition DRTTreatmentSessionIonBeamSequence::gotoFirstItem()
 OFCondition DRTTreatmentSessionIonBeamSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

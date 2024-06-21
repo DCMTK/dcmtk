@@ -3,7 +3,7 @@
 \page mod_config config: configuration utilities for dcmtk
 
 This module contains configuration files for the OFFIS "dcmtk" (DICOM Toolkit).
-The configuration mechanism uses GNU autoconf / configure facilities.
+The configuration mechanism uses GNU Autoconf / configure facilities.
 
 \section Files
 
@@ -14,8 +14,9 @@ The following files provide further documentation:
 \li \ref file_macros
 \li \ref file_modules
 
-\section sec_cxx11_support C++11 Support
-DCMTK supports some C++11 features. See \ref cxx11_support for details.
+\section sec_modern_cxx_support Modern C++ Support
+DCMTK supports features only available when compiling using C++11 or later.
+See \ref modern_cxx_support for details.
 */
 
 /*!

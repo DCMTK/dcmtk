@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2022c
- *  File created on 2022-07-25 09:55:36 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024b
+ *  File created on 2024-04-03 11:12:37 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 4021 (PET Radiopharmaceutical)
 #define CONTEXT_GROUP_NUMBER  "4021"
-#define CONTEXT_GROUP_VERSION "20201116"
+#define CONTEXT_GROUP_VERSION "20221201"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.305"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -178,7 +178,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(CMAbU36_89Zr, DSRBasicCodedEntry("126746", "DCM", "cMAb U36 ^89^Zr")));
         Codes->insert(OFMake_pair(CU36_89Zr, DSRBasicCodedEntry("126515", "DCM", "cU36 ^89^Zr")));
         Codes->insert(OFMake_pair(DCFBC_F18, DSRBasicCodedEntry("C96234", "NCIt", "DCFBC F^18^")));
-        Codes->insert(OFMake_pair(DCFPyL_F18, DSRBasicCodedEntry("C116352", "NCIt", "DCFPyL F^18^")));
+        Codes->insert(OFMake_pair(Piflufolastat_F18, DSRBasicCodedEntry("C116352", "NCIt", "Piflufolastat F^18^")));
         Codes->insert(OFMake_pair(DfFK2_89Zr, DSRBasicCodedEntry("126762", "DCM", "Df-[FK](2) ^89^Zr")));
         Codes->insert(OFMake_pair(DfFK23PEG4_89Zr, DSRBasicCodedEntry("126763", "DCM", "Df-[FK](2)-3PEG(4) ^89^Zr")));
         Codes->insert(OFMake_pair(DfCD45_89Zr, DSRBasicCodedEntry("126520", "DCM", "Df-CD45 ^89^Zr")));
@@ -196,7 +196,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(FLB457_C11, DSRBasicCodedEntry("126706", "DCM", "FLB 457 C^11^")));
         Codes->insert(OFMake_pair(Florbetaben_F18, DSRBasicCodedEntry("712736002", "SCT", "Florbetaben F^18^")));
         Codes->insert(OFMake_pair(Florbetapir_F18, DSRBasicCodedEntry("456995000", "SCT", "Florbetapir F^18^")));
-        Codes->insert(OFMake_pair(Flortaucipir_F18, DSRBasicCodedEntry("C000591008", "MSH", "Flortaucipir F^18^")));
+        Codes->insert(OFMake_pair(Flortaucipir_F18, DSRBasicCodedEntry("879808000", "SCT", "Flortaucipir F^18^")));
         Codes->insert(OFMake_pair(Flubatine_F18, DSRBasicCodedEntry("126503", "DCM", "Flubatine F^18^")));
         Codes->insert(OFMake_pair(Fluciclatide_F18, DSRBasicCodedEntry("456999006", "SCT", "Fluciclatide F^18^")));
         Codes->insert(OFMake_pair(Fluciclovine_F18, DSRBasicCodedEntry("457000009", "SCT", "Fluciclovine F^18^")));
@@ -206,12 +206,12 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Fluorobenzothiazole_F18, DSRBasicCodedEntry("423546004", "SCT", "Fluorobenzothiazole F^18^")));
         Codes->insert(OFMake_pair(Fluorocholine_F18, DSRBasicCodedEntry("456992002", "SCT", "Fluorocholine F^18^")));
         Codes->insert(OFMake_pair(Fluorodeoxyglucose_F18, DSRBasicCodedEntry("35321007", "SCT", "Fluorodeoxyglucose F^18^")));
-        Codes->insert(OFMake_pair(FluoroestradiolFES_F18, DSRBasicCodedEntry("C1831937", "UMLS", "Fluoroestradiol (FES) F^18^")));
+        Codes->insert(OFMake_pair(Fluoroestradiol_F18, DSRBasicCodedEntry("926372005", "SCT", "Fluoroestradiol F^18^")));
         Codes->insert(OFMake_pair(Fluoroetanidazole_F18, DSRBasicCodedEntry("C1541539", "UMLS", "Fluoroetanidazole F^18^")));
         Codes->insert(OFMake_pair(FluoroLDopa_F18, DSRBasicCodedEntry("5811000122108", "SCT", "Fluoro-L-dopa F^18^")));
         Codes->insert(OFMake_pair(Fluoromethane_F18, DSRBasicCodedEntry("422763008", "SCT", "Fluoromethane F^18^")));
         Codes->insert(OFMake_pair(Fluoromisonidazole_F18, DSRBasicCodedEntry("422598008", "SCT", "Fluoromisonidazole F^18^")));
-        Codes->insert(OFMake_pair(FluoropropylDihydrotetrabenazineDTBZ_F18, DSRBasicCodedEntry("C2934038", "UMLS", "Fluoropropyl-dihydrotetrabenazine (DTBZ) F^18^")));
+        Codes->insert(OFMake_pair(FluoropropylDihydrotetrabenazine_F18, DSRBasicCodedEntry("C2934038", "UMLS", "Fluoropropyl-dihydrotetrabenazine F^18^")));
         Codes->insert(OFMake_pair(Fluorotriopride_F18, DSRBasicCodedEntry("126707", "DCM", "Fluorotriopride F^18^")));
         Codes->insert(OFMake_pair(Fluorouracil_F18, DSRBasicCodedEntry("425236000", "SCT", "Fluorouracil F^18^")));
         Codes->insert(OFMake_pair(Flurpiridaz_F18, DSRBasicCodedEntry("126718", "DCM", "Flurpiridaz F^18^")));
@@ -232,8 +232,8 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Methionine_C11, DSRBasicCodedEntry("129510001", "SCT", "Methionine C^11^")));
         Codes->insert(OFMake_pair(MK6240_F18, DSRBasicCodedEntry("C4506764", "UMLS", "MK-6240 F^18^")));
         Codes->insert(OFMake_pair(Mogamulizumab_89Zr, DSRBasicCodedEntry("126738", "DCM", "Mogamulizumab ^89^Zr")));
-        Codes->insert(OFMake_pair(MonoclonalAntibodymAb_64Cu, DSRBasicCodedEntry("126510", "DCM", "Monoclonal Antibody (mAb) ^64^Cu")));
-        Codes->insert(OFMake_pair(MonoclonalAntibodymAb_89Zr, DSRBasicCodedEntry("126511", "DCM", "Monoclonal Antibody (mAb) ^89^Zr")));
+        Codes->insert(OFMake_pair(MonoclonalAntibody_64Cu, DSRBasicCodedEntry("126510", "DCM", "Monoclonal Antibody ^64^Cu")));
+        Codes->insert(OFMake_pair(MonoclonalAntibody_89Zr, DSRBasicCodedEntry("126511", "DCM", "Monoclonal Antibody ^89^Zr")));
         Codes->insert(OFMake_pair(MonoclonalAntibody_I124, DSRBasicCodedEntry("423249007", "SCT", "Monoclonal antibody I^124^")));
         Codes->insert(OFMake_pair(NanocolloidalAlbumin_89Zr, DSRBasicCodedEntry("126753", "DCM", "Nanocolloidal albumin ^89^Zr")));
         Codes->insert(OFMake_pair(Nifene_F18, DSRBasicCodedEntry("126714", "DCM", "Nifene F^18^")));
@@ -272,10 +272,10 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(T807_F18, DSRBasicCodedEntry("126502", "DCM", "T807 F^18^")));
         Codes->insert(OFMake_pair(THK5317_F18, DSRBasicCodedEntry("C4550127", "UMLS", "THK5317 F^18^")));
         Codes->insert(OFMake_pair(THK5351_F18, DSRBasicCodedEntry("C4279748", "UMLS", "THK5351 F^18^")));
-        Codes->insert(OFMake_pair(ThymidineFLT_F18, DSRBasicCodedEntry("129502002", "SCT", "Thymidine (FLT) F^18^")));
+        Codes->insert(OFMake_pair(Thymidine_F18, DSRBasicCodedEntry("129502002", "SCT", "Thymidine F^18^")));
         Codes->insert(OFMake_pair(Trastuzumab_89Zr, DSRBasicCodedEntry("126512", "DCM", "Trastuzumab ^89^Zr")));
         Codes->insert(OFMake_pair(TRC105_89Zr, DSRBasicCodedEntry("126749", "DCM", "TRC105 ^89^Zr")));
-        Codes->insert(OFMake_pair(Tyrosine3Octreotate_Ga68, DSRBasicCodedEntry("C1742831", "UMLS", "tyrosine-3-octreotate Ga^68^")));
+        Codes->insert(OFMake_pair(Dotatate_Ga68, DSRBasicCodedEntry("724025002", "SCT", "Dotatate Ga^68^")));
         Codes->insert(OFMake_pair(Ublituximab_89Zr, DSRBasicCodedEntry("126739", "DCM", "Ublituximab ^89^Zr")));
         Codes->insert(OFMake_pair(UCBJ_C11, DSRBasicCodedEntry("C4506788", "UMLS", "UCB-J C^11^")));
         Codes->insert(OFMake_pair(XmAb5574_89Zr, DSRBasicCodedEntry("126734", "DCM", "XmAb5574 ^89^Zr")));

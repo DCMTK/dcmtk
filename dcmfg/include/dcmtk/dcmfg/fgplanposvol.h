@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrfd.h"
 #include "dcmtk/dcmfg/fgbase.h"
 
 /** Class representing the Plane Position (Volume) Functional Group that

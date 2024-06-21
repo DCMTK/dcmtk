@@ -1,4 +1,4 @@
-.TH "dcmgpdir" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmgpdir" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmgpdir \- Create a general purpose DICOMDIR
@@ -7,7 +7,7 @@ dcmgpdir \- Create a general purpose DICOMDIR
 .PP
 .PP
 .nf
-dcmgpdir [options] [dcmfile-in...]
+dcmgpdir [options] [dcmfile-in\&.\&.\&.]
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -16,11 +16,11 @@ The \fBdcmgpdir\fP utility creates a \fIDICOMDIR\fP file from the specified refe
 .PP
 Currently, the following profiles are supported:
 .PP
-.PD 0
 .IP "\(bu" 2
 General Purpose CD-R Interchange (STD-GEN-CD)
 .IP "\(bu" 2
 General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
+.PP
 .PP
 \fBdcmmkdir\fP is an extended version of this tool which also supports other Media Storage Application Profiles than the general purpose one (e\&.g\&. the cardio profiles require the use of icon images)\&.
 .SH "PARAMETERS"
@@ -68,15 +68,15 @@ DICOMDIR identifiers:
 
   +F    --fileset-id  [i]d: string
           use specific file-set ID
-          (default: DCMTK_MEDIA_DEMO, "" for none)
+          (default: DCMTK_MEDIA_DEMO, '' for none)
 
   +R    --descriptor  [f]ilename: string
           add a file-set descriptor file ID
-          (e.g. README, default: no descriptor)
+          (e\&.g\&. README, default: no descriptor)
 
   +C    --char-set  [c]harset: string
           add a specific character set for descriptor
-          (default: "ISO_IR 100" if descriptor present)
+          (default: 'ISO_IR 100' if descriptor present)
 
 reading:
 
@@ -228,4 +228,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmmkdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

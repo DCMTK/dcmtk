@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2017-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -86,7 +86,7 @@ OFBool DSRPatientRadiationDoseSRConstraintChecker::checkContentRelationship(cons
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
             result = (targetValueType == VT_DateTime) || (targetValueType == VT_Code)  || (targetValueType == VT_Text) ||
-                     (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName) || (targetValueType == VT_Container) /* see CP-2084 */;
+                     (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName) || (targetValueType == VT_Container);
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasObsContext) &&
@@ -113,7 +113,7 @@ OFBool DSRPatientRadiationDoseSRConstraintChecker::checkContentRelationship(cons
         else if ((relationshipType == RT_hasProperties) &&
             ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num) || (sourceValueType == VT_Composite)))
         {
-            result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num) ||
+            result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num)   ||
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef)    || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Image)    || (targetValueType == VT_Composite) || (targetValueType == VT_Container);
         }

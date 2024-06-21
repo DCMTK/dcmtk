@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -20,7 +20,7 @@
  */
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofutil.h"
-#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcvrut.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmtract/trctrackset.h"
 #include "dcmtk/dcmtract/trctrack.h"

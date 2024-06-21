@@ -98,11 +98,7 @@ endmacro()
 function(DCMTK_ANDROID_FIND_RUNTIME_LIBRARIES VAR)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
     foreach(DIR ${ANDROID_STL_INCLUDE_DIRS})
-        if(CMAKE_VERSION VERSION_LESS 2.8.11)
-            get_filename_component(DIR "${DIR}" PATH)
-        else()
-            get_filename_component(DIR "${DIR}" DIRECTORY)
-        endif()
+        get_filename_component(DIR "${DIR}" DIRECTORY)
         list(APPEND ANDROID_STL_LIBRARY_DIRS "${DIR}")
     endforeach()
     find_library(ANDROID_STL_SHARED_OBJECT ${ANDROID_STL} PATHS ${ANDROID_STL_LIBRARY_DIRS} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -200,11 +196,6 @@ endfunction()
 #       the generated UUID as a string value
 # Will ignore all additional arguments.
 #
-if(CMAKE_VERSION VERSION_LESS 2.8.11)
-macro(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
-    string(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" ${VAR})
-endmacro()
-else()
 function(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
     string(RANDOM LENGTH 20 RAND)
     string(TIMESTAMP TM)
@@ -212,7 +203,6 @@ function(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
     string(MD5 ${VAR} ${${VAR}})
     set(${VAR} ${${VAR}} PARENT_SCOPE)
 endfunction()
-endif()
 
 #
 # Tries to query the UUID property of an accessible Android device.
@@ -573,11 +563,7 @@ function(DCMTK_ANDROID_SHELL VAR)
         endif()
 
         # Prefix to prevent collision of output capturing files
-        if(CMAKE_VERSION VERSION_LESS 2.8.7)
-            string(RANDOM LENGTH 20 ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" PREFIX)
-        else()
-            string(MD5 PREFIX "${DCMTK_ANDROID_SHELL_COMMAND}")
-        endif()
+        string(MD5 PREFIX "${DCMTK_ANDROID_SHELL_COMMAND}")
 
         # Prepare output redirection (buffering)
         if(STREAMS_MERGED)

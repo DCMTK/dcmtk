@@ -72,8 +72,6 @@
 #define _CITRUS_ICONV_ALIAS "iconv.alias"
 
 #define CI_HASH_SIZE 101
-#define CI_INITIAL_MAX_REUSE    5
-#define CI_ENV_MAX_REUSE    "ICONV_MAX_REUSE"
 
 static bool          isinit = false;
 static int           shared_max_reuse, shared_num_unused;
@@ -101,11 +99,7 @@ init_cache(void)
     if (!isinit) {
         _CITRUS_HASH_INIT(&shared_pool, CI_HASH_SIZE);
         TAILQ_INIT(&shared_unused);
-        shared_max_reuse = -1;
-        if (getenv(CI_ENV_MAX_REUSE))
-            shared_max_reuse = atoi(getenv(CI_ENV_MAX_REUSE));
-        if (shared_max_reuse < 0)
-            shared_max_reuse = CI_INITIAL_MAX_REUSE;
+        shared_max_reuse = 0;
         isinit = true;
     }
     UNLOCK(&ci_lock);
@@ -139,8 +133,7 @@ open_shared(struct _citrus_iconv_shared * * rci,
     size_t len_convname;
     int ret;
 
-#define INCOMPATIBLE_WITH_GNU_ICONV
-#ifdef INCOMPATIBLE_WITH_GNU_ICONV
+#ifdef DCMTK_ENABLE_ICONV_PASSTHROUGH
     /* 
      * Use a pass-through when the (src,dest) encodings are the same.
      */
@@ -230,7 +223,7 @@ get_shared(struct _citrus_iconv_shared * * rci,
     const char *src, const char *dst)
 {
     struct _citrus_iconv_shared * ci;
-    char convname[PATH_MAX];
+    char convname[OFICONV_PATH_MAX];
     int hashval, ret = 0;
 
 #if ( defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1 ) ) )
@@ -279,7 +272,6 @@ quit:
 static void
 release_shared(struct _citrus_iconv_shared * ci)
 {
-
     WLOCK(&ci_lock);
     ci->ci_used_count--;
     if (ci->ci_used_count == 0) {
@@ -309,7 +301,7 @@ _citrus_iconv_open(struct _citrus_iconv * * rcv,
 {
 struct _citrus_iconv *cv = NULL;
     struct _citrus_iconv_shared *ci = NULL;
-    char realdst[PATH_MAX], realsrc[PATH_MAX];
+    char realdst[OFICONV_PATH_MAX], realsrc[OFICONV_PATH_MAX];
     int ret;
 
     init_cache();
@@ -338,8 +330,8 @@ struct _citrus_iconv *cv = NULL;
 #endif
 
     /* resolve codeset name aliases */
-    strlcpy(realsrc, src, (size_t)PATH_MAX);
-    strlcpy(realdst, dst, (size_t)PATH_MAX);
+    strlcpy(realsrc, src, (size_t)OFICONV_PATH_MAX);
+    strlcpy(realdst, dst, (size_t)OFICONV_PATH_MAX);
 
     /* sanity check */
     if (strchr(realsrc, '/') != NULL || strchr(realdst, '/'))
@@ -400,8 +392,8 @@ const char
 {
     char *buf;
 
-    if ((buf = calloc((size_t)PATH_MAX, sizeof(*buf))) == NULL)
+    if ((buf = calloc((size_t)OFICONV_PATH_MAX, sizeof(*buf))) == NULL)
         return (NULL);
-    _citrus_esdb_alias(name, buf, (size_t)PATH_MAX);
+    _citrus_esdb_alias(name, buf, (size_t)OFICONV_PATH_MAX);
     return (buf);
 }

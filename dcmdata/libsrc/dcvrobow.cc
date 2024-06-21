@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,14 +21,12 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
+#include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofuuid.h"
 #include "dcmtk/ofstd/offile.h"
-
 #include "dcmtk/dcmdata/dcjson.h"
-#include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcswap.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for UID generation */
@@ -244,7 +242,7 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream &out,
         if (pixelCounter != NULL)
         {
             char num[20];
-            sprintf(num, "%ld", OFstatic_cast(long, (*pixelCounter)++));
+            OFStandard::snprintf(num, sizeof(num), "%ld", OFstatic_cast(long, (*pixelCounter)++));
             fname += num;
         }
         fname += ".raw";
@@ -566,7 +564,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
         {
             /* ... and convert it to a character string (hex mode) */
             char buffer[32];
-            sprintf(buffer, "%4.4hx", uint16Val);
+            OFStandard::snprintf(buffer, sizeof(buffer), "%4.4hx", uint16Val);
             /* assign result */
             stringVal = buffer;
         }
@@ -578,7 +576,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
         {
             /* ... and convert it to a character string (hex mode) */
             char buffer[32];
-            sprintf(buffer, "%2.2hx", OFstatic_cast(unsigned short, uint8Val));
+            OFStandard::snprintf(buffer, sizeof(buffer), "%2.2hx", OFstatic_cast(unsigned short, uint8Val));
             /* assign result */
             stringVal = buffer;
         }
@@ -657,7 +655,8 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
                                            const E_TransferSyntax /*oldXfer*/)
 {
     DcmXfer newXferSyn(newXfer);
-    return (getTag() != DCM_PixelData) || !newXferSyn.isEncapsulated();
+    /* pixel data can only be written in native format */
+    return (getTag() != DCM_PixelData) || newXferSyn.usesNativeFormat();
 }
 
 

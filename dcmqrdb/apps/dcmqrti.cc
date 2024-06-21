@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,11 +25,11 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
-#ifdef HAVE_SIGNAL_H
+
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
-#endif
 END_EXTERN_C
+
 #include "dcmtk/dcmqrdb/dcmqrtis.h"
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmnet/dimse.h"
@@ -39,6 +39,8 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
+
 #ifdef WITH_ZLIB
 #include <zlib.h>          /* for zlibVersion() */
 #endif
@@ -60,11 +62,7 @@ DcmQueryRetrieveTelnetInitiator conf(config);
  * We only really need to make sure that the display is clear
  * before quitting.
  */
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-extern "C" void TI_signalHandler(...)
-#else
 extern "C" void TI_signalHandler(int)
-#endif
 {
   conf.TI_detachAssociation(OFTrue);
   exit( 1 );
@@ -128,10 +126,10 @@ int main( int argc, char *argv[] )
     opt1 += ")";
     cmd.addOption( "--aetitle",                   "-aet", 1, "[a]etitle: string", opt1.c_str() );
     OFString opt2 = "[n]umber of bytes: integer (";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
     opt2 += tempstr;
     opt2 += "..";
-    sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
+    OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
     opt2 += tempstr;
     opt2 += ")";
     cmd.addOption( "--max-pdu",                   "-pdu", 1, opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );

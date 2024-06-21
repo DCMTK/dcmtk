@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,8 +41,9 @@
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  The code for OFStandard::atof has been derived from an implementation
- *  which carries the following copyright notice:
+ *  The code for OFStandard::atof that is used when DCMTK is compiled
+ *  with the macro ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION has been derived
+ *  from an implementation that carries the following copyright notice:
  *
  *  Copyright 1988 Regents of the University of California
  *  Permission to use, copy, modify, and distribute this software and
@@ -115,6 +116,7 @@ END_EXTERN_C
 
 #include <cmath>
 #include <cstring>       /* for memset() */
+#include <sstream>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -130,14 +132,8 @@ BEGIN_EXTERN_C
 #include <dirent.h>      /* for opendir() and closedir() */
 #else
 #define dirent direct
-#ifdef HAVE_SYS_NDIR_H
-#include <sys/ndir.h>
-#endif
 #ifdef HAVE_SYS_DIR_H
 #include <sys/dir.h>
-#endif
-#ifdef HAVE_NDIR_H
-#include <ndir.h>
 #endif
 #endif
 #ifdef HAVE_FNMATCH_H
@@ -304,7 +300,7 @@ int OFStandard::vsnprintf(char *str, size_t size, const char *format, va_list ap
     return ::vsnprintf(str, size, format, ap);
 #else /* HAVE_VSNPRINTF */
 #ifdef DCMTK_ENABLE_UNSAFE_VSNPRINTF
-    // This implementation internally uses sprintf (which is inherently unsafe).
+    // This implementation internally uses vsprintf (which is inherently unsafe).
     // It allocates a buffer that is 1 kByte larger than "size",
     // formats the string into that buffer, and then uses strlcpy() to
     // copy the formatted string into the output buffer, truncating if necessary.
@@ -368,7 +364,7 @@ const char *OFStandard::strerror(const int errnum,
                                  const size_t /*buflen*/)
 {
     // we only have strerror() which is thread unsafe on Posix platforms, but thread safe on Windows
-    return STDIO_NAMESPACE strerror(errnum);
+    return :: strerror(errnum);
 }
 #endif
 
@@ -423,7 +419,7 @@ OFBool OFStandard::pathExists(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#if HAVE_ACCESS
+#ifdef HAVE_ACCESS
         /* check existence with "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -533,7 +529,7 @@ OFBool OFStandard::isReadable(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#if HAVE_ACCESS
+#ifdef HAVE_ACCESS
         /* check whether the path is readable using "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -558,7 +554,7 @@ OFBool OFStandard::isWriteable(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#if HAVE_ACCESS
+#ifdef HAVE_ACCESS
         /* check whether the path is writable using "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -1918,27 +1914,59 @@ size_t OFStandard::decodeBase64(const OFString &data,
     return count;
 }
 
-#ifdef DISABLE_OFSTD_ATOF
-
-// we use sscanf instead of atof because atof doesn't return a status flag
+#ifndef ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
 
 double OFStandard::atof(const char *s, OFBool *success)
 {
-  double result;
-  if (success)
+  double d = 0.0;
+  if (success) *success = OFFalse;
+  if (s)
   {
-    *success = (1 == sscanf(s,"%lf",&result));
+    // convert input to a string object
+    STD_NAMESPACE string ss(s);
+
+    // erase leading whitespace
+    ss.erase(0, ss.find_first_not_of("\t "));
+
+    // handle NaN as a special case, since iostream does not
+    if ((ss.length() >= 3) && (ss[0] == 'n' || ss[0] == 'N') && (ss[1] == 'a' || ss[1] == 'A') && (ss[2] == 'n' || ss[2] == 'N'))
+    {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::quiet_NaN();
+    }
+
+    // handle positive infinity as a special case, since iostream does not
+    if ((ss.length() >= 3) && (ss[0] == 'i' || ss[0] == 'I') && (ss[1] == 'n' || ss[1] == 'N') && (ss[2] == 'f' || ss[2] == 'F'))
+    {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::infinity();
+    }
+
+    // handle negative infinity as a special case, since iostream does not
+    if ((ss.length() >= 4) && (ss[0] == '-') && (ss[1] == 'i' || ss[1] == 'I') && (ss[2] == 'n' || ss[2] == 'N') && (ss[3] == 'f' || ss[3] == 'F'))
+    {
+        if (success) *success = OFTrue;
+        return -OFnumeric_limits<double>::infinity();
+    }
+
+    // create an input string stream
+    STD_NAMESPACE istringstream iss(s);
+
+    // create a locale object for the C locale and activate it in the stream
+    STD_NAMESPACE locale mylocale("C");
+    iss.imbue(mylocale);
+
+    // convert string to double and set success flag
+    if ((iss >> d) && success) *success = OFTrue;
   }
-  else
-  {
-    (void) sscanf(s,"%lf",&result);
-  }
-  return result;
+  return d;
 }
 
 #else
 
-// --- definitions and constants for atof() ---
+// Old implementation of OFStandard::atof(). This implementation may produce
+// rounding errors (see DCMTK issue #1100) and has thus been replaced by
+// a new implementation based on std::istringstream.
 
 /* Largest possible base 10 exponent.  Any exponent larger than this will
  * already produce underflow or overflow, so there's no need to worry
@@ -2152,7 +2180,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     return fraction;
 }
 
-#endif /* DISABLE_OFSTD_ATOF */
+#endif /* ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION */
 
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define FTOA_MAXEXP          308
@@ -2184,8 +2212,8 @@ void OFStandard::ftoa(
   int width,
   int prec)
 {
-  // this version of the function uses sprintf to format the output string.
-  // Since we have to assemble the sprintf format string, this version might
+  // this version of the function uses snprintf to format the output string.
+  // Since we have to assemble the snprintf format string, this version might
   // even be slower than the alternative implementation.
 
   char buf[FTOA_BUFSIZE];
@@ -2227,17 +2255,17 @@ void OFStandard::ftoa(
   if (flags & FTOA_ZEROPAD) s += "0";
   if (width > 0)
   {
-    sprintf(buf, "%d", width);
+    OFStandard::snprintf(buf, sizeof(buf), "%d", width);
     s += buf;
   }
   if (prec >= 0)
   {
-    sprintf(buf, ".%d", prec);
+    OFStandard::snprintf(buf, sizeof(buf), ".%d", prec);
     s += buf;
   }
   s += fmtch;
 
-  sprintf(buf, s.c_str(), val);
+  OFStandard::snprintf(buf, sizeof(buf), s.c_str(), val);
   OFStandard::strlcpy(dst, buf, siz);
 }
 
@@ -2829,7 +2857,6 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 {
   OFString result;
 
-#ifdef HAVE_GETADDRINFO
   // We have getaddrinfo(). In this case we also presume that we have
   // getnameinfo(), since both functions were introduced together.
   // This is the preferred implementation, being thread-safe and protocol independent.
@@ -2866,33 +2893,6 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
   while ((EAI_AGAIN == err) && (rep-- > 0)) err = getnameinfo(sa, nameinfo_len, hostname, 512, NULL, 0, 0);
   if ((err == 0) && (hostname[0] != '\0')) result = hostname;
 
-#elif defined(HAVE_GETHOSTBYADDR_R)
-  // We do not have getaddrinfo(), but we have a thread-safe gethostbyaddr_r()
-
-  unsigned size = 1024;
-  char *tmp = new char[size];
-  struct hostent *he = NULL;
-  hostent buf;
-  int err = 0;
-  while ((gethostbyaddr_r( addr, len, type, &buf, tmp, size, &he, &err ) == ERANGE) && (size < MAX_NAME))
-  {
-      // increase buffer size
-      delete[] tmp;
-      size *= 2;
-      tmp = new char[size];
-  }
-  if (he && he->h_name) result = he->h_name;
-  delete[] tmp;
-
-#else
-  // Default implementation using gethostbyaddr().
-  // This should work on all Posix systems, but is not thread safe
-  // (except on Windows, which allocates the result in thread-local storage)
-
-  struct hostent *he = gethostbyaddr( addr, len, type );
-  if (he && he->h_name) result = he->h_name;
-
-#endif
   return result;
 }
 
@@ -2902,7 +2902,6 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
   result.clear();
   if (NULL == name) return;
 
-#ifdef HAVE_GETADDRINFO
   struct addrinfo *result_list = NULL;
   int err = EAI_AGAIN;
   int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
@@ -2925,60 +2924,6 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
     }
     freeaddrinfo(result_list);
   }
-
-#else // HAVE_GETADDRINFO
-
-#ifdef HAVE_GETHOSTBYNAME_R
-  // We do not have getaddrinfo(), but we have a thread-safe gethostbyname_r()
-
-  struct hostent *he = NULL;
-  unsigned bufsize = 1024;
-  char *buf = new char[bufsize];
-  hostent ret;
-  int err = 0;
-  while ((gethostbyname_r( name, &ret, buf, bufsize, &he, &err ) == ERANGE) && (bufsize < MAX_NAME))
-  {
-      // increase buffer size
-      delete[] buf;
-      bufsize *= 2;
-      buf = new char[bufsize];
-  }
-
-#else // HAVE_GETHOSTBYNAME_R
-
-  // Default implementation using gethostbyname().
-  // This should work on all Posix systems, but is not thread safe
-  // (except on Windows, which allocates the result in thread-local storage)
-
-  struct hostent *he = gethostbyname(name);
-
-#endif // HAVE_GETHOSTBYNAME_R
-
-  if (he)
-  {
-    if (he->h_addrtype == AF_INET)
-    {
-      result.setFamily(AF_INET);
-      struct sockaddr_in *result_sa = result.getSockaddr_in();
-      // copy IP address into result struct
-      memcpy (&result_sa->sin_addr, he->h_addr, he->h_length);
-    }
-    else if (he->h_addrtype == AF_INET6)
-    {
-      result.setFamily(AF_INET6);
-      struct sockaddr_in6 *result_sa = result.getSockaddr_in6();
-      memcpy (&result_sa->sin6_addr, he->h_addr, he->h_length);
-    }
-    // else we have an unsupported protocol type
-    // and simply leave the result variable empty
-  }
-
-#ifdef HAVE_GETHOSTBYNAME_R
-  delete[] buf;
-#endif
-
-#endif // HAVE_GETADDRINFO
-
 }
 
 
@@ -3190,13 +3135,11 @@ OFString OFStandard::getHostName()
     struct utsname n;
     uname( &n );
     return n.nodename;
-#elif defined(HAVE_GETHOSTNAME)
+#else
     char buf[513];
     gethostname( buf, 512 );
     buf[512] = 0;
     return buf;
-#else
-    return "localhost";
 #endif
 }
 

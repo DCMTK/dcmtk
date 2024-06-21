@@ -20,7 +20,7 @@ are DICOM files in part 10 format (with meta-header).
 \section dcmftest_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename to be dumped
+dcmfile-in  DICOM input filename to be checked
 \endverbatim
 
 \section dcmftest_notes NOTES
@@ -39,6 +39,6 @@ is intended for use in shell script programming.
 
 \section dcmftest_copyright COPYRIGHT
 
-Copyright (C) 1997-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1997-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,16 +21,6 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
-#endif
-
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcdicdir.h"
@@ -523,7 +513,7 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
         DcmXfer xf(oxfer);
         templen += xf.sizeofTagHeader(dO->getVR());
 
-        if ( dO->getTag().getXTag() == DCM_DirectoryRecordSequence )
+        if ( dO->getTag() == DCM_DirectoryRecordSequence )
             break;
 
         Uint32 sublength = dO->getLength( oxfer, enctype );

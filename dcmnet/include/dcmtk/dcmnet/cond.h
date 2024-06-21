@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofdeprec.h"
 #include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmnet/dndefine.h"
 
@@ -239,7 +240,7 @@ public:
    *  @param console console to dump to
    *  @deprecated Please use the other dump() function instead!
    */
-  static void dump(OFCondition cond, OFConsole& console = ofConsole);
+  OFdeprecated static void dump(OFCondition cond, OFConsole& console = ofConsole);
 
   /** creates a new condition from the given parameters and the sub-condition.
    *  This method is intended as a replacement for COND_PushCondition().

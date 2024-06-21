@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -244,17 +244,13 @@ OFCondition DcmSpecificCharacterSet::determineDestinationEncoding(const OFString
     else if (DestinationCharacterSet == "ISO_IR 203")   // Latin alphabet No. 9
         DestinationEncoding = "ISO-8859-15";
     else if (DestinationCharacterSet == "ISO_IR 13")    // Japanese
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
         DestinationEncoding = "JIS_X0201";              // - the name "ISO-IR-13" is not supported by libiconv
 #else
-        DestinationEncoding = "Shift_JIS";              // - ICU and stdlibc iconv only know "Shift_JIS", which is a superset of JIS X0201
+        DestinationEncoding = "Shift_JIS";              // - stdlibc iconv only knows "Shift_JIS", which is a superset of JIS X0201
 #endif
     else if (DestinationCharacterSet == "ISO_IR 166")   // Thai
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
-        DestinationEncoding = "TIS-620";                // - the name "ISO-IR-166" is not supported by ICU
-#else
         DestinationEncoding = "ISO-IR-166";
-#endif
     else if (DestinationCharacterSet == "ISO_IR 192")   // Unicode in UTF-8 (multi-byte)
         DestinationEncoding = "UTF-8";
     else if (DestinationCharacterSet == "GB18030")      // Chinese (multi-byte)
@@ -307,17 +303,13 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
     else if (SourceCharacterSet == "ISO_IR 203")    // Latin alphabet No. 9
         fromEncoding = "ISO-8859-15";
     else if (SourceCharacterSet == "ISO_IR 13")     // Japanese
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
         fromEncoding = "JIS_X0201";                 // - the name "ISO-IR-13" is not supported by libiconv
 #else
-        fromEncoding = "Shift_JIS";                 // - ICU and stdlibc iconv only know "Shift_JIS", which is a superset of JIS X0201
+        fromEncoding = "Shift_JIS";                 // - stdlibc iconv only knows "Shift_JIS", which is a superset of JIS X0201
 #endif
     else if (SourceCharacterSet == "ISO_IR 166")    // Thai
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
-        fromEncoding = "TIS-620";                   // - the name "ISO-IR-166" is not supported by ICU
-#else
         fromEncoding = "ISO-IR-166";
-#endif
     else if (SourceCharacterSet == "ISO_IR 192")    // Unicode in UTF-8 (multi-byte)
         fromEncoding = "UTF-8";
     else if (SourceCharacterSet == "GB18030")       // Chinese (multi-byte)
@@ -421,29 +413,25 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         }
         else if (definedTerm == "ISO 2022 IR 13")       // Japanese
         {
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
             encodingName = "JIS_X0201";                 // - the name "ISO-IR-13" is not supported by libiconv
 #else
-            encodingName = "Shift_JIS";                 // - ICU and stdlibc iconv only know "Shift_JIS", which is a superset of JIS X0201
+            encodingName = "Shift_JIS";                 // - stdlibc iconv only knows "Shift_JIS", which is a superset of JIS X0201
 #endif
         }
         else if (definedTerm == "ISO 2022 IR 166")      // Thai
         {
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICU
-            encodingName = "TIS-620";                   // - "ISO-IR-166" is not supported by ICU
-#else
             encodingName = "ISO-IR-166";
-#endif
             needsASCII = OFTrue;
         }
         else if (definedTerm == "ISO 2022 IR 87")       // Japanese (multi-byte), JIS X0208
         {
-            encodingName = "ISO-IR-87";                 // - this might generate an error since "ISO-IR-87" is not supported by ICU and stdlibc iconv
+            encodingName = "ISO-IR-87";                 // - this might generate an error since "ISO-IR-87" is not supported by stdlibc iconv
             notFirstValue = OFTrue;
         }
         else if (definedTerm == "ISO 2022 IR 159")      // Japanese (multi-byte), JIS X0212
         {
-            encodingName = "ISO-IR-159";                // - this might generate an error since "ISO-IR-159" is not supported by ICU and stdlibc iconv
+            encodingName = "ISO-IR-159";                // - this might generate an error since "ISO-IR-159" is not supported by stdlibc iconv
             notFirstValue = OFTrue;
         }
         else if (definedTerm == "ISO 2022 IR 149")      // Korean (multi-byte)
@@ -453,7 +441,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
         }
         else if (definedTerm == "ISO 2022 IR 58")       // Simplified Chinese (multi-byte)
         {
-            encodingName = "GB2312";                    // - should work, but not tested yet!
+            encodingName = "GB2312";
             notFirstValue = OFTrue;
         }
         else {
@@ -548,8 +536,9 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
                                                    const OFString &delimiters)
 {
     OFCondition status = EC_Normal;
-    // check whether there are any code extensions at all
-    if (EncodingConverters.empty() || !checkForEscapeCharacter(fromString, fromLength))
+    // check whether there are or could be any code extensions
+    const OFBool hasEscapeChar = checkForEscapeCharacter(fromString, fromLength);
+    if (EncodingConverters.empty() || (!hasEscapeChar && delimiters.empty()))
     {
         DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
             << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
@@ -564,10 +553,11 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
         } else {
             DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
                 << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with code extensions and delimiters '" << delimiters << "')");
+                << "' (with " << (hasEscapeChar ? "code extensions and " : "")
+                << "delimiters '" << delimiters << "')");
         }
-        // code extensions according to ISO 2022 used, so we need to check for
-        // particular escape sequences in order to switch between character sets
+        // code extensions according to ISO 2022 (possibly) used, so we need to check
+        // for particular escape sequences in order to switch between character sets
         toString.clear();
         size_t pos = 0;
         // some (extended) character sets use more than 1 byte per character

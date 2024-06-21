@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTROIContourSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -20,6 +20,7 @@
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtcs.h"     // for ContourSequence
+#include "dcmtk/dcmrt/seq/drtsppcs.h"  // for SourcePixelPlanesCharacteristicsSequence
 
 
 /** Interface class for ROIContourSequence (3006,0039)
@@ -148,6 +149,18 @@ class DCMTK_DCMRT_EXPORT DRTROIContourSequence
         const DRTContourSequence &getContourSequence() const
             { return ContourSequence; }
 
+        /** get SourcePixelPlanesCharacteristicsSequence (3006,004a)
+         *  @return reference to sequence element
+         */
+        DRTSourcePixelPlanesCharacteristicsSequence &getSourcePixelPlanesCharacteristicsSequence()
+            { return SourcePixelPlanesCharacteristicsSequence; }
+
+        /** get SourcePixelPlanesCharacteristicsSequence (3006,004a)
+         *  @return const reference to sequence element
+         */
+        const DRTSourcePixelPlanesCharacteristicsSequence &getSourcePixelPlanesCharacteristicsSequence() const
+            { return SourcePixelPlanesCharacteristicsSequence; }
+
       // --- set DICOM attribute values ---
 
         /** set ROIDisplayColor (3006,002a)
@@ -193,6 +206,8 @@ class DCMTK_DCMRT_EXPORT DRTROIContourSequence
         DcmUnsignedShort RecommendedDisplayGrayscaleValue;
         /// ReferencedROINumber (3006,0084) vr=IS, vm=1, type=1
         DcmIntegerString ReferencedROINumber;
+        /// SourcePixelPlanesCharacteristicsSequence (3006,004a) vr=SQ, vm=1, type=3
+        DRTSourcePixelPlanesCharacteristicsSequence SourcePixelPlanesCharacteristicsSequence;
 
     };
 
@@ -302,13 +317,13 @@ class DCMTK_DCMRT_EXPORT DRTROIContourSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

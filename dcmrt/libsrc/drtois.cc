@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTOperatorIdentificationSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -24,6 +24,8 @@ DRTOperatorIdentificationSequence::Item::Item(const OFBool emptyDefaultItem)
     InstitutionAddress(DCM_InstitutionAddress),
     InstitutionCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     InstitutionName(DCM_InstitutionName),
+    InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     PersonAddress(DCM_PersonAddress),
     PersonIdentificationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     PersonTelecomInformation(DCM_PersonTelecomInformation),
@@ -37,6 +39,8 @@ DRTOperatorIdentificationSequence::Item::Item(const Item &copy)
     InstitutionAddress(copy.InstitutionAddress),
     InstitutionCodeSequence(copy.InstitutionCodeSequence),
     InstitutionName(copy.InstitutionName),
+    InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(copy.InstitutionalDepartmentTypeCodeSequence),
     PersonAddress(copy.PersonAddress),
     PersonIdentificationCodeSequence(copy.PersonIdentificationCodeSequence),
     PersonTelecomInformation(copy.PersonTelecomInformation),
@@ -58,6 +62,8 @@ DRTOperatorIdentificationSequence::Item &DRTOperatorIdentificationSequence::Item
         InstitutionAddress = copy.InstitutionAddress;
         InstitutionCodeSequence = copy.InstitutionCodeSequence;
         InstitutionName = copy.InstitutionName;
+        InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
+        InstitutionalDepartmentTypeCodeSequence = copy.InstitutionalDepartmentTypeCodeSequence;
         PersonAddress = copy.PersonAddress;
         PersonIdentificationCodeSequence = copy.PersonIdentificationCodeSequence;
         PersonTelecomInformation = copy.PersonTelecomInformation;
@@ -79,6 +85,8 @@ void DRTOperatorIdentificationSequence::Item::clear()
         InstitutionName.clear();
         InstitutionAddress.clear();
         InstitutionCodeSequence.clear();
+        InstitutionalDepartmentName.clear();
+        InstitutionalDepartmentTypeCodeSequence.clear();
     }
 }
 
@@ -91,7 +99,9 @@ OFBool DRTOperatorIdentificationSequence::Item::isEmpty()
            PersonTelecomInformation.isEmpty() &&
            InstitutionName.isEmpty() &&
            InstitutionAddress.isEmpty() &&
-           InstitutionCodeSequence.isEmpty();
+           InstitutionCodeSequence.isEmpty() &&
+           InstitutionalDepartmentName.isEmpty() &&
+           InstitutionalDepartmentTypeCodeSequence.isEmpty();
 }
 
 
@@ -115,6 +125,8 @@ OFCondition DRTOperatorIdentificationSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, InstitutionName, "1", "1C", "OperatorIdentificationSequence");
         getAndCheckElementFromDataset(item, InstitutionAddress, "1", "3", "OperatorIdentificationSequence");
         InstitutionCodeSequence.read(item, "1-n", "1C", "OperatorIdentificationSequence");
+        getAndCheckElementFromDataset(item, InstitutionalDepartmentName, "1", "3", "OperatorIdentificationSequence");
+        InstitutionalDepartmentTypeCodeSequence.read(item, "1-n", "3", "OperatorIdentificationSequence");
         result = EC_Normal;
     }
     return result;
@@ -134,6 +146,8 @@ OFCondition DRTOperatorIdentificationSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(InstitutionName), "1", "1C", "OperatorIdentificationSequence");
         addElementToDataset(result, item, new DcmShortText(InstitutionAddress), "1", "3", "OperatorIdentificationSequence");
         if (result.good()) result = InstitutionCodeSequence.write(item, "1-n", "1C", "OperatorIdentificationSequence");
+        addElementToDataset(result, item, new DcmLongString(InstitutionalDepartmentName), "1", "3", "OperatorIdentificationSequence");
+        if (result.good()) result = InstitutionalDepartmentTypeCodeSequence.write(item, "1-n", "3", "OperatorIdentificationSequence");
     }
     return result;
 }
@@ -154,6 +168,15 @@ OFCondition DRTOperatorIdentificationSequence::Item::getInstitutionName(OFString
         return EC_IllegalCall;
     else
         return getStringValueFromElement(InstitutionName, value, pos);
+}
+
+
+OFCondition DRTOperatorIdentificationSequence::Item::getInstitutionalDepartmentName(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(InstitutionalDepartmentName, value, pos);
 }
 
 
@@ -205,6 +228,19 @@ OFCondition DRTOperatorIdentificationSequence::Item::setInstitutionName(const OF
         result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = InstitutionName.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTOperatorIdentificationSequence::Item::setInstitutionalDepartmentName(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = InstitutionalDepartmentName.putOFStringArray(value);
     }
     return result;
 }
@@ -373,10 +409,12 @@ OFCondition DRTOperatorIdentificationSequence::gotoFirstItem()
 OFCondition DRTOperatorIdentificationSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

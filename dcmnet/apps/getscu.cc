@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 #include "dcmtk/dcmdata/dcpath.h"     /* for DcmPathProcessor */
+#include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
@@ -85,11 +86,15 @@ main(int argc, char *argv[])
   const char *opt_peerTitle = PEERAPPLICATIONTITLE;
   const char *opt_ourTitle = APPLICATIONTITLE;
   OFList<OFString> fileNameList;
-
+  DcmTLSOptions tlsOptions(NET_REQUESTOR);
   char tempstr[20];
   OFString temp_str;
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM retrieve (C-GET) SCU", rcsid);
   OFCommandLine cmd;
+
+#ifdef WITH_OPENSSL
+  DcmTLSTransportLayer::initializeOpenSSL();
+#endif
 
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("peer", "hostname of DICOM peer");
@@ -139,7 +144,7 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg4-2-3d",   "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",   "+xo",     "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
       cmd.addOption("--prefer-hevc",         "+x4",     "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--prefer-hevc10",       "+x5",     "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--prefer-hevc10",       "+x5",     "prefer HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--prefer-rle",          "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",     "+xd",     "prefer deflated explicit VR little endian TS");
@@ -159,19 +164,23 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--repeat",                      1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                          "abort association instead of releasing it");
+
+  // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+  tlsOptions.addTLSCommandlineOptions(cmd);
+
   cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
       cmd.addOption("--output-directory",    "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
@@ -191,13 +200,24 @@ main(int argc, char *argv[])
       {
         app.printHeader(OFTrue /*print host identifier*/);
         COUT << OFendl << "External libraries used:";
-    #ifdef WITH_ZLIB
+#ifdef WITH_ZLIB
         COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-    #else
+#endif
+        // print OpenSSL version if (and only if) we are compiling with OpenSSL
+        tlsOptions.printLibraryVersion();
+
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
         COUT << " none" << OFendl;
-    #endif
+#endif
         return 0;
       }
+    }
+
+    // check if the command line contains the --list-ciphers option
+    if (tlsOptions.listOfCiphersRequested(cmd))
+    {
+        tlsOptions.printSupportedCiphersuites(app, COUT);
+        return 0;
     }
 
     /* general options */
@@ -291,6 +311,9 @@ main(int argc, char *argv[])
     if (cmd.findOption("--repeat")) app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
     if (cmd.findOption("--abort")) opt_abortAssociation = OFTrue;
     if (cmd.findOption("--ignore")) opt_storageMode = DCMSCU_STORAGE_IGNORE;
+
+    // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
+    tlsOptions.parseArguments(app, cmd);
 
     /* output options */
     if (cmd.findOption("--output-directory"))
@@ -396,13 +419,27 @@ main(int argc, char *argv[])
     scu.setStorageDir(opt_outputDirectory);
   }
 
+  /* create a secure transport layer if requested and OpenSSL is available */
+  OFCondition cond = tlsOptions.createTransportLayer(NULL, NULL, app, cmd);
+  if (cond.bad())
+  {
+    OFString tempStr;
+    OFLOG_FATAL(getscuLogger, DimseCondition::dump(tempStr, cond));
+    exit(1);
+  }
+
   /* initialize network and negotiate association */
-  OFCondition cond = scu.initNetwork();
+  cond = scu.initNetwork();
   if (cond.bad())
   {
     OFLOG_FATAL(getscuLogger, DimseCondition::dump(temp_str, cond));
     exit(1);
   }
+
+  /* make sure the server connection uses TLS if requested */
+  if (tlsOptions.secureConnectionRequested())
+    scu.useSecureConnection(tlsOptions.getTransportLayer());
+
   cond = scu.negotiateAssociation();
   if (cond.bad())
   {
@@ -566,7 +603,7 @@ static void prepareTS(E_TransferSyntax ts,
 #endif
     default:
       DcmXfer xfer(ts);
-      if (xfer.isEncapsulated())
+      if (xfer.usesEncapsulatedFormat())
       {
         syntaxes.push_back(xfer.getXferID());
       }

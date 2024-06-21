@@ -1,4 +1,4 @@
-.TH "dcmprscu" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmprscu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmprscu \- Print spooler for presentation state viewer
@@ -7,7 +7,7 @@ dcmprscu \- Print spooler for presentation state viewer
 .PP
 .PP
 .nf
-dcmprscu [options] [dcmfile-in...]
+dcmprscu [options] [dcmfile-in\&.\&.\&.]
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -23,7 +23,7 @@ The \fBdcmprscu\fP utility can be run either in 'printer mode', in which case th
 .PP
 .PP
 .nf
-dcmfile-in  stored print file(s) to be spooled
+dcmfile-in   stored print file(s) to be spooled ('-' for stdin)
 .fi
 .PP
 .SH "OPTIONS"
@@ -103,7 +103,7 @@ dcmfile-in  stored print file(s) to be spooled
 .SS "basic film session options (not with &ndash;spool):"
 .PP
 .nf
-       --copies  [v]alue: integer (1..100, default: 1)
+       --copies  [v]alue: integer (1\&.\&.100, default: 1)
          set number of copies to v
 
        --medium-type  [v]alue: string
@@ -147,4 +147,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmprscp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1999-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

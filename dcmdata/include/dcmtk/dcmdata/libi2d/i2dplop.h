@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
+/** img2dcm output plugin for Ophthalmic Photography Storage SOP Class */
 class DCMTK_I2D_EXPORT I2DOutputPlugOphthalmicPhotography : public I2DOutputPlug
 {
 
@@ -47,7 +48,6 @@ public:
    *  written by this plugin
    *  @param suppSOPs - [out] List of UIDs representing the supported SOP
    *                    classes supported by this plugin.
-   *  @return none
    */
   virtual void supportedSOPClassUIDs(OFList<OFString>& suppSOPs);
 

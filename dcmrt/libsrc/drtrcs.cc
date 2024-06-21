@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTROIContourSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -25,7 +25,8 @@ DRTROIContourSequence::Item::Item(const OFBool emptyDefaultItem)
     ROIDisplayColor(DCM_ROIDisplayColor),
     RecommendedDisplayCIELabValue(DCM_RecommendedDisplayCIELabValue),
     RecommendedDisplayGrayscaleValue(DCM_RecommendedDisplayGrayscaleValue),
-    ReferencedROINumber(DCM_ReferencedROINumber)
+    ReferencedROINumber(DCM_ReferencedROINumber),
+    SourcePixelPlanesCharacteristicsSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
 }
 
@@ -36,7 +37,8 @@ DRTROIContourSequence::Item::Item(const Item &copy)
     ROIDisplayColor(copy.ROIDisplayColor),
     RecommendedDisplayCIELabValue(copy.RecommendedDisplayCIELabValue),
     RecommendedDisplayGrayscaleValue(copy.RecommendedDisplayGrayscaleValue),
-    ReferencedROINumber(copy.ReferencedROINumber)
+    ReferencedROINumber(copy.ReferencedROINumber),
+    SourcePixelPlanesCharacteristicsSequence(copy.SourcePixelPlanesCharacteristicsSequence)
 {
 }
 
@@ -56,6 +58,7 @@ DRTROIContourSequence::Item &DRTROIContourSequence::Item::operator=(const Item &
         RecommendedDisplayCIELabValue = copy.RecommendedDisplayCIELabValue;
         RecommendedDisplayGrayscaleValue = copy.RecommendedDisplayGrayscaleValue;
         ReferencedROINumber = copy.ReferencedROINumber;
+        SourcePixelPlanesCharacteristicsSequence = copy.SourcePixelPlanesCharacteristicsSequence;
     }
     return *this;
 }
@@ -70,6 +73,7 @@ void DRTROIContourSequence::Item::clear()
         ROIDisplayColor.clear();
         RecommendedDisplayGrayscaleValue.clear();
         RecommendedDisplayCIELabValue.clear();
+        SourcePixelPlanesCharacteristicsSequence.clear();
         ContourSequence.clear();
     }
 }
@@ -81,6 +85,7 @@ OFBool DRTROIContourSequence::Item::isEmpty()
            ROIDisplayColor.isEmpty() &&
            RecommendedDisplayGrayscaleValue.isEmpty() &&
            RecommendedDisplayCIELabValue.isEmpty() &&
+           SourcePixelPlanesCharacteristicsSequence.isEmpty() &&
            ContourSequence.isEmpty();
 }
 
@@ -102,6 +107,7 @@ OFCondition DRTROIContourSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, ROIDisplayColor, "3", "3", "ROIContourSequence");
         getAndCheckElementFromDataset(item, RecommendedDisplayGrayscaleValue, "1", "3", "ROIContourSequence");
         getAndCheckElementFromDataset(item, RecommendedDisplayCIELabValue, "3", "3", "ROIContourSequence");
+        SourcePixelPlanesCharacteristicsSequence.read(item, "1-n", "3", "ROIContourSequence");
         ContourSequence.read(item, "1-n", "3", "ROIContourSequence");
         result = EC_Normal;
     }
@@ -119,6 +125,7 @@ OFCondition DRTROIContourSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmIntegerString(ROIDisplayColor), "3", "3", "ROIContourSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(RecommendedDisplayGrayscaleValue), "1", "3", "ROIContourSequence");
         addElementToDataset(result, item, new DcmUnsignedShort(RecommendedDisplayCIELabValue), "3", "3", "ROIContourSequence");
+        if (result.good()) result = SourcePixelPlanesCharacteristicsSequence.write(item, "1-n", "3", "ROIContourSequence");
         if (result.good()) result = ContourSequence.write(item, "1-n", "3", "ROIContourSequence");
     }
     return result;
@@ -347,10 +354,12 @@ OFCondition DRTROIContourSequence::gotoFirstItem()
 OFCondition DRTROIContourSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

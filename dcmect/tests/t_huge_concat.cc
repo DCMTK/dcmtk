@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,9 @@
 #include "dcmtk/ofstd/oftest.h"
 
 #include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 
 #include "dcmtk/dcmect/enhanced_ct.h"
 
@@ -50,10 +53,7 @@
 #include "dcmtk/dcmfg/fgpixmsr.h"
 #include "dcmtk/dcmfg/fgplanor.h"
 #include "dcmtk/dcmfg/fgplanpo.h"
-#include "dcmtk/dcmfg/fgrealworldvaluemapping.h"
 #include "dcmtk/dcmfg/fgtemporalposition.h"
-
-static OFLogger tRoundLogger = OFLog::getLogger("dcmtk.test.t_huge_concat");
 
 // Number of Rows of image, might be changed for testing purposes
 static const Uint16 NUM_ROWS = 4000;
@@ -460,13 +460,11 @@ static void checkConcatenationInstance(size_t numInstance, EctEnhancedCT* srcIns
 
     FunctionalGroups::const_iterator srcShared = srcInstance->getFunctionalGroups().getShared()->begin();
     FunctionalGroups::const_iterator cShared   = concat->getFunctionalGroups().getShared()->begin();
-    size_t numShared                           = 0;
     do
     {
         OFCHECK(srcShared->second->compare(*cShared->second) == 0);
         srcShared++;
         cShared++;
-        numShared++;
     } while ((srcShared != srcInstance->getFunctionalGroups().getShared()->end())
              && (cShared != concat->getFunctionalGroups().getShared()->end()));
     OFCHECK((srcShared == srcInstance->getFunctionalGroups().getShared()->end())

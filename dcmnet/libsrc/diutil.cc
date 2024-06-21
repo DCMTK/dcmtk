@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -78,22 +78,11 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
-#endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
-#ifdef HAVE_STAT_H
-#include <stat.h>
 #endif
 
 #include "dcmtk/ofstd/ofstd.h"
@@ -159,23 +148,21 @@ DU_stripLeadingAndTrailingSpaces(char *s)
 OFBool
 DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s, size_t bufsize)
 {
-    DcmByteString *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
     char* aString;
 
-    ec = obj->search(t, stack);
-    elem = (DcmByteString*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
+    OFCondition ec = obj->search(t, stack);
+    if (ec.good() && (stack.top() != NULL) && stack.top()->isElement()) {
+        DcmElement *elem = (DcmElement *) stack.top();
         if (elem->getLength() == 0) {
             s[0] = '\0';
         } else {
             ec =  elem->getString(aString);
-            if (ec == EC_Normal)
+            if (ec.good())
                 OFStandard::strlcpy(s, aString, bufsize);
         }
     }
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -193,7 +180,7 @@ DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s)
         ec = obj->insert(e, OFTrue);
     }
 
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -201,15 +188,15 @@ DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
 {
     DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
 
-    ec = obj->search(t, stack);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        ec = elem->getUint16(*us, 0);
+    OFCondition ec = obj->search(t, stack);
+    if (ec.good() && stack.top()->isElement())
+    {
+        elem = (DcmElement*) stack.top();
+        if (elem) ec = elem->getUint16(*us, 0);
     }
 
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -226,7 +213,7 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
     if (ec == EC_Normal) {
         ec = obj->insert(e, OFTrue);
     }
-    return (ec == EC_Normal);
+    return (ec.good());
 }
 
 OFBool
@@ -287,7 +274,7 @@ DU_cechoStatusString(Uint16 statusCode)
     if (statusCode == STATUS_Success)
         s = "Success";
     else {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -336,7 +323,7 @@ DU_cstoreStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -381,7 +368,7 @@ DU_cfindStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -432,7 +419,7 @@ DU_cmoveStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -480,7 +467,7 @@ DU_cgetStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -551,7 +538,7 @@ DU_ncreateStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -607,7 +594,7 @@ DU_ngetStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-          sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+          OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
           s = staticBuf;
     }
     return s;
@@ -672,7 +659,7 @@ DU_nsetStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -734,7 +721,7 @@ DU_nactionStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -787,7 +774,7 @@ DU_ndeleteStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;
@@ -849,7 +836,7 @@ DU_neventReportStatusString(Uint16 statusCode)
     }
 
     if (s == NULL) {
-        sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+        OFStandard::snprintf(staticBuf, sizeof(staticBuf), "Unknown Status: 0x%x", (unsigned int)statusCode);
         s = staticBuf;
     }
     return s;

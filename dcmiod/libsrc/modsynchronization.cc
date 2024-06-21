@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -21,13 +21,11 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmiod/modsynchronisation.h"
-#include "dcmtk/ofstd/ofstream.h"
 
 const OFString IODSynchronizationModule::m_ModuleName = "SynchronizationModule";
 

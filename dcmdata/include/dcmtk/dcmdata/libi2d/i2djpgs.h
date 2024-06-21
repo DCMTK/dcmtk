@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2021, OFFIS e.V.
+ *  Copyright (C) 2007-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -116,14 +116,14 @@ struct DCMTK_I2D_EXPORT JPEGFileMapEntry
 };
 
 /** This is a I2DImgSource implementation that can parse JPEG files and convert
- *  them into DICOM images.
+ *  them into DICOM images. This includes files using the original JPEG encoding
+ *  (ITU-T Recommendation T.81) and JPEG-LS encoding (ITU-T Recommendation T.87).
  */
 class DCMTK_I2D_EXPORT I2DJpegSource : public I2DImgSource
 {
 
 public:
     /** Constructor, initializes member variables
-     *  @return none
      */
     I2DJpegSource();
 
@@ -189,45 +189,43 @@ public:
     /** Enable/Disable support for Extended Sequential JPEG Coding
      *  @param enabled - [in] OFTrue: support Extended Sequential,
      *                        OFFalse: do not support
-     *  @return none
      */
     void setExtSeqSupport(const OFBool enabled);
 
     /** Enable/Disable support for Progressive JPEG Coding
      *  @param enabled - [in] OFTrue: support Extended Sequential,
      *                        OFFalse: do not support
-     *  @return none
      */
     void setProgrSupport(const OFBool enabled);
 
     /** If enabled, conversion will only take place if JFIF data could be found
      *  and evaluated. Many digital cameras do not provide a JFIF header, so this
      *  is disabled by default.
+     *  @param enabled - [in] Set whether we want to insist on JFIF header (OFTrue)
+     *                    or not (OFFalse)
      */
     void setInsistOnJFIF(const OFBool enabled);
 
     /**  If enabled, APPn markers (except JFIF!) are also copied to the output file.
      *   Default: false
      *   @param enabled - [in] OFTrue: copy APPn, OFFalse: cut off APPn info
-     *   @return none
      */
     void setKeepAPPn(const OFBool enabled);
 
     /**  If enabled, COM marker is also copied to the output file.
      *   Default: true
      *   @param enabled - [in] OFTrue: copy COM, OFFalse: cut off COM segment
-     *   @return none
      */
     void setKeepCOM(const OFBool enabled);
 
     /** Returns a string representation of a JPEG marker code.
      *  @param marker - [in] The marker to be converted
+     *  @param isJPEGLS - [in] Denotes whether we are handling JPEG-LS data
      *  @return A string representation of the marker
      */
-    static OFString jpegMarkerToString(const E_JPGMARKER& marker);
+    static OFString jpegMarkerToString(const E_JPGMARKER& marker, const OFBool isJPEGLS);
 
     /** Destructor, frees some memory.
-     *  @return none
      */
     ~I2DJpegSource();
 
@@ -239,7 +237,6 @@ protected:
     OFCondition openFile(const OFString& filename);
 
     /** Closes JPEG file.
-     *  @return A string representation of the marker
      */
     void closeFile();
 
@@ -252,7 +249,6 @@ protected:
     /** Dump the internal JPEG file map to a given stream. The file map
      *  lists JPEG markers and their position in the bitstream found in the JPEG
      *  file
-     *  @return none
      */
     void debugDumpJPEGFileMap() const;
 
@@ -270,6 +266,24 @@ protected:
                                       Uint16& imageHeight,
                                       Uint16& samplesPerPixel,
                                       Uint16& bitsPerSample);
+
+    /** Get image parameters as found at given SOF marker of the JPEG image.
+     *  Used for JPEG-LS codec.
+     *  @param entry - [in] Related SOS marker (E_JPGMARKER_SOS)
+     *  @param nearLossless - [out] Returns whether image is encoded in lossless (0)
+     *                              or near-lossless (>0) mode
+     *  @return EC_Normal, if successful, error otherwise
+     */
+    OFCondition getSOSImageParameters(const JPEGFileMapEntry& entry,
+                                      Uint8& nearLossless);
+
+    /** Get color transform as found at given APP8 marker of the JPEG image.
+     *  Used for JPEG-LS codec.
+     *  @param entry - [in] Related APP8 marker (E_JPGMARKER_APP8)
+     *  @param xform - [out] Returns the color transform
+     *  @return EC_Normal, if successful, error otherwise
+     */
+    OFCondition getAPP8ImageParameters(const JPEGFileMapEntry& entry, Uint8& xform);
 
     /** Get JPEG parameters as found at given JFIF marker of the JPEG image.
      *  @param entry - [in] This specifies the marker and the byte position of the
@@ -293,9 +307,12 @@ protected:
     /** Returns if possible the DICOM transfer syntax matching the coding of the
      *  JPEG data.
      *  @param jpegEncoding - [in] Image marker that should be tested
+     *  @param useJPEGLS - [in] Denotes whether we are handling JPEG-LS data
+     *  @param nearLossless - [in] Denotes whether we are handling JPEG-LS data
+     *                             in near-lossless mode
      *  @return EC_Normal, marker is supported, error otherwise
      */
-    static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding);
+    static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding, OFBool const useJPEGLS, Uint8 const nearLossless);
 
     /** Returns true if marker is one of the RST0 to RST7 markers
      *  @param jpegEncoding - [in] Image marker that should be tested
@@ -305,9 +322,10 @@ protected:
 
     /** Returns true if marker is one of the SOF0 to SOF15 markers
      *  @param jpegEncoding - [in] Image marker that should be tested
+     *  @param isJPEGLS - [in] Denotes whether we are handling JPEG-LS data
      *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
      */
-    static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding);
+    static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding, const OFBool isJPEGLS);
 
     /** Extract raw JPEG stream (i.e. without APPn markers) from JPEG file.
      *  @param pixelData - [out] The resulting JPEG stream
@@ -349,7 +367,6 @@ protected:
     inline int read1Byte(Uint8& result);
 
     /** Deletes internal JPEG file map and frees memory.
-     *  @return none
      */
     void clearMap();
 
@@ -384,6 +401,10 @@ protected:
     /// After reading pixel data, this denotes whether the source
     /// data is already lossy compressed
     OFBool m_lossyCompressed;
+
+    /// After reading pixel data, this denotes whether the source
+    /// data is JPEG-LS (ITU 87) or original JPEG (ITU 81)
+    OFBool m_isJPEGLS;
 };
 
 #endif // I2DJPGS_H

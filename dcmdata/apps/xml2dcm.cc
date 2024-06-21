@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -74,8 +74,8 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("xmlfile-in",  "XML input filename to be converted (stdin: \"-\")", OFCmdParam::PM_Mandatory);
-    cmd.addParam("dcmfile-out", "DICOM output filename", OFCmdParam::PM_Mandatory);
+    cmd.addParam("xmlfile-in",  "XML input filename to be converted\n(\"-\" for stdin)", OFCmdParam::PM_Mandatory);
+    cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)", OFCmdParam::PM_Mandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
             if (fileformat.canWriteXfer(opt_xfer))
             {
                 /* check whether pixel data is compressed */
-                if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).isEncapsulated())
+                if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).usesEncapsulatedFormat())
                 {
                     OFLOG_WARN(xml2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
                     opt_writeMode = EWM_fileformat;

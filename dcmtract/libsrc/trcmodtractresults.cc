@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,6 +23,8 @@
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmtract/trcmodtractresults.h"
 #include "dcmtk/dcmtract/trctrack.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
 
 const OFString TrcTractographyResultsModule::m_ModuleName = "TractographyResultsModule";
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2010, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,13 +21,14 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsril.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcsequen.h"
-#include "dcmtk/dcmpstat/dvpsril.h"
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
 #include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsdef.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
@@ -71,7 +72,7 @@ OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
-  if (EC_Normal == dset.search(DCM_ReferencedImageSequence, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(DCM_ReferencedImageSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
@@ -218,10 +219,10 @@ OFCondition DVPSReferencedImage_PList::addImageReference(
 {
   if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
   const char *framenumber=NULL;
+  char frameString[24];
   if (applicability==DVPSB_currentFrame)
   {
-    char frameString[100];
-    sprintf(frameString, "%ld", frame);
+    OFStandard::snprintf(frameString, sizeof(frameString), "%ld", frame);
     framenumber = frameString;
   }
   return addImageReference(sopclassUID, instanceUID, framenumber);

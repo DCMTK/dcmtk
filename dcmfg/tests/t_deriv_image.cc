@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2020, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/dcmfg/fgderimg.h"
 #include "dcmtk/dcmfg/fginterface.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 static void init_template(OFString& fg_dump)
 {

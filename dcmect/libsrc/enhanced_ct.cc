@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -18,12 +18,16 @@
  *  Purpose: Class representing a Enhanced CT object
  *
  */
+ #include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmect/enhanced_ct.h"
-#include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmect/types.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/concatenationloader.h"
+#include "dcmtk/dcmfg/fgtypes.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmiod/modimagepixel.h"
 
@@ -100,8 +104,19 @@ struct EctEnhancedCT::WriteVisitor
         m_CT.getRows(rows);
         m_CT.getColumns(cols);
         const size_t numFrames      = m_CT.m_Frames.size();
+        if (numFrames > 2147483647)
+        {
+            DCMECT_ERROR("More than 2147483647 frames provided");
+            return FG_EC_PixelDataTooLarge;
+        }
+        const size_t numPixelsFrame = OFstatic_cast(size_t, rows) * OFstatic_cast(size_t, cols);
         const size_t numBytesFrame  = m_CT.m_Frames[0]->length;
-        const size_t numPixelsFrame = rows * cols;
+        if (numBytesFrame != numPixelsFrame * 2)
+        {
+            DCMECT_ERROR("Invalid number of bytes per frame: Expected " << numPixelsFrame * 2 << " but got "
+              << numBytesFrame << " frame pixel data");
+            return ECT_InvalidPixelInfo;
+        }
         // Creates the correct pixel data element, based on the image pixel module used.
         DcmPixelData* pixData = new DcmPixelData(DCM_PixelData);
         OFCondition result;
@@ -1210,9 +1225,9 @@ OFCondition EctEnhancedCT::decompress(DcmDataset& dset)
 {
     DcmXfer xfer = dset.getOriginalXfer();
     OFCondition result;
-    // If the original transfer is encapsulated and we do not already have an uncompressed version, decompress or reject
-    // the file
-    if (xfer.isEncapsulated())
+    // If the original transfer syntax refers to compressed pixel data and we do not
+    // already have an uncompressed version, decompress or reject the file
+    if (xfer.isPixelDataCompressed())
     {
         DCMECT_DEBUG("Enhanced CT object is compressed, converting to uncompressed transfer syntax first");
         result = DcmIODUtil::decompress(dset);

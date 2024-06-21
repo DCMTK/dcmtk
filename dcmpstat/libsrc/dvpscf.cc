@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -881,7 +881,7 @@ Uint32 DVConfiguration::getTargetPrinterNumberOfConfigurationSettings(const char
       char l0_key[80];
       do
       {
-        sprintf(l0_key, "CONFIGURATION_%d", counter++);
+        OFStandard::snprintf(l0_key, sizeof(l0_key), "CONFIGURATION_%d", counter++);
       } while (NULL != pConfig->get_entry(l0_key));
       result = counter - 2;
     }
@@ -892,7 +892,7 @@ Uint32 DVConfiguration::getTargetPrinterNumberOfConfigurationSettings(const char
 const char *DVConfiguration::getTargetPrinterConfigurationSetting(const char *targetID, Uint32 idx)
 {
   char l0_key[80];
-  sprintf(l0_key, "CONFIGURATION_%d", (int)idx+1);
+  OFStandard::snprintf(l0_key, sizeof(l0_key), "CONFIGURATION_%d", (int)idx+1);
   return getConfigEntry(L2_COMMUNICATION, targetID, l0_key);
 }
 

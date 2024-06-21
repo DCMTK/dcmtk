@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,7 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvrsv.h"
-
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcjson.h"
 
@@ -186,19 +186,19 @@ void DcmSigned64bitVeryLong::print(STD_NAMESPACE ostream &out,
                     /* check whether first value is printed (omit delimiter) */
 #ifdef PRId64
                     if (i == 0)
-                        sprintf(buffer, "%" PRId64, *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRId64, *sintVals);
                     else
-                        sprintf(buffer, "\\%" PRId64, *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%" PRId64, *sintVals);
 #elif SIZEOF_LONG == 8
                     if (i == 0)
-                        sprintf(buffer, "%ld", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%ld", *sintVals);
                     else
-                        sprintf(buffer, "\\%ld", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%ld", *sintVals);
 #else // assume "long long" is 64 bits
                     if (i == 0)
-                        sprintf(buffer, "%lld", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "%lld", *sintVals);
                     else
-                        sprintf(buffer, "\\%lld", *sintVals);
+                        OFStandard::snprintf(buffer, sizeof(buffer), "\\%lld", *sintVals);
 #endif
                     /* check whether current value sticks to the length limit */
                     newLength = printedLength + OFstatic_cast(unsigned long, strlen(buffer));
@@ -277,11 +277,11 @@ OFCondition DcmSigned64bitVeryLong::getOFString(OFString &stringVal,
         /* ... and convert it to a character string */
         char buffer[32];
 #ifdef PRId64
-        sprintf(buffer, "%" PRId64, sintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%" PRId64, sintVal);
 #elif SIZEOF_LONG == 8
-        sprintf(buffer, "%ld", sintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%ld", sintVal);
 #else // assume "long long" is 64 bits
-        sprintf(buffer, "%lld", sintVal);
+        OFStandard::snprintf(buffer, sizeof(buffer), "%lld", sintVal);
 #endif
         /* assign result */
         stringVal = buffer;

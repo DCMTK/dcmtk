@@ -1,14 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTRTROIObservationsSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
- *  Last modified on 2022-07-25 by Riesmeier
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -22,36 +21,40 @@
 
 DRTRTROIObservationsSequence::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
+    AnatomicRegionSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     MaterialID(DCM_MaterialID),
     ObservationNumber(DCM_ObservationNumber),
+    PrimaryAnatomicStructureSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ROIInterpreter(DCM_ROIInterpreter),
-    ROIObservationDescription(DCM_RETIRED_ROIObservationDescription),
-    ROIObservationLabel(DCM_RETIRED_ROIObservationLabel),
     ROIPhysicalPropertiesSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RTROIIdentificationCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     RTROIInterpretedType(DCM_RTROIInterpretedType),
     RTRelatedROISequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedROINumber(DCM_ReferencedROINumber),
     RelatedRTROIObservationsSequence(emptyDefaultItem /*emptyDefaultSequence*/),
-    SegmentedPropertyCategoryCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/)
+    SegmentedPropertyCategoryCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    TherapeuticRoleCategoryCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/),
+    TherapeuticRoleTypeCodeSequence(emptyDefaultItem /*emptyDefaultSequence*/)
 {
 }
 
 
 DRTRTROIObservationsSequence::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
+    AnatomicRegionSequence(copy.AnatomicRegionSequence),
     MaterialID(copy.MaterialID),
     ObservationNumber(copy.ObservationNumber),
+    PrimaryAnatomicStructureSequence(copy.PrimaryAnatomicStructureSequence),
     ROIInterpreter(copy.ROIInterpreter),
-    ROIObservationDescription(copy.ROIObservationDescription),
-    ROIObservationLabel(copy.ROIObservationLabel),
     ROIPhysicalPropertiesSequence(copy.ROIPhysicalPropertiesSequence),
     RTROIIdentificationCodeSequence(copy.RTROIIdentificationCodeSequence),
     RTROIInterpretedType(copy.RTROIInterpretedType),
     RTRelatedROISequence(copy.RTRelatedROISequence),
     ReferencedROINumber(copy.ReferencedROINumber),
     RelatedRTROIObservationsSequence(copy.RelatedRTROIObservationsSequence),
-    SegmentedPropertyCategoryCodeSequence(copy.SegmentedPropertyCategoryCodeSequence)
+    SegmentedPropertyCategoryCodeSequence(copy.SegmentedPropertyCategoryCodeSequence),
+    TherapeuticRoleCategoryCodeSequence(copy.TherapeuticRoleCategoryCodeSequence),
+    TherapeuticRoleTypeCodeSequence(copy.TherapeuticRoleTypeCodeSequence)
 {
 }
 
@@ -66,11 +69,11 @@ DRTRTROIObservationsSequence::Item &DRTRTROIObservationsSequence::Item::operator
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        AnatomicRegionSequence = copy.AnatomicRegionSequence;
         MaterialID = copy.MaterialID;
         ObservationNumber = copy.ObservationNumber;
+        PrimaryAnatomicStructureSequence = copy.PrimaryAnatomicStructureSequence;
         ROIInterpreter = copy.ROIInterpreter;
-        ROIObservationDescription = copy.ROIObservationDescription;
-        ROIObservationLabel = copy.ROIObservationLabel;
         ROIPhysicalPropertiesSequence = copy.ROIPhysicalPropertiesSequence;
         RTROIIdentificationCodeSequence = copy.RTROIIdentificationCodeSequence;
         RTROIInterpretedType = copy.RTROIInterpretedType;
@@ -78,6 +81,8 @@ DRTRTROIObservationsSequence::Item &DRTRTROIObservationsSequence::Item::operator
         ReferencedROINumber = copy.ReferencedROINumber;
         RelatedRTROIObservationsSequence = copy.RelatedRTROIObservationsSequence;
         SegmentedPropertyCategoryCodeSequence = copy.SegmentedPropertyCategoryCodeSequence;
+        TherapeuticRoleCategoryCodeSequence = copy.TherapeuticRoleCategoryCodeSequence;
+        TherapeuticRoleTypeCodeSequence = copy.TherapeuticRoleTypeCodeSequence;
     }
     return *this;
 }
@@ -90,11 +95,13 @@ void DRTRTROIObservationsSequence::Item::clear()
         /* clear all DICOM attributes */
         ObservationNumber.clear();
         ReferencedROINumber.clear();
-        ROIObservationLabel.clear();
-        ROIObservationDescription.clear();
         RTRelatedROISequence.clear();
+        AnatomicRegionSequence.clear();
+        PrimaryAnatomicStructureSequence.clear();
         SegmentedPropertyCategoryCodeSequence.clear();
         RTROIIdentificationCodeSequence.clear();
+        TherapeuticRoleCategoryCodeSequence.clear();
+        TherapeuticRoleTypeCodeSequence.clear();
         RelatedRTROIObservationsSequence.clear();
         RTROIInterpretedType.clear();
         ROIInterpreter.clear();
@@ -108,11 +115,13 @@ OFBool DRTRTROIObservationsSequence::Item::isEmpty()
 {
     return ObservationNumber.isEmpty() &&
            ReferencedROINumber.isEmpty() &&
-           ROIObservationLabel.isEmpty() &&
-           ROIObservationDescription.isEmpty() &&
            RTRelatedROISequence.isEmpty() &&
+           AnatomicRegionSequence.isEmpty() &&
+           PrimaryAnatomicStructureSequence.isEmpty() &&
            SegmentedPropertyCategoryCodeSequence.isEmpty() &&
            RTROIIdentificationCodeSequence.isEmpty() &&
+           TherapeuticRoleCategoryCodeSequence.isEmpty() &&
+           TherapeuticRoleTypeCodeSequence.isEmpty() &&
            RelatedRTROIObservationsSequence.isEmpty() &&
            RTROIInterpretedType.isEmpty() &&
            ROIInterpreter.isEmpty() &&
@@ -136,11 +145,13 @@ OFCondition DRTRTROIObservationsSequence::Item::read(DcmItem &item)
         clear();
         getAndCheckElementFromDataset(item, ObservationNumber, "1", "1", "RTROIObservationsSequence");
         getAndCheckElementFromDataset(item, ReferencedROINumber, "1", "1", "RTROIObservationsSequence");
-        getAndCheckElementFromDataset(item, ROIObservationLabel, "1", "3", "RTROIObservationsSequence");
-        getAndCheckElementFromDataset(item, ROIObservationDescription, "1", "3", "RTROIObservationsSequence");
         RTRelatedROISequence.read(item, "1-n", "3", "RTROIObservationsSequence");
+        AnatomicRegionSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
+        PrimaryAnatomicStructureSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         SegmentedPropertyCategoryCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         RTROIIdentificationCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
+        TherapeuticRoleCategoryCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
+        TherapeuticRoleTypeCodeSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         RelatedRTROIObservationsSequence.read(item, "1-n", "3", "RTROIObservationsSequence");
         getAndCheckElementFromDataset(item, RTROIInterpretedType, "1", "2", "RTROIObservationsSequence");
         getAndCheckElementFromDataset(item, ROIInterpreter, "1", "2", "RTROIObservationsSequence");
@@ -160,11 +171,13 @@ OFCondition DRTRTROIObservationsSequence::Item::write(DcmItem &item)
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ObservationNumber), "1", "1", "RTROIObservationsSequence");
         addElementToDataset(result, item, new DcmIntegerString(ReferencedROINumber), "1", "1", "RTROIObservationsSequence");
-        addElementToDataset(result, item, new DcmShortString(ROIObservationLabel), "1", "3", "RTROIObservationsSequence");
-        addElementToDataset(result, item, new DcmShortText(ROIObservationDescription), "1", "3", "RTROIObservationsSequence");
         if (result.good()) result = RTRelatedROISequence.write(item, "1-n", "3", "RTROIObservationsSequence");
+        if (result.good()) result = AnatomicRegionSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
+        if (result.good()) result = PrimaryAnatomicStructureSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         if (result.good()) result = SegmentedPropertyCategoryCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         if (result.good()) result = RTROIIdentificationCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
+        if (result.good()) result = TherapeuticRoleCategoryCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
+        if (result.good()) result = TherapeuticRoleTypeCodeSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         if (result.good()) result = RelatedRTROIObservationsSequence.write(item, "1-n", "3", "RTROIObservationsSequence");
         addElementToDataset(result, item, new DcmCodeString(RTROIInterpretedType), "1", "2", "RTROIObservationsSequence");
         addElementToDataset(result, item, new DcmPersonName(ROIInterpreter), "1", "2", "RTROIObservationsSequence");
@@ -208,24 +221,6 @@ OFCondition DRTRTROIObservationsSequence::Item::getROIInterpreter(OFString &valu
         return EC_IllegalCall;
     else
         return getStringValueFromElement(ROIInterpreter, value, pos);
-}
-
-
-OFCondition DRTRTROIObservationsSequence::Item::getROIObservationDescription(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIObservationDescription, value, pos);
-}
-
-
-OFCondition DRTRTROIObservationsSequence::Item::getROIObservationLabel(OFString &value, const signed long pos) const
-{
-    if (EmptyDefaultItem)
-        return EC_IllegalCall;
-    else
-        return getStringValueFromElement(ROIObservationLabel, value, pos);
 }
 
 
@@ -290,32 +285,6 @@ OFCondition DRTRTROIObservationsSequence::Item::setROIInterpreter(const OFString
         result = (check) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = ROIInterpreter.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTRTROIObservationsSequence::Item::setROIObservationDescription(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
-        if (result.good())
-            result = ROIObservationDescription.putOFStringArray(value);
-    }
-    return result;
-}
-
-
-OFCondition DRTRTROIObservationsSequence::Item::setROIObservationLabel(const OFString &value, const OFBool check)
-{
-    OFCondition result = EC_IllegalCall;
-    if (!EmptyDefaultItem)
-    {
-        result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
-        if (result.good())
-            result = ROIObservationLabel.putOFStringArray(value);
     }
     return result;
 }
@@ -471,10 +440,12 @@ OFCondition DRTRTROIObservationsSequence::gotoFirstItem()
 OFCondition DRTRTROIObservationsSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -86,7 +86,7 @@ OFBool DSRAcquisitionContextSRConstraintChecker::checkContentRelationship(const 
         {
             result = (targetValueType == VT_Code) || (targetValueType == VT_Date)   || (targetValueType == VT_DateTime) ||
                      (targetValueType == VT_Num)  || (targetValueType == VT_PName)  || (targetValueType == VT_Text)     ||
-                     (targetValueType == VT_Time) || (targetValueType == VT_UIDRef) || (targetValueType == VT_Container) /* see CP-2084 */;
+                     (targetValueType == VT_Time) || (targetValueType == VT_UIDRef) || (targetValueType == VT_Container);
         }
         /* row 3 of the table */
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Code))

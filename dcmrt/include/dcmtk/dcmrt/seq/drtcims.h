@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTContentItemModifierSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -142,6 +142,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition getObservationDateTime(OFString &value, const signed long pos = 0) const;
+
+        /** get ObservationStartDateTime (0040,a033)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getObservationStartDateTime(OFString &value, const signed long pos = 0) const;
 
         /** get PersonName (0040,a123)
          *  @param  value  reference to variable in which the value should be stored
@@ -279,6 +286,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
          */
         OFCondition setObservationDateTime(const OFString &value, const OFBool check = OFTrue);
 
+        /** set ObservationStartDateTime (0040,a033)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setObservationStartDateTime(const OFString &value, const OFBool check = OFTrue);
+
         /** set PersonName (0040,a123)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (PN) and VM (1) if enabled
@@ -349,6 +363,8 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
         DcmDecimalString NumericValue;
         /// ObservationDateTime (0040,a032) vr=DT, vm=1, type=3
         DcmDateTime ObservationDateTime;
+        /// ObservationStartDateTime (0040,a033) vr=DT, vm=1, type=3
+        DcmDateTime ObservationStartDateTime;
         /// PersonName (0040,a123) vr=PN, vm=1, type=1C
         DcmPersonName PersonName;
         /// RationalDenominatorValue (0040,a163) vr=UL, vm=1-n, type=1C
@@ -474,13 +490,13 @@ class DCMTK_DCMRT_EXPORT DRTContentItemModifierSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

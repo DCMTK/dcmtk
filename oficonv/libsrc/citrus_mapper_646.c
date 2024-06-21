@@ -101,7 +101,7 @@ parse_file(struct _citrus_mapper_646 *m6, const char *path)
     const char *p;
     char *pp;
     size_t len;
-    char buf[PATH_MAX];
+    char buf[OFICONV_PATH_MAX];
     int i, ret;
 
     ret = _citrus_map_file(&r, path);
@@ -141,7 +141,7 @@ parse_var(struct _citrus_mapper_646 *m6, struct _citrus_memory_stream *ms,
     const char *dir)
 {
     struct _citrus_region r;
-    char path[PATH_MAX];
+    char path[OFICONV_PATH_MAX];
 
     memset(&r, 0, sizeof(struct _citrus_region ));
     m6->m6_forward = 1;

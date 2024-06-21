@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djencbas.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmjpeg/djrploss.h"
 #include "dcmtk/dcmjpeg/djeijg8.h"
@@ -61,7 +62,7 @@ void DJEncoderBaseline::createDerivationDescription(
   char buf[64];
  
   derivationDescription =  "Lossy compression with JPEG baseline, IJG quality factor ";
-  sprintf(buf, "%u", rp->getQuality());
+  OFStandard::snprintf(buf, sizeof(buf), "%u", rp->getQuality());
   derivationDescription += buf;
   derivationDescription += ", compression ratio ";
   appendCompressionRatio(derivationDescription, ratio);

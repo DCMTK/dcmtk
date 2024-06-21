@@ -36,6 +36,8 @@
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
 
+// use this macro if the tests are run in a module where the logger from oflog
+// and the macros from dcmdata are not accessible, i.e. ofstd and oficonv.
 #ifdef OFTEST_OFSTD_ONLY
 
 #define OFTEST_LOG_VERBOSE(msg) do { \
@@ -43,12 +45,18 @@
         COUT << msg << OFendl; \
 } while (0)
 
+#ifdef OFTEST_INCLUDE_IPC_OPTION
+extern const char *appName;
+extern void ipc_client(Uint32 port);
+#endif
+
 #else
 
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 #include "dcmtk/oflog/oflog.h"
 
 static OFLogger testLogger = OFLog::getLogger("dcmtk.test");
+
 #define OFTEST_LOG_VERBOSE(msg) OFLOG_INFO(testLogger, msg)
 
 #endif
@@ -237,9 +245,12 @@ public:
     {
         OFList<OFTestTest*> testsToRun;
         OFBool listOnly = OFFalse;
-
         OFString rcsid;
+
 #ifdef OFTEST_OFSTD_ONLY
+#ifdef OFTEST_INCLUDE_IPC_OPTION
+        appName = argv[0];
+#endif
         // No proper rcsid because the necessary defines are in dcmdata
         if (module != NULL)
             rcsid = "$dcmtk: " + OFString(module) + " $";
@@ -261,6 +272,10 @@ public:
           cmd.addOption("--exhaustive", "-x", "also run extensive and slow tests");
 #ifdef OFTEST_OFSTD_ONLY
           cmd.addOption("--verbose",    "-v", "verbose mode, print processing details");
+#ifdef OFTEST_INCLUDE_IPC_OPTION
+          cmd.addOption("--ipc",           1, "run as IPC message queue client process",
+                                              "[p]rocess ID: int",  OFCommandLine::AF_Internal);
+#endif
 #else
           OFLog::addOptions(cmd);
 #endif
@@ -273,6 +288,16 @@ public:
 
 #ifdef OFTEST_OFSTD_ONLY
         if (cmd.findOption("--verbose")) verbose_ = OFTrue;
+#ifdef OFTEST_INCLUDE_IPC_OPTION
+        if (cmd.findOption("--ipc"))
+        {
+            // act as the client process for the IPC test case
+            OFCmdUnsignedInt ipc_port = 0;
+            app.checkValue(cmd.getValueAndCheckMin(ipc_port, 65536));
+            ipc_client(ipc_port);
+            exit(0);
+        }
+#endif
 #else
         /* We disable warnings and errors by default since some tests cause
          * such messages by testing corner cases. */

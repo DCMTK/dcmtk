@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2019-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -81,20 +81,22 @@ OFBool DSRPlannedImagingAgentAdministrationSRConstraintChecker::checkContentRela
                      (targetValueType == VT_DateTime) || (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||
                      (targetValueType == VT_PName)    || (targetValueType == VT_Container);
         }
-        /* row 2 of the table */
+        /* row 2 of the table (CONTAINER-related constraints are checked with row 3) */
         else if ((relationshipType == RT_hasObsContext) &&
-            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num) || (sourceValueType == VT_Container)))
+            ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
         {
             result = (targetValueType == VT_Text)     || (targetValueType == VT_Code) || (targetValueType == VT_Num)    ||
                      (targetValueType == VT_DateTime) || (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||
                      (targetValueType == VT_PName);
         }
-        /* new row introduced with CP-2084 */
+        /* row 3 of the table (including CONTAINER-related constraints from row 2) */
         else if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
         {
-            result = (targetValueType == VT_Container);
+            result = (targetValueType == VT_Text)     || (targetValueType == VT_Code) || (targetValueType == VT_Num)    ||
+                     (targetValueType == VT_DateTime) || (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||
+                     (targetValueType == VT_PName)    || (targetValueType == VT_Container);
         }
-        /* row 3 of the table */
+        /* row 4 of the table */
         else if ((relationshipType == RT_hasAcqContext) &&
             ((sourceValueType == VT_Container) || (sourceValueType == VT_Num)))
         {
@@ -102,12 +104,12 @@ OFBool DSRPlannedImagingAgentAdministrationSRConstraintChecker::checkContentRela
                      (targetValueType == VT_DateTime) || (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||
                      (targetValueType == VT_PName)    || (targetValueType == VT_Container);
         }
-        /* row 4 of the table */
+        /* row 5 of the table */
         else if (relationshipType == RT_hasConceptMod)
         {
             result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
         }
-        /* row 5 of the table */
+        /* row 6 of the table */
         else if ((relationshipType == RT_hasProperties) &&
             ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
         {
@@ -115,13 +117,13 @@ OFBool DSRPlannedImagingAgentAdministrationSRConstraintChecker::checkContentRela
                      (targetValueType == VT_DateTime) || (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||
                      (targetValueType == VT_PName)    || (targetValueType == VT_Container);
         }
-        /* row 6 of the table */
+        /* row 7 of the table */
         else if ((relationshipType == RT_hasProperties) && (sourceValueType == VT_PName))
         {
             result = (targetValueType == VT_Text) || (targetValueType == VT_Code)   || (targetValueType == VT_DateTime) ||
                      (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||(targetValueType == VT_PName);
         }
-        /* row 7 of the table */
+        /* row 8 of the table */
         else if ((relationshipType == RT_inferredFrom) &&
             ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
         {

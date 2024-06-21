@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,9 +19,8 @@
  *
  */
 
-#include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/iodutil.h"
@@ -30,6 +29,7 @@ IODComponent::IODComponent(const IODComponent& rhs)
     : m_Item(OFstatic_cast(DcmItem*, rhs.m_Item->clone()))
     , m_Rules(rhs.m_Rules->clone())
     , m_Parent(OFnullptr)
+    , m_CheckValueOnWrite(rhs.m_CheckValueOnWrite)
 {
 }
 
@@ -37,6 +37,7 @@ IODComponent::IODComponent(OFshared_ptr<DcmItem> item, OFshared_ptr<IODRules> ru
     : m_Item(item)
     , m_Rules(rules)
     , m_Parent(parent)
+    , m_CheckValueOnWrite(OFTrue)
 {
     if (!m_Item)
         m_Item.reset(new DcmItem());
@@ -49,9 +50,14 @@ IODComponent::IODComponent(IODComponent* parent)
     : m_Item()
     , m_Rules()
     , m_Parent(parent)
+    , m_CheckValueOnWrite()
 {
     m_Item.reset(new DcmItem());
     m_Rules.reset(new IODRules());
+    if (parent)
+    {
+        m_CheckValueOnWrite = parent->getValueCheckOnWrite();
+    }
 }
 
 IODComponent::~IODComponent()
@@ -66,13 +72,14 @@ IODComponent& IODComponent::operator=(const IODComponent& rhs)
         m_Item.reset(OFstatic_cast(DcmItem*, rhs.m_Item->clone()));
         m_Rules.reset(rhs.m_Rules->clone());
         m_Parent = OFnullptr;
+        m_CheckValueOnWrite = rhs.m_CheckValueOnWrite;
     }
     return *this;
 }
 
 void IODComponent::inventMissing()
 {
-    // Try to fill in missing type 1 information
+    // Try to fill in default values
     OFVector<IODRule*> writeRules     = m_Rules->getByModule(getName());
     OFVector<IODRule*>::iterator rule = writeRules.begin();
     while (rule != writeRules.end())
@@ -154,7 +161,7 @@ OFCondition IODComponent::write(DcmItem& destination)
 
     // Start writing
     OFCondition result = EC_Normal;
-    result             = write(*m_Item, *m_Rules, destination, getName());
+    result             = write(*m_Item, *m_Rules, destination, getName(), m_CheckValueOnWrite);
     return result;
 }
 
@@ -220,7 +227,7 @@ OFCondition IODComponent::read(DcmItem& source, IODRules& rules, DcmItem& destin
 }
 
 // static helper
-OFCondition IODComponent::write(DcmItem& source, IODRules& rules, DcmItem& destination, const OFString& componentName)
+OFCondition IODComponent::write(DcmItem& source, IODRules& rules, DcmItem& destination, const OFString& componentName, const OFBool checkValue)
 {
     OFCondition result = EC_Normal;
 
@@ -230,11 +237,21 @@ OFCondition IODComponent::write(DcmItem& source, IODRules& rules, DcmItem& desti
     {
         DcmElement* elem = NULL;
         source.findAndGetElement((*rule)->getTagKey(), elem, OFFalse /* only this level */, OFTrue /* create copy*/);
-        DcmIODUtil::addElementToDataset(result, destination, elem, *rule);
+        DcmIODUtil::addElementToDataset(result, destination, elem, *rule, checkValue);
         rule++;
     }
 
     return result;
+}
+
+void IODComponent::setValueCheckOnWrite(const OFBool checkValue)
+{
+    m_CheckValueOnWrite = checkValue;
+}
+
+OFBool IODComponent::getValueCheckOnWrite() const
+{
+    return m_CheckValueOnWrite;
 }
 
 // -------- IODModule --------------

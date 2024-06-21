@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -85,6 +85,7 @@
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"     /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 OFCondition
@@ -108,7 +109,7 @@ DIMSE_echoUser(
     if (presID == 0)
     {
         char buf[1024];
-        sprintf(buf, "DIMSE: No Presentation Context for: %s", sopClass);
+        OFStandard::snprintf(buf, sizeof(buf), "DIMSE: No Presentation Context for: %s", sopClass);
         return makeDcmnetCondition(DIMSEC_NOVALIDPRESENTATIONCONTEXTID, OF_error, buf);
     }
 
@@ -131,14 +132,14 @@ DIMSE_echoUser(
     if (rsp.CommandField != DIMSE_C_ECHO_RSP)
     {
         char buf1[256];
-        sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+        OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
         return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
     }
 
     if (rsp.msg.CEchoRSP.MessageIDBeingRespondedTo != msgId)
     {
         char buf1[256];
-        sprintf(buf1, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", rsp.msg.CEchoRSP.MessageIDBeingRespondedTo, msgId);
+        OFStandard::snprintf(buf1, sizeof(buf1), "DIMSE: Unexpected Response MsgId: %d (expected: %d)", rsp.msg.CEchoRSP.MessageIDBeingRespondedTo, msgId);
         return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
     }
 

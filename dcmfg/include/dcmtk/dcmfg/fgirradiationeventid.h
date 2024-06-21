@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,10 +24,9 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmfg/fgbase.h"
 #include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/dcmdata/dcvrui.h"
 
 /** Class representing the "Irradiation Event Identification" Functional Group Macro.
  */

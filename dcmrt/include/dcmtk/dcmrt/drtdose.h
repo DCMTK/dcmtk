@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTDoseIOD
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,7 +19,9 @@
 
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
 #include "dcmtk/dcmrt/seq/drtadcs.h"   // for AdmittingDiagnosesCodeSequence
+#include "dcmtk/dcmrt/seq/drtars.h"    // for AnatomicRegionSequence
 #include "dcmtk/dcmrt/seq/drtbrs.h"    // for BreedRegistrationSequence
+#include "dcmtk/dcmrt/seq/drtcttcs.h"  // for ClinicalTrialTimePointTypeCodeSequence
 #include "dcmtk/dcmrt/seq/drtcsis.h"   // for CodingSchemeIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtcctus.h"  // for ConsentForClinicalTrialUseSequence
 #include "dcmtk/dcmrt/seq/drtcpis.h"   // for ConsultingPhysicianIdentificationSequence
@@ -36,13 +38,13 @@
 #include "dcmtk/dcmrt/seq/drtgpis.h"   // for GroupOfPatientsIdentificationSequence
 #include "dcmtk/dcmrt/seq/drthsdrs.h"  // for HL7StructuredDocumentReferenceSequence
 #include "dcmtk/dcmrt/seq/drtiis.h"    // for IconImageSequence
+#include "dcmtk/dcmrt/seq/drtidcs.h"   // for InstitutionalDepartmentTypeCodeSequence
 #include "dcmtk/dcmrt/seq/drtians.h"   // for IssuerOfAccessionNumberSequence
 #include "dcmtk/dcmrt/seq/drtiais.h"   // for IssuerOfAdmissionIDSequence
 #include "dcmtk/dcmrt/seq/drtipiqs.h"  // for IssuerOfPatientIDQualifiersSequence
 #include "dcmtk/dcmrt/seq/drtiseis.h"  // for IssuerOfServiceEpisodeIDSequence
 #include "dcmtk/dcmrt/seq/drtmps.h"    // for MACParametersSequence
 #include "dcmtk/dcmrt/seq/drtmris.h"   // for MappingResourceIdentificationSequence
-#include "dcmtk/dcmrt/seq/drtmls.h"    // for ModalityLUTSequence
 #include "dcmtk/dcmrt/seq/drtois.h"    // for OperatorIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtoas.h"    // for OriginalAttributesSequence
 #include "dcmtk/dcmrt/seq/drtopis.h"   // for OtherPatientIDsSequence
@@ -52,24 +54,25 @@
 #include "dcmtk/dcmrt/seq/drtppcs.h"   // for PerformedProtocolCodeSequence
 #include "dcmtk/dcmrt/seq/drtporis.h"  // for PhysiciansOfRecordIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtprsis.h"  // for PhysiciansReadingStudyIdentificationSequence
-#include "dcmtk/dcmrt/seq/drtpsss.h"   // for PredecessorStructureSetSequence
+#include "dcmtk/dcmrt/seq/drtplos.h"   // for PlanOverviewSequence
+#include "dcmtk/dcmrt/seq/drtpass.h"   // for PrimaryAnatomicStructureSequence
 #include "dcmtk/dcmrt/seq/drtpdecs.h"  // for PrivateDataElementCharacteristicsSequence
 #include "dcmtk/dcmrt/seq/drtpcs.h"    // for ProcedureCodeSequence
-#include "dcmtk/dcmrt/seq/drtrcs.h"    // for ROIContourSequence
-#include "dcmtk/dcmrt/seq/drtrdros.h"  // for RTDoseROISequence
 #include "dcmtk/dcmrt/seq/drtrwvms.h"  // for RealWorldValueMappingSequence
 #include "dcmtk/dcmrt/seq/drtrppcs.h"  // for ReasonForPerformedProcedureCodeSequence
-#include "dcmtk/dcmrt/seq/drtrfors.h"  // for ReferencedFrameOfReferenceSequence
+#include "dcmtk/dcmrt/seq/drtrvcs.h"   // for ReasonForVisitCodeSequence
+#include "dcmtk/dcmrt/seq/drtrdps.h"   // for ReferencedDefinedProtocolSequence
 #include "dcmtk/dcmrt/seq/drtris.h"    // for ReferencedInstanceSequence
 #include "dcmtk/dcmrt/seq/drtrpphs.h"  // for ReferencedPatientPhotoSequence
 #include "dcmtk/dcmrt/seq/drtrps.h"    // for ReferencedPatientSequence
 #include "dcmtk/dcmrt/seq/drtrppss.h"  // for ReferencedPerformedProcedureStepSequence
-#include "dcmtk/dcmrt/seq/drtrrtps.h"  // for ReferencedRTPlanSequence
+#include "dcmtk/dcmrt/seq/drtrpprs.h"  // for ReferencedPerformedProtocolSequence
+#include "dcmtk/dcmrt/seq/drtrtps1.h"  // for ReferencedRTPlanSequence
 #include "dcmtk/dcmrt/seq/drtrsers.h"  // for ReferencedSeriesSequence
 #include "dcmtk/dcmrt/seq/drtrsrs.h"   // for ReferencedSpatialRegistrationSequence
 #include "dcmtk/dcmrt/seq/drtrsss.h"   // for ReferencedStructureSetSequence
 #include "dcmtk/dcmrt/seq/drtrss.h"    // for ReferencedStudySequence
-#include "dcmtk/dcmrt/seq/drtrtrs2.h"  // for ReferencedTreatmentRecordSequence
+#include "dcmtk/dcmrt/seq/drtrtrs1.h"  // for ReferencedTreatmentRecordSequence
 #include "dcmtk/dcmrt/seq/drtrpis.h"   // for ReferringPhysicianIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtras.h"    // for RequestAttributesSequence
 #include "dcmtk/dcmrt/seq/drtrscs.h"   // for RequestingServiceCodeSequence
@@ -77,7 +80,6 @@
 #include "dcmtk/dcmrt/seq/drtspgis.h"  // for SourcePatientGroupIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtscs.h"    // for StrainCodeSequence
 #include "dcmtk/dcmrt/seq/drtsss.h"    // for StrainStockSequence
-#include "dcmtk/dcmrt/seq/drtssrs.h"   // for StructureSetROISequence
 #include "dcmtk/dcmrt/seq/drtscris.h"  // for StudiesContainingOtherReferencedInstancesSequence
 #include "dcmtk/dcmrt/seq/drtudis.h"   // for UDISequence
 
@@ -223,30 +225,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFBool isMultiFrameModulePresent(const OFBool complete = OFFalse);
 
-    /** check whether OverlayPlaneModule (U) is present.
-     *  By default, a module is reported as being present if at least one attribute
-     *  from this module has a non-empty value.
-     *  @param  complete  check for all mandatory attributes of this module if enabled
-     *  @return OFTrue if module is present, OFFalse otherwise
-     */
-    virtual OFBool isOverlayPlaneModulePresent(const OFBool complete = OFFalse);
-
-    /** check whether MultiFrameOverlayModule (U) is present.
-     *  By default, a module is reported as being present if at least one attribute
-     *  from this module has a non-empty value.
-     *  @param  complete  check for all mandatory attributes of this module if enabled
-     *  @return OFTrue if module is present, OFFalse otherwise
-     */
-    virtual OFBool isMultiFrameOverlayModulePresent(const OFBool complete = OFFalse);
-
-    /** check whether ModalityLUTModule (U) is present.
-     *  By default, a module is reported as being present if at least one attribute
-     *  from this module has a non-empty value.
-     *  @param  complete  check for all mandatory attributes of this module if enabled
-     *  @return OFTrue if module is present, OFFalse otherwise
-     */
-    virtual OFBool isModalityLUTModulePresent(const OFBool complete = OFFalse);
-
     /** check whether RTDVHModule (U) is present.
      *  By default, a module is reported as being present if at least one attribute
      *  from this module has a non-empty value.
@@ -254,30 +232,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return OFTrue if module is present, OFFalse otherwise
      */
     virtual OFBool isRTDVHModulePresent(const OFBool complete = OFFalse);
-
-    /** check whether StructureSetModule (C) is present.
-     *  By default, a module is reported as being present if at least one attribute
-     *  from this module has a non-empty value.
-     *  @param  complete  check for all mandatory attributes of this module if enabled
-     *  @return OFTrue if module is present, OFFalse otherwise
-     */
-    virtual OFBool isStructureSetModulePresent(const OFBool complete = OFFalse);
-
-    /** check whether ROIContourModule (C) is present.
-     *  By default, a module is reported as being present if at least one attribute
-     *  from this module has a non-empty value.
-     *  @param  complete  check for all mandatory attributes of this module if enabled
-     *  @return OFTrue if module is present, OFFalse otherwise
-     */
-    virtual OFBool isROIContourModulePresent(const OFBool complete = OFFalse);
-
-    /** check whether RTDoseROIModule (C) is present.
-     *  By default, a module is reported as being present if at least one attribute
-     *  from this module has a non-empty value.
-     *  @param  complete  check for all mandatory attributes of this module if enabled
-     *  @return OFTrue if module is present, OFFalse otherwise
-     */
-    virtual OFBool isRTDoseROIModulePresent(const OFBool complete = OFFalse);
 
     /** check whether CommonInstanceReferenceModule (U) is present.
      *  By default, a module is reported as being present if at least one attribute
@@ -303,41 +257,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getAccessionNumber(OFString &value, const signed long pos = 0) const;
-
-    /** get AcquisitionDate (0008,0022)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getAcquisitionDate(OFString &value, const signed long pos = 0) const;
-
-    /** get AcquisitionDateTime (0008,002a)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getAcquisitionDateTime(OFString &value, const signed long pos = 0) const;
-
-    /** get AcquisitionNumber (0020,0012)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getAcquisitionNumber(OFString &value, const signed long pos = 0) const;
-
-    /** get AcquisitionNumber (0020,0012)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getAcquisitionNumber(Sint32 &value, const unsigned long pos = 0) const;
-
-    /** get AcquisitionTime (0008,0032)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getAcquisitionTime(OFString &value, const signed long pos = 0) const;
 
     /** get AdditionalPatientHistory (0010,21b0)
      *  @param  value  reference to variable in which the value should be stored
@@ -373,6 +292,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getAuthorizationEquipmentCertificationNumber(OFString &value, const signed long pos = 0) const;
+
+    /** get BarcodeValue (2200,0005)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getBarcodeValue(OFString &value, const signed long pos = 0) const;
 
     /** get BitsAllocated (0028,0100)
      *  @param  value  reference to variable in which the value should be stored
@@ -611,6 +537,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getDeviceSerialNumber(OFString &value, const signed long pos = 0) const;
 
+    /** get DeviceUID (0018,1002)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getDeviceUID(OFString &value, const signed long pos = 0) const;
+
     /** get DoseComment (3004,0006)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -653,12 +586,40 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getDoseUnits(OFString &value, const signed long pos = 0) const;
 
+    /** get EncapsulatedPixelDataValueTotalLength (7fe0,0003)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getEncapsulatedPixelDataValueTotalLength(Uint64 &value, const unsigned long pos = 0) const;
+
+    /** get EntityLongLabel (3010,0038)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getEntityLongLabel(OFString &value, const signed long pos = 0) const;
+
     /** get EthnicGroup (0010,2160)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getEthnicGroup(OFString &value, const signed long pos = 0) const;
+
+    /** get ExtendedOffsetTable (7fe0,0001)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  count  stores number of items in the result array (if not NULL)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getExtendedOffsetTable(Uint64 *&value, unsigned long *count = NULL) const;
+
+    /** get ExtendedOffsetTableLengths (7fe0,0002)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  count  stores number of items in the result array (if not NULL)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getExtendedOffsetTableLengths(Uint64 *&value, unsigned long *count = NULL) const;
 
     /** get FrameIncrementPointer (0028,0009)
      *  @param  value  reference to variable in which the value should be stored
@@ -736,12 +697,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getImageComments(OFString &value, const signed long pos = 0) const;
 
-    /** get ImageFrameOrigin (60xx,0051)
+    /** get ImageLaterality (0020,0062)
      *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getImageFrameOrigin(Uint16 &value, const unsigned long pos = 0) const;
+    virtual OFCondition getImageLaterality(OFString &value, const signed long pos = 0) const;
 
     /** get ImageOrientationPatient (0020,0037)
      *  @param  value  reference to variable in which the value should be stored
@@ -790,20 +751,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getImageType(OFString &value, const signed long pos = 0) const;
 
-    /** get ImagesInAcquisition (0020,1002)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getImagesInAcquisition(OFString &value, const signed long pos = 0) const;
-
-    /** get ImagesInAcquisition (0020,1002)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getImagesInAcquisition(Sint32 &value, const unsigned long pos = 0) const;
-
     /** get InstanceCoercionDateTime (0008,0015)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -846,6 +793,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getInstanceNumber(Sint32 &value, const unsigned long pos = 0) const;
 
+    /** get InstanceOriginStatus (0400,0600)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getInstanceOriginStatus(OFString &value, const signed long pos = 0) const;
+
     /** get InstitutionAddress (0008,0081)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -866,13 +820,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getInstitutionalDepartmentName(OFString &value, const signed long pos = 0) const;
-
-    /** get IrradiationEventUID (0008,3010)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getIrradiationEventUID(OFString &value, const signed long pos = 0) const;
 
     /** get IssuerOfPatientID (0010,0021)
      *  @param  value  reference to variable in which the value should be stored
@@ -956,6 +903,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getManufacturer(OFString &value, const signed long pos = 0) const;
+
+    /** get ManufacturerDeviceClassUID (0018,100b)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getManufacturerDeviceClassUID(OFString &value, const signed long pos = 0) const;
 
     /** get ManufacturerModelName (0008,1090)
      *  @param  value  reference to variable in which the value should be stored
@@ -1047,20 +1001,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getNumberOfFrames(Sint32 &value, const unsigned long pos = 0) const;
 
-    /** get NumberOfFramesInOverlay (60xx,0015)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getNumberOfFramesInOverlay(OFString &value, const signed long pos = 0) const;
-
-    /** get NumberOfFramesInOverlay (60xx,0015)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getNumberOfFramesInOverlay(Sint32 &value, const unsigned long pos = 0) const;
-
     /** get Occupation (0010,2180)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -1088,69 +1028,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOtherPatientNames(OFString &value, const signed long pos = 0) const;
-
-    /** get OverlayBitPosition (60xx,0102)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayBitPosition(Uint16 &value, const unsigned long pos = 0) const;
-
-    /** get OverlayBitsAllocated (60xx,0100)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayBitsAllocated(Uint16 &value, const unsigned long pos = 0) const;
-
-    /** get OverlayColumns (60xx,0011)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayColumns(Uint16 &value, const unsigned long pos = 0) const;
-
-    /** get OverlayDescription (60xx,0022)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayDescription(OFString &value, const signed long pos = 0) const;
-
-    /** get OverlayLabel (60xx,1500)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayLabel(OFString &value, const signed long pos = 0) const;
-
-    /** get OverlayOrigin (60xx,0050)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayOrigin(Sint16 &value, const unsigned long pos = 0) const;
-
-    /** get OverlayRows (60xx,0010)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayRows(Uint16 &value, const unsigned long pos = 0) const;
-
-    /** get OverlaySubtype (60xx,0045)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlaySubtype(OFString &value, const signed long pos = 0) const;
-
-    /** get OverlayType (60xx,0040)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getOverlayType(OFString &value, const signed long pos = 0) const;
 
     /** get PatientAge (0010,1010)
      *  @param  value  reference to variable in which the value should be stored
@@ -1473,47 +1350,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getQueryRetrieveView(OFString &value, const signed long pos = 0) const;
 
-    /** get ROIArea (60xx,1301)
+    /** get ReasonForVisit (0032,1066)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getROIArea(OFString &value, const signed long pos = 0) const;
-
-    /** get ROIArea (60xx,1301)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getROIArea(Sint32 &value, const unsigned long pos = 0) const;
-
-    /** get ROIMean (60xx,1302)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getROIMean(OFString &value, const signed long pos = 0) const;
-
-    /** get ROIMean (60xx,1302)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getROIMean(Float64 &value, const unsigned long pos = 0) const;
-
-    /** get ROIStandardDeviation (60xx,1303)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getROIStandardDeviation(OFString &value, const signed long pos = 0) const;
-
-    /** get ROIStandardDeviation (60xx,1303)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getROIStandardDeviation(Float64 &value, const unsigned long pos = 0) const;
+    virtual OFCondition getReasonForVisit(OFString &value, const signed long pos = 0) const;
 
     /** get RecognizableVisualFeatures (0028,0302)
      *  @param  value  reference to variable in which the value should be stored
@@ -1550,40 +1392,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getRelatedGeneralSOPClassUID(OFString &value, const signed long pos = 0) const;
 
-    /** get RescaleIntercept (0028,1052)
+    /** get RequestingService (0032,1033)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getRescaleIntercept(OFString &value, const signed long pos = 0) const;
-
-    /** get RescaleIntercept (0028,1052)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getRescaleIntercept(Float64 &value, const unsigned long pos = 0) const;
-
-    /** get RescaleSlope (0028,1053)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getRescaleSlope(OFString &value, const signed long pos = 0) const;
-
-    /** get RescaleSlope (0028,1053)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1)
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getRescaleSlope(Float64 &value, const unsigned long pos = 0) const;
-
-    /** get RescaleType (0028,1054)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getRescaleType(OFString &value, const signed long pos = 0) const;
+    virtual OFCondition getRequestingService(OFString &value, const signed long pos = 0) const;
 
     /** get ResponsibleOrganization (0010,2299)
      *  @param  value  reference to variable in which the value should be stored
@@ -1760,6 +1574,20 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getSoftwareVersions(OFString &value, const signed long pos = 0) const;
 
+    /** get SpacingBetweenSlices (0018,0088)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSpacingBetweenSlices(OFString &value, const signed long pos = 0) const;
+
+    /** get SpacingBetweenSlices (0018,0088)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSpacingBetweenSlices(Float64 &value, const unsigned long pos = 0) const;
+
     /** get SpatialResolution (0018,1050)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -1823,41 +1651,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getStrainNomenclature(OFString &value, const signed long pos = 0) const;
 
-    /** get StructureSetDate (3006,0008)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getStructureSetDate(OFString &value, const signed long pos = 0) const;
-
-    /** get StructureSetDescription (3006,0006)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getStructureSetDescription(OFString &value, const signed long pos = 0) const;
-
-    /** get StructureSetLabel (3006,0002)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getStructureSetLabel(OFString &value, const signed long pos = 0) const;
-
-    /** get StructureSetName (3006,0004)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getStructureSetName(OFString &value, const signed long pos = 0) const;
-
-    /** get StructureSetTime (3006,0009)
-     *  @param  value  reference to variable in which the value should be stored
-     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition getStructureSetTime(OFString &value, const signed long pos = 0) const;
-
     /** get StudyDate (0008,0020)
      *  @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -1914,6 +1707,20 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition getTissueHeterogeneityCorrection(OFString &value, const signed long pos = 0) const;
 
+    /** get TreatmentSessionUID (300a,0700)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTreatmentSessionUID(OFString &value, const signed long pos = 0) const;
+
+    /** get TypeOfPatientID (0010,0022)
+     *  @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getTypeOfPatientID(OFString &value, const signed long pos = 0) const;
+
   // --- get pixel data element ---
 
     /** get PixelData (7fe0,0010)
@@ -1942,6 +1749,18 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     const DRTAdmittingDiagnosesCodeSequence &getAdmittingDiagnosesCodeSequence() const
         { return AdmittingDiagnosesCodeSequence; }
 
+    /** get AnatomicRegionSequence (0008,2218)
+     *  @return reference to sequence element
+     */
+    DRTAnatomicRegionSequence &getAnatomicRegionSequence()
+        { return AnatomicRegionSequence; }
+
+    /** get AnatomicRegionSequence (0008,2218)
+     *  @return const reference to sequence element
+     */
+    const DRTAnatomicRegionSequence &getAnatomicRegionSequence() const
+        { return AnatomicRegionSequence; }
+
     /** get BreedRegistrationSequence (0010,2294)
      *  @return reference to sequence element
      */
@@ -1953,6 +1772,18 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     const DRTBreedRegistrationSequence &getBreedRegistrationSequence() const
         { return BreedRegistrationSequence; }
+
+    /** get ClinicalTrialTimePointTypeCodeSequence (0012,0054)
+     *  @return reference to sequence element
+     */
+    DRTClinicalTrialTimePointTypeCodeSequence &getClinicalTrialTimePointTypeCodeSequence()
+        { return ClinicalTrialTimePointTypeCodeSequence; }
+
+    /** get ClinicalTrialTimePointTypeCodeSequence (0012,0054)
+     *  @return const reference to sequence element
+     */
+    const DRTClinicalTrialTimePointTypeCodeSequence &getClinicalTrialTimePointTypeCodeSequence() const
+        { return ClinicalTrialTimePointTypeCodeSequence; }
 
     /** get CodingSchemeIdentificationSequence (0008,0110)
      *  @return reference to sequence element
@@ -2146,6 +1977,18 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     const DRTIconImageSequence &getIconImageSequence() const
         { return IconImageSequence; }
 
+    /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+     *  @return reference to sequence element
+     */
+    DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence()
+        { return InstitutionalDepartmentTypeCodeSequence; }
+
+    /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+     *  @return const reference to sequence element
+     */
+    const DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence() const
+        { return InstitutionalDepartmentTypeCodeSequence; }
+
     /** get IssuerOfAccessionNumberSequence (0008,0051)
      *  @return reference to sequence element
      */
@@ -2217,18 +2060,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     const DRTMappingResourceIdentificationSequence &getMappingResourceIdentificationSequence() const
         { return MappingResourceIdentificationSequence; }
-
-    /** get ModalityLUTSequence (0028,3000)
-     *  @return reference to sequence element
-     */
-    DRTModalityLUTSequence &getModalityLUTSequence()
-        { return ModalityLUTSequence; }
-
-    /** get ModalityLUTSequence (0028,3000)
-     *  @return const reference to sequence element
-     */
-    const DRTModalityLUTSequence &getModalityLUTSequence() const
-        { return ModalityLUTSequence; }
 
     /** get OperatorIdentificationSequence (0008,1072)
      *  @return reference to sequence element
@@ -2338,17 +2169,29 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     const DRTPhysiciansReadingStudyIdentificationSequence &getPhysiciansReadingStudyIdentificationSequence() const
         { return PhysiciansReadingStudyIdentificationSequence; }
 
-    /** get PredecessorStructureSetSequence (3006,0018)
+    /** get PlanOverviewSequence (300c,0116)
      *  @return reference to sequence element
      */
-    DRTPredecessorStructureSetSequence &getPredecessorStructureSetSequence()
-        { return PredecessorStructureSetSequence; }
+    DRTPlanOverviewSequence &getPlanOverviewSequence()
+        { return PlanOverviewSequence; }
 
-    /** get PredecessorStructureSetSequence (3006,0018)
+    /** get PlanOverviewSequence (300c,0116)
      *  @return const reference to sequence element
      */
-    const DRTPredecessorStructureSetSequence &getPredecessorStructureSetSequence() const
-        { return PredecessorStructureSetSequence; }
+    const DRTPlanOverviewSequence &getPlanOverviewSequence() const
+        { return PlanOverviewSequence; }
+
+    /** get PrimaryAnatomicStructureSequence (0008,2228)
+     *  @return reference to sequence element
+     */
+    DRTPrimaryAnatomicStructureSequence &getPrimaryAnatomicStructureSequence()
+        { return PrimaryAnatomicStructureSequence; }
+
+    /** get PrimaryAnatomicStructureSequence (0008,2228)
+     *  @return const reference to sequence element
+     */
+    const DRTPrimaryAnatomicStructureSequence &getPrimaryAnatomicStructureSequence() const
+        { return PrimaryAnatomicStructureSequence; }
 
     /** get PrivateDataElementCharacteristicsSequence (0008,0300)
      *  @return reference to sequence element
@@ -2374,30 +2217,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     const DRTProcedureCodeSequence &getProcedureCodeSequence() const
         { return ProcedureCodeSequence; }
 
-    /** get ROIContourSequence (3006,0039)
-     *  @return reference to sequence element
-     */
-    DRTROIContourSequence &getROIContourSequence()
-        { return ROIContourSequence; }
-
-    /** get ROIContourSequence (3006,0039)
-     *  @return const reference to sequence element
-     */
-    const DRTROIContourSequence &getROIContourSequence() const
-        { return ROIContourSequence; }
-
-    /** get RTDoseROISequence (3004,0010)
-     *  @return reference to sequence element
-     */
-    DRTRTDoseROISequence &getRTDoseROISequence()
-        { return RTDoseROISequence; }
-
-    /** get RTDoseROISequence (3004,0010)
-     *  @return const reference to sequence element
-     */
-    const DRTRTDoseROISequence &getRTDoseROISequence() const
-        { return RTDoseROISequence; }
-
     /** get RealWorldValueMappingSequence (0040,9096)
      *  @return reference to sequence element
      */
@@ -2422,17 +2241,29 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     const DRTReasonForPerformedProcedureCodeSequence &getReasonForPerformedProcedureCodeSequence() const
         { return ReasonForPerformedProcedureCodeSequence; }
 
-    /** get ReferencedFrameOfReferenceSequence (3006,0010)
+    /** get ReasonForVisitCodeSequence (0032,1067)
      *  @return reference to sequence element
      */
-    DRTReferencedFrameOfReferenceSequence &getReferencedFrameOfReferenceSequence()
-        { return ReferencedFrameOfReferenceSequence; }
+    DRTReasonForVisitCodeSequence &getReasonForVisitCodeSequence()
+        { return ReasonForVisitCodeSequence; }
 
-    /** get ReferencedFrameOfReferenceSequence (3006,0010)
+    /** get ReasonForVisitCodeSequence (0032,1067)
      *  @return const reference to sequence element
      */
-    const DRTReferencedFrameOfReferenceSequence &getReferencedFrameOfReferenceSequence() const
-        { return ReferencedFrameOfReferenceSequence; }
+    const DRTReasonForVisitCodeSequence &getReasonForVisitCodeSequence() const
+        { return ReasonForVisitCodeSequence; }
+
+    /** get ReferencedDefinedProtocolSequence (0018,990c)
+     *  @return reference to sequence element
+     */
+    DRTReferencedDefinedProtocolSequence &getReferencedDefinedProtocolSequence()
+        { return ReferencedDefinedProtocolSequence; }
+
+    /** get ReferencedDefinedProtocolSequence (0018,990c)
+     *  @return const reference to sequence element
+     */
+    const DRTReferencedDefinedProtocolSequence &getReferencedDefinedProtocolSequence() const
+        { return ReferencedDefinedProtocolSequence; }
 
     /** get ReferencedInstanceSequence (0008,114a)
      *  @return reference to sequence element
@@ -2481,6 +2312,18 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     const DRTReferencedPerformedProcedureStepSequence &getReferencedPerformedProcedureStepSequence() const
         { return ReferencedPerformedProcedureStepSequence; }
+
+    /** get ReferencedPerformedProtocolSequence (0018,990d)
+     *  @return reference to sequence element
+     */
+    DRTReferencedPerformedProtocolSequence &getReferencedPerformedProtocolSequence()
+        { return ReferencedPerformedProtocolSequence; }
+
+    /** get ReferencedPerformedProtocolSequence (0018,990d)
+     *  @return const reference to sequence element
+     */
+    const DRTReferencedPerformedProtocolSequence &getReferencedPerformedProtocolSequence() const
+        { return ReferencedPerformedProtocolSequence; }
 
     /** get ReferencedRTPlanSequence (300c,0002)
      *  @return reference to sequence element
@@ -2638,18 +2481,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     const DRTStrainStockSequence &getStrainStockSequence() const
         { return StrainStockSequence; }
 
-    /** get StructureSetROISequence (3006,0020)
-     *  @return reference to sequence element
-     */
-    DRTStructureSetROISequence &getStructureSetROISequence()
-        { return StructureSetROISequence; }
-
-    /** get StructureSetROISequence (3006,0020)
-     *  @return const reference to sequence element
-     */
-    const DRTStructureSetROISequence &getStructureSetROISequence() const
-        { return StructureSetROISequence; }
-
     /** get StudiesContainingOtherReferencedInstancesSequence (0008,1200)
      *  @return reference to sequence element
      */
@@ -2682,34 +2513,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setAccessionNumber(const OFString &value, const OFBool check = OFTrue);
-
-    /** set AcquisitionDate (0008,0022)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DA) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setAcquisitionDate(const OFString &value, const OFBool check = OFTrue);
-
-    /** set AcquisitionDateTime (0008,002a)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DT) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setAcquisitionDateTime(const OFString &value, const OFBool check = OFTrue);
-
-    /** set AcquisitionNumber (0020,0012)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setAcquisitionNumber(const OFString &value, const OFBool check = OFTrue);
-
-    /** set AcquisitionTime (0008,0032)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (TM) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setAcquisitionTime(const OFString &value, const OFBool check = OFTrue);
 
     /** set AdditionalPatientHistory (0010,21b0)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -2745,6 +2548,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setAuthorizationEquipmentCertificationNumber(const OFString &value, const OFBool check = OFTrue);
+
+    /** set BarcodeValue (2200,0005)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LT) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setBarcodeValue(const OFString &value, const OFBool check = OFTrue);
 
     /** set BitsAllocated (0028,0100)
      *  @param  value  value to be set (should be valid for this VR)
@@ -2963,6 +2773,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setDeviceSerialNumber(const OFString &value, const OFBool check = OFTrue);
 
+    /** set DeviceUID (0018,1002)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setDeviceUID(const OFString &value, const OFBool check = OFTrue);
+
     /** set DoseComment (3004,0006)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -2998,12 +2815,40 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setDoseUnits(const OFString &value, const OFBool check = OFTrue);
 
+    /** set EncapsulatedPixelDataValueTotalLength (7fe0,0003)
+     *  @param  value  value to be set (should be valid for this VR)
+     *  @param  pos    index of the value to be set (0..vm-1), vm=1
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setEncapsulatedPixelDataValueTotalLength(const Uint64 value, const unsigned long pos = 0);
+
+    /** set EntityLongLabel (3010,0038)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setEntityLongLabel(const OFString &value, const OFBool check = OFTrue);
+
     /** set EthnicGroup (0010,2160)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setEthnicGroup(const OFString &value, const OFBool check = OFTrue);
+
+    /** set ExtendedOffsetTable (7fe0,0001)
+     *  @param  value  array value to be set (data is copied)
+     *  @param  count  number of items in the array
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setExtendedOffsetTable(const Uint64 *value, const unsigned long count);
+
+    /** set ExtendedOffsetTableLengths (7fe0,0002)
+     *  @param  value  array value to be set (data is copied)
+     *  @param  count  number of items in the array
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setExtendedOffsetTableLengths(const Uint64 *value, const unsigned long count);
 
     /** set FrameIncrementPointer (0028,0009)
      *  @param  value  value to be set (possibly multi-valued) or "" for no value
@@ -3068,12 +2913,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setImageComments(const OFString &value, const OFBool check = OFTrue);
 
-    /** set ImageFrameOrigin (60xx,0051)
-     *  @param  value  value to be set (should be valid for this VR)
-     *  @param  pos    index of the value to be set (0..vm-1), vm=1
+    /** set ImageLaterality (0020,0062)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setImageFrameOrigin(const Uint16 value, const unsigned long pos = 0);
+    virtual OFCondition setImageLaterality(const OFString &value, const OFBool check = OFTrue);
 
     /** set ImageOrientationPatient (0020,0037)
      *  @param  value  value to be set (possibly multi-valued) or "" for no value
@@ -3095,13 +2940,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setImageType(const OFString &value, const OFBool check = OFTrue);
-
-    /** set ImagesInAcquisition (0020,1002)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setImagesInAcquisition(const OFString &value, const OFBool check = OFTrue);
 
     /** set InstanceCoercionDateTime (0008,0015)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -3138,6 +2976,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setInstanceNumber(const OFString &value, const OFBool check = OFTrue);
 
+    /** set InstanceOriginStatus (0400,0600)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setInstanceOriginStatus(const OFString &value, const OFBool check = OFTrue);
+
     /** set InstitutionAddress (0008,0081)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
@@ -3158,13 +3003,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setInstitutionalDepartmentName(const OFString &value, const OFBool check = OFTrue);
-
-    /** set IrradiationEventUID (0008,3010)
-     *  @param  value  value to be set (possibly multi-valued) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (UI) and VM (1-n) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setIrradiationEventUID(const OFString &value, const OFBool check = OFTrue);
 
     /** set IssuerOfPatientID (0010,0021)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -3236,6 +3074,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setManufacturer(const OFString &value, const OFBool check = OFTrue);
 
+    /** set ManufacturerDeviceClassUID (0018,100b)
+     *  @param  value  value to be set (possibly multi-valued) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1-n) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setManufacturerDeviceClassUID(const OFString &value, const OFBool check = OFTrue);
+
     /** set ManufacturerModelName (0008,1090)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
@@ -3292,13 +3137,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setNumberOfFrames(const OFString &value, const OFBool check = OFTrue);
 
-    /** set NumberOfFramesInOverlay (60xx,0015)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setNumberOfFramesInOverlay(const OFString &value, const OFBool check = OFTrue);
-
     /** set Occupation (0010,2180)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
@@ -3326,69 +3164,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setOtherPatientNames(const OFString &value, const OFBool check = OFTrue);
-
-    /** set OverlayBitPosition (60xx,0102)
-     *  @param  value  value to be set (should be valid for this VR)
-     *  @param  pos    index of the value to be set (0..vm-1), vm=1
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayBitPosition(const Uint16 value, const unsigned long pos = 0);
-
-    /** set OverlayBitsAllocated (60xx,0100)
-     *  @param  value  value to be set (should be valid for this VR)
-     *  @param  pos    index of the value to be set (0..vm-1), vm=1
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayBitsAllocated(const Uint16 value, const unsigned long pos = 0);
-
-    /** set OverlayColumns (60xx,0011)
-     *  @param  value  value to be set (should be valid for this VR)
-     *  @param  pos    index of the value to be set (0..vm-1), vm=1
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayColumns(const Uint16 value, const unsigned long pos = 0);
-
-    /** set OverlayDescription (60xx,0022)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayDescription(const OFString &value, const OFBool check = OFTrue);
-
-    /** set OverlayLabel (60xx,1500)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayLabel(const OFString &value, const OFBool check = OFTrue);
-
-    /** set OverlayOrigin (60xx,0050)
-     *  @param  value  value to be set (should be valid for this VR)
-     *  @param  pos    index of the value to be set (0..vm-1), vm=2
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayOrigin(const Sint16 value, const unsigned long pos = 0);
-
-    /** set OverlayRows (60xx,0010)
-     *  @param  value  value to be set (should be valid for this VR)
-     *  @param  pos    index of the value to be set (0..vm-1), vm=1
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayRows(const Uint16 value, const unsigned long pos = 0);
-
-    /** set OverlaySubtype (60xx,0045)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlaySubtype(const OFString &value, const OFBool check = OFTrue);
-
-    /** set OverlayType (60xx,0040)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setOverlayType(const OFString &value, const OFBool check = OFTrue);
 
     /** set PatientAge (0010,1010)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -3670,26 +3445,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setQueryRetrieveView(const OFString &value, const OFBool check = OFTrue);
 
-    /** set ROIArea (60xx,1301)
+    /** set ReasonForVisit (0032,1066)
      *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
+     *  @param  check  check 'value' for conformance with VR (UT) and VM (1) if enabled
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setROIArea(const OFString &value, const OFBool check = OFTrue);
-
-    /** set ROIMean (60xx,1302)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setROIMean(const OFString &value, const OFBool check = OFTrue);
-
-    /** set ROIStandardDeviation (60xx,1303)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setROIStandardDeviation(const OFString &value, const OFBool check = OFTrue);
+    virtual OFCondition setReasonForVisit(const OFString &value, const OFBool check = OFTrue);
 
     /** set RecognizableVisualFeatures (0028,0302)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -3726,26 +3487,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setRelatedGeneralSOPClassUID(const OFString &value, const OFBool check = OFTrue);
 
-    /** set RescaleIntercept (0028,1052)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setRescaleIntercept(const OFString &value, const OFBool check = OFTrue);
-
-    /** set RescaleSlope (0028,1053)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setRescaleSlope(const OFString &value, const OFBool check = OFTrue);
-
-    /** set RescaleType (0028,1054)
+    /** set RequestingService (0032,1033)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition setRescaleType(const OFString &value, const OFBool check = OFTrue);
+    virtual OFCondition setRequestingService(const OFString &value, const OFBool check = OFTrue);
 
     /** set ResponsibleOrganization (0010,2299)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -3901,6 +3648,13 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setSoftwareVersions(const OFString &value, const OFBool check = OFTrue);
 
+    /** set SpacingBetweenSlices (0018,0088)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setSpacingBetweenSlices(const OFString &value, const OFBool check = OFTrue);
+
     /** set SpatialResolution (0018,1050)
      *  @param  value  value to be set (single value only) or "" for no value
      *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
@@ -3956,41 +3710,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setStrainNomenclature(const OFString &value, const OFBool check = OFTrue);
-
-    /** set StructureSetDate (3006,0008)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (DA) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setStructureSetDate(const OFString &value, const OFBool check = OFTrue);
-
-    /** set StructureSetDescription (3006,0006)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (ST) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setStructureSetDescription(const OFString &value, const OFBool check = OFTrue);
-
-    /** set StructureSetLabel (3006,0002)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (SH) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setStructureSetLabel(const OFString &value, const OFBool check = OFTrue);
-
-    /** set StructureSetName (3006,0004)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (LO) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setStructureSetName(const OFString &value, const OFBool check = OFTrue);
-
-    /** set StructureSetTime (3006,0009)
-     *  @param  value  value to be set (single value only) or "" for no value
-     *  @param  check  check 'value' for conformance with VR (TM) and VM (1) if enabled
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition setStructureSetTime(const OFString &value, const OFBool check = OFTrue);
 
     /** set StudyDate (0008,0020)
      *  @param  value  value to be set (single value only) or "" for no value
@@ -4048,9 +3767,19 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
      */
     virtual OFCondition setTissueHeterogeneityCorrection(const OFString &value, const OFBool check = OFTrue);
 
-  // --- all other attributes (without get/set methods) ---
+    /** set TreatmentSessionUID (300a,0700)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTreatmentSessionUID(const OFString &value, const OFBool check = OFTrue);
 
-    // - OverlayData (60xx,3000)
+    /** set TypeOfPatientID (0010,0022)
+     *  @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (CS) and VM (1) if enabled
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTypeOfPatientID(const OFString &value, const OFBool check = OFTrue);
 
 
   protected:
@@ -4082,6 +3811,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmLongString IssuerOfPatientID;
     /// IssuerOfPatientIDQualifiersSequence (0010,0024) vr=SQ, vm=1, type=3
     DRTIssuerOfPatientIDQualifiersSequence IssuerOfPatientIDQualifiersSequence;
+    /// TypeOfPatientID (0010,0022) vr=CS, vm=1, type=3
+    DcmCodeString TypeOfPatientID;
     /// PatientBirthDate (0010,0030) vr=DA, vm=1, type=2
     DcmDate PatientBirthDate;
     /// PatientBirthDateInAlternativeCalendar (0010,0033) vr=LO, vm=1, type=3
@@ -4200,6 +3931,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmPersonName NameOfPhysiciansReadingStudy;
     /// PhysiciansReadingStudyIdentificationSequence (0008,1062) vr=SQ, vm=1, type=3
     DRTPhysiciansReadingStudyIdentificationSequence PhysiciansReadingStudyIdentificationSequence;
+    /// RequestingService (0032,1033) vr=LO, vm=1, type=3
+    DcmLongString RequestingService;
     /// RequestingServiceCodeSequence (0032,1034) vr=SQ, vm=1, type=3
     DRTRequestingServiceCodeSequence RequestingServiceCodeSequence;
     /// ReferencedStudySequence (0008,1110) vr=SQ, vm=1, type=3
@@ -4249,6 +3982,10 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmLongString AdmissionID;
     /// IssuerOfAdmissionIDSequence (0038,0014) vr=SQ, vm=1, type=3
     DRTIssuerOfAdmissionIDSequence IssuerOfAdmissionIDSequence;
+    /// ReasonForVisit (0032,1066) vr=UT, vm=1, type=3
+    DcmUnlimitedText ReasonForVisit;
+    /// ReasonForVisitCodeSequence (0032,1067) vr=SQ, vm=1, type=3
+    DRTReasonForVisitCodeSequence ReasonForVisitCodeSequence;
     /// ServiceEpisodeID (0038,0060) vr=LO, vm=1, type=3
     DcmLongString ServiceEpisodeID;
     /// IssuerOfServiceEpisodeIDSequence (0038,0064) vr=SQ, vm=1, type=3
@@ -4264,6 +4001,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmLongString ClinicalTrialTimePointID;
     /// ClinicalTrialTimePointDescription (0012,0051) vr=ST, vm=1, type=3
     DcmShortText ClinicalTrialTimePointDescription;
+    /// ClinicalTrialTimePointTypeCodeSequence (0012,0054) vr=SQ, vm=1, type=3
+    DRTClinicalTrialTimePointTypeCodeSequence ClinicalTrialTimePointTypeCodeSequence;
     /// LongitudinalTemporalOffsetFromEvent (0012,0052) vr=FD, vm=1, type=3
     DcmFloatingPointDouble LongitudinalTemporalOffsetFromEvent;
     /// LongitudinalTemporalEventType (0012,0053) vr=CS, vm=1, type=1C
@@ -4311,6 +4050,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DRTPerformedProtocolCodeSequence PerformedProtocolCodeSequence;
     /// CommentsOnThePerformedProcedureStep (0040,0280) vr=ST, vm=1, type=3
     DcmShortText CommentsOnThePerformedProcedureStep;
+    /// TreatmentSessionUID (300a,0700) vr=UI, vm=1, type=3
+    DcmUniqueIdentifier TreatmentSessionUID;
 
     // --- ClinicalTrialSeriesModule (U) ---
 
@@ -4340,8 +4081,12 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmShortString StationName;
     /// InstitutionalDepartmentName (0008,1040) vr=LO, vm=1, type=3
     DcmLongString InstitutionalDepartmentName;
+    /// InstitutionalDepartmentTypeCodeSequence (0008,1041) vr=SQ, vm=1, type=3
+    DRTInstitutionalDepartmentTypeCodeSequence InstitutionalDepartmentTypeCodeSequence;
     /// ManufacturerModelName (0008,1090) vr=LO, vm=1, type=3
     DcmLongString ManufacturerModelName;
+    /// ManufacturerDeviceClassUID (0018,100b) vr=UI, vm=1-n, type=3
+    DcmUniqueIdentifier ManufacturerDeviceClassUID;
     /// DeviceSerialNumber (0018,1000) vr=LO, vm=1, type=3
     DcmLongString DeviceSerialNumber;
     /// SoftwareVersions (0018,1020) vr=LO, vm=1-n, type=3
@@ -4350,6 +4095,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmLongString GantryID;
     /// UDISequence (0018,100a) vr=SQ, vm=1, type=3
     DRTUDISequence UDISequence;
+    /// DeviceUID (0018,1002) vr=UI, vm=1, type=3
+    DcmUniqueIdentifier DeviceUID;
     /// SpatialResolution (0018,1050) vr=DS, vm=1, type=3
     DcmDecimalString SpatialResolution;
     /// DateOfLastCalibration (0018,1200) vr=DA, vm=1-n, type=3
@@ -4362,7 +4109,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     // --- GeneralImageModule (C) ---
 
     // InstanceNumber (0020,0013) vr=IS, vm=1, type=2
-    // - also defined in: RTDoseModule, StructureSetModule, SOPCommonModule
+    // - also defined in: RTDoseModule, SOPCommonModule
     // DcmIntegerString InstanceNumber;
     /// PatientOrientation (0020,0020) vr=CS, vm=2, type=2C
     DcmCodeString PatientOrientation;
@@ -4374,16 +4121,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     // DcmTime ContentTime;
     /// ImageType (0008,0008) vr=CS, vm=2-n, type=3
     DcmCodeString ImageType;
-    /// AcquisitionNumber (0020,0012) vr=IS, vm=1, type=3
-    DcmIntegerString AcquisitionNumber;
-    /// AcquisitionDate (0008,0022) vr=DA, vm=1, type=3
-    DcmDate AcquisitionDate;
-    /// AcquisitionTime (0008,0032) vr=TM, vm=1, type=3
-    DcmTime AcquisitionTime;
-    /// AcquisitionDateTime (0008,002a) vr=DT, vm=1, type=3
-    DcmDateTime AcquisitionDateTime;
-    /// ImagesInAcquisition (0020,1002) vr=IS, vm=1, type=3
-    DcmIntegerString ImagesInAcquisition;
     /// ImageComments (0020,4000) vr=LT, vm=1, type=3
     DcmLongText ImageComments;
     /// QualityControlImage (0028,0300) vr=CS, vm=1, type=3
@@ -4402,10 +4139,14 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DRTIconImageSequence IconImageSequence;
     /// PresentationLUTShape (2050,0020) vr=CS, vm=1, type=3
     DcmCodeString PresentationLUTShape;
-    /// IrradiationEventUID (0008,3010) vr=UI, vm=1-n, type=3
-    DcmUniqueIdentifier IrradiationEventUID;
     /// RealWorldValueMappingSequence (0040,9096) vr=SQ, vm=1, type=3
     DRTRealWorldValueMappingSequence RealWorldValueMappingSequence;
+    /// ImageLaterality (0020,0062) vr=CS, vm=1, type=3
+    DcmCodeString ImageLaterality;
+    /// AnatomicRegionSequence (0008,2218) vr=SQ, vm=1, type=3
+    DRTAnatomicRegionSequence AnatomicRegionSequence;
+    /// PrimaryAnatomicStructureSequence (0008,2228) vr=SQ, vm=1, type=3
+    DRTPrimaryAnatomicStructureSequence PrimaryAnatomicStructureSequence;
 
     // --- ImagePlaneModule (C) ---
 
@@ -4417,6 +4158,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmDecimalString ImagePositionPatient;
     /// SliceThickness (0018,0050) vr=DS, vm=1, type=2
     DcmDecimalString SliceThickness;
+    /// SpacingBetweenSlices (0018,0088) vr=DS, vm=1, type=3
+    DcmDecimalString SpacingBetweenSlices;
     /// SliceLocation (0020,1041) vr=DS, vm=1, type=3
     DcmDecimalString SliceLocation;
 
@@ -4474,6 +4217,10 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmUniversalResourceIdentifierOrLocator PixelDataProviderURL;
     /// PixelPaddingRangeLimit (0028,0121) vr=US/SS, vm=1, type=1C
     DcmUnsignedShort PixelPaddingRangeLimit;
+    /// ExtendedOffsetTable (7fe0,0001) vr=OV, vm=1, type=3
+    DcmOther64bitVeryLong ExtendedOffsetTable;
+    /// ExtendedOffsetTableLengths (7fe0,0002) vr=OV, vm=1, type=1C
+    DcmOther64bitVeryLong ExtendedOffsetTableLengths;
 
     // --- MultiFrameModule (C) ---
 
@@ -4483,53 +4230,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmAttributeTag FrameIncrementPointer;
     /// StereoPairsPresent (0022,0028) vr=CS, vm=1, type=3
     DcmCodeString StereoPairsPresent;
-
-    // --- OverlayPlaneModule (U) ---
-
-    /// OverlayRows (60xx,0010) vr=US, vm=1, type=1
-    DcmUnsignedShort OverlayRows;
-    /// OverlayColumns (60xx,0011) vr=US, vm=1, type=1
-    DcmUnsignedShort OverlayColumns;
-    /// OverlayType (60xx,0040) vr=CS, vm=1, type=1
-    DcmCodeString OverlayType;
-    /// OverlayOrigin (60xx,0050) vr=SS, vm=2, type=1
-    DcmSignedShort OverlayOrigin;
-    /// OverlayBitsAllocated (60xx,0100) vr=US, vm=1, type=1
-    DcmUnsignedShort OverlayBitsAllocated;
-    /// OverlayBitPosition (60xx,0102) vr=US, vm=1, type=1
-    DcmUnsignedShort OverlayBitPosition;
-    /// OverlayData (60xx,3000) vr=OB/OW, vm=1, type=1
-    DcmOtherByteOtherWord OverlayData;
-    /// OverlayDescription (60xx,0022) vr=LO, vm=1, type=3
-    DcmLongString OverlayDescription;
-    /// OverlaySubtype (60xx,0045) vr=LO, vm=1, type=3
-    DcmLongString OverlaySubtype;
-    /// OverlayLabel (60xx,1500) vr=LO, vm=1, type=3
-    DcmLongString OverlayLabel;
-    /// ROIArea (60xx,1301) vr=IS, vm=1, type=3
-    DcmIntegerString ROIArea;
-    /// ROIMean (60xx,1302) vr=DS, vm=1, type=3
-    DcmDecimalString ROIMean;
-    /// ROIStandardDeviation (60xx,1303) vr=DS, vm=1, type=3
-    DcmDecimalString ROIStandardDeviation;
-
-    // --- MultiFrameOverlayModule (U) ---
-
-    /// NumberOfFramesInOverlay (60xx,0015) vr=IS, vm=1, type=1
-    DcmIntegerString NumberOfFramesInOverlay;
-    /// ImageFrameOrigin (60xx,0051) vr=US, vm=1, type=3
-    DcmUnsignedShort ImageFrameOrigin;
-
-    // --- ModalityLUTModule (U) ---
-
-    /// ModalityLUTSequence (0028,3000) vr=SQ, vm=1, type=1C
-    DRTModalityLUTSequence ModalityLUTSequence;
-    /// RescaleIntercept (0028,1052) vr=DS, vm=1, type=1C
-    DcmDecimalString RescaleIntercept;
-    /// RescaleSlope (0028,1053) vr=DS, vm=1, type=1C
-    DcmDecimalString RescaleSlope;
-    /// RescaleType (0028,1054) vr=LO, vm=1, type=1C
-    DcmLongString RescaleType;
+    /// EncapsulatedPixelDataValueTotalLength (7fe0,0003) vr=UV, vm=1, type=3
+    DcmUnsigned64bitVeryLong EncapsulatedPixelDataValueTotalLength;
 
     // --- RTDoseModule (M) ---
 
@@ -4566,8 +4268,10 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     /// ReferencedSpatialRegistrationSequence (0070,0404) vr=SQ, vm=1, type=2C
     DRTReferencedSpatialRegistrationSequence ReferencedSpatialRegistrationSequence;
     /// InstanceNumber (0020,0013) vr=IS, vm=1, type=3
-    /// - also defined in: GeneralImageModule, StructureSetModule, SOPCommonModule
+    /// - also defined in: GeneralImageModule, SOPCommonModule
     DcmIntegerString InstanceNumber;
+    /// EntityLongLabel (3010,0038) vr=LO, vm=1, type=3
+    DcmLongString EntityLongLabel;
     /// DoseComment (3004,0006) vr=LO, vm=1, type=3
     DcmLongString DoseComment;
     /// NormalizationPoint (3004,0008) vr=DS, vm=3, type=3
@@ -4588,6 +4292,8 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DRTDerivationCodeSequence DerivationCodeSequence;
     /// ReferencedInstanceSequence (0008,114a) vr=SQ, vm=1, type=3
     DRTReferencedInstanceSequence ReferencedInstanceSequence;
+    /// PlanOverviewSequence (300c,0116) vr=SQ, vm=1, type=1C
+    DRTPlanOverviewSequence PlanOverviewSequence;
 
     // --- RTDVHModule (U) ---
 
@@ -4599,38 +4305,6 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmDecimalString DVHNormalizationDoseValue;
     /// DVHSequence (3004,0050) vr=SQ, vm=1, type=1
     DRTDVHSequence DVHSequence;
-
-    // --- StructureSetModule (C) ---
-
-    /// StructureSetLabel (3006,0002) vr=SH, vm=1, type=1
-    DcmShortString StructureSetLabel;
-    /// StructureSetName (3006,0004) vr=LO, vm=1, type=3
-    DcmLongString StructureSetName;
-    /// StructureSetDescription (3006,0006) vr=ST, vm=1, type=3
-    DcmShortText StructureSetDescription;
-    // InstanceNumber (0020,0013) vr=IS, vm=1, type=3
-    // - also defined in: GeneralImageModule, RTDoseModule, SOPCommonModule
-    // DcmIntegerString InstanceNumber;
-    /// StructureSetDate (3006,0008) vr=DA, vm=1, type=2
-    DcmDate StructureSetDate;
-    /// StructureSetTime (3006,0009) vr=TM, vm=1, type=2
-    DcmTime StructureSetTime;
-    /// ReferencedFrameOfReferenceSequence (3006,0010) vr=SQ, vm=1, type=3
-    DRTReferencedFrameOfReferenceSequence ReferencedFrameOfReferenceSequence;
-    /// StructureSetROISequence (3006,0020) vr=SQ, vm=1, type=1
-    DRTStructureSetROISequence StructureSetROISequence;
-    /// PredecessorStructureSetSequence (3006,0018) vr=SQ, vm=1, type=3
-    DRTPredecessorStructureSetSequence PredecessorStructureSetSequence;
-
-    // --- ROIContourModule (C) ---
-
-    /// ROIContourSequence (3006,0039) vr=SQ, vm=1, type=1
-    DRTROIContourSequence ROIContourSequence;
-
-    // --- RTDoseROIModule (C) ---
-
-    /// RTDoseROISequence (3004,0010) vr=SQ, vm=1, type=1
-    DRTRTDoseROISequence RTDoseROISequence;
 
     // --- SOPCommonModule (M) ---
 
@@ -4663,7 +4337,7 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     /// ContributingEquipmentSequence (0018,a001) vr=SQ, vm=1, type=3
     DRTContributingEquipmentSequence ContributingEquipmentSequence;
     // InstanceNumber (0020,0013) vr=IS, vm=1, type=3
-    // - also defined in: GeneralImageModule, RTDoseModule, StructureSetModule
+    // - also defined in: GeneralImageModule, RTDoseModule
     // DcmIntegerString InstanceNumber;
     /// SOPInstanceStatus (0100,0410) vr=CS, vm=1, type=3
     DcmCodeString SOPInstanceStatus;
@@ -4693,6 +4367,14 @@ class DCMTK_DCMRT_EXPORT DRTDoseIOD
     DcmCodeString ContentQualification;
     /// PrivateDataElementCharacteristicsSequence (0008,0300) vr=SQ, vm=1, type=3
     DRTPrivateDataElementCharacteristicsSequence PrivateDataElementCharacteristicsSequence;
+    /// InstanceOriginStatus (0400,0600) vr=CS, vm=1, type=3
+    DcmCodeString InstanceOriginStatus;
+    /// BarcodeValue (2200,0005) vr=LT, vm=1, type=3
+    DcmLongText BarcodeValue;
+    /// ReferencedDefinedProtocolSequence (0018,990c) vr=SQ, vm=1, type=1C
+    DRTReferencedDefinedProtocolSequence ReferencedDefinedProtocolSequence;
+    /// ReferencedPerformedProtocolSequence (0018,990d) vr=SQ, vm=1, type=1C
+    DRTReferencedPerformedProtocolSequence ReferencedPerformedProtocolSequence;
 
     // --- CommonInstanceReferenceModule (U) ---
 

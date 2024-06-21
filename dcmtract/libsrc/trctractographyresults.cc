@@ -1,6 +1,6 @@
   /*
  *
- *  Copyright (C) 2016-2018, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -70,14 +70,6 @@ OFCondition TrcTractographyResults::loadDataset(
   DcmDataset& dataset,
   TrcTractographyResults*& tract)
 {
-  DcmXfer xfer = dataset.getOriginalXfer();
-  // If the original transfer is encapsulated and we do not already have an uncompressed version, decompress or reject the file
-  if (xfer.isEncapsulated())
-  {
-    DCMTRACT_ERROR("Cannot load dataset since it is compressed, transfer syntax: " << xfer.getXferName());
-    return IOD_EC_CannotDecompress;
-  }
-
   tract = new TrcTractographyResults();
   if (tract == NULL)
   {

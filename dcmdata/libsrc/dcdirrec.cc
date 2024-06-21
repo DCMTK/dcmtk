@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,15 +32,6 @@
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcspchrs.h"
-
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
-#endif
 
 
 // ********************************
@@ -97,7 +88,8 @@ static const char *DRTypeNames[] =
     "TRACT",
     "ASSESSMENT",
     "RADIOTHERAPY",
-    "ANNOTATION"
+    "ANNOTATION",
+    "INVENTORY"
 };
 
 static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames) / sizeof(DRTypeNames[0])));
@@ -331,6 +323,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Implant:
                 case ERT_ImplantGroup:
                 case ERT_ImplantAssy:
+                case ERT_Inventory:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -530,6 +523,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Assessment:
         case ERT_Radiotherapy:
         case ERT_Annotation:
+        case ERT_Inventory:
         case ERT_Private:
             switch (lowerRecord)
             {
@@ -1004,7 +998,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
             DCMDATA_ERROR("Internal ERROR in DcmDirectoryRecord::fillElementsAndReadSOP()");
         }
         uiP = new DcmUniqueIdentifier(refSOPClassTag);    // (0004,1510)
-        if (refFile->search(DCM_SOPClassUID, stack).good())
+        if (refFile->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
         {
             char *uid = NULL;
             OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -1017,7 +1011,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         insert(uiP, OFTrue);
 
         uiP = new DcmUniqueIdentifier(refSOPInstTag);     // (0004,1511)
-        if (refFile->search(DCM_SOPInstanceUID, stack).good() || refFile->search(DCM_MediaStorageSOPInstanceUID, stack).good())
+        if ((refFile->search(DCM_SOPInstanceUID, stack).good() || refFile->search(DCM_MediaStorageSOPInstanceUID, stack).good()) && (stack.top()->ident() == EVR_UI))
         {
             char *uid = NULL;
             OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -1030,7 +1024,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         insert(uiP, OFTrue);
 
         uiP = new DcmUniqueIdentifier(refFileXferTag);     // (0004,1512)
-        if (refFile->search(DCM_TransferSyntaxUID, stack).good())
+        if (refFile->search(DCM_TransferSyntaxUID, stack).good() && (stack.top()->ident() == EVR_UI))
         {
             char *uid = NULL;
             OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);

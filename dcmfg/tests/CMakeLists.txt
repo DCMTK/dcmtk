@@ -1,5 +1,5 @@
 # declare executables
-DCMTK_ADD_EXECUTABLE(dcmfg_tests
+DCMTK_ADD_TEST_EXECUTABLE(dcmfg_tests
   tests.cc
   t_concatenation_creator.cc
   t_concatenation_loader.cc

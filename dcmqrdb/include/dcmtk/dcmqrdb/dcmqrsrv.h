@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2017, OFFIS e.V.
+ *  Copyright (C) 1993-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,6 +33,7 @@ class DcmQueryRetrieveConfig;
 class DcmQueryRetrieveOptions;
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveDatabaseHandleFactory;
+class DcmTLSOptions;
 
 /// enumeration describing reasons for refusing an association request
 enum CTN_RefuseReason
@@ -61,12 +62,14 @@ public:
    *  @param config SCP configuration facility
    *  @param options SCP configuration options
    *  @param factory factory object used to create database handles
+   *  @param object managing the TLS options for network connections
    */
   DcmQueryRetrieveSCP(
     const DcmQueryRetrieveConfig& config,
     const DcmQueryRetrieveOptions& options,
     const DcmQueryRetrieveDatabaseHandleFactory& factory,
-    const DcmAssociationConfiguration& associationConfiguration);
+    const DcmAssociationConfiguration& associationConfiguration,
+    DcmTLSOptions& tlsOptions);
 
   /// destructor
   virtual ~DcmQueryRetrieveSCP() { }
@@ -107,10 +110,10 @@ private:
    */
   OFCondition negotiateAssociation(T_ASC_Association * assoc);
 
-  OFCondition refuseAssociation(T_ASC_Association ** assoc, CTN_RefuseReason reason);
+  OFCondition refuseAssociation(T_ASC_Association ** pAssoc, CTN_RefuseReason reason);
 
   OFCondition handleAssociation(
-    T_ASC_Association * assoc,
+    T_ASC_Association ** assoc,
     OFBool correctUIDPadding);
 
   OFCondition echoSCP(
@@ -169,6 +172,9 @@ private:
 
   /// Association configuration profiles read from configuration file
   const DcmAssociationConfiguration& associationConfiguration_;
+
+  /// reference to object managing the TLS options
+  DcmTLSOptions& tlsOptions_;
 };
 
 #endif

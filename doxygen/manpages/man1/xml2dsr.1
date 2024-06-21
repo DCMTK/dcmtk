@@ -1,4 +1,4 @@
-.TH "xml2dsr" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dsr" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 xml2dsr \- Convert XML document to DICOM SR file
@@ -19,9 +19,9 @@ An appropriate XML file can be created using the \fBdsr2xml\fP tool (option \fI+
 .PP
 .PP
 .nf
-xmlfile-in   XML input filename to be converted (stdin: "-")
+xmlfile-in   XML input filename to be converted ('-' for stdin)
 
-dsrfile-out  DICOM SR output filename
+dsrfile-out  DICOM SR output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -170,25 +170,25 @@ The \fBxml2dsr\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-SpectaclePrescriptionReportStorage           1.2.840.10008.5.1.4.1.1.78.6
-MacularGridThicknessAndVolumeReportStorage   1.2.840.10008.5.1.4.1.1.79.1
-BasicTextSRStorage                           1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSRStorage                            1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSRStorage                       1.2.840.10008.5.1.4.1.1.88.33
-Comprehensive3DSRStorage                     1.2.840.10008.5.1.4.1.1.88.34
-ProcedureLogStorage                          1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSRStorage                      1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocumentStorage            1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSRStorage                   1.2.840.10008.5.1.4.1.1.88.67
-RadiopharmaceuticalRadiationDoseSRStorage    1.2.840.10008.5.1.4.1.1.88.68
-ColonCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage            1.2.840.10008.5.1.4.1.1.88.70
-AcquisitionContextSRStorage                  1.2.840.10008.5.1.4.1.1.88.71
-SimplifiedAdultEchoSRStorage                 1.2.840.10008.5.1.4.1.1.88.72
-PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
-PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
-PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
+SpectaclePrescriptionReportStorage           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.78\&.6
+MacularGridThicknessAndVolumeReportStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.79\&.1
+BasicTextSRStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.11
+EnhancedSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.22
+ComprehensiveSRStorage                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.33
+Comprehensive3DSRStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.34
+ProcedureLogStorage                          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.40
+MammographyCADSRStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.50
+KeyObjectSelectionDocumentStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.59
+ChestCADSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.65
+XRayRadiationDoseSRStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.67
+RadiopharmaceuticalRadiationDoseSRStorage    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.68
+ColonCADSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.69
+ImplantationPlanSRStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.70
+AcquisitionContextSRStorage                  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.71
+SimplifiedAdultEchoSRStorage                 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.72
+PatientRadiationDoseSRStorage                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.73
+PlannedImagingAgentAdministrationSRStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.74
+PerformedImagingAgentAdministrationSRStorage 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.75
 .fi
 .PP
 .PP
@@ -199,22 +199,23 @@ The DICOM character encoding is determined automatically from the element with t
 .PP
 .nf
 ASCII         (ISO_IR 6)    (UTF-8)
-UTF-8         "ISO_IR 192"  (UTF-8)
-ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
-ISO Latin 2   "ISO_IR 101"  (ISO-8859-2)
-ISO Latin 3   "ISO_IR 109"  (ISO-8859-3)
-ISO Latin 4   "ISO_IR 110"  (ISO-8859-4)
-ISO Latin 5   "ISO_IR 148"  (ISO-8859-9)
-Cyrillic      "ISO_IR 144"  (ISO-8859-5)
-Arabic        "ISO_IR 127"  (ISO-8859-6)
-Greek         "ISO_IR 126"  (ISO-8859-7)
-Hebrew        "ISO_IR 138"  (ISO-8859-8)
-Thai          "ISO_IR 166"  (TIS-620)
-Japanese      "ISO 2022 IR 13\ISO 2022 IR 87"  (ISO-2022-JP)
-Korean        "ISO 2022 IR 6\ISO 2022 IR 149"  (ISO-2022-KR)
-Chinese       "ISO 2022 IR 6\ISO 2022 IR 58"   (ISO-2022-CN)
-Chinese       "GB18030"     (GB18030)
-Chinese       "GBK"         (GBK)
+UTF-8         'ISO_IR 192'  (UTF-8)
+ISO Latin 1   'ISO_IR 100'  (ISO-8859-1)
+ISO Latin 2   'ISO_IR 101'  (ISO-8859-2)
+ISO Latin 3   'ISO_IR 109'  (ISO-8859-3)
+ISO Latin 4   'ISO_IR 110'  (ISO-8859-4)
+ISO Latin 5   'ISO_IR 148'  (ISO-8859-9)
+ISO Latin 9   'ISO_IR 203'  (ISO-8859-15)
+Cyrillic      'ISO_IR 144'  (ISO-8859-5)
+Arabic        'ISO_IR 127'  (ISO-8859-6)
+Greek         'ISO_IR 126'  (ISO-8859-7)
+Hebrew        'ISO_IR 138'  (ISO-8859-8)
+Thai          'ISO_IR 166'  (TIS-620)
+Japanese      'ISO 2022 IR 13\\ISO 2022 IR 87'  (ISO-2022-JP)
+Korean        'ISO 2022 IR 6\\ISO 2022 IR 149'  (ISO-2022-KR)
+Chinese       'ISO 2022 IR 6\\ISO 2022 IR 58'   (ISO-2022-CN)
+Chinese       'GB18030'     (GB18030)
+Chinese       'GBK'         (GBK)
 .fi
 .PP
 .SS "Compression"
@@ -248,4 +249,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdsr2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2003-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -330,7 +330,8 @@ ManualResetEvent::signal () const
     MutexGuard mguard (mtx);
 
     signaled = true;
-    sigcount += 1;
+    unsigned sigcount_new = sigcount + 1; // operator++ on volatile variables is deprecated in C++20.
+    sigcount = sigcount_new; 
     int ret = pthread_cond_broadcast (&cv);
     if (ret != 0)
         DCMTK_LOG4CPLUS_THROW_RTE ("ManualResetEVent::signal");

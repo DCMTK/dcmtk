@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Andrew Hewett
+ *  Author:  Andrew Hewett, Joerg Riesmeier
  *
  *  Purpose:
  *  Definitions of "well known" DICOM Unique Identifiers,
@@ -35,7 +35,6 @@
  *  @brief global definitions and functions for UID handling
  */
 
-
 /// type of Storage SOP Class
 typedef enum {
     /// patient objects
@@ -47,6 +46,117 @@ typedef enum {
     /// all types (patient and non-patient objects)
     ESSC_All        = 0x03
 } E_StorageSOPClassType;
+
+
+/// standard that defines the UID
+typedef enum {
+    /// DICOM standard
+    EUS_DICOM,
+    /// DICOS standard
+    EUS_DICOS,
+    /// DICONDE standard
+    EUS_DICONDE,
+    /// anything else
+    EUS_other
+} E_UIDStandard;
+
+/// validity of the UID definition
+typedef enum {
+    /// defined in the standard
+    EUV_Standard,
+    /// retired from the standard
+    EUV_Retired,
+    /// draft definition, e.g. for trial implementation
+    EUV_Draft,
+    /// private definition
+    EUV_Private,
+    /// anything else
+    EUV_other
+} E_UIDValidity;
+
+/// UID type
+typedef enum {
+    /// Application Context Name
+    EUT_ApplicationContextName,
+    /// Transfer Syntax
+    EUT_TransferSyntax,
+    /// Service Class
+    EUT_ServiceClass,
+    /// SOP Class
+    EUT_SOPClass,
+    /// Meta SOP Class
+    EUT_MetaSOPClass,
+    /// Well-known SOP Instance
+    EUT_SOPInstance,
+    /// Coding Scheme
+    EUT_CodingScheme,
+    /// Context Group (not yet used)
+    EUT_ContextGroup,
+    /// Mapping Resource
+    EUT_MappingResource,
+    /// Well-known Frame of Reference
+    EUT_FrameOfReference,
+    /// Application Hosting
+    EUT_ApplicationHosting,
+    /// LDAP OID
+    EUT_LDAP,
+    /// anything else
+    EUT_other
+} E_UIDType;
+
+/// UID sub type
+typedef enum {
+    /// Storage
+    EUST_Storage,
+    /// Query/Retrieve
+    EUST_QueryRetrieve,
+    /// Worklist
+    EUST_Worklist,
+    /// Print Management
+    EUST_PrintManagement,
+    /// Color Palette
+    EUST_ColorPalette,
+    /// anything else
+    EUST_other
+} E_UIDSubType;
+
+/// UID IOD type
+typedef enum {
+    /// Image IOD
+    EUIT_Image,
+    /// Presentation State IOD
+    EUIT_PresentationState,
+    /// Structured Report IOD
+    EUIT_StructuredReport,
+    /// Waveform IOD
+    EUIT_Waveform,
+    /// Encapsulated IOD
+    EUIT_Encapsulated,
+    /// other IOD
+    EUIT_other
+} E_UIDIODType;
+
+/// UID properties
+struct DcmUIDProperties {
+    /// standard that defines the UID
+    E_UIDStandard standard;
+    /// validity of the UID definition
+    E_UIDValidity validity;
+    /// UID type
+    E_UIDType uidType;
+    /// UID sub type
+    E_UIDSubType subType;
+    /// UID IOD type
+    E_UIDIODType iodType;
+    /// other flags
+    size_t otherFlags;
+};
+
+// UID property flags
+#define UID_PROP_NONE          0x0000UL
+#define UID_PROP_NON_PATIENT   0x0001UL
+#define UID_PROP_NO_DIR_RECORD 0x0002UL
+#define UID_PROP_ENHANCED_MF   0x0004UL
 
 
 /** return the name of a UID.
@@ -63,6 +173,29 @@ DCMTK_DCMDATA_EXPORT const char* dcmFindNameOfUID(const char* uid, const char* d
  *  @return UID string or NULL if name is unknown
  */
 DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromName(const char* name);
+
+/** return the keyword of a UID.
+ *  Performs a table lookup and returns a pointer to a read-only string.
+ *  @param uid UID string for which the keyword is to be looked up
+ *  @param defaultValue default to return if UID not known
+ *  @return keyword string or defaultValue if UID is unknown
+ */
+DCMTK_DCMDATA_EXPORT const char* dcmFindKeywordOfUID(const char* uid, const char* defaultValue = NULL);
+
+/** return the UID of a keyword.
+ *  Performs a table lookup and returns a pointer to a read-only string.
+ *  @param keyword keyword string for which the corresponding UID is to be looked up
+ *  @return UID string or NULL if keyword is unknown
+ */
+DCMTK_DCMDATA_EXPORT const char* dcmFindUIDFromKeyword(const char* keyword);
+
+/** return properties of a UID.
+ *  Performs a table lookup and fills a given struct with the properties.
+ *  @param uid UID string for which the properties are to be looked up
+ *  @param properties struct that is filled with the properties of the UID
+ *  @return true if UID was found, false otherwise
+ */
+DCMTK_DCMDATA_EXPORT OFBool dcmGetPropertiesOfUID(const char* uid, DcmUIDProperties &properties);
 
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
@@ -250,21 +383,35 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #endif
 
 /*
-** Useful UID prefixes. These can be whatever you want.
+** Useful UID prefixes.
 **
 ** These site UIDs are arbitrary, non-standard, with no meaning
 ** and can be changed at any time.  Do _not_ rely on these values.
-** Do _not_ assume any semantics when using these suffixes.
+** Do _not_ assume any semantics when using these prefixes.
 **
+** The DCMTK currently uses the following site-specific UID prefixes:
+** - SITE_UID_ROOT + ".1"
+**
+** In addition, the DCMTK uses the following UID prefixes based on the
+** organization root that is registered for OFFIS, which is identical
+*  to SITE_UID_ROOT if not redefined:
+** - OFFIS_UID_ROOT + ".0"
+** - OFFIS_UID_ROOT + ".4"
+**
+** Note: For application-specific purposes that require specific
+**       semantics, the UID prefix SITE_UID_ROOT + ".9" may be used
+**       in user code.  DCMTK does not and will not use this UID prefix
+**       internally.  Of course, this UID prefix should preferably be
+**       used with a site-specific SITE_UID_ROOT (see above).
 */
 
-/// UID root for study instance UIDs
+/// UID root for Study Instance UIDs
 #define SITE_STUDY_UID_ROOT                     SITE_UID_ROOT ".1.2"
 
-/// UID root for series instance UIDs
+/// UID root for Series Instance UIDs
 #define SITE_SERIES_UID_ROOT                    SITE_UID_ROOT ".1.3"
 
-/// UID root for SOP instance UIDs
+/// UID root for SOP Instance UIDs
 #define SITE_INSTANCE_UID_ROOT                  SITE_UID_ROOT ".1.4"
 
 /** A private SOP Class UID which is used in a file meta-header when no
@@ -280,110 +427,134 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 */
 
 /// Implicit VR Little Endian: Default Transfer Syntax for DICOM
-#define UID_LittleEndianImplicitTransferSyntax  "1.2.840.10008.1.2"
+#define UID_LittleEndianImplicitTransferSyntax          "1.2.840.10008.1.2"
 /// Explicit VR Little Endian
-#define UID_LittleEndianExplicitTransferSyntax  "1.2.840.10008.1.2.1"
+#define UID_LittleEndianExplicitTransferSyntax           "1.2.840.10008.1.2.1"
 /// Explicit VR Big Endian - RETIRED
-#define UID_BigEndianExplicitTransferSyntax     "1.2.840.10008.1.2.2"
+#define UID_BigEndianExplicitTransferSyntax              "1.2.840.10008.1.2.2"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
  *  for Lossy JPEG 8 Bit Image Compression
  */
-#define UID_JPEGProcess1TransferSyntax          "1.2.840.10008.1.2.4.50"
+#define UID_JPEGProcess1TransferSyntax                   "1.2.840.10008.1.2.4.50"
 /** JPEG Extended (Process 2 & 4): Default Transfer Syntax
  *  for Lossy JPEG 12 Bit Image Compression (Process 4 only)
  */
-#define UID_JPEGProcess2_4TransferSyntax        "1.2.840.10008.1.2.4.51"
+#define UID_JPEGProcess2_4TransferSyntax                 "1.2.840.10008.1.2.4.51"
 /// JPEG Extended (Process 3 & 5) - RETIRED
-#define UID_JPEGProcess3_5TransferSyntax        "1.2.840.10008.1.2.4.52"
+#define UID_JPEGProcess3_5TransferSyntax                 "1.2.840.10008.1.2.4.52"
 /// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) - RETIRED
-#define UID_JPEGProcess6_8TransferSyntax        "1.2.840.10008.1.2.4.53"
+#define UID_JPEGProcess6_8TransferSyntax                 "1.2.840.10008.1.2.4.53"
 /// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) - RETIRED
-#define UID_JPEGProcess7_9TransferSyntax        "1.2.840.10008.1.2.4.54"
+#define UID_JPEGProcess7_9TransferSyntax                 "1.2.840.10008.1.2.4.54"
 /// JPEG Full Progression, Non-Hierarchical (Process 10 & 12) - RETIRED
-#define UID_JPEGProcess10_12TransferSyntax      "1.2.840.10008.1.2.4.55"
+#define UID_JPEGProcess10_12TransferSyntax               "1.2.840.10008.1.2.4.55"
 /// JPEG Full Progression, Non-Hierarchical (Process 11 & 13) - RETIRED
-#define UID_JPEGProcess11_13TransferSyntax      "1.2.840.10008.1.2.4.56"
+#define UID_JPEGProcess11_13TransferSyntax               "1.2.840.10008.1.2.4.56"
 /// JPEG Lossless, Non-Hierarchical (Process 14)
-#define UID_JPEGProcess14TransferSyntax         "1.2.840.10008.1.2.4.57"
+#define UID_JPEGProcess14TransferSyntax                  "1.2.840.10008.1.2.4.57"
 /// JPEG Lossless, Non-Hierarchical (Process 15) - RETIRED
-#define UID_JPEGProcess15TransferSyntax         "1.2.840.10008.1.2.4.58"
+#define UID_JPEGProcess15TransferSyntax                  "1.2.840.10008.1.2.4.58"
 /// JPEG Extended, Hierarchical (Process 16 & 18) - RETIRED
-#define UID_JPEGProcess16_18TransferSyntax      "1.2.840.10008.1.2.4.59"
+#define UID_JPEGProcess16_18TransferSyntax               "1.2.840.10008.1.2.4.59"
 /// JPEG Extended, Hierarchical (Process 17 & 19) - RETIRED
-#define UID_JPEGProcess17_19TransferSyntax      "1.2.840.10008.1.2.4.60"
+#define UID_JPEGProcess17_19TransferSyntax               "1.2.840.10008.1.2.4.60"
 /// JPEG Spectral Selection, Hierarchical (Process 20 & 22) - RETIRED
-#define UID_JPEGProcess20_22TransferSyntax      "1.2.840.10008.1.2.4.61"
+#define UID_JPEGProcess20_22TransferSyntax               "1.2.840.10008.1.2.4.61"
 /// JPEG Spectral Selection, Hierarchical (Process 21 & 23) - RETIRED
-#define UID_JPEGProcess21_23TransferSyntax      "1.2.840.10008.1.2.4.62"
+#define UID_JPEGProcess21_23TransferSyntax               "1.2.840.10008.1.2.4.62"
 /// JPEG Full Progression, Hierarchical (Process 24 & 26) - RETIRED
-#define UID_JPEGProcess24_26TransferSyntax      "1.2.840.10008.1.2.4.63"
+#define UID_JPEGProcess24_26TransferSyntax               "1.2.840.10008.1.2.4.63"
 /// JPEG Full Progression, Hierarchical (Process 25 & 27) - RETIRED
-#define UID_JPEGProcess25_27TransferSyntax      "1.2.840.10008.1.2.4.64"
+#define UID_JPEGProcess25_27TransferSyntax               "1.2.840.10008.1.2.4.64"
 /// JPEG Lossless, Hierarchical (Process 28) - RETIRED
-#define UID_JPEGProcess28TransferSyntax         "1.2.840.10008.1.2.4.65"
+#define UID_JPEGProcess28TransferSyntax                  "1.2.840.10008.1.2.4.65"
 /// JPEG Lossless, Hierarchical (Process 29) - RETIRED
-#define UID_JPEGProcess29TransferSyntax         "1.2.840.10008.1.2.4.66"
+#define UID_JPEGProcess29TransferSyntax                  "1.2.840.10008.1.2.4.66"
 /** JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14
  *  [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression
  */
-#define UID_JPEGProcess14SV1TransferSyntax      "1.2.840.10008.1.2.4.70"
+#define UID_JPEGProcess14SV1TransferSyntax               "1.2.840.10008.1.2.4.70"
 /// JPEG-LS Lossless Image Compression
-#define UID_JPEGLSLosslessTransferSyntax        "1.2.840.10008.1.2.4.80"
+#define UID_JPEGLSLosslessTransferSyntax                 "1.2.840.10008.1.2.4.80"
 /// JPEG-LS Lossy (Near-Lossless) Image Compression
-#define UID_JPEGLSLossyTransferSyntax           "1.2.840.10008.1.2.4.81"
+#define UID_JPEGLSLossyTransferSyntax                    "1.2.840.10008.1.2.4.81"
 /// JPEG 2000 Image Compression (Lossless Only)
-#define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
+#define UID_JPEG2000LosslessOnlyTransferSyntax           "1.2.840.10008.1.2.4.90"
 /// JPEG 2000 Image Compression (Lossless or Lossy)
-#define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
+#define UID_JPEG2000TransferSyntax                       "1.2.840.10008.1.2.4.91"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only)
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
 /// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy)
-#define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
+#define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax             "1.2.840.10008.1.2.4.93"
 /// JPIP Referenced
-#define UID_JPIPReferencedTransferSyntax        "1.2.840.10008.1.2.4.94"
+#define UID_JPIPReferencedTransferSyntax                                          "1.2.840.10008.1.2.4.94"
 /// JPIP Referenced Deflate
-#define UID_JPIPReferencedDeflateTransferSyntax "1.2.840.10008.1.2.4.95"
+#define UID_JPIPReferencedDeflateTransferSyntax                                   "1.2.840.10008.1.2.4.95"
 /// MPEG2 Main Profile @ Main Level (changed with DICOM 2016e to: MPEG2 Main Profile / Main Level)
-#define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
+#define UID_MPEG2MainProfileAtMainLevelTransferSyntax                             "1.2.840.10008.1.2.4.100"
+/// Fragmentable MPEG2 Main Profile / Main Level
+#define UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax                   "1.2.840.10008.1.2.4.100.1"
 /// MPEG2 Main Profile @ High Level (changed with DICOM 2016e to: MPEG2 Main Profile / High Level)
-#define UID_MPEG2MainProfileAtHighLevelTransferSyntax "1.2.840.10008.1.2.4.101"
+#define UID_MPEG2MainProfileAtHighLevelTransferSyntax                             "1.2.840.10008.1.2.4.101"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
+#define UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax                   "1.2.840.10008.1.2.4.101.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.1
-#define UID_MPEG4HighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.102"
+#define UID_MPEG4HighProfileLevel4_1TransferSyntax                                "1.2.840.10008.1.2.4.102"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
+#define UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax                    "1.2.840.10008.1.2.4.102.1"
 /// MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
-#define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax "1.2.840.10008.1.2.4.103"
+#define UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax                    "1.2.840.10008.1.2.4.103"
+/// Fragmentable MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
+#define UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax        "1.2.840.10008.1.2.4.103.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
-#define UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax "1.2.840.10008.1.2.4.104"
+#define UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax                     "1.2.840.10008.1.2.4.104"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
+#define UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax         "1.2.840.10008.1.2.4.104.1"
 /// MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
-#define UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax "1.2.840.10008.1.2.4.105"
+#define UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax                     "1.2.840.10008.1.2.4.105"
+/// Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
+#define UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax         "1.2.840.10008.1.2.4.105.1"
 /// MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
-#define UID_MPEG4StereoHighProfileLevel4_2TransferSyntax "1.2.840.10008.1.2.4.106"
+#define UID_MPEG4StereoHighProfileLevel4_2TransferSyntax                          "1.2.840.10008.1.2.4.106"
+/// Fragmentable MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
+#define UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax              "1.2.840.10008.1.2.4.106.1"
 /// HEVC/H.265 Main Profile / Level 5.1
-#define UID_HEVCMainProfileLevel5_1TransferSyntax "1.2.840.10008.1.2.4.107"
+#define UID_HEVCMainProfileLevel5_1TransferSyntax                                 "1.2.840.10008.1.2.4.107"
 /// HEVC/H.265 Main 10 Profile / Level 5.1
-#define UID_HEVCMain10ProfileLevel5_1TransferSyntax "1.2.840.10008.1.2.4.108"
+#define UID_HEVCMain10ProfileLevel5_1TransferSyntax                               "1.2.840.10008.1.2.4.108"
+/// High-Throughput JPEG 2000 Image Compression (Lossless Only)
+#define UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax      "1.2.840.10008.1.2.4.201"
+/// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
+#define UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.202"
+/// High-Throughput JPEG 2000 Image Compression
+#define UID_HighThroughputJPEG2000ImageCompressionTransferSyntax                  "1.2.840.10008.1.2.4.203"
+/// JPIP HTJ2K Referenced
+#define UID_JPIPHTJ2KReferencedTransferSyntax                                     "1.2.840.10008.1.2.4.204"
+/// JPIP HTJ2K Referenced Deflate
+#define UID_JPIPHTJ2KReferencedDeflateTransferSyntax                              "1.2.840.10008.1.2.4.205"
 /// RLE Lossless
-#define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
+#define UID_RLELosslessTransferSyntax                                             "1.2.840.10008.1.2.5"
 /// SMPTE ST 2110-20 Uncompressed Progressive Active Video
-#define UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax "1.2.840.10008.1.2.7.1"
+#define UID_SMPTEST2110_20_UncompressedProgressiveActiveVideoTransferSyntax       "1.2.840.10008.1.2.7.1"
 /// SMPTE ST 2110-20 Uncompressed Interlaced Active Video
-#define UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax "1.2.840.10008.1.2.7.2"
+#define UID_SMPTEST2110_20_UncompressedInterlacedActiveVideoTransferSyntax        "1.2.840.10008.1.2.7.2"
 /// SMPTE ST 2110-30 PCM Digital Audio
-#define UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax "1.2.840.10008.1.2.7.3"
+#define UID_SMPTEST2110_30_PCMDigitalAudioTransferSyntax                          "1.2.840.10008.1.2.7.3"
 
 /** RFC 2557 MIME Encapsulation (RETIRED) was only a pseudo transfer syntax used
  *  to refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
  *  on a DICOM storage medium. It was never used for network communication
  *  or encoding of DICOM objects.
  */
-#define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
+#define UID_RETIRED_RFC2557MIMEEncapsulationTransferSyntax     "1.2.840.10008.1.2.6.1"
 
 /** XML Encoding (RETIRED) was only a pseudo transfer syntax used to refer to
  *  encapsulated HL7 CDA documents from a DICOMDIR when stored on a DICOM storage
  *  medium. It was never used for network communication or encoding of DICOM objects.
  */
-#define UID_XMLEncodingTransferSyntax "1.2.840.10008.1.2.6.2"
+#define UID_RETIRED_XMLEncodingTransferSyntax                  "1.2.840.10008.1.2.6.2"
 
 /** Private transfer syntax defined by GE. This transfer syntax is identical to
  *  Implicit VR Little Endian, except that Pixel Data are encoded in big endian.
@@ -419,6 +590,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RETIRED_UltrasoundImageStorage                         "1.2.840.10008.5.1.4.1.1.6"
 #define UID_UltrasoundImageStorage                                 "1.2.840.10008.5.1.4.1.1.6.1"
 #define UID_EnhancedUSVolumeStorage                                "1.2.840.10008.5.1.4.1.1.6.2"
+#define UID_PhotoacousticImageStorage                              "1.2.840.10008.5.1.4.1.1.6.3"
 #define UID_SecondaryCaptureImageStorage                           "1.2.840.10008.5.1.4.1.1.7"
 #define UID_MultiframeSingleBitSecondaryCaptureImageStorage        "1.2.840.10008.5.1.4.1.1.7.1"
 #define UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage    "1.2.840.10008.5.1.4.1.1.7.2"
@@ -429,6 +601,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_TwelveLeadECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.1"
 #define UID_GeneralECGWaveformStorage                              "1.2.840.10008.5.1.4.1.1.9.1.2"
 #define UID_AmbulatoryECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.3"
+#define UID_General32BitECGWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.1.4"
 #define UID_HemodynamicWaveformStorage                             "1.2.840.10008.5.1.4.1.1.9.2.1"
 #define UID_CardiacElectrophysiologyWaveformStorage                "1.2.840.10008.5.1.4.1.1.9.3.1"
 #define UID_BasicVoiceAudioWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.4.1"
@@ -454,6 +627,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_VolumeRenderingVolumetricPresentationStateStorage      "1.2.840.10008.5.1.4.1.1.11.9"
 #define UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage "1.2.840.10008.5.1.4.1.1.11.10"
 #define UID_MultipleVolumeRenderingVolumetricPresentationStateStorage "1.2.840.10008.5.1.4.1.1.11.11"
+#define UID_VariableModalityLUTSoftcopyPresentationStateStorage    "1.2.840.10008.5.1.4.1.1.11.12"
 #define UID_XRayAngiographicImageStorage                           "1.2.840.10008.5.1.4.1.1.12.1"
 #define UID_EnhancedXAImageStorage                                 "1.2.840.10008.5.1.4.1.1.12.1.1"
 #define UID_XRayRadiofluoroscopicImageStorage                      "1.2.840.10008.5.1.4.1.1.12.2"
@@ -496,6 +670,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage "1.2.840.10008.5.1.4.1.1.77.1.5.8"
 #define UID_VLWholeSlideMicroscopyImageStorage                     "1.2.840.10008.5.1.4.1.1.77.1.6"
 #define UID_DermoscopicPhotographyImageStorage                     "1.2.840.10008.5.1.4.1.1.77.1.7"
+#define UID_ConfocalMicroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.77.1.8"
+#define UID_ConfocalMicroscopyTiledPyramidalImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.9"
 #define UID_RETIRED_VLMultiframeImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
 #define UID_LensometryMeasurementsStorage                          "1.2.840.10008.5.1.4.1.1.78.1"
 #define UID_AutorefractionMeasurementsStorage                      "1.2.840.10008.5.1.4.1.1.78.2"
@@ -521,7 +697,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_XRayRadiationDoseSRStorage                             "1.2.840.10008.5.1.4.1.1.88.67"
 #define UID_RadiopharmaceuticalRadiationDoseSRStorage              "1.2.840.10008.5.1.4.1.1.88.68"
 #define UID_ColonCADSRStorage                                      "1.2.840.10008.5.1.4.1.1.88.69"
-#define UID_ImplantationPlanSRDocumentStorage                      "1.2.840.10008.5.1.4.1.1.88.70"
+#define UID_ImplantationPlanSRStorage                              "1.2.840.10008.5.1.4.1.1.88.70"
 #define UID_AcquisitionContextSRStorage                            "1.2.840.10008.5.1.4.1.1.88.71"
 #define UID_SimplifiedAdultEchoSRStorage                           "1.2.840.10008.5.1.4.1.1.88.72"
 #define UID_PatientRadiationDoseSRStorage                          "1.2.840.10008.5.1.4.1.1.88.73"
@@ -567,12 +743,11 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RoboticRadiationRecordStorage                          "1.2.840.10008.5.1.4.1.1.481.20"
 #define UID_RTRadiationSetDeliveryInstructionStorage               "1.2.840.10008.5.1.4.1.1.481.21"
 #define UID_RTTreatmentPreparationStorage                          "1.2.840.10008.5.1.4.1.1.481.22"
+#define UID_EnhancedRTImageStorage                                 "1.2.840.10008.5.1.4.1.1.481.23"
+#define UID_EnhancedContinuousRTImageStorage                       "1.2.840.10008.5.1.4.1.1.481.24"
+#define UID_RTPatientPositionAcquisitionInstructionStorage         "1.2.840.10008.5.1.4.1.1.481.25"
 #define UID_RTBeamsDeliveryInstructionStorage                      "1.2.840.10008.5.1.4.34.7"
 #define UID_RTBrachyApplicationSetupDeliveryInstructionStorage     "1.2.840.10008.5.1.4.34.10"
-#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
-#define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
-#define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
-#define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
 
 // DICOMDIR (was UID_BasicDirectoryStorageSOPClass in DCMTK versions prior to 3.5.3)
 #define UID_MediaStorageDirectoryStorage                           "1.2.840.10008.1.3.10"
@@ -638,9 +813,11 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_RETIRED_StorageCommitmentPullModelSOPClass             "1.2.840.10008.1.20.2"
 #define UID_RETIRED_StorageCommitmentPullModelSOPInstance          "1.2.840.10008.1.20.2.1"
 
-// Hanging Protocols
+// Hanging Protocol Storage and Query/Retrieve
+#define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 #define UID_FINDHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.2"
 #define UID_MOVEHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.3"
+#define UID_GETHangingProtocolInformationModel                     "1.2.840.10008.5.1.4.38.4"
 
 // Relevant Patient Information Query
 #define UID_RelevantPatientInformationQuery_Prefix                 "1.2.840.10008.5.1.4.37."
@@ -654,13 +831,18 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_MOVEColorPaletteInformationModel                       "1.2.840.10008.5.1.4.39.3"
 #define UID_GETColorPaletteInformationModel                        "1.2.840.10008.5.1.4.39.4"
 
-// Implant Template Query/Retrieve
+// Implant Template Storage and Query/Retrieve
+#define UID_GenericImplantTemplateStorage                          "1.2.840.10008.5.1.4.43.1"
 #define UID_FINDGenericImplantTemplateInformationModel             "1.2.840.10008.5.1.4.43.2"
 #define UID_MOVEGenericImplantTemplateInformationModel             "1.2.840.10008.5.1.4.43.3"
 #define UID_GETGenericImplantTemplateInformationModel              "1.2.840.10008.5.1.4.43.4"
+
+#define UID_ImplantAssemblyTemplateStorage                         "1.2.840.10008.5.1.4.44.1"
 #define UID_FINDImplantAssemblyTemplateInformationModel            "1.2.840.10008.5.1.4.44.2"
 #define UID_MOVEImplantAssemblyTemplateInformationModel            "1.2.840.10008.5.1.4.44.3"
 #define UID_GETImplantAssemblyTemplateInformationModel             "1.2.840.10008.5.1.4.44.4"
+
+#define UID_ImplantTemplateGroupStorage                            "1.2.840.10008.5.1.4.45.1"
 #define UID_FINDImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.2"
 #define UID_MOVEImplantTemplateGroupInformationModel               "1.2.840.10008.5.1.4.45.3"
 #define UID_GETImplantTemplateGroupInformationModel                "1.2.840.10008.5.1.4.45.4"
@@ -674,6 +856,15 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_FINDProtocolApprovalInformationModel                   "1.2.840.10008.5.1.4.1.1.200.4"
 #define UID_MOVEProtocolApprovalInformationModel                   "1.2.840.10008.5.1.4.1.1.200.5"
 #define UID_GETProtocolApprovalInformationModel                    "1.2.840.10008.5.1.4.1.1.200.6"
+
+// Inventory Storage, Query/Retrieve, and related Services
+#define UID_InventoryStorage                                       "1.2.840.10008.5.1.4.1.1.201.1"
+#define UID_FINDInventory                                          "1.2.840.10008.5.1.4.1.1.201.2"
+#define UID_MOVEInventory                                          "1.2.840.10008.5.1.4.1.1.201.3"
+#define UID_GETInventory                                           "1.2.840.10008.5.1.4.1.1.201.4"
+#define UID_InventoryCreation                                      "1.2.840.10008.5.1.4.1.1.201.5"
+#define UID_RepositoryQuery                                        "1.2.840.10008.5.1.4.1.1.201.6"
+#define UID_StorageManagementSOPInstance                           "1.2.840.10008.5.1.4.1.1.201.1.1"
 
 // Print Management
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
@@ -825,7 +1016,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ICBM452T1FrameOfReference                              "1.2.840.10008.1.4.2.1"
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 #define UID_IEC61217FixedCoordinateSystemFrameOfReference          "1.2.840.10008.1.4.3.1"
-#define UID_StandardRoboticCoordinateSystemFrameOfReference        "1.2.840.10008.1.4.3.2"
+#define UID_StandardRoboticArmCoordinateSystemFrameOfReference     "1.2.840.10008.1.4.3.2"
 #define UID_IEC61217TableTopCoordinateSystemFrameOfReference       "1.2.840.10008.1.4.3.3"
 #define UID_SRI24FrameOfReference                                  "1.2.840.10008.1.4.4.1"
 #define UID_Colin27FrameOfReference                                "1.2.840.10008.1.4.5.1"

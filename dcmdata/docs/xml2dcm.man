@@ -23,9 +23,9 @@ validate against the DTD (Document Type Definition) which is described in file
 \section xml2dcm_parameters PARAMETERS
 
 \verbatim
-xmlfile-in   XML input filename to be converted (stdin: "-")
+xmlfile-in   XML input filename to be converted ("-" for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section xml2dcm_options OPTIONS
@@ -351,6 +351,6 @@ It is an error if no data dictionary can be loaded.
 
 \section xml2dcm_copyright COPYRIGHT
 
-Copyright (C) 2003-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

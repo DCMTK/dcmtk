@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -123,7 +123,6 @@
 #include <cstring>
 #include <cassert>
 #include <cstdlib>
-#include "dcmtk/ofstd/ofstdinc.h"
 
 using STD_NAMESPACE free;
 using STD_NAMESPACE malloc;

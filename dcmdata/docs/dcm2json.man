@@ -29,9 +29,9 @@ with a particular transfer syntax.
 \section dcm2json_parameters PARAMETERS
 
 \verbatim
-dcmfile-in    DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ("-" for stdin)
 
-jsonfile-out  JSON output filename (default: stdout)
+jsonfile-out JSON output filename (default: stdout)
 \endverbatim
 
 \section dcm2json_options OPTIONS
@@ -323,8 +323,8 @@ parsers cannot process larger numbers.
 
 As required by the DICOM JSON encoding, \b dcm2json always creates output in
 Unicode UTF-8 encoding and converts DICOM datasets accordingly.  If this is not
-possible, for example because DCMTK has been compiled without either iconv or
-ICU library, an error is returned.
+possible, for example because DCMTK has been compiled without character set
+conversion support, an error is returned.
 
 \section dcm2json_logging LOGGING
 
@@ -411,8 +411,18 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+The \b dcm2json utility will attempt to load character set mapping tables.
+This happens when DCMTK was compiled with the oficonv library (which is the
+default) and the mapping tables are not built into the library (default when
+DCMTK uses shared libraries).
+
+The mapping table files are expected in DCMTK's <em>\<datadir\></em>.
+The \e DCMICONVPATH environment variable can be used to specify a different
+location.  If a different location is specified, those mapping tables also
+replace any built-in tables.
+
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

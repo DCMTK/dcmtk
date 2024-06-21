@@ -1,4 +1,4 @@
-.TH "dcmquant" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmquant" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmquant \- Convert DICOM color images to palette color
@@ -17,9 +17,9 @@ The \fBdcmquant\fP utility reads a DICOM color image, computes a palette color l
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename to be written
+dcmfile-out  DICOM output filename to be written ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -137,7 +137,7 @@ color palette creation:
   +pf  --floyd-steinberg
          use Floyd-Steinberg error diffusion
 
-  +pc  --colors  number of colors: 2..65536 (default 256)
+  +pc  --colors  number of colors: 2\&.\&.65536 (default 256)
          number of colors to quantize to
 
 SOP Class UID:
@@ -243,4 +243,4 @@ The \fBdcmquant\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

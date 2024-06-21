@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,7 +24,6 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdatset.h"
-#include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmiod/ioddef.h"
@@ -185,10 +184,14 @@ public:
      *          and therefore ownership is transferred to the dataset, or the
      *          element is deleted from memory if it could not be inserted.
      *  @param  rule  Rule describing parameters to be checked on element.
+     *  @param  checkValue If OFTrue, the value of the element is checked for
+     *          violations against VR, VM, charset and value length. If OFTrue,
+     *          an error is printed and an error is returned. Otherwise, a warning
+     *          is printed and EC_Normal is returned.
      *  @return Current value of 'result', EC_Normal if successful, an error code otherwise
      */
     static OFCondition
-    addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElement* delem, const IODRule* rule);
+    addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElement* delem, const IODRule* rule, const OFBool checkValue = OFTrue);
 
     /** Check element value for correct value multiplicity and type.
      *  @param  delem Pointer to DICOM element to be checked (might be NULL)
@@ -998,6 +1001,8 @@ public:
      *  @param  numBits The number of bits to shift. Must be 0 <= numBits <= 7.
      */
     static void alignFrameOnByteBoundary(Uint8* buf, const size_t bufLen, const Uint8 numBits);
+
+    static void reset_value_check_result(OFCondition& result, const OFBool checkValue, DcmElement& elem);
 
 private:
     // We only have static functions so we do not need an instance of

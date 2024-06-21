@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -221,7 +221,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
             if (i > 0)
                 ReferencedContentItem += '.';
             if (delem.getUint32(value, i).good())
-                ReferencedContentItem += numberToString(OFstatic_cast(size_t, value), buffer);
+                ReferencedContentItem += numberToString(OFstatic_cast(size_t, value), buffer, sizeof(buffer));
         }
     }
     return result;

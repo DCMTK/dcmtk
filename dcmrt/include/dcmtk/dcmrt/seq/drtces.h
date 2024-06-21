@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTContributingEquipmentSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,8 +19,10 @@
 
 #include "dcmtk/ofstd/oflist.h"        // for standard list class
 #include "dcmtk/dcmrt/drttypes.h"      // module-specific helper class
+#include "dcmtk/dcmrt/seq/drtidcs.h"   // for InstitutionalDepartmentTypeCodeSequence
 #include "dcmtk/dcmrt/seq/drtois.h"    // for OperatorIdentificationSequence
 #include "dcmtk/dcmrt/seq/drtporcs.h"  // for PurposeOfReferenceCodeSequence
+#include "dcmtk/dcmrt/seq/drtudis.h"   // for UDISequence
 
 
 /** Interface class for ContributingEquipmentSequence (0018,a001)
@@ -121,6 +123,13 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
          */
         OFCondition getDeviceSerialNumber(OFString &value, const signed long pos = 0) const;
 
+        /** get DeviceUID (0018,1002)
+         *  @param  value  reference to variable in which the value should be stored
+         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition getDeviceUID(OFString &value, const signed long pos = 0) const;
+
         /** get InstitutionAddress (0008,0081)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -200,6 +209,18 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
 
       // --- get DICOM sequence attributes ---
 
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return reference to sequence element
+         */
+        DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence()
+            { return InstitutionalDepartmentTypeCodeSequence; }
+
+        /** get InstitutionalDepartmentTypeCodeSequence (0008,1041)
+         *  @return const reference to sequence element
+         */
+        const DRTInstitutionalDepartmentTypeCodeSequence &getInstitutionalDepartmentTypeCodeSequence() const
+            { return InstitutionalDepartmentTypeCodeSequence; }
+
         /** get OperatorIdentificationSequence (0008,1072)
          *  @return reference to sequence element
          */
@@ -223,6 +244,18 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
          */
         const DRTPurposeOfReferenceCodeSequence &getPurposeOfReferenceCodeSequence() const
             { return PurposeOfReferenceCodeSequence; }
+
+        /** get UDISequence (0018,100a)
+         *  @return reference to sequence element
+         */
+        DRTUDISequence &getUDISequence()
+            { return UDISequence; }
+
+        /** get UDISequence (0018,100a)
+         *  @return const reference to sequence element
+         */
+        const DRTUDISequence &getUDISequence() const
+            { return UDISequence; }
 
       // --- set DICOM attribute values ---
 
@@ -253,6 +286,13 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
          *  @return status, EC_Normal if successful, an error code otherwise
          */
         OFCondition setDeviceSerialNumber(const OFString &value, const OFBool check = OFTrue);
+
+        /** set DeviceUID (0018,1002)
+         *  @param  value  value to be set (single value only) or "" for no value
+         *  @param  check  check 'value' for conformance with VR (UI) and VM (1) if enabled
+         *  @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition setDeviceUID(const OFString &value, const OFBool check = OFTrue);
 
         /** set InstitutionAddress (0008,0081)
          *  @param  value  value to be set (single value only) or "" for no value
@@ -337,12 +377,16 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
         DcmDate DateOfLastCalibration;
         /// DeviceSerialNumber (0018,1000) vr=LO, vm=1, type=3
         DcmLongString DeviceSerialNumber;
+        /// DeviceUID (0018,1002) vr=UI, vm=1, type=3
+        DcmUniqueIdentifier DeviceUID;
         /// InstitutionAddress (0008,0081) vr=ST, vm=1, type=3
         DcmShortText InstitutionAddress;
         /// InstitutionName (0008,0080) vr=LO, vm=1, type=3
         DcmLongString InstitutionName;
         /// InstitutionalDepartmentName (0008,1040) vr=LO, vm=1, type=3
         DcmLongString InstitutionalDepartmentName;
+        /// InstitutionalDepartmentTypeCodeSequence (0008,1041) vr=SQ, vm=1, type=3
+        DRTInstitutionalDepartmentTypeCodeSequence InstitutionalDepartmentTypeCodeSequence;
         /// Manufacturer (0008,0070) vr=LO, vm=1, type=1
         DcmLongString Manufacturer;
         /// ManufacturerModelName (0008,1090) vr=LO, vm=1, type=3
@@ -361,6 +405,8 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
         DcmShortString StationName;
         /// TimeOfLastCalibration (0018,1201) vr=TM, vm=1-n, type=3
         DcmTime TimeOfLastCalibration;
+        /// UDISequence (0018,100a) vr=SQ, vm=1, type=3
+        DRTUDISequence UDISequence;
 
     };
 
@@ -470,13 +516,13 @@ class DCMTK_DCMRT_EXPORT DRTContributingEquipmentSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

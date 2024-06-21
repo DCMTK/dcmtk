@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,6 +23,7 @@
 
 #include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmfg/fgderimg.h"
 #include "dcmtk/dcmiod/iodutil.h"
 

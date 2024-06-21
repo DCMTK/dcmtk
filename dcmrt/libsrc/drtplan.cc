@@ -1,14 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTPlanIOD
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
- *  Last modified on 2022-01-26 by Riesmeier
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -23,6 +22,7 @@ DRTPlanIOD::DRTPlanIOD()
     PatientID(DCM_PatientID),
     IssuerOfPatientID(DCM_IssuerOfPatientID),
     IssuerOfPatientIDQualifiersSequence(),
+    TypeOfPatientID(DCM_TypeOfPatientID),
     PatientBirthDate(DCM_PatientBirthDate),
     PatientBirthDateInAlternativeCalendar(DCM_PatientBirthDateInAlternativeCalendar),
     PatientDeathDateInAlternativeCalendar(DCM_PatientDeathDateInAlternativeCalendar),
@@ -79,6 +79,7 @@ DRTPlanIOD::DRTPlanIOD()
     PhysiciansOfRecordIdentificationSequence(),
     NameOfPhysiciansReadingStudy(DCM_NameOfPhysiciansReadingStudy),
     PhysiciansReadingStudyIdentificationSequence(),
+    RequestingService(DCM_RequestingService),
     RequestingServiceCodeSequence(),
     ReferencedStudySequence(),
     ProcedureCodeSequence(),
@@ -102,12 +103,15 @@ DRTPlanIOD::DRTPlanIOD()
     AdditionalPatientHistory(DCM_AdditionalPatientHistory),
     AdmissionID(DCM_AdmissionID),
     IssuerOfAdmissionIDSequence(),
+    ReasonForVisit(DCM_ReasonForVisit),
+    ReasonForVisitCodeSequence(),
     ServiceEpisodeID(DCM_ServiceEpisodeID),
     IssuerOfServiceEpisodeIDSequence(),
     ServiceEpisodeDescription(DCM_ServiceEpisodeDescription),
     PatientSexNeutered(DCM_PatientSexNeutered),
     ClinicalTrialTimePointID(DCM_ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(DCM_ClinicalTrialTimePointDescription),
+    ClinicalTrialTimePointTypeCodeSequence(),
     LongitudinalTemporalOffsetFromEvent(DCM_LongitudinalTemporalOffsetFromEvent),
     LongitudinalTemporalEventType(DCM_LongitudinalTemporalEventType),
     ConsentForClinicalTrialUseSequence(),
@@ -130,6 +134,7 @@ DRTPlanIOD::DRTPlanIOD()
     PerformedProcedureStepDescription(DCM_PerformedProcedureStepDescription),
     PerformedProtocolCodeSequence(),
     CommentsOnThePerformedProcedureStep(DCM_CommentsOnThePerformedProcedureStep),
+    TreatmentSessionUID(DCM_TreatmentSessionUID),
     ClinicalTrialCoordinatingCenterName(DCM_ClinicalTrialCoordinatingCenterName),
     ClinicalTrialSeriesID(DCM_ClinicalTrialSeriesID),
     ClinicalTrialSeriesDescription(DCM_ClinicalTrialSeriesDescription),
@@ -140,11 +145,14 @@ DRTPlanIOD::DRTPlanIOD()
     InstitutionAddress(DCM_InstitutionAddress),
     StationName(DCM_StationName),
     InstitutionalDepartmentName(DCM_InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(),
     ManufacturerModelName(DCM_ManufacturerModelName),
+    ManufacturerDeviceClassUID(DCM_ManufacturerDeviceClassUID),
     DeviceSerialNumber(DCM_DeviceSerialNumber),
     SoftwareVersions(DCM_SoftwareVersions),
     GantryID(DCM_GantryID),
     UDISequence(),
+    DeviceUID(DCM_DeviceUID),
     SpatialResolution(DCM_SpatialResolution),
     DateOfLastCalibration(DCM_DateOfLastCalibration),
     TimeOfLastCalibration(DCM_TimeOfLastCalibration),
@@ -157,7 +165,8 @@ DRTPlanIOD::DRTPlanIOD()
     RTPlanTime(DCM_RTPlanTime),
     TreatmentProtocols(DCM_TreatmentProtocols),
     PlanIntent(DCM_PlanIntent),
-    TreatmentSites(DCM_RETIRED_TreatmentSites),
+    TreatmentSite(DCM_TreatmentSite),
+    TreatmentSiteCodeSequence(),
     RTPlanGeometry(DCM_RTPlanGeometry),
     ReferencedStructureSetSequence(),
     ReferencedDoseSequence(),
@@ -212,6 +221,10 @@ DRTPlanIOD::DRTPlanIOD()
     ConversionSourceAttributesSequence(),
     ContentQualification(DCM_ContentQualification),
     PrivateDataElementCharacteristicsSequence(),
+    InstanceOriginStatus(DCM_InstanceOriginStatus),
+    BarcodeValue(DCM_BarcodeValue),
+    ReferencedDefinedProtocolSequence(),
+    ReferencedPerformedProtocolSequence(),
     ReferencedSeriesSequence(),
     StudiesContainingOtherReferencedInstancesSequence()
 {
@@ -225,6 +238,7 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     PatientID(copy.PatientID),
     IssuerOfPatientID(copy.IssuerOfPatientID),
     IssuerOfPatientIDQualifiersSequence(copy.IssuerOfPatientIDQualifiersSequence),
+    TypeOfPatientID(copy.TypeOfPatientID),
     PatientBirthDate(copy.PatientBirthDate),
     PatientBirthDateInAlternativeCalendar(copy.PatientBirthDateInAlternativeCalendar),
     PatientDeathDateInAlternativeCalendar(copy.PatientDeathDateInAlternativeCalendar),
@@ -281,6 +295,7 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     PhysiciansOfRecordIdentificationSequence(copy.PhysiciansOfRecordIdentificationSequence),
     NameOfPhysiciansReadingStudy(copy.NameOfPhysiciansReadingStudy),
     PhysiciansReadingStudyIdentificationSequence(copy.PhysiciansReadingStudyIdentificationSequence),
+    RequestingService(copy.RequestingService),
     RequestingServiceCodeSequence(copy.RequestingServiceCodeSequence),
     ReferencedStudySequence(copy.ReferencedStudySequence),
     ProcedureCodeSequence(copy.ProcedureCodeSequence),
@@ -304,12 +319,15 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     AdditionalPatientHistory(copy.AdditionalPatientHistory),
     AdmissionID(copy.AdmissionID),
     IssuerOfAdmissionIDSequence(copy.IssuerOfAdmissionIDSequence),
+    ReasonForVisit(copy.ReasonForVisit),
+    ReasonForVisitCodeSequence(copy.ReasonForVisitCodeSequence),
     ServiceEpisodeID(copy.ServiceEpisodeID),
     IssuerOfServiceEpisodeIDSequence(copy.IssuerOfServiceEpisodeIDSequence),
     ServiceEpisodeDescription(copy.ServiceEpisodeDescription),
     PatientSexNeutered(copy.PatientSexNeutered),
     ClinicalTrialTimePointID(copy.ClinicalTrialTimePointID),
     ClinicalTrialTimePointDescription(copy.ClinicalTrialTimePointDescription),
+    ClinicalTrialTimePointTypeCodeSequence(copy.ClinicalTrialTimePointTypeCodeSequence),
     LongitudinalTemporalOffsetFromEvent(copy.LongitudinalTemporalOffsetFromEvent),
     LongitudinalTemporalEventType(copy.LongitudinalTemporalEventType),
     ConsentForClinicalTrialUseSequence(copy.ConsentForClinicalTrialUseSequence),
@@ -332,6 +350,7 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     PerformedProcedureStepDescription(copy.PerformedProcedureStepDescription),
     PerformedProtocolCodeSequence(copy.PerformedProtocolCodeSequence),
     CommentsOnThePerformedProcedureStep(copy.CommentsOnThePerformedProcedureStep),
+    TreatmentSessionUID(copy.TreatmentSessionUID),
     ClinicalTrialCoordinatingCenterName(copy.ClinicalTrialCoordinatingCenterName),
     ClinicalTrialSeriesID(copy.ClinicalTrialSeriesID),
     ClinicalTrialSeriesDescription(copy.ClinicalTrialSeriesDescription),
@@ -342,11 +361,14 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     InstitutionAddress(copy.InstitutionAddress),
     StationName(copy.StationName),
     InstitutionalDepartmentName(copy.InstitutionalDepartmentName),
+    InstitutionalDepartmentTypeCodeSequence(copy.InstitutionalDepartmentTypeCodeSequence),
     ManufacturerModelName(copy.ManufacturerModelName),
+    ManufacturerDeviceClassUID(copy.ManufacturerDeviceClassUID),
     DeviceSerialNumber(copy.DeviceSerialNumber),
     SoftwareVersions(copy.SoftwareVersions),
     GantryID(copy.GantryID),
     UDISequence(copy.UDISequence),
+    DeviceUID(copy.DeviceUID),
     SpatialResolution(copy.SpatialResolution),
     DateOfLastCalibration(copy.DateOfLastCalibration),
     TimeOfLastCalibration(copy.TimeOfLastCalibration),
@@ -359,7 +381,8 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     RTPlanTime(copy.RTPlanTime),
     TreatmentProtocols(copy.TreatmentProtocols),
     PlanIntent(copy.PlanIntent),
-    TreatmentSites(copy.TreatmentSites),
+    TreatmentSite(copy.TreatmentSite),
+    TreatmentSiteCodeSequence(copy.TreatmentSiteCodeSequence),
     RTPlanGeometry(copy.RTPlanGeometry),
     ReferencedStructureSetSequence(copy.ReferencedStructureSetSequence),
     ReferencedDoseSequence(copy.ReferencedDoseSequence),
@@ -414,6 +437,10 @@ DRTPlanIOD::DRTPlanIOD(const DRTPlanIOD &copy)
     ConversionSourceAttributesSequence(copy.ConversionSourceAttributesSequence),
     ContentQualification(copy.ContentQualification),
     PrivateDataElementCharacteristicsSequence(copy.PrivateDataElementCharacteristicsSequence),
+    InstanceOriginStatus(copy.InstanceOriginStatus),
+    BarcodeValue(copy.BarcodeValue),
+    ReferencedDefinedProtocolSequence(copy.ReferencedDefinedProtocolSequence),
+    ReferencedPerformedProtocolSequence(copy.ReferencedPerformedProtocolSequence),
     ReferencedSeriesSequence(copy.ReferencedSeriesSequence),
     StudiesContainingOtherReferencedInstancesSequence(copy.StudiesContainingOtherReferencedInstancesSequence)
 {
@@ -433,6 +460,7 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         PatientID = copy.PatientID;
         IssuerOfPatientID = copy.IssuerOfPatientID;
         IssuerOfPatientIDQualifiersSequence = copy.IssuerOfPatientIDQualifiersSequence;
+        TypeOfPatientID = copy.TypeOfPatientID;
         PatientBirthDate = copy.PatientBirthDate;
         PatientBirthDateInAlternativeCalendar = copy.PatientBirthDateInAlternativeCalendar;
         PatientDeathDateInAlternativeCalendar = copy.PatientDeathDateInAlternativeCalendar;
@@ -489,6 +517,7 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         PhysiciansOfRecordIdentificationSequence = copy.PhysiciansOfRecordIdentificationSequence;
         NameOfPhysiciansReadingStudy = copy.NameOfPhysiciansReadingStudy;
         PhysiciansReadingStudyIdentificationSequence = copy.PhysiciansReadingStudyIdentificationSequence;
+        RequestingService = copy.RequestingService;
         RequestingServiceCodeSequence = copy.RequestingServiceCodeSequence;
         ReferencedStudySequence = copy.ReferencedStudySequence;
         ProcedureCodeSequence = copy.ProcedureCodeSequence;
@@ -512,12 +541,15 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         AdditionalPatientHistory = copy.AdditionalPatientHistory;
         AdmissionID = copy.AdmissionID;
         IssuerOfAdmissionIDSequence = copy.IssuerOfAdmissionIDSequence;
+        ReasonForVisit = copy.ReasonForVisit;
+        ReasonForVisitCodeSequence = copy.ReasonForVisitCodeSequence;
         ServiceEpisodeID = copy.ServiceEpisodeID;
         IssuerOfServiceEpisodeIDSequence = copy.IssuerOfServiceEpisodeIDSequence;
         ServiceEpisodeDescription = copy.ServiceEpisodeDescription;
         PatientSexNeutered = copy.PatientSexNeutered;
         ClinicalTrialTimePointID = copy.ClinicalTrialTimePointID;
         ClinicalTrialTimePointDescription = copy.ClinicalTrialTimePointDescription;
+        ClinicalTrialTimePointTypeCodeSequence = copy.ClinicalTrialTimePointTypeCodeSequence;
         LongitudinalTemporalOffsetFromEvent = copy.LongitudinalTemporalOffsetFromEvent;
         LongitudinalTemporalEventType = copy.LongitudinalTemporalEventType;
         ConsentForClinicalTrialUseSequence = copy.ConsentForClinicalTrialUseSequence;
@@ -540,6 +572,7 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         PerformedProcedureStepDescription = copy.PerformedProcedureStepDescription;
         PerformedProtocolCodeSequence = copy.PerformedProtocolCodeSequence;
         CommentsOnThePerformedProcedureStep = copy.CommentsOnThePerformedProcedureStep;
+        TreatmentSessionUID = copy.TreatmentSessionUID;
         ClinicalTrialCoordinatingCenterName = copy.ClinicalTrialCoordinatingCenterName;
         ClinicalTrialSeriesID = copy.ClinicalTrialSeriesID;
         ClinicalTrialSeriesDescription = copy.ClinicalTrialSeriesDescription;
@@ -550,11 +583,14 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         InstitutionAddress = copy.InstitutionAddress;
         StationName = copy.StationName;
         InstitutionalDepartmentName = copy.InstitutionalDepartmentName;
+        InstitutionalDepartmentTypeCodeSequence = copy.InstitutionalDepartmentTypeCodeSequence;
         ManufacturerModelName = copy.ManufacturerModelName;
+        ManufacturerDeviceClassUID = copy.ManufacturerDeviceClassUID;
         DeviceSerialNumber = copy.DeviceSerialNumber;
         SoftwareVersions = copy.SoftwareVersions;
         GantryID = copy.GantryID;
         UDISequence = copy.UDISequence;
+        DeviceUID = copy.DeviceUID;
         SpatialResolution = copy.SpatialResolution;
         DateOfLastCalibration = copy.DateOfLastCalibration;
         TimeOfLastCalibration = copy.TimeOfLastCalibration;
@@ -567,7 +603,8 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         RTPlanTime = copy.RTPlanTime;
         TreatmentProtocols = copy.TreatmentProtocols;
         PlanIntent = copy.PlanIntent;
-        TreatmentSites = copy.TreatmentSites;
+        TreatmentSite = copy.TreatmentSite;
+        TreatmentSiteCodeSequence = copy.TreatmentSiteCodeSequence;
         RTPlanGeometry = copy.RTPlanGeometry;
         ReferencedStructureSetSequence = copy.ReferencedStructureSetSequence;
         ReferencedDoseSequence = copy.ReferencedDoseSequence;
@@ -622,6 +659,10 @@ DRTPlanIOD &DRTPlanIOD::operator=(const DRTPlanIOD &copy)
         ConversionSourceAttributesSequence = copy.ConversionSourceAttributesSequence;
         ContentQualification = copy.ContentQualification;
         PrivateDataElementCharacteristicsSequence = copy.PrivateDataElementCharacteristicsSequence;
+        InstanceOriginStatus = copy.InstanceOriginStatus;
+        BarcodeValue = copy.BarcodeValue;
+        ReferencedDefinedProtocolSequence = copy.ReferencedDefinedProtocolSequence;
+        ReferencedPerformedProtocolSequence = copy.ReferencedPerformedProtocolSequence;
         ReferencedSeriesSequence = copy.ReferencedSeriesSequence;
         StudiesContainingOtherReferencedInstancesSequence = copy.StudiesContainingOtherReferencedInstancesSequence;
     }
@@ -636,6 +677,7 @@ void DRTPlanIOD::clear()
     PatientID.clear();
     IssuerOfPatientID.clear();
     IssuerOfPatientIDQualifiersSequence.clear();
+    TypeOfPatientID.clear();
     PatientBirthDate.clear();
     PatientBirthDateInAlternativeCalendar.clear();
     PatientDeathDateInAlternativeCalendar.clear();
@@ -692,6 +734,7 @@ void DRTPlanIOD::clear()
     PhysiciansOfRecordIdentificationSequence.clear();
     NameOfPhysiciansReadingStudy.clear();
     PhysiciansReadingStudyIdentificationSequence.clear();
+    RequestingService.clear();
     RequestingServiceCodeSequence.clear();
     ReferencedStudySequence.clear();
     ProcedureCodeSequence.clear();
@@ -715,12 +758,15 @@ void DRTPlanIOD::clear()
     AdditionalPatientHistory.clear();
     AdmissionID.clear();
     IssuerOfAdmissionIDSequence.clear();
+    ReasonForVisit.clear();
+    ReasonForVisitCodeSequence.clear();
     ServiceEpisodeID.clear();
     IssuerOfServiceEpisodeIDSequence.clear();
     ServiceEpisodeDescription.clear();
     PatientSexNeutered.clear();
     ClinicalTrialTimePointID.clear();
     ClinicalTrialTimePointDescription.clear();
+    ClinicalTrialTimePointTypeCodeSequence.clear();
     LongitudinalTemporalOffsetFromEvent.clear();
     LongitudinalTemporalEventType.clear();
     ConsentForClinicalTrialUseSequence.clear();
@@ -743,6 +789,7 @@ void DRTPlanIOD::clear()
     PerformedProcedureStepDescription.clear();
     PerformedProtocolCodeSequence.clear();
     CommentsOnThePerformedProcedureStep.clear();
+    TreatmentSessionUID.clear();
     ClinicalTrialCoordinatingCenterName.clear();
     ClinicalTrialSeriesID.clear();
     ClinicalTrialSeriesDescription.clear();
@@ -753,11 +800,14 @@ void DRTPlanIOD::clear()
     InstitutionAddress.clear();
     StationName.clear();
     InstitutionalDepartmentName.clear();
+    InstitutionalDepartmentTypeCodeSequence.clear();
     ManufacturerModelName.clear();
+    ManufacturerDeviceClassUID.clear();
     DeviceSerialNumber.clear();
     SoftwareVersions.clear();
     GantryID.clear();
     UDISequence.clear();
+    DeviceUID.clear();
     SpatialResolution.clear();
     DateOfLastCalibration.clear();
     TimeOfLastCalibration.clear();
@@ -770,7 +820,8 @@ void DRTPlanIOD::clear()
     RTPlanTime.clear();
     TreatmentProtocols.clear();
     PlanIntent.clear();
-    TreatmentSites.clear();
+    TreatmentSite.clear();
+    TreatmentSiteCodeSequence.clear();
     RTPlanGeometry.clear();
     ReferencedStructureSetSequence.clear();
     ReferencedDoseSequence.clear();
@@ -825,6 +876,10 @@ void DRTPlanIOD::clear()
     ConversionSourceAttributesSequence.clear();
     ContentQualification.clear();
     PrivateDataElementCharacteristicsSequence.clear();
+    InstanceOriginStatus.clear();
+    BarcodeValue.clear();
+    ReferencedDefinedProtocolSequence.clear();
+    ReferencedPerformedProtocolSequence.clear();
     ReferencedSeriesSequence.clear();
     StudiesContainingOtherReferencedInstancesSequence.clear();
 }
@@ -888,11 +943,14 @@ OFCondition DRTPlanIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, InstitutionAddress, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, StationName, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, InstitutionalDepartmentName, "1", "3", "GeneralEquipmentModule");
+        InstitutionalDepartmentTypeCodeSequence.read(dataset, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, ManufacturerModelName, "1", "3", "GeneralEquipmentModule");
+        getAndCheckElementFromDataset(dataset, ManufacturerDeviceClassUID, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, DeviceSerialNumber, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, SoftwareVersions, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, GantryID, "1", "3", "GeneralEquipmentModule");
         UDISequence.read(dataset, "1-n", "3", "GeneralEquipmentModule");
+        getAndCheckElementFromDataset(dataset, DeviceUID, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, SpatialResolution, "1", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, DateOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
         getAndCheckElementFromDataset(dataset, TimeOfLastCalibration, "1-n", "3", "GeneralEquipmentModule");
@@ -907,7 +965,8 @@ OFCondition DRTPlanIOD::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, RTPlanTime, "1", "2", "RTGeneralPlanModule");
         getAndCheckElementFromDataset(dataset, TreatmentProtocols, "1-n", "3", "RTGeneralPlanModule");
         getAndCheckElementFromDataset(dataset, PlanIntent, "1", "3", "RTGeneralPlanModule");
-        getAndCheckElementFromDataset(dataset, TreatmentSites, "1-n", "3", "RTGeneralPlanModule");
+        getAndCheckElementFromDataset(dataset, TreatmentSite, "1", "3", "RTGeneralPlanModule");
+        TreatmentSiteCodeSequence.read(dataset, "1-n", "3", "RTGeneralPlanModule");
         getAndCheckElementFromDataset(dataset, RTPlanGeometry, "1", "1", "RTGeneralPlanModule");
         ReferencedStructureSetSequence.read(dataset, "1-n", "1C", "RTGeneralPlanModule");
         ReferencedDoseSequence.read(dataset, "1-n", "3", "RTGeneralPlanModule");
@@ -1000,6 +1059,10 @@ OFCondition DRTPlanIOD::read(DcmItem &dataset)
         ConversionSourceAttributesSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
         getAndCheckElementFromDataset(dataset, ContentQualification, "1", "3", "SOPCommonModule");
         PrivateDataElementCharacteristicsSequence.read(dataset, "1-n", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, InstanceOriginStatus, "1", "3", "SOPCommonModule");
+        getAndCheckElementFromDataset(dataset, BarcodeValue, "1", "3", "SOPCommonModule");
+        ReferencedDefinedProtocolSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
+        ReferencedPerformedProtocolSequence.read(dataset, "1-n", "1C", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         ReferencedSeriesSequence.read(dataset, "1-n", "1C", "CommonInstanceReferenceModule");
@@ -1018,6 +1081,7 @@ OFCondition DRTPlanIOD::readPatientData(DcmItem &dataset)
     getAndCheckElementFromDataset(dataset, PatientID, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, IssuerOfPatientID, "1", "3", "PatientModule");
     IssuerOfPatientIDQualifiersSequence.read(dataset, "1-n", "3", "PatientModule");
+    getAndCheckElementFromDataset(dataset, TypeOfPatientID, "1", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthDate, "1", "2", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientBirthDateInAlternativeCalendar, "1", "3", "PatientModule");
     getAndCheckElementFromDataset(dataset, PatientDeathDateInAlternativeCalendar, "1", "3", "PatientModule");
@@ -1094,6 +1158,7 @@ OFCondition DRTPlanIOD::readStudyData(DcmItem &dataset)
         PhysiciansOfRecordIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         getAndCheckElementFromDataset(dataset, NameOfPhysiciansReadingStudy, "1-n", "3", "GeneralStudyModule");
         PhysiciansReadingStudyIdentificationSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
+        getAndCheckElementFromDataset(dataset, RequestingService, "1", "3", "GeneralStudyModule");
         RequestingServiceCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         ReferencedStudySequence.read(dataset, "1-n", "3", "GeneralStudyModule");
         ProcedureCodeSequence.read(dataset, "1-n", "3", "GeneralStudyModule");
@@ -1119,6 +1184,8 @@ OFCondition DRTPlanIOD::readStudyData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, AdditionalPatientHistory, "1", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, AdmissionID, "1", "3", "PatientStudyModule");
         IssuerOfAdmissionIDSequence.read(dataset, "1-n", "3", "PatientStudyModule");
+        getAndCheckElementFromDataset(dataset, ReasonForVisit, "1", "3", "PatientStudyModule");
+        ReasonForVisitCodeSequence.read(dataset, "1-n", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, ServiceEpisodeID, "1", "3", "PatientStudyModule");
         IssuerOfServiceEpisodeIDSequence.read(dataset, "1-n", "3", "PatientStudyModule");
         getAndCheckElementFromDataset(dataset, ServiceEpisodeDescription, "1", "3", "PatientStudyModule");
@@ -1129,6 +1196,7 @@ OFCondition DRTPlanIOD::readStudyData(DcmItem &dataset)
         {
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointID, "1", "2", "ClinicalTrialStudyModule");
             getAndCheckElementFromDataset(dataset, ClinicalTrialTimePointDescription, "1", "3", "ClinicalTrialStudyModule");
+            ClinicalTrialTimePointTypeCodeSequence.read(dataset, "1-n", "3", "ClinicalTrialStudyModule");
             getAndCheckElementFromDataset(dataset, LongitudinalTemporalOffsetFromEvent, "1", "3", "ClinicalTrialStudyModule");
             getAndCheckElementFromDataset(dataset, LongitudinalTemporalEventType, "1", "1C", "ClinicalTrialStudyModule");
             ConsentForClinicalTrialUseSequence.read(dataset, "1-n", "3", "ClinicalTrialStudyModule");
@@ -1164,6 +1232,7 @@ OFCondition DRTPlanIOD::readSeriesData(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, PerformedProcedureStepDescription, "1", "3", "RTSeriesModule");
         PerformedProtocolCodeSequence.read(dataset, "1-n", "3", "RTSeriesModule");
         getAndCheckElementFromDataset(dataset, CommentsOnThePerformedProcedureStep, "1", "3", "RTSeriesModule");
+        getAndCheckElementFromDataset(dataset, TreatmentSessionUID, "1", "3", "RTSeriesModule");
 
         // --- ClinicalTrialSeriesModule (U) ---
         if (dataset.tagExists(DCM_ClinicalTrialCoordinatingCenterName))
@@ -1191,6 +1260,7 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmLongString(PatientID), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(IssuerOfPatientID), "1", "3", "PatientModule");
         if (result.good()) result = IssuerOfPatientIDQualifiersSequence.write(dataset, "1-n" ,"3", "PatientModule");
+        addElementToDataset(result, dataset, new DcmCodeString(TypeOfPatientID), "1", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmDate(PatientBirthDate), "1", "2", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(PatientBirthDateInAlternativeCalendar), "1", "3", "PatientModule");
         addElementToDataset(result, dataset, new DcmLongString(PatientDeathDateInAlternativeCalendar), "1", "3", "PatientModule");
@@ -1254,6 +1324,7 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         if (result.good()) result = PhysiciansOfRecordIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         addElementToDataset(result, dataset, new DcmPersonName(NameOfPhysiciansReadingStudy), "1-n", "3", "GeneralStudyModule");
         if (result.good()) result = PhysiciansReadingStudyIdentificationSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
+        addElementToDataset(result, dataset, new DcmLongString(RequestingService), "1", "3", "GeneralStudyModule");
         if (result.good()) result = RequestingServiceCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         if (result.good()) result = ReferencedStudySequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
         if (result.good()) result = ProcedureCodeSequence.write(dataset, "1-n" ,"3", "GeneralStudyModule");
@@ -1281,6 +1352,8 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmLongText(AdditionalPatientHistory), "1", "3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongString(AdmissionID), "1", "3", "PatientStudyModule");
             if (result.good()) result = IssuerOfAdmissionIDSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
+            addElementToDataset(result, dataset, new DcmUnlimitedText(ReasonForVisit), "1", "3", "PatientStudyModule");
+            if (result.good()) result = ReasonForVisitCodeSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongString(ServiceEpisodeID), "1", "3", "PatientStudyModule");
             if (result.good()) result = IssuerOfServiceEpisodeIDSequence.write(dataset, "1-n" ,"3", "PatientStudyModule");
             addElementToDataset(result, dataset, new DcmLongString(ServiceEpisodeDescription), "1", "3", "PatientStudyModule");
@@ -1292,6 +1365,7 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         {
             addElementToDataset(result, dataset, new DcmLongString(ClinicalTrialTimePointID), "1", "2", "ClinicalTrialStudyModule");
             addElementToDataset(result, dataset, new DcmShortText(ClinicalTrialTimePointDescription), "1", "3", "ClinicalTrialStudyModule");
+            if (result.good()) result = ClinicalTrialTimePointTypeCodeSequence.write(dataset, "1-n" ,"3", "ClinicalTrialStudyModule");
             addElementToDataset(result, dataset, new DcmFloatingPointDouble(LongitudinalTemporalOffsetFromEvent), "1", "3", "ClinicalTrialStudyModule");
             addElementToDataset(result, dataset, new DcmCodeString(LongitudinalTemporalEventType), "1", "1C", "ClinicalTrialStudyModule");
             if (result.good()) result = ConsentForClinicalTrialUseSequence.write(dataset, "1-n" ,"3", "ClinicalTrialStudyModule");
@@ -1317,6 +1391,7 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmLongString(PerformedProcedureStepDescription), "1", "3", "RTSeriesModule");
         if (result.good()) result = PerformedProtocolCodeSequence.write(dataset, "1-n" ,"3", "RTSeriesModule");
         addElementToDataset(result, dataset, new DcmShortText(CommentsOnThePerformedProcedureStep), "1", "3", "RTSeriesModule");
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(TreatmentSessionUID), "1", "3", "RTSeriesModule");
 
         // --- ClinicalTrialSeriesModule (U) ---
         if (isClinicalTrialSeriesModulePresent(OFFalse /*complete*/))
@@ -1339,11 +1414,14 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmShortText(InstitutionAddress), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmShortString(StationName), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmLongString(InstitutionalDepartmentName), "1", "3", "GeneralEquipmentModule");
+        if (result.good()) result = InstitutionalDepartmentTypeCodeSequence.write(dataset, "1-n" ,"3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmLongString(ManufacturerModelName), "1", "3", "GeneralEquipmentModule");
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(ManufacturerDeviceClassUID), "1-n", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmLongString(DeviceSerialNumber), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmLongString(SoftwareVersions), "1-n", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmLongString(GantryID), "1", "3", "GeneralEquipmentModule");
         if (result.good()) result = UDISequence.write(dataset, "1-n" ,"3", "GeneralEquipmentModule");
+        addElementToDataset(result, dataset, new DcmUniqueIdentifier(DeviceUID), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmDecimalString(SpatialResolution), "1", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmDate(DateOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
         addElementToDataset(result, dataset, new DcmTime(TimeOfLastCalibration), "1-n", "3", "GeneralEquipmentModule");
@@ -1358,7 +1436,8 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmTime(RTPlanTime), "1", "2", "RTGeneralPlanModule");
         addElementToDataset(result, dataset, new DcmLongString(TreatmentProtocols), "1-n", "3", "RTGeneralPlanModule");
         addElementToDataset(result, dataset, new DcmCodeString(PlanIntent), "1", "3", "RTGeneralPlanModule");
-        addElementToDataset(result, dataset, new DcmLongString(TreatmentSites), "1-n", "3", "RTGeneralPlanModule");
+        addElementToDataset(result, dataset, new DcmLongString(TreatmentSite), "1", "3", "RTGeneralPlanModule");
+        if (result.good()) result = TreatmentSiteCodeSequence.write(dataset, "1-n" ,"3", "RTGeneralPlanModule");
         addElementToDataset(result, dataset, new DcmCodeString(RTPlanGeometry), "1", "1", "RTGeneralPlanModule");
         if (result.good()) result = ReferencedStructureSetSequence.write(dataset, "1-n" ,"1C", "RTGeneralPlanModule");
         if (result.good()) result = ReferencedDoseSequence.write(dataset, "1-n" ,"3", "RTGeneralPlanModule");
@@ -1456,6 +1535,10 @@ OFCondition DRTPlanIOD::write(DcmItem &dataset)
         if (result.good()) result = ConversionSourceAttributesSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
         addElementToDataset(result, dataset, new DcmCodeString(ContentQualification), "1", "3", "SOPCommonModule");
         if (result.good()) result = PrivateDataElementCharacteristicsSequence.write(dataset, "1-n" ,"3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmCodeString(InstanceOriginStatus), "1", "3", "SOPCommonModule");
+        addElementToDataset(result, dataset, new DcmLongText(BarcodeValue), "1", "3", "SOPCommonModule");
+        if (result.good()) result = ReferencedDefinedProtocolSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
+        if (result.good()) result = ReferencedPerformedProtocolSequence.write(dataset, "1-n" ,"1C", "SOPCommonModule");
 
         // --- CommonInstanceReferenceModule (U) ---
         if (isCommonInstanceReferenceModulePresent(OFFalse /*complete*/))
@@ -1513,6 +1596,8 @@ OFBool DRTPlanIOD::isPatientStudyModulePresent(const OFBool /*complete*/)
            !AdditionalPatientHistory.isEmpty() ||
            !AdmissionID.isEmpty() ||
            !IssuerOfAdmissionIDSequence.isEmpty() ||
+           !ReasonForVisit.isEmpty() ||
+           !ReasonForVisitCodeSequence.isEmpty() ||
            !ServiceEpisodeID.isEmpty() ||
            !IssuerOfServiceEpisodeIDSequence.isEmpty() ||
            !ServiceEpisodeDescription.isEmpty() ||
@@ -1525,6 +1610,7 @@ OFBool DRTPlanIOD::isClinicalTrialStudyModulePresent(const OFBool /*complete*/)
     /* check whether at least one attribute is present */
     return !ClinicalTrialTimePointID.isEmpty() ||
            !ClinicalTrialTimePointDescription.isEmpty() ||
+           !ClinicalTrialTimePointTypeCodeSequence.isEmpty() ||
            !LongitudinalTemporalOffsetFromEvent.isEmpty() ||
            !LongitudinalTemporalEventType.isEmpty() ||
            !ConsentForClinicalTrialUseSequence.isEmpty();
@@ -1689,6 +1775,12 @@ OFCondition DRTPlanIOD::getAuthorizationEquipmentCertificationNumber(OFString &v
 }
 
 
+OFCondition DRTPlanIOD::getBarcodeValue(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(BarcodeValue, value, pos);
+}
+
+
 OFCondition DRTPlanIOD::getBrachyTreatmentTechnique(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(BrachyTreatmentTechnique, value, pos);
@@ -1827,6 +1919,12 @@ OFCondition DRTPlanIOD::getDeviceSerialNumber(OFString &value, const signed long
 }
 
 
+OFCondition DRTPlanIOD::getDeviceUID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(DeviceUID, value, pos);
+}
+
+
 OFCondition DRTPlanIOD::getEthnicGroup(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(EthnicGroup, value, pos);
@@ -1887,6 +1985,12 @@ OFCondition DRTPlanIOD::getInstanceNumber(Sint32 &value, const unsigned long pos
 }
 
 
+OFCondition DRTPlanIOD::getInstanceOriginStatus(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(InstanceOriginStatus, value, pos);
+}
+
+
 OFCondition DRTPlanIOD::getInstitutionAddress(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(InstitutionAddress, value, pos);
@@ -1938,6 +2042,12 @@ OFCondition DRTPlanIOD::getLongitudinalTemporalOffsetFromEvent(Float64 &value, c
 OFCondition DRTPlanIOD::getManufacturer(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(Manufacturer, value, pos);
+}
+
+
+OFCondition DRTPlanIOD::getManufacturerDeviceClassUID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ManufacturerDeviceClassUID, value, pos);
 }
 
 
@@ -2259,6 +2369,12 @@ OFCondition DRTPlanIOD::getRTPlanTime(OFString &value, const signed long pos) co
 }
 
 
+OFCondition DRTPlanIOD::getReasonForVisit(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(ReasonForVisit, value, pos);
+}
+
+
 OFCondition DRTPlanIOD::getReferringPhysicianName(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(ReferringPhysicianName, value, pos);
@@ -2268,6 +2384,12 @@ OFCondition DRTPlanIOD::getReferringPhysicianName(OFString &value, const signed 
 OFCondition DRTPlanIOD::getRelatedGeneralSOPClassUID(OFString &value, const signed long pos) const
 {
     return getStringValueFromElement(RelatedGeneralSOPClassUID, value, pos);
+}
+
+
+OFCondition DRTPlanIOD::getRequestingService(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(RequestingService, value, pos);
 }
 
 
@@ -2487,9 +2609,21 @@ OFCondition DRTPlanIOD::getTreatmentProtocols(OFString &value, const signed long
 }
 
 
-OFCondition DRTPlanIOD::getTreatmentSites(OFString &value, const signed long pos) const
+OFCondition DRTPlanIOD::getTreatmentSessionUID(OFString &value, const signed long pos) const
 {
-    return getStringValueFromElement(TreatmentSites, value, pos);
+    return getStringValueFromElement(TreatmentSessionUID, value, pos);
+}
+
+
+OFCondition DRTPlanIOD::getTreatmentSite(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(TreatmentSite, value, pos);
+}
+
+
+OFCondition DRTPlanIOD::getTypeOfPatientID(OFString &value, const signed long pos) const
+{
+    return getStringValueFromElement(TypeOfPatientID, value, pos);
 }
 
 
@@ -2552,6 +2686,15 @@ OFCondition DRTPlanIOD::setAuthorizationEquipmentCertificationNumber(const OFStr
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = AuthorizationEquipmentCertificationNumber.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTPlanIOD::setBarcodeValue(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongText::checkStringValue(value) : EC_Normal;
+    if (result.good())
+        result = BarcodeValue.putOFStringArray(value);
     return result;
 }
 
@@ -2763,6 +2906,15 @@ OFCondition DRTPlanIOD::setDeviceSerialNumber(const OFString &value, const OFBoo
 }
 
 
+OFCondition DRTPlanIOD::setDeviceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = DeviceUID.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTPlanIOD::setEthnicGroup(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
@@ -2841,6 +2993,15 @@ OFCondition DRTPlanIOD::setInstanceNumber(const OFString &value, const OFBool ch
 }
 
 
+OFCondition DRTPlanIOD::setInstanceOriginStatus(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = InstanceOriginStatus.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTPlanIOD::setInstitutionAddress(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmShortText::checkStringValue(value) : EC_Normal;
@@ -2915,6 +3076,15 @@ OFCondition DRTPlanIOD::setManufacturer(const OFString &value, const OFBool chec
     OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = Manufacturer.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTPlanIOD::setManufacturerDeviceClassUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1-n") : EC_Normal;
+    if (result.good())
+        result = ManufacturerDeviceClassUID.putOFStringArray(value);
     return result;
 }
 
@@ -3345,6 +3515,15 @@ OFCondition DRTPlanIOD::setRTPlanTime(const OFString &value, const OFBool check)
 }
 
 
+OFCondition DRTPlanIOD::setReasonForVisit(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmUnlimitedText::checkStringValue(value) : EC_Normal;
+    if (result.good())
+        result = ReasonForVisit.putOFStringArray(value);
+    return result;
+}
+
+
 OFCondition DRTPlanIOD::setReferringPhysicianName(const OFString &value, const OFBool check)
 {
     OFCondition result = (check) ? DcmPersonName::checkStringValue(value, "1") : EC_Normal;
@@ -3359,6 +3538,15 @@ OFCondition DRTPlanIOD::setRelatedGeneralSOPClassUID(const OFString &value, cons
     OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1-n") : EC_Normal;
     if (result.good())
         result = RelatedGeneralSOPClassUID.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTPlanIOD::setRequestingService(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = RequestingService.putOFStringArray(value);
     return result;
 }
 
@@ -3669,11 +3857,29 @@ OFCondition DRTPlanIOD::setTreatmentProtocols(const OFString &value, const OFBoo
 }
 
 
-OFCondition DRTPlanIOD::setTreatmentSites(const OFString &value, const OFBool check)
+OFCondition DRTPlanIOD::setTreatmentSessionUID(const OFString &value, const OFBool check)
 {
-    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1-n") : EC_Normal;
+    OFCondition result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
-        result = TreatmentSites.putOFStringArray(value);
+        result = TreatmentSessionUID.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTPlanIOD::setTreatmentSite(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = TreatmentSite.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DRTPlanIOD::setTypeOfPatientID(const OFString &value, const OFBool check)
+{
+    OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = TypeOfPatientID.putOFStringArray(value);
     return result;
 }
 

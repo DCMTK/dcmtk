@@ -21,9 +21,9 @@ and writes the converted image to an output file (\e dcmfile-out).
 \section dcmdjpeg_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ("-" for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section dcmdjpeg_options OPTIONS
@@ -110,7 +110,10 @@ color space conversion:
           always convert YCbCr to RGB
 
   # If the compressed image is a color image, assume YCbCr color model
-  # and convert to RGB.
+  # and convert to RGB. Warning: This will lead to an incorrectly decoded
+  # image if the color space is in fact RGB. Images compressed with lossless
+  # JPEG are almost never encoded in YCbCr, this option should thus be used
+  # with care on such images.
 
   +cn   --conv-never
           never convert YCbCr to RGB
@@ -344,6 +347,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmdjpeg_copyright COPYRIGHT
 
-Copyright (C) 2001-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

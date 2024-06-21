@@ -1,4 +1,4 @@
-.TH "dsrdump" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsrdump" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsrdump \- Dump DICOM SR file and data set
@@ -7,7 +7,7 @@ dsrdump \- Dump DICOM SR file and data set
 .PP
 .PP
 .nf
-dsrdump [options] dsrfile-in...
+dsrdump [options] dsrfile-in\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -19,7 +19,7 @@ If \fBdsrdump\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-dsrfile-in  DICOM SR input filename to be dumped
+dsrfile-in  DICOM SR input filename to be dumped ('-' for stdin)
 .fi
 .PP
 .SH "OPTIONS"
@@ -100,14 +100,14 @@ error handling:
 
   -Ev   --invalid-item-value
           accept invalid content item value
-          (e.g. violation of VR or VM definition)
+          (e\&.g\&. violation of VR or VM definition)
 
   -Ec   --ignore-constraints
           ignore relationship content constraints
 
   -Ee   --ignore-item-errors
           do not abort on content item errors, just warn
-          (e.g. missing value type specific attributes)
+          (e\&.g\&. missing value type specific attributes)
 
   -Ei   --skip-invalid-items
           skip invalid content items (including sub-tree)
@@ -155,7 +155,7 @@ printing values:
 
   -Ps   --print-sopclass-short
           print short SOP class name of referenced image objects,
-          e.g. "CT image" (default)
+          e\&.g\&. 'CT image' (default)
 
   +Ps   --print-sopclass-long
           print long SOP class name of referenced objects
@@ -170,7 +170,7 @@ printing values:
           print invalid codes (for debugging purposes)
 
   -Pi   --no-invalid-codes
-          print text "invalid code" instead (default)
+          print text 'invalid code' instead (default)
 
   +Pt   --print-template-id
           print template identification information
@@ -188,12 +188,8 @@ color:
   +C    --print-color
           use ANSI escape codes for colored output
 
-          # not available on Windows systems
-
   -C    --no-color
           do not use any ANSI escape codes (default)
-
-          # not available on Windows systems
 .fi
 .PP
 .SH "NOTES"
@@ -203,25 +199,25 @@ The \fBdsrdump\fP utility supports the following SOP Classes:
 .PP
 .PP
 .nf
-SpectaclePrescriptionReportStorage           1.2.840.10008.5.1.4.1.1.78.6
-MacularGridThicknessAndVolumeReportStorage   1.2.840.10008.5.1.4.1.1.79.1
-BasicTextSRStorage                           1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSRStorage                            1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSRStorage                       1.2.840.10008.5.1.4.1.1.88.33
-Comprehensive3DSRStorage                     1.2.840.10008.5.1.4.1.1.88.34
-ProcedureLogStorage                          1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSRStorage                      1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocumentStorage            1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSRStorage                   1.2.840.10008.5.1.4.1.1.88.67
-RadiopharmaceuticalRadiationDoseSRStorage    1.2.840.10008.5.1.4.1.1.88.68
-ColonCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage            1.2.840.10008.5.1.4.1.1.88.70
-AcquisitionContextSRStorage                  1.2.840.10008.5.1.4.1.1.88.71
-SimplifiedAdultEchoSRStorage                 1.2.840.10008.5.1.4.1.1.88.72
-PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
-PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
-PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
+SpectaclePrescriptionReportStorage           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.78\&.6
+MacularGridThicknessAndVolumeReportStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.79\&.1
+BasicTextSRStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.11
+EnhancedSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.22
+ComprehensiveSRStorage                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.33
+Comprehensive3DSRStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.34
+ProcedureLogStorage                          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.40
+MammographyCADSRStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.50
+KeyObjectSelectionDocumentStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.59
+ChestCADSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.65
+XRayRadiationDoseSRStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.67
+RadiopharmaceuticalRadiationDoseSRStorage    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.68
+ColonCADSRStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.69
+ImplantationPlanSRStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.70
+AcquisitionContextSRStorage                  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.71
+SimplifiedAdultEchoSRStorage                 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.72
+PatientRadiationDoseSRStorage                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.73
+PlannedImagingAgentAdministrationSRStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.74
+PerformedImagingAgentAdministrationSRStorage 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.75
 .fi
 .PP
 .SH "LOGGING"
@@ -241,9 +237,13 @@ In addition, one or more command files can be specified using an '@' sign as a p
 The \fBdsrdump\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.PP
+Depending on the command line options specified, the \fBdsrdump\fP utility will attempt to load character set mapping tables\&. This happens when DCMTK was compiled with the oficonv library (which is the default) and the mapping tables are not built into the library (default when DCMTK uses shared libraries)\&.
+.PP
+The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "SEE ALSO"
 .PP
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

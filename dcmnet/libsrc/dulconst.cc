@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -75,6 +75,7 @@
 #include "dcmtk/dcmnet/dulstruc.h"
 #include "dulpriv.h"
 #include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 static OFCondition
 constructSubItem(char *name, unsigned char type,
@@ -712,7 +713,7 @@ constructPresentationContext(unsigned char associateType,
            PRV_PRESENTATIONCONTEXTITEM * context, unsigned long *rtnLen)
 {
     OFCondition cond = EC_Normal;
-    unsigned long length;
+    unsigned long length = 0;
     /* Subitem pointer created for transfer syntax items */
     DUL_SUBITEM * subItem;
     /* Pointer to loop through list of transfer syntaxes */
@@ -904,7 +905,7 @@ constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
     if (totalUserInfoLength > 65535)
     {
       char errbuf[500];
-      sprintf(errbuf, "Total length of user items (%lu bytes) exceeds upper limit of 65535 bytes", totalUserInfoLength);
+      OFStandard::snprintf(errbuf, sizeof(errbuf), "Total length of user items (%lu bytes) exceeds upper limit of 65535 bytes", totalUserInfoLength);
       return makeDcmnetCondition(ASCC_CODINGERROR, OF_error, errbuf);
     }
     else // now casting to unsigned short should be safe
@@ -973,7 +974,7 @@ constructSCUSCPRoles(unsigned char type,
   DUL_PRESENTATIONCONTEXT* presentationCtx;
   PRV_SCUSCPROLE* scuscpItem;
   unsigned char scuRole = 0, scpRole = 0;
-  unsigned long length;
+  unsigned long length = 0;
 
   *rtnLength = 0;
   OFCondition cond = EC_Normal;

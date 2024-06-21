@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,12 +19,9 @@
  *
  */
 
-#include "dcmtk/dcmiod/modfloatingpointimagepixel.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/modfloatingpointimagepixel.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmdata/dcvrfd.h"
-#include "dcmtk/dcmdata/dcvrfl.h"
-#include "dcmtk/dcmiod/iodutil.h"
 
 const OFString IODFloatingPointImagePixelModule::m_ModuleName          = "FloatingPointImagePixelModule";
 const DcmTagKey IODFloatingPointImagePixelModule::pixel_data_tag       = DCM_FloatPixelData;

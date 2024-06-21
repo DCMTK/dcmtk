@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTRecordedBlockSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -24,6 +24,8 @@ DRTRecordedBlockSequence::Item::Item(const OFBool emptyDefaultItem)
     AccessoryCode(DCM_AccessoryCode),
     BlockName(DCM_BlockName),
     BlockTrayID(DCM_BlockTrayID),
+    NumberOfBlockSlabItems(DCM_NumberOfBlockSlabItems),
+    RecordedBlockSlabSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ReferencedBlockNumber(DCM_ReferencedBlockNumber)
 {
 }
@@ -34,6 +36,8 @@ DRTRecordedBlockSequence::Item::Item(const Item &copy)
     AccessoryCode(copy.AccessoryCode),
     BlockName(copy.BlockName),
     BlockTrayID(copy.BlockTrayID),
+    NumberOfBlockSlabItems(copy.NumberOfBlockSlabItems),
+    RecordedBlockSlabSequence(copy.RecordedBlockSlabSequence),
     ReferencedBlockNumber(copy.ReferencedBlockNumber)
 {
 }
@@ -52,6 +56,8 @@ DRTRecordedBlockSequence::Item &DRTRecordedBlockSequence::Item::operator=(const 
         AccessoryCode = copy.AccessoryCode;
         BlockName = copy.BlockName;
         BlockTrayID = copy.BlockTrayID;
+        NumberOfBlockSlabItems = copy.NumberOfBlockSlabItems;
+        RecordedBlockSlabSequence = copy.RecordedBlockSlabSequence;
         ReferencedBlockNumber = copy.ReferencedBlockNumber;
     }
     return *this;
@@ -67,6 +73,8 @@ void DRTRecordedBlockSequence::Item::clear()
         AccessoryCode.clear();
         ReferencedBlockNumber.clear();
         BlockName.clear();
+        NumberOfBlockSlabItems.clear();
+        RecordedBlockSlabSequence.clear();
     }
 }
 
@@ -76,7 +84,9 @@ OFBool DRTRecordedBlockSequence::Item::isEmpty()
     return BlockTrayID.isEmpty() &&
            AccessoryCode.isEmpty() &&
            ReferencedBlockNumber.isEmpty() &&
-           BlockName.isEmpty();
+           BlockName.isEmpty() &&
+           NumberOfBlockSlabItems.isEmpty() &&
+           RecordedBlockSlabSequence.isEmpty();
 }
 
 
@@ -97,6 +107,8 @@ OFCondition DRTRecordedBlockSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, AccessoryCode, "1", "3", "RecordedBlockSequence");
         getAndCheckElementFromDataset(item, ReferencedBlockNumber, "1", "1", "RecordedBlockSequence");
         getAndCheckElementFromDataset(item, BlockName, "1", "3", "RecordedBlockSequence");
+        getAndCheckElementFromDataset(item, NumberOfBlockSlabItems, "1", "3", "RecordedBlockSequence");
+        RecordedBlockSlabSequence.read(item, "1-n", "1C", "RecordedBlockSequence");
         result = EC_Normal;
     }
     return result;
@@ -113,6 +125,8 @@ OFCondition DRTRecordedBlockSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmLongString(AccessoryCode), "1", "3", "RecordedBlockSequence");
         addElementToDataset(result, item, new DcmIntegerString(ReferencedBlockNumber), "1", "1", "RecordedBlockSequence");
         addElementToDataset(result, item, new DcmLongString(BlockName), "1", "3", "RecordedBlockSequence");
+        addElementToDataset(result, item, new DcmIntegerString(NumberOfBlockSlabItems), "1", "3", "RecordedBlockSequence");
+        if (result.good()) result = RecordedBlockSlabSequence.write(item, "1-n", "1C", "RecordedBlockSequence");
     }
     return result;
 }
@@ -142,6 +156,24 @@ OFCondition DRTRecordedBlockSequence::Item::getBlockTrayID(OFString &value, cons
         return EC_IllegalCall;
     else
         return getStringValueFromElement(BlockTrayID, value, pos);
+}
+
+
+OFCondition DRTRecordedBlockSequence::Item::getNumberOfBlockSlabItems(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(NumberOfBlockSlabItems, value, pos);
+}
+
+
+OFCondition DRTRecordedBlockSequence::Item::getNumberOfBlockSlabItems(Sint32 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmIntegerString &, NumberOfBlockSlabItems).getSint32(value, pos);
 }
 
 
@@ -197,6 +229,19 @@ OFCondition DRTRecordedBlockSequence::Item::setBlockTrayID(const OFString &value
         result = (check) ? DcmShortString::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             result = BlockTrayID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTRecordedBlockSequence::Item::setNumberOfBlockSlabItems(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmIntegerString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = NumberOfBlockSlabItems.putOFStringArray(value);
     }
     return result;
 }
@@ -339,10 +384,12 @@ OFCondition DRTRecordedBlockSequence::gotoFirstItem()
 OFCondition DRTRecordedBlockSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

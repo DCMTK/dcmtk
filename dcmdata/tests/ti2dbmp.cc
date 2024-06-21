@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2022, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,7 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmdata/libi2d/i2dbmps.h"
 
-static OFLogger i2dbmpLogger = OFLog::getLogger("dcmtk.test.i2dbmp");
+static OFLogger i2dbmpLogger = OFLog::getLogger("dcmtk.test.ti2dbmp");
 
 enum offset {
     BMP_IMAGE_OFFSET = 10,

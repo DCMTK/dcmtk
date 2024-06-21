@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4031e_CommonAnatomicRegion
@@ -30,7 +30,7 @@ struct DefinedTermTypeMapStruct
  *  constant definitions  *
  *------------------------*/
 
-// mapping extracted from DICOM PS 3.16-2020c Table L-1
+// mapping extracted manually from DICOM PS 3.16-2023b Table L-1
 
 static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
 {
@@ -39,6 +39,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"ACJOINT",          CID4031_CommonAnatomicRegion::AcromioclavicularJoint},
     {"ANKLE",            CID4031_CommonAnatomicRegion::AnkleJoint},
     {"BILEDUCT",         CID4031_CommonAnatomicRegion::BileDuct},
+    {"BILIARYTRACT​",     CID4031_CommonAnatomicRegion::BiliaryTract},
     {"BLADDER",          CID4031_CommonAnatomicRegion::Bladder},
     {"BREAST",           CID4031_CommonAnatomicRegion::Breast},
     {"BRONCHUS",         CID4031_CommonAnatomicRegion::Bronchus},
@@ -50,8 +51,8 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"CHESTABDPELVIS",   CID4031_CommonAnatomicRegion::ChestAbdomenAndPelvis},
     {"CLAVICLE",         CID4031_CommonAnatomicRegion::Clavicle},
     {"COCCYX",           CID4031_CommonAnatomicRegion::Coccyx},
-    {"COMMONBILEDUCT",   CID4031_CommonAnatomicRegion::CommonBileDuct},
     {"COLON",            CID4031_CommonAnatomicRegion::Colon},
+    {"COMMONBILEDUCT",   CID4031_CommonAnatomicRegion::CommonBileDuct},
     {"DUODENUM",         CID4031_CommonAnatomicRegion::Duodenum},
     {"ELBOW",            CID4031_CommonAnatomicRegion::ElbowJoint},
     {"WHOLEBODY",        CID4031_CommonAnatomicRegion::EntireBody},
@@ -78,10 +79,11 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"KNEE",             CID4031_CommonAnatomicRegion::Knee},
     {"LARGEINTESTINE",   CID4031_CommonAnatomicRegion::LargeIntestine},
     {"LARYNX",           CID4031_CommonAnatomicRegion::Larynx},
-    {"LEG",              CID4031_CommonAnatomicRegion::LowerLeg},
+    {"LOWERLEG",         CID4031_CommonAnatomicRegion::LowerLeg},
+    {"LOWERLIMB",        CID4031_CommonAnatomicRegion::LowerLimb},
     {"LSPINE",           CID4031_CommonAnatomicRegion::LumbarSpine},
     {"LSSPINE",          CID4031_CommonAnatomicRegion::LumboSacralSpine},
-    {"JAW",              CID4031_CommonAnatomicRegion::Mandible},              // same Defined Term as for (T-D1213,SRT,"Jaw region")
+    {"MANDIBLE",         CID4031_CommonAnatomicRegion::Mandible},
     {"MASTOID",          CID4031_CommonAnatomicRegion::MastoidBone},
     {"MAXILLA",          CID4031_CommonAnatomicRegion::Maxilla},
     {"MEDIASTINUM",      CID4031_CommonAnatomicRegion::Mediastinum},
@@ -93,9 +95,12 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"ORBIT",            CID4031_CommonAnatomicRegion::OrbitalStructure},
     {"PANCREAS",         CID4031_CommonAnatomicRegion::Pancreas},
     {"PANCREATICDUCT",   CID4031_CommonAnatomicRegion::PancreaticDuct},
+    {"PANCBILEDUCT​",     CID4031_CommonAnatomicRegion::PancreaticDuctAndBileDuctSystems},
     {"PAROTID",          CID4031_CommonAnatomicRegion::ParotidGland},
     {"PATELLA",          CID4031_CommonAnatomicRegion::Patella},
     {"PELVIS",           CID4031_CommonAnatomicRegion::Pelvis},
+    {"PELVISLOWEXTREMT​", CID4031_CommonAnatomicRegion::PelvisAndLowerExtremities},
+    {"PHANTOM",          CID4031_CommonAnatomicRegion::Phantom},
     {"PROSTATE",         CID4031_CommonAnatomicRegion::Prostate},
     {"RECTUM",           CID4031_CommonAnatomicRegion::Rectum},
     {"RIB",              CID4031_CommonAnatomicRegion::Rib},
@@ -119,7 +124,8 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"THUMB",            CID4031_CommonAnatomicRegion::Thumb},
     {"TOE",              CID4031_CommonAnatomicRegion::Toe},
     {"TRACHEA",          CID4031_CommonAnatomicRegion::Trachea},
-    {"ARM",              CID4031_CommonAnatomicRegion::UpperArm},
+    {"UPPERARM",         CID4031_CommonAnatomicRegion::UpperArm},
+    {"UPPERLIMB",        CID4031_CommonAnatomicRegion::UpperLimb},
     {"UPRURINARYTRACT",  CID4031_CommonAnatomicRegion::UpperUrinaryTract},
     {"URETER",           CID4031_CommonAnatomicRegion::Ureter},
     {"URETHRA",          CID4031_CommonAnatomicRegion::Urethra},

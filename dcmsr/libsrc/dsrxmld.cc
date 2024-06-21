@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2021, OFFIS e.V.
+ *  Copyright (C) 2003-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,7 +76,7 @@ extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
 
         pos = buffer.find('\n');
     }
-#elif defined(HAVE_VPRINTF)
+#else
     // No vsnprint, but at least vfprintf. Output the messages directly to stderr.
     va_list ap;
     va_start(ap, msg);
@@ -86,9 +86,6 @@ extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
     vfprintf(stderr, msg, ap);
 #endif
     va_end(ap);
-#else
-    // We can only show the most basic part of the message, this will look bad :(
-    printf("%s", msg);
 #endif
 
 #ifndef HAVE_VSNPRINTF
@@ -144,17 +141,31 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
     OFString tmpErrorString;
     /* first remove any possibly existing document from memory */
     clear();
+
+#if LIBXML_VERSION < 20703
+    /*
+     * the following settings have been deprecated in newer versions of libxml,
+     * or they are not needed any more:
+     */
+
     /* do not substitute entities (other than the standard ones) */
     xmlSubstituteEntitiesDefault(0);
     /* add line number to debug messages */
     xmlLineNumbersDefault(1);
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
+#endif
+
     xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
 
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the given file */
+#if LIBXML_VERSION < 20703
+    /* xmlParseFile() is deprecated in newer versions of libxml */
     Document = xmlParseFile(filename.c_str());
+#else
+    Document = xmlReadFile(filename.c_str(), NULL /*encoding*/, XML_PARSE_NONET);
+#endif
     if (Document != NULL)
     {
         OFBool isValid = OFTrue;

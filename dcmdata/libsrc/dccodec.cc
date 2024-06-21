@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2020, OFFIS e.V.
+ *  Copyright (C) 1997-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpxitem.h"  /* for DcmPixelItem */
 #include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
+#include "dcmtk/dcmdata/dcvrcs.h"    /* for DcmCodeString */
 #include "dcmtk/dcmdata/dcvrui.h"    /* for DcmUniqueIdentifier */
 
 // static member variables
@@ -200,27 +201,37 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 {
   if (dataset == NULL) return EC_IllegalCall;
 
-  DcmStack stack;
-  OFString imageType("DERIVED");
-  OFString a;
-
-  /* find existing Image Type element */
-  OFCondition status = dataset->search(DCM_ImageType, stack, ESM_fromHere, OFFalse);
-  if (status.good())
+  DcmElement *elem = NULL;
+  /* check for the data element (with non-empty value) */
+  if (dataset->findAndGetElement(DCM_ImageType, elem).good() && !elem->isEmpty())
   {
-    DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
-    unsigned long pos = 1;
-
-    // append old image type information beginning with second entry
-    while ((elem->getOFString(a, pos++)).good())
+    /* case 1: there is a single value only */
+    if (elem->getNumberOfValues() == 1)
     {
-      imageType += "\\";
-      imageType += a;
+      DCMDATA_DEBUG("DcmCodec::updateImageType() setting data element value 'DERIVED\\SECONDARY'");
+      /* overwrite with a valid value (VM=2-n) */
+      return elem->putString("DERIVED\\SECONDARY");
+    } else {
+      OFString elemValue;
+      /* case 2: value 1 is different from "DERIVED" */
+      if (elem->getOFString(elemValue, 0 /*pos*/).good() && (elemValue != "DERIVED"))
+      {
+        if (elem->ident() == EVR_CS)
+        {
+          DCMDATA_DEBUG("DcmCodec::updateImageType() setting data element value 1 to 'DERIVED'");
+          /* overwrite value 1 */
+          return OFstatic_cast(DcmCodeString *, elem)->putOFStringAtPos("DERIVED", 0);
+        } else {
+          /* cannot overwrite value with wrong VR (should never happen) */
+          DCMDATA_ERROR("DcmCodec: Internal ERROR: Cannot update element ImageType " << DCM_ImageType << " with wrong VR");
+          return EC_InvalidVR;
+        }
+      }
     }
   }
 
-  // insert new Image Type, replace old value
-  return dataset->putAndInsertString(DCM_ImageType, imageType.c_str(), OFTrue);
+  /* nothing to do */
+  return EC_Normal;
 }
 
 

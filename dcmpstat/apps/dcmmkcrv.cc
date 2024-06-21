@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2017, OFFIS e.V.
+ *  Copyright (C) 1998-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -66,9 +66,9 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "DICOM input image file");
+    cmd.addParam("dcmfile-in",   "DICOM input image file (\"-\" for stdin)");
     cmd.addParam("curvedata-in", "curve data input file (text)");
-    cmd.addParam("dcmfile-out", "DICOM output filename");
+    cmd.addParam("dcmfile-out",  "DICOM output filename (\"-\" for stdout)");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);

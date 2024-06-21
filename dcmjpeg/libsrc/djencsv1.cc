@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djencsv1.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmjpeg/djrplol.h"
 #include "dcmtk/dcmjpeg/djeijg8.h"
@@ -66,7 +67,7 @@ void DJEncoderP14SV1::createDerivationDescription(
     derivationDescription = "Lossless JPEG compression, selection value 1, point transform ";
   else
     derivationDescription = "Pseudo-Lossless JPEG compression, selection value 1, point transform ";
-  sprintf(buf, "%u", rp->getPointTransformation());
+  OFStandard::snprintf(buf, sizeof(buf), "%u", rp->getPointTransformation());
   derivationDescription += buf;
   derivationDescription += ", compression ratio ";
   appendCompressionRatio(derivationDescription, ratio);

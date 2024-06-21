@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -113,7 +113,7 @@ class DCMTK_DCMDATA_EXPORT DcmApplicationEntity
                            const OFString& candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
-    /// @copydoc DcmElement::isUniversalMatch()
+    /// @copydoc DcmByteString::isUniversalMatch()
     virtual OFBool isUniversalMatch(const OFBool normalize = OFTrue,
                                     const OFBool enableWildCardMatching = OFTrue);
 

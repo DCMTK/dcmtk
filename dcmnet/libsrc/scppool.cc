@@ -61,18 +61,9 @@ OFCondition DcmBaseSCPPool::listen()
 
   /* Initialize network, i.e. create an instance of T_ASC_Network*. */
   T_ASC_Network *network = NULL;
-  OFCondition cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, m_cfg.getPort()), m_cfg.getACSETimeout(), &network );
-  if( cond.bad() )
+  OFCondition cond = initializeNework(&network);
+  if(cond.bad())
     return cond;
-
-  if (m_cfg.transportLayerEnabled())
-  {
-    cond = ASC_setTransportLayer(network, m_cfg.getTransportLayer(), 0 /* Do not take over ownership */);
-    if (cond.bad())
-    {
-        DCMNET_ERROR("DcmBaseSCPPool: Error setting secured transport layer: " << cond.text());
-    }
-  }
 
   /* As long as all is fine (or we have been to busy handling last connection request) keep listening */
   while ( m_runMode == LISTEN && ( cond.good() || (cond == NET_EC_SCPBusy) ) )
@@ -297,6 +288,25 @@ void DcmBaseSCPPool::notifyThreadExit(DcmBaseSCPPool::DcmBaseSCPWorker* thread,
   m_criticalSection.unlock();
 }
 
+// ----------------------------------------------------------------------------
+
+OFCondition DcmBaseSCPPool::initializeNework(T_ASC_Network** network)
+{
+    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, m_cfg.getPort()), m_cfg.getACSETimeout(), network);
+    if (cond.good())
+    {
+      if (m_cfg.transportLayerEnabled())
+      {
+        cond = ASC_setTransportLayer(*network, m_cfg.getTransportLayer(), 0 /* Do not take over ownership */);
+        if (cond.bad())
+        {
+          DCMNET_ERROR("DcmBaseSCPPool: Error setting secured transport layer: " << cond.text());
+          ASC_dropNetwork(network);
+        }
+      }
+    }
+    return cond;
+}
 
 /* *********************************************************************** */
 /*                        DcmBaseSCPPool::BaseSCPWorker class              */

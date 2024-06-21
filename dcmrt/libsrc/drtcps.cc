@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTControlPointSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -27,6 +27,7 @@ DRTControlPointSequence::Item::Item(const OFBool emptyDefaultItem)
     ControlPointIndex(DCM_ControlPointIndex),
     CumulativeMetersetWeight(DCM_CumulativeMetersetWeight),
     DoseRateSet(DCM_DoseRateSet),
+    EnhancedRTBeamLimitingOpeningSequence(emptyDefaultItem /*emptyDefaultSequence*/),
     ExternalContourEntryPoint(DCM_ExternalContourEntryPoint),
     GantryAngle(DCM_GantryAngle),
     GantryPitchAngle(DCM_GantryPitchAngle),
@@ -64,6 +65,7 @@ DRTControlPointSequence::Item::Item(const Item &copy)
     ControlPointIndex(copy.ControlPointIndex),
     CumulativeMetersetWeight(copy.CumulativeMetersetWeight),
     DoseRateSet(copy.DoseRateSet),
+    EnhancedRTBeamLimitingOpeningSequence(copy.EnhancedRTBeamLimitingOpeningSequence),
     ExternalContourEntryPoint(copy.ExternalContourEntryPoint),
     GantryAngle(copy.GantryAngle),
     GantryPitchAngle(copy.GantryPitchAngle),
@@ -109,6 +111,7 @@ DRTControlPointSequence::Item &DRTControlPointSequence::Item::operator=(const It
         ControlPointIndex = copy.ControlPointIndex;
         CumulativeMetersetWeight = copy.CumulativeMetersetWeight;
         DoseRateSet = copy.DoseRateSet;
+        EnhancedRTBeamLimitingOpeningSequence = copy.EnhancedRTBeamLimitingOpeningSequence;
         ExternalContourEntryPoint = copy.ExternalContourEntryPoint;
         GantryAngle = copy.GantryAngle;
         GantryPitchAngle = copy.GantryPitchAngle;
@@ -152,6 +155,7 @@ void DRTControlPointSequence::Item::clear()
         DoseRateSet.clear();
         WedgePositionSequence.clear();
         BeamLimitingDevicePositionSequence.clear();
+        EnhancedRTBeamLimitingOpeningSequence.clear();
         GantryAngle.clear();
         GantryRotationDirection.clear();
         GantryPitchAngle.clear();
@@ -189,6 +193,7 @@ OFBool DRTControlPointSequence::Item::isEmpty()
            DoseRateSet.isEmpty() &&
            WedgePositionSequence.isEmpty() &&
            BeamLimitingDevicePositionSequence.isEmpty() &&
+           EnhancedRTBeamLimitingOpeningSequence.isEmpty() &&
            GantryAngle.isEmpty() &&
            GantryRotationDirection.isEmpty() &&
            GantryPitchAngle.isEmpty() &&
@@ -236,6 +241,7 @@ OFCondition DRTControlPointSequence::Item::read(DcmItem &item)
         getAndCheckElementFromDataset(item, DoseRateSet, "1", "3", "ControlPointSequence");
         WedgePositionSequence.read(item, "1-n", "1C", "ControlPointSequence");
         BeamLimitingDevicePositionSequence.read(item, "1-n", "1C", "ControlPointSequence");
+        EnhancedRTBeamLimitingOpeningSequence.read(item, "1-n", "2C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, GantryAngle, "1", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, GantryRotationDirection, "1", "1C", "ControlPointSequence");
         getAndCheckElementFromDataset(item, GantryPitchAngle, "1", "3", "ControlPointSequence");
@@ -279,6 +285,7 @@ OFCondition DRTControlPointSequence::Item::write(DcmItem &item)
         addElementToDataset(result, item, new DcmDecimalString(DoseRateSet), "1", "3", "ControlPointSequence");
         if (result.good()) result = WedgePositionSequence.write(item, "1-n", "1C", "ControlPointSequence");
         if (result.good()) result = BeamLimitingDevicePositionSequence.write(item, "1-n", "1C", "ControlPointSequence");
+        if (result.good()) result = EnhancedRTBeamLimitingOpeningSequence.write(item, "1-n", "2C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmDecimalString(GantryAngle), "1", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmCodeString(GantryRotationDirection), "1", "1C", "ControlPointSequence");
         addElementToDataset(result, item, new DcmFloatingPointSingle(GantryPitchAngle), "1", "3", "ControlPointSequence");
@@ -1158,10 +1165,12 @@ OFCondition DRTControlPointSequence::gotoFirstItem()
 OFCondition DRTControlPointSequence::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }

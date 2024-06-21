@@ -13,6 +13,7 @@ DCMTK_ADD_LIBRARY(ofstd
   offile.cc
   offilsys.cc
   offname.cc
+  ofipc.cc
   oflist.cc
   ofstd.cc
   ofstring.cc

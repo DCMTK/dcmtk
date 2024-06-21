@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -104,11 +104,7 @@ BEGIN_EXTERN_C
 int dcmtk_hosts_access(struct request_info *req);
 #endif
 /* declare extern "C" typedef for signal handler function pointer */
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-typedef void(*mySIG_TYP)(...);
-#else
 typedef void(*mySIG_TYP)(int);
-#endif
 END_EXTERN_C
 
 #ifdef DCMTK_HAVE_POLL
@@ -1563,13 +1559,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     fd_set fdset;
 #endif
     struct timeval timeout_val;
-#ifdef HAVE_DECLARATION_SOCKLEN_T
     socklen_t len;
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-    int len;
-#else
-    size_t len;
-#endif
     int nfound, connected;
     struct sockaddr from;
     struct linger sockarg;
@@ -1630,17 +1620,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #ifdef DCMTK_HAVE_POLL
             nfound = poll(pfd, 1, timeout_val.tv_sec*1000+(timeout_val.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-            nfound = select(
-              OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
-                           (int *)(&fdset), NULL, NULL, &timeout_val);
-#else
             // On Win32, it is safe to cast the first parameter to int
             // because Windows ignores this parameter anyway.
             nfound = select(
               OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                            &fdset, NULL, NULL, &timeout_val);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL*/
 
             if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -1681,17 +1665,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #ifdef DCMTK_HAVE_POLL
                 nfound = poll(pfd, 1, timeout_val.tv_sec*1000+(timeout_val.tv_usec/1000));
 #else
-#ifdef HAVE_INTP_SELECT
-                nfound = select(
-                  OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
-                                (int *)(&fdset), NULL, NULL, &timeout_val);
-#else
                 // On Win32, it is safe to cast the first parameter to int
                 // because Windows ignores this parameter anyway.
                 nfound = select(
                   OFstatic_cast(int, (*network)->networkSpecific.TCP.listenSocket + 1),
                                 &fdset, NULL, NULL, &timeout_val);
-#endif /* HAVE_INTP_SELECT */
 #endif /* DCMTK_HAVE_POLL */
                 if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
                 {
@@ -1882,7 +1860,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 DWORD bytesWritten;
                 char buf[30];
                 // we pass the socket handle as a 64-bit unsigned integer, which should work for 32 and 64 bit Windows
-                sprintf(buf, "%llu", OFreinterpret_cast(unsigned __int64, childSocketHandle));
+                OFStandard::snprintf(buf, sizeof(buf), "%llu", OFreinterpret_cast(unsigned __int64, childSocketHandle));
                 if (!WriteFile(hChildStdInWriteDup, buf, OFstatic_cast(DWORD, strlen(buf) + 1), &bytesWritten, NULL))
                 {
                     CloseHandle(hChildStdInWriteDup);
@@ -1983,7 +1961,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     // create string containing numerical IP address.
     OFString client_dns_name;
     char client_ip_address[20];
-    sprintf(client_ip_address, "%-d.%-d.%-d.%-d",  // this code is ugly but thread safe
+    OFStandard::snprintf(client_ip_address, sizeof(client_ip_address), "%-d.%-d.%-d.%-d",  // this code is ugly but thread safe
        ((int) from.sa_data[2]) & 0xff,
        ((int) from.sa_data[3]) & 0xff,
        ((int) from.sa_data[4]) & 0xff,
@@ -2180,13 +2158,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         (! processIsForkedChild))
     {
 
-#ifdef HAVE_DECLARATION_SOCKLEN_T
       socklen_t length;
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-      int length;
-#else
-      size_t length;
-#endif
 
 #ifdef _WIN32
       SOCKET sock;
@@ -2685,11 +2657,11 @@ dump_uid(const char *UID, const char *indent)
 
     if ((UID==NULL)||(UID[0] == '\0'))
     {
-        sprintf(buf, indent, " ");
+        OFStandard::snprintf(buf, sizeof(buf), indent, " ");
         return OFString(buf) + "No UID";
     } else {
         uidName = dcmFindNameOfUID(UID, "Unknown UID");
-        sprintf(buf, indent, " ");
+        OFStandard::snprintf(buf, sizeof(buf), indent, " ");
         return OFString(buf) + uidName;
     }
 }
@@ -2845,6 +2817,15 @@ OFString& DUL_DumpConnectionParameters(OFString& str, DUL_ASSOCIATIONKEY *associ
   }
   str.clear();
   return str;
+}
+
+void DUL_setParentProcessMode(DUL_ASSOCIATIONKEY *callerAssociation)
+{
+    PRIVATE_ASSOCIATIONKEY *association = (PRIVATE_ASSOCIATIONKEY *) callerAssociation;
+    if (association->connection)
+    {
+      association->connection->setParentProcessMode();
+    }
 }
 
 // Legacy functions!

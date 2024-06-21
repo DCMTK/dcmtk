@@ -1,4 +1,4 @@
-.TH "dcmpsprt" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmpsprt" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmpsprt \- Read DICOM images and presentation states and render print job
@@ -7,7 +7,7 @@ dcmpsprt \- Read DICOM images and presentation states and render print job
 .PP
 .PP
 .nf
-dcmpsprt [options] dcmfile-in...
+dcmpsprt [options] dcmfile-in\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -17,7 +17,7 @@ The \fBdcmpsprt\fP utility reads one or more DICOM images and presentation state
 .PP
 .PP
 .nf
-dcmfile-in  DICOM image file(s) to be printed
+dcmfile-in  DICOM image file(s) to be printed ('-' for stdin)
 .fi
 .PP
 .SH "OPTIONS"
@@ -133,17 +133,17 @@ dcmfile-in  DICOM image file(s) to be printed
          render the inverse presentation LUT into the
          bitmap of the hardcopy grayscale image
 
-       --illumination  [v]alue: integer (0..65535)
+       --illumination  [v]alue: integer (0\&.\&.65535)
          set illumination to v (in cd/m^2)
 
-       --reflection  [v]alue: integer (0..65535)
+       --reflection  [v]alue: integer (0\&.\&.65535)
          set reflected ambient light to v (in cd/m^2)
 .fi
 .PP
 .SS "basic film session options (only with &ndash;spool)"
 .PP
 .nf
-       --copies  [v]alue: integer (1..100, default: 1)
+       --copies  [v]alue: integer (1\&.\&.100, default: 1)
          set number of copies to v
 
        --medium-type  [v]alue: string
@@ -196,7 +196,7 @@ dcmfile-in  DICOM image file(s) to be printed
   +O   --overlay  [f]ilename: string, [x] [y]: integer
          load overlay data from PBM file f and display at position (x,y)
 
-  +Og  --ovl-graylevel  [v]alue: integer (0..4095)
+  +Og  --ovl-graylevel  [v]alue: integer (0\&.\&.4095)
          use overlay gray level v (default: 4095 = white)
 .fi
 .PP
@@ -204,7 +204,7 @@ dcmfile-in  DICOM image file(s) to be printed
 .PP
 .nf
   -l   --layout  [c]olumns [r]ows: integer (default: 1 1)
-         use 'STANDARD\c,r' image display format
+         use 'STANDARD\\c,r' image display format
 
        --filmsize  [v]alue: string
          set film size ID to v
@@ -274,4 +274,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmprscu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1999-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

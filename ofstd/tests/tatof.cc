@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,11 +61,19 @@ const ValuePair vp[] =
 
   // since our precision is limited, everything else smaller then this may be converted to zero.
   {"2.2250738585072014E-292", 2.2250738585072014E-292, OFTrue},
-  {"3.402823466E+38F", 3.402823466E+38F, OFTrue},
-  {"1.175494351E-38F", 1.175494351E-38F, OFTrue},
+  {"3.402823466E+38", 3.402823466E+38F, OFTrue},
+  {"1.175494351E-38", 1.175494351E-38F, OFTrue},
 
-  // overflow is reported as infinity
+  // very large numbers that produce an overflow during conversion to double
+  // cause undefined behavior in std::atof().
+  // Our old implementation (used in DCMTK 3.5.2 to 3.6.8) returned
+  // HUGE_VAL and success, our new implementation returns an error instead,
+  // as the iostream classes do. Here we check both cases.
+#ifdef ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
   {"1.7976931348623157E+1000", HUGE_VAL, OFTrue},
+#else
+  {"1.7976931348623157E+1000", 0.0, OFFalse},
+#endif
 
   // underflow should be reported as zero, but on some platforms that support
   // denormalized floating point numbers this test case fails.
@@ -110,7 +118,7 @@ OFTEST(ofstd_atof)
         if (r)
           OFCHECK_FAIL("test #" << i << " failed: conversion did not flag error as expected, atof=" << d2);
         else
-          OFCHECK_FAIL("test #" << i << " failed: conversion did not succeed as expected");
+          OFCHECK_FAIL("test #" << i << " failed: conversion did not succeed as expected: " << vp[i].s << ", " << d2);
       }
     }
   }

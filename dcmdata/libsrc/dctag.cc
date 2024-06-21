@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,6 +34,7 @@ DcmTag::DcmTag()
 {
 }
 
+
 DcmTag::DcmTag(const DcmTagKey& akey, const char *privCreator)
   : DcmTagKey(akey),
     vr(EVR_UNKNOWN),
@@ -45,6 +46,7 @@ DcmTag::DcmTag(const DcmTagKey& akey, const char *privCreator)
         updatePrivateCreator(privCreator);
     lookupVRinDictionary();
 }
+
 
 DcmTag::DcmTag(Uint16 g, Uint16 e, const char *privCreator)
   : DcmTagKey(g, e),
@@ -58,6 +60,7 @@ DcmTag::DcmTag(Uint16 g, Uint16 e, const char *privCreator)
     lookupVRinDictionary();
 }
 
+
 DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr)
   : DcmTagKey(akey),
     vr(avr),
@@ -66,6 +69,7 @@ DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr)
     errorFlag(EC_Normal)
 {
 }
+
 
 DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
   : DcmTagKey(g, e),
@@ -76,9 +80,22 @@ DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
 {
 }
 
+
 DcmTag::DcmTag(const DcmTag& tag)
   : DcmTagKey(tag),
     vr(tag.vr),
+    tagName(NULL),
+    privateCreator(NULL),
+    errorFlag(tag.errorFlag)
+{
+    updateTagName(tag.tagName);
+    updatePrivateCreator(tag.privateCreator);
+}
+
+
+DcmTag::DcmTag(const DcmTag& tag, const DcmVR& avr)
+  : DcmTagKey(tag),
+    vr(avr),
     tagName(NULL),
     privateCreator(NULL),
     errorFlag(tag.errorFlag)
@@ -114,7 +131,42 @@ DcmTag& DcmTag::operator=(const DcmTag& tag)
     return *this;
 }
 
+
 // ********************************
+
+
+OFBool DcmTag::operator==(const DcmTag& tag) const
+{
+    OFBool result = DcmTagKey::operator==(tag);
+    if (result)
+    {
+         // check whether private creator identifiers are identical
+        if ((privateCreator != NULL) && (tag.getPrivateCreator() != NULL))
+            result = (strcmp(privateCreator, tag.getPrivateCreator()) == 0);
+        else if (privateCreator != tag.getPrivateCreator())
+            result = OFFalse;
+    }
+    return result;
+}
+
+
+OFBool DcmTag::operator!=(const DcmTag& tag) const
+{
+    OFBool result = DcmTagKey::operator!=(tag);
+    if (!result)
+    {
+         // check whether private creator identifiers are different
+        if ((privateCreator != NULL) && (tag.getPrivateCreator() != NULL))
+            result = (strcmp(privateCreator, tag.getPrivateCreator()) != 0);
+        else if (privateCreator != tag.getPrivateCreator())
+            result = OFTrue;
+    }
+    return result;
+}
+
+
+// ********************************
+
 
 void DcmTag::lookupVRinDictionary()
 {
@@ -127,6 +179,7 @@ void DcmTag::lookupVRinDictionary()
     }
     dcmDataDict.rdunlock();
 }
+
 
 // ********************************
 
@@ -165,6 +218,7 @@ const char *DcmTag::getTagName()
     return DcmTag_ERROR_TagName;
 }
 
+
 OFBool DcmTag::isSignable() const
 {
     OFBool result = isSignableTag();
@@ -172,6 +226,7 @@ OFBool DcmTag::isSignable() const
         result = !isUnknownVR();
     return result;
 }
+
 
 OFBool DcmTag::isUnknownVR() const
 {
@@ -212,10 +267,7 @@ OFCondition DcmTag::findTagFromName(const char *name, DcmTag &value)
             const DcmDictEntry *dicent = globalDataDict.findEntry(name);
             /* store resulting tag value */
             if (dicent != NULL)
-            {
-              value.set(dicent->getKey());
-              value.setVR(dicent->getVR());
-            }
+                value.setTag(dicent->getKey(), dicent->getVR(), dicent->getTagName(), dicent->getPrivateCreator());
             else
                 result = EC_TagNotFound;
             dcmDataDict.rdunlock();
@@ -230,14 +282,28 @@ const char* DcmTag::getPrivateCreator() const
     return privateCreator;
 }
 
+
 void DcmTag::setPrivateCreator(const char *privCreator)
 {
-    // a new private creator code probably changes the name
-    // of the tag. Enforce new dictionary lookup the next time
-    // getTagName() is called.
+    // a new private creator identifier probably changes the name of the tag.
+    // Enforce new dictionary lookup the next time getTagName() is called.
     updateTagName(NULL);
     updatePrivateCreator(privCreator);
 }
+
+
+void DcmTag::setTag(const DcmTagKey &key,
+                    const DcmVR &avr,
+                    const char *name,
+                    const char *privCreator)
+{
+    set(key);
+    /* the following method also sets the errorFlag */
+    setVR(avr);
+    updateTagName(name);
+    updatePrivateCreator(privCreator);
+}
+
 
 void DcmTag::updateTagName(const char *c)
 {
@@ -251,6 +317,7 @@ void DcmTag::updateTagName(const char *c)
     } else
         tagName = NULL;
 }
+
 
 void DcmTag::updatePrivateCreator(const char *c)
 {

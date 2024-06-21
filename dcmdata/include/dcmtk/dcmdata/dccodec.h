@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2022, OFFIS e.V.
+ *  Copyright (C) 1997-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -249,7 +249,7 @@ public:
    */
   static OFCondition convertToSecondaryCapture(DcmItem *dataset);
 
-  /** create new SOP instance UID and Source Image Sequence
+  /** create new SOP Instance UID and Source Image Sequence
    *  referencing the old SOP instance (if present)
    *  @param dataset dataset to be modified
    *  @param purposeOfReferenceCodingScheme coding scheme designator for purpose of reference code sequence
@@ -263,7 +263,15 @@ public:
     const char *purposeOfReferenceCodeValue = NULL,
     const char *purposeOfReferenceCodeMeaning = NULL);
 
-  /** set first value of Image Type to DERIVED.
+  /** update value of the Image Type element (if needed).
+   *  Three cases are handled by this method:
+   *    1. The Image Type element is not present or has an empty value.
+   *    2. The Image Type element is present and has a single value only.
+   *    3. The Image Type element is present and has two or more values.
+   *
+   *  For case 1, nothing is done. An empty value means "unknown" for Type 2.<br>
+   *  For case 2, the value "DERIVED\SECONDARY" is used (VM is 2-n).<br>
+   *  For case 3, the first value is replaced by the string "DERIVED".
    *  @param dataset dataset to be modified
    *  @return EC_Normal if successful, an error code otherwise
    */

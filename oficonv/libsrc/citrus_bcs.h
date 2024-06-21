@@ -36,6 +36,7 @@
 #include <windows.h>
 #endif
 
+#include <errno.h>
 #include <stdint.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -56,9 +57,7 @@
 #endif
 #endif
 
-#ifdef _MSC_VER
-#define PATH_MAX MAX_PATH
-#endif
+#define OFICONV_PATH_MAX 4096
 
 #ifndef EFTYPE
 #define EFTYPE EINVAL

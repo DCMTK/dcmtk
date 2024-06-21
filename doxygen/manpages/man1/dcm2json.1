@@ -1,4 +1,4 @@
-.TH "dcm2json" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2json" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2json \- Convert DICOM file and data set to JSON
@@ -19,9 +19,9 @@ If \fBdcm2json\fP reads a raw data set (DICOM data without a file format meta-he
 .PP
 .PP
 .nf
-dcmfile-in    DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-jsonfile-out  JSON output filename (default: stdout)
+jsonfile-out JSON output filename (default: stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -91,11 +91,23 @@ input transfer syntax:
 .PP
 .nf
 encoding of infinity and not-a-number:
+
   -es  --encode-strict
          report error for 'inf' and 'nan' (default)
 
   -ee  --encode-extended
          permit 'inf' and 'nan' in JSON numbers
+
+encoding of IS and DS (integer/decimal string) elements:
+
+  -ia  --is-ds-auto
+         encode as number if valid, as string otherwise (default)
+
+  -in  --is-ds-num
+         always encode as number, fail if invalid
+
+  -is  --is-ds-string
+         always encode as string
 .fi
 .PP
 .SS "output options"
@@ -124,154 +136,154 @@ The basic structure of the JSON output created from a DICOM file looks like the 
 .PP
 .nf
 {
-    "00080005": {
-        "vr": "CS",
-        "Value": [
-            "ISO_IR 192"
+    '00080005': {
+        'vr': 'CS',
+        'Value': [
+            'ISO_IR 192'
         ]
     },
-    "00080020": {
-        "vr": "DT",
-        "Value": [
-            "20130409"
+    '00080020': {
+        'vr': 'DT',
+        'Value': [
+            '20130409'
         ]
     },
-    "00080030": {
-        "vr": "TM",
-        "Value": [
-            "131600.0000"
+    '00080030': {
+        'vr': 'TM',
+        'Value': [
+            '131600\&.0000'
         ]
     },
-    "00080050": {
-        "vr": "SH",
-        "Value": [
-            "11235813"
+    '00080050': {
+        'vr': 'SH',
+        'Value': [
+            '11235813'
         ]
     },
-    "00080056": {
-        "vr": "CS",
-        "Value": [
-            "ONLINE"
+    '00080056': {
+        'vr': 'CS',
+        'Value': [
+            'ONLINE'
         ]
     },
-    "00080061": {
-        "vr": "CS",
-        "Value": [
-            "CT",
-            "PET"
+    '00080061': {
+        'vr': 'CS',
+        'Value': [
+            'CT',
+            'PET'
         ]
     },
-    "00080090": {
-        "vr": "PN",
-        "Value": [
+    '00080090': {
+        'vr': 'PN',
+        'Value': [
           {
-            "Alphabetic": "^Bob^^Dr."
+            'Alphabetic': '^Bob^^Dr\&.'
           }
         ]
     },
-    "00081190": {
-        "vr": "UR",
-        "Value": [
-            "http://wado.nema.org/studies/
-            1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
+    '00081190': {
+        'vr': 'UR',
+        'Value': [
+            'http://wado\&.nema\&.org/studies/
+            1\&.2\&.392\&.200036\&.9116\&.2\&.2\&.2\&.1762893313\&.1029997326\&.945873'
         ]
     },
-    "00090010": {
-        "vr": "LO",
-        "Value": [
-            "Vendor A"
+    '00090010': {
+        'vr': 'LO',
+        'Value': [
+            'Vendor A'
         ]
     },
-    "00091002": {
-        "vr": "UN",
-        "InlineBinary": "z0x9c8v7"
+    '00091002': {
+        'vr': 'UN',
+        'InlineBinary': 'z0x9c8v7'
     },
-    "00100010": {
-        "vr": "PN",
-        "Value": [
+    '00100010': {
+        'vr': 'PN',
+        'Value': [
           {
-            "Alphabetic": "Wang^XiaoDong"
+            'Alphabetic': 'Wang^XiaoDong'
           }
         ]
     },
-    "00100020": {
-        "vr": "LO",
-        "Value": [
-            "12345"
+    '00100020': {
+        'vr': 'LO',
+        'Value': [
+            '12345'
         ]
     },
-    "00100021": {
-        "vr": "LO",
-        "Value": [
-            "Hospital A"
+    '00100021': {
+        'vr': 'LO',
+        'Value': [
+            'Hospital A'
         ]
     },
-    "00100030": {
-        "vr": "DA",
-        "Value": [
-            "19670701"
+    '00100030': {
+        'vr': 'DA',
+        'Value': [
+            '19670701'
         ]
     },
-    "00100040": {
-        "vr": "CS",
-        "Value": [
-            "M"
+    '00100040': {
+        'vr': 'CS',
+        'Value': [
+            'M'
         ]
     },
-    "00101002": {
-        "vr": "SQ",
-        "Value": [
+    '00101002': {
+        'vr': 'SQ',
+        'Value': [
             {
-                "00100020": {
-                    "vr": "LO",
-                    "Value": [
-                        "54321"
+                '00100020': {
+                    'vr': 'LO',
+                    'Value': [
+                        '54321'
                     ]
                 },
-                "00100021": {
-                    "vr": "LO",
-                    "Value": [
-                        "Hospital B"
+                '00100021': {
+                    'vr': 'LO',
+                    'Value': [
+                        'Hospital B'
                     ]
                 }
             },
             {
-                "00100020": {
-                    "vr": "LO",
-                    "Value": [
-                        "24680"
+                '00100020': {
+                    'vr': 'LO',
+                    'Value': [
+                        '24680'
                     ]
                 },
-                "00100021": {
-                    "vr": "LO",
-                    "Value": [
-                        "Hospital C"
+                '00100021': {
+                    'vr': 'LO',
+                    'Value': [
+                        'Hospital C'
                     ]
                 }
             }
         ]
     },
-    "0020000D": {
-        "vr": "UI",
-        "Value": [
-            "1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
+    '0020000D': {
+        'vr': 'UI',
+        'Value': [
+            '1\&.2\&.392\&.200036\&.9116\&.2\&.2\&.2\&.1762893313\&.1029997326\&.945873'
         ]
     },
-    "00200010": {
-        "vr": "SH",
-        "Value": [
-            "11235813"
+    '00200010': {
+        'vr': 'SH',
+        'Value': [
+            '11235813'
         ]
     },
-    "00201206": {
-        "vr": "IS",
-        "Value": [
+    '00201206': {
+        'vr': 'IS',
+        'Value': [
             4
         ]
     },
-    "00201208": {
-        "vr": "IS",
-        "Value": [
+    '00201208': {
+        'vr': 'IS',
+        'Value': [
             942
         ]
     }
@@ -333,6 +345,10 @@ EXITCODE_CANNOT_WRITE_VALID_JSON         81
 The \fBdcm2json\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.PP
+The \fBdcm2json\fP utility will attempt to load character set mapping tables\&. This happens when DCMTK was compiled with the oficonv library (which is the default) and the mapping tables are not built into the library (default when DCMTK uses shared libraries)\&.
+.PP
+The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2016-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2016-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

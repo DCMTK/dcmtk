@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djcodecd.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // dcmdata includes
 #include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */
@@ -53,7 +54,8 @@ OFBool DJCodecDecoder::canChangeCoding(
 {
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
-  if (newRep.isNotEncapsulated() && (oldRepType == myXfer)) return OFTrue; // decompress requested
+  if (newRep.usesNativeFormat() && (oldRepType == myXfer))
+    return OFTrue; // decompress requested
 
   // we don't support re-coding for now.
   return OFFalse;
@@ -150,8 +152,25 @@ OFCondition DJCodecDecoder::decode(
               if (jpeg == NULL) result = EC_MemoryExhausted;
               else
               {
-                size_t frameSize = ((precision > 8) ? sizeof(Uint16) : sizeof(Uint8)) * imageRows * imageColumns * imageSamplesPerPixel;
-                size_t totalSize = frameSize * imageFrames;
+                Uint32 imageBytesAllocated = (precision > 8) ? sizeof(Uint16) : sizeof(Uint8);
+                Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+
+                // check for overflow
+                if (imageRows != 0 && frameSize / imageRows != (imageBytesAllocated * imageColumns * imageSamplesPerPixel))
+                {
+                  DCMJPEG_WARN("cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
+                  return EC_ElemLengthExceeds32BitField;
+                }
+
+                Uint32 totalSize = frameSize * imageFrames;
+
+                // check for overflow
+                if (totalSize == 0xFFFFFFFF || (frameSize != 0 && totalSize / frameSize != OFstatic_cast(Uint32, imageFrames)))
+                {
+                  DCMJPEG_WARN("cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
+                  return EC_ElemLengthExceeds32BitField;
+                }
+
                 if (totalSize & 1) totalSize++; // align on 16-bit word boundary
                 Uint16 *imageData16 = NULL;
                 Sint32 currentFrame = 0;
@@ -166,7 +185,7 @@ OFCondition DJCodecDecoder::decode(
                   }
                 }
 
-                result = uncompressedPixelData.createUint16Array(OFstatic_cast(Uint32, totalSize / sizeof(Uint16)), imageData16);
+                result = uncompressedPixelData.createUint16Array(totalSize / sizeof(Uint16), imageData16);
                 if (result.good())
                 {
                   Uint8 *imageData8 = OFreinterpret_cast(Uint8*, imageData16);
@@ -324,7 +343,7 @@ OFCondition DJCodecDecoder::decode(
                   if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
                   {
                     char numBuf[20];
-                    sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+                    OFStandard::snprintf(numBuf, sizeof(numBuf), "%ld", OFstatic_cast(long, imageFrames));
                     result = OFreinterpret_cast(DcmItem*, dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
                   }
 
@@ -492,7 +511,16 @@ OFCondition DJCodecDecoder::decodeFrame(
             if (precision == 0) result = EC_CannotChangeRepresentation; // something has gone wrong, bail out
             else
             {
-              size_t frameSize = ((precision > 8) ? sizeof(Uint16) : sizeof(Uint8)) * imageRows * imageColumns * imageSamplesPerPixel;
+              Uint32 imageBytesAllocated = (precision > 8) ? sizeof(Uint16) : sizeof(Uint8);
+              Uint32 frameSize = imageBytesAllocated * imageRows * imageColumns * imageSamplesPerPixel;
+
+              // check for overflow
+              if (imageRows != 0 && frameSize / imageRows != (imageBytesAllocated * imageColumns * imageSamplesPerPixel))
+              {
+                DCMJPEG_WARN("cannot decompress image because uncompressed representation would exceed maximum possible size of PixelData attribute");
+                return EC_ElemLengthExceeds32BitField;
+              }
+
               if (frameSize > bufSize) return EC_IllegalCall;
 
               DJDecoder *jpeg = createDecoderInstance(fromParam, djcp, precision, isYBR);
@@ -638,7 +666,7 @@ OFCondition DJCodecDecoder::determineDecompressedColorModel(
     Uint32 startFragment = 1;
     Uint32 bufSize = 0;
     // determine size of uncompressed frame
-    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize).good()) && (bufSize > 0))
+    if ((fromPixSeq->getUncompressedFrameSize(dataset, bufSize, OFFalse).good()) && (bufSize > 0))
     {
       // allocate temporary buffer for a single frame
       Uint8 *buffer = new Uint8[bufSize];

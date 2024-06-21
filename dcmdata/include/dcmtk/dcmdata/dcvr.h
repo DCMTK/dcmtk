@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2020, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -399,10 +399,32 @@ public:
      */
     OFBool isForInternalUseOnly() const;
 
-    /** returns true if VR represents a string
+    /** returns true if VR represents a string.
+     *  @note This method is only applicable to standard DICOM VRs.
      *  @return true if VR represents a string, false otherwise
      */
     OFBool isaString() const;
+
+    /** returns true if VR represents a number (either encoded as a string or
+     *  in binary format).
+     *  @note This method is only applicable to standard DICOM VRs.
+     *  @return true if VR represents a number, false otherwise
+     */
+    OFBool isaNumber() const;
+
+    /** returns true if VR represents an integer number (either encoded as a
+     *  string or in binary format).
+     *  @note This method is only applicable to standard DICOM VRs.
+     *  @return true if VR represents an integer number, false otherwise
+     */
+    OFBool isInteger() const;
+
+    /** returns true if VR represents an unsigned number (either encoded as a
+     *  string or in binary format).
+     *  @note This method is only applicable to standard DICOM VRs.
+     *  @return true if VR represents an unsigned number, false otherwise
+     */
+    OFBool isUnsigned() const;
 
     /** returns true if VR uses an extended length encoding for explicit
      *  transfer syntaxes

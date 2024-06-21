@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2019, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,16 +19,16 @@
  *
  */
 
-#include "dcmtk/dcmiod/iodreferences.h"
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmiod/iodreferences.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmdata/dcerror.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmiod/iodtypes.h"
 #include "dcmtk/dcmiod/iodutil.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // ------------------- class IODReference -------------------------------
 
@@ -237,7 +237,7 @@ OFCondition IODReferences::writeTractographyReferencedInstanceSequence(DcmItem& 
 OFString IODReference::toString() const
 {
     char buf[400];
-    sprintf(buf,
+    OFStandard::snprintf(buf, sizeof(buf),
             "Study/Series/SOPClass/SOPInstance UIDs: %s/%s/%s/%s",
             m_StudyInstanceUID.c_str(),
             m_SeriesInstanceUID.c_str(),

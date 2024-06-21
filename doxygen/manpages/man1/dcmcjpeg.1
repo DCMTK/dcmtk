@@ -1,4 +1,4 @@
-.TH "dcmcjpeg" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpeg" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
@@ -17,9 +17,9 @@ The \fBdcmcjpeg\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP),
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -110,37 +110,37 @@ JPEG process:
 
   # This option selects the JPEG Lossless, Non-Hierarchical, First-Order
   # Prediction (Process 14 Selection Value 1) Transfer Syntax for
-  # Lossless JPEG Image Compression.
+  # Lossless JPEG Image Compression\&.
 
   +el   --encode-lossless
           encode lossless
 
   # This option selects the JPEG Lossless, Non-Hierarchical (Process 14)
-  # Transfer Syntax for Lossless JPEG Image Compression.
+  # Transfer Syntax for Lossless JPEG Image Compression\&.
 
   +eb   --encode-baseline
           encode baseline
 
   # This option selects the JPEG Baseline (Process 1) Transfer Syntax
-  # for Lossy JPEG 8 Bit Image Compression.
+  # for Lossy JPEG 8 Bit Image Compression\&.
 
   +ee   --encode-extended
           encode extended sequential
 
   # This option selects the JPEG Extended (Process 2 & 4) Transfer
-  # Syntax for Lossy JPEG Image Compression.
+  # Syntax for Lossy JPEG Image Compression\&.
 
   +es   --encode-spectral
           encode spectral selection
 
   # This option selects the JPEG Spectral Selection, Non-Hierarchical
-  # (Process 6 & 8) Transfer Syntax for Lossy JPEG Image Compression.
+  # (Process 6 & 8) Transfer Syntax for Lossy JPEG Image Compression\&.
 
   +ep   --encode-progressive
           encode progressive
 
   # This option selects the JPEG Full Progression, Non-Hierarchical
-  # (Process 10 & 12) Transfer Syntax for Lossy JPEG Image Compression.
+  # (Process 10 & 12) Transfer Syntax for Lossy JPEG Image Compression\&.
 
 lossless JPEG codec selection:
 
@@ -148,45 +148,45 @@ lossless JPEG codec selection:
           true lossless codec (default)
 
   # This option selects an encoder, that guarantees truly lossless
-  # image compression. See NOTES for further information.
+  # image compression\&. See NOTES for further information\&.
 
   +pl   --pseudo-lossless
           old pseudo-lossless codec
 
   # Old encoder, that uses lossless compression algorithms, but can
   # cause lossy images because of internal color space transformations
-  # etc. Higher compression ratio than --true-lossless in most cases.
+  # etc\&. Higher compression ratio than --true-lossless in most cases\&.
 
 lossless JPEG representation:
 
-  +sv   --selection-value  [sv]: integer (1..7, default: 6)
+  +sv   --selection-value  [sv]: integer (1\&.\&.7, default: 6)
           use selection value sv only with --encode-lossless
 
-  # This option selects the selection value for lossless JPEG.
+  # This option selects the selection value for lossless JPEG\&.
 
-  +pt   --point-transform  [pt]: integer (0..15, default: 0)
+  +pt   --point-transform  [pt]: integer (0\&.\&.15, default: 0)
           use point transform pt
 
-  # This option selects the point transform for lossless JPEG.
+  # This option selects the point transform for lossless JPEG\&.
   # WARNING: Using this option with a value other than zero causes
-  # a loss of precision, i. e. makes the compression "lossy".
+  # a loss of precision, i\&. e\&. makes the compression 'lossy'\&.
 
 lossy JPEG representation:
 
-  +q    --quality  [q]: integer (0..100, default: 90)
+  +q    --quality  [q]: integer (0\&.\&.100, default: 90)
           use quality factor q
 
   # This option selects the quality factor used to determine the
   # quantization table inside the JPEG compressor, which affects
-  # compression ratio and image quality in lossy JPEG.
-  # See documentation of the Independent JPEG Group for details.
+  # compression ratio and image quality in lossy JPEG\&.
+  # See documentation of the Independent JPEG Group for details\&.
 
-  +sm   --smooth  [s]: integer (0..100, default: 0)
+  +sm   --smooth  [s]: integer (0\&.\&.100, default: 0)
           use smoothing factor s
 
   # This option enables a smoothing (low-pass filter) of the image data
-  # prior to compression. Increases the compression ratio at the expense
-  # of image quality.
+  # prior to compression\&. Increases the compression ratio at the expense
+  # of image quality\&.
 
 other JPEG options:
 
@@ -194,14 +194,14 @@ other JPEG options:
           optimize huffman tables (default)
 
   # This option enables an optimization of the huffman tables during
-  # image compression. It results in a slightly smaller image at a small
-  # increase of CPU time. Always on if bits/sample is larger than 8.
+  # image compression\&. It results in a slightly smaller image at a small
+  # increase of CPU time\&. Always on if bits/sample is larger than 8\&.
 
   -ho   --huffman-standard
           use standard huffman tables if 8 bits/sample
 
   # This option disables an optimization of the huffman tables during
-  # image compression.
+  # image compression\&.
 
 compressed bits per sample (always +ba with +tl):
 
@@ -223,21 +223,21 @@ compression color space conversion (overridden by +tl):
           use YCbCr for color images if lossy (default)
 
   # This option enables a transformation of the color space to YCbCr
-  # prior to image compression for color images in lossy JPEG.
+  # prior to image compression for color images in lossy JPEG\&.
 
   +cr   --color-rgb
           use RGB for color images if lossy
 
   # This option prevents the transformation of the color space to YCbCr
-  # prior to image compression for color images in lossy JPEG. It causes
+  # prior to image compression for color images in lossy JPEG\&. It causes
   # lossy image compression in the RGB color space which is not
-  # recommendable.
+  # recommendable\&.
 
   +cm   --monochrome
           convert color images to monochrome
 
   # This option forces a conversion of color images to monochrome
-  # prior to compression.
+  # prior to compression\&.
 
 decompression color space conversion
 (if input is compressed; always +cn with +tl):
@@ -246,71 +246,71 @@ decompression color space conversion
           convert if YCbCr photometric interpretation (default)
 
   # This option describes the behavior of dcmcjpeg when a compressed
-  # image is read and decompressed prior to re-compression.  If the
+  # image is read and decompressed prior to re-compression\&.  If the
   # compressed image uses YBR_FULL or YBR_FULL_422 photometric
-  # interpretation, it is converted to RGB during decompression.
+  # interpretation, it is converted to RGB during decompression\&.
 
   +cl   --conv-lossy
           convert YCbCr to RGB if lossy JPEG
 
   # If the compressed image is encoded in lossy JPEG, assume YCbCr
-  # color model and convert to RGB.
+  # color model and convert to RGB\&.
 
   +cg   --conv-guess
           convert to RGB if YCbCr is guessed by library
 
-  # If the underlying JPEG library "guesses" the color space of the
-  # compressed image to be YCbCr, convert to RGB.
+  # If the underlying JPEG library 'guesses' the color space of the
+  # compressed image to be YCbCr, convert to RGB\&.
 
   +cgl  --conv-guess-lossy
           convert to RGB if lossy JPEG and YCbCr is
           guessed by the underlying JPEG library
 
   # If the compressed image is encoded in lossy JPEG and the underlying
-  # JPEG library "guesses" the color space to be YCbCr, convert to RGB.
+  # JPEG library 'guesses' the color space to be YCbCr, convert to RGB\&.
 
   +ca   --conv-always
           always convert YCbCr to RGB
 
   # If the compressed image is a color image, assume YCbCr color model
-  # and convert to RGB.
+  # and convert to RGB\&.
 
   +cn   --conv-never
           never convert color space
 
-  # Never convert color space during decompression.
+  # Never convert color space during decompression\&.
 
-decompr. workaround options for incorrect encodings (if input is compressed):
+decompr\&. workaround options for incorrect encodings (if input is compressed):
 
   +w6   --workaround-pred6
           enable workaround for JPEG lossless images
           with overflow in predictor 6
 
-  # DICOM images with 16 bits/pixel have been observed "in the wild"
+  # DICOM images with 16 bits/pixel have been observed 'in the wild'
   # that are compressed with lossless JPEG and need special handling
   # because the encoder produced an 16-bit integer overflow in predictor
-  # 6, which needs to be compensated (reproduced) during decompression.
+  # 6, which needs to be compensated (reproduced) during decompression\&.
   # This flag enables a correct decompression of such faulty images, but
   # at the same time will cause an incorrect decompression of correctly
-  # compressed images. Use with care.
+  # compressed images\&. Use with care\&.
 
   +wi   --workaround-incpl
           enable workaround for incomplete JPEG data
 
   # This option causes dcmjpeg to ignore incomplete JPEG data
   # at the end of a compressed fragment and to start decompressing
-  # the next frame from the next fragment (if any). This permits
-  # images with incomplete JPEG data to be decoded.
+  # the next frame from the next fragment (if any)\&. This permits
+  # images with incomplete JPEG data to be decoded\&.
 
   +wc   --workaround-cornell
           enable workaround for 16-bit JPEG lossless
           Cornell images with Huffman table overflow
 
   # One of the first open-source implementations of lossless JPEG
-  # compression, the "Cornell" library, has a well-known bug that leads
+  # compression, the 'Cornell' library, has a well-known bug that leads
   # to invalid values in the Huffmann table when images with 16 bit/sample
-  # are compressed. This flag enables a workaround that permits such
-  # images to be decoded correctly.
+  # are compressed\&. This flag enables a workaround that permits such
+  # images to be decoded correctly\&.
 
 YCbCr component subsampling (lossy JPEG only):
 
@@ -318,8 +318,8 @@ YCbCr component subsampling (lossy JPEG only):
           4:2:2 subsampling with YBR_FULL_422 (default)
 
   # This option enables a 4:2:2 color component subsampling for
-  # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL_422.
+  # compression in the YCbCr color space\&. The DICOM photometric
+  # interpretation is encoded as YBR_FULL_422\&.
 
 non-standard YCbCr component subsampling (not with +tl):
 
@@ -327,29 +327,29 @@ non-standard YCbCr component subsampling (not with +tl):
           4:4:4 sampling with YBR_FULL
 
   # This option disables color component subsampling for compression in
-  # the YCbCr color space. The DICOM photometric interpretation is
-  # encoded as YBR_FULL, which violates DICOM rules for lossy JPEG.
+  # the YCbCr color space\&. The DICOM photometric interpretation is
+  # encoded as YBR_FULL, which violates DICOM rules for lossy JPEG\&.
 
   +n2   --nonstd-422-full
           4:2:2 subsampling with YBR_FULL
 
   # This option enables a 4:2:2 color component subsampling for
-  # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL, which violates DICOM rules.
+  # compression in the YCbCr color space\&. The DICOM photometric
+  # interpretation is encoded as YBR_FULL, which violates DICOM rules\&.
 
   +n1   --nonstd-411-full
           4:1:1 subsampling with YBR_FULL
 
   # This option enables a 4:1:1 color component subsampling for
-  # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL, which violates DICOM rules.
+  # compression in the YCbCr color space\&. The DICOM photometric
+  # interpretation is encoded as YBR_FULL, which violates DICOM rules\&.
 
   +np   --nonstd-411
           4:1:1 subsampling with YBR_FULL_422
 
   # This option enables a 4:1:1 color component subsampling for
-  # compression in the YCbCr color space. The DICOM photometric
-  # interpretation is encoded as YBR_FULL_422, which violates DICOM rules.
+  # compression in the YCbCr color space\&. The DICOM photometric
+  # interpretation is encoded as YBR_FULL_422, which violates DICOM rules\&.
 .fi
 .PP
 .SS "encapsulated pixel data encoding options:"
@@ -361,13 +361,13 @@ encapsulated pixel data fragmentation:
           encode each frame as one fragment (default)
 
   # This option causes the creation of one compressed fragment for each
-  # frame (recommended).
+  # frame (recommended)\&.
 
   +fs   --fragment-size  [s]ize: integer
           limit fragment size to s kbytes
 
   # This option limits the fragment size which may cause the creation of
-  # multiple fragments per frame.
+  # multiple fragments per frame\&.
 
 basic offset table encoding:
 
@@ -375,40 +375,40 @@ basic offset table encoding:
           create offset table (default)
 
   # This option causes the creation of a valid offset table for the
-  # compressed JPEG fragments.
+  # compressed JPEG fragments\&.
 
   -ot   --offset-table-empty
           leave offset table empty
 
   # This option causes the creation of an empty offset table
-  # for the compressed JPEG fragments.
+  # for the compressed JPEG fragments\&.
 
 VOI windowing for monochrome images (not with +tl):
 
   -W    --no-windowing
           no VOI windowing (default)
 
-  # No window level/width is "burned" into monochrome images prior to
-  # compression.  See notes below on pixel scaling and rescale slope
-  # and intercept encoding.
+  # No window level/width is 'burned' into monochrome images prior to
+  # compression\&.  See notes below on pixel scaling and rescale slope
+  # and intercept encoding\&.
 
   +Wi   --use-window  [n]umber: integer
           use the n-th VOI window from image file
 
   # Apply the n-th window center/width encoded in the image data prior
-  # to compression.
+  # to compression\&.
 
   +Wl   --use-voi-lut  [n]umber: integer
           use the n-th VOI look up table from image file
 
   # Apply the n-th VOI LUT encoded in the image data prior
-  # to compression.
+  # to compression\&.
 
   +Wm   --min-max-window
           compute VOI window using min-max algorithm
 
   # Compute and apply a window center and width that covers the
-  # range from the smallest to the largest occurring pixel value.
+  # range from the smallest to the largest occurring pixel value\&.
 
   +Wn   --min-max-window-n
           compute VOI window using min-max algorithm,
@@ -416,17 +416,17 @@ VOI windowing for monochrome images (not with +tl):
 
   # Compute and apply a window center and width that covers the
   # range from the second smallest to the second largest occurring
-  # pixel value. This is useful if the background is set to an
+  # pixel value\&. This is useful if the background is set to an
   # artificial black (padding value) or if white overlays are burned
   # into the image data which should not be considered for the window
-  # computation.
+  # computation\&.
 
   +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight: integer
           compute ROI window using min-max algorithm,
           region of interest is specified by l,t,w,h
 
   # This option works like --min-max-window but only considers the given
-  # region of interest inside the image.
+  # region of interest inside the image\&.
 
   +Wh   --histogram-window  [n]umber: integer
           compute VOI window using Histogram algorithm,
@@ -439,7 +439,7 @@ VOI windowing for monochrome images (not with +tl):
   +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 
-  # Apply the given window center/width prior to compression.
+  # Apply the given window center/width prior to compression\&.
 
 pixel scaling for monochrome images (--no-windowing; ignored by +tl):
 
@@ -448,12 +448,12 @@ pixel scaling for monochrome images (--no-windowing; ignored by +tl):
 
   # Monochrome image pixel values are always scaled to make use of the
   # pixel range available with the selected JPEG process as good as
-  # possible. This option selects a scaling based on the minimum and
-  # maximum pixel value occurring in the image.  This often leads to
+  # possible\&. This option selects a scaling based on the minimum and
+  # maximum pixel value occurring in the image\&.  This often leads to
   # significantly better image quality, but may cause different
   # compressed images within one series to have different values for
   # rescale slope and intercept, which is a problem if a presentation
-  # state for one series is to be created.
+  # state for one series is to be created\&.
 
   +sr   --scaling-range
           scale using min/max range
@@ -461,7 +461,7 @@ pixel scaling for monochrome images (--no-windowing; ignored by +tl):
   # This options selects a scaling based on the pixel range as defined
   # by the stored bits, pixel representation and modality transform,
   # without consideration of the minimum and maximum value really
-  # used within the image.
+  # used within the image\&.
 
 rescale slope/intercept encoding for monochrome (-W; ignored by +tl):
 
@@ -471,8 +471,8 @@ rescale slope/intercept encoding for monochrome (-W; ignored by +tl):
 
   # This options prevents the creation of a modality transformation
   # other than an identity transformation (which is required for
-  # many DICOM IODs).  Window center/width settings encoded
-  # in the image are adapted, VOI LUTs are removed.
+  # many DICOM IODs)\&.  Window center/width settings encoded
+  # in the image are adapted, VOI LUTs are removed\&.
 
   +rm   --rescale-map
           use modality rescale to scale pixel range
@@ -480,40 +480,40 @@ rescale slope/intercept encoding for monochrome (-W; ignored by +tl):
 
   # This option causes the creation of a modality rescale slope and
   # intercept that maps the decompressed image data back to their
-  # original range.  This keeps all VOI transformations valid but
+  # original range\&.  This keeps all VOI transformations valid but
   # requires that the DICOM IOD supports a modality rescale slope
-  # and intercept transformation other than identity.
+  # and intercept transformation other than identity\&.
 
 SOP Class UID:
 
   +cd   --class-default
           keep SOP Class UID (default)
 
-  # Keep the SOP Class UID of the source image.
+  # Keep the SOP Class UID of the source image\&.
 
   +cs   --class-sc
           convert to Secondary Capture Image (implies --uid-always)
 
-  # Convert the image to Secondary Capture.  In addition to the SOP
+  # Convert the image to Secondary Capture\&.  In addition to the SOP
   # Class UID, all attributes required for a valid secondary capture
-  # image are added. A new SOP instance UID is always assigned.
+  # image are added\&. A new SOP instance UID is always assigned\&.
 
 SOP Instance UID:
 
   +ud   --uid-default
           assign new UID if lossy compression (default)
 
-  # Assigns a new SOP instance UID if the compression is lossy.
+  # Assigns a new SOP instance UID if the compression is lossy\&.
 
   +ua   --uid-always
           always assign new UID
 
-  # Unconditionally assigns a new SOP instance UID.
+  # Unconditionally assigns a new SOP instance UID\&.
 
   +un   --uid-never
           never assign new UID
 
-  # Never assigns a new SOP instance UID.
+  # Never assigns a new SOP instance UID\&.
 .fi
 .PP
 .SS "output options"
@@ -565,7 +565,6 @@ The \fBdcmcjpeg\fP utility compresses DICOM images of all SOP classes\&. It proc
 .PP
 A few examples:
 .PP
-.PD 0
 .IP "\(bu" 2
 MR images are required to have BitsAllocated=16\&.
 .IP "\(bu" 2
@@ -573,11 +572,11 @@ NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric inte
 .IP "\(bu" 2
 Hardcopy Color images must have RGB color model which is a problem if lossy compression is to be performed\&.
 .PP
+.PP
 The user is responsible for making sure that the compressed images he creates are compliant with the DICOM standard\&. If in question, the \fBdcmcjpeg\fP utility allows one to convert an image to secondary capture - this SOP class does not pose restrictions as the ones mentioned above\&.
 .PP
 With version DCMTK 3\&.5\&.4 a new encoder for truly lossless JPEG compression was added (\fI--true-lossless\fP)\&. Compared to the old (\fI--pseudo-lossless\fP) encoder, that creates slightly lossy images caused from internal color space conversions, windowing etc\&., there are a some issues to consider:
 .PP
-.PD 0
 .IP "\(bu" 2
 Only source images with Bits Allocated 8 or 16 are supported
 .IP "\(bu" 2
@@ -589,6 +588,7 @@ The encoder changes automatically Planar Configuration from 1 to 0 if necessary
 .IP "\(bu" 2
 The compression ratio can be lower than in \fI--pseudo-lossless\fP mode
 .PP
+.PP
 However, when using the new encoder (default), you can be sure, that compression does not affect image quality\&.
 .PP
 In order to be on the safe side, the Lossy Compression Flag is always set to '01' and a new SOP instance UID is assigned (by default) for the old pseudo-lossless encoder\&. The output of the old and new lossless encoder can also be distinguished by the Derivation Description in the resulting DICOM image, which contains the term 'Lossless JPEG compression' for the new and 'Pseudo-Lossless JPEG compression' for the old encoder\&.
@@ -598,16 +598,16 @@ In order to be on the safe side, the Lossy Compression Flag is always set to '01
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
-JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
-JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
-JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
-JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
-JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
-JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
+JPEGProcess1TransferSyntax                     1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+JPEGProcess2_4TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
+JPEGProcess6_8TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.53
+JPEGProcess10_12TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
+JPEGProcess14TransferSyntax                    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.57
+JPEGProcess14SV1TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.70
 .fi
 .PP
 .PP
@@ -617,12 +617,12 @@ JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
 .PP
 .PP
 .nf
-JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
-JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
-JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
-JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
-JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
-JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+JPEGProcess1TransferSyntax                     1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+JPEGProcess2_4TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
+JPEGProcess6_8TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.53
+JPEGProcess10_12TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
+JPEGProcess14TransferSyntax                    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.57
+JPEGProcess14SV1TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.70
 .fi
 .PP
 .SH "LOGGING"
@@ -647,4 +647,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

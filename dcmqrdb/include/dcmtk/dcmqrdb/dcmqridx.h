@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2018, OFFIS e.V.
+ *  Copyright (C) 1993-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -119,10 +119,11 @@ enum DB_QUERY_CLASS
 struct DCMTK_DCMQRDB_EXPORT DB_SerializedTagKey
 {
     inline DB_SerializedTagKey() {}
-    inline DB_SerializedTagKey(const DcmTagKey& rhs) { *this = rhs; }
+    inline DB_SerializedTagKey(const DcmTagKey& tk) { *this = tk; }
     inline DB_SerializedTagKey& operator=(const DcmTagKey& tk) { key[0] = tk.getGroup(); key[1] = tk.getElement(); return *this; }
     inline operator DcmTagKey() const { return DcmTagKey( key[0], key[1] ); }
     inline bool operator==(const DB_SerializedTagKey& rhs) const { return key[0] == rhs.key[0] && key[1] == rhs.key[1]; }
+    inline bool operator==(const DcmTagKey& tk) const { return key[0] == tk.getGroup() && key[1] == tk.getElement(); }
     Uint16 key[2];
 };
 

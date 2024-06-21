@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2019, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,9 +21,9 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofstring.h"
-
 #include "dcmtk/dcmpstat/dvpsall.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmpstat/dvpsal.h"      /* for DVPSOverlayCurveActivationLayer */
 #include "dcmtk/dcmpstat/dvpsovl.h"     /* for DVPSOverlay_PList */
 #include "dcmtk/dcmpstat/dvpsgll.h"     /* for DVPSGraphicLayer_PList */
@@ -181,7 +181,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
             if (currentLayer==0)
             {
               currentLayer++;
-              sprintf(layerName, "LAYER");
+              OFStandard::snprintf(layerName, sizeof(layerName), "LAYER");
               result = gLayerList.addGraphicLayer(layerName, 1, "Overlays and Curves");
             }
             break;
@@ -189,14 +189,14 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
             if (currentLayer==0)
             {
               currentLayer++;
-              sprintf(layerName, "OVERLAY");
+              OFStandard::snprintf(layerName, sizeof(layerName), "OVERLAY");
               result = gLayerList.addGraphicLayer(layerName, 1, "Overlays");
             }
             break;
           case DVPSG_separateLayers:
             currentLayer++;
-            sprintf(layerName, "OVERLAY%04ld", (long)currentLayer);
-            sprintf(layerDesc, "Overlay Layer %ld", (long)currentLayer);
+            OFStandard::snprintf(layerName, sizeof(layerName), "OVERLAY%04ld", (long)currentLayer);
+            OFStandard::snprintf(layerDesc, sizeof(layerDesc), "Overlay Layer %ld", (long)currentLayer);
             result = gLayerList.addGraphicLayer(layerName, currentLayer, layerDesc);
             break;
         }
@@ -268,7 +268,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
             if (currentLayer==0)
             {
               currentLayer++;
-              sprintf(layerName, "LAYER");
+              OFStandard::snprintf(layerName, sizeof(layerName), "LAYER");
               result = gLayerList.addGraphicLayer(layerName, 1, "Overlays and Curves");
             }
             break;
@@ -276,14 +276,14 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
             if ((currentLayer==0)||((currentLayer==1)&&(haveOverlays)))
             {
               currentLayer++;
-              sprintf(layerName, "CURVE");
+              OFStandard::snprintf(layerName, sizeof(layerName), "CURVE");
               result = gLayerList.addGraphicLayer(layerName, 1, "Curves");
             }
             break;
           case DVPSG_separateLayers:
             currentLayer++;
-            sprintf(layerName, "CURVE%04ld", (long)currentLayer-lastOverlayLayer);
-            sprintf(layerDesc, "Curve Layer %ld", (long)currentLayer-lastOverlayLayer);
+            OFStandard::snprintf(layerName, sizeof(layerName), "CURVE%04ld", (long)currentLayer-lastOverlayLayer);
+            OFStandard::snprintf(layerDesc, sizeof(layerDesc), "Curve Layer %ld", (long)currentLayer-lastOverlayLayer);
             result = gLayerList.addGraphicLayer(layerName, currentLayer, layerDesc);
             break;
         }

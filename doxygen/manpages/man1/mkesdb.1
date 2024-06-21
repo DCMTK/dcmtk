@@ -1,0 +1,45 @@
+.TH "mkesdb" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+mkesdb \- Create encoding scheme database (esdb) files for oficonv
+
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+mkesdb [-d] [-m] [-o outfile] infile
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBmkesdb\fP utility generates a conversion catalog for the oficonv library\&. The generated data includes a list of supported encodings and their most important characteristics, such as the decoder module to use\&.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+infile  input file (from oficonv/datasrc/esdb) to be converted
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+  -d    debug mode, print debug information
+
+  -m    process directory catalog or alias file,
+        instead of an encoding description
+
+  -o    [f]ilename: string
+        store output in file f
+.fi
+.PP
+.SH "EXIT STATUS"
+.PP
+The \fBmkesdb\fP utility exits 0 on success, and >0 if an error occurs\&.
+.SH "SEE ALSO"
+.PP
+\fBmkcsmapper\fP(1)
+.SH "COPYRIGHT"
+.PP
+This man page is derived from the FreeBSD mkesdb man page, Copyright (C) 2009 Gabor Kovesdan gabor@FreeBSD.org

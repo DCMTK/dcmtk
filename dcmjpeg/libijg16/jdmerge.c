@@ -44,8 +44,6 @@ typedef long jdmerge_sint64;
 typedef __int64 jdmerge_sint64;
 #elif defined(HAVE_LONG_LONG)
 typedef long long jdmerge_sint64;
-#elif defined (HAVE_LONGLONG)
-typedef longlong jdmerge_sint64;
 #else
 #define JDMERGE_NO_SINT64
 #endif

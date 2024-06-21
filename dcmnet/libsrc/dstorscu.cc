@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -484,7 +484,7 @@ OFCondition DcmStorageSCU::addDicomFilesFromDICOMDIR(const OFFilename &filename,
         OFFilename dirName;
         OFStandard::getDirNameFromPath(dirName, filename, OFFalse /* assumeDirName */);
         // iterate over all items (directory records) where ReferencedFileID is present
-        while (dataset->search(DCM_ReferencedFileID, stack, ESM_afterStackTop, OFTrue).good())
+        while (dataset->search(DCM_ReferencedFileID, stack, ESM_afterStackTop, OFTrue).good() && stack.top()->isElement())
         {
             // make sure that the dataset and element pointer are there
             if (stack.card() > 1)
@@ -564,7 +564,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
         uncompressedXfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         // make sure that the list of presentation contexts is empty before we start
         clearPresentationContexts();
-        // iterate over the list of SOP instance to be transferred
+        // iterate over the list of SOP instances to be transferred
         // (continue with next SOP instance if there already was a transmission)
         if (PresentationContextCounter == 0)
             CurrentTransferEntry = TransferList.begin();
@@ -617,7 +617,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                 if ((*transferEntry)->PresentationContextID == 0)
                 {
                     // check whether transfer syntax is known at all
-                    if (xfer.getXfer() == EXS_Unknown)
+                    if (xfer == EXS_Unknown)
                     {
                         // warn that an unknown (and therefore unsupported) transfer syntax is used
                         DCMNET_WARN("transfer syntax is unknown, trying to propose only this one: "
@@ -638,13 +638,13 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                         status = EC_UnsupportedEncoding;
                     }
                     // check whether transfer syntax uses any kind of compression
-                    else if (xfer.isEncapsulated() || (xfer.getStreamCompression() != ESC_none))
+                    else if (xfer.isPixelDataCompressed() || xfer.isDatasetCompressed())
                     {
                         // create list of proposed transfer syntaxes
                         transferSyntaxes.clear();
                         transferSyntaxes.push_back((*transferEntry)->TransferSyntaxUID.c_str());
                         // check whether compression is lossless and we can decompress it
-                        if (xfer.isLossless())
+                        if (xfer.isLosslessCompressed())
                         {
                             if (DecompressionMode == DM_never)
                             {
@@ -663,7 +663,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                                     status = EC_UnsupportedEncoding;
                                 }
                             }
-                            else if ((xfer.getStreamCompression() != ESC_none) /* e.g. ZIP compression */ ||
+                            else if (xfer.isDatasetCompressed() /* e.g. ZIP compression */ ||
                                 DcmCodecList::canChangeCoding(xfer.getXfer(), EXS_LittleEndianExplicit))
                             {
                                 DCMNET_DEBUG("also propose the three uncompressed transfer syntaxes, "
@@ -691,7 +691,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                             // check whether we can decompress the lossy compression
                             if (DecompressionMode == DM_lossyAndLossless)
                             {
-                                if ((xfer.getStreamCompression() != ESC_none) /* is there any lossy stream compression? */ ||
+                                if (xfer.isDatasetCompressed() /* is there any lossy stream compression? */ ||
                                     DcmCodecList::canChangeCoding(xfer.getXfer(), EXS_LittleEndianExplicit))
                                 {
                                     DCMNET_DEBUG("also propose the three uncompressed transfer syntaxes, "
@@ -729,7 +729,7 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                         (*transferEntry)->PresentationContextID = OFstatic_cast(T_ASC_PresentationContextID, presContextID);
                         // increase ID for the next presentation context
                         presContextID += 2;
-                        // count total number of presentation context
+                        // count total number of presentation contexts
                         ++PresentationContextCounter;
                     } else {
                         if (status == EC_UnsupportedEncoding)
@@ -794,7 +794,7 @@ OFCondition DcmStorageSCU::sendSOPInstances()
     if (!TransferList.empty())
     {
         DcmDataset *dataset = NULL;
-        // iterate over the list of SOP instance to be transferred
+        // iterate over the list of SOP instances to be transferred
         // (continue with next SOP instance if there already was a transmission)
         OFListConstIterator(TransferEntry *) lastEntry = TransferList.end();
         while ((CurrentTransferEntry != lastEntry) && status.good())
@@ -872,9 +872,8 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     // notify user of this class that the current SOP instance is to be sent
                     notifySOPInstanceToBeSent(**CurrentTransferEntry);
                     // call the inherited method from the base class doing the real work
-                    status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
-                        dataset, (*CurrentTransferEntry)->ResponseStatusCode,
-                        MoveOriginatorAETitle, MoveOriginatorMsgID);
+                    status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */, dataset,
+                        (*CurrentTransferEntry)->ResponseStatusCode, MoveOriginatorAETitle, MoveOriginatorMsgID);
                     // store some further information (even in case of error)
                     (*CurrentTransferEntry)->AssociationNumber = AssociationCounter;
                     (*CurrentTransferEntry)->NetworkTransferSyntax = dataset->getCurrentXfer();
@@ -1207,7 +1206,7 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
                 {
                     DCMNET_DEBUG("retired transfer syntax: " << transferSyntaxUID);
                 }
-                else if (xfer.getXfer() == EXS_Unknown)
+                else if (xfer == EXS_Unknown)
                 {
                     // check whether the DICOM standard prefix for transfer syntax UIDs is used
                     if (sopClassUID.compare(0, 17, "1.2.840.10008.1.2") == 0)

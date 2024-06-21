@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,8 +19,8 @@
  *
  */
 
-#include "dcmtk/dcmiod/modenhusseries.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/modenhusseries.h"
 #include "dcmtk/dcmiod/iodutil.h"
 
 const OFString IODEnhancedUSSeriesModule::m_ModuleName = "EnhancedUSSeries";

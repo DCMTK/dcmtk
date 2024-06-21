@@ -1,4 +1,4 @@
-.TH "dcmdjpls" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdjpls" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdjpls \- Decode JPEG-LS compressed DICOM file
@@ -17,9 +17,9 @@ The \fBdcmdjpls\fP utility reads a JPEG-ls compressed DICOM image (\fIdcmfile-in
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -68,9 +68,9 @@ input file format:
          read data set without file meta information
 
   # This option allows one to decompress JPEG-LS compressed DICOM objects that have
-  # been stored as dataset without meta-header. Such a thing should not exist
+  # been stored as dataset without meta-header\&. Such a thing should not exist
   # since the transfer syntax cannot be reliably determined without meta-header,
-  # but unfortunately it does.
+  # but unfortunately it does\&.
 .fi
 .PP
 .SS "processing options"
@@ -82,7 +82,7 @@ planar configuration:
          restore original planar configuration (default)
 
   # If the compressed image is a color image, restore the planar
-  # configuration as described in the Planar Configuration attribute.
+  # configuration as described in the Planar Configuration attribute\&.
 
   +pa  --planar-auto
          automatically determine planar configuration
@@ -90,34 +90,34 @@ planar configuration:
 
   # If the compressed image is a color image, store in color-by-plane
   # planar configuration if required by the SOP class and photometric
-  # interpretation. Hardcopy Color images are always stored color-by-
+  # interpretation\&. Hardcopy Color images are always stored color-by-
   # plane, and the revised Ultrasound image objects are stored color-by-
-  # plane if the color model is YBR_FULL.  Everything else is stored
-  # color-by-pixel.
+  # plane if the color model is YBR_FULL\&.  Everything else is stored
+  # color-by-pixel\&.
 
   +px  --color-by-pixel
          always store color-by-pixel
 
   # If the compressed image is a color image, store in color-by-pixel
-  # planar configuration.
+  # planar configuration\&.
 
   +pl  --color-by-plane
          always store color-by-plane
 
   # If the compressed image is a color image, store in color-by-plane
-  # planar configuration.
+  # planar configuration\&.
 
 SOP Instance UID:
 
   +ud  --uid-default
          keep same SOP Instance UID (default)
 
-  #  Never assigns a new SOP instance UID.
+  #  Never assigns a new SOP instance UID\&.
 
   +ua  --uid-always
          always assign new UID
 
-  # Always assigns a new SOP instance UID.
+  # Always assigns a new SOP instance UID\&.
 
 workaround options for incorrect JPEG-LS encodings:
 
@@ -198,12 +198,12 @@ data set trailing padding (not with --write-dataset):
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
-JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
-JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
+JPEGLSLosslessTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.80
+JPEGLSLossyTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.81
 .fi
 .PP
 .PP
@@ -213,9 +213,9 @@ JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .SH "LOGGING"
@@ -240,4 +240,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmcjpls\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2009-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2009-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

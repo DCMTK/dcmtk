@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -19,7 +19,7 @@ The \fBdump2dcm\fP utility converts an ASCII dump file to a DICOM file\&. The du
 .nf
 dumpfile-in  dump input filename
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -188,43 +188,43 @@ The individual parts of a line have the following syntax:
 .nf
 Tag:   (gggg,eeee)
        with gggg and eeee are 4 character hexadecimal values
-       representing group and element tag.  Spaces and tabs can be
-       anywhere in a tag specification.
+       representing group and element tag\&.  Spaces and tabs can be
+       anywhere in a tag specification\&.
 VR:    Value Representation must be written as 2 characters as in
-       Part 6 of the DICOM standard.  No spaces or tabs are allowed
-       between the two characters.  If the VR can be determined from
-       the tag, this part of a line is optional.
+       Part 6 of the DICOM standard\&.  No spaces or tabs are allowed
+       between the two characters\&.  If the VR can be determined from
+       the tag, this part of a line is optional\&.
 Value: There are several rules for writing values:
-       1. US, SS, UL, SL, UV, SV, FD, FL, OD, OF, OL and OV are written
-          as decimal strings that can be read by scanf().
-       2. AT is written as '(gggg,eeee)' with additional spaces
+       1\&. US, SS, UL, SL, UV, SV, FD, FL, OD, OF, OL and OV are written
+          as decimal strings that can be read by scanf()\&.
+       2\&. AT is written as '(gggg,eeee)' with additional spaces
           stripped off automatically and gggg and eeee being decimal
-          strings that can be read by scanf().
-       3. OB and OW values are written as byte or word hexadecimal
-          values separated by '\' character.  Alternatively, OB or OW
+          strings that can be read by scanf()\&.
+       3\&. OB and OW values are written as byte or word hexadecimal
+          values separated by '\\' character\&.  Alternatively, OB or OW
           values can be read from a separate file by writing the
-          filename prefixed by a '=' character (e.g. '=largepix.dat').
-          The contents of the file will be read as is.  By default, OW
+          filename prefixed by a '=' character (e\&.g\&. '=largepix\&.dat')\&.
+          The contents of the file will be read as is\&.  By default, OW
           data is expected to be little endian ordered and will be
-          swapped if necessary.  No checks will be made to ensure that
+          swapped if necessary\&.  No checks will be made to ensure that
           the amount of data is reasonable in terms of other attributes
-          such as Rows or Columns.
+          such as Rows or Columns\&.
           In case of compressed pixel data, the line should start with
           '(7fe0,0010) OB (PixelSequence' in order to distinguish from
-          uncompressed pixel data.
-       4. UI is written as '=Name' in data dictionary or as unique
-          identifier string (see 6.), e.g. '[1.2.840.....]'.
-       5. Strings without () <> [] spaces, tabs and # can be written
-          directly.
-       6. Other strings must be surrounded by '[' and ']'.  No bracket
-          structure is passed.  The value ends at the last ']' in the
-          line.  Anything after the ']' is interpreted as comment.
-       7. '(' and '<' are interpreted special and may not be used when
+          uncompressed pixel data\&.
+       4\&. UI is written as '=Name' in data dictionary or as unique
+          identifier string (see 6\&.), e\&.g\&. '[1\&.2\&.840\&.\&.\&.\&.\&.]'\&.
+       5\&. Strings without () <> [] spaces, tabs and # can be written
+          directly\&.
+       6\&. Other strings must be surrounded by '[' and ']'\&.  No bracket
+          structure is passed\&.  The value ends at the last ']' in the
+          line\&.  Anything after the ']' is interpreted as comment\&.
+       7\&. '(' and '<' are interpreted special and may not be used when
           writing an input file by hand as beginning characters of a
-          string.  Multiple Value are separated by '\'.  The lines
-          need not be sorted into ascending tag order.  References in
-          DICOM Directories are not supported.  Semantic errors are
-          not detected.
+          string\&.  Multiple Value are separated by '\\'\&.  The lines
+          need not be sorted into ascending tag order\&.  References in
+          DICOM Directories are not supported\&.  Semantic errors are
+          not detected\&.
 .fi
 .PP
 .SS "Examples"
@@ -234,11 +234,11 @@ The following lines show valid examples of the syntax described above:
 .nf
  (0008,0020) DA [19921012]            #  8, 1 StudyDate
  (0008,0016) UI =MRImageStorage       # 26, 1 SOPClassUID
- (0002,0012) UI [1.2.276.0.7230010.100.1.1]
- (0020,0032) DS [0.0\0.0]             #  8, 2 ImagePositionPatient
+ (0002,0012) UI [1\&.2\&.276\&.0\&.7230010\&.100\&.1\&.1]
+ (0020,0032) DS [0\&.0\\0\&.0]             #  8, 2 ImagePositionPatient
  (0028,0009) AT (3004,000c)           #  4, 1 FrameIncrementPointer
  (0028,0010) US 256                   #  4, 1 Rows
- (0002,0001) OB 01\00
+ (0002,0001) OB 01\\00
 .fi
 .PP
 .SS "Limitations"
@@ -265,4 +265,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

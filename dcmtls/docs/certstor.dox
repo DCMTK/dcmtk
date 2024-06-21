@@ -64,31 +64,54 @@ The DICOM standard defines a number of security profiles for the use of the
 DICOM network protocol over TLS. DCMTK supports the following profiles:
 
 \verbatim
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile (default)
+          Non-downgrading BCP 195 TLS Profile (retired)
 
   +px   --profile-bcp195
-          BCP 195 TLS Profile
+          BCP 195 TLS Profile (retired)
 
   +pz   --profile-bcp195-ex
-          Extended BCP 195 TLS Profile
-
-  +pa   --profile-aes
-          AES TLS Secure Transport Connection Profile (retired)
+          Extended BCP 195 TLS Profile (retired)
 
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
 
   +pn   --profile-null
           Authenticated unencrypted communication
           (retired, was used in IHE ATNA)
 \endverbatim
 
-The Non-downgrading BCP 195 TLS Profile, which is selected by default, is
-currently the most secure choice, as older protocol versions and cipher suites
-are explicitly disabled. It does not support backward compatibility with the
-older profiles. It uses either TLS version 1.2 or 1.3 and will default to TLS
-1.3 when possible.
+The BCP 195 RFC 8996 TLS Profile, which is selected by default, is a secure
+choice while providing backward compatibility with the earlier BCP 195 profiles.
+It does not support backward compatibility with the older profiles.
+It uses either TLS version 1.2 or 1.3 and will default to TLS 1.3 when possible.
+
+The Modified BCP 195 RFC 8996 TLS Profile, which adds further constraints
+compared to the BCP 195 RFC 8996 TLS Profile, cannot be implemented with
+OpenSSL 1.0.2 to 3.0.x because it requires support for the TLS 1.2 Camellia
+ciphersuites in GCM mode, which is not available in OpenSSL. Should future
+OpenSSL releases add support for these ciphersuites, then this option will
+automatically be enabled when compiling DCMTK.
+
+The Non-downgrading BCP 195 TLS Profile, which was the default in DCMTK 3.6.7,
+also disables older protocol versions and cipher suites. It does, however,
+support DHE ciphersuites, whereas RFC 9325 recommends that these should not
+be used. It uses either TLS version 1.2 or 1.3 and will default to TLS 1.3
+when possible.
 
 The BCP 195 TLS Profile, which was the default up to DCMTK 3.6.6, will try to
 negotiate cryptographic algorithms that are currently considered secure, but
@@ -128,12 +151,16 @@ using the following option:
           add ciphersuite to list of negotiated suites
 \endverbatim
 
-The list of supported ciphersuites can be printed using the following option:
+The list of supported TLS 1.0-1.2 ciphersuites can be printed
+using the following option:
 
 \verbatim
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 \endverbatim
+
+Option \c \--cipher can be specified more than once to add multiple
+ciphersuites.
 
 \section dcmtls_certstore_peer_authentication Peer authentication
 
@@ -196,6 +223,8 @@ line options for this purpose:
     +cd   --add-cert-dir  [d]irectory: string
             add certificates in d to list of certificates
 \endverbatim
+
+Both options can be specified more than once, also in combination.
 
 \subsection dcmtls_certstore_certification_authority_file File-based management of trusted root certificates
 
@@ -276,8 +305,7 @@ The following CRL options are available starting with DCMTK 3.6.7:
 
 \verbatim
   +crl  --add-crl-file  [f]ilename: string
-          add certificate revocation list file
-          (implies --enable-crl-vfy)
+          add certificate revocation list file (implies --enable-crl-vfy)
 
   +crv  --enable-crl-vfy
           enable leaf CRL verification

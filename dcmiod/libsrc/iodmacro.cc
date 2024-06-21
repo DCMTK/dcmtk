@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,10 +19,17 @@
  *
  */
 
-#include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmiod/iodutil.h"  // for static IOD helpers
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcvrur.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvruc.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // --------------------------- Code Sequence Macro ---------------------------
 
@@ -888,7 +895,7 @@ OFCondition ImageSOPInstanceReferenceMacro::addReferencedFrameNumber(const Uint1
         val += "\\";
     }
     char buf[10];
-    sprintf(buf, "%u", value);
+    OFStandard::snprintf(buf, sizeof(buf), "%u", value);
     val += buf;
     return ReferencedFrameNumber.putOFStringArray(val);
 }

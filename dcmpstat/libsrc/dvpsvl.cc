@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,7 @@
 #include "dcmtk/dcmpstat/dvpssv.h"      /* for DVPSSoftcopyVOI */
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
-
+#include "dcmtk/ofstd/ofstd.h"
 
 /* --------------- class DVPSVOILUT --------------- */
 
@@ -59,9 +59,24 @@ OFCondition DVPSVOILUT::read(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, voiLUTDescriptor)
+  // LUTDescriptor can be US or SS
+  if ((EC_Normal == dset.search((DcmTagKey &)voiLUTDescriptor.getTag(),
+    stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_SS))
+  {
+    // We explicitly use DcmElement::operator=(), which works for US and SS
+    DcmElement *vLUTDescriptor = &voiLUTDescriptor;
+    vLUTDescriptor->operator=(* OFstatic_cast(DcmElement *, stack.top()));
+  }
+
   READ_FROM_DATASET(DcmLongString, EVR_LO, voiLUTExplanation)
-  READ_FROM_DATASET(DcmUnsignedShort, EVR_US, voiLUTData)
+
+  stack.clear();
+  if ((EC_Normal == dset.search((DcmTagKey &)voiLUTData.getTag(), stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_US || stack.top()->ident() == EVR_OW))
+  {
+    // we deliberately call DcmElement::operator=() here, which will work for both DcmUnsignedShort and DcmOtherByteOtherWord parameters
+    DcmElement *vldata = &voiLUTData;
+    vldata->operator=(*(DcmElement *)(stack.top()));
+  }
 
   if (EC_Normal == result)
   {
@@ -74,7 +89,7 @@ OFCondition DVPSVOILUT::read(DcmItem &dset)
     voiLUTDescriptor.getUint16(numEntries,0);
     voiLUTDescriptor.getUint16(bits,2);
     char descr[100];
-    sprintf(descr, "VOI LUT entries=%u bits=%u", (unsigned int)numEntries, (unsigned int)bits);
+    OFStandard::snprintf(descr, sizeof(descr), "VOI LUT entries=%u bits=%u", (unsigned int)numEntries, (unsigned int)bits);
     voiLUTExplanation.putString(descr);
   }
   return result;

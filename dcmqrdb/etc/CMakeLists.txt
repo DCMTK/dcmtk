@@ -1,2 +1,2 @@
 # declare installation files
-install(FILES dcmqrscp.cfg DESTINATION "${CMAKE_INSTALL_FULL_SYSCONFDIR}" COMPONENT etc)
+install(FILES dcmqrscp.cfg dcmqrprf.cfg DESTINATION "${CMAKE_INSTALL_SYSCONFDIR}" COMPONENT etc)

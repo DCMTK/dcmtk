@@ -1,4 +1,4 @@
-.TH "pdf2dcm" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "pdf2dcm" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 pdf2dcm \- Encapsulate PDF file into DICOM file format
@@ -19,7 +19,7 @@ The \fBpdf2dcm\fP utility reads a PDF file (\fIpdffile-in\fP), converts it to a 
 .nf
 pdffile-in   PDF input filename to be encapsulated
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -115,7 +115,7 @@ burned-in annotation:
 .nf
 other processing options:
 
-  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+  -k   --key  [k]ey: gggg,eeee='str', path or dictionary name='str'
          add further attribute
 .fi
 .PP
@@ -164,23 +164,14 @@ data set trailing padding (not with --write-dataset):
 .SS "Attribute Sources"
 The application may be fed with some additional input for filling mandatory (and optional) attributes in the new DICOM file like patient, study and series information:
 .PP
-.PD 0
 .IP "\(bu" 2
 The \fI--key\fP option can be used to add further attributes to the DICOM output file\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 It is also possible to specify sequences, items and nested attributes using the \fI--key\fP option\&. In these cases, a special 'path' notation has to be used\&. Details on this path notation can be found in the documentation of \fBdcmodify\fP\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 The \fI--key\fP option can be present more than once\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 The value part (after the '=') may be absent causing the attribute to be set with zero length\&.
-.PP
-.PD 0
 .IP "\(bu" 2
 Please be advised that the \fI--key\fP option is applied at the very end, just before saving the DICOM file, so there is no value checking whatsoever\&.
 .PP
@@ -231,4 +222,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pdf\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2005-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2005-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

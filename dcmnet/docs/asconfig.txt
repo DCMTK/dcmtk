@@ -6,8 +6,9 @@ ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
   application, based on so-called "association negotiation profiles"
   which may be read from a configuration file.
 
-  This mechanism is currently enabled in the storescu and storescp
-  applications.
+  Originally, this mechanism was only enabled in the storescu and storescp
+  applications.  In the meantime, it is also used by other tools such as
+  dcmrecv and dcmqrscp.
 
 
 1. CONFIGURATION FILE FORMAT
@@ -31,6 +32,7 @@ ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
   The well-known "INI" syntax is extended by the definition of
   supersections which define a grouping for sections, using the
   following syntax:
+
   [[Supersection]]
 
   The content of the configuration file needs to establish a true tree
@@ -42,11 +44,13 @@ ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
 
   A configuration file for association negotiation profiles may contain
   the following supersections:
+
   [[TransferSyntaxes]]
   [[PresentationContexts]]
   [[Profiles]]
   [[SCPSCURoleSelection]]
   [[ExtendedNegotiation]]
+
   The first three supersections are mandatory, the others are optional.
 
 
@@ -89,6 +93,14 @@ On a big endian machine (Sparc, M68K, MIPS)
   - "LocalEndianExplicit" is interpreted as "BigEndianExplicit"
   - "OppositeEndianExplicit" is interpreted as "LittleEndianExplicit"
 
+Please note that the order of transfer syntaxes within a section might be
+significant.  For example, an implementation of a DICOM Storage SCP, such as
+storescp or dcmrecv, will use this order to determine which transfer syntax
+to prefer when multiple transfer syntaxes are offered by the SCU and are
+acceptable for the SCP.  The transfer syntax selection policy is to prefer
+the first transfer syntax that is acceptable, i.e. the one with the lowest
+number.
+
 
 2.2 PRESENTATION CONTEXTS
 
@@ -96,9 +108,9 @@ This supersection contains one or more sections with arbitrary
 user-defined but unique section names that are used as symbolic labels.
 Within each section, one or more key/value pairs are contained.  The key
 names are "PresentationContext1", "PresentationContext2" etc., in
-increasing order.  Each list must not contain more than 128 entries,
-due to the limitation of the DICOM network protocol to 128 presentation
-contexts per association.
+increasing order.  For an association requestor, each list must not
+contain more than 128 entries, due to the limitation of the DICOM network
+protocol to 128 presentation contexts per association.
 
 Each value consists of two parts, separated by a single backslash
 character ('\').  The first value denotes a DICOM SOP Class UID or
@@ -233,4 +245,4 @@ procedure can use exactly one of these profiles.
 
 Examples for association negotiation profiles that can be used
 with the storescu and storescp tools are provided with DCMTK, as
-"storescp.cfg" and "storescu.cfg" in the <etcdir> directory.
+"storescu.cfg" and "storescp.cfg" in the <etcdir> directory.

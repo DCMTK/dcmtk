@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2017, OFFIS e.V.
+ *  Copyright (C) 2002-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,7 +62,7 @@ offile_off_t DcmBufferConsumer::avail() const
 offile_off_t DcmBufferConsumer::write(const void *buf, offile_off_t buflen)
 {
   offile_off_t result = 0;
-  if (status_.good() && buf && buflen)
+  if (buflen && buf && status_.good())
   {
     result = bufSize_ - filled_;
     if (result > buflen) result = buflen;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2022, OFFIS e.V.
+ *  Copyright (C) 2003-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,6 +83,8 @@ public:
 
   /** this method evaluates an incoming association request according to the settings
    *  of a profile maintained by this object. It is used by an association acceptor.
+   *  @note The first transfer syntax in the list that is acceptable will be
+   *    preferred.  More details can be found in the text file "asconfig.txt".
    *  @param profile symbolic profile name, must not be NULL
    *  @param assoc T_ASC_Association structure to be evaluated
    *  @return EC_Normal if successful, an error code otherwise

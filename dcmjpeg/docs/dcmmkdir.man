@@ -20,45 +20,74 @@ Profiles.
 
 Currently the following profiles are supported (others might be added later):
 
-\li General Purpose CD-R Interchange (STD-GEN-CD)
-\li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
-\li General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
-\li General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
-\li General Purpose BD Interchange with JPEG (STD-GEN-BD-JPEG)
-\li General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K)
-\li General Purpose BD Interchange with MPEG2 MP\@ML (STD-GEN-BD-MPEG2-MPML)
-\li General Purpose BD Interchange with MPEG2 MP\@HL (STD-GEN-BD-MPEG2-MPHL)
-\li General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.1
-    (STD-GEN-BD-MPEG4-HPLV41)
-\li General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible
-    HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
-\li General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 2D
-    video (STD-GEN-BD-MPEG4-HPLV42-2D)
-\li General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 3D
-    video (STD-GEN-BD-MPEG4-HPLV42-3D)
-\li General Purpose BD Interchange with MPEG-4 AVC/H.264 Stereo HiP\@Level4.2
-    (STD-GEN-BD-MPEG4-SHPLV42)
-\li General Purpose USB and Flash Memory Interchange with JPEG
-    (STD-GEN-USB/MMC/CF/SD-JPEG)
-\li General Purpose USB and Flash Memory Interchange with JPEG 2000
-    (STD-GEN-USB/MMC/CF/SD-J2K)
-\li General Purpose MIME Interchange (STD-GEN-MIME)
-\li DVD Interchange with MPEG2 MP\@ML (STD-DVD-MPEG2-MPML)
-\li Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
-\li 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
-\li 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
-\li Dental Radiograph Interchange (STD-DEN-CD)
-\li CT/MR Studies on various Media (STD-CTMR-xxxx)
-\li Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
-\li Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
-\li Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
-\li Ultrasound Single & Multi-Frame for Image Display (STD-US-ID-MF-xxxx)
-\li Ultrasound Single & Multi-Frame with Spatial Calibration
-    (STD-US-SC-MF-xxxx)
-\li Ultrasound Single & Multi-Frame with Combined Calibration
-    (STD-US-CC-MF-xxxx)
-\li 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
-\li Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
+- General Purpose CD-R Interchange (STD-GEN-CD)
+
+- General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
+
+- General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
+
+- General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
+
+- General Purpose BD Interchange with JPEG (STD-GEN-BD-JPEG)
+
+- General Purpose BD Interchange with JPEG 2000 (STD-GEN-BD-J2K)
+
+- General Purpose BD Interchange with MPEG2 MP\@ML (STD-GEN-BD-MPEG2-MPML)
+
+- General Purpose BD Interchange with MPEG2 MP\@HL (STD-GEN-BD-MPEG2-MPHL)
+
+- General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.1
+  (STD-GEN-BD-MPEG4-HPLV41)
+
+- General Purpose BD Interchange with MPEG-4 AVC/H.264 BD-Compatible
+  HiP\@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
+
+- General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 2D
+  video (STD-GEN-BD-MPEG4-HPLV42-2D)
+
+- General Purpose BD Interchange with MPEG-4 AVC/H.264 HiP\@Level4.2 for 3D
+  video (STD-GEN-BD-MPEG4-HPLV42-3D)
+
+- General Purpose BD Interchange with MPEG-4 AVC/H.264 Stereo HiP\@Level4.2
+  (STD-GEN-BD-MPEG4-SHPLV42)
+
+- General Purpose USB and Flash Memory Interchange with JPEG
+  (STD-GEN-USB/MMC/CF/SD-JPEG)
+
+- General Purpose USB and Flash Memory Interchange with JPEG 2000
+  (STD-GEN-USB/MMC/CF/SD-J2K)
+
+- General Purpose MIME Interchange (STD-GEN-MIME)
+
+- DVD Interchange with MPEG2 MP\@ML (STD-DVD-MPEG2-MPML)
+
+- Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
+
+- 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
+
+- 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
+
+- Dental Radiograph Interchange (STD-DEN-CD)
+
+- CT/MR Studies on various Media (STD-CTMR-xxxx)
+
+- Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
+
+- Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
+
+- Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
+
+- Ultrasound Single & Multi-Frame for Image Display (STD-US-ID-MF-xxxx)
+
+- Ultrasound Single & Multi-Frame with Spatial Calibration
+  (STD-US-SC-MF-xxxx)
+
+- Ultrasound Single & Multi-Frame with Combined Calibration
+  (STD-US-CC-MF-xxxx)
+
+- 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
+
+- Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 
 This tool extends \b dcmgpdir which can only create General Purpose \e DICOMDIR
 files.  The default behavior of \b dcmmkdir (with \e --general-purpose) is
@@ -477,6 +506,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmmkdir_copyright COPYRIGHT
 
-Copyright (C) 2001-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

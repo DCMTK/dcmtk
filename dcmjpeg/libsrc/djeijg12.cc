@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2021, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,16 +26,6 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofdiag.h"
 #include <csetjmp>
-
-// These two macros are re-defined in the IJG header files.
-// We undefine them here and hope that IJG's configure has
-// come to the same conclusion that we have...
-#ifdef HAVE_STDLIB_H
-#undef HAVE_STDLIB_H
-#endif
-#ifdef HAVE_STDDEF_H
-#undef HAVE_STDDEF_H
-#endif
 
 // use 16K blocks for temporary storage of compressed JPEG data
 #define IJGE12_BLOCKSIZE 16384
@@ -350,7 +340,7 @@ OFCondition DJCompressIJG12Bit::encode(
   Uint32 & length)
 {
 
-  struct jpeg_compress_struct cinfo;
+  struct dcmtk_jpeg12_compress_struct cinfo;
   struct DJEIJG12ErrorStruct jerr;
   cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.instance = this;
@@ -494,7 +484,7 @@ OFCondition DJCompressIJG12Bit::encode(
 
 #include DCMTK_DIAGNOSTIC_POP
 
-void DJCompressIJG12Bit::initDestination(jpeg_compress_struct *cinfo)
+void DJCompressIJG12Bit::initDestination(dcmtk_jpeg12_compress_struct *cinfo)
 {
   cleanup(); // erase old list of compressed blocks, if any
 
@@ -512,7 +502,7 @@ void DJCompressIJG12Bit::initDestination(jpeg_compress_struct *cinfo)
   }
 }
 
-int DJCompressIJG12Bit::emptyOutputBuffer(jpeg_compress_struct *cinfo)
+int DJCompressIJG12Bit::emptyOutputBuffer(dcmtk_jpeg12_compress_struct *cinfo)
 {
   bytesInLastBlock = 0;
   unsigned char *newBlock = new unsigned char[IJGE12_BLOCKSIZE];
@@ -532,7 +522,7 @@ int DJCompressIJG12Bit::emptyOutputBuffer(jpeg_compress_struct *cinfo)
 }
 
 
-void DJCompressIJG12Bit::termDestination(jpeg_compress_struct *cinfo)
+void DJCompressIJG12Bit::termDestination(dcmtk_jpeg12_compress_struct *cinfo)
 {
   bytesInLastBlock = IJGE12_BLOCKSIZE - cinfo->dest->free_in_buffer;
 }

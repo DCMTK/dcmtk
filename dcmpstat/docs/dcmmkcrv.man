@@ -27,11 +27,11 @@ two-dimensional curves.
 \section dcmmkcrv_parameters PARAMETERS
 
 \verbatim
-dcmfile-in    DICOM input image file
+dcmfile-in    DICOM input image file ("-" for stdin)
 
 curvedata-in  curve data input file (text)
 
-dcmfile-out   DICOM output filename
+dcmfile-out   DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section dcmmkcrv_options OPTIONS
@@ -178,6 +178,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmmkcrv_copyright COPYRIGHT
 
-Copyright (C) 1998-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

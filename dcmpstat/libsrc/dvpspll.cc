@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2022, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@ OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
-  if (EC_Normal == dset.search(DCM_RETIRED_PresentationLUTContentSequence, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(DCM_RETIRED_PresentationLUTContentSequence, stack, ESM_fromHere, OFFalse) && (stack.top()->ident() == EVR_SQ))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)

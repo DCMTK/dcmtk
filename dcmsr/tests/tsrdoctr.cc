@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -173,7 +173,7 @@ OFTEST(dcmsr_compareNodes)
     /* create an "incompatible" node */
     DSRNumTreeNode numNode(DSRTypes::RT_contains);
     /* and compare it to the initial node */
-    OFCHECK(numNode != node);
+    OFCHECK(numNode.operator!=(node)); // this resolves operator ambiguity in C++20
     delete newNode;
     /* try the same with an "included template" tree node */
     DSRIncludedTemplateTreeNode templNode1(DSRSharedSubTemplate(NULL), DSRTypes::RT_contains);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2014, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,6 +21,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpeg/djencpro.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmjpeg/djcparam.h"
 #include "dcmtk/dcmjpeg/djrploss.h"
 #include "dcmtk/dcmjpeg/djeijg8.h"
@@ -64,7 +65,7 @@ void DJEncoderProgressive::createDerivationDescription(
   derivationDescription =  "Lossy compression with JPEG full progression ";
   if (bitsPerSample > 8) derivationDescription += "12 bit"; else derivationDescription += "8 bit";
   derivationDescription += ", IJG quality factor ";
-  sprintf(buf, "%u", rp->getQuality());
+  OFStandard::snprintf(buf, sizeof(buf), "%u", rp->getQuality());
   derivationDescription += buf;
   derivationDescription += ", compression ratio ";
   appendCompressionRatio(derivationDescription, ratio);

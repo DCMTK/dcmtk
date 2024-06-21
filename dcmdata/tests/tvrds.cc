@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2020, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,7 +30,7 @@
 
 OFTEST(dcmdata_decimalString_1)
 {
-    DcmDecimalString decStr(DCM_ContourData, EVR_DS);
+    DcmDecimalString decStr(DCM_ContourData);
     OFVector<Float64> doubleVals;
     OFCHECK(decStr.putString("1\\2.0\\3.5\\-4.99\\+500.005\\6.66E-01").good());
     OFCHECK(decStr.getFloat64Vector(doubleVals).good());
@@ -45,7 +45,7 @@ OFTEST(dcmdata_decimalString_1)
 
 OFTEST(dcmdata_decimalString_2)
 {
-    DcmDecimalString decStr(DCM_ContourData, EVR_DS);
+    DcmDecimalString decStr(DCM_ContourData);
     OFVector<Float64> doubleVals;
     /* insert a NULL byte into the string */
     OFCHECK(decStr.putString("1\\2.0\\3.5\\-4.99\0\\+500.005\\6.66E-01", 34).good());
@@ -61,7 +61,7 @@ OFTEST(dcmdata_decimalString_2)
 
 OFTEST(dcmdata_decimalString_3)
 {
-    DcmDecimalString decStr(DCM_ContourData, EVR_DS);
+    DcmDecimalString decStr(DCM_ContourData);
     OFVector<Float64> doubleVals;
     /* insert a NULL byte into the string */
     OFCHECK(decStr.putOFStringArray(OFString("1\\2.0\\3.5\\-4.99\0\\+500.005\\6.66E-01", 34)).good());
@@ -77,7 +77,7 @@ OFTEST(dcmdata_decimalString_3)
 
 OFTEST(dcmdata_decimalString_4)
 {
-    DcmDecimalString decStr(DCM_ContourData, EVR_DS);
+    DcmDecimalString decStr(DCM_ContourData);
     OFVector<Float64> doubleVals;
     OFCHECK(decStr.putString("1\\2.0\\3.5\\-4.99\\+500.005\\6.66E-01\\").good());
     OFCHECK_EQUAL(decStr.getVM(), 7);
@@ -96,7 +96,7 @@ OFTEST(dcmdata_decimalString_putFloat64)
 {
     // Test insertion in the beginning
     OFString testStr;
-    DcmDecimalString decStr(DCM_ContourData, EVR_DS);
+    DcmDecimalString decStr(DCM_ContourData);
     OFCHECK(decStr.putFloat64(0, 0).good());
     decStr.getOFStringArray(testStr);
     OFCHECK(testStr == "0");

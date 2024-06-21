@@ -27,9 +27,9 @@ An appropriate XML file can be created using the \b dsr2xml tool (option
 \section xml2dsr_parameters PARAMETERS
 
 \verbatim
-xmlfile-in   XML input filename to be converted (stdin: "-")
+xmlfile-in   XML input filename to be converted ("-" for stdin)
 
-dsrfile-out  DICOM SR output filename
+dsrfile-out  DICOM SR output filename ("-" for stdout)
 \endverbatim
 
 \section xml2dsr_options OPTIONS
@@ -187,7 +187,7 @@ ChestCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                   1.2.840.10008.5.1.4.1.1.88.67
 RadiopharmaceuticalRadiationDoseSRStorage    1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                            1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage            1.2.840.10008.5.1.4.1.1.88.70
+ImplantationPlanSRStorage                    1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                  1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                 1.2.840.10008.5.1.4.1.1.88.72
 PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
@@ -311,6 +311,6 @@ It is an error if no data dictionary can be loaded.
 
 \section xml2dsr_copyright COPYRIGHT
 
-Copyright (C) 2003-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

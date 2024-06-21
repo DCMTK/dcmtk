@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2020, OFFIS e.V.
+ *  Copyright (C) 2013-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -41,9 +41,6 @@ static OFLogger dcmrecvLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APP
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-/* default application entity title */
-#define APPLICATIONTITLE "DCMRECV"
-
 
 /* exit codes for this command line tool */
 /* (common codes are defined in "ofexit.h" included from "ofconapp.h") */
@@ -80,8 +77,8 @@ int main(int argc, char *argv[])
 
     const char *opt_configFile = NULL;
     const char *opt_profileName = NULL;
-    const char *opt_aeTitle = APPLICATIONTITLE;
-    const char *opt_outputDirectory = ".";
+    const char *opt_aeTitle = NULL;                 // default: respond with called AE title
+    const char *opt_outputDirectory = ".";          // default: current directory
     const char *opt_filenameExtension = "";
 
     OFCmdUnsignedInt opt_port = 0;
@@ -91,7 +88,6 @@ int main(int argc, char *argv[])
     T_DIMSE_BlockingMode opt_blockingMode = DIMSE_BLOCKING;
 
     OFBool opt_showPresentationContexts = OFFalse;  // default: do not show presentation contexts in verbose mode
-    OFBool opt_useCalledAETitle = OFFalse;          // default: respond with specified application entity title
     OFBool opt_HostnameLookup = OFTrue;             // default: perform hostname lookup (for log output)
 
     DcmStorageSCP::E_DirectoryGenerationMode opt_directoryGeneration = DcmStorageSCP::DGM_NoSubdirectory;
@@ -116,19 +112,19 @@ int main(int argc, char *argv[])
         cmd.addOption("--config-file",         "-xf",  2, "[f]ilename, [p]rofile: string",
                                                           "use profile p from configuration file f");
       cmd.addSubGroup("application entity title:");
-        CONVERT_TO_STRING("set my AE title (default: " << opt_aeTitle << ")", optString1);
-        cmd.addOption("--aetitle",             "-aet", 1, "[a]etitle: string", optString1.c_str());
-        cmd.addOption("--use-called-aetitle",  "-uca",    "always respond with called AE title");
+        cmd.addOption("--use-called-aetitle",  "-uca",    "always respond with called AE title (default)");
+        cmd.addOption("--aetitle",             "-aet", 1, "[a]etitle: string",
+                                                          "set my AE title and check called AE title");
       cmd.addSubGroup("other network options:");
-        CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acseTimeout << ")", optString2);
-        cmd.addOption("--acse-timeout",        "-ta",  1, optString2.c_str(),
+        CONVERT_TO_STRING("[s]econds: integer (default: " << opt_acseTimeout << ")", optString1);
+        cmd.addOption("--acse-timeout",        "-ta",  1, optString1.c_str(),
                                                           "timeout for ACSE messages");
         cmd.addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)",
                                                           "timeout for DIMSE messages");
-        CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
-        CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDULength << ")", optString4);
-        cmd.addOption("--max-pdu",             "-pdu", 1, optString3.c_str(),
-                                                          optString4.c_str());
+        CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
+        CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDULength << ")", optString3);
+        cmd.addOption("--max-pdu",             "-pdu", 1, optString2.c_str(),
+                                                          optString3.c_str());
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
     /* add TLS specific command line options if (and only if) we are compiling with OpenSSL */
@@ -136,8 +132,8 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("general:");
-        CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString5);
-        cmd.addOption("--output-directory",    "-od",  1, optString5.c_str(),
+        CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString4);
+        cmd.addOption("--output-directory",    "-od",  1, optString4.c_str(),
                                                           "write received objects to existing directory d");
       cmd.addSubGroup("subdirectory generation:");
         cmd.addOption("--no-subdir",           "-s",      "do not generate any subdirectories (default)");
@@ -200,12 +196,9 @@ int main(int argc, char *argv[])
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--aetitle"))
-        {
             app.checkValue(cmd.getValue(opt_aeTitle));
-            opt_useCalledAETitle = OFFalse;
-        }
         if (cmd.findOption("--use-called-aetitle"))
-            opt_useCalledAETitle = OFTrue;
+            opt_aeTitle = NULL;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--acse-timeout"))
@@ -282,13 +275,14 @@ int main(int argc, char *argv[])
 
     /* set general network parameters */
     storageSCP.setPort(OFstatic_cast(Uint16, opt_port));
-    storageSCP.setAETitle(opt_aeTitle);
+    if (opt_aeTitle != NULL)
+        storageSCP.setAETitle(opt_aeTitle);
     storageSCP.setMaxReceivePDULength(OFstatic_cast(Uint32, opt_maxPDULength));
     storageSCP.setACSETimeout(OFstatic_cast(Uint32, opt_acseTimeout));
     storageSCP.setDIMSETimeout(OFstatic_cast(Uint32, opt_dimseTimeout));
     storageSCP.setDIMSEBlockingMode(opt_blockingMode);
     storageSCP.setVerbosePCMode(opt_showPresentationContexts);
-    storageSCP.setRespondWithCalledAETitle(opt_useCalledAETitle);
+    storageSCP.setRespondWithCalledAETitle(opt_aeTitle == NULL);
     storageSCP.setHostLookupEnabled(opt_HostnameLookup);
     storageSCP.setDirectoryGenerationMode(opt_directoryGeneration);
     storageSCP.setFilenameGenerationMode(opt_filenameGeneration);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -63,9 +63,8 @@ OFCondition DRTImage::loadFile(const OFFilename &filename,
         cond = DRTImageIOD::read(*format_.getDataset());
         if (cond.good())
         {
-            image_ = new DicomImage(&format_,
-                    format_.getDataset()->getOriginalXfer(),
-                    CIF_MayDetachPixelData);
+            image_ = new DicomImage(&format_, format_.getDataset()->getOriginalXfer(),
+                                    CIF_MayDetachPixelData);
         }
     }
     if (cond.bad())
@@ -78,12 +77,14 @@ OFCondition DRTImage::read(DcmItem *dataset)
     /* get rid of the old image before we mess with its dataset */
     reset();
 
-    dataset_ = dataset;
-    OFCondition cond = DRTImageIOD::read(*format_.getDataset());
+    if (dataset == NULL)
+        return EC_IllegalCall;
+
+    OFCondition cond = DRTImageIOD::read(*dataset);
     if (cond.good())
     {
-        image_ = new DicomImage(&format_,
-                EXS_Unknown, CIF_MayDetachPixelData);
+        dataset_ = dataset;
+        image_ = new DicomImage(dataset_, EXS_Unknown, CIF_MayDetachPixelData);
     }
     else
         clear();

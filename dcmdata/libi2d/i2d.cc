@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/libi2d/i2d.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcfilefo.h"  /* for DcmFileFormat */
 #include "dcmtk/dcmdata/dcdeftag.h"  /* for DCM_ defines */
@@ -454,7 +455,7 @@ OFCondition Image2Dcm::incrementInstanceNumber(DcmDataset *targetDset)
     {
       instanceNumber++;
       char buf[100];
-      sprintf(buf, "%ld", OFstatic_cast(long, instanceNumber));
+      OFStandard::snprintf(buf, sizeof(buf), "%ld", OFstatic_cast(long, instanceNumber));
       OFCondition cond = targetDset->putAndInsertOFStringArray(DCM_InstanceNumber, buf);
       if (cond.bad())
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Instance Number to dataset");
@@ -607,7 +608,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
   if (m_frameLength > 0) compressionRatio = uncompressedSize / m_frameLength;
 
   DcmXfer transport(outputTS);
-  if (transport.isEncapsulated())
+  if (transport.usesEncapsulatedFormat())
   {
     m_offsetList.clear();
     insertEncapsulatedPixelDataFirstFrame(dset, pixData, m_frameLength, outputTS);
@@ -686,7 +687,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
   if ( m_pixelAspectRatioH != m_pixelAspectRatioV )
   {
     char buf[200];
-    int err = sprintf(buf, "%u\\%u", m_pixelAspectRatioV, m_pixelAspectRatioH);
+    int err = OFStandard::snprintf(buf, sizeof(buf), "%u\\%u", m_pixelAspectRatioV, m_pixelAspectRatioH);
     if (err == -1) return EC_IllegalCall;
     cond = dset->putAndInsertOFStringArray(DCM_PixelAspectRatio, buf);
     if (cond.bad())
@@ -785,7 +786,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataNextFrame(
     cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "Image2Dcm: value of vertical PixelAspectRatio not equal for all frames of the multi-frame image");
     return cond;
   }
-  if ((!transport.isEncapsulated()) && (next_frameLength != m_frameLength))
+  if (transport.isPixelDataUncompressed() && (next_frameLength != m_frameLength))
   {
     // in the case of uncompressed images, all frames must have exactly the same size.
     // for compressed images, where we store the compressed bitstream as a pixel item, this does not matter.
@@ -803,7 +804,7 @@ OFCondition Image2Dcm::readAndInsertPixelDataNextFrame(
   // We will divide this by the number of frames later.
   m_compressionRatio += compressionRatio;
 
-  if (transport.isEncapsulated())
+  if (transport.usesEncapsulatedFormat())
   {
     cond = insertEncapsulatedPixelDataNextFrame(pixData, next_frameLength);
     delete[] pixData;

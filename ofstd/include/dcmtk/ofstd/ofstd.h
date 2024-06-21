@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -769,19 +769,14 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  decimal representation to internal double-precision format.
      *  Unlike the atof() function defined in Posix, this implementation
      *  is not affected by a locale setting, the radix character is always
-     *  assumed to be '.'
-     *  This implementation does not set errno if the input cannot be parsed
-     *  and it does not implement special handling for overflow/underflow.
+     *  assumed to be '.'. This implementation never modifies errno.
      *  It does handle "NaN" and "Inf" (case insensitive; following
-     *  characters are ignore). A return code indicates whether or not
+     *  characters are ignored). A return code indicates whether or not
      *  a successful conversion could be performed.
-     *  The precision of this implementation is limited to approx. 9
-     *  decimal digits.
-     *  @note The use of this implementation can be disabled by defining
-     *    the macro DISABLE_OFSTD_ATOF at compile time; in this case,
-     *    the locale dependent Posix implementation of sscanf is used and
-     *    the application is responsible for making sure that the Posix locale
-     *    is activated at all times.
+     *  Very large numbers that cannot be represented as a double will
+     *  cause the success value to be set to false, unless the old
+     *  implementation is enabled through the ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
+     *  macro, in which case HUGE_VAL and success will be returned.
      *  @param s
      *    A decimal ASCII floating-point number, optionally preceded by white
      *    space. Must have form "-I.FE-X", where I is the integer part of the

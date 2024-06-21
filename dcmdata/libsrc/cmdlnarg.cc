@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,57 +25,6 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/ofstd/ofconsol.h"
-
-/*
-** prepareCmdLineArgs
-**
-** Should do nothing on Unix OS's.
-** On other OS's (e.g. MacOS with CW6) allows command line arguments
-** to be input from the standard input.
-*/
-
-#ifdef HAVE_EMPTY_ARGC_ARGV
-
-#include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofstd.h"
-
-void prepareCmdLineArgs(int& argc, char* argv[],
-                        const char* progname)
-{
-    const int bufsize = 2024;
-    char buf[bufsize];
-    char arg[1024];
-
-    size_t len = strlen(progname)+1;
-    argv[0] = new char[len];
-    OFStandard::strlcpy(argv[0], progname, len);
-    argc = 1;
-
-    ofConsole.lockCout() << "CmdLineArgs-> ";
-    ofConsole.unlockCout();
-    cin.getline(buf, bufsize);
-
-    istringstream is(buf);
-
-    arg[0] = '\0';
-    while (is.good()) {
-        is >> arg;
-        if (strlen(arg) > 0) {
-            size_t len = strlen(arg)+1;
-            argv[argc] = new char[len];
-            OFStandard::strlcpy(argv[argc], arg, len);
-            argc++;
-        }
-        arg[0] = '\0';
-    }
-}
-
-#else // HAVE_EMPTY_ARGC_ARGV
-
-// #define INCLUDE_CSTDLIB
-// #define INCLUDE_CSTDIO
-// #define INCLUDE_CSTRING
-// #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_IO_H
 #include <io.h>
@@ -130,4 +79,3 @@ void prepareCmdLineArgs(int& argc, wchar_t** /* argv */,
 #endif // HAVE_WINDOWS_H
 
 
-#endif // HAVE_EMPTY_ARGC_ARGV

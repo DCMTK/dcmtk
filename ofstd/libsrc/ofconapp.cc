@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2022, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -139,7 +139,7 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
     if (hostInfo)
     {
         (*output) << OFendl << "Host type: " << CANONICAL_HOST_TYPE << OFendl;
-#if defined(DCMTK_ENABLE_CHARSET_CONVERSION) && defined(HAVE_LOCALE_H)
+#if defined(DCMTK_ENABLE_CHARSET_CONVERSION)
         /* determine system's current locale */
         const char *currentLocale = setlocale(LC_CTYPE, NULL);
         if (setlocale(LC_CTYPE, "") != NULL)
@@ -172,7 +172,7 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
         /* indicate that debug code is present */
         (*output) << " debug";
 #endif
-#ifdef ofstd_EXPORTS
+#ifdef DCMTK_SHARED
         /* indicate that shared library support is enabled */
         (*output) << " shared";
 #endif
@@ -180,16 +180,16 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
         /* indicate that C++11 is used */
         (*output) << " cxx11";
 #endif
-#if defined(HAVE_STL_ALGORITHM) && defined(HAVE_STL_LIMITS) && defined(HAVE_STL_LIST) && \
-    defined(HAVE_STL_MAP) && defined(HAVE_STL_MEMORY) && defined(HAVE_STL_STACK) && \
-    defined(HAVE_STL_STRING) && defined(HAVE_STL_SYSTEM_ERROR) && defined(HAVE_STL_TUPLE) && \
-    defined(HAVE_STL_TYPE_TRAITS) && defined(HAVE_STL_VECTOR)
+#if defined(HAVE_STL_ALGORITHM) && defined(HAVE_STL_LIST) &&  defined(HAVE_STL_MAP) && \
+    defined(HAVE_STL_MEMORY) && defined(HAVE_STL_STACK) && defined(HAVE_STL_STRING) && \
+    defined(HAVE_STL_SYSTEM_ERROR) && defined(HAVE_STL_TUPLE) && defined(HAVE_STL_TYPE_TRAITS) && \
+    defined(HAVE_STL_VECTOR)
         /* indicate that the C++ STL is used */
         (*output) << " stl";
-#elif defined(HAVE_STL_ALGORITHM) || defined(HAVE_STL_LIMITS) || defined(HAVE_STL_LIST) || \
-    defined(HAVE_STL_MAP) || defined(HAVE_STL_MEMORY) || defined(HAVE_STL_STACK) || \
-    defined(HAVE_STL_STRING) || defined(HAVE_STL_SYSTEM_ERROR) || defined(HAVE_STL_TUPLE) || \
-    defined(HAVE_STL_TYPE_TRAITS) || defined(HAVE_STL_VECTOR)
+#elif defined(HAVE_STL_ALGORITHM) || defined(HAVE_STL_LIST) || defined(HAVE_STL_MAP) || \
+    defined(HAVE_STL_MEMORY) || defined(HAVE_STL_STACK) || defined(HAVE_STL_STRING) || \
+    defined(HAVE_STL_SYSTEM_ERROR) || defined(HAVE_STL_TUPLE) || defined(HAVE_STL_TYPE_TRAITS) || \
+    defined(HAVE_STL_VECTOR)
         /* indicate that parts of the C++ STL are used */
         (*output) << " (stl)";
 #endif

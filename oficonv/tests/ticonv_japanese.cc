@@ -35,19 +35,19 @@
 // For all pratical purposes, Shift-JIS is identical to ISO-IR-13 (JIS_X0201)
 OFTEST(oficonv_shift_jis_to_utf8)
 {
-  convert_to_utf8("Shift_JIS", jis_x0201_characters, sizeof(jis_x0201_characters), jis_x0201_to_utf8, sizeof(jis_x0201_to_utf8));
+  convert_to_utf8("JIS_X0201", jis_x0201_characters, sizeof(jis_x0201_characters), jis_x0201_to_utf8, sizeof(jis_x0201_to_utf8));
 }
 
 OFTEST(oficonv_utf8_to_shift_jis)
 {
-  convert_from_utf8("Shift_JIS", jis_x0201_characters, sizeof(jis_x0201_characters), jis_x0201_to_utf8, sizeof(jis_x0201_to_utf8));
+  convert_from_utf8("JIS_X0201", jis_x0201_characters, sizeof(jis_x0201_characters), jis_x0201_to_utf8, sizeof(jis_x0201_to_utf8));
 }
 
 OFTEST(oficonv_jis_x0201_to_ascii)
 {
   // the transliteration function in oficonv is rather stupid and will simply map all extended
   // characters to '?' when converting to ASCII. We can at least check that this works
-  convert_jis_x0201_to_ascii("Shift_JIS", jis_x0201_characters, sizeof(jis_x0201_characters), jis_x0201_to_ascii, sizeof(jis_x0201_to_ascii));
+  convert_jis_x0201_to_ascii("JIS_X0201", jis_x0201_characters, sizeof(jis_x0201_characters), jis_x0201_to_ascii, sizeof(jis_x0201_to_ascii));
 }
 
 OFTEST(oficonv_jis_x0208_to_utf8)

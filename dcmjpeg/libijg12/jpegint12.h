@@ -256,56 +256,56 @@ struct jpeg_color_quantizer {
 /* Short forms of external names for systems with brain-damaged linkers. */
 
 #ifdef NEED_SHORT_EXTERNAL_NAMES
-#define jinit_c_codec		jinit12_c_codec
-#define jinit_c_diff_controller		jinit12_c_diff_controller
-#define jinit_lossy_c_codec		jinit12_lossy_c_codec
-#define jinit_lossless_c_codec		jinit12_lossless_c_codec
-#define jinit_compress_master		jinit12_compress_master
-#define jinit_c_master_control		jinit12_c_master_control
-#define jinit_c_main_controller		jinit12_c_main_controller
-#define jinit_c_prep_controller		jinit12_c_prep_controller
-#define jinit_c_coef_controller		jinit12_c_coef_controller
-#define jinit_color_converter		jinit12_color_converter
-#define jinit_downsampler		jinit12_downsampler
-#define jinit_forward_dct		jinit12_forward_dct
-#define jinit_shuff_encoder		jinit12_shuff_encoder
-#define jinit_phuff_encoder		jinit12_phuff_encoder
+#define jinit_c_codec               dcmtk_jinit12_c_codec
+#define jinit_c_diff_controller     dcmtk_jinit12_c_diff_controller
+#define jinit_lossy_c_codec         dcmtk_jinit12_lossy_c_codec
+#define jinit_lossless_c_codec      dcmtk_jinit12_lossless_c_codec
+#define jinit_compress_master       dcmtk_jinit12_compress_master
+#define jinit_c_master_control      dcmtk_jinit12_c_master_control
+#define jinit_c_main_controller     dcmtk_jinit12_c_main_controller
+#define jinit_c_prep_controller     dcmtk_jinit12_c_prep_controller
+#define jinit_c_coef_controller     dcmtk_jinit12_c_coef_controller
+#define jinit_color_converter       dcmtk_jinit12_color_converter
+#define jinit_downsampler           dcmtk_jinit12_downsampler
+#define jinit_forward_dct           dcmtk_jinit12_forward_dct
+#define jinit_shuff_encoder         dcmtk_jinit12_shuff_encoder
+#define jinit_phuff_encoder         dcmtk_jinit12_phuff_encoder
 #ifdef WITH_ARITHMETIC_PATCH
-#define jinit_arith_encoder		jinit12_arith_encoder
+#define jinit_arith_encoder         dcmtk_jinit12_arith_encoder
 #endif
-#define jinit_marker_writer		jinit12_marker_writer
-#define jinit_d_codec		jinit12_d_codec
-#define jinit_lossy_d_codec		jinit12_lossy_d_codec
-#define jinit_lossless_d_codec		jinit12_lossless_d_codec
-#define jinit_master_decompress		jinit12_master_decompress
-#define jinit_d_main_controller		jinit12_d_main_controller
-#define jinit_d_coef_controller		jinit12_d_coef_controller
-#define jinit_d_diff_controller		jinit12_d_diff_controller
-#define jinit_d_post_controller		jinit12_d_post_controller
-#define jinit_input_controller		jinit12_input_controller
-#define jinit_marker_reader		jinit12_marker_reader
-#define jinit_shuff_decoder		jinit12_shuff_decoder
-#define jinit_phuff_decoder		jinit12_phuff_decoder
+#define jinit_marker_writer         dcmtk_jinit12_marker_writer
+#define jinit_d_codec               dcmtk_jinit12_d_codec
+#define jinit_lossy_d_codec         dcmtk_jinit12_lossy_d_codec
+#define jinit_lossless_d_codec      dcmtk_jinit12_lossless_d_codec
+#define jinit_master_decompress     dcmtk_jinit12_master_decompress
+#define jinit_d_main_controller     dcmtk_jinit12_d_main_controller
+#define jinit_d_coef_controller     dcmtk_jinit12_d_coef_controller
+#define jinit_d_diff_controller     dcmtk_jinit12_d_diff_controller
+#define jinit_d_post_controller     dcmtk_jinit12_d_post_controller
+#define jinit_input_controller      dcmtk_jinit12_input_controller
+#define jinit_marker_reader         dcmtk_jinit12_marker_reader
+#define jinit_shuff_decoder         dcmtk_jinit12_shuff_decoder
+#define jinit_phuff_decoder         dcmtk_jinit12_phuff_decoder
 #ifdef WITH_ARITHMETIC_PATCH
-#define jinit_arith_decoder		jinit12_arith_decoder
+#define jinit_arith_decoder         dcmtk_jinit12_arith_decoder
 #endif
-#define jinit_lhuff_decoder		jinit12_lhuff_decoder
-#define jinit_undifferencer		jinit12_undifferencer
-#define jinit_d_scaler		jinit12_d_scaler
-#define jinit_inverse_dct		jinit12_inverse_dct
-#define jinit_upsampler		jinit12_upsampler
-#define jinit_color_deconverter		jinit12_color_deconverter
-#define jinit_1pass_quantizer		jinit12_1pass_quantizer
-#define jinit_2pass_quantizer		jinit12_2pass_quantizer
-#define jinit_merged_upsampler		jinit12_merged_upsampler
-#define jinit_memory_mgr		jinit12_memory_mgr
-#define jdiv_round_up		jdiv12_round_up
-#define jround_up		jround12_up
-#define jcopy_sample_rows		jcopy12_sample_rows
-#define jcopy_block_row		jcopy12_block_row
-#define jzero_far		jzero12_far
-#define jpeg_zigzag_order		jpeg12_zigzag_order
-#define jpeg_natural_order		jpeg12_natural_order
+#define jinit_lhuff_decoder         dcmtk_jinit12_lhuff_decoder
+#define jinit_undifferencer         dcmtk_jinit12_undifferencer
+#define jinit_d_scaler              dcmtk_jinit12_d_scaler
+#define jinit_inverse_dct           dcmtk_jinit12_inverse_dct
+#define jinit_upsampler             dcmtk_jinit12_upsampler
+#define jinit_color_deconverter     dcmtk_jinit12_color_deconverter
+#define jinit_1pass_quantizer       dcmtk_jinit12_1pass_quantizer
+#define jinit_2pass_quantizer       dcmtk_jinit12_2pass_quantizer
+#define jinit_merged_upsampler      dcmtk_jinit12_merged_upsampler
+#define jinit_memory_mgr            dcmtk_jinit12_memory_mgr
+#define jdiv_round_up               dcmtk_jdiv12_round_up
+#define jround_up                   dcmtk_jround12_up
+#define jcopy_sample_rows           dcmtk_jcopy12_sample_rows
+#define jcopy_block_row             dcmtk_jcopy12_block_row
+#define jzero_far                   dcmtk_jzero12_far
+#define jpeg_zigzag_order           dcmtk_jpeg12_zigzag_order
+#define jpeg_natural_order          dcmtk_jpeg12_natural_order
 #endif /* NEED_SHORT_EXTERNAL_NAMES */
 
 

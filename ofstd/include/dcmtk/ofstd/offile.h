@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2021, OFFIS e.V.
+ *  Copyright (C) 2006-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,7 +24,6 @@
 #define OFFILE_H
 
 #include "dcmtk/config/osconfig.h"
-
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofstd.h"      /* for class OFStandard */
@@ -358,7 +357,7 @@ public:
 #ifdef EXPLICIT_LFS_64
     file_ = :: fopen64(filename, modes);
 #else
-    file_ = STDIO_NAMESPACE fopen(filename, modes);
+    file_ = :: fopen(filename, modes);
 #endif
     if (file_) popened_ = OFFalse; else storeLastError();
     return (file_ != NULL);
@@ -465,7 +464,7 @@ public:
     // MinGW has EXPLICIT_LFS_64 but no freopen64()
     file_ = :: freopen64(filename, modes, file_);
 #else
-    file_ = STDIO_NAMESPACE freopen(filename, modes, file_);
+    file_ = :: freopen(filename, modes, file_);
 #endif
     if (file_) popened_ = OFFalse; else storeLastError();
     return (file_ != NULL);
@@ -484,7 +483,7 @@ public:
     // MinGW has EXPLICIT_LFS_64 but no tmpfile64()
     file_ = :: tmpfile64();
 #else
-    file_ = STDIO_NAMESPACE tmpfile();
+    file_ = :: tmpfile();
 #endif
     if (file_) popened_ = OFFalse; else storeLastError();
     return (file_ != NULL);
@@ -518,7 +517,7 @@ public:
    */
   size_t fwrite(const void *ptr, size_t size, size_t n)
   {
-    return STDIO_NAMESPACE fwrite(ptr, size, n, file_);
+    return :: fwrite(ptr, size, n, file_);
   }
 
   /** reads n elements of data, each size bytes long, from the stream, storing
@@ -534,7 +533,7 @@ public:
    */
   size_t fread(void *ptr, size_t size, size_t n)
   {
-    return STDIO_NAMESPACE fread(ptr, size, n, file_);
+    return :: fread(ptr, size, n, file_);
   }
 
   /** forces a write of all user-space buffered data for the given output or
@@ -544,7 +543,7 @@ public:
    */
   int fflush()
   {
-    int result = STDIO_NAMESPACE fflush(file_);
+    int result = :: fflush(file_);
     if (result) storeLastError();
     return result;
   }
@@ -553,7 +552,7 @@ public:
    *  cast to an int, or EOF on end of file or error.
    *  @return next character from stream or EOF
    */
-  int fgetc() { return STDIO_NAMESPACE fgetc(file_); }
+  int fgetc() { return :: fgetc(file_); }
 
   /** The three types of buffering available are unbuffered, block buffered, and
    *  line buffered. When an output stream is unbuffered, information appears on
@@ -589,13 +588,13 @@ public:
      */
     (void) this->fseek(0L, SEEK_SET);
 #else
-    STDIO_NAMESPACE rewind(file_);
+    :: rewind(file_);
 #endif
   }
 
   /** clears the end-of-file and error indicators for the stream
    */
-  void clearerr() { STDIO_NAMESPACE clearerr(file_); }
+  void clearerr() { :: clearerr(file_); }
 
   /** tests the end-of-file indicator for the stream, returning non-zero if it
    *  is set. The end-of-file indicator can only be cleared by the function
@@ -609,7 +608,7 @@ public:
     // feof is a macro on some systems. Macros never have namespaces.
     return feof(file_);
 #else
-    return STDIO_NAMESPACE feof(file_);
+    return :: feof(file_);
 #endif
   }
 
@@ -625,7 +624,7 @@ public:
     // ferror is a macro on some systems. Macros never have namespaces.
     return ferror(file_);
 #else
-    return STDIO_NAMESPACE ferror(file_);
+    return :: ferror(file_);
 #endif
   }
 
@@ -654,7 +653,7 @@ public:
    *  @param buf pointer to buffer of size BUFSIZ as declared in cstdio, or NULL
    *  @return 0 upon success, nonzero otherwise, in which case the error code may be set
    */
-  void setbuf(char *buf) { STDIO_NAMESPACE setbuf(file_, buf); }
+  void setbuf(char *buf) { :: setbuf(file_, buf); }
 
   /** The three types of buffering available are unbuffered, block buffered, and
    *  line buffered. When an output stream is unbuffered, information appears on
@@ -673,7 +672,7 @@ public:
    */
   int setvbuf(char * buf, int modes, size_t n)
   {
-    int result = STDIO_NAMESPACE setvbuf(file_, buf, modes, n);
+    int result = :: setvbuf(file_, buf, modes, n);
     if (result) storeLastError();
     return result;
   }
@@ -705,7 +704,7 @@ public:
    *  @param c character
    *  @return the character written as an unsigned char cast to an int or EOF on error
    */
-  int fputc(int c) { return STDIO_NAMESPACE fputc(c, file_); }
+  int fputc(int c) { return :: fputc(c, file_); }
 
   /** reads in at most one less than n characters from stream and stores them
    *  into the buffer pointed to by s. Reading stops after an EOF or a newline.
@@ -715,13 +714,13 @@ public:
    *  @param n buffer size
    *  @return pointer to string
    */
-  char *fgets(char *s, int n) { return STDIO_NAMESPACE fgets(s, n, file_); }
+  char *fgets(char *s, int n) { return :: fgets(s, n, file_); }
 
   /** writes the string s to stream, without its trailing '@\0'.
    *  @param s string to be written
    *  @return a non-negative number on success, or EOF on error.
    */
-  int fputs(const char *s) { return STDIO_NAMESPACE fputs(s, file_); }
+  int fputs(const char *s) { return :: fputs(s, file_); }
 
   /** pushes c back to stream, cast to unsigned char, where it is available for
    *  subsequent read operations. Pushed - back characters will be returned in
@@ -729,7 +728,7 @@ public:
    *  @param c character to push back
    *  @return c on success, or EOF on error.
    */
-  int ungetc(int c) { return STDIO_NAMESPACE ungetc(c, file_); }
+  int ungetc(int c) { return :: ungetc(c, file_); }
 
   /** sets the file position indicator for the stream pointed to by stream. The
    *  new position, measured in bytes, is obtained by adding offset bytes to the
@@ -756,11 +755,11 @@ public:
     {
       case SEEK_END:
         // flush write buffer, if any, so that the file size is correct
-        STDIO_NAMESPACE fflush(file_);
+        :: fflush(file_);
 #if 0
         // Python implementation based on _lseeki64(). May be unsafe because
         // there is no guarantee that fflush also empties read buffers.
-        STDIO_NAMESPACE fflush(file_);
+        :: fflush(file_);
 #ifdef fileno
         if (_lseeki64(   fileno(file_), 0, 2) == -1)
 #else
@@ -788,7 +787,7 @@ public:
         break;
 #endif
       case SEEK_CUR:
-        if (STDIO_NAMESPACE fgetpos(file_, &pos) != 0)
+        if (:: fgetpos(file_, &pos) != 0)
         {
           storeLastError();
           return -1;
@@ -801,8 +800,6 @@ public:
         break;
     }
     result = this->fsetpos(&off2);
-#elif defined(__BEOS__)
-    result = :: _fseek(file_, off, whence);
 #else
 #ifdef HAVE_FSEEKO
 #ifdef EXPLICIT_LFS_64
@@ -811,7 +808,7 @@ public:
     result = :: fseeko(file_, off, whence);
 #endif
 #else
-    result = STDIO_NAMESPACE fseek(file_, off, whence);
+    result = :: fseek(file_, off, whence);
 #endif
 #endif
     if (result) storeLastError();
@@ -844,7 +841,7 @@ public:
     result = :: ftello(file_);
 #endif
 #else
-    result = STDIO_NAMESPACE ftell(file_);
+    result = :: ftell(file_);
 #endif
     if (result < 0) storeLastError();
     return result;
@@ -865,7 +862,7 @@ public:
     // MinGW and QNX have EXPLICIT_LFS_64 but no fgetpos64()
     result = :: fgetpos64(file_, pos);
 #else
-    result = STDIO_NAMESPACE fgetpos(file_, pos);
+    result = :: fgetpos(file_, pos);
 #endif
     if (result) storeLastError();
     return result;
@@ -885,7 +882,7 @@ public:
     // MinGW and QNX have EXPLICIT_LFS_64 but no fsetpos64()
     result = :: fsetpos64(file_, pos);
 #else
-    result = STDIO_NAMESPACE fsetpos(file_, pos);
+    result = :: fsetpos(file_, pos);
 #endif
     if (result) storeLastError();
     return result;
@@ -901,7 +898,7 @@ public:
     int result = 0;
     va_list ap;
     va_start(ap, format);
-    result = STDIO_NAMESPACE vfprintf(file_, format, ap);
+    result = :: vfprintf(file_, format, ap);
     va_end(ap);
     return result;
   }
@@ -913,7 +910,7 @@ public:
    */
    int vfprintf(const char *format, va_list arg)
    {
-     return STDIO_NAMESPACE vfprintf(file_, format, arg);
+     return :: vfprintf(file_, format, arg);
    }
 
   // we cannot emulate fscanf because we would need vfscanf for this
@@ -967,7 +964,7 @@ public:
    */
   int fwide(int mode)
   {
-    return STDIO_NAMESPACE fwide(file_, mode);
+    return :: fwide(file_, mode);
   }
 
   /** reads a wide character from stream and returns it. If the end of stream is
@@ -978,7 +975,7 @@ public:
    */
   wint_t fgetwc()
   {
-    wint_t result = STDIO_NAMESPACE fgetwc(file_);
+    wint_t result = :: fgetwc(file_);
     if (result == WEOF) storeLastError();
     return result;
   }
@@ -991,7 +988,7 @@ public:
    */
   wint_t fputwc(wchar_t wc)
   {
-    wint_t result = STDIO_NAMESPACE fputwc(wc, file_);
+    wint_t result = :: fputwc(wc, file_);
     if (result == WEOF) storeLastError();
     return result;
   }
@@ -1012,7 +1009,7 @@ public:
    */
   wint_t ungetwc(wint_t wc)
   {
-    wint_t result = STDIO_NAMESPACE ungetwc(wc, file_);
+    wint_t result = :: ungetwc(wc, file_);
     if (result == WEOF) storeLastError();
     return result;
   }
@@ -1027,7 +1024,7 @@ public:
     int result = 0;
     va_list ap;
     va_start(ap, format);
-    result = STDIO_NAMESPACE vfwprintf(file_, format, ap);
+    result = :: vfwprintf(file_, format, ap);
     va_end(ap);
     return result;
   }
@@ -1039,7 +1036,7 @@ public:
    */
    int vfwprintf(const wchar_t *format, va_list arg)
    {
-     return STDIO_NAMESPACE vfwprintf(file_, format, arg);
+     return :: vfwprintf(file_, format, arg);
    }
 
   // we cannot emulate fwscanf because we would need vfwscanf for this

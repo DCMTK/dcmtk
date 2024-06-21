@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2019, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,15 +31,7 @@
 #endif
 #include <fstream>
 #include <iomanip>
-// For standard STREAMS library: preference for standard stringstream
-#if defined(HAVE_SSTREAM)
 #include <sstream>
-#define USE_STRINGSTREAM
-#elif defined(HAVE_STRSTREAM)
-#include <strstream>
-#else
-#error DCMTK needs stringstream or strstream type
-#endif
 
 /* DCMTK by default does not anymore pollute the default namespace by
  * importing namespace std. Earlier releases did this to simplify compatibility
@@ -60,8 +52,6 @@
 #endif
 
 #define OFendl STD_NAMESPACE endl
-
-#ifdef USE_STRINGSTREAM
 
 typedef STD_NAMESPACE stringstream OFStringStream;
 typedef STD_NAMESPACE ostringstream OFOStringStream;
@@ -87,35 +77,6 @@ typedef STD_NAMESPACE istringstream OFIStringStream;
 #define OFSTRINGSTREAM_FREESTR(chptr) \
 }
 
-#else /* USE_STRINGSTREAM */
-
-typedef STD_NAMESPACE strstream OFStringStream;
-typedef STD_NAMESPACE ostrstream OFOStringStream;
-typedef STD_NAMESPACE istrstream OFIStringStream;
-
-#define OFStringStream_ends STD_NAMESPACE ends
-#define OFSTRINGSTREAM_GETOFSTRING(oss, strng) \
-    char *strng##__ = (oss).str(); \
-    OFString strng(strng##__, (oss).pcount()); \
-    delete[] strng##__;
-// The following two macros define a block structure. Please note that variables
-// declared between xxx_GETSTR and xxx_FREESTR are only valid within this scope.
-#define OFSTRINGSTREAM_GETSTR(oss, chptr) \
-{ \
-    const char *chptr = (oss).str();
-#define OFSTRINGSTREAM_FREESTR(chptr) \
-    delete[] (char *)chptr; \
-}
-
-#endif /* USE_STRINGSTREAM */
-
-// Define OFopenmode_in_nocreate as a macro that either expands
-// to ios::in or to ios::in|ios::nocreate, if the historic
-// nocreate flag is supported on the platform.
-#if defined(HAVE_IOS_NOCREATE) && (__cplusplus < 201103L)
-#define OFopenmode_in_nocreate STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate
-#else
 #define OFopenmode_in_nocreate STD_NAMESPACE ios::in
-#endif
 
 #endif /* OFSTREAM_H */

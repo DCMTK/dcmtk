@@ -1,4 +1,4 @@
-.TH "dcmsend" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsend" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsend \- Simple DICOM storage SCU (sender)
@@ -7,7 +7,7 @@ dcmsend \- Simple DICOM storage SCU (sender)
 .PP
 .PP
 .nf
-dcmsend [options] peer port dcmfile-in...
+dcmsend [options] peer port dcmfile-in\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -159,10 +159,10 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes (default: 16384)
 
-        --max-send-pdu  [n]umber of bytes: integer (4096..131072)
+        --max-send-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           restrict max send pdu to n bytes
 .fi
 .PP
@@ -183,7 +183,7 @@ A typical use case of \fBdcmsend\fP is to send arbitrary SOP instances that are 
 .PP
 .PP
 .nf
-dcmsend --verbose <peer> <port> *.dcm
+dcmsend --verbose <peer> <port> *\&.dcm
 .fi
 .PP
 .PP
@@ -199,7 +199,7 @@ It is also possible to specify multiple directories and to combine the aforement
 .PP
 .PP
 .nf
-dcmsend -v +sd +r <peer> <port> IMAGES_1 IMAGES_2 test.img *.dcm
+dcmsend -v +sd +r <peer> <port> IMAGES_1 IMAGES_2 test\&.img *\&.dcm
 .fi
 .PP
 .PP
@@ -215,7 +215,7 @@ And again, all of the above approaches can be combined like this:
 .PP
 .PP
 .nf
-dcmsend -v +sd +r +rd <peer> <port> IMAGES_1 IMAGES_2 test.img DICOMDIR *.dcm
+dcmsend -v +sd +r +rd <peer> <port> IMAGES_1 IMAGES_2 test\&.img DICOMDIR *\&.dcm
 .fi
 .PP
 .PP
@@ -317,4 +317,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmrecv\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

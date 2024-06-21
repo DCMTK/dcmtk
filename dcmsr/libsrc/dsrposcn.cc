@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -116,13 +116,13 @@ const OFString &DSRPositionCounter::getString(OFString &position,
         {
             if (!position.empty())
                 position += separator;
-            position += DSRTypes::numberToString(*iterator, stringBuf);
+            position += DSRTypes::numberToString(*iterator, stringBuf, sizeof(stringBuf));
             iterator++;
         }
         /* also append the current position on the current level */
         if (!position.empty())
             position += separator;
-        position += DSRTypes::numberToString(Position, stringBuf);
+        position += DSRTypes::numberToString(Position, stringBuf, sizeof(stringBuf));
     }
     return position;
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2021, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,10 +23,6 @@
 #define OFVECTOR_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#ifndef HAVE_CLASS_TEMPLATE
-#error Your C++ compiler cannot handle class templates:
-#endif
 
 #ifdef HAVE_STL_VECTOR
 

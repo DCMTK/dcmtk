@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,9 @@ offile_off_t DcmStdoutConsumer::avail() const
 
 offile_off_t DcmStdoutConsumer::write(const void *buf, offile_off_t buflen)
 {
-  return OFstatic_cast(offile_off_t, fwrite(buf, 1, OFstatic_cast(size_t, buflen), stdout));
+  if (buflen && buf)
+    return OFstatic_cast(offile_off_t, fwrite(buf, 1, OFstatic_cast(size_t, buflen), stdout));
+    else return 0;
 }
 
 void DcmStdoutConsumer::flush()

@@ -54,6 +54,6 @@ Barten's model (including GSDF).
 
 \section dconvlum_copyright COPYRIGHT
 
-Copyright (C) 1999-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 #include "dcmtk/dcmpstat/dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
 #include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dcmtk/ofstd/ofstd.h"
 
 /* --------------- class DVPSGraphicAnnotation --------------- */
 
@@ -160,11 +161,11 @@ OFCondition DVPSGraphicAnnotation::addImageReference(
     DVPSObjectApplicability applicability)
 {
   if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
+  char frameString[24];
   const char *framenumber=NULL;
   if (applicability==DVPSB_currentFrame)
   {
-    char frameString[100];
-    sprintf(frameString, "%ld", frame);
+    OFStandard::snprintf(frameString, sizeof(frameString), "%ld", frame);
     framenumber = frameString;
   }
   return referencedImageList.addImageReference(sopclassUID, instanceUID, framenumber);

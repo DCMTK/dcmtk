@@ -37,6 +37,8 @@ BEGIN_EXTERN_C
 int  _citrus_csmapper_open(struct _citrus_csmapper * *,
         const char *, const char *, uint32_t,
         unsigned long *);
+
+void _citrus_csmapper_free();
 END_EXTERN_C
 
 #endif

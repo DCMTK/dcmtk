@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,8 +28,9 @@
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+
 #include "dcmtk/dcmimgle/diobjcou.h"
-#include "dcmtk/ofstd/ofstring.h"
+
 
 /*------------------------*
  *  forward declarations  *
@@ -60,12 +61,12 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
 
     /** constructor, open a DICOM file
      *
-     ** @param  filename  the DICOM file
+     ** @param  filename  the DICOM file specified by its filename
      *  @param  flags     configuration flags (only stored for later use)
      *  @param  fstart    first frame to be processed (only stored for later use)
      *  @param  fcount    number of frames (only stored for later use)
      */
-    DiDocument(const char *filename,
+    DiDocument(const OFFilename &filename,
                const unsigned long flags = 0,
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
@@ -178,7 +179,7 @@ class DCMTK_DCMIMGLE_EXPORT DiDocument
      */
     inline OFBool isCompressed() const
     {
-        return DcmXfer(Xfer).isEncapsulated();
+        return DcmXfer(Xfer).isPixelDataCompressed();
     }
 
     /** search for given tag

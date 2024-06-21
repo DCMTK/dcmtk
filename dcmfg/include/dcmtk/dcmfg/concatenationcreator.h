@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, Open Connections GmbH
+ *  Copyright (C) 2019-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,9 +23,13 @@
 #define CONCATENATIONCREATOR_H
 
 #include "dcmtk/config/osconfig.h"
-
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/offile.h"
 #include "dcmtk/dcmfg/fgdefine.h"
+
+class DcmItem;
+class DcmSequenceOfItems;
 
 /** Class for creating Concatenations from existing SOP Instances.
  *  As input, a user can either provide a full SOP Instance with Pixel Data

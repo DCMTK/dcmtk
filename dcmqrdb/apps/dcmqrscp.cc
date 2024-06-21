@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,6 +58,8 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcostrmz.h"    /* for dcmZlibCompressionLevel */
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmtls/tlsopt.h"       /* for DcmTLSOptions */
 
 #ifdef WITH_SQL_DATABASE
 #include "dcmtk/dcmqrdbx/dcmqrdbq.h"
@@ -113,8 +115,12 @@ main(int argc, char *argv[])
   OFCmdUnsignedInt overrideMaxPDU = 0;
   DcmQueryRetrieveOptions options;
   DcmAssociationConfiguration asccfg;
+  DcmTLSOptions tlsOptions(NET_ACCEPTORREQUESTOR);
 
   OFStandard::initializeNetwork();
+#ifdef WITH_OPENSSL
+  DcmTLSTransportLayer::initializeOpenSSL();
+#endif
 
   char tempstr[20];
   OFString temp_str;
@@ -180,8 +186,8 @@ main(int argc, char *argv[])
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("association negotiation profiles from configuration file:");
-      cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-profile, [o]ut-profile: string",
-                                                           "use profile i from f for incoming associations,\nuse profile o from f for outgoing associations");
+      cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-prof, [o]ut-prof: string",
+                                                           "use profile i from f for incoming,\nand profile o from f for outgoing associations");
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",         "+x=",     "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",     "prefer explicit VR little endian TS");
@@ -202,7 +208,7 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg4-2-3d",      "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",      "+xo",     "prefer MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
       cmd.addOption("--prefer-hevc",            "+x4",     "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--prefer-hevc10",          "+x5",     "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--prefer-hevc10",          "+x5",     "prefer HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
@@ -231,7 +237,7 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-mpeg4-2-3d",     "-x3",     "propose MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--propose-mpeg4-2-st",     "-xo",     "propose MPEG4 AVC/H.264 Stereo / Level 4.2 TS");
       cmd.addOption("--propose-hevc",           "-x4",     "propose HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--propose-hevc10",         "-x5",     "propose HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--propose-hevc10",         "-x5",     "propose HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--propose-rle",            "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",       "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -252,10 +258,10 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",          "-td",  1, "[s]econds: integer (default: unlimited)",
                                                            "timeout for DIMSE messages");
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(),
@@ -271,17 +277,20 @@ main(int argc, char *argv[])
     cmd.addSubGroup("specific character set:");
       cmd.addOption("--use-request-charset",    "+Cr",     "try to convert all element values that are\naffected by Specific Character Set (0008,0005)\n"
                                                            "to the one specified in the request data set,\nfall back to the one specified via\n"
-                                                           "--convert-to-xxx if that is not possible\n(default, unless overridden by config file)");
+                                                           "--convert-to-xxx if that is not possible\n(default, unless overridden by config file)", OFCommandLine::AF_NoWarning);
       cmd.addOption("--override-charset",       "-Cr",     "convert affected element values to the\ncharacter set specified via --convert-to-xxx,\n"
-                                                           "ignoring the one specified in the request");
-      cmd.addOption("--convert-to-ascii",       "+A7",     "convert affected element values to 7-bit ASCII\n(default, unless overridden by config file)");
-      cmd.addOption("--convert-to-utf8",        "+U8",     "convert affected element values to UTF-8");
-      cmd.addOption("--convert-to-latin1",      "+L1",     "convert affected element values to ISO 8859-1");
+                                                           "ignoring the one specified in the request", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--convert-to-ascii",       "+A7",     "convert affected element values to 7-bit ASCII\n(default, unless overridden by config file)", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--convert-to-utf8",        "+U8",     "convert affected element values to UTF-8", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--convert-to-latin1",      "+L1",     "convert affected element values to ISO 8859-1", OFCommandLine::AF_NoWarning);
       cmd.addOption("--convert-to-charset",     "+C",   1, "[c]harset: string",
-                                                           "convert affected element values to the char.\nset specified by the DICOM defined term c");
-      cmd.addOption("--transliterate",          "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters");
-      cmd.addOption("--discard-illegal",        "-Cd",     "discard characters that cannot be represented\nin destination character set");
+                                                           "convert affected element values to the char.\nset specified by the DICOM defined term c", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--transliterate",          "-Ct",     "try to approximate characters that cannot be\nrepresented through similar looking characters", OFCommandLine::AF_NoWarning);
+      cmd.addOption("--discard-illegal",        "-Cd",     "discard characters that cannot be represented\nin destination character set", OFCommandLine::AF_NoWarning);
 #endif
+
+  // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+  tlsOptions.addTLSCommandlineOptions(cmd);
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
@@ -333,11 +342,13 @@ main(int argc, char *argv[])
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION)
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER) && !defined(DCMTK_ENABLE_CHARSET_CONVERSION) && !defined(WITH_OPENSSL)
           COUT << " none" << OFendl;
 #else
           COUT << OFendl;
 #endif
+        // print OpenSSL version if (and only if) we are compiling with OpenSSL
+        tlsOptions.printLibraryVersion();
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
@@ -347,6 +358,13 @@ main(int argc, char *argv[])
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
           COUT << "- " << OFCharacterEncoding::getLibraryVersionString() << OFendl;
 #endif
+          return 0;
+        }
+
+        // check if the command line contains the --list-ciphers option
+        if (tlsOptions.listOfCiphersRequested(cmd))
+        {
+          tlsOptions.printSupportedCiphersuites(app, COUT);
           return 0;
         }
       }
@@ -769,6 +787,9 @@ main(int argc, char *argv[])
         dcmZlibCompressionLevel.set(OFstatic_cast(int, compressionLevel));
       }
 #endif
+
+      // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
+      tlsOptions.parseArguments(app, cmd);
     }
 
     /* print resource identifier */
@@ -862,6 +883,13 @@ main(int argc, char *argv[])
       return 10;
     }
 
+    /* create a secure transport layer if requested and OpenSSL is available */
+    cond = tlsOptions.createTransportLayer(options.net_, NULL, app, cmd);
+    if (cond.bad()) {
+      OFLOG_FATAL(dcmqrscpLogger, DimseCondition::dump(temp_str, cond));
+      return 10;
+    }
+
 #if defined(HAVE_SETUID) && defined(HAVE_GRP_H) && defined(HAVE_PWD_H)
     OFStandard::OFGroup grp;
     OFStandard::OFPasswd pwd;
@@ -904,7 +932,7 @@ main(int argc, char *argv[])
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
 #endif
 
-    DcmQueryRetrieveSCP scp(config, options, factory, asccfg);
+    DcmQueryRetrieveSCP scp(config, options, factory, asccfg, tlsOptions);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier);
 
     /* loop waiting for associations */
@@ -912,6 +940,15 @@ main(int argc, char *argv[])
     {
       cond = scp.waitForAssociation(options.net_);
       if (!options.singleProcess_) scp.cleanChildren();  /* clean up any child processes */
+
+      /* since dcmqrscp is usually terminated with SIGTERM or the like,
+       * we write back an updated random seed after every association handled.
+       */
+      const OFCondition cond2 = tlsOptions.writeRandomSeed();
+      if (cond2.bad()) {
+          // failure to write back the random seed is a warning, not an error
+          OFLOG_WARN(dcmqrscpLogger, DimseCondition::dump(temp_str, cond2));
+      }
     }
 
     cond = ASC_dropNetwork(&options.net_);

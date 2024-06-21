@@ -188,7 +188,7 @@ association negotiation profiles from configuration file:
   -xf   --assoc-config-file
           [f]ilename, [i]n-profile, [o]ut-profile: string
           use profile i from f for incoming associations,
-          use profile o from f for outgoing associations
+          and profile o from f for outgoing associations
 
 preferred network transfer syntaxes (incoming associations):
 
@@ -244,10 +244,10 @@ preferred network transfer syntaxes (incoming associations):
           prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
 
   +x4   --prefer-hevc
-          prefer HEVC H.265 Main Profile / Level 5.1 TS
+          prefer HEVC/H.265 Main Profile / Level 5.1 TS
 
   +x5   --prefer-hevc10
-          prefer HEVC H.265 Main 10 Profile / Level 5.1 TS
+          prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -323,10 +323,10 @@ proposed transmission transfer syntaxes (outgoing associations):
           propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
 
   -x4   --propose-hevc
-          propose HEVC H.265 Main Profile / Level 5.1 TS only
+          propose HEVC/H.265 Main Profile / Level 5.1 TS only
 
   -x5   --propose-hevc10
-          propose HEVC H.265 Main 10 Profile / Level 5.1 TS only
+          propose HEVC/H.265 Main 10 Profile / Level 5.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -420,6 +420,127 @@ specific character set:
   -Cd   --discard-illegal
           discard characters that cannot be represented
           in destination character set
+\endverbatim
+
+\subsection dcmqrscp_tls_options transport layer security (TLS) options
+\verbatim
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [f]ilename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [d]irectory: string
+          add certificates in d to list of certificates
+
+  +crl  --add-crl-file  [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +crv  --enable-crl-vfy
+          enable leaf CRL verification
+
+  +cra  --enable-crl-all
+          enable full chain CRL verification
+
+security profile:
+
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile (retired)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (retired)
+
+  +pz   --profile-bcp195-ex
+          Extended BCP 195 TLS Profile (retired)
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
+ciphersuite:
+
+  +cc   --list-ciphers
+          list supported TLS ciphersuites and exit
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --expect-sni  [s]erver name: string
+          expect requests for server name s
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
 \endverbatim
 
 \subsection dcmqrscp_output_options output options
@@ -639,7 +760,7 @@ KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.
 ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
+ImplantationPlanSRStorage                            1.2.840.10008.5.1.4.1.1.88.70
 EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
 EncapsulatedCDAStorage                               1.2.840.10008.5.1.4.1.1.104.2
 PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
@@ -743,6 +864,7 @@ RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
 EnhancedUSVolumeStorage                              1.2.840.10008.5.1.4.1.1.6.2
+PhotoacousticImageStorage                            1.2.840.10008.5.1.4.1.1.6.3
 SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
 MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
 MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
@@ -754,6 +876,7 @@ DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
 TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
 GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
 AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+General32BitECGWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.1.4
 HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
 CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
 BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
@@ -779,6 +902,7 @@ AdvancedBlendingPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.
 VolumeRenderingVolumetricPresentationStateStorage    1.2.840.10008.5.1.4.1.1.11.9
 SegmentedVolumeRenderingVolumetricPres.StateStorage  1.2.840.10008.5.1.4.1.1.11.10
 MultipleVolumeRenderingVolumetricPres.StateStorage   1.2.840.10008.5.1.4.1.1.11.11
+VariableModalityLUTSoftcopyPresentationStateStorage  1.2.840.10008.5.1.4.1.1.11.12
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
@@ -821,6 +945,8 @@ OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.
 OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 DermoscopicPhotographyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.7
+ConfocalMicroscopyImageStorage                       1.2.840.10008.5.1.4.1.1.77.1.8
+ConfocalMicroscopyTiledPyramidalImageStorage         1.2.840.10008.5.1.4.1.1.77.1.9
 RETIRED_VLMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
@@ -850,7 +976,7 @@ ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
 RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
+ImplantationPlanSRStorage                            1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
 PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.73
@@ -893,6 +1019,9 @@ CArmPhotonElectronRadiationRecordStorage             1.2.840.10008.5.1.4.1.1.481
 RoboticRadiationRecordStorage                        1.2.840.10008.5.1.4.1.1.481.20
 RTRadiationSetDeliveryInstructionStorage             1.2.840.10008.5.1.4.1.1.481.21
 RTTreatmentPreparationStorage                        1.2.840.10008.5.1.4.1.1.481.22
+EnhancedRTImageStorage                               1.2.840.10008.5.1.4.1.1.481.23
+EnhancedContinuousRTImageStorage                     1.2.840.10008.5.1.4.1.1.481.24
+RTPatientPositionAcquisitionInstructionStorage       1.2.840.10008.5.1.4.1.1.481.25
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
@@ -1084,6 +1213,16 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+Depending on the command line options specified, the \b dcmqrscp utility will
+attempt to load character set mapping tables.  This happens when DCMTK was
+compiled with the oficonv library (which is the default) and the mapping tables
+are not built into the library (default when DCMTK uses shared libraries).
+
+The mapping table files are expected in DCMTK's <em>\<datadir\></em>.
+The \e DCMICONVPATH environment variable can be used to specify a different
+location.  If a different location is specified, those mapping tables also
+replace any built-in tables.
+
 \section dcmqrscp_files FILES
 
 <em>\<docdir\>/dcmqrcnf.txt</em> - configuration information
@@ -1098,6 +1237,6 @@ profiles
 
 \section dcmqrscp_copyright COPYRIGHT
 
-Copyright (C) 1993-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

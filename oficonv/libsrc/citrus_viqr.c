@@ -34,6 +34,14 @@
 #include "dcmtk/oficonv/queue.h"
 #endif
 
+/* FreeBSD defines TAILQ_FOREACH_SAFE in <sys/queue.h>, but not all systems do */
+#ifndef TAILQ_FOREACH_SAFE
+#define TAILQ_FOREACH_SAFE(var, head, field, tvar)          \
+    for ((var) = TAILQ_FIRST((head));               \
+        (var) && ((tvar) = TAILQ_NEXT((var), field), 1);        \
+        (var) = (tvar))
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -201,9 +209,9 @@ mnemonic_append_child(mnemonic_t *m, const char *s,
 static void
 mnemonic_destroy(mnemonic_t *m)
 {
-    mnemonic_t *m0;
+    mnemonic_t *m0, *n;
 
-    TAILQ_FOREACH(m0, &m->child, entry)
+    TAILQ_FOREACH_SAFE(m0, &m->child, entry, n)
         mnemonic_destroy(m0);
     free(m);
 }

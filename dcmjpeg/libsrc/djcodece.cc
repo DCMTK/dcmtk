@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,7 +67,8 @@ OFBool DJCodecEncoder::canChangeCoding(
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
   DcmXfer oldRep(oldRepType);
-  if (oldRep.isNotEncapsulated() && (newRepType == myXfer)) return OFTrue; // compress requested
+  if (oldRep.usesNativeFormat() && (newRepType == myXfer))
+    return OFTrue; // compress requested
 
   // we don't support re-coding for now
   return OFFalse;
@@ -1399,17 +1400,17 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   DcmElement *explanation = NULL;
 
   DcmStack stack;
-  if ((dataset->search(DCM_WindowCenter, stack, ESM_fromHere, OFFalse)).good())
+  if ((dataset->search(DCM_WindowCenter, stack, ESM_fromHere, OFFalse)).good() && stack.top()->isElement())
   {
     center = OFreinterpret_cast(DcmElement*, stack.top());
   }
   stack.clear();
-  if ((dataset->search(DCM_WindowWidth, stack, ESM_fromHere, OFFalse)).good())
+  if ((dataset->search(DCM_WindowWidth, stack, ESM_fromHere, OFFalse)).good() && stack.top()->isElement())
   {
     width = OFreinterpret_cast(DcmElement*, stack.top());
   }
   stack.clear();
-  if ((dataset->search(DCM_WindowCenterWidthExplanation, stack, ESM_fromHere, OFFalse)).good())
+  if ((dataset->search(DCM_WindowCenterWidthExplanation, stack, ESM_fromHere, OFFalse)).good() && stack.top()->isElement())
   {
     explanation = OFreinterpret_cast(DcmElement*, stack.top());
   }

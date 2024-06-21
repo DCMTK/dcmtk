@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,21 +21,21 @@
 
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimgle/dcmimage.h"
 
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/ofstd/ofstd.h"
 
-#include "dcmtk/dcmimgle/dcmimage.h"
 #include "dcmtk/dcmimgle/diovlimg.h"
 #include "dcmtk/dcmimgle/dimo1img.h"
 #include "dcmtk/dcmimgle/dimo2img.h"
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimgle/diregbas.h"
 #include "dcmtk/dcmimgle/diplugin.h"
-#include "dcmtk/dcmdata/dcdicent.h"  /* needed by MSVC5 */
 
 #ifndef FILENAME_MAX
 #define FILENAME_MAX 255
@@ -55,7 +55,7 @@ DiRegisterBase *DiRegisterBase::Pointer = NULL;
 
 // --- create 'DicomImage' from 'filename', for valid 'flags' see 'diutils.h'
 
-DicomImage::DicomImage(const char *filename,
+DicomImage::DicomImage(const OFFilename &filename,
                        const unsigned long flags,
                        const unsigned long fstart,
                        const unsigned long fcount)
@@ -231,6 +231,8 @@ void DicomImage::Init()
                 default:                                            // unknown or unsupported color model
                     if (DiRegisterBase::Pointer != NULL)
                         Image = DiRegisterBase::Pointer->createImage(Document, ImageStatus, PhotometricInterpretation);
+                    else
+                        DCMIMGLE_DEBUG("Support for color images not registered, need to include \"dcmtk/dcmimage/diregist.h\"");
                     if (Image == NULL)
                     {
                         if (PhotometricInterpretation == EPI_Unknown)
@@ -649,7 +651,7 @@ int DicomImage::writePPM(const char *filename,
     if ((filename != NULL) && (Image != NULL))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "w");                // open text file for writing
         int ok = writePPM(stream, bits, frame);
@@ -693,7 +695,7 @@ int DicomImage::writeRawPPM(const char *filename,
     if ((filename != NULL) && (Image != NULL) && (Image->getBits(bits) <= MAX_RAWPPM_BITS))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "wb");               // open binary file for writing
         if (stream != NULL)
@@ -728,7 +730,7 @@ int DicomImage::writeBMP(const char *filename,
         ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24) || (bits == 32)))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "wb");               // open binary file for writing
         if (stream != NULL)
@@ -766,7 +768,7 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
     if ((plugin != NULL) && (filename != NULL) && (Image != NULL))
     {
         char fname[FILENAME_MAX + 1];
-        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+        if (OFStandard::snprintf(fname, sizeof(fname), filename, frame) >= 0)           // replace '%d' etc. with frame number
             filename = fname;
         FILE *stream = fopen(filename, "wb");               // open binary file for writing
         if (stream != NULL)

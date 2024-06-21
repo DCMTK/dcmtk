@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -21,12 +21,13 @@
 
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimage/dicoimg.h"
 
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcpixel.h"
+#include "dcmtk/ofstd/ofstd.h"
 
-#include "dcmtk/dcmimage/dicoimg.h"
 #include "dcmtk/dcmimgle/dimo2img.h"
 #include "dcmtk/dcmimage/dicopxt.h"
 #include "dcmtk/dcmimage/dicocpt.h"
@@ -574,11 +575,11 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                 dataset.putAndInsertUint16(DCM_Columns, Columns);
                 dataset.putAndInsertUint16(DCM_Rows, Rows);
 #ifdef PRId32
-                sprintf(numBuf, "%" PRId32, NumberOfFrames);
+                OFStandard::snprintf(numBuf, sizeof(numBuf), "%" PRId32, NumberOfFrames);
 #elif SIZEOF_LONG == 8
-                sprintf(numBuf, "%d", NumberOfFrames);
+                OFStandard::snprintf(numBuf, sizeof(numBuf), "%d", NumberOfFrames);
 #else
-                sprintf(numBuf, "%ld", NumberOfFrames);
+                OFStandard::snprintf(numBuf, sizeof(numBuf), "%ld", NumberOfFrames);
 #endif
                 dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
                 dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);

@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTContourSequence
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -92,20 +92,6 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
 
       // --- get DICOM attribute values ---
 
-        /** get AttachedContours (3006,0049)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getAttachedContours(OFString &value, const signed long pos = 0) const;
-
-        /** get AttachedContours (3006,0049)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getAttachedContours(Sint32 &value, const unsigned long pos = 0) const;
-
         /** get ContourData (3006,0050)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -147,40 +133,6 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
          */
         OFCondition getContourNumber(Sint32 &value, const unsigned long pos = 0) const;
 
-        /** get ContourOffsetVector (3006,0045)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContourOffsetVector(OFString &value, const signed long pos = 0) const;
-
-        /** get ContourOffsetVector (3006,0045)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContourOffsetVector(Float64 &value, const unsigned long pos = 0) const;
-
-        /** get ContourOffsetVector (3006,0045)
-         *  @param  value  reference to variable in which the value(s) should be stored
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContourOffsetVector(OFVector<Float64> &value) const;
-
-        /** get ContourSlabThickness (3006,0044)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1), -1 for all components
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContourSlabThickness(OFString &value, const signed long pos = 0) const;
-
-        /** get ContourSlabThickness (3006,0044)
-         *  @param  value  reference to variable in which the value should be stored
-         *  @param  pos    index of the value to get (0..vm-1)
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition getContourSlabThickness(Float64 &value, const unsigned long pos = 0) const;
-
         /** get NumberOfContourPoints (3006,0046)
          *  @param  value  reference to variable in which the value should be stored
          *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -211,13 +163,6 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
 
       // --- set DICOM attribute values ---
 
-        /** set AttachedContours (3006,0049)
-         *  @param  value  value to be set (possibly multi-valued) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (IS) and VM (1-n) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setAttachedContours(const OFString &value, const OFBool check = OFTrue);
-
         /** set ContourData (3006,0050)
          *  @param  value  value to be set (possibly multi-valued) or "" for no value
          *  @param  check  check 'value' for conformance with VR (DS) and VM (3-3n) if enabled
@@ -239,20 +184,6 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
          */
         OFCondition setContourNumber(const OFString &value, const OFBool check = OFTrue);
 
-        /** set ContourOffsetVector (3006,0045)
-         *  @param  value  value to be set (possibly multi-valued) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (3) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContourOffsetVector(const OFString &value, const OFBool check = OFTrue);
-
-        /** set ContourSlabThickness (3006,0044)
-         *  @param  value  value to be set (single value only) or "" for no value
-         *  @param  check  check 'value' for conformance with VR (DS) and VM (1) if enabled
-         *  @return status, EC_Normal if successful, an error code otherwise
-         */
-        OFCondition setContourSlabThickness(const OFString &value, const OFBool check = OFTrue);
-
         /** set NumberOfContourPoints (3006,0046)
          *  @param  value  value to be set (single value only) or "" for no value
          *  @param  check  check 'value' for conformance with VR (IS) and VM (1) if enabled
@@ -265,8 +196,6 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
         /// internal flag used to mark the empty default item
         /*const*/ OFBool EmptyDefaultItem;
 
-        /// AttachedContours (3006,0049) vr=IS, vm=1-n, type=3
-        DcmIntegerString AttachedContours;
         /// ContourData (3006,0050) vr=DS, vm=3-3n, type=1
         DcmDecimalString ContourData;
         /// ContourGeometricType (3006,0042) vr=CS, vm=1, type=1
@@ -275,10 +204,6 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
         DRTContourImageSequence ContourImageSequence;
         /// ContourNumber (3006,0048) vr=IS, vm=1, type=3
         DcmIntegerString ContourNumber;
-        /// ContourOffsetVector (3006,0045) vr=DS, vm=3, type=3
-        DcmDecimalString ContourOffsetVector;
-        /// ContourSlabThickness (3006,0044) vr=DS, vm=1, type=3
-        DcmDecimalString ContourSlabThickness;
         /// NumberOfContourPoints (3006,0046) vr=IS, vm=1, type=1
         DcmIntegerString NumberOfContourPoints;
 
@@ -390,13 +315,13 @@ class DCMTK_DCMRT_EXPORT DRTContourSequence
      */
     const Item &operator[](const size_t num) const;
 
-    /** add new item to the end of this sequence
+    /** create and add new item to the end of this sequence
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(Item *&item);
 
-    /** insert new item into the sequence
+    /** create and insert new item into the sequence
      *  @param  pos   position where the new item is to be inserted (0..num)
      *  @param  item  reference to new item pointer (result variable)
      *  @return status, EC_Normal if successful, an error code otherwise

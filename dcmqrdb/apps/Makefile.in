@@ -37,20 +37,25 @@ dcmnetinc = -I$(dcmnetdir)/include
 dcmnetlibdir = -L$(dcmnetdir)/libsrc
 dcmnetlib = -ldcmnet
 
-LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofstdinc) $(ofloginc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) $(ofloglibdir) \
-	$(ofstdlibdir) $(oficonvlibdir)
-LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) \
+dcmtlsdir = $(top_srcdir)/../dcmtls
+dcmtlsinc = -I$(dcmtlsdir)/include
+dcmtlslibdir = -L$(dcmtlsdir)/libsrc
+dcmtlslib = -ldcmtls
+
+LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofstdinc) $(ofloginc) $(dcmtlsinc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
+	$(ofstdlibdir) $(ofloglibdir) $(dcmtlslibdir) $(oficonvlibdir)
+LOCALLIBS = -ldcmqrdb $(dcmnetlib) $(dcmtlslib) $(dcmdatalib) $(ofstdlib) \
+	$(ofloglib) $(oficonvlib) \
 	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcmqrscp.o dcmqrti.o dcmqridx.o
 progs = dcmqrscp dcmqrti dcmqridx
 
-
 all: $(progs)
 
 dcmqrscp: dcmqrscp.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmqrscp.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmqrscp.o $(dcmtlslib) $(LOCALLIBS) $(OPENSSLLIBS) $(LIBS)
 
 dcmqrti: dcmqrti.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmqrti.o $(LOCALLIBS) $(LIBS)

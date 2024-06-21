@@ -361,7 +361,11 @@ _citrus_HZ_wcrtomb_priv(_HZEncodingInfo * ei,
         ch = (wc >> (len * 8)) & 0xFF;
         if (range->start > ch || range->end < ch)
             goto ilseq;
-        psenc->ch[psenc->chlen++] = (char) (ch | bit);
+        if (psenc->chlen < ROWCOL_MAX) {
+            psenc->ch[psenc->chlen++] = (char) (ch | bit);
+        } else {
+            return (E2BIG);
+        }
     }
     memcpy(s, psenc->ch, psenc->chlen);
     *nresult = psenc->chlen;

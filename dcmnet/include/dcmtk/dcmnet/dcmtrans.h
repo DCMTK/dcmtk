@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 #include "dcmtk/ofstd/ofglobal.h"     /* for OFGlobal */
 #include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
+#include "dcmtk/ofstd/ofdeprec.h"     /* for OFdeprecated */
 #include "dcmtk/ofstd/ofstream.h"     /* for ostream */
 #include "dcmtk/dcmnet/dndefine.h"    /* for DCMTK_DCMNET_EXPORT */
 #include "dcmtk/dcmnet/dntypes.h"     /* for DcmNativeSocketType */
@@ -161,12 +162,24 @@ public:
    */
   virtual OFString& dumpConnectionParameters(OFString& str) = 0;
 
+  /** this method must be called by the parent process after a fork()
+   *  if the TLS connection is handled by the child process. This
+   *  will prevent the destructor in the parent process from calling
+   * SSL_shutdown().
+   */
+  virtual void setParentProcessMode();
+
+  /** check if the connection has been set to parent process mode
+   *  by a prior call to setParentProcessMode().
+   */
+  virtual OFBool isParentProcessMode() const;
+
   /** prints the characteristics of the current connection
    *  on the given output stream.
    *  @param out output stream
    *  @deprecated Please use the other dumpConnectionParameters() function instead!
    */
-  void dumpConnectionParameters(STD_NAMESPACE ostream& out);
+  OFdeprecated void dumpConnectionParameters(STD_NAMESPACE ostream& out);
 
   /** indicates which of the specified transport connections is ready for
    *  reading. If none of the specified transport connections is ready
@@ -242,6 +255,14 @@ private:
 
   /// the socket file descriptor/handle used by the transport connection.
   DcmNativeSocketType theSocket;
+
+  /** a flag that must be set in the parent process after a fork()
+   *  if the TLS connection is handled by the child process. This
+   *  will prevent the destructor in the parent process from calling
+   *  SSL_shutdown().
+   */
+  OFBool isForkedParent;
+
 };
 
 
@@ -318,12 +339,12 @@ public:
    */
   virtual unsigned long getPeerCertificateLength();
 
-  /* copies the peer certificate of a secure connection into a buffer
-   * specified by the caller. If the buffer is too small to hold the
-   * certificate, nothing is copied and zero is returned.
-   * @param buf buffer into which the certificate is written
-   * @param bufLen size of the buffer in bytes
-   * @return number of bytes written, always less or equal bufLen.
+  /** copies the peer certificate of a secure connection into a buffer
+   *  specified by the caller. If the buffer is too small to hold the
+   *  certificate, nothing is copied and zero is returned.
+   *  @param buf buffer into which the certificate is written
+   *  @param bufLen size of the buffer in bytes
+   *  @return number of bytes written, always less or equal bufLen.
    */
   virtual unsigned long getPeerCertificate(void *buf, unsigned long bufLen);
 

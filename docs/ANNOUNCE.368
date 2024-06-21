@@ -1,0 +1,177 @@
+ANNOUNCEMENT
+
+Version 3.6.8 of the OFFIS DCMTK (DICOM toolkit) software is now available for
+public release.  This release includes the following main changes over the
+previous version 3.6.7:
+
+- DCMTK 3.6.8 builds correctly on older and up-to-date versions of GNU gcc
+  (4.8.5 to 12.3.0) Clang (3.4.2 to 15.0.7), Apple Clang (14.0.3 to 15.0.0),
+  and Microsoft Visual Studio (2015 to 2022).
+
+- Tested with the following operating systems/environments:
+  - Android on arm64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64 and arm64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86
+  - Windows (including MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- Updated DICOM data dictionary, list of SOP classes, well-known frame of
+  references, transfer syntaxes [*], code definitions, supported context group
+  classes, and directory record types for DICOM standard release 2023c.
+
+  [*] Support for the Encapsulated Uncompressed Explicit VR Little Endian
+      Transfer Syntax (introduced with CP-2083) is still missing, see
+      https://support.dcmtk.org/redmine/issues/1000 for the current status.
+
+- Updated automatically generated classes in module "dcmrt" (Radiotherapy)
+  based on DICOM 2023b.  Also fixed long undiscovered bugs that occurred when
+  iterating over sequence items or when reading RT images.
+
+- Added new module oficonv providing builtin character set conversion in DCMTK.
+  oficonv is enabled by default and, therefore, is chosen over the external
+  libraries iconv and icu as well as stdlibc (iconv).  However, one of the
+  other conversion libraries can still be enabled if preferred by the user.
+
+- Added support for the Specific Character Sets "ISO_IR 203" and "ISO 2022 IR
+  203" (ISO 8859-15, Latin-9) introduced with CP-2113 to the character set
+  conversion.
+
+- Added support for the new RFC 8996 TLS profiles, including support for
+  Application-Layer Protocol Negotiation (ALPN), Server Name Indication (SNI),
+  and other recommendations of RFC 9325 (the current revision of BCP 195).
+
+- Further enhanced DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added support for Context Groups CID 218 and CID 7551, which are used for
+    TID 1500 "Measurement Report".
+
+  - Implemented changes for CP-2000 by adding support for the SR Template
+    parameters $ImagePurpose or $Purpose to the implementation of TID 1501,
+    300 and 320.
+
+  - Added "Rendition Selection Document" (introduced with Supplement 202) to
+    the list of supported "ReportTypes" in the XML Schema (XSD).
+
+  - Updated list of known Presentation State, Segmentation and Waveform SOP
+    Classes.
+
+  - Updated mapping of the Defined Terms for the Body Part Examined attribute
+    to associated CID 4031 (Common Anatomic Regions) codes based on part 16.
+
+- Further improved network classes DcmSCU and DcmSCP:
+
+  - Removed note on experimental status of DcmSCU and DcmSCP.
+  - Reject wrong called AE Title in DcmSCP (if configured).
+  - Allow operating system to choose free port for DcmSCP.
+  - Added N-CREATE and N-SET support to DcmSCU.
+  - Allow setting individual TCP timeout for every instance of DcmSCU.
+  - Introduced new class DcmTLSSCU to bring TLS support to DcmSCU.
+
+- Don't fill in Responding AE Title in log output of A-ASSOCIATE request.
+  DCMTK used to fill in Responding AE Title in the log when an SCU was
+  connecting to a Remote AE.  Since obviously the Responding AE Title is
+  not known in the request, the string value should be logged empty.
+
+- Fixed an unexpected behavior when using option --charset-assume (+Ca)
+  together with option --convert-to-utf8 (+U8) for dcm2xml, dsr2html or
+  dsr2xml.  Now, the order of evaluating these options is reversed, so that
+  a DICOM file that is missing the Specific Character Set attribute although it
+  is needed (because extended characters are used) can be processed.
+
+- Enabled support for the --print-color (+C) option in dcmdump and dsrdump also
+  on Windows systems.  Both the Windows Terminal and the PowerShell support
+  ANSI escape codes, so the color output should work with these tools.
+
+- Enhanced handling of converting IS (Integer String) and DS (Decimal String)
+  values to JSON format.  Added new command line options to dcm2json for this
+  purpose.
+
+- Added initial support for Multi-Fragment Video Transfer Syntaxes introduced
+  with Supplement 225.  This commit covers the definition of the UID values
+  and the DCMTK-specific definitions that are needed to later enhance support.
+
+- Added JPEG-LS support to img2dcm's regular JPEG plugin.
+
+- Added comparison operators to classes DcmTag and DcmXfer.
+
+- Added support for the official DICOM UID keywords that were originally
+  introduced with CP-1995.  These keywords are defined in addition to the
+  DCMTK-specific UID names that have been used for a long time and will still
+  be supported for the foreseeable future.
+
+- Added classes OFIPCMessageQueueServer and OFIPCMessageQueueClient, which
+  implement the server and client side of a message queue for inter-process
+  communication.  A server process can create a message queue and receive
+  text messages, and a client process can open the queue and send messages.
+  Depending on the platform, the queues are implemented as Windows Mailslot,
+  Posix message queue or System V message queue.
+
+- CMake-related enhancements and other changes:
+
+  - Fix detection and enabling of modern C++ versions (C++11 and later) for VS.
+    Mainly, it is ensured that the __cplusplus version macro is set accordingly
+    when using VS while enabling C++11 or later.
+
+  - The CMake install target now uses the installation directories provided by
+    the GNUInstallDirs package more consistently.
+
+  - The minimum supported CMake version has been increased to 3.0.0.
+
+  - A new, still experimental setting named DCMTK_USE_WIN32_PROGRAMDATA allows
+    data files to be installed in the "ProgramData" directory on Windows.
+
+- The default installation directories for support data, configuration data and
+  documentation now contain the DCMTK release number in the path.  This allows
+  multiple versions of DCMTK to be installed in parallel, without generating
+  conflicts for the data dictionary and other data and configuration files.
+
+- Fixed various issues that occurred after the official 3.6.7 release.
+  See CHANGES file for details.
+
+Many people have contributed to this new release of DCMTK, appearing here in
+alphabetical order.  Thank you very much for your support!
+
+  Ahmad Hazimeh <ahmad.hazimeh@epfl.ch>
+  Calvin Fong <calvin.fong@trailofbits.com>
+  Dimitri Papadopoulos Orfanos <dimitri.papadopoulos@cea.fr>
+  Franz Reitner <franz.reitner@excelitas.com>
+  Joger Hansegard <joger.hansegard@ge.com>
+  Juhee Kim <kimjuhi96@snu.ac.kr>
+  Marcus Hennix <Marcus.Hennix@elekta.com>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Michael L. Williams <MWILLIAMS72@mgh.harvard.edu>
+  Oliver Klerx <klerx@phoenix-pacs.de>
+  Peter Klotz <peter.klotz@siemens-healthineers.com>
+  Sharon Brizinov>sharon.b@claroty.com>
+  Song Xiangpu <songxiangpu@mail.sdu.edu.cn>
+  Tamas Nemeth <TNemeth@erad.com>
+  Zahra Mirzamomen <zahra.mirzamomen@monash.edu>
+
+  DCMTK forum users "nbeck", "pgimeno", "Martin Roeseler"
+
+  GitHub users "bettar", "Cheney-W", "chrisse74", "doskachok", "jogerh",
+    "knight2995", "kwach", "maddin200", "malaterre", "mrbean-bremen",
+    "reunanen", "StillerHarpo"
+
+Members of the DCMTK Team who have worked on this release are:
+
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Jan Schlamelcher <schlamelcher@offis.de>
+
+Student associates:
+
+  Marcel Baumann <marcel.baumann@uni-oldenburg.de>
+  Nikolas Goldhammer <nikolas.goldhammer@offis.de>
+
+The DCMTK software can be downloaded via:
+
+  https://dicom.offis.de/en/dcmtk/ or https://www.dcmtk.org/
+
+OFFIS e.V., Oldenburg, Germany, 2023-12-19

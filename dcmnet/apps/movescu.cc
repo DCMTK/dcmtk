@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,6 +35,7 @@
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
+#include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -176,18 +177,18 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
     }
     DcmTag tag(OFstatic_cast(Uint16, g), OFstatic_cast(Uint16, e));
     if (tag.error() != EC_Normal) {
-        sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
+        OFStandard::snprintf(msg2, sizeof(msg2), "unknown tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
     DcmElement *elem = DcmItem::newDicomElement(tag);
     if (elem == NULL) {
-        sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
+        OFStandard::snprintf(msg2, sizeof(msg2), "cannot create element for tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
     if (!valStr.empty()) {
         if (elem->putString(valStr.c_str()).bad())
         {
-            sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
+            OFStandard::snprintf(msg2, sizeof(msg2), "cannot put tag value: (%04x,%04x)=\"", g, e);
             msg = msg2;
             msg += valStr;
             msg += "\"";
@@ -197,7 +198,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
 
     if (overrideKeys == NULL) overrideKeys = new DcmDataset;
     if (overrideKeys->insert(elem, OFTrue).bad()) {
-        sprintf(msg2, "cannot insert tag: (%04x,%04x)", g, e);
+        OFStandard::snprintf(msg2, sizeof(msg2), "cannot insert tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
 }
@@ -282,7 +283,7 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-mpeg4-2-3d",   "+x3",     "prefer MPEG4 AVC/H.264 HP / Level 4.2 TS (3D)");
       cmd.addOption("--prefer-mpeg4-2-st",   "+xo",     "prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS");
       cmd.addOption("--prefer-hevc",         "+x4",     "prefer HEVC/H.265 Main Profile / Level 5.1 TS");
-      cmd.addOption("--prefer-hevc10",       "+x5",     "prefer HEVC/H.265 Main 10 Profile / Level 5.1 TS");
+      cmd.addOption("--prefer-hevc10",       "+x5",     "prefer HEVC/H.265 Main 10 Profile / L5.1 TS");
       cmd.addOption("--prefer-rle",          "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",     "+xd",     "prefer deflated explicit VR little endian TS");
@@ -316,14 +317,14 @@ main(int argc, char *argv[])
       cmd.addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer (";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
-      sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
@@ -786,7 +787,7 @@ main(int argc, char *argv[])
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
-    sprintf(peerHost, "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
     /*
@@ -1422,7 +1423,7 @@ static OFCondition storeSCP(
         OFStandard::strlcpy(imageFileName, NULL_DEVICE_NAME, 2048);
 #endif
     } else {
-        sprintf(imageFileName, "%s.%s",
+        OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s.%s",
             dcmSOPClassUIDToModality(req->AffectedSOPClassUID),
             req->AffectedSOPInstanceUID);
         OFStandard::sanitizeFilename(imageFileName);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,8 +19,8 @@
  *
  */
 
-#include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmdata/dctypes.h" // logger
 #include "dcmtk/dcmiod/iodrules.h"
 
@@ -29,11 +29,11 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcitem.h"
-#include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/ofstd/ofstring.h"
 
 // --- static helpers ---
 
@@ -43,7 +43,7 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(
     DcmStack stack;
     const DcmTagKey tagKey = delem.getTag();
     OFCondition result     = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
+    if (result.good() && stack.top()->isElement())
     {
         /* copy object from search stack */
         result = delem.copyFrom(*stack.top());
@@ -76,7 +76,7 @@ OFCondition DcmIODUtil::getAndCheckElementFromDataset(DcmItem& dataset,
 
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
+    if (result.good() && stack.top()->isElement())
     {
         /* copy object from search stack */
         delem = OFstatic_cast(DcmElement*, stack.top()->clone());
@@ -143,7 +143,7 @@ OFCondition DcmIODUtil::copyElementToDataset(OFCondition& result,
 }
 
 OFCondition
-DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElement* delem, const IODRule* rule)
+DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElement* delem, const IODRule* rule, const OFBool checkValue)
 {
     OFBool insertionOK = OFFalse;
     if (result.good())
@@ -179,7 +179,9 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                     return result;
                 }
             }
-            // At this point, we certainly have an element. Check its value (empty ok for type 2)
+            // At this point, we certainly have an element. Check its value (empty ok for type 2).
+            dcmtk::log4cplus::LogLevel logLevel;
+            if (checkValue) logLevel = dcmtk::log4cplus::ERROR_LOG_LEVEL; else logLevel = dcmtk::log4cplus::WARN_LOG_LEVEL;
             if ((type == "2") || !delem->isEmpty())
             {
                 // Insert non-empty element or empty "type 2" element. First, perform the insertion, and then
@@ -193,7 +195,8 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                                                type,
                                                result,
                                                rule->getModule().c_str(),
-                                               dcmtk::log4cplus::ERROR_LOG_LEVEL);
+                                               logLevel);
+                    reset_value_check_result(result, checkValue, *delem);
                 }
                 if (result.good())
                 {
@@ -210,7 +213,7 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                 // Empty element value not allowed for "type 1"
                 result = EC_InvalidValue;
                 checkElementValue(
-                    *delem, rule->getVM(), type, result, rule->getModule().c_str(), dcmtk::log4cplus::ERROR_LOG_LEVEL);
+                    *delem, rule->getVM(), type, result, rule->getModule().c_str(), logLevel);
             }
         }
         else
@@ -422,7 +425,7 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
     OFCondition result;
     if (values.size() > OFnumeric_limits<unsigned long>::max())
     {
-        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag());
         return IOD_EC_InvalidElementValue;
     }
     const unsigned long vmCount          = OFstatic_cast(unsigned long, values.size());
@@ -432,8 +435,8 @@ OFCondition DcmIODUtil::setFloat64ValuesOnElement(DcmElement& delem,
         result = delem.putFloat64((*it), count);
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Setting value "
-                                                 << " #" << count << " to \" " << *it << "\" not possible");
+            DCMIOD_WARN(delem.getTag() << ": Setting value "
+                                       << " #" << count << " to \" " << *it << "\" not possible");
         }
         else if (check)
         {
@@ -457,7 +460,7 @@ OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
     OFCondition result;
     if (values.size() > OFnumeric_limits<unsigned long>::max())
     {
-        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag());
         return IOD_EC_InvalidElementValue;
     }
     const unsigned long vmCount          = OFstatic_cast(unsigned long, values.size());
@@ -467,8 +470,8 @@ OFCondition DcmIODUtil::setFloat32ValuesOnElement(DcmElement& delem,
         result = delem.putFloat32((*it), count);
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Setting value "
-                                                 << " #" << count << " to \" " << *it << "\" not possible");
+            DCMIOD_WARN(delem.getTag() << ": Setting value "
+                                       << " #" << count << " to \" " << *it << "\" not possible");
         }
         else if (check)
         {
@@ -487,7 +490,7 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement& delem,
     OFCondition result;
     if (values.size() > OFnumeric_limits<unsigned long>::max())
     {
-        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag().getXTag());
+        DCMIOD_ERROR("Too many values provided (" << values.size() << " for element: " << delem.getTag());
         return IOD_EC_InvalidElementValue;
     }
     const unsigned long vmCount         = OFstatic_cast(unsigned long, values.size());
@@ -497,8 +500,8 @@ OFCondition DcmIODUtil::setUint16ValuesOnElement(DcmElement& delem,
         result = delem.putUint16((*it), count);
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Setting value "
-                                                 << " #" << count << " to \" " << *it << "\" not possible");
+            DCMIOD_WARN(delem.getTag() << ": Setting value "
+                                       << " #" << count << " to \" " << *it << "\" not possible");
         }
         else if (check)
         {
@@ -520,8 +523,8 @@ OFCondition DcmIODUtil::getUint16ValuesFromElement(DcmElement& delem, OFVector<U
         result = delem.getUint16(val, OFstatic_cast(unsigned long, i));
         if (result.bad())
         {
-            DCMIOD_WARN(delem.getTag().getXTag() << ": Getting value "
-                                                 << " #" << i << " not possible");
+            DCMIOD_WARN(delem.getTag() << ": Getting value "
+                                       << " #" << i << " not possible");
             break;
         }
         values.push_back(val);
@@ -553,7 +556,7 @@ OFCondition DcmIODUtil::getAndCheckSingleItem(DcmSequenceOfItems& seq, DcmItem*&
     const OFString tagName = OFconst_cast(DcmTag*, &seq.getTag())->getTagName(); // getTagName is not const...
     if (checkKey != DCM_UndefinedTagKey)
     {
-        if (seq.getTag().getXTag() != checkKey)
+        if (seq.getTag() != checkKey)
         {
             DCMIOD_ERROR("Expected sequence " << checkKey << " but got " << &seq.getTag() << "(" << tagName << ")");
             return EC_ItemNotFound;
@@ -640,7 +643,7 @@ const DcmTagKey DcmIODUtil::parseTagKey(const OFString& keyString)
 OFCondition DcmIODUtil::decompress(DcmDataset& dset)
 {
     DcmXfer xfer = dset.getOriginalXfer();
-    if (xfer.isEncapsulated())
+    if (xfer.isPixelDataCompressed())
     {
         if (EC_Normal != dset.chooseRepresentation(EXS_LittleEndianExplicit, NULL))
         {
@@ -771,4 +774,34 @@ void DcmIODUtil::alignFrameOnByteBoundary(Uint8* buf, size_t bufLen, Uint8 numBi
     }
     // Shift last byte manually
     buf[bufLen - 1] = OFstatic_cast(unsigned char, buf[bufLen - 1]) >> numBits;
+}
+
+
+void DcmIODUtil::reset_value_check_result(OFCondition& result, const OFBool checkValue, DcmElement& elem)
+{
+    if (!checkValue)
+    {
+        if ( (result == EC_ValueRepresentationViolated) ||
+             (result == EC_MaximumLengthViolated) ||
+             (result == EC_InvalidCharacter) ||
+             (result == EC_ValueMultiplicityViolated) )
+        {
+            // print element to string
+            OFOStringStream oss;
+            oss << elem.getTag() << " " << DcmVR(elem.getVR()).getVRName() << " ";
+            oss << DcmTag(elem.getTag()).getTagName() << " ";
+            if (elem.getLength() > 1024)
+            {
+                oss << "(value too long for printing)";
+            }
+            {
+                OFString val;
+                elem.getOFString(val, 0, OFTrue);
+                oss << "[" << val << "]";
+            }
+
+            DCMIOD_DEBUG("Ignoring error (" << result.text() <<") when checking element: " << oss.str().c_str());
+            result = EC_Normal;
+        }
+    }
 }

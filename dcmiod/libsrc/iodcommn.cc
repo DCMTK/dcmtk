@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -19,10 +19,10 @@
  *
  */
 
-#include "dcmtk/dcmiod/iodcommn.h"
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmiod/iodcommn.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dctypes.h" // logger
-#include "dcmtk/dcmiod/iodutil.h"
 
 DcmIODCommon::DcmIODCommon()
     : m_Item(new DcmItem())
@@ -36,6 +36,7 @@ DcmIODCommon::DcmIODCommon()
     , m_SOPCommon(m_Item, m_Rules)
     , m_CommonInstanceReferenceModule(m_Item, m_Rules)
     , m_Modules()
+    , m_CheckValueOnWrite(OFTrue)
 {
     // Set initial values for a new SOP instance
     ensureInstanceUIDs(OFFalse);
@@ -82,13 +83,13 @@ DcmIODCommon::~DcmIODCommon()
 
 void DcmIODCommon::clearData()
 {
-    // TODO
-    //   OFVector<IODModule*>::iterator it = m_Modules.begin();
-    //   while (it != m_Modules.end())
-    //   {
-    //     (*it)->clearData();
-    //     it++;
-    //   }
+    // Clear data in all modules
+    OFVector<IODModule*>::iterator it = m_Modules.begin();
+    while (it != m_Modules.end())
+    {
+        (*it)->clearData();
+        it++;
+    }
 }
 
 IODPatientModule& DcmIODCommon::getPatient()
@@ -255,6 +256,23 @@ OFCondition DcmIODCommon::write(DcmItem& dataset)
         it++;
     }
     return result;
+}
+
+void DcmIODCommon::setValueCheckOnWrite(const OFBool check)
+{
+    m_CheckValueOnWrite = check;
+    // set value checking policy for all modules
+    OFVector<IODModule*>::iterator it = m_Modules.begin();
+    while (it != m_Modules.end())
+    {
+        (*it)->setValueCheckOnWrite(check);
+        it++;
+    }
+}
+
+OFBool DcmIODCommon::getValueCheckOnWrite() const
+{
+    return m_CheckValueOnWrite;
 }
 
 void DcmIODCommon::createNewStudy(const OFBool clearEquipment)

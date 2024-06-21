@@ -41,7 +41,7 @@ in which case commands are read periodically from a spool directory.
 \section dcmprscu_parameters PARAMETERS
 
 \verbatim
-dcmfile-in  stored print file(s) to be spooled
+dcmfile-in   stored print file(s) to be spooled ("-" for stdin)
 \endverbatim
 
 \section dcmprscu_options OPTIONS
@@ -201,6 +201,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmprscu_copyright COPYRIGHT
 
-Copyright (C) 1999-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

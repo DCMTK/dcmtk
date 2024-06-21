@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,10 +38,6 @@
 
 #if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
 #define PATTERN_MATCHING_AVAILABLE
-#endif
-
-#ifndef HAVE_WINDOWS_H
-#define ANSI_ESCAPE_CODES_AVAILABLE
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
@@ -163,7 +159,7 @@ DCMTK_MAIN_FUNCTION
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "DICOM input file or directory to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dcmfile-in", "DICOM input file or directory to be dumped\n(\"-\" for stdin)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -265,12 +261,9 @@ DCMTK_MAIN_FUNCTION
         cmd.addOption("--quote-nonascii",      "+Qn",    "quote non-ASCII and control chars as XML markup");
         cmd.addOption("--quote-as-octal",      "+Qo",    "quote non-ASCII and control ch. as octal numbers");
         cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
-#ifdef ANSI_ESCAPE_CODES_AVAILABLE
       cmd.addSubGroup("color:");
         cmd.addOption("--print-color",         "+C",     "use ANSI escape codes for colored output");
         cmd.addOption("--no-color",            "-C",     "do not use any ANSI escape codes (default)");
-#endif
-
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",       "-E",     "do not print if file is damaged (default)");
         cmd.addOption("--ignore-errors",       "+E",     "attempt to print even if file is damaged");
@@ -570,12 +563,10 @@ DCMTK_MAIN_FUNCTION
         printFlags = printFlags & ~(DCMTypes::PF_convertToMarkup | DCMTypes::PF_convertToOctalNumbers);
       cmd.endOptionBlock();
 
-#ifdef ANSI_ESCAPE_CODES_AVAILABLE
       cmd.beginOptionBlock();
       if (cmd.findOption("--print-color")) printFlags |= DCMTypes::PF_useANSIEscapeCodes;
       if (cmd.findOption("--no-color")) printFlags &= ~DCMTypes::PF_useANSIEscapeCodes;
       cmd.endOptionBlock();
-#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
@@ -743,7 +734,7 @@ static void printResult(STD_NAMESPACE ostream &out,
             /* do not print if a DCM_Item as this is not
              * very helpful to distinguish instances.
              */
-            if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
+            if (dobj != NULL && dobj->getTag() != DCM_Item) {
                 out << dobj->getTag() << ".";
             }
         }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -197,9 +197,13 @@ public:
   /** loads the certificate (public key) used for authentication of this application from a file.
    *  @param fileName path to the certificate file
    *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
+   *  @param profile the currently active TLS profile
    *  @return EC_Normal if successful, an error code otherwise
    */
-  OFCondition setCertificateFile(const char *fileName, DcmKeyFileFormat fileType);
+  OFCondition setCertificateFile(
+    const char *fileName,
+    DcmKeyFileFormat fileType,
+    DcmTLSSecurityProfile profile);
 
   /** checks if the private key and the certificate set using setPrivateKeyFile()
    *  and setCertificateFile() match, i.e. if they establish a private/public key pair.
@@ -279,6 +283,11 @@ public:
    */
   OFCondition setTLSProfile(DcmTLSSecurityProfile profile);
 
+  /** return the currently selected TLS profile
+   *  @return currently selected TLS profile
+   */
+  DcmTLSSecurityProfile getTLSProfile() const;
+
   /** clear the current list of ciphersuites. Equivalent to
    *  calling setTLSProfile(TSP_Profile_None).
    */
@@ -325,6 +334,29 @@ public:
    *  @return OFTrue if successful, OFFalse otherwise.
    */
   OFBool writeRandomSeed(const char *randFile);
+
+  /** set SNI server name to be used in outgoing connections
+   *  @param s server name, NULL to disable SNI
+   */
+  void setClientSNI(const char *s) { clientSNI = s; }
+
+  /** set SNI server name to be expected and checked in incoming connections
+   *  if the ClientHello message contains an SNI field
+   *  @param s server name, NULL to disable SNI
+   */
+  void setServerSNI(const char *s) { serverSNI = s; }
+
+  /** check if the requested SNI server name s matches the
+   *  SNI server name defined by a prior call to setServerSNI().
+   *  @param s requested SNI server name
+   *  @return OFTrue if server names matches, OFFalse otherwise
+   */
+  OFBool checkServerSNI(const char *s) const;
+
+  /** get the SNI server name
+   * @return SNI server name. Never returns NULL.
+   */
+  const char *getServerSNI() const;
 
   /** adds the contents of a file to the seed for the cryptographic
    *  pseudo-random number generator. The file should contain real
@@ -397,15 +429,22 @@ public:
    */
   static int getRSAKeySize(X509 *certificate);
 
-  /** checks the BCP 195 recommendations that RSA certificates
-   *  should use SHA-256 hash keys. We also accept better SHA-2
-   *  hash keys (SHA-384 and SHA-512).
+  /** checks for the use of hash keys that are broken and too insecure to permit.
+   *  Currently MD2, MD4 and MD5 are on our "blacklist".
    *  @param certificate X.509 certificate
-   *  @return NULL if everything is OK (i.e. the certificate is
-   *    not RSA, or it is RSA and uses SHA-256 or better),
+   *  @return NULL if the hash key algorithm is not on the blacklist,
    *    the name of the hash key algorithm used otherwise.
    */
-  static const char *checkRSAHashKeyIsSHA2(X509 *certificate);
+  static const char *checkHashKeyIsTooInSecure(X509 *certificate);
+
+  /** checks the RFC 8325 recommendations that certificates
+   *  should use SHA-256 (or better) hash keys.
+   *  We accept the SHA-2 and SHA-3 family with 256 or more bits.
+   *  @param certificate X.509 certificate
+   *  @return NULL if the hash key algorithm is considered secure,
+   *    the name of the hash key algorithm used otherwise.
+   */
+  static const char *checkHashKeyIsSecure(X509 *certificate);
 
   /** returns the version name of the OpenSSL version used.
    *  @return OpenSSL version name, never NULL.
@@ -465,6 +504,11 @@ public:
    */
   native_handle_type getNativeHandle();
 
+  /// global variable populated in initializeOpenSSL().
+  /// It contains an index number that is unique for the program lifetime
+  /// and can be used to store application specific data in an SSL structure.
+  static int contextStoreIndex;
+
 private:
 
   /// private undefined copy constructor
@@ -493,6 +537,22 @@ private:
 
   /// network role for this TLS layer
   T_ASC_NetworkRole role;
+
+  /// SNI server name to be requested in outgoing connections
+  /// @remark this member is only available if DCMTK is compiled with
+  /// OpenSSL support enabled.
+  const char* clientSNI;
+
+  /// SNI server name to be expected in incoming connections
+  /// @remark this member is only available if DCMTK is compiled with
+  /// OpenSSL support enabled.
+  const char* serverSNI;
+
+  /// flag indicating whether a DSA certificate has been loaded.
+  /// In this case, TLS 1.3 cannot be used because it does not support
+  /// DSA certificates.
+  OFBool certificateTypeIsDSA;
+
 };
 
 #endif /* WITH_OPENSSL */

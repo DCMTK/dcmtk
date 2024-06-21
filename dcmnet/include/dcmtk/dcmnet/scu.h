@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2022, OFFIS e.V.
+ *  Copyright (C) 2008-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,7 +28,7 @@
 #include "dcmtk/dcmnet/dcasccff.h" /* for reading a association config file */
 #include "dcmtk/dcmnet/dcasccfg.h" /* for holding association config file infos */
 #include "dcmtk/dcmnet/dcompat.h"
-#include "dcmtk/dcmnet/dimse.h" /* DIMSE network layer */
+#include "dcmtk/dcmnet/dimse.h"    /* DIMSE network layer */
 #include "dcmtk/ofstd/oflist.h"
 
 // include this file in doxygen documentation
@@ -189,7 +189,6 @@ private:
  *  support for negotiating associations and sending and receiving arbitrary DIMSE messages
  *  on that connection. DcmSCU has built-in C-ECHO support so derived classes do not have to
  *  implement that capability on their own.
- *  @warning This class is EXPERIMENTAL. Be careful to use it in production environment.
  */
 class DCMTK_DCMNET_EXPORT DcmSCU
 {
@@ -309,7 +308,7 @@ public:
      *  come (i.e. response status is PENDING). In the end, after receiving all responses, the
      *  full list of responses is returned to the caller. If he is not interested, he just sets
      *  responses=NULL when calling the function.
-     *  This function can be overwritten by actual SCU implementations but just should work fine
+     *  This function can be overwritten by actual SCU implementations but should work just fine
      *  for most people.
      *  @param presID                 [in]  The presentation context ID that should be used.
      *                                      Must be an odd number.
@@ -502,9 +501,14 @@ public:
      *  class and usually only, if the last command send on that presentation context was a
      *  C-FIND message.
      *  @param presID [in] The presentation context ID where the C-CANCEL should be sent on.
+     *  @param msgIDBeingRespondedTo [in] Optional message ID to respond with a C-CANCEL request.
+     *                                    -1 means standard logic will take place. It should be
+     *                                    provided when nextMessageId() is overridden.
+     *                                    The value should fit UINT16_MAX.
      *  @return The current implementation always returns EC_Normal.
      */
-    virtual OFCondition sendCANCELRequest(const T_ASC_PresentationContextID presID);
+    virtual OFCondition sendCANCELRequest(const T_ASC_PresentationContextID presID,
+                                          const Sint32 msgIDBeingRespondedTo = -1);
 
     /** This function sends a N-ACTION request on the currently opened association and receives
      *  the corresponding response then
@@ -610,8 +614,8 @@ public:
     handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& message, OFBool& waitForNextResponse);
 
     /** Closes the association created by this SCU. Also resets the current association.
-     *  @deprecated The use of this method is deprecated. Please use releaseAssociation()
-     *    or abortAssociation() instead.
+     *  @note The direct call of this method by user code should be avoided.
+     *    Please use releaseAssociation() or abortAssociation() instead.
      *  @param closeType [in] Define whether to release or abort the association
      */
     virtual void closeAssociation(const DcmCloseAssociationType closeType);
@@ -818,12 +822,20 @@ public:
     OFBool getProgressNotificationMode() const;
 
     /** Returns whether SCU is configured to create a TLS connection with the SCP
-     *  @return OFFalse for this class but may be overridden by derived classes
+     *  @return OFTrue if TLS mode has been enabled, OFFalse otherwise
      */
-    OFBool getTLSEnabled() const;
+    virtual OFBool getTLSEnabled() const;
 
     /** Deletes internal networking structures from memory */
     void freeNetwork();
+
+    /** Tells DcmSCU to use a secure TLS connection described by the given TLS layer.
+     *  The DcmSCU instance does not take ownership of the TLS layer object, i.e.
+     *  it is the caller's responsibility to delete it after its use has ended.
+     *  @param tlayer [in] The TLS transport layer including all TLS parameters
+     *  @return EC_Normal if given transport layer is ok, an error code otherwise
+     */
+    OFCondition useSecureConnection(DcmTransportLayer* tlayer);
 
 protected:
     /** Sends a DIMSE command and possibly also a dataset from a data object via network to
@@ -856,12 +868,6 @@ protected:
                                OFString& sopClassUID,
                                OFString& sopInstanceUID,
                                E_TransferSyntax& transferSyntax);
-
-    /** Tells DcmSCU to use a secure TLS connection described by the given TLS layer
-     *  @param tlayer [in] The TLS transport layer including all TLS parameters
-     *  @return EC_Normal if given transport layer is ok, an error code otherwise
-     */
-    OFCondition useSecureConnection(DcmTransportLayer* tlayer);
 
     /** Receive DIMSE command (excluding dataset!) over the currently open association
      *  @param presID       [out] Contains in the end the ID of the presentation context
@@ -993,6 +999,11 @@ protected:
      */
     virtual OFCondition ignoreSTORERequest(T_ASC_PresentationContextID presID, const T_DIMSE_C_StoreRQ& request);
 
+    /** Returns next available message ID free to be used by SCU
+     *  @return Next free message ID
+     */
+    virtual Uint16 nextMessageID();
+
     /* Callback functions (static) */
 
     /** Callback function used for sending DIMSE messages.
@@ -1112,10 +1123,8 @@ private:
     /// Progress notification mode (default: enabled)
     OFBool m_progressNotificationMode;
 
-    /** Returns next available message ID free to be used by SCU
-     *  @return Next free message ID
-     */
-    Uint16 nextMessageID();
+    /// Flag indicating whether secure mode has been enabled (default: disabled)
+    OFBool m_secureConnectionEnabled;
 };
 
 #endif // SCU_H

@@ -94,9 +94,9 @@ DCMTK_OFICONV_EXPORT iconv_t OFiconv_open(const char *dstname, const char *srcna
  *
  *   If the string pointed to by *src contains a character which is valid
  *   under the source codeset but can not be converted to the destination
- *   codeset, the character is replaced by an “invalid character” which
- *   depends on the destination codeset, e.g., ‘?’, and the conversion is
- *   continued. iconv() returns the number of such “invalid conversions”.
+ *   codeset, the character is replaced by an "invalid character" which
+ *   depends on the destination codeset, e.g., '?', and the conversion is
+ *   continued. iconv() returns the number of such "invalid conversions".
  *
  *   @param cd conversion descriptor returned by OFiconv_open()
  *   @param src address of pointer to first byte in source buffer
@@ -194,6 +194,13 @@ DCMTK_OFICONV_EXPORT int OFiconv_open_into(const char *dstname, const char *srcn
  *  @return 0 if successful, -1 otherwise, in which case errno is set
  */
 DCMTK_OFICONV_EXPORT int OFiconv_close_in(iconv_allocation_t *ptr);
+
+/** free static memory allocated in the oficonv module.
+ *  Calling this function will delete the csmapper area object.
+ *  This function may be called at application exit in order to avoid
+ *  reports of memory leaks when a memory leak checker is in use.
+ */
+DCMTK_OFICONV_EXPORT void OFiconv_cleanup();
 
 /*
  * OFiconvctl() request macros

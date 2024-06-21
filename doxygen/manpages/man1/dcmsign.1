@@ -1,4 +1,4 @@
-.TH "dcmsign" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
@@ -16,7 +16,6 @@ The \fBdcmsign\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs a digi
 .PP
 Five digital signature operations are supported:
 .PP
-.PD 0
 .IP "\(bu" 2
 verification of all signatures in the DICOM file
 .IP "\(bu" 2
@@ -32,9 +31,9 @@ removal of all digital signatures from the DICOM file\&.
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be processed
+dcmfile-in   DICOM input filename to be processed ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -148,9 +147,9 @@ signature format:
           use correct DICOM signature format (default)
 
   -fo   --format-old
-          use old (pre-3.5.4) DCMTK signature format, non-conformant
-          if signature includes compressed pixel data. This option should
-          only be used to verify signatures in the old format.
+          use old (pre-3\&.5\&.4) DCMTK signature format, non-conformant
+          if signature includes compressed pixel data\&. This option should
+          only be used to verify signatures in the old format\&.
 .fi
 .PP
 .SS "signature verification options (only with &ndash;verify)"
@@ -270,13 +269,13 @@ signature purpose:
           do not add signature purpose (default)
 
   +sp   --sig-purpose
-          [p]urpose code: integer (1..18)
+          [p]urpose code: integer (1\&.\&.18)
           add digital signature purpose code p
 
 tag selection:
 
   -t    --tag
-          [t]ag: "gggg,eeee" or dictionary name
+          [t]ag: 'gggg,eeee' or dictionary name
           sign only specified tag
           (this option can be specified multiple times)
 
@@ -386,10 +385,10 @@ On the command line, attribute tags are specified as
 .PP
 .PP
 .nf
---tag "gggg,eeee"  where gggg and eeee are the hexadecimal group
+--tag 'gggg,eeee'  where gggg and eeee are the hexadecimal group
                    and element numbers
---tag "Name"       where 'Name' is a symbolic attribute name from
-                   the DICOM dictionary (see below).
+--tag 'Name'       where 'Name' is a symbolic attribute name from
+                   the DICOM dictionary (see below)\&.
 .fi
 .PP
 .PP
@@ -401,7 +400,7 @@ The \fI--sign-item\fP operation requires a location string that describes in whi
 .PP
 .PP
 .nf
-SequenceName[index].SequenceName[index].SequenceName[index](...)
+SequenceName[index]\&.SequenceName[index]\&.SequenceName[index](\&.\&.\&.)
 .fi
 .PP
 .PP
@@ -409,7 +408,7 @@ where SequenceName is either a symbolic attribute name from the data dictionary 
 .PP
 .PP
 .nf
-ReferencedSeriesSequence[0].ReferencedImageSequence[1]
+ReferencedSeriesSequence[0]\&.ReferencedImageSequence[1]
 .fi
 .PP
 .PP
@@ -497,4 +496,4 @@ The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

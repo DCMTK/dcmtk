@@ -7,24 +7,27 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtaadcs.cc
   drtadcs.cc
   drtads.cc
+  drtafcs.cc
   drtafs.cc
   drtags.cc
   drtajcs.cc
+  drtancs.cc
+  drtarms.cc
+  drtars.cc
   drtas1.cc
-  drtas5.cc
-  drtas6.cc
-  drtas7.cc
+  drtas2.cc
+  drtas3.cc
+  drtas4.cc
   drtass.cc
   drtbads.cc
   drtbas.cc
   drtbcps.cc
+  drtbl1.cc
   drtbl2.cc
-  drtbl5.cc
   drtbldls.cc
   drtbldps.cc
   drtblds1.cc
-  drtblds5.cc
-  drtblds6.cc
+  drtblds2.cc
   drtbldts.cc
   drtbrcss.cc
   drtbrdrs.cc
@@ -46,15 +49,22 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtcpas.cc
   drtcpis.cc
   drtcps.cc
-  drtcs.cc
   drtcsas.cc
+  drtcs.cc
   drtcshs.cc
   drtcsis.cc
   drtcsrs.cc
   drtcss.cc
+  drtcttcs.cc
+  drtcvcss.cc
+  drtcvdas.cc
+  drtcvis.cc
+  drtdccs.cc
   drtdcs.cc
+  drtdcvs.cc
   drtdddps.cc
   drtddps.cc
+  drtdfss.cc
   drtdias.cc
   drtdimcs.cc
   drtdimrs.cc
@@ -64,18 +74,29 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtds.cc
   drtdspcs.cc
   drtdss.cc
+  drtdtcs.cc
   drtdvhs.cc
   drtdvrrs.cc
   drteas.cc
+  drteblds.cc
+  drteblos.cc
   drtecs.cc
+  drtecvis.cc
+  drtecvs.cc
   drtes.cc
+  drtfbdds.cc
   drtfds.cc
   drtfes.cc
   drtfgs.cc
   drtfgss.cc
   drtfms.cc
   drtfsss.cc
-  drtgas.cc
+  drtgas1.cc
+  drtgas2.cc
+  drtgas3.cc
+  drtgas4.cc
+  drtgas5.cc
+  drtgas6.cc
   drtgmcs.cc
   drtgms.cc
   drtgpis.cc
@@ -88,6 +109,7 @@ DCMTK_ADD_LIBRARY(dcmrt
   drticpds.cc
   drticps.cc
   drtics.cc
+  drtidcs.cc
   drtiis.cc
   drtimage.cc
   drtionpl.cc
@@ -98,9 +120,9 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtitts.cc
   drtiwps.cc
   drtiws.cc
+  drtlsds1.cc
+  drtlsds2.cc
   drtlsds.cc
-  drtlsds6.cc
-  drtlsds7.cc
   drtmacds.cc
   drtmas.cc
   drtmdrs.cc
@@ -108,12 +130,19 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtmps.cc
   drtmris.cc
   drtmss.cc
+  drtmttcs.cc
   drtmucs.cc
+  drtnmas.cc
   drtoas.cc
   drtois.cc
   drtopis.cc
   drtos.cc
+  drtosirs.cc
+  drtpasms.cc
+  drtpass.cc
   drtpbcs.cc
+  drtpbdds.cc
+  drtpbdos.cc
   drtpcs.cc
   drtpcxs.cc
   drtpdecs.cc
@@ -121,9 +150,11 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtpfms.cc
   drtpics.cc
   drtplan.cc
+  drtplos.cc
   drtporcs.cc
   drtporis.cc
   drtppcs.cc
+  drtpros.cc
   drtprsis.cc
   drtpscs.cc
   drtpsics.cc
@@ -132,24 +163,29 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtpvis.cc
   drtqds.cc
   drtras.cc
+  drtrbas1.cc
   drtrbas2.cc
-  drtrbas8.cc
+  drtrbdgs.cc
   drtrbls.cc
   drtrbos1.cc
-  drtrbos6.cc
-  drtrbos7.cc
+  drtrbos2.cc
+  drtrbos3.cc
+  drtrbs1.cc
   drtrbs2.cc
-  drtrbs4.cc
-  drtrbs8.cc
+  drtrbs3.cc
+  drtrbss.cc
   drtrcdrs.cc
   drtrcos.cc
   drtrcps.cc
   drtrcs.cc
-  drtrdros.cc
+  drtrdais.cc
+  drtrdcks.cc
+  drtrdps.cc
   drtrdrs1.cc
-  drtrdrs6.cc
-  drtrdrs8.cc
+  drtrdrs2.cc
+  drtrdrs3.cc
   drtrds.cc
+  drtrdsis.cc
   drtrecs.cc
   drtrfgs.cc
   drtrfors.cc
@@ -159,34 +195,31 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtrlsds.cc
   drtrmdrs.cc
   drtrms.cc
-  drtrmss6.cc
-  drtrmss7.cc
+  drtrmss1.cc
+  drtrmss2.cc
   drtrpcs.cc
   drtrpis.cc
   drtrppcs.cc
   drtrpphs.cc
+  drtrpprs.cc
   drtrpps.cc
   drtrppss.cc
   drtrps.cc
   drtrris1.cc
-  drtrris6.cc
-  drtrris9.cc
+  drtrris2.cc
+  drtrris3.cc
   drtrrms.cc
   drtrros.cc
   drtrrpcs.cc
   drtrrros.cc
   drtrrs.cc
   drtrrshs.cc
-  drtrrtps.cc
-  drtrrtps3.cc
-  drtrrtps4.cc
-  drtrrtps5.cc
   drtrscs.cc
   drtrsers.cc
   drtrses.cc
+  drtrshs1.cc
+  drtrshs2.cc
   drtrshs.cc
-  drtrshs6.cc
-  drtrshs7.cc
   drtrsis.cc
   drtrsns.cc
   drtrsos.cc
@@ -194,13 +227,19 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtrss.cc
   drtrsss.cc
   drtrsts.cc
+  drtrtps1.cc
+  drtrtps2.cc
+  drtrtps3.cc
+  drtrtps4.cc
+  drtrtrs1.cc
   drtrtrs2.cc
-  drtrtrs4.cc
+  drtrvcs.cc
   drtrvis.cc
   drtrws.cc
   drtrwvms.cc
   drtscris.cc
   drtscs.cc
+  drtscvs.cc
   drtsdcs.cc
   drtsds.cc
   drtshds.cc
@@ -210,18 +249,23 @@ DCMTK_ADD_LIBRARY(dcmrt
   drtspccs.cc
   drtspcs.cc
   drtspgis.cc
+  drtsppcs.cc
   drtsptcs.cc
   drtss.cc
   drtssrcs.cc
   drtssrs.cc
   drtsss.cc
   drtstrct.cc
-  drttms0.cc
-  drttms9.cc
+  drttms1.cc
+  drttms2.cc
+  drttrccs.cc
   drttreat.cc
+  drttrtcs.cc
   drttscds.cc
+  drttscs.cc
   drttsibs.cc
   drttsmds.cc
+  drtttrcs.cc
   drttts.cc
   drttypes.cc
   drtudis.cc

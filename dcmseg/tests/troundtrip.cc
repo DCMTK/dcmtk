@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, OFFIS e.V.
+ *  Copyright (C) 2019-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,8 +32,8 @@
 #include "dcmtk/dcmfg/fgseg.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/ofmem.h"
-#include "dcmtk/ofstd/ofstrutl.h"
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/oftest.h"
 
@@ -316,13 +316,11 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
 
     FunctionalGroups::const_iterator srcShared = srcInstance->getFunctionalGroups().getShared()->begin();
     FunctionalGroups::const_iterator cShared   = concat->getFunctionalGroups().getShared()->begin();
-    size_t numShared                           = 0;
     do
     {
         OFCHECK(srcShared->second->compare(*cShared->second) == 0);
         srcShared++;
         cShared++;
-        numShared++;
     } while ((srcShared != srcInstance->getFunctionalGroups().getShared()->end())
              && (cShared != concat->getFunctionalGroups().getShared()->end()));
     OFCHECK((srcShared == srcInstance->getFunctionalGroups().getShared()->end())

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2022, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,6 +54,7 @@ END_EXTERN_C
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofipc.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -68,14 +69,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 
 DVPSIPCClient *messageClient  = NULL; // global pointer to IPC message client, if present
-
-
-enum associationType
-{
-  assoc_success,
-  assoc_error,
-  assoc_terminate
-};
 
 enum refuseReason
 {
@@ -102,26 +95,11 @@ static void cleanChildren()
 {
 #ifdef HAVE_WAITPID
     int stat_loc;
-#elif defined(HAVE_WAIT3)
-    struct rusage rusage;
-#if defined(__NeXT__)
-    /* some systems need a union wait as argument to wait3 */
-    union wait status;
-#else
-    int        status;
-#endif
-#endif
-
-#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
     int child = 1;
     int options = WNOHANG;
     while (child > 0)
     {
-#ifdef HAVE_WAITPID
         child = (int)(waitpid(-1, &stat_loc, options));
-#elif defined(HAVE_WAIT3)
-        child = wait3(&status, options, &rusage);
-#endif
         if (child < 0)
         {
             if (errno != ECHILD)
@@ -144,7 +122,6 @@ static void dropAssociation(T_ASC_Association **assoc)
   *assoc = NULL;
   return;
 }
-
 
 static OFCondition
 refuseAssociation(T_ASC_Association *assoc, refuseReason reason)
@@ -191,24 +168,41 @@ refuseAssociation(T_ASC_Association *assoc, refuseReason reason)
     return cond;
 }
 
-static associationType negotiateAssociation(
+static OFBool negotiateAssociation(
   T_ASC_Network *net,
   T_ASC_Association **assoc,
   const char *aetitle,
   unsigned long maxPDU,
   OFBool opt_networkImplicitVROnly,
-  OFBool useTLS)
+  OFBool useTLS,
+  OFIPCMessageQueueServer& mqserver)
 {
-    associationType result = assoc_success;
+    OFBool result = OFTrue;
     char buf[BUFSIZ];
     OFBool dropAssoc = OFFalse;
 
     OFCondition cond = ASC_receiveAssociation(net, assoc, maxPDU, NULL, NULL, useTLS);
+    if (cond.code() == DULC_FORKEDCHILD)
+    {
+      // a child process has been forked and will handle the network association.
+      // In the parent process, we can simply continue as if association was received.
+      return OFFalse;
+    }
+#ifdef HAVE_FORK
+    else
+    {
+      // we are a forked child process. Make sure that we don't interfere
+      // with the IPC message queue in the parent process
+      mqserver.detachQueue();
+    }
+#else
+    (void) mqserver; // avoid warning about unused parameter
+#endif
 
     if (errorCond(cond, "Failed to receive association:"))
     {
       dropAssoc = OFTrue;
-      result = assoc_error;
+      result = OFFalse;
 
       if (messageClient)
       {
@@ -257,13 +251,12 @@ static associationType negotiateAssociation(
             OFSTRINGSTREAM_FREESTR(theString)
           }
           dropAssoc = OFTrue;
-          result = assoc_error;
+          result = OFFalse;
       } else {
 
         const char *nonStorageSyntaxes[] =
         {
           UID_VerificationSOPClass,
-          UID_PrivateShutdownSOPClass
         };
 
         const char* transferSyntaxes[] = { NULL, NULL, NULL };
@@ -302,14 +295,6 @@ static associationType negotiateAssociation(
         errorCond(cond, "Cannot accept presentation contexts:");
       }
 
-      /* check if we have negotiated the private "shutdown" SOP Class */
-      if (0 != ASC_findAcceptedPresentationContextID(*assoc, UID_PrivateShutdownSOPClass))
-      {
-        // we don't notify the IPC server about this incoming connection
-        cond = refuseAssociation(*assoc, ref_NoReason);
-        dropAssoc = OFTrue;
-        result = assoc_terminate;
-      }
     } /* receiveAssociation successful */
 
     if (dropAssoc) dropAssociation(assoc);
@@ -712,136 +697,40 @@ static void handleClient(
 static void terminateAllReceivers(DVConfiguration& dvi)
 {
   OFLOG_INFO(dcmpsrcvLogger, "Terminating all receivers");
-
   const char *recID=NULL;
-  const char *recAETitle=NULL;
   unsigned short recPort=0;
   OFBool recUseTLS=OFFalse;
-  T_ASC_Network *net=NULL;
-  T_ASC_Parameters *params=NULL;
-  DIC_NODENAME peerHost;
-  T_ASC_Association *assoc=NULL;
-  OFBool prepared = OFTrue;
-  const char *xfer = UID_LittleEndianImplicitTransferSyntax;
-
-#ifdef WITH_OPENSSL
-  /* TLS directory */
-  const char *current = NULL;
-  const char *tlsFolder = dvi.getTLSFolder();
-  if (tlsFolder==NULL) tlsFolder = ".";
-
-  /* key file format */
-  DcmKeyFileFormat keyFileFormat = DCF_Filetype_PEM;
-  if (! dvi.getTLSPEMFormat()) keyFileFormat = DCF_Filetype_PEM;
-#endif
-
-  if ((ASC_initializeNetwork(NET_REQUESTOR, 0, 30, &net).bad())) return;
-
+  OFCondition cond;
+  OFString msg = UID_PrivateShutdownSOPClass;
   Uint32 numReceivers = dvi.getNumberOfTargets(DVPSE_receiver);
   for (Uint32 i=0; i<numReceivers; i++)
   {
-    prepared = OFTrue;
     recID = dvi.getTargetID(i, DVPSE_receiver);
     recPort = dvi.getTargetPort(recID);
     recUseTLS = dvi.getTargetUseTLS(recID);
-    recAETitle = dvi.getTargetAETitle(recID);
 
     OFLOG_INFO(dcmpsrcvLogger, "Receiver " << recID << " on port " << recPort
          << (recUseTLS ? " with TLS" : ""));
 
-    if (recUseTLS)
+    if (recPort > 0)
     {
-#ifdef WITH_OPENSSL
-      /* certificate file */
-      OFString tlsCertificateFile(tlsFolder);
-      tlsCertificateFile += PATH_SEPARATOR;
-      current = dvi.getTargetCertificate(recID);
-      if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
-
-      /* private key file */
-      OFString tlsPrivateKeyFile(tlsFolder);
-      tlsPrivateKeyFile += PATH_SEPARATOR;
-      current = dvi.getTargetPrivateKey(recID);
-      if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile += "sitekey.pem";
-
-      /* private key password */
-      const char *tlsPrivateKeyPassword = dvi.getTargetPrivateKeyPassword(recID);
-
-      /* DH parameter file */
-      OFString tlsDHParametersFile;
-      current = dvi.getTargetDiffieHellmanParameters(recID);
-      if (current)
+      OFIPCMessageQueueClient mqclient;
+      cond = mqclient.openQueue("dcmpsrcv", recPort);
+      if (cond.bad())
       {
-        tlsDHParametersFile = tlsFolder;
-        tlsDHParametersFile += PATH_SEPARATOR;
-        tlsDHParametersFile += current;
+        OFLOG_WARN(dcmpsrcvLogger, "Cannot open message queue for receiver on port " << recPort);
       }
-
-      /* random seed file */
-      OFString tlsRandomSeedFile(tlsFolder);
-      tlsRandomSeedFile += PATH_SEPARATOR;
-      current = dvi.getTargetRandomSeed(recID);
-      if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
-
-      /* CA certificate directory */
-      const char *tlsCACertificateFolder = dvi.getTLSCACertificateFolder();
-      if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
-
-      /* ciphersuites */
-      DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(NET_REQUESTOR, tlsRandomSeedFile.c_str(), OFFalse);
-      if (tLayer)
+      else
       {
-
-        // determine TLS profile
-        OFString profileName;
-        const char *profileNamePtr = dvi.getTargetTLSProfile(recID);
-        if (profileNamePtr) profileName = profileNamePtr;
-        DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
-        if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
-        else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
-        else if (profileName == "BCP195-EX") tlsProfile = TSP_Profile_BCP195_Extended;
-        else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
-        else if (profileName == "BASIC") tlsProfile = TSP_Profile_Basic;
-        else if (profileName == "NULL") tlsProfile = TSP_Profile_IHE_ATNA_Unencrypted;
-
-        (void) tLayer->setTLSProfile(tlsProfile);
-        (void) tLayer->activateCipherSuites();
-
-        if (tlsCACertificateFolder) tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat);
-        if (tlsDHParametersFile.size() > 0) tLayer->setTempDHParameters(tlsDHParametersFile.c_str());
-        tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
-        tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat);
-        tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat);
-        tLayer->setCertificateVerification(DCV_ignoreCertificate);
-        ASC_setTransportLayer(net, tLayer, 1);
-      }
-#else
-      prepared = OFFalse;
-#endif
-    } else {
-      DcmTransportLayer *dLayer = new DcmTransportLayer();
-      ASC_setTransportLayer(net, dLayer, 1);
-    }
-    if (prepared && recAETitle && (recPort > 0))
-    {
-      if ((ASC_createAssociationParameters(&params, DEFAULT_MAXPDU, dcmConnectionTimeout.get())).good())
-      {
-        ASC_setTransportLayerType(params, recUseTLS);
-        ASC_setAPTitles(params, dvi.getNetworkAETitle(), recAETitle, NULL);
-        sprintf(peerHost, "%s:%d", "localhost", (int)recPort);
-        ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
-        // we propose only the "shutdown" SOP class in implicit VR
-        ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, &xfer, 1);
-        // request shutdown association, abort if some strange peer accepts it
-        if (ASC_requestAssociation(net, params, &assoc).good()) ASC_abortAssociation(assoc);
-        ASC_dropAssociation(assoc);
-        ASC_destroyAssociation(&assoc);
+        cond = mqclient.sendMessage(msg);
+        if (cond.bad())
+        {
+          OFLOG_WARN(dcmpsrcvLogger, "Cannot send shutdown message to receiver on port " << recPort);
+        }
       }
     }
   } /* for loop */
 
-  ASC_dropNetwork(&net);
-  OFStandard::shutdownNetwork();
   return;
 }
 
@@ -861,6 +750,9 @@ int main(int argc, char *argv[])
     int         opt_terminate = 0;         /* default: no terminate mode */
     const char *opt_cfgName   = NULL;      /* config file name */
     const char *opt_cfgID     = NULL;      /* name of entry in config file */
+#ifdef _WIN32
+    int         opt_forkedChild = 0;
+#endif
 
     dcmDisableGethostbyaddr.set(OFTrue);               // disable hostname lookup
 
@@ -877,6 +769,9 @@ int main(int argc, char *argv[])
      cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
      cmd.addOption("--terminate", "-t", "terminate all running receivers");
+#ifdef _WIN32
+    cmd.addOption("--forked-child",     "process is forked child, internal use only", OFCommandLine::AF_Internal);
+#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -908,6 +803,9 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_cfgName);
       if (cmd.getParamCount() >= 2) cmd.getParam(2, opt_cfgID);
       if (cmd.findOption("--terminate")) opt_terminate = 1;
+#ifdef _WIN32
+      if (cmd.findOption("--forked-child")) opt_forkedChild = OFTrue;
+#endif
 
       OFLog::configureFromCommandLine(cmd, app);
     }
@@ -944,6 +842,7 @@ int main(int argc, char *argv[])
     if (opt_terminate)
     {
       terminateAllReceivers(dvi);
+      OFStandard::shutdownNetwork();
       return 0;  // application terminates here
     }
 
@@ -960,6 +859,7 @@ int main(int argc, char *argv[])
     OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen();
     OFBool useTLS = dvi.getTargetUseTLS(opt_cfgID);
     OFBool notifyTermination      = OFTrue;  // notify IPC server of application termination
+
 #ifdef WITH_OPENSSL
     /* TLS directory */
     const char *current = NULL;
@@ -1064,7 +964,6 @@ int main(int argc, char *argv[])
     }
 
     OFOStringStream verboseParameters;
-
     OFBool comma=OFFalse;
     verboseParameters << "Network parameters:" << OFendl
          << "  port            : " << networkPort << OFendl
@@ -1108,10 +1007,8 @@ int main(int argc, char *argv[])
 
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */
     T_ASC_Association *assoc = NULL; /* the DICOM association */
-    OFBool finished1 = OFFalse;
-    OFBool finished2 = OFFalse;
+    OFBool finished = OFFalse;
     int connected = 0;
-    OFCondition cond = EC_Normal;
 
 #ifdef WITH_OPENSSL
 
@@ -1129,8 +1026,10 @@ int main(int argc, char *argv[])
       OFString profileName;
       const char *profileNamePtr = dvi.getTargetTLSProfile(opt_cfgID);
       if (profileNamePtr) profileName = profileNamePtr;
-      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP195;  // default
-      if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
+      DcmTLSSecurityProfile tlsProfile = TSP_Profile_BCP_195_RFC_8996;  // default
+      if (profileName == "BCP195-RFC8996") tlsProfile = TSP_Profile_BCP_195_RFC_8996;
+      else if (profileName == "BCP195-RFC8996-MOD") tlsProfile = TSP_Profile_BCP_195_RFC_8996_Modified;
+      else if (profileName == "BCP195") tlsProfile = TSP_Profile_BCP195;
       else if (profileName == "BCP195-ND") tlsProfile = TSP_Profile_BCP195_ND;
       else if (profileName == "AES") tlsProfile = TSP_Profile_AES;
       else if (profileName == "BASIC") tlsProfile = TSP_Profile_Basic;
@@ -1168,7 +1067,7 @@ int main(int argc, char *argv[])
         OFLOG_FATAL(dcmpsrcvLogger, "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'");
         return 1;
       }
-      if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat).bad())
+      if (tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat, tlsProfile).bad())
       {
         OFLOG_FATAL(dcmpsrcvLogger, "unable to load certificate from '" << tlsCertificateFile << "'");
         return 1;
@@ -1213,194 +1112,146 @@ int main(int argc, char *argv[])
 
     verboseParameters << OFStringStream_ends;
     OFSTRINGSTREAM_GETSTR(verboseParameters, verboseParametersString)
-    OFLOG_INFO(dcmpsrcvLogger, verboseParametersString);
-
-    while (!finished1)
+#ifdef _WIN32
+    if (!opt_forkedChild)
     {
-      /* open listen socket */
-      cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 30, &net);
-      if (errorCond(cond, "Error initialising network:"))
-      {
-        return 1;
-      }
-
-#ifdef WITH_OPENSSL
-      if (tLayer)
-      {
-        cond = ASC_setTransportLayer(net, tLayer, 0);
-        if (cond.bad())
-        {
-            OFString temp_str;
-            OFLOG_FATAL(dcmpsrcvLogger, DimseCondition::dump(temp_str, cond));
-            return 1;
-        }
-      }
+#endif
+      OFLOG_INFO(dcmpsrcvLogger, verboseParametersString);
+#ifdef _WIN32
+    }
 #endif
 
-      /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
-      if (OFStandard::dropPrivileges().bad())
+    // open IPC message server for incoming messages
+    OFCondition cond = EC_Normal;
+    OFIPCMessageQueueServer mqserver;
+
+    // make sure that the message queue is deleted if this application
+    // is terminated through SIGINT (CTRL-C) or SIGTERM (kill).
+    mqserver.registerSignalHandler();
+
+#ifdef _WIN32
+  if (opt_forkedChild)
+  {
+    // we are a child process in multi-process mode
+    if (DUL_readSocketHandleAsForkedChild().bad()) return 1;
+  }
+  else
+  {
+    // parent process
+    DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+    OFLOG_DEBUG(dcmpsrcvLogger, "Initializing message queue server dcmpsrcv/" << networkPort);
+    cond = mqserver.createQueue("dcmpsrcv", networkPort);
+    if (errorCond(cond, "Error initialising message queue:"))
+    {
+      return 1;
+    }
+  }
+#else
+    DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+    OFLOG_DEBUG(dcmpsrcvLogger, "Initializing message queue server dcmpsrcv/" << networkPort);
+    cond = mqserver.createQueue("dcmpsrcv", networkPort);
+    if (errorCond(cond, "Error initialising message queue:"))
+    {
+      OFLOG_ERROR(dcmpsrcvLogger, OFStandard::getLastSystemErrorCode().message());
+      return 1;
+    }
+#endif
+
+    /* open listen socket */
+    cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 30, &net);
+    if (errorCond(cond, "Error initialising network:"))
+    {
+      return 1;
+    }
+
+#ifdef WITH_OPENSSL
+    if (tLayer)
+    {
+      cond = ASC_setTransportLayer(net, tLayer, 0);
+      if (cond.bad())
       {
-          OFLOG_FATAL(dcmpsrcvLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+          OFString temp_str;
+          OFLOG_FATAL(dcmpsrcvLogger, DimseCondition::dump(temp_str, cond));
           return 1;
       }
-
-#ifdef HAVE_FORK
-      int timeout=1;
-#else
-      int timeout=1000;
+    }
 #endif
-      while (!finished2)
+
+    /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
+    if (OFStandard::dropPrivileges().bad())
+    {
+        OFLOG_FATAL(dcmpsrcvLogger, "setuid() failed, maximum number of processes/threads for uid already running.");
+        return 1;
+    }
+
+    int timeout=1;
+    while (!finished)
+    {
+      /* now we connect to the IPC server and request an application ID */
+      if (messageClient) // on Unix, re-initialize for each connect which is later inherited by the forked child
       {
-        /* now we connect to the IPC server and request an application ID */
-        if (messageClient) // on Unix, re-initialize for each connect which is later inherited by the forked child
+        delete messageClient;
+        messageClient = NULL;
+      }
+      if (messagePort > 0)
+      {
+        messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCP, verboseParametersString, messagePort, keepMessagePortOpen);
+        if (! messageClient->isServerActive())
         {
-          delete messageClient;
-          messageClient = NULL;
+          OFLOG_WARN(dcmpsrcvLogger, "no IPC message server found at port " << messagePort << ", disabling IPC");
         }
-        if (messagePort > 0)
-        {
-          messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCP, verboseParametersString, messagePort, keepMessagePortOpen);
-          if (! messageClient->isServerActive())
-          {
-            OFLOG_WARN(dcmpsrcvLogger, "no IPC message server found at port " << messagePort << ", disabling IPC");
-          }
-        }
-        connected = 0;
-        while (!connected)
-        {
-           connected = ASC_associationWaiting(net, timeout);
-           if (!connected) cleanChildren();
-        }
-        switch (negotiateAssociation(net, &assoc, networkAETitle, networkMaxPDU, networkImplicitVROnly, useTLS))
-        {
-          case assoc_error:
-            // association has already been deleted, we just wait for the next client to connect.
-            break;
-          case assoc_terminate:
-            finished2=OFTrue;
-            finished1=OFTrue;
-            notifyTermination = OFFalse; // IPC server will probably already be down
-            cond = ASC_dropNetwork(&net);
-            if (errorCond(cond, "Error dropping network:")) return 1;
-            break;
-          case assoc_success:
-#ifdef HAVE_FORK
-            // Unix version - call fork()
-            int pid;
-            pid = (int)(fork());
-            if (pid < 0)
-            {
-              char buf[256];
-              OFLOG_ERROR(dcmpsrcvLogger, "Cannot create association sub-process: " << OFStandard::strerror(errno, buf, sizeof(buf)));
-              refuseAssociation(assoc, ref_CannotFork);
+      }
 
-              if (messageClient)
-              {
-                // notify about rejected association
-                OFOStringStream out;
-                OFString temp_str;
-                out << "DIMSE Association Rejected:" << OFendl
-                    << "  reason: cannot create association sub-process: " << OFStandard::strerror(errno, buf, sizeof(buf)) << OFendl
-                    << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << OFendl
-                    << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
-                    << "  called AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
-                out << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl;
-                out << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(out, theString)
-                if (useTLS)
-                  messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-                  else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-                OFSTRINGSTREAM_FREESTR(theString)
-              }
-              dropAssociation(&assoc);
-            } else if (pid > 0)
-            {
-              /* we're the parent process, close accepted socket and continue */
-              dropAssociation(&assoc);
-            } else {
-              /* child process */
-
-#ifdef WITH_OPENSSL
-              // a generated UID contains the process ID and current time.
-              // Adding it to the PRNG seed guarantees that we have different seeds for
-              // different child processes.
-              char randomUID[65];
-              dcmGenerateUniqueIdentifier(randomUID);
-              if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
-#endif
-              handleClient(&assoc, dbfolder, networkBitPreserving, useTLS, opt_correctUIDPadding);
-              finished2=OFTrue;
-              finished1=OFTrue;
-            }
-#else  /* HAVE_FORK */
-            // Windows version - call CreateProcess()
-            finished2=OFTrue;
-            cond = ASC_dropNetwork(&net);
-            if (errorCond(cond, "Error dropping network:"))
-            {
-              if (messageClient)
-              {
-                messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
-                delete messageClient;
-              }
-              return 1;
-            }
-
-            // initialize startup info
-            const char *receiver_application = dvi.getReceiverName();
-            PROCESS_INFORMATION procinfo;
-            STARTUPINFOA sinfo;
-            OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
-            sinfo.cb = sizeof(sinfo);
-            char commandline[4096];
-            sprintf(commandline, "%s %s %s", receiver_application, opt_cfgName, opt_cfgID);
-#ifdef DEBUG
-            if (CreateProcessA(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+      connected = 0;
+      while (!connected && !finished)
+      {
+         if (mqserver.messageWaiting())
+         {
+           OFString msg;
+           if (mqserver.receiveMessage(msg).good() && msg == UID_PrivateShutdownSOPClass)
+           {
+             OFLOG_DEBUG(dcmpsrcvLogger, "Shutdown message received for dcmpsrcv/" << networkPort);
+             finished = OFTrue;
+             notifyTermination = OFFalse; // IPC server will probably already be down
+           }
+         }
+         else
+         {
+#ifdef _WIN32
+           connected = opt_forkedChild || ASC_associationWaiting(net, timeout);
 #else
-            if (CreateProcessA(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+           connected = ASC_associationWaiting(net, timeout);
 #endif
-            {
+         }
+         if (!connected) cleanChildren();
+      }
+
+      if (! finished)
+      {
+        if (negotiateAssociation(net, &assoc, networkAETitle, networkMaxPDU, networkImplicitVROnly, useTLS, mqserver))
+        {
 #ifdef WITH_OPENSSL
-              // a generated UID contains the process ID and current time.
-              // Adding it to the PRNG seed guarantees that we have different seeds for
-              // different child processes.
-              char randomUID[65];
-              dcmGenerateUniqueIdentifier(randomUID);
-              if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
+          // a generated UID contains the process ID and current time.
+          // Adding it to the PRNG seed guarantees that we have different seeds for
+          // different child processes.
+          char randomUID[65];
+          dcmGenerateUniqueIdentifier(randomUID);
+          if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
-              handleClient(&assoc, dbfolder, networkBitPreserving, useTLS, opt_correctUIDPadding);
-              finished1=OFTrue;
-            } else {
-              OFLOG_ERROR(dcmpsrcvLogger, "Cannot execute command line: " << commandline);
-              refuseAssociation(assoc, ref_CannotFork);
+          handleClient(&assoc, dbfolder, networkBitPreserving, useTLS, opt_correctUIDPadding);
 
-              if (messageClient)
-              {
-                // notify about rejected association
-                OFOStringStream out;
-                OFString temp_str;
-                out << "DIMSE Association Rejected:" << OFendl
-                    << "  reason: cannot execute command line: " << commandline << OFendl
-                    << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << OFendl
-                    << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
-                    << "  called AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
-                out << ASC_dumpConnectionParameters(temp_str, assoc) << OFendl;
-                out << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(out, theString)
-                if (useTLS)
-                  messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-                  else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
-                OFSTRINGSTREAM_FREESTR(theString)
-              }
-
-              dropAssociation(&assoc);
-            }
-#endif  /* HAVE_FORK */
-            break;
         }
-      } // finished2
-    } // finished1
+
+        // if running in multi-process mode, always terminate child after one association
+        if (DUL_processIsForkedChild()) finished = OFTrue;
+      }
+    } // while (!finished)
+
     cleanChildren();
+
+    // close handle for incoming network connections
+    cond = ASC_dropNetwork(&net);
+    (void) errorCond(cond, "Error dropping network:");
 
     // tell the IPC server that we're going to terminate.
     // We need to do this before we shutdown WinSock.

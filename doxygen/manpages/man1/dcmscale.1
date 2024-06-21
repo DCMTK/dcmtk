@@ -1,4 +1,4 @@
-.TH "dcmscale" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmscale" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmscale \- Scale DICOM images
@@ -17,9 +17,9 @@ The \fBdcmscale\fP utility reads a DICOM image, scales it according to the comma
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be scaled
+dcmfile-in   DICOM input filename to be scaled ('-' for stdin)
 
-dcmfile-out  DICOM output filename to be written
+dcmfile-out  DICOM output filename to be written ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -97,7 +97,7 @@ scaling:
           ignore pixel aspect ratio when scaling
 
   +i    --interpolate  [n]umber of algorithm: integer
-          use interpolation when scaling (1..4, default: 1)
+          use interpolation when scaling (1\&.\&.4, default: 1)
 
   -i    --no-interpolation
           no interpolation when scaling
@@ -201,7 +201,6 @@ data set trailing padding (not with --write-dataset):
 .PP
 The following preferred interpolation algorithms can be selected using the \fI--interpolate\fP option:
 .PP
-.PD 0
 .IP "\(bu" 2
 1 = free scaling algorithm with interpolation from pbmplus toolkit
 .IP "\(bu" 2
@@ -230,4 +229,4 @@ The \fBdcmscale\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2021, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,7 +79,7 @@ OFBool DSRMacularGridThicknessAndVolumeReportConstraintChecker::checkContentRela
         {
             result = (targetValueType == VT_Code)   || (targetValueType == VT_PName) || (targetValueType == VT_Text) ||
                      (targetValueType == VT_UIDRef) || (targetValueType == VT_Date)  || (targetValueType == VT_Num)  ||
-                     (targetValueType == VT_Container) /* see CP-2084 */;
+                     (targetValueType == VT_Container);
         }
         /* row 2 of the table */
         else if ((relationshipType == RT_contains) && (sourceValueType == VT_Container))

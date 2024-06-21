@@ -14,7 +14,7 @@
 #define END_EXTERN_C
 #endif
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
+/* MinGW needs some special handling because it is a mixture of WIN32 and POSIX.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
@@ -29,18 +29,10 @@
 /* Define the canonical host system type as a string constant. */
 #undef CANONICAL_HOST_TYPE
 
-/* Define if char is unsigned on the C compiler. */
-#undef C_CHAR_UNSIGNED
-
-/* Define to the inline keyword supported by the C compiler, if any, or to the
-   empty string. */
-#undef C_INLINE
-
 /* Define if >> is unsigned on the C compiler. */
 #undef C_RIGHTSHIFT_UNSIGNED
 
 /* character set conversion constants. */
-#define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
 #define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
 #define DCMTK_CHARSET_CONVERSION_OFICONV 4
@@ -96,9 +88,6 @@
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif
 
-/* Define to 1 if you have the `accept' function. */
-#undef HAVE_ACCEPT
-
 /* Define to 1 if you have the `access' function. */
 #undef HAVE_ACCESS
 
@@ -107,9 +96,6 @@
 
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
-
-/* Define to 1 if you have the <assert.h> header file. */
-#undef HAVE_ASSERT_H
 
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
@@ -126,15 +112,6 @@
 /* Define to 1 if you have the `bcmp' function. */
 #undef HAVE_BCMP
 
-/* Define to 1 if you have the `bcopy' function. */
-#undef HAVE_BCOPY
-
-/* Define if the bidirectional iterator category is supported. */
-#undef HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
-
-/* Define to 1 if you have the `bind' function. */
-#undef HAVE_BIND
-
 /* Define to 1 if the system has the type `char16_t'. */
 #undef HAVE_CHAR16_T
 
@@ -142,38 +119,14 @@
    instead of int. */
 #undef HAVE_CHARP_STRERROR_R
 
-/* Define if your C++ compiler can work with class templates. */
-#undef HAVE_CLASS_TEMPLATE
-
-/* Define to 1 if you have the <climits> header file. */
-#undef HAVE_CLIMITS
-
-/* Define to 1 if you have the <cmath> header file. */
-#undef HAVE_CMATH
-
-/* Define to 1 if you have the `connect' function. */
-#undef HAVE_CONNECT
-
-/* Define if the compiler supports const_cast<>. */
-#undef HAVE_CONST_CAST
-
 /* Define if the contiguous iterator category is supported. */
 #undef HAVE_CONTIGUOUS_ITERATOR_CATEGORY
-
-/* Define to 1 if you have the <cstdarg> header file. */
-#undef HAVE_CSTDARG
 
 /* Define to 1 if you have the <cstddef> header file. */
 #undef HAVE_CSTDDEF
 
 /* Define to 1 if you have the <cstdint> header file. */
 #undef HAVE_CSTDINT
-
-/* Define to 1 if you have the <cstdio> header file. */
-#undef HAVE_CSTDIO
-
-/* Define to 1 if you have the <ctype.h> header file. */
-#undef HAVE_CTYPE_H
 
 /* Define to 1 if you have the `cuserid' function. */
 #undef HAVE_CUSERID
@@ -186,24 +139,6 @@
 
 /* Define if the compiler supports [[deprecated("message")]]. */
 #undef HAVE_CXX14_DEPRECATED_ATTRIBUTE_MSG
-
-/* Define if volatile is a known keyword. */
-#undef HAVE_CXX_VOLATILE
-
-/* Define if "const" is supported by the C compiler. */
-#undef HAVE_C_CONST
-
-/* Define if your system has a declaration for socklen_t in sys/types.h
-   sys/socket.h . */
-#undef HAVE_DECLARATION_SOCKLEN_T
-
-/* Define if your system has a declaration for std::ios_base::openmode in
-   iostream. */
-#undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
-
-/* Define if your system has a declaration for struct utimbuf in sys/types.h
-   utime.h sys/utime.h . */
-#undef HAVE_DECLARATION_STRUCT_UTIMBUF
 
 /* Define if the compiler supports __declspec(deprecated). */
 #undef HAVE_DECLSPEC_DEPRECATED
@@ -219,27 +154,11 @@
    */
 #undef HAVE_DIRENT_H
 
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#undef HAVE_DOPRNT
-
-/* Define if the compiler supports dynamic_cast<>. */
-#undef HAVE_DYNAMIC_CAST
-
-/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
-/* #undef HAVE_EMPTY_ARGC_ARGV */
-
 /* Define if your system provides ENAMETOOLONG errno value. */
 #undef HAVE_ENAMETOOLONG
 
-/* Define to 1 if you have the <errno.h> header file. */
-#undef HAVE_ERRNO_H
-
 /* Define to 1 if you have the <err.h> header file. */
 #undef HAVE_ERR_H
-
-/* Define if your C++ compiler supports the explicit template specialization
-   syntax. */
-#undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
 /* Define to 1 if you have the `fcntl' function. */
 #undef HAVE_FCNTL
@@ -247,17 +166,11 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
-/* Define to 1 if you have the <fenv.h> header file. */
-#undef HAVE_FENV_H
-
 /* Define to 1 if you have the `fgetln' function. */
 #undef HAVE_FGETLN
 
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
-
-/* Define to 1 if you have the <float.h> header file. */
-#undef HAVE_FLOAT_H
 
 /* Define to 1 if you have the `flock' function. */
 #undef HAVE_FLOCK
@@ -268,32 +181,14 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
-/* Define if the forward iterator category is supported. */
-#undef HAVE_FORWARD_ITERATOR_CATEGORY
-
 /* Define to 1 if the system has the type `fpos64_t'. */
 #undef HAVE_FPOS64_T
 
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
 
-/* Define to 1 if you have the <fstream> header file. */
-#undef HAVE_FSTREAM
-
-/* Define to 1 if you have the <fstream.h> header file. */
-#undef HAVE_FSTREAM_H
-
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
-
-/* Define if your C++ compiler can work with function templates. */
-#undef HAVE_FUNCTION_TEMPLATE
-
-/* Define to 1 if you have the `getaddrinfo' function. */
-#undef HAVE_GETADDRINFO
-
-/* Define to 1 if you have the `getenv' function. */
-#undef HAVE_GETENV
 
 /* Define to 1 if you have the `geteuid' function. */
 #undef HAVE_GETEUID
@@ -307,17 +202,11 @@
 /* Define to 1 if you have the `gethostbyaddr_r' function. */
 #undef HAVE_GETHOSTBYADDR_R
 
-/* Define to 1 if you have the `gethostbyname' function. */
-#undef HAVE_GETHOSTBYNAME
-
 /* Define to 1 if you have the `gethostbyname_r' function. */
 #undef HAVE_GETHOSTBYNAME_R
 
 /* Define to 1 if you have the `gethostid' function. */
 #undef HAVE_GETHOSTID
-
-/* Define to 1 if you have the `gethostname' function. */
-#undef HAVE_GETHOSTNAME
 
 /* Define to 1 if you have the `getlogin' function. */
 #undef HAVE_GETLOGIN
@@ -336,12 +225,6 @@
 
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
-
-/* Define to 1 if you have the `getsockname' function. */
-#undef HAVE_GETSOCKNAME
-
-/* Define to 1 if you have the `getsockopt' function. */
-#undef HAVE_GETSOCKOPT
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
@@ -370,9 +253,6 @@
 /* Define to 1 if you have the `index' function. */
 #undef HAVE_INDEX
 
-/* Define if the input iterator category is supported. */
-#undef HAVE_INPUT_ITERATOR_CATEGORY
-
 /* Define to 1 if the system has the type `int64_t'. */
 #undef HAVE_INT64_T
 
@@ -384,42 +264,14 @@
    of size_t * or socklen_t. */
 #undef HAVE_INTP_GETSOCKOPT
 
-/* Define if your system declares argument 2-4 of select() as int * instead of
-   struct fd_set *. */
-#undef HAVE_INTP_SELECT
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the <iomanip> header file. */
-#undef HAVE_IOMANIP
-
-/* Define to 1 if you have the <iomanip.h> header file. */
-#undef HAVE_IOMANIP_H
 
 /* Define to 1 if you have the <iostream> header file. */
 #undef HAVE_IOSTREAM
 
-/* Define to 1 if you have the <iostream.h> header file. */
-#undef HAVE_IOSTREAM_H
-
-/* Define if your system defines ios::nocreate in iostream.h. */
-#undef HAVE_IOS_NOCREATE
-
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
-
-/* Define to 1 if you have the `isinf' function. */
-#undef HAVE_ISINF
-
-/* Define to 1 if you have the `isnan' function. */
-#undef HAVE_ISNAN
-
-/* Define to 1 if you have the <iso646.h> header file. */
-#undef HAVE_ISO646_H
-
-/* Define to 1 if you have the <iterator> header file. */
-#undef HAVE_ITERATOR_HEADER
 
 /* Define to 1 if you have the `itoa' function. */
 #undef HAVE_ITOA
@@ -430,9 +282,6 @@
 /* Define to 1 if you have the <libc.h> header file. */
 #undef HAVE_LIBC_H
 
-/* Define to 1 if you have the `iostream' library (-liostream). */
-#undef HAVE_LIBIOSTREAM
-
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #undef HAVE_LIBNSL
 
@@ -442,26 +291,14 @@
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #undef HAVE_LIBSOCKET
 
-/* Define to 1 if you have the <limits.h> header file. */
-#undef HAVE_LIMITS_H
-
 /* Define to 1 if you have the `listen' function. */
 #undef HAVE_LISTEN
-
-/* Define to 1 if you have the <locale.h> header file. */
-#undef HAVE_LOCALE_H
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
 
 /* Define to 1 if you have the `lockf' function. */
 #undef HAVE_LOCKF
-
-/* Define to 1 if the system has the type `longlong'. */
-#undef HAVE_LONGLONG
-
-/* Define to 1 if you support file names longer than 14 characters. */
-#undef HAVE_LONG_FILE_NAMES
 
 /* Define to 1 if the system has the type `long long'. */
 #undef HAVE_LONG_LONG
@@ -475,32 +312,17 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
-/* Define to 1 if you have the <math.h> header file. */
-#undef HAVE_MATH_H
-
-/* Define to 1 if you have the `mbstowcs' function. */
-#undef HAVE_MBSTOWCS
-
-/* Define to 1 if you have the `memcmp' function. */
-#undef HAVE_MEMCMP
-
-/* Define to 1 if you have the `memcpy' function. */
-#undef HAVE_MEMCPY
-
-/* Define to 1 if you have the `memmove' function. */
-#undef HAVE_MEMMOVE
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the `memset' function. */
-#undef HAVE_MEMSET
 
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
 
 /* Define to 1 if you have the `mktemp' function. */
 #undef HAVE_MKTEMP
+
+/* Define to 1 if you have the <mqueue.h> header file. */
+#undef HAVE_MQUEUE_H
 
 /* Define to 1 if you have the `nanosleep' function. */
 #undef HAVE_NANOSLEEP
@@ -523,9 +345,6 @@
 /* Define to 1 if you have the <new> header file. */
 #undef HAVE_NEW
 
-/* Define to 1 if you have the <new.h> header file. */
-#undef HAVE_NEW_H
-
 /* Define if the compiler supports operator delete (std::nothrow). */
 #undef HAVE_NOTHROW_DELETE
 
@@ -534,13 +353,6 @@
 
 #ifdef HAVE_NO_TYPEDEF_PID_T
 typedef int pid_t;
-#endif
-
-/* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
-#undef HAVE_NO_TYPEDEF_SIZE_T
-
-#ifdef HAVE_NO_TYPEDEF_SIZE_T
-typedef unsigned size_t;
 #endif
 
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
@@ -587,11 +399,6 @@ typedef unsigned short ushort;
 /* Define to 1 if the system has the type `off64_t'. */
 #undef HAVE_OFF64_T
 
-/* Define if your system supports readdir_r with the obsolete Posix 1.c draft
-   6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
-   arguments. */
-#undef HAVE_OLD_READDIR_R
-
 /* Define to 1 if you have the <openssl/asn1.h> header file. */
 #undef HAVE_OPENSSL_ASN1_H
 
@@ -605,32 +412,21 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <openssl/evp.h> header file. */
 #undef HAVE_OPENSSL_EVP_H
 
-/* Define if OpenSSL provides a prototype for ASN1_STRING_get0_data in
-   <openssl/asn1.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_ASN1_STRING_GET0_DATA
-
-/* Define if OpenSSL provides a prototype for DH_bits in <openssl/dh.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_DH_BITS
-
-/* Define if OpenSSL provides a prototype for EVP_PKEY_base_id in
-   <openssl/evp.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_BASE_ID
-
-/* Define if OpenSSL provides a prototype for EVP_PKEY_get0_EC_KEY in
-   <openssl/evp.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET0_EC_KEY
-
 /* Define if OpenSSL provides a prototype for EVP_PKEY_get_group_name in
    <openssl/evp.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_GET_GROUP_NAME
 
-/* Define if OpenSSL provides a prototype for EVP_PKEY_id in <openssl/evp.h>.
-   */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_ID
+/* Define if OpenSSL provides a prototype for NID_dsa_with_SHA512 in
+   <openssl/obj_mac.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_NID_DSA_WITH_SHA512
 
-/* Define if OpenSSL provides a prototype for EVP_PKEY_RSA_PSS in
-   <openssl/evp.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_EVP_PKEY_RSA_PSS
+/* Define if OpenSSL provides a prototype for NID_ecdsa_with_SHA3_256 in
+   <openssl/obj_mac.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_NID_ECDSA_WITH_SHA3_256
+
+/* Define if OpenSSL provides a prototype for NID_sha512_256WithRSAEncryption
+   in <openssl/obj_mac.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_NID_SHA512_256WITHRSAENCRYPTION
 
 /* Define if OpenSSL provides a prototype for OSSL_PROVIDER_load in
    <openssl/provider.h>. */
@@ -639,105 +435,21 @@ typedef unsigned short ushort;
 /* Define if OpenSSL provides a prototype for RAND_egd in <openssl/rand.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_RAND_EGD
 
-/* Define if OpenSSL provides a prototype for SSL_CTX_get0_param in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET0_PARAM
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_get_cert_store in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CERT_STORE
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_get_ciphers in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_GET_CIPHERS
-
 /* Define if OpenSSL provides a prototype for SSL_CTX_set0_tmp_dh_pkey in
    <openssl/ssl.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET0_TMP_DH_PKEY
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_set1_curves in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_CURVES
 
 /* Define if OpenSSL provides a prototype for SSL_CTX_set1_sigalgs in
    <openssl/ssl.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET1_SIGALGS
 
-/* Define if OpenSSL provides a prototype for SSL_CTX_set_ecdh_auto in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_ECDH_AUTO
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_set_max_proto_version in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_MAX_PROTO_VERSION
-
-/* Define if OpenSSL provides a prototype for SSL_CTX_set_security_level in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_CTX_SET_SECURITY_LEVEL
-
-/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_ASYNC in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC
-
-/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_ASYNC_JOB in
-   <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_ASYNC_JOB
-
-/* Define if OpenSSL provides a prototype for SSL_ERROR_WANT_CLIENT_HELLO_CB
-   in <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_SSL_ERROR_WANT_CLIENT_HELLO_CB
+/* Define if OpenSSL provides a prototype for
+   TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8 in <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8
 
 /* Define if OpenSSL provides a prototype for
-   TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305 in <openssl/ssl.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305
-
-/* Define if OpenSSL provides a prototype for TLS_method in <openssl/ssl.h>.
-   */
-#undef HAVE_OPENSSL_PROTOTYPE_TLS_METHOD
-
-/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_failure_info
-   in <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_FAILURE_INFO
-
-/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_status in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_STATUS
-
-/* Define if OpenSSL provides a prototype for TS_STATUS_INFO_get0_text in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_STATUS_INFO_GET0_TEXT
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTS_set_certs in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTS_SET_CERTS
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_data in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_DATA
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_flags in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_FLAGS
-
-/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_set_store in
-   <openssl/ts.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET_STORE
-
-/* Define if OpenSSL provides a prototype for X509_get0_notAfter in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTAFTER
-
-/* Define if OpenSSL provides a prototype for X509_get0_notBefore in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_GET0_NOTBEFORE
-
-/* Define if OpenSSL provides a prototype for X509_get_signature_nid in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_GET_SIGNATURE_NID
-
-/* Define if OpenSSL provides a prototype for X509_STORE_get0_param in
-   <openssl/x509.h>. */
-#undef HAVE_OPENSSL_PROTOTYPE_X509_STORE_GET0_PARAM
+   TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 in <openssl/ssl.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384
 
 /* Define to 1 if you have the <openssl/provider.h> header file. */
 #undef HAVE_OPENSSL_PROVIDER_H
@@ -748,15 +460,8 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <openssl/ts.h> header file. */
 #undef HAVE_OPENSSL_TS_H
 
-/* Define if OpenSSL provides the X509_ALGOR_get0() function that expects a
-   const pointer as first parameter. */
-#undef HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM
-
 /* Define to 1 if you have the <openssl/x509.h> header file. */
 #undef HAVE_OPENSSL_X509_H
-
-/* Define if the output iterator category is supported. */
-#undef HAVE_OUTPUT_ITERATOR_CATEGORY
 
 /* Define if passwd::pw_gecos is available. */
 #undef HAVE_PASSWD_GECOS
@@ -769,18 +474,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `popen' function. */
 #undef HAVE_POPEN
-
-/* Define if your system has a prototype for accept in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_ACCEPT
-
-/* Define if your system has a prototype for bind in sys/types.h sys/socket.h.
-   */
-#undef HAVE_PROTOTYPE_BIND
-
-/* Define if your system has a prototype for connect in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_CONNECT
 
 /* Define if your system has a prototype for feenableexcept in fenv.h. */
 #undef HAVE_PROTOTYPE_FEENABLEEXCEPT
@@ -795,10 +488,6 @@ typedef unsigned short ushort;
    unistd.h stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYADDR_R
 
-/* Define if your system has a prototype for gethostbyname in libc.h unistd.h
-   stdlib.h netdb.h. */
-#undef HAVE_PROTOTYPE_GETHOSTBYNAME
-
 /* Define if your system has a prototype for gethostbyname_r in libc.h
    unistd.h stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTBYNAME_R
@@ -807,31 +496,9 @@ typedef unsigned short ushort;
    stdlib.h netdb.h. */
 #undef HAVE_PROTOTYPE_GETHOSTID
 
-/* Define if your system has a prototype for gethostname in unistd.h libc.h
-   stdlib.h netdb.h. */
-#undef HAVE_PROTOTYPE_GETHOSTNAME
-
-/* Define if your system has a prototype for getsockname in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_GETSOCKNAME
-
-/* Define if your system has a prototype for getsockopt in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_GETSOCKOPT
-
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h. */
 #undef HAVE_PROTOTYPE_GETTIMEOFDAY
-
-/* Define if your system has a prototype for isinf in math.h. */
-#undef HAVE_PROTOTYPE_ISINF
-
-/* Define if your system has a prototype for isnan in math.h. */
-#undef HAVE_PROTOTYPE_ISNAN
-
-/* Define if your system has a prototype for listen in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_LISTEN
 
 /* Define if your system has a prototype for mkstemp in libc.h unistd.h
    stdlib.h. */
@@ -840,21 +507,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
    stdlib.h. */
 #undef HAVE_PROTOTYPE_MKTEMP
-
-/* Define if your system has a prototype for select in sys/select.h
-   sys/types.h sys/socket.h sys/time.h. */
-#undef HAVE_PROTOTYPE_SELECT
-
-/* Define if your system has a prototype for setsockopt in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_SETSOCKOPT
-
-/* Define if your system has a prototype for socket in sys/types.h
-   sys/socket.h. */
-#undef HAVE_PROTOTYPE_SOCKET
-
-/* Define if your system has a prototype for std::finite in cmath. */
-#undef HAVE_PROTOTYPE_STD__FINITE
 
 /* Define if your system has a prototype for std::isinf in cmath. */
 #undef HAVE_PROTOTYPE_STD__ISINF
@@ -889,10 +541,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for vsnprintf in stdio.h stdarg.h. */
 #undef HAVE_PROTOTYPE_VSNPRINTF
 
-/* Define if your system has a prototype for wait3 in libc.h sys/wait.h
-   sys/time.h sys/resource.h. */
-#undef HAVE_PROTOTYPE_WAIT3
-
 /* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
    sys/resource.h. */
 #undef HAVE_PROTOTYPE_WAITPID
@@ -909,29 +557,14 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
 
-/* Define if the random_access iterator category is supported. */
-#undef HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY
-
 /* Define to 1 if you have the `readdir_r' function. */
 #undef HAVE_READDIR_R
-
-/* Define if the compiler supports reinterpret_cast<>. */
-#undef HAVE_REINTERPRET_CAST
 
 /* Define to 1 if you have the `rindex' function. */
 #undef HAVE_RINDEX
 
-/* Define to 1 if you have the `select' function. */
-#undef HAVE_SELECT
-
 /* Define to 1 if you have the <semaphore.h> header file. */
 #undef HAVE_SEMAPHORE_H
-
-/* Define to 1 if you have the <setjmp.h> header file. */
-#undef HAVE_SETJMP_H
-
-/* Define to 1 if you have the `setsockopt' function. */
-#undef HAVE_SETSOCKOPT
 
 /* Define to 1 if you have the `setuid' function. */
 #undef HAVE_SETUID
@@ -939,20 +572,8 @@ typedef unsigned short ushort;
 /* Define to 1 if the system has the type `sigjmp_buf'. */
 #undef HAVE_SIGJMP_BUF
 
-/* Define to 1 if you have the <signal.h> header file. */
-#undef HAVE_SIGNAL_H
-
 /* Define to 1 if you have the `sleep' function. */
 #undef HAVE_SLEEP
-
-/* Define to 1 if you have the `socket' function. */
-#undef HAVE_SOCKET
-
-/* Define to 1 if you have the <sstream> header file. */
-#undef HAVE_SSTREAM
-
-/* Define to 1 if you have the <sstream.h> header file. */
-#undef HAVE_SSTREAM_H
 
 /* Define to 1 if you have the `stat' function. */
 #undef HAVE_STAT
@@ -960,30 +581,8 @@ typedef unsigned short ushort;
 /* Define if the compiler supports static_assert. */
 #undef HAVE_STATIC_ASSERT
 
-/* Define if the compiler supports static_cast<>. */
-#undef HAVE_STATIC_CAST
-
-/* Define if your C++ compiler can work with static methods in class
-   templates. */
-#undef HAVE_STATIC_TEMPLATE_METHOD
-
-/* Define to 1 if you have the <stat.h> header file. */
-#undef HAVE_STAT_H
-
-/* Define to 1 if you have the <stdarg.h> header file. */
-#undef HAVE_STDARG_H
-
-/* Define to 1 if you have the <stdbool.h> header file. */
-#undef HAVE_STDBOOL_H
-
-/* Define to 1 if you have the <stddef.h> header file. */
-#undef HAVE_STDDEF_H
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
-
-/* Define to 1 if you have the <stdio.h> header file. */
-#undef HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -996,9 +595,6 @@ typedef unsigned short ushort;
 
 /* Define if STL's algorithm should be used. */
 #undef HAVE_STL_ALGORITHM
-
-/* Define if STL's limits should be used. */
-#undef HAVE_STL_LIMITS
 
 /* Define if STL's list should be used. */
 #undef HAVE_STL_LIST
@@ -1027,17 +623,8 @@ typedef unsigned short ushort;
 /* Define if STL's vector should be used. */
 #undef HAVE_STL_VECTOR
 
-/* Define to 1 if you have the `strchr' function. */
-#undef HAVE_STRCHR
-
 /* Define to 1 if you have the `strdup' function. */
 #undef HAVE_STRDUP
-
-/* Define to 1 if you have the <streambuf.h> header file. */
-#undef HAVE_STREAMBUF_H
-
-/* Define to 1 if you have the `strerror' function. */
-#undef HAVE_STRERROR
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -1050,21 +637,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
-
-/* Define to 1 if you have the `strstr' function. */
-#undef HAVE_STRSTR
-
-/* Define to 1 if you have the <strstream> header file. */
-#undef HAVE_STRSTREAM
-
-/* Define to 1 if you have the <strstream.h> header file. */
-#undef HAVE_STRSTREAM_H
-
-/* Define to 1 if you have the <strstrea.h> header file. */
-#undef HAVE_STRSTREA_H
-
-/* Define to 1 if you have the `strtoul' function. */
-#undef HAVE_STRTOUL
 
 /* Define to 1 if you have the <synch.h> header file. */
 #undef HAVE_SYNCH_H
@@ -1096,6 +668,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #undef HAVE_SYS_MMAN_H
+
+/* Define to 1 if you have the <sys/msg.h> header file. */
+#undef HAVE_SYS_MSG_H
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
@@ -1134,6 +709,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define to 1 if you have the <sys/un.h> header file. */
+#undef HAVE_SYS_UN_H
+
 /* Define to 1 if you have the <sys/utime.h> header file. */
 #undef HAVE_SYS_UTIME_H
 
@@ -1143,26 +721,11 @@ typedef unsigned short ushort;
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
 
-/* Define to 1 if you have the `tempnam' function. */
-#undef HAVE_TEMPNAM
-
 /* Define to 1 if you have the <thread.h> header file. */
 #undef HAVE_THREAD_H
 
-/* Define to 1 if you have the <time.h> header file. */
-#undef HAVE_TIME_H
-
-/* Define to 1 if you have the `tmpnam' function. */
-#undef HAVE_TMPNAM
-
-/* Define if typename is a known keyword. */
-#undef HAVE_TYPENAME
-
 /* Define to 1 if the system has the type `uint64_t'. */
 #undef HAVE_UINT64_T
-
-/* Define to 1 if the system has the type `ulonglong'. */
-#undef HAVE_ULONGLONG
 
 /* Define to 1 if you have the `uname' function. */
 #undef HAVE_UNAME
@@ -1185,27 +748,11 @@ typedef unsigned short ushort;
 /* Define if variable-length arrays are supported in C. */
 #undef HAVE_VLA
 
-/* Define to 1 if you have the `vprintf' function. */
-#undef HAVE_VPRINTF
-
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
-/* Define to 1 if you have the `wait3' system call. Deprecated, you should no
-   longer depend upon `wait3'. */
-#undef HAVE_WAIT3
-
 /* Define to 1 if you have the `waitpid' function. */
 #undef HAVE_WAITPID
-
-/* Define to 1 if you have the <wchar.h> header file. */
-#undef HAVE_WCHAR_H
-
-/* Define to 1 if you have the `wcstombs' function. */
-#undef HAVE_WCSTOMBS
-
-/* Define to 1 if you have the <wctype.h> header file. */
-#undef HAVE_WCTYPE_H
 
 /* Define to 1 if you have the `_findfirst' function. */
 #undef HAVE__FINDFIRST
@@ -1218,12 +765,6 @@ typedef unsigned short ushort;
 
 /* Define if the compiler supports __func__. */
 #undef HAVE___func___MACRO
-
-/* Define if libc.h should be treated as a C++ header. */
-#undef INCLUDE_LIBC_H_AS_CXX
-
-/* Define if <math.h> fails if included extern "C". */
-#undef INCLUDE_MATH_H_AS_CXX
 
 /* Define if the second argument to iconv() is const. */
 #undef LIBICONV_SECOND_ARGUMENT_CONST
@@ -1261,12 +802,6 @@ typedef unsigned short ushort;
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
-/* Define if signal handlers need ellipse (...) parameters. */
-#undef SIGNAL_HANDLER_WITH_ELLIPSE
-
-/* The size of `char', as computed by sizeof. */
-#undef SIZEOF_CHAR
-
 /* The size of `double', as computed by sizeof. */
 #undef SIZEOF_DOUBLE
 
@@ -1287,9 +822,6 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
-
-/* Namespace for ANSI C functions in standard C++ headers. */
-#undef STDIO_NAMESPACE
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
@@ -1318,9 +850,6 @@ typedef unsigned short ushort;
 
 /* Define if we are compiling with libiconv support. */
 #undef WITH_LIBICONV
-
-/* Define if we are compiling with ICU support. */
-#undef WITH_LIBICU
 
 /* Define if we are compiling with libpng support. */
 #undef WITH_LIBPNG

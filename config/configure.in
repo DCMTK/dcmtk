@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(dcmtk, 3.6.7, [bugs@dcmtk.org], [dcmtk-3.6.7], [https://www.dcmtk.org/])
+AC_INIT(dcmtk, 3.6.8, [bugs@dcmtk.org], [dcmtk-3.6.8], [https://www.dcmtk.org/])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADERS(include/dcmtk/config/osconfig.h)
@@ -10,7 +10,7 @@ dnl -------------------------------------------------------
 dnl Additional Package Information
 dnl -------------------------------------------------------
 
-PACKAGE_VERSION_NUMBER=367
+PACKAGE_VERSION_NUMBER=368
 PACKAGE_VERSION_SUFFIX="+"
 PACKAGE_DATE="DEV"
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER,${PACKAGE_VERSION_NUMBER},[Define to the version number of this package.])
@@ -76,9 +76,6 @@ AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable pa
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif])
 
-AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
-/* #undef HAVE_EMPTY_ARGC_ARGV */])
-
 AH_TOP([#ifndef OSCONFIG_H
 #define OSCONFIG_H
 
@@ -93,7 +90,7 @@ AH_TOP([#ifndef OSCONFIG_H
 #define END_EXTERN_C
 #endif
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
+/* MinGW needs some special handling because it is a mixture of WIN32 and POSIX.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
@@ -194,15 +191,11 @@ dnl -------------------------------------------------------
 
 AC_AIX
 AC_ISC_POSIX
-AC_SYS_LONG_FILE_NAMES
 
 dnl ----------------------------------------------------------
 dnl Perform some tests with the C compiler, needed for dcmjpeg
 dnl ----------------------------------------------------------
 
-AC_MY_C_INLINE
-AC_MY_C_CONST
-AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
 dnl --------------------------------------------------------
@@ -214,8 +207,6 @@ AC_TYPEDEF(uchar, unsigned char)
 AC_TYPEDEF(ushort, unsigned short)
 AC_TYPEDEF(uint, unsigned int)
 AC_TYPEDEF(ulong, unsigned long)
-AC_CHECK_TYPES(longlong)
-AC_CHECK_TYPES(ulonglong)
 AC_CHECK_TYPES(long long)
 AC_CHECK_TYPES(unsigned long long)
 CHECK_VLA
@@ -224,8 +215,7 @@ dnl File access stuff
 AC_CHECK_TYPES(fpos64_t)
 AC_CHECK_TYPES(off64_t)
 
-dnl stdbool.h and stdint.h are only defined in ANSI C, not in C++
-AC_CHECK_HEADERS(stdbool.h)
+dnl stdint.h is only defined in ANSI C, not in C++
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(cstdint)
 
@@ -241,23 +231,20 @@ dnl Check for libc library functions
 dnl -------------------------------------------------------
 
 AC_FUNC_MEMCMP
-AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
-AC_FUNC_WAIT3
-AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
-AC_CHECK_FUNCS(strchr strstr strtoul itoa atoll)
-AC_CHECK_FUNCS(memcpy memset memmove memcmp bcopy bcmp)
-AC_CHECK_FUNCS(getpid mktemp tempnam tmpnam getenv mkstemp)
+AC_CHECK_FUNCS(gethostid sysinfo)
+AC_CHECK_FUNCS(itoa atoll)
+AC_CHECK_FUNCS(bcmp)
+AC_CHECK_FUNCS(getpid mktemp mkstemp)
 AC_CHECK_FUNCS(stat)
 AC_CHECK_FUNCS(malloc_debug)
-AC_CHECK_FUNCS(strerror strdup index rindex access)
+AC_CHECK_FUNCS(strdup index rindex access)
 AC_CHECK_FUNCS(uname cuserid getlogin getlogin_r)
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(flock lockf)
-AC_CHECK_FUNCS(listen connect setsockopt getsockopt select)
-AC_CHECK_FUNCS(gethostbyname gethostbyname_r)
+AC_CHECK_FUNCS(listen)
+AC_CHECK_FUNCS(gethostbyname_r)
 AC_CHECK_FUNCS(gethostbyaddr_r getgrnam_r getpwnam_r)
-AC_CHECK_FUNCS(bind accept getsockname getaddrinfo)
 AC_CHECK_FUNCS(getrusage)
 AC_CHECK_FUNCS(gettimeofday)
 AC_CHECK_FUNCS(waitpid)
@@ -266,7 +253,6 @@ AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
 AC_CHECK_FUNCS(vsnprintf)
-AC_CHECK_FUNCS(mbstowcs wcstombs)
 AC_CHECK_FUNCS(popen pclose)
 AC_CHECK_FUNCS(readdir_r)
 AC_FUNC_FSEEKO
@@ -318,7 +304,7 @@ dnl -------------------------------------------------------
 
 SAVELIBS="$LIBS"
 LIBS="$LIBS -lm"
-AC_CHECK_FUNCS(finite isinf isnan)
+AC_CHECK_FUNCS(finite)
 LIBS="$SAVELIBS"
 
 dnl -------------------------------------------------------
@@ -327,10 +313,6 @@ dnl -------------------------------------------------------
 
 AC_LANG(C++)
 
-AC_CXX_CONST_CAST
-AC_CXX_DYNAMIC_CAST
-AC_CXX_REINTERPRET_CAST
-AC_CXX_STATIC_CAST
 AC_CXX_STD_NOTHROW
 AC_CXX_NOTHROW_DELETE
 AC_CXX_STATIC_ASSERT
@@ -433,7 +415,7 @@ dnl Check for libraries
 dnl -------------------------------------------------------
 
 AC_CHECK_GXXLIB
-AC_CHECK_LIB(iostream, main)
+
 dnl Some C++ compilers have problems with recursive main calls
 dnl (e.g. Sun C++ 4.2). In this case we must test another function
 dnl to link.
@@ -488,63 +470,32 @@ dnl -------------------------------------------------------
 dnl Check for header files
 dnl -------------------------------------------------------
 
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
 AC_CHECK_HEADERS(arpa/inet.h)
-AC_CHECK_HEADERS(assert.h)
-AC_CHECK_HEADERS(ctype.h)
-AC_CHECK_HEADERS(errno.h)
 AC_CHECK_HEADERS(fcntl.h)
-AC_CHECK_HEADERS(float.h)
 AC_CHECK_HEADERS(fnmatch.h)
-AC_CHECK_HEADERS(fstream)
-AC_CHECK_HEADERS(fstream.h)
 AC_CHECK_HEADERS(grp.h)
 AC_CHECK_HEADERS(ieeefp.h)
 AC_CHECK_HEADERS(io.h)
-AC_CHECK_HEADERS(iomanip)
-AC_CHECK_HEADERS(iomanip.h)
 AC_CHECK_HEADERS(iostream)
-AC_CHECK_HEADERS(iostream.h)
-AC_CHECK_HEADERS(iso646.h)
 AC_CHECK_HEADERS(libc.h)
-AC_CHECK_HEADERS(limits.h)
-AC_CHECK_HEADERS(climits)
-AC_CHECK_HEADERS(locale.h)
 AC_CHECK_HEADERS(malloc.h)
-AC_CHECK_HEADERS(math.h)
-AC_CHECK_HEADERS(cmath)
+AC_CHECK_HEADERS(mqueue.h)
 AC_CHECK_HEADERS(new)
-AC_CHECK_HEADERS(new.h)
 AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(pthread.h)
 AC_CHECK_HEADERS(pwd.h)
 AC_CHECK_HEADERS(semaphore.h)
-AC_CHECK_HEADERS(setjmp.h)
-AC_CHECK_HEADERS(signal.h)
-AC_CHECK_HEADERS(sstream)
-AC_CHECK_HEADERS(sstream.h)
-AC_CHECK_HEADERS(stat.h)
-AC_CHECK_HEADERS(cstdarg)
-AC_CHECK_HEADERS(stdarg.h)
-AC_CHECK_HEADERS(stddef.h)
 AC_CHECK_HEADERS(cstddef)
-AC_CHECK_HEADERS(cstdio)
-AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdint.h)
-AC_CHECK_HEADERS(stdlib.h)
-AC_CHECK_HEADERS(streambuf.h)
-AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
-AC_CHECK_HEADERS(strstrea.h)
-AC_CHECK_HEADERS(strstream)
-AC_CHECK_HEADERS(strstream.h)
 AC_CHECK_HEADERS(synch.h)
 AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
+AC_CHECK_HEADERS(sys/msg.h)
 AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_HEADERS(sys/select.h)
@@ -555,27 +506,15 @@ AC_CHECK_HEADERS(sys/systeminfo.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_HEADERS(sys/timeb.h)
 AC_CHECK_HEADERS(sys/types.h)
+AC_CHECK_HEADERS(sys/un.h)
 AC_CHECK_HEADERS(sys/utime.h)
 AC_CHECK_HEADERS(sys/utsname.h)
 AC_CHECK_HEADERS(thread.h)
-AC_CHECK_HEADERS(time.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
-AC_CHECK_HEADERS(wchar.h)
-AC_CHECK_HEADERS(wctype.h)
-AC_CHECK_HEADERS(fenv.h)
-AC_CHECK_HEADER(iterator,
-    [AC_DEFINE([HAVE_ITERATOR_HEADER], 1, [Define to 1 if you have the <iterator> header file.])]
-)
 
 AC_CHECK_POLL_H
-
-if test $ac_cv_header_libc_h = yes ; then
-  if test $ac_cv_header_math_h = yes ; then
-    AC_CXX_LIBC_H_EXTERN_C
-  fi
-fi
 
 dnl --------------------------------------------------------
 dnl Tests for pointer vs. integer types
@@ -621,7 +560,7 @@ fi
 
 if test $THREADSUPPORT = posix ; then
   dnl
-  dnl check Posix MT libraries -lrt and -lpthread
+  dnl check POSIX MT libraries -lrt and -lpthread.
   dnl OSF/1 re-#defines most of the pthread function names.
   dnl This is why we use pthread_key_create for the test.
   dnl
@@ -740,6 +679,16 @@ if test $THREADSUPPORT = posix ; then
     ], AC_MSG_RESULT(no))
   ]
   )
+else
+  dnl
+  dnl Even if support for POSIX threads is not enabled, check for library -lrt,
+  dnl since it is also required for IPC (inter-process communication).
+  dnl
+  AC_CHECK_LIB(rt, mq_open, [
+  ac_tr_lib=HAVE_LIBRT
+  AC_DEFINE_UNQUOTED($ac_tr_lib)
+  LIBS="-lrt $LIBS"
+  ], , $LIBS )
 fi
 
 AC_MSG_CHECKING(multi-thread support)
@@ -784,11 +733,9 @@ dnl ------------------------------------------------------------
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ------------------------------------------------------------
 
-AC_TYPEDEF(size_t, unsigned)
 AC_TYPEDEF(ssize_t, long)
 AC_TYPEDEF(pid_t, int)
 AC_C_CHAR_UNSIGNED
-AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long)
@@ -810,86 +757,37 @@ dnl DCMTK project and are not supported by GNU autoheader.
 
 AC_CHECK_PROTOTYPE(feenableexcept, fenv.h)
 AC_CHECK_PROTOTYPE(_stricmp, string.h)
-AC_CHECK_PROTOTYPE(accept, sys/types.h sys/socket.h)
-if test $ac_cv_prototype_accept = yes ; then
 AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
-fi
-AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(finite, math.h)
-AC_CHECK_PROTOTYPE(isinf, math.h)
-AC_CHECK_PROTOTYPE(isnan, math.h)
-AC_CHECK_PROTOTYPE(std::finite, cmath)
 AC_CHECK_PROTOTYPE(std::isinf, cmath)
 AC_CHECK_PROTOTYPE(std::isnan, cmath)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
-AC_CHECK_PROTOTYPE(gethostbyname, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostbyname_r, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostbyaddr_r, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)
-AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
-AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(strerror_r, string.h)
 if test $ac_cv_prototype_strerror_r = yes ; then
 AC_CHECK_CHARP_STRERROR_R(string.h)
 fi
-if test $ac_cv_prototype_getsockopt = yes ; then
 AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
-fi
 AC_CHECK_PROTOTYPE(gettimeofday, sys/time.h unistd.h)
-AC_CHECK_PROTOTYPE(listen, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(mkstemp, libc.h unistd.h stdlib.h)
-AC_CHECK_PROTOTYPE(select, sys/select.h sys/types.h sys/socket.h sys/time.h)
-if test $ac_cv_prototype_select = yes ; then
-AC_CHECK_INTP_SELECT(sys/select.h sys/types.h sys/socket.h sys/time.h)
-fi
-AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(strcasecmp, string.h)
 AC_CHECK_PROTOTYPE(strncasecmp, string.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(vsnprintf, stdio.h stdarg.h)
-AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
-AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h sys/utime.h)
-AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
-AC_CHECK_OLD_READDIR_R
-AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
-if test $ac_cv_header_math_h = yes ; then
-AC_INCLUDE_MATH_H_AS_CXX
-fi
-
 
 dnl -------------------------------------------------------
 dnl Check for the usage of standard C++ headers
 dnl -------------------------------------------------------
 
 AC_CHECK_STD_NAMESPACE
-AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
-AC_CHECK_IOS_NOCREATE(std::ios, fstream)
 AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
   [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
 AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
   [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
-
-
-AC_CHECK_STD_NAMESPACE
-AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
-AC_CHECK_IOS_NOCREATE(std::ios, fstream)
-AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
-  [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
-AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
-  [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
-
-AC_CHECK_CLASS_TEMPLATE
-AC_CHECK_STATIC_TEMPLATE_METHOD
-AC_CHECK_FUNCTION_TEMPLATE
-AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
-AC_CHECK_CXX_VOLATILE
-AC_CXX_TYPENAME
-AC_STDIO_NAMESPACE
 
 
 dnl -------------------------------------------------------
@@ -992,7 +890,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
 [ case "$withval" in
   yes)
       AC_TRY_COMPILE([#include <openssl/ssl.h>], [
-#if OPENSSL_VERSION_NUMBER < 0x10001000L
+#if OPENSSL_VERSION_NUMBER < 0x10101000L
 #error OpenSSL too old
 #endif
 ],
@@ -1000,7 +898,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
     AC_DEFINE(WITH_OPENSSL)
     OPENSSL_WORKS="yes"
     OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
-   [ AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] )
+   [ AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.1.1 or newer)] )
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -1011,7 +909,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
   AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()],
     [
       AC_TRY_COMPILE([#include <openssl/ssl.h>], [
-#if OPENSSL_VERSION_NUMBER < 0x10001000L
+#if OPENSSL_VERSION_NUMBER < 0x10101000L
 #error OpenSSL too old
 #endif
 ],
@@ -1019,7 +917,7 @@ AS_HELP_STRING([--without-openssl], [don't include OpenSSL support])],
       AC_DEFINE(WITH_OPENSSL)
       OPENSSL_WORKS="yes"
       OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
-      [ AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.0.1 or newer)] )],
+      [ AC_MSG_RESULT(no - DCMTK requires OpenSSL version 1.1.1 or newer)] )],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
@@ -1034,42 +932,18 @@ AC_CHECK_HEADERS(openssl/x509.h)
 AC_CHECK_HEADERS(openssl/provider.h)
 
 dnl test presence of functions, constants and macros needed for the dcmtls module
-AC_CHECK_EXT_LIB_PROTOTYPE(DH_bits, OpenSSL, openssl/dh.h)
-AC_CHECK_EXT_LIB_COMPILES(EVP_PKEY_RSA_PSS, OpenSSL, openssl/evp.h, [EVP_PKEY_RSA_PSS])
-AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_base_id, OpenSSL, openssl/evp.h)
+AC_CHECK_EXT_LIB_COMPILES(NID_dsa_with_SHA512, OpenSSL, openssl/obj_mac.h, [NID_dsa_with_SHA512])
+AC_CHECK_EXT_LIB_COMPILES(NID_ecdsa_with_SHA3_256, OpenSSL, openssl/obj_mac.h, [NID_ecdsa_with_SHA3_256])
+AC_CHECK_EXT_LIB_COMPILES(NID_sha512_256WithRSAEncryption, OpenSSL, openssl/obj_mac.h, [NID_sha512_256WithRSAEncryption])
 AC_CHECK_EXT_LIB_PROTOTYPE(RAND_egd, OpenSSL, openssl/rand.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_get_cert_store, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_get_ciphers, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_get0_param, OpenSSL, openssl/ssl.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set0_tmp_dh_pkey, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set1_curves, OpenSSL, openssl/ssl.h, [SSL_CTX_set1_curves(0,0,0)])
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set1_sigalgs, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set_ecdh_auto, OpenSSL, openssl/ssl.h, [SSL_CTX_set_ecdh_auto(0,0)])
-AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set_max_proto_version, OpenSSL, openssl/ssl.h, [SSL_CTX_set_max_proto_version(0,0)])
-AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set_security_level, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_COMPILES(SSL_ERROR_WANT_ASYNC, OpenSSL, openssl/ssl.h, [SSL_ERROR_WANT_ASYNC])
-AC_CHECK_EXT_LIB_COMPILES(SSL_ERROR_WANT_ASYNC_JOB, OpenSSL, openssl/ssl.h, [SSL_ERROR_WANT_ASYNC_JOB])
-AC_CHECK_EXT_LIB_COMPILES(SSL_ERROR_WANT_CLIENT_HELLO_CB, OpenSSL, openssl/ssl.h, [SSL_ERROR_WANT_CLIENT_HELLO_CB])
-AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_RSA_WITH_CHACHA20_POLY1305])
-AC_CHECK_EXT_LIB_PROTOTYPE(TLS_method, OpenSSL, openssl/ssl.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_STORE_get0_param, OpenSSL, openssl/x509.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_get_signature_nid, OpenSSL, openssl/x509.h)
+AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set1_sigalgs, OpenSSL, openssl/ssl.h, [SSL_CTX_set1_sigalgs(0,0,0)])
+AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8])
+AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384])
 
 dnl test presence of functions, constants and macros needed for the dcmsign module
-AC_CHECK_EXT_LIB_PROTOTYPE(ASN1_STRING_get0_data, OpenSSL, openssl/asn1.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_get0_EC_KEY, OpenSSL, openssl/evp.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_get_group_name, OpenSSL, openssl/evp.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_id, OpenSSL, openssl/evp.h)
 AC_CHECK_EXT_LIB_PROTOTYPE(OSSL_PROVIDER_load, OpenSSL, openssl/provider.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_STATUS_INFO_get0_failure_info, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_STATUS_INFO_get0_status, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_STATUS_INFO_get0_text, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_COMPILES(TS_VERIFY_CTS_set_certs, OpenSSL, openssl/ts.h, [TS_VERIFY_CTS_set_certs(0,0)])
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_VERIFY_CTX_set_data, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_VERIFY_CTX_set_flags, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(TS_VERIFY_CTX_set_store, OpenSSL, openssl/ts.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_get0_notAfter, OpenSSL, openssl/x509.h)
-AC_CHECK_EXT_LIB_PROTOTYPE(X509_get0_notBefore, OpenSSL, openssl/x509.h)
 
 dnl check if type EVP_MD_CTX is defined as typedef for "struct evp_md_ctx_st" (new) or "struct env_md_ctx_st" (old)
 AC_MSG_CHECKING(whether OpenSSL defines the new typedef of EVP_MD_CTX as struct evp_md_ctx_st)
@@ -1078,15 +952,6 @@ AH_TEMPLATE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX, [Define if OpenSSL provides
   [struct evp_md_ctx_st *a; EVP_MD_CTX *b=a],
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX) ],
-  [AC_MSG_RESULT(no)])
-
-dnl check if the first parameter passed to X509_ALGOR_get0() should be "const ASN1_OBJECT **" (new) or "ASN1_OBJECT **" (old)
-AC_MSG_CHECKING(whether OpenSSL defines the first parameter of function X509_ALGOR_get0() const)
-AH_TEMPLATE(HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM, [Define if OpenSSL provides the X509_ALGOR_get0() function that expects a const pointer as first parameter.])
-AC_TRY_COMPILE([#include <openssl/x509.h>],
-  [const ASN1_OBJECT *a; X509_ALGOR_get0(&a,0,0,0)],
-  [ AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_OPENSSL_X509_ALGOR_GET0_CONST_PARAM) ],
   [AC_MSG_RESULT(no)])
 
 fi
@@ -1288,10 +1153,8 @@ AS_HELP_STRING([--without-libwrap], [don't include libwrap support])],
     [#ifdef __cplusplus
     extern "C" {
     #endif
-    #ifdef HAVE_STDIO_H
     /* on some platforms, tcpd.h needs stdio.h */
     #include <stdio.h>
-    #endif
     #ifdef HAVE_SYS_TYPES_H
     /* on some platforms, tcpd.h needs sys/types.h */
     #include <sys/types.h>
@@ -1428,49 +1291,10 @@ AC_MSG_RESULT($WITH_STDLIBC_ICONV)
 LIBS="$SAVELIBS"
 
 dnl -------------------------------------------------------
-dnl Check for libicu support
-dnl -------------------------------------------------------
-
-AC_MY_LIB_PATH([libicu])
-AH_TEMPLATE(WITH_LIBICU, [Define if we are compiling with ICU support.])
-WITH_LIBICU=no
-AC_ARG_WITH(libicu,
-[AS_HELP_STRING([--with-libicu], [include libicu support (default: auto)])
-AS_HELP_STRING([--without-libicu], [don't include libicu support])],
-[ AC_MSG_CHECKING(whether to include ICU support)
-  case "$withval" in
-  yes)
-    WITH_LIBICU=yes
-    AC_DEFINE(WITH_LIBICU)
-    ICULIBS="-licui18n -licuuc -licudata"
-    ;;
-  *)
-    ;;
-  esac ],
-[
-  if test -z "$ICU_CONFIG"; then
-    AC_PATH_PROG(ICU_CONFIG, icu-config, no)
-    AC_MSG_CHECKING(whether to include ICU support)
-  fi
-  if [[ ! "$ICU_CONFIG" = "no" ]]; then
-    ICU_VERSION=`$ICU_CONFIG --version`
-        VERSION_CHECK=`expr $ICU_VERSION \>\= 3.4.1`
-        if test VERSION_CHECK=1; then
-            WITH_LIBICU=yes
-            AC_DEFINE(WITH_LIBICU)
-            ICUINCLUDES=`$ICU_CONFIG --cppflags`
-            ICULIBS=`$ICU_CONFIG --ldflags`
-        fi
-  fi
-])
-AC_MSG_RESULT($WITH_LIBICU)
-
-dnl -------------------------------------------------------
 dnl Check for character set conversion support
 dnl -------------------------------------------------------
 
 AH_VERBATIM([DCMTK_CHARSET_CONVERSION_CONSTANTS], [/* character set conversion constants. */
-#define DCMTK_CHARSET_CONVERSION_ICU 1
 #define DCMTK_CHARSET_CONVERSION_ICONV 2
 #define DCMTK_CHARSET_CONVERSION_STDLIBC_ICONV 3
 #define DCMTK_CHARSET_CONVERSION_OFICONV 4
@@ -1495,14 +1319,6 @@ AC_DEFUN([AC_CHOOSE_CHARSET_LIBICONV],
     DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICONV"
 ])
 
-AC_DEFUN([AC_CHOOSE_CHARSET_LIBICU],
-[
-    AC_MSG_RESULT([yes, type=libicu])
-    CHARCONVINCLUDES="$ICUINCLUDES"
-    CHARCONVLIBS="$ICULIBS"
-    DCMTK_ENABLE_CHARSET_CONVERSION="DCMTK_CHARSET_CONVERSION_ICU"
-])
-
 AC_DEFUN([AC_CHOOSE_CHARSET_STDLIBC_ICONV],
 [
     AC_MSG_RESULT([yes, type=stdlibc])
@@ -1515,8 +1331,6 @@ dnl disabled automatic detection, now always choose "oficonv" as a default
 dnl
 dnl if test "$WITH_LIBICONV" = "yes"; then
 dnl     AC_CHOOSE_CHARSET_LIBICONV()
-dnl elif test "$WITH_LIBICU" = "yes"; then
-dnl     AC_CHOOSE_CHARSET_LIBICU()
 dnl elif test "$WITH_STDLIBC_ICONV" = "yes"; then
 dnl     AC_CHOOSE_CHARSET_STDLIBC_ICONV()
 dnl else
@@ -1558,7 +1372,7 @@ fi
 AC_MSG_CHECKING(whether to enable character set conversion support)
 AC_ARG_ENABLE(charconv,
 [  --enable-charconv=TYPE  enable character set conversion support
-                          (libiconv/libicu/stdlibc/oficonv=default)
+                          (libiconv/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support],
 [ case "$enableval" in
   yes)
@@ -1569,9 +1383,6 @@ AC_ARG_ENABLE(charconv,
     ;;
   libiconv)
     AC_CHOOSE_CHARSET_LIBICONV()
-    ;;
-  libicu)
-    AC_CHOOSE_CHARSET_LIBICU()
     ;;
   stdlibc)
     AC_CHOOSE_CHARSET_STDLIBC_ICONV()
@@ -1615,22 +1426,17 @@ AC_ARG_ENABLE(builtin-oficonv,
 
 
 dnl -------------------------------------------------------
-dnl Include config test code from config/tests
+dnl Enable/Disable C++11 support
 dnl -------------------------------------------------------
 
-ac_enable_cxx11="no"
+ac_enable_cxx11="yes"
 AC_MSG_CHECKING(whether to enable C++11 support)
 AC_ARG_ENABLE(cxx11,
-[  --enable-cxx11          use C++11
-  --disable-cxx11         do not use C++11 (default)],
+[  --enable-cxx11          use C++11 (default)
+  --disable-cxx11         do not use C++11],
 [ case "$enableval" in
   yes)
-   AC_MSG_RESULT()
-   AX_CXX_COMPILE_STDCXX([11], [noext], [optional])
-   if test "$HAVE_CXX11 == 1"; then
-     ac_enable_cxx11="yes"
-   fi
-   AC_MSG_CHECKING(whether to enable C++11 support)
+   ac_enable_cxx11="yes"
    ;;
 
   *)
@@ -1638,11 +1444,21 @@ AC_ARG_ENABLE(cxx11,
    ;;
   esac ]
 )
+
+if test "$ac_enable_cxx11" = "yes"; then
+   AC_MSG_RESULT()
+   AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
+   if test "$HAVE_CXX11" != 1; then
+     ac_enable_cxx11="no"
+   fi
+   AC_MSG_CHECKING(whether to enable C++11 support)
+fi
+
 AC_MSG_RESULT($ac_enable_cxx11)
 
 
 dnl -------------------------------------------------------
-dnl Enable/disable STL support
+dnl Enable/Disable STL support
 dnl -------------------------------------------------------
 
 ac_enable_stl="no"
@@ -1707,29 +1523,6 @@ if test "$ac_enable_stl_algorithm" = "yes"; then
   AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/algo.cc"]])], [AC_DEFINE(HAVE_STL_ALGORITHM, 1, [Define if STL's algorithm should be used.])], [ac_enable_stl_algorithm="unsupported -> no"])
 fi
 AC_MSG_RESULT($ac_enable_stl_algorithm)
-
-ac_enable_stl_limits="auto"
-AC_MSG_CHECKING(whether to enable STL limits support)
-AC_ARG_ENABLE(stl-limits,
-[  --enable-stl-limits     use C++ STL limits
-  --disable-stl-limits    do not use C++ STL limits],
-[ case "$enableval" in
-  yes)
-   ac_enable_stl_limits="yes"
-   ;;
-
-  *)
-    ac_enable_stl_limits="no"
-    ;;
-  esac ]
-)
-if test "$ac_enable_stl_limits" = "auto"; then
-  ac_enable_stl_limits="$ac_enable_stl"
-fi
-if test "$ac_enable_stl_limits" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/limits.cc"]])], [AC_DEFINE(HAVE_STL_LIMITS, 1, [Define if STL's limits should be used.])], [ac_enable_stl_limits="unsupported -> no"])
-fi
-AC_MSG_RESULT($ac_enable_stl_limits)
 
 ac_enable_stl_list="auto"
 AC_MSG_CHECKING(whether to enable STL list support)
@@ -1974,11 +1767,6 @@ dnl -------------------------------------------------------
 dnl Test for defined iterator categories
 dnl -------------------------------------------------------
 
-AC_CHECK_ITERATOR_CATEGORY([input],[HAVE_INPUT_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([output],[HAVE_OUTPUT_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([forward],[HAVE_FORWARD_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([bidirectional],[HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY])
-AC_CHECK_ITERATOR_CATEGORY([random_access],[HAVE_RANDOM_ACCESS_ITERATOR_CATEGORY])
 AC_CHECK_ITERATOR_CATEGORY([contiguous],[HAVE_CONTIGUOUS_ITERATOR_CATEGORY])
 
 

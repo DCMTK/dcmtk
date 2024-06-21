@@ -130,10 +130,10 @@ preferred network transfer syntaxes (not with --config-file):
           prefer MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS
 
   +x4   --prefer-hevc
-          prefer HEVC H.265 Main Profile / Level 5.1 TS
+          prefer HEVC/H.265 Main Profile / Level 5.1 TS
 
   +x5   --prefer-hevc10
-          prefer HEVC H.265 Main 10 Profile / Level 5.1 TS
+          prefer HEVC/H.265 Main Profile / Level 5.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -259,17 +259,28 @@ certification authority:
 
 security profile:
 
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile (default)
+          Non-downgrading BCP 195 TLS Profile (retired)
 
   +px   --profile-bcp195
-          BCP 195 TLS Profile
+          BCP 195 TLS Profile (retired)
 
   +pz   --profile-bcp195-ex
-          Extended BCP 195 TLS Profile
+          Extended BCP 195 TLS Profile (retired)
 
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
 
   +pa   --profile-aes
           AES TLS Secure Transport Connection Profile (retired)
@@ -281,13 +292,21 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
 
   +dp   --dhparam  [f]ilename: string
           read DH parameters for DH/DSS ciphersuites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --expect-sni  [s]erver name: string
+          expect requests for server name s
 
 pseudo random generator:
 
@@ -502,7 +521,7 @@ Set) and Latin-1 (Specific Character Set valued "ISO_IR 100") are supported.
 If another character set is found and the patient name contains non-ASCII
 characters, a warning is printed and the transformation is performed as if
 Latin-1 character set would be set in the file.  This may lead to unreadable
-or unexpected patient name directories and behaviour.  Thus, it is advisable
+or unexpected patient name directories and behavior.  Thus, it is advisable
 to use \e --sort-on-patientname only if Latin-1 or ASCII patient names are
 expected to be received.
 
@@ -536,22 +555,31 @@ The command line to be executed is passed to this option as a parameter.  The
 specified command line may contain a number of placeholders which will be
 replaced at run time:
 
-\li \b \#p: complete path to the output directory into which the last DICOM
-            object was stored (not available with option \e --ignore though)
-\li \b \#f: filename of the current output file (not available with option
-            \e --ignore though)
-\li \b \#a: calling application entity title of the peer Storage SCU
-\li \b \#c: called application entity title used by the peer Storage SCU to
-            address \b storescp
-\li \b \#r: calling presentation address, i.e. hostname or IP address of the
-            peer Storage SCU
+- \b \#p: complete path to the output directory into which the last DICOM
+          object was stored (not available with option \e --ignore though)
+
+- \b \#f: filename of the current output file (not available with option
+          \e --ignore though)
+
+- \b \#a: calling application entity title of the peer Storage SCU
+
+- \b \#c: called application entity title used by the peer Storage SCU to
+          address \b storescp
+
+- \b \#r: calling presentation address, i.e. hostname or IP address of the
+          peer Storage SCU
 
 The specified command line is executed as a separate process, so that the
 execution of \b storescp will not be held back.  This behavior can be influenced
 with the \e --exec-sync option.
 
-Option \e --exec-on-eostudy allows one to execute a certain command line when all
-DICOM objects that belong to one study have been received by \b storescp.
+Note that the application entity titles ('\#a' and '\#c') will be 'sanitized'
+to avoid undesirable behavior when the parameters are passed to the shell.
+Unusual characters will be mapped to the '_' character.  A warning is printed
+to the logger in this case.
+
+Option \e --exec-on-eostudy allows one to execute a certain command line when
+all DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
 '\#f', which is not supported.  A study is considered complete by \b storescp
 when an object belonging to a different study is received or the timeout
@@ -629,6 +657,7 @@ RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
 RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
 UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
 EnhancedUSVolumeStorage                              1.2.840.10008.5.1.4.1.1.6.2
+PhotoacousticImageStorage                            1.2.840.10008.5.1.4.1.1.6.3
 SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
 MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
 MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
@@ -640,6 +669,7 @@ DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
 TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
 GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
 AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+General32BitECGWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.1.4
 HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
 CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
 BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
@@ -665,6 +695,7 @@ AdvancedBlendingPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.
 VolumeRenderingVolumetricPresentationStateStorage    1.2.840.10008.5.1.4.1.1.11.9
 SegmentedVolumeRenderingVolumetricPres.StateStorage  1.2.840.10008.5.1.4.1.1.11.10
 MultipleVolumeRenderingVolumetricPres.StateStorage   1.2.840.10008.5.1.4.1.1.11.11
+VariableModalityLUTSoftcopyPresentationStateStorage  1.2.840.10008.5.1.4.1.1.11.12
 XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
 EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
 XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
@@ -707,6 +738,8 @@ OphthalmicOpticalCoherenceTomogr.EnFaceImageStorage  1.2.840.10008.5.1.4.1.1.77.
 OphthalmicOpticalCoh.Tomogr.BscanVolumeAnalysisStor. 1.2.840.10008.5.1.4.1.1.77.1.5.8
 VLWholeSlideMicroscopyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.6
 DermoscopicPhotographyImageStorage                   1.2.840.10008.5.1.4.1.1.77.1.7
+ConfocalMicroscopyImageStorage                       1.2.840.10008.5.1.4.1.1.77.1.8
+ConfocalMicroscopyTiledPyramidalImageStorage         1.2.840.10008.5.1.4.1.1.77.1.9
 RETIRED_VLMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
 LensometryMeasurementsStorage                        1.2.840.10008.5.1.4.1.1.78.1
 AutorefractionMeasurementsStorage                    1.2.840.10008.5.1.4.1.1.78.2
@@ -736,7 +769,7 @@ ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.
 XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
 RadiopharmaceuticalRadiationDoseSRStorage            1.2.840.10008.5.1.4.1.1.88.68
 ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
-ImplantationPlanSRDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.70
+ImplantationPlanSRStorage                            1.2.840.10008.5.1.4.1.1.88.70
 AcquisitionContextSRStorage                          1.2.840.10008.5.1.4.1.1.88.71
 SimplifiedAdultEchoSRStorage                         1.2.840.10008.5.1.4.1.1.88.72
 PatientRadiationDoseSRStorage                        1.2.840.10008.5.1.4.1.1.88.73
@@ -779,6 +812,9 @@ CArmPhotonElectronRadiationRecordStorage             1.2.840.10008.5.1.4.1.1.481
 RoboticRadiationRecordStorage                        1.2.840.10008.5.1.4.1.1.481.20
 RTRadiationSetDeliveryInstructionStorage             1.2.840.10008.5.1.4.1.1.481.21
 RTTreatmentPreparationStorage                        1.2.840.10008.5.1.4.1.1.481.22
+EnhancedRTImageStorage                               1.2.840.10008.5.1.4.1.1.481.23
+EnhancedContinuousRTImageStorage                     1.2.840.10008.5.1.4.1.1.481.24
+RTPatientPositionAcquisitionInstructionStorage       1.2.840.10008.5.1.4.1.1.481.25
 DICOS_CTImageStorage                                 1.2.840.10008.5.1.4.1.1.501.1
 DICOS_DigitalXRayImageStorageForPresentation         1.2.840.10008.5.1.4.1.1.501.2.1
 DICOS_DigitalXRayImageStorageForProcessing           1.2.840.10008.5.1.4.1.1.501.2.2
@@ -823,19 +859,31 @@ JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
 JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
 JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+FragmentableMPEG2MainProfile/MainLevelTransferSyntax 1.2.840.10008.1.2.4.100.1
 MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
+FragmentableMPEG2MainProfil/tHighLevelTransferSyntax 1.2.840.10008.1.2.4.101.1
 MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
+FragmentableMPEG4HighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.102.1
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
+FragmentableMPEG4BDcompatibleHighProfileLevel4_1T.S. 1.2.840.10008.1.2.4.103.1
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
+FragmentableMPEG4HighProfileLevel4_2_For2DVideoTr.S. 1.2.840.10008.1.2.4.104.1
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
+FragmentableMPEG4HighProfileLevel4_2_For3DVideoTr.S. 1.2.840.10008.1.2.4.105.1
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
+FragmentableMPEG4StereoHighProfileLevel4_2TransferS. 1.2.840.10008.1.2.4.106.1
 HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
 HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
+HighThroughputJPEG2000ImageCompressionLossless.Tr.S. 1.2.840.10008.1.2.4.201
+HighThroughputJPEG2000RPCLImageCompressionLoss.Tr.S. 1.2.840.10008.1.2.4.202
+HighThroughputJPEG2000ImageCompressionTransferSynta. 1.2.840.10008.1.2.4.203
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 
 Additional Storage SOP Classes and Transfer Syntaxes can be used with the
-so-called "association negotiation profiles" (see below).
+so-called "association negotiation profiles" (see below).  This could be both
+Private Storage SOP Classes and Standard Storage SOP Classes that do not fit
+into the PATIENT-STUDY-SERIES-INSTANCE information model.
 
 The \b storescp application does not support extended negotiation by default.
 However, using an appropriate association negotiation profile (see below)
@@ -951,6 +999,6 @@ It is an error if no data dictionary can be loaded.
 
 \section storescp_copyright COPYRIGHT
 
-Copyright (C) 1996-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

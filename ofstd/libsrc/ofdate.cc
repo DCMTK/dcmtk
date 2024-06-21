@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofdate.h"
 #include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 
 
@@ -272,10 +273,10 @@ OFBool OFDate::getISOFormattedDate(OFString &formattedDate,
         char buf[32];
         /* format: YYYY-MM-DD */
         if (showDelimiter)
-            sprintf(buf, "%04u-%02u-%02u", Year, Month, Day);
+            OFStandard::snprintf(buf, sizeof(buf), "%04u-%02u-%02u", Year, Month, Day);
         /* format: YYYYMMDD */
         else
-            sprintf(buf, "%04u%02u%02u", Year, Month, Day);
+            OFStandard::snprintf(buf, sizeof(buf), "%04u%02u%02u", Year, Month, Day);
         formattedDate = buf;
         status = OFTrue;
     }

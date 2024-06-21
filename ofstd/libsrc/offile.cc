@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -262,7 +262,7 @@ int OFFile::fclose()
     }
     else
     {
-      result = STDIO_NAMESPACE fclose(file_);
+      result = :: fclose(file_);
     }
     // After calling fclose() once, the FILE* is gone even if fclose() failed.
     file_ = NULL;

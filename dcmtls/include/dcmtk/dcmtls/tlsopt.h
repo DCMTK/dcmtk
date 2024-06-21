@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, OFFIS e.V.
+ *  Copyright (C) 2017-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,61 +33,21 @@ class DcmTLSTransportLayer;
 struct T_ASC_Network;
 struct T_ASC_Parameters;
 
-/** A class that handles the command line arguments used by applications
- *  that support TLS.
- *  DcmTLSOptions handles storing the relevant options, printing the associated
- *  help text an information (e.g. OpenSSL library version), parsing and
- *  evaluating the given command line arguments and creating a
- *  DcmTLSTransportLayer object based on the collected information.
+/** A class that handles the TLS options for DCMTK applications.
+ *  DcmTLSOptionsBase allows a derived class to store the relevant options
+ *  and to create a DcmTLSTransportLayer object based on the collected information.
  */
-class DCMTK_DCMTLS_EXPORT DcmTLSOptions
+class DCMTK_DCMTLS_EXPORT DcmTLSOptionsBase
 {
 public:
 
     /** Constructor.
      *  @param networkRole the network role to create a transport layer for
      */
-    DcmTLSOptions(T_ASC_NetworkRole networkRole);
+    DcmTLSOptionsBase(T_ASC_NetworkRole networkRole);
 
     /// Destructor
-    virtual ~DcmTLSOptions();
-
-    /** Add TLS specific command line options to the OFCommandLine object
-     *  passed to the constructor.
-     *  @param cmd a reference to an OFCommandLine object used to parse
-     *    the command line argument give to the calling application.
-     */
-    void addTLSCommandlineOptions(OFCommandLine& cmd);
-
-    /** Parse and evaluate the given command line arguments.
-     *  @param app a reference to an OFConsoleApplication object used in the
-     *    calling application.
-     *  @param cmd a reference to an OFCommandLine object used to parse
-     *    the command line argument give to the calling application.
-     */
-    void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd);
-
-    /** Create a DcmTLSTransportLayer object based on the collected command
-     *  line arguments.
-     *  @param net pointer to network object in which the transport layer
-     *    should be registered. May be NULL, in which case the caller
-     *    must activate the transport layer manually using ASC_setTransportLayer().
-     *  @param params pointer to the association negotiation parameters object.
-     *    For an association acceptor, this parameter is passed as NULL.
-     *    If NULL is passed and the caller in an association requestor,
-     *    then it is the responsibility of the caller to call ASC_setTransportLayerType()
-     *    and set the right transport layer type for the association parameters.
-     *  @param app a reference to an OFConsoleApplication object used in the
-     *    calling application.
-     *  @param cmd a reference to an OFCommandLine object used to parse
-     *    the command line argument give to the calling application.
-     *  @return EC_Normal if successful, an error code otherwise
-     */
-    OFCondition createTransportLayer(
-      T_ASC_Network *net,
-      T_ASC_Parameters *params,
-      OFConsoleApplication& app,
-      OFCommandLine& cmd);
+    virtual ~DcmTLSOptionsBase();
 
     /** Update the random seed file if this was requested by the given command
      *  line arguments.
@@ -96,26 +56,26 @@ public:
      *    error condition indicating what went wrong in case the random seed
      *    file could not be updated.
      */
-    OFCondition writeRandomSeed();
+    virtual OFCondition writeRandomSeed();
 
     /** Returns true if a secure connection was requested, false otherwise.
      *  Caller must ensure that parseArguments() has been run before this method.
      *  @return true if secure connection requested, false otherwise
      */
-    OFBool secureConnectionRequested() const;
+    virtual OFBool secureConnectionRequested() const;
 
     /** Returns a pointer to the transport layer object, or NULL if the object
      *  has not yet been created by a call to createTransportLayer().
      *  @return pointer to transport layer object, may be NULL.
      */
-    DcmTransportLayer *getTransportLayer();
+    virtual DcmTransportLayer *getTransportLayer();
 
     /** loads a certificate or certificate chain from a file and checks whether
      *  it can be verified against the current settings of the trust store.
      *  @param fileName path to the certificate file
      *  @return EC_Normal if verification succeeded, an error code otherwise
      */
-    OFCondition verifyClientCertificate(const char *fileName);
+    virtual OFCondition verifyClientCertificate(const char *fileName);
 
     /** loads a certificate file and checks whether it is a
      *  valid (e.g. non-expired), self-signed root certificate that
@@ -123,7 +83,7 @@ public:
      *  @param fileName path to the certificate file
      *  @return EC_Normal if certificate is a root certificate, an error code otherwise
      */
-    OFCondition isRootCertificate(const char *fileName);
+    virtual OFCondition isRootCertificate(const char *fileName);
 
     /** checks if the command line option --list-ciphers was given.
      *  In this case the list of supported TLS ciphersuites should be
@@ -145,7 +105,7 @@ public:
      */
     static void printLibraryVersion();
 
-private:
+protected:
 #ifdef WITH_OPENSSL
     /// flag indicating the file format of certificates and private keys: PEM or ASN.1
     /// @remark this member is only available if DCMTK is compiled with
@@ -207,11 +167,87 @@ private:
     /// indicates whether we act as client, server or both
     T_ASC_NetworkRole opt_networkRole;
 
+    /// SNI server name to be requested in outgoing connections
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
+    const char* opt_clientSNI;
+
+    /// SNI server name to be expected in incoming connections
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
+    const char* opt_serverSNI;
+
+    /// CRL verification mode
+    /// @remark this member is only available if DCMTK is compiled with
+    /// OpenSSL support enabled.
+    DcmTLSCRLVerification opt_crlMode;
+
     /// pointer to the secure transport layer managed by this object
     /// @remark this member is only available if DCMTK is compiled with
     /// OpenSSL support enabled.
     DcmTLSTransportLayer *tLayer;
 #endif // WITH_OPENSSL
+};
+
+
+/** A class that handles the command line arguments used by applications
+ *  that support TLS.
+ *  DcmTLSOptions handles storing the relevant options, printing the associated
+ *  help text an information (e.g. OpenSSL library version), parsing and
+ *  evaluating the given command line arguments and creating a
+ *  DcmTLSTransportLayer object based on the collected information.
+ */
+class DCMTK_DCMTLS_EXPORT DcmTLSOptions: public DcmTLSOptionsBase
+{
+public:
+
+    /** Constructor.
+     *  @param networkRole the network role to create a transport layer for
+     */
+    DcmTLSOptions(T_ASC_NetworkRole networkRole);
+
+    /// Destructor
+    virtual ~DcmTLSOptions();
+
+    /** Add TLS specific command line options to the OFCommandLine object
+     *  passed to the constructor.
+     *  @param cmd a reference to an OFCommandLine object used to parse
+     *    the command line argument give to the calling application.
+     */
+    virtual void addTLSCommandlineOptions(OFCommandLine& cmd);
+
+    /** Parse and evaluate the given command line arguments.
+     *  @param app a reference to an OFConsoleApplication object used in the
+     *    calling application.
+     *  @param cmd a reference to an OFCommandLine object used to parse
+     *    the command line argument give to the calling application.
+     */
+    virtual void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd);
+
+    /** Create a DcmTLSTransportLayer object based on the collected command
+     *  line arguments.
+     *  @param net pointer to network object in which the transport layer
+     *    should be registered. May be NULL, in which case the caller
+     *    must activate the transport layer manually using ASC_setTransportLayer().
+     *  @param params pointer to the association negotiation parameters object.
+     *    For an association acceptor, this parameter is passed as NULL.
+     *    If NULL is passed and the caller in an association requestor,
+     *    then it is the responsibility of the caller to call ASC_setTransportLayerType()
+     *    and set the right transport layer type for the association parameters.
+     *  @param app a reference to an OFConsoleApplication object used in the
+     *    calling application.
+     *  @param cmd a reference to an OFCommandLine object used to parse
+     *    the command line argument give to the calling application.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createTransportLayer(
+      T_ASC_Network *net,
+      T_ASC_Parameters *params,
+      OFConsoleApplication& app,
+      OFCommandLine& cmd);
+
+private:
+
 };
 
 #endif // TLSOPT_H

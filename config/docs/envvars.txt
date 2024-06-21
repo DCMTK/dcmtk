@@ -38,16 +38,6 @@ DCMICONVPATH
     to specify a different data directory containing the "esdb" and "csmapper"
     subdirectories.
 
-ICONV_MAX_REUSE
-  Affected: oficonv
-  Explanation: The Citrus iconv implementation, on which the oficonv library is
-    based, keeps a cache of currently unused encoder/decoder modules.  By
-    default, the cache size is 5, but this environment variable can be used to
-    specify another size.  Since in the oficonv implementation the
-    encoder/decoder modules are not loaded dynamically from individual shared
-    libraries, this has little meaning for oficonv and only minimally affects
-    memory usage.
-
 TCP_BUFFER_LENGTH
   Affected: dcmnet
   Explanation: By default, DCMTK does not modify the TCP send and receive buffer

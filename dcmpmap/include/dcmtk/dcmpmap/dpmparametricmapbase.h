@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,17 +23,8 @@
 #define DPMPARAMETRICMAPBASE_H
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmfg/fginterface.h"
-#include "dcmtk/dcmfg/fgderimg.h"
-#include "dcmtk/dcmfg/fgfracon.h"
-#include "dcmtk/dcmfg/fgframeanatomy.h"
-#include "dcmtk/dcmfg/fgframevoilut.h"
-#include "dcmtk/dcmfg/fgpixeltransform.h"
-#include "dcmtk/dcmfg/fgparametricmapframetype.h"
-#include "dcmtk/dcmfg/fgpixmsr.h"
-#include "dcmtk/dcmfg/fgplanor.h"
-#include "dcmtk/dcmfg/fgplanpo.h"
-#include "dcmtk/dcmfg/fgrealworldvaluemapping.h"
 #include "dcmtk/dcmiod/iodimage.h"
 #include "dcmtk/dcmiod/modacquisitioncontext.h"
 #include "dcmtk/dcmiod/modcommoninstanceref.h"
@@ -52,6 +43,9 @@
 #include "dcmtk/dcmpmap/dpmmodparametricmapimage.h"
 #include "dcmtk/dcmpmap/dpmmodparametricmapseries.h"
 #include "dcmtk/dcmpmap/dpmdef.h"
+
+class DcmFileFormat;
+class DcmDataset;
 
 /** Class for managing the Parametric Map IOD attributes. Template parameter defines the type of pixel data
  *  to use: Unsigned or signed 16 bit integer, or 32 bit floating point, or 64 bit floating point data.

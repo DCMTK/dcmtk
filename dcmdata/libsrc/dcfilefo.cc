@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -298,11 +298,10 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
         if (obj != NULL)
             tag = obj->getTag();
 
-        DcmTagKey xtag = tag.getXTag();
         DcmElement *elem = OFstatic_cast(DcmElement *, obj);
 
-        /* go ahead and scrutinize one particular data element (depending on xtag) */
-        if (xtag == DCM_FileMetaInformationGroupLength)     // (0002,0000)
+        /* go ahead and scrutinize one particular data element (depending on tag) */
+        if (tag == DCM_FileMetaInformationGroupLength)     // (0002,0000)
         {
             if (elem == NULL)
             {
@@ -314,7 +313,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 OFstatic_cast(DcmUnsignedLong *, elem)->putUint32Array(&temp, 1);
             // the calculation of actual group length value is contained in validateMetaInfo()
         }
-        else if (xtag == DCM_FileMetaInformationVersion)    // (0002,0001)
+        else if (tag == DCM_FileMetaInformationVersion)    // (0002,0001)
         {
             if (elem == NULL)
             {
@@ -352,7 +351,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 DCMDATA_ERROR("DcmFileFormat: Cannot determine Version of MetaHeader");
             }
         }
-        else if (xtag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
+        else if (tag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
         {
             if (elem == NULL)
             {
@@ -363,7 +362,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             {
                 if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
                 {
-                    if (dataset->search(DCM_SOPClassUID, stack).good())
+                    if (dataset->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         char *uid = NULL;
                         l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -379,7 +378,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 else if (DCM_dcmdataLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                 {
                     // check whether UID in meta-header is identical to the one in the dataset
-                    if (dataset->search(DCM_SOPClassUID, stack).good())
+                    if (dataset->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         OFString uidDataset, uidMetaHeader;
                         OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getOFStringArray(uidDataset);
@@ -394,7 +393,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 }
             }
         }
-        else if (xtag == DCM_MediaStorageSOPInstanceUID)    // (0002,0003)
+        else if (tag == DCM_MediaStorageSOPInstanceUID)    // (0002,0003)
         {
             if (elem == NULL)
             {
@@ -405,7 +404,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             {
                 if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
                 {
-                    if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                    if (dataset->search(DCM_SOPInstanceUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         char* uid = NULL;
                         l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
@@ -423,7 +422,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 else if (DCM_dcmdataLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
                 {
                     // check whether UID in meta-header is identical to the one in the dataset
-                    if (dataset->search(DCM_SOPInstanceUID, stack).good())
+                    if (dataset->search(DCM_SOPInstanceUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
                         OFString uidDataset, uidMetaHeader;
                         OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getOFStringArray(uidDataset);
@@ -438,7 +437,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 }
             }
         }
-        else if (xtag == DCM_TransferSyntaxUID)             // (0002,0010)
+        else if (tag == DCM_TransferSyntaxUID)             // (0002,0010)
         {
             if (elem == NULL)
             {
@@ -460,7 +459,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                     << dcXfer.getXferName() << "] on writing following Dataset");
             }
         }
-        else if (xtag == DCM_ImplementationClassUID)        // (0002,0012)
+        else if (tag == DCM_ImplementationClassUID)        // (0002,0012)
         {
             if (elem == NULL)
             {
@@ -473,7 +472,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
             }
         }
-        else if (xtag == DCM_ImplementationVersionName)     // (0002,0013)
+        else if (tag == DCM_ImplementationVersionName)     // (0002,0013)
         {
             if (elem == NULL)
             {
@@ -486,9 +485,9 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
                 OFstatic_cast(DcmShortString *, elem)->putString(uid);
             }
         }
-        else if ((xtag == DCM_SourceApplicationEntityTitle) ||  // (0002,0016)
-                 (xtag == DCM_SendingApplicationEntityTitle) || // (0002,0017)
-                 (xtag == DCM_ReceivingApplicationEntityTitle)) // (0002,0018)
+        else if ((tag == DCM_SourceApplicationEntityTitle) ||  // (0002,0016)
+                 (tag == DCM_SendingApplicationEntityTitle) || // (0002,0017)
+                 (tag == DCM_ReceivingApplicationEntityTitle)) // (0002,0018)
         {
             if (elem == NULL)
             {
@@ -497,9 +496,9 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
         }
-        else if ((xtag == DCM_SourcePresentationAddress) ||  // (0002,0026)
-                 (xtag == DCM_SendingPresentationAddress) || // (0002,0027)
-                 (xtag == DCM_ReceivingPresentationAddress)) // (0002,0028)
+        else if ((tag == DCM_SourcePresentationAddress) ||  // (0002,0026)
+                 (tag == DCM_SendingPresentationAddress) || // (0002,0027)
+                 (tag == DCM_ReceivingPresentationAddress)) // (0002,0028)
         {
             if (elem == NULL)
             {
@@ -508,7 +507,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             DCMDATA_WARN("DcmFileFormat: Don't know how to handle " << tag.getTagName());
         }
-        else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
+        else if (tag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
         {
             if (elem == NULL)
             {
@@ -517,7 +516,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             DCMDATA_WARN("DcmFileFormat: Don't know how to handle PrivateInformationCreatorUID");
         }
-        else if (xtag == DCM_PrivateInformation)            // (0002,0102)
+        else if (tag == DCM_PrivateInformation)            // (0002,0102)
         {
             if (elem == NULL)
             {
@@ -634,10 +633,10 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
     /* check whether meta header is present (and non-empty, i.e. contains elements) */
     if (metainfo && !metainfo->isEmpty())
     {
-        if (metainfo->search(DCM_TransferSyntaxUID, stack).good())
+        if (metainfo->search(DCM_TransferSyntaxUID, stack).good() && (stack.top()->ident() == EVR_UI))
         {
             DcmUniqueIdentifier *xferUI = OFstatic_cast(DcmUniqueIdentifier *, stack.top());
-            if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
+            if (xferUI->getTag() == DCM_TransferSyntaxUID)
             {
                 char *xferid = NULL;
                 xferUI->getString(xferid);

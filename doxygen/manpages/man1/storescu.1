@@ -1,4 +1,4 @@
-.TH "storescu" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -7,7 +7,7 @@ storescu \- DICOM storage (C-STORE) SCU
 .PP
 .PP
 .nf
-storescu [options] peer port dcmfile-in...
+storescu [options] peer port dcmfile-in\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -92,7 +92,7 @@ input files:
           do not rename processed files (default)
 
   +rn   --rename
-          append .done/.bad to processed files
+          append \&.done/\&.bad to processed files
 .fi
 .PP
 .SS "network options"
@@ -161,25 +161,25 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose MPEG2 Main Profile @ High Level TS only
 
   -xn   --propose-mpeg4
-          propose MPEG4 AVC/H.264 High Profile / Level 4.1 TS only
+          propose MPEG4 AVC/H\&.264 High Profile / Level 4\&.1 TS only
 
   -xl   --propose-mpeg4-bd
-          propose MPEG4 AVC/H.264 BD-compatible HP / Level 4.1 TS only
+          propose MPEG4 AVC/H\&.264 BD-compatible HP / Level 4\&.1 TS only
 
   -x2   --propose-mpeg4-2-2d
-          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 2D Videos only
+          propose MPEG4 AVC/H\&.264 HP / Level 4\&.2 TS for 2D Videos only
 
   -x3   --propose-mpeg4-2-3d
-          propose MPEG4 AVC/H.264 HP / Level 4.2 TS for 3D Videos only
+          propose MPEG4 AVC/H\&.264 HP / Level 4\&.2 TS for 3D Videos only
 
   -xo   --propose-mpeg4-2-st
-          propose MPEG4 AVC/H.264 Stereo HP / Level 4.2 TS only
+          propose MPEG4 AVC/H\&.264 Stereo HP / Level 4\&.2 TS only
 
   -x4   --propose-hevc
-          propose HEVC H.265 Main Profile / Level 5.1 TS only
+          propose HEVC H\&.265 Main Profile / Level 5\&.1 TS only
 
   -x5   --propose-hevc10
-          propose HEVC H.265 Main 10 Profile / Level 5.1 TS only
+          propose HEVC H\&.265 Main 10 Profile / Level 5\&.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -195,7 +195,7 @@ proposed transmission transfer syntaxes (not with --config-file):
 
           # This will also work with storage SOP classes that are
           # supported by DCMTK but are not in the list of SOP classes
-          # proposed by default.
+          # proposed by default\&.
 
   +C    --combine
           combine proposed transfer syntaxes
@@ -251,10 +251,10 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes (default: 16384)
 
-        --max-send-pdu  [n]umber of bytes: integer (4096..131072)
+        --max-send-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           restrict max send pdu to n bytes
 
         --repeat  [n]umber: integer
@@ -339,17 +339,28 @@ certification authority:
 
 security profile:
 
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
   +py   --profile-bcp195-nd
-          Non-downgrading BCP 195 TLS Profile (default)
+          Non-downgrading BCP 195 TLS Profile (retired)
 
   +px   --profile-bcp195
-          BCP 195 TLS Profile
+          BCP 195 TLS Profile (retired)
 
   +pz   --profile-bcp195-ex
-          Extended BCP 195 TLS Profile
+          Extended BCP 195 TLS Profile (retired)
 
   +pb   --profile-basic
           Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
 
   +pa   --profile-aes
           AES TLS Secure Transport Connection Profile (retired)
@@ -365,6 +376,14 @@ ciphersuite:
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --request-sni  [s]erver name: string
+          request server name s
 
 pseudo random generator:
 
@@ -395,70 +414,70 @@ The \fBstorescu\fP application supports the following Storage SOP Classes as an 
 .PP
 .PP
 .nf
-ComputedRadiographyImageStorage                      1.2.840.10008.5.1.4.1.1.1
-DigitalXRayImageStorageForPresentation               1.2.840.10008.5.1.4.1.1.1.1
-DigitalXRayImageStorageForProcessing                 1.2.840.10008.5.1.4.1.1.1.1.1
-DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
-DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
-DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
-DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
-CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
-EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
-UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
-MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
-EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
-MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
-UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
-SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
-MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
-MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
-MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
-MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
-TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
-GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
-AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
-HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
-CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
-BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
-GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
-ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.2
-PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
-BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
-XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
-EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
-XRayRadiofluoroscopicImageStorage                    1.2.840.10008.5.1.4.1.1.12.2
-EnhancedXRFImageStorage                              1.2.840.10008.5.1.4.1.1.12.2.1
-NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
-RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
-SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
-SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
-RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
-VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
-VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
-VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
-VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
-OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.1.5.1
-OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
-StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
-OphthalmicTomographyImageStorage                     1.2.840.10008.5.1.4.1.1.77.1.5.4
-BasicTextSRStorage                                   1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSRStorage                                    1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSRStorage                               1.2.840.10008.5.1.4.1.1.88.33
-ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSRStorage                              1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocumentStorage                    1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.65
-XRayRadiationDoseSRStorage                           1.2.840.10008.5.1.4.1.1.88.67
-ColonCADSRStorage                                    1.2.840.10008.5.1.4.1.1.88.69
-EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
-PositronEmissionTomographyImageStorage               1.2.840.10008.5.1.4.1.1.128
-RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
-RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
-RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
-RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481.4
-RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
-RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
-RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
+ComputedRadiographyImageStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1
+DigitalXRayImageStorageForPresentation               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1\&.1
+DigitalXRayImageStorageForProcessing                 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1\&.1\&.1
+DigitalMammographyXRayImageStorageForPresentation    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1\&.2
+DigitalMammographyXRayImageStorageForProcessing      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1\&.2\&.1
+DigitalIntraOralXRayImageStorageForPresentation      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1\&.3
+DigitalIntraOralXRayImageStorageForProcessing        1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.1\&.3\&.1
+CTImageStorage                                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.2
+EnhancedCTImageStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.2\&.1
+UltrasoundMultiframeImageStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.3\&.1
+MRImageStorage                                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.4
+EnhancedMRImageStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.4\&.1
+MRSpectroscopyStorage                                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.4\&.2
+UltrasoundImageStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.6\&.1
+SecondaryCaptureImageStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.7\&.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.7\&.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.7\&.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.7\&.4
+TwelveLeadECGWaveformStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.9\&.1\&.1
+GeneralECGWaveformStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.9\&.1\&.2
+AmbulatoryECGWaveformStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.9\&.1\&.3
+HemodynamicWaveformStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.9\&.2\&.1
+CardiacElectrophysiologyWaveformStorage              1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.9\&.3\&.1
+BasicVoiceAudioWaveformStorage                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.9\&.4\&.1
+GrayscaleSoftcopyPresentationStateStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.11\&.1
+ColorSoftcopyPresentationStateStorage                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.11\&.2
+PseudoColorSoftcopyPresentationStateStorage          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.11\&.3
+BlendingSoftcopyPresentationStateStorage             1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.11\&.4
+XRayAngiographicImageStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.12\&.1
+EnhancedXAImageStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.12\&.1\&.1
+XRayRadiofluoroscopicImageStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.12\&.2
+EnhancedXRFImageStorage                              1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.12\&.2\&.1
+NuclearMedicineImageStorage                          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.20
+RawDataStorage                                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66
+SpatialRegistrationStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.1
+SpatialFiducialsStorage                              1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.2
+RealWorldValueMappingStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.67
+VLEndoscopicImageStorage                             1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.1
+VLMicroscopicImageStorage                            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.2
+VLSlideCoordinatesMicroscopicImageStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.3
+VLPhotographicImageStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.4
+OphthalmicPhotography8BitImageStorage                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.5\&.1
+OphthalmicPhotography16BitImageStorage               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.5\&.2
+StereometricRelationshipStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.5\&.3
+OphthalmicTomographyImageStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.5\&.4
+BasicTextSRStorage                                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.11
+EnhancedSRStorage                                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.22
+ComprehensiveSRStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.33
+ProcedureLogStorage                                  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.40
+MammographyCADSRStorage                              1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.50
+KeyObjectSelectionDocumentStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.59
+ChestCADSRStorage                                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.65
+XRayRadiationDoseSRStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.67
+ColonCADSRStorage                                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.69
+EncapsulatedPDFStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.104\&.1
+PositronEmissionTomographyImageStorage               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.128
+RTImageStorage                                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.1
+RTDoseStorage                                        1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.2
+RTStructureSetStorage                                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.3
+RTBeamsTreatmentRecordStorage                        1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.4
+RTPlanStorage                                        1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.5
+RTBrachyTreatmentRecordStorage                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.6
+RTTreatmentSummaryRecordStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.481\&.7
 .fi
 .PP
 .PP
@@ -466,27 +485,27 @@ The default behavior of \fBstorescu\fP is to propose two presentation contexts f
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
-BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
-JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
-JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
-JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
-JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
-JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
-JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
-JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
-MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
-MPEG2MainProfileAtHighLevelTransferSyntax            1.2.840.10008.1.2.4.101
-MPEG4HighProfileLevel4_1TransferSyntax               1.2.840.10008.1.2.4.102
-MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1.2.840.10008.1.2.4.103
-MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1.2.840.10008.1.2.4.104
-MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1.2.840.10008.1.2.4.105
-MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
-HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
-HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
-RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+LittleEndianImplicitTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99
+BigEndianExplicitTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.2
+JPEGProcess1TransferSyntax                           1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
+JPEGProcess2_4TransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
+JPEGProcess14SV1TransferSyntax                       1\&.2\&.840\&.10008\&.1\&.2\&.4\&.70
+JPEGLSLosslessTransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.80
+JPEGLSLossyTransferSyntax                            1\&.2\&.840\&.10008\&.1\&.2\&.4\&.81
+JPEG2000LosslessOnlyTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.90
+JPEG2000TransferSyntax                               1\&.2\&.840\&.10008\&.1\&.2\&.4\&.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1\&.2\&.840\&.10008\&.1\&.2\&.4\&.100
+MPEG2MainProfileAtHighLevelTransferSyntax            1\&.2\&.840\&.10008\&.1\&.2\&.4\&.101
+MPEG4HighProfileLevel4_1TransferSyntax               1\&.2\&.840\&.10008\&.1\&.2\&.4\&.102
+MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.103
+MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.104
+MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.105
+MPEG4StereoHighProfileLevel4_2TransferSyntax         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.106
+HEVCMainProfileLevel5_1TransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.4\&.107
+HEVCMain10ProfileLevel5_1TransferSyntax              1\&.2\&.840\&.10008\&.1\&.2\&.4\&.108
+RLELosslessTransferSyntax                            1\&.2\&.840\&.10008\&.1\&.2\&.5
 .fi
 .PP
 .PP
@@ -496,6 +515,10 @@ The \fBstorescu\fP application does not support extended negotiation by default\
 .SS "Association Negotiation Profiles and Configuration Files"
 \fBstorescu\fP supports a flexible mechanism for specifying the DICOM network association negotiation behavior, based on so-called 'association
 negotiation profiles' which may be read from a configuration file\&. The format and semantics of this configuration file are documented in \fIasconfig\&.txt\fP\&.
+.SS "User Identity Negotiation"
+When specifying user name and/or password using options \fI--user\fP and -e --password, the value has to be provided in UTF-8 encoding\&.
+.PP
+If the option \fI--pos-response\fP is used, the SCP is asked to explicitly respond, i\&.e\&. acknowledge, the user credentials provided in the \fBstorescu\fP request\&. Otherwise, if no such response is sent, \fBstorescu\fP will not continue but instead abort the connection\&. Since User Identity Negotiation is an optional feature that has been introduced later into the standard, many SCPs will not check the user identity provided and therefore will not provide a user identity response at all\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -523,4 +546,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

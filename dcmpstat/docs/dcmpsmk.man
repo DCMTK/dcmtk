@@ -26,9 +26,9 @@ when rendered under control of the presentation state.
 \section dcmpsmk_parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM image file(s) to be read
+dcmfile-in   DICOM image file(s) to be read ("-" for stdin)
 
-dcmfile-out  DICOM presentation state file to be created
+dcmfile-out  DICOM presentation state file to be created ("-" for stdout)
 \endverbatim
 
 \section dcmpsmk_options OPTIONS
@@ -245,6 +245,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpsmk_copyright COPYRIGHT
 
-Copyright (C) 1998-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

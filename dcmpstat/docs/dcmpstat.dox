@@ -3,9 +3,10 @@
 \page mod_dcmpstat dcmpstat: a presentation state library and utility apps
 
 This module contains classes that implement a high-level API for the DICOM
-Softcopy Grayscale Presentation State Storage SOP Class. It also contains various
-support classes that are used by DICOMscope, a free DICOM viewer that has been
-developed as a demonstrator for presentation states. See http://dicom.offis.de/dscope
+Softcopy Grayscale Presentation State Storage SOP Class.  It also contains
+various support classes that are used by DICOMscope, a free DICOM viewer that
+has been developed as a demonstrator for presentation states.
+See https://dicom.offis.de/en/dicomscope/
 
 The main interface classes are:
 \li \b DVPresentationState

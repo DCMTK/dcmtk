@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2023, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,10 +35,6 @@
 #endif
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"     /* for OFCharacterEncoding */
-#endif
-
-#ifndef HAVE_WINDOWS_H
-#define ANSI_ESCAPE_CODES_AVAILABLE
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsrdump"
@@ -117,7 +113,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped\n(\"-\" for stdin)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                   "-h",   "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -171,11 +167,9 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("enhanced encoding mode:");
         cmd.addOption("--indicate-enhanced",    "+Pe",  "indicate that enhanced mode is used for codes");
         cmd.addOption("--no-enhanced-mode",     "-Pe",  "do not indicate enhanced mode (default)");
-#ifdef ANSI_ESCAPE_CODES_AVAILABLE
       cmd.addSubGroup("color:");
         cmd.addOption("--print-color",          "+C",   "use ANSI escape codes for colored output");
         cmd.addOption("--no-color",             "-C",   "do not use any ANSI escape codes (default)");
-#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -309,14 +303,12 @@ int main(int argc, char *argv[])
             opt_printFlags &= ~DSRTypes::PF_indicateEnhancedEncodingMode;
         cmd.endOptionBlock();
 
-#ifdef ANSI_ESCAPE_CODES_AVAILABLE
         cmd.beginOptionBlock();
         if (cmd.findOption("--print-color"))
             opt_printFlags |= DSRTypes::PF_useANSIEscapeCodes;
         if (cmd.findOption("--no-color"))
             opt_printFlags &= ~DSRTypes::PF_useANSIEscapeCodes;
         cmd.endOptionBlock();
-#endif
     }
 
     /* print resource identifier */

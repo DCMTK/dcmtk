@@ -1,4 +1,4 @@
-.TH "dcmicmp" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmicmp" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmicmp \- Compare DICOM images and compute difference metrics
@@ -36,7 +36,7 @@ All metrics are computed as defined in R\&.C\&. Gonzalez and R\&.E\&. Woods, 'Di
 .nf
 dcmfile-in-1  Reference DICOM image file for comparison
 
-dcmfile-in-2  Test DICOM image file for comparison
+dcmfile-in-2  Test DICOM image file for comparison ('-' for stdin)
 .fi
 .PP
 .SH "OPTIONS"
@@ -169,19 +169,19 @@ presentation LUT transformation:
           check if max absolute error <= limit
 
   # Return exit code EXITCODE_LIMIT_EXCEEDED_MAX_ERROR if the computed
-  # maximum absolute error is larger than the given limit.
+  # maximum absolute error is larger than the given limit\&.
 
   +cm   --check-mae  [l]imit: float
           check if mean absolute error <= limit
 
   # Return exit code EXITCODE_LIMIT_EXCEEDED_MAE if the computed
-  # mean absolute error is larger than the given limit.
+  # mean absolute error is larger than the given limit\&.
 
   +cr   --check-rmse  [l]imit: float
           check if root mean square error <= limit
 
   # Return exit code EXITCODE_LIMIT_EXCEEDED_RMSE if the computed
-  # root mean square error is larger than the given limit.
+  # root mean square error is larger than the given limit\&.
 
   +cp   --check-psnr  [l]imit: float
           check if PSNR >= limit
@@ -205,20 +205,20 @@ presentation LUT transformation:
           write secondary capture difference image
 
   # Create a Multiframe Secondary Capture image that contains a
-  # difference image between reference and test image. For monochrome
+  # difference image between reference and test image\&. For monochrome
   # images, one difference frame is created for each frame in the reference
-  # image. For color images, three monochrome frames are created for each
+  # image\&. For color images, three monochrome frames are created for each
   # frame in the reference image, corresponding to the differences in the
-  # red, green and blue color plane. The difference image will have
-  # BitsStored 8 or 16, depending on the properties of the reference image.
+  # red, green and blue color plane\&. The difference image will have
+  # BitsStored 8 or 16, depending on the properties of the reference image\&.
 
   +a    --amplify  [f]actor: float
           multiply diff image pixel values by f
 
   # This option can be used to amplify the grayscale values in the
-  # difference image by multiplying each value with the given factor.
+  # difference image by multiplying each value with the given factor\&.
   # Alternatively, a DICOM VOI LUT window may be used when visualizing
-  # the difference image.
+  # the difference image\&.
 .fi
 .PP
 .SH "NOTES"
@@ -233,10 +233,10 @@ The user should also note that the metrics computed by this tool cannot predict 
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .PP
@@ -300,4 +300,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2018-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2018-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

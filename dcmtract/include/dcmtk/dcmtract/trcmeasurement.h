@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, Open Connections GmbH
+ *  Copyright (C) 2016-2024, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -27,7 +27,7 @@
 #include "dcmtk/dcmiod/modbase.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmiod/iodmacro.h"   // for CodeSequenceMacro
-#include "dcmtk/dcmtract/trctypes.h"
+#include "dcmtk/dcmtract/trcdef.h"   // for DCMTK_DCMTRACT_EXPORT
 
 
 /** Class representing a Measurement within the Tractography Results IOD. A

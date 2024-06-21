@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,7 +61,7 @@ END_EXTERN_C
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
 
-static OFLogger msgservLogger = OFLog::getLogger("dcmtk.tests." OFFIS_CONSOLE_APPLICATION);
+static OFLogger msgservLogger = OFLog::getLogger("dcmtk.test." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -197,12 +197,8 @@ int main(int argc, char *argv[])
       t.tv_sec = 10;  // 10 seconds timeout
       t.tv_usec = 0;
 
-#ifdef HAVE_INTP_SELECT
-      nfound = select(OFstatic_cast(int, s + 1), (int *)(&fdset), NULL, NULL, &t);
-#else
       // the typecast is safe because Windows ignores the first select() parameter anyway
       nfound = select(OFstatic_cast(int, s + 1), &fdset, NULL, NULL, &t);
-#endif
 
       if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
       {
@@ -218,13 +214,8 @@ int main(int argc, char *argv[])
         int sock=0;
 #endif
         struct sockaddr from;
-#ifdef HAVE_DECLARATION_SOCKLEN_T
         socklen_t len = sizeof(from);
-#elif !defined(HAVE_PROTOTYPE_ACCEPT) || defined(HAVE_INTP_ACCEPT)
-        int len = sizeof(from);
-#else
-        size_t len = sizeof(from);
-#endif
+
         do
         {
           sock = accept(s, &from, &len);

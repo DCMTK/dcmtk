@@ -1,13 +1,13 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
- *  Source file for class DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule
+ *  Source file for class DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule
  *
- *  Generated automatically from DICOM PS 3.3-2017e
- *  File created on 2017-12-05 09:30:54
+ *  Generated automatically from DICOM PS 3.3-2023b
+ *  File created on 2023-05-19 16:00:57
  *
  */
 
@@ -19,59 +19,74 @@
 
 // --- item class ---
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::Item(const OFBool emptyDefaultItem)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::Item(const OFBool emptyDefaultItem)
   : EmptyDefaultItem(emptyDefaultItem),
-    ReferencedBrachyApplicationSetupNumber(DCM_ReferencedBrachyApplicationSetupNumber)
+    BrachyApplicationSetupDose(DCM_BrachyApplicationSetupDose),
+    BrachyApplicationSetupDoseSpecificationPoint(DCM_BrachyApplicationSetupDoseSpecificationPoint),
+    ReferencedBrachyApplicationSetupNumber(DCM_ReferencedBrachyApplicationSetupNumber),
+    ReferencedDoseReferenceUID(DCM_ReferencedDoseReferenceUID)
 {
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::Item(const Item &copy)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::Item(const Item &copy)
   : EmptyDefaultItem(copy.EmptyDefaultItem),
-    ReferencedBrachyApplicationSetupNumber(copy.ReferencedBrachyApplicationSetupNumber)
+    BrachyApplicationSetupDose(copy.BrachyApplicationSetupDose),
+    BrachyApplicationSetupDoseSpecificationPoint(copy.BrachyApplicationSetupDoseSpecificationPoint),
+    ReferencedBrachyApplicationSetupNumber(copy.ReferencedBrachyApplicationSetupNumber),
+    ReferencedDoseReferenceUID(copy.ReferencedDoseReferenceUID)
 {
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::~Item()
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::~Item()
 {
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::operator=(const Item &copy)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::operator=(const Item &copy)
 {
     if (this != &copy)
     {
         EmptyDefaultItem = copy.EmptyDefaultItem;
+        BrachyApplicationSetupDose = copy.BrachyApplicationSetupDose;
+        BrachyApplicationSetupDoseSpecificationPoint = copy.BrachyApplicationSetupDoseSpecificationPoint;
         ReferencedBrachyApplicationSetupNumber = copy.ReferencedBrachyApplicationSetupNumber;
+        ReferencedDoseReferenceUID = copy.ReferencedDoseReferenceUID;
     }
     return *this;
 }
 
 
-void DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::clear()
+void DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::clear()
 {
     if (!EmptyDefaultItem)
     {
         /* clear all DICOM attributes */
         ReferencedBrachyApplicationSetupNumber.clear();
+        BrachyApplicationSetupDoseSpecificationPoint.clear();
+        BrachyApplicationSetupDose.clear();
+        ReferencedDoseReferenceUID.clear();
     }
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::isEmpty()
+OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::isEmpty()
 {
-    return ReferencedBrachyApplicationSetupNumber.isEmpty();
+    return ReferencedBrachyApplicationSetupNumber.isEmpty() &&
+           BrachyApplicationSetupDoseSpecificationPoint.isEmpty() &&
+           BrachyApplicationSetupDose.isEmpty() &&
+           ReferencedDoseReferenceUID.isEmpty();
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::isValid() const
+OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::isValid() const
 {
     return !EmptyDefaultItem;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::read(DcmItem &item)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::read(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -79,25 +94,76 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::rea
         /* re-initialize object */
         clear();
         getAndCheckElementFromDataset(item, ReferencedBrachyApplicationSetupNumber, "1", "1", "ReferencedBrachyApplicationSetupSequence");
+        getAndCheckElementFromDataset(item, BrachyApplicationSetupDoseSpecificationPoint, "3", "3", "ReferencedBrachyApplicationSetupSequence");
+        getAndCheckElementFromDataset(item, BrachyApplicationSetupDose, "1", "3", "ReferencedBrachyApplicationSetupSequence");
+        getAndCheckElementFromDataset(item, ReferencedDoseReferenceUID, "1", "3", "ReferencedBrachyApplicationSetupSequence");
         result = EC_Normal;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::write(DcmItem &item)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::write(DcmItem &item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
     {
         result = EC_Normal;
         addElementToDataset(result, item, new DcmIntegerString(ReferencedBrachyApplicationSetupNumber), "1", "1", "ReferencedBrachyApplicationSetupSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BrachyApplicationSetupDoseSpecificationPoint), "3", "3", "ReferencedBrachyApplicationSetupSequence");
+        addElementToDataset(result, item, new DcmDecimalString(BrachyApplicationSetupDose), "1", "3", "ReferencedBrachyApplicationSetupSequence");
+        addElementToDataset(result, item, new DcmUniqueIdentifier(ReferencedDoseReferenceUID), "1", "3", "ReferencedBrachyApplicationSetupSequence");
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::getReferencedBrachyApplicationSetupNumber(OFString &value, const signed long pos) const
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDose(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BrachyApplicationSetupDose, value, pos);
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDose(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, BrachyApplicationSetupDose).getFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDoseSpecificationPoint(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(BrachyApplicationSetupDoseSpecificationPoint, value, pos);
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDoseSpecificationPoint(Float64 &value, const unsigned long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, BrachyApplicationSetupDoseSpecificationPoint).getFloat64(value, pos);
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getBrachyApplicationSetupDoseSpecificationPoint(OFVector<Float64> &value) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return OFconst_cast(DcmDecimalString &, BrachyApplicationSetupDoseSpecificationPoint).getFloat64Vector(value);
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getReferencedBrachyApplicationSetupNumber(OFString &value, const signed long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -106,7 +172,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::get
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos) const
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getReferencedBrachyApplicationSetupNumber(Sint32 &value, const unsigned long pos) const
 {
     if (EmptyDefaultItem)
         return EC_IllegalCall;
@@ -115,7 +181,42 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::get
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::getReferencedDoseReferenceUID(OFString &value, const signed long pos) const
+{
+    if (EmptyDefaultItem)
+        return EC_IllegalCall;
+    else
+        return getStringValueFromElement(ReferencedDoseReferenceUID, value, pos);
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setBrachyApplicationSetupDose(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = BrachyApplicationSetupDose.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setBrachyApplicationSetupDoseSpecificationPoint(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmDecimalString::checkStringValue(value, "3") : EC_Normal;
+        if (result.good())
+            result = BrachyApplicationSetupDoseSpecificationPoint.putOFStringArray(value);
+    }
+    return result;
+}
+
+
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setReferencedBrachyApplicationSetupNumber(const OFString &value, const OFBool check)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultItem)
@@ -128,9 +229,22 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item::set
 }
 
 
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item::setReferencedDoseReferenceUID(const OFString &value, const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    if (!EmptyDefaultItem)
+    {
+        result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
+        if (result.good())
+            result = ReferencedDoseReferenceUID.putOFStringArray(value);
+    }
+    return result;
+}
+
+
 // --- sequence class ---
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule(const OFBool emptyDefaultSequence)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const OFBool emptyDefaultSequence)
   : EmptyDefaultSequence(emptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -140,7 +254,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::DRTReferencedBrachyAp
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule(const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &copy)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy)
   : EmptyDefaultSequence(copy.EmptyDefaultSequence),
     SequenceOfItems(),
     CurrentItem(),
@@ -166,7 +280,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::DRTReferencedBrachyAp
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::operator=(const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &copy)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::operator=(const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule &copy)
 {
     if (this != &copy)
     {
@@ -194,13 +308,13 @@ DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule &DRTReferencedBrachyAp
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::~DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule()
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::~DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule()
 {
     clear();
 }
 
 
-void DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::clear()
+void DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::clear()
 {
     if (!EmptyDefaultSequence)
     {
@@ -219,25 +333,25 @@ void DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::clear()
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::isEmpty()
+OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::isEmpty()
 {
     return SequenceOfItems.empty();
 }
 
 
-OFBool DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::isValid() const
+OFBool DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::isValid() const
 {
     return !EmptyDefaultSequence;
 }
 
 
-size_t DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getNumberOfItems() const
+size_t DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getNumberOfItems() const
 {
     return SequenceOfItems.size();
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoFirstItem()
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoFirstItem()
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -249,19 +363,21 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoFirst
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoNextItem()
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoNextItem()
 {
     OFCondition result = EC_IllegalCall;
-    if (CurrentItem != SequenceOfItems.end())
+    if (++CurrentItem != SequenceOfItems.end())
     {
-        ++CurrentItem;
-        result = EC_Normal;
+        if (*CurrentItem != NULL)
+            result = EC_Normal;
+        else
+            result = EC_CorruptedData;
     }
     return result;
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoItem(const size_t num, OFListIterator(Item *) &iterator)
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -281,7 +397,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoItem(
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoItem(const size_t num, OFListConstIterator(Item *) &iterator) const
 {
     OFCondition result = EC_IllegalCall;
     if (!SequenceOfItems.empty())
@@ -301,13 +417,13 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoItem(
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::gotoItem(const size_t num)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::gotoItem(const size_t num)
 {
     return gotoItem(num, CurrentItem);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getCurrentItem(Item *&item) const
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getCurrentItem(Item *&item) const
 {
     OFCondition result = EC_IllegalCall;
     if (CurrentItem != SequenceOfItems.end())
@@ -319,7 +435,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getCurren
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getCurrentItem()
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getCurrentItem()
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -328,7 +444,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBr
 }
 
 
-const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getCurrentItem() const
+const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getCurrentItem() const
 {
     if (CurrentItem != SequenceOfItems.end())
         return **CurrentItem;
@@ -337,7 +453,7 @@ const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTRefere
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getItem(const size_t num, Item *&item)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getItem(const size_t num, Item *&item)
 {
     OFListIterator(Item *) iterator;
     OFCondition result = gotoItem(num, iterator);
@@ -347,7 +463,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getItem(c
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getItem(const size_t num)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getItem(const size_t num)
 {
     OFListIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -357,7 +473,7 @@ DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBr
 }
 
 
-const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::getItem(const size_t num) const
+const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::getItem(const size_t num) const
 {
     OFListConstIterator(Item *) iterator;
     if (gotoItem(num, iterator).good())
@@ -367,19 +483,19 @@ const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTRefere
 }
 
 
-DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::operator[](const size_t num)
+DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::operator[](const size_t num)
 {
     return getItem(num);
 }
 
 
-const DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::operator[](const size_t num) const
+const DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::Item &DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::operator[](const size_t num) const
 {
     return getItem(num);
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::addItem(Item *&item)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::addItem(Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -396,7 +512,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::addItem(I
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::insertItem(const size_t pos, Item *&item)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::insertItem(const size_t pos, Item *&item)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -419,7 +535,7 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::insertIte
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::removeItem(const size_t pos)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::removeItem(const size_t pos)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -437,10 +553,10 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::removeIte
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::read(DcmItem &dataset,
-                                                                            const OFString &card,
-                                                                            const OFString &type,
-                                                                            const char *moduleName)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::read(DcmItem &dataset,
+                                                                                      const OFString &card,
+                                                                                      const OFString &type,
+                                                                                      const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)
@@ -487,10 +603,10 @@ OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::read(DcmI
 }
 
 
-OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTDoseModule::write(DcmItem &dataset,
-                                                                             const OFString &card,
-                                                                             const OFString &type,
-                                                                             const char *moduleName)
+OFCondition DRTReferencedBrachyApplicationSetupSequenceInRTFractionSchemeModule::write(DcmItem &dataset,
+                                                                                       const OFString &card,
+                                                                                       const OFString &type,
+                                                                                       const char *moduleName)
 {
     OFCondition result = EC_IllegalCall;
     if (!EmptyDefaultSequence)

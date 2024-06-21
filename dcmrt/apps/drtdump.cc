@@ -1,13 +1,13 @@
 /*
  *
- *  Copyright (c) 2010-2021, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
+ *  Copyright (c) 2010-2022, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Test read and write methods of DICOM RT classes
  *
  *  Generated manually
  *  File created on 2010-05-10
- *  Last modified on 2012-10-09 by Riesmeier
+ *  Last modified on 2023-01-27 by Riesmeier
  *
  */
 
@@ -409,11 +409,11 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("drtfile-in", "DICOM RT input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("drtfile-in", "DICOM RT input filename to be dumped\n(\"-\" for stdin)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                   "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                       "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--help",                 "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                     "print version information and exit", OFCommandLine::AF_Exclusive);
       OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");

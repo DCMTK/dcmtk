@@ -39,7 +39,7 @@ common spread sheet application (e.g. Microsoft Excel).
 \section dcmmklut_parameters PARAMETERS
 
 \verbatim
-dcmimg-out  DICOM output filename
+dcmimg-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section dcmmklut_options OPTIONS
@@ -248,6 +248,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmmklut_copyright COPYRIGHT
 
-Copyright (C) 1998-2022 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

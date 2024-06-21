@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,7 @@ extern DCMTK_DCMSR_EXPORT OFLogger DCM_dcmsrLogger;
 // protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
 #define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
 // URL of the DICOM toolkit DCMTK
-#define DCMTK_INTERNET_URL "http://dicom.offis.de/dcmtk"
+#define DCMTK_INTERNET_URL "https://www.dcmtk.org/"
 
 // XML namespace URI for dcmsr module
 #define DCMSR_XML_NAMESPACE_URI "http://dicom.offis.de/dcmsr"
@@ -653,8 +653,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         PT_SegmentedVolumeRendering,
         /// Multiple Volume Rendering Volumetric Presentation State (MVR-VPS)
         PT_MultipleVolumeRendering,
+        /// Variable Modality LUT Softcopy Presentation State (VML-SPS)
+        PT_VariableModalityLUT,
         /// internal type used to mark the last entry
-        PT_last = PT_MultipleVolumeRendering
+        PT_last = PT_VariableModalityLUT
     };
 
     /** SR graphic types.  Used for content item SCOORD.
@@ -1245,11 +1247,13 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /** convert unsigned integer number to character string
      ** @param  number       unsigned integer number to be converted
      *  @param  stringValue  character string used to store the result
+     *  @param  stringLength size of the character string buffer used to store the result
      ** @return pointer to the first character of the resulting string
      *          (may be NULL if 'string' was NULL)
      */
     static const char *numberToString(const size_t number,
-                                      char *stringValue);
+                                      char *stringValue,
+                                      size_t stringLength);
 
     /** convert string to unsigned integer number
      ** @param  stringValue  character string to be converted

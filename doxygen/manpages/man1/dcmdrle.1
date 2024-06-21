@@ -1,4 +1,4 @@
-.TH "dcmdrle" 1 "Fri Apr 22 2022" "Version 3.6.7" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdrle" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdrle \- Decode RLE-compressed DICOM file
@@ -17,9 +17,9 @@ The \fBdcmdrle\fP utility reads a RLE-compressed DICOM image (\fIdcmfile-in\fP),
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -68,9 +68,9 @@ input file format:
          read data set without file meta information
 
   # This option allows one to decompress RLE compressed DICOM objects that have
-  # been stored as dataset without meta-header. Such a thing should not exist
+  # been stored as dataset without meta-header\&. Such a thing should not exist
   # since the transfer syntax cannot be reliably determined without meta-header,
-  # but unfortunately it does.
+  # but unfortunately it does\&.
 .fi
 .PP
 .SS "processing options"
@@ -93,8 +93,8 @@ RLE byte segment order:
          least significant byte first
 
   # This option allows one to decompress RLE compressed DICOM files in which
-  # the order of byte segments is encoded in incorrect order. This only affects
-  # images with more than one byte per sample.
+  # the order of byte segments is encoded in incorrect order\&. This only affects
+  # images with more than one byte per sample\&.
 .fi
 .PP
 .SS "output options"
@@ -165,11 +165,11 @@ data set trailing padding (not with --write-dataset):
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
-RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
+RLELosslessTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.5
 .fi
 .PP
 .PP
@@ -179,9 +179,9 @@ RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .SH "LOGGING"
@@ -206,4 +206,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmcrle\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2022 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany
+Copyright (C) 2002-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany

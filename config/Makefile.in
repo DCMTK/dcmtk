@@ -9,7 +9,7 @@ SHELL = /bin/sh
 include @common_makefile@
 
 
-all: include/dcmtk/config/arith.h
+all:
 
 install: all install-doc
 
@@ -41,7 +41,6 @@ check-exhaustive: tests-all
 include-install:
 	./mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/config
 	$(INSTALL_DATA) include/dcmtk/config/osconfig.h $(DESTDIR)$(includedir)/dcmtk/config
-	$(INSTALL_DATA) include/dcmtk/config/arith.h $(DESTDIR)$(includedir)/dcmtk/config
 
 docs-install:
 	./mkinstalldirs $(DESTDIR)$(docdir)
@@ -57,13 +56,5 @@ clean:
 	rm -rf $(TRASH)
 
 distclean:
-	(cd include/dcmtk/config && rm -f $(DISTTRASH) osconfig.h arith.h)
-	rm -rf $(DISTTRASH) Makefile.def lzwtest.tif arith
-
-include/dcmtk/config/arith.h: arith
-	./arith $@
-
-arith: tests/arith.cc
-	$(CXX) $(CXXFLAGS) -Iinclude -I../ofstd/include -I../ofstd/libsrc -o$@ tests/$@.cc
-
-dependencies: include/dcmtk/config/arith.h
+	(cd include/dcmtk/config && rm -f $(DISTTRASH) osconfig.h)
+	rm -rf $(DISTTRASH) Makefile.def

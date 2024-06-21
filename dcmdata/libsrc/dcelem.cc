@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -224,8 +224,8 @@ int DcmElement::compare(const DcmElement& rhs) const
     DcmElement* myThis = OFconst_cast(DcmElement*, this);
     DcmElement* myRhs = OFconst_cast(DcmElement*, &rhs);
 
-    DcmTagKey thisKey = (*myThis).getTag().getXTag();
-    DcmTagKey rhsKey = (*myRhs).getTag().getXTag();
+    DcmTagKey thisKey = (*myThis).getTag();
+    DcmTagKey rhsKey = (*myRhs).getTag();
 
     if ( thisKey > rhsKey )
     {
@@ -716,6 +716,13 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* function, we need to we need to delete this object here as well */
             if (isStreamNew)
                 delete readStream;
+        }
+        else
+        {
+            errorFlag = EC_InvalidStream; // incomplete dataset read from stream
+            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                << " larger (" << getLengthField() << ") than remaining bytes ("
+                << getTransferredBytes() << ") in file, premature end of stream");
         }
     }
     /* return result value */
@@ -1380,6 +1387,10 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             /* write tag and length information to it, do something */
             if (getTransferState() == ERW_init)
             {
+                // Force a compression filter (if any) to process the input buffer, by calling outStream.write().
+                // This ensures that we cannot get stuck if there are just a few bytes available in the buffer
+                outStream.write(NULL, 0);
+
                 /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
@@ -2008,7 +2019,8 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
 
 
 OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
-                                                 Uint32 &frameSize) const
+                                                 Uint32 &frameSize,
+                                                 OFBool pixelDataIsUncompressed) const
 {
     OFCondition result = EC_IllegalParameter;
     if (dataset != NULL)
@@ -2017,7 +2029,14 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         Uint16 cols = 0;
         Uint16 samplesPerPixel = 0;
         Uint16 bitsAllocated = 0;
-        /* retrieve values from dataset (and check them for validity and plausibility) */
+        Sint32 numberOfFrames = 1;
+        OFString photometricInterpretation;
+
+        /* retrieve number of frames from dataset (may be absent) */
+        (void) dataset->findAndGetSint32(DCM_NumberOfFrames, numberOfFrames);
+        if (numberOfFrames < 1) numberOfFrames = 1;
+
+        /* retrieve further values from dataset (and check them for validity and plausibility) */
         GET_AND_CHECK_UINT16_VALUE(DCM_Columns, cols)
         else if (cols == 0)
             DCMDATA_WARN("DcmElement: Dubious value (" << cols << ") for element Columns " << DCM_Columns);
@@ -2033,7 +2052,6 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
             else /* result.good() */
             {
                 /* also need to check value of PhotometricInterpretation */
-                OFString photometricInterpretation;
                 if (dataset->findAndGetOFStringArray(DCM_PhotometricInterpretation, photometricInterpretation).good())
                 {
                     if (photometricInterpretation.empty())
@@ -2077,6 +2095,40 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         /* if all checks were passed... */
         if (result.good())
         {
+            if (pixelDataIsUncompressed && (photometricInterpretation == "YBR_FULL_422"))
+            {
+              /* YBR_FULL_422 can exist in uncompressed format, but in many cases
+               * images claiming to be YBR_FULL_422 are in fact formerly compressed
+               * images in YBR_FULL color model where the decoder has failed to update
+               * the photometric interpretation. We can keep these apart by checking
+               * the size of the pixel data and the number of frames.
+               */
+               Uint32 pixelLen = 0;
+               DcmElement *pixData = NULL;
+               result = dataset->findAndGetElement(DCM_PixelData, pixData);
+               if (result.good() && pixData && ((pixelLen = pixData->getLength()) > 0))
+               {
+                  const Uint32 v1 = rows * cols * 3;
+                  const Uint32 v2 = (bitsAllocated / 8) * v1;
+                  const Uint32 v3 = ((bitsAllocated % 8) * v1 + 7) / 8;
+
+                  if (pixelLen >= (v2 + v3) * numberOfFrames)
+                  {
+                     /* the size of the pixel data indicates that no subsampling is present. We assume YBR_FULL. */
+                     DCMDATA_WARN("DcmElement: PhotometricInterpretation probably incorrect, assuming YBR_FULL instead of YBR_FULL_422");
+                  }
+                  else
+                  {
+                     /* the size of the pixel data indicates subsampling is present. We assume YBR_FULL_422,
+                      * which means that the frame size can be computed by setting samplesPerPixel to 2.
+                      */
+                     samplesPerPixel = 2;
+                  }
+               }
+               else
+                   DCMDATA_WARN("DcmElement: failed to compute size of PixelData element");
+            }
+
             /* compute frame size (TODO: check for 32-bit integer overflow?) */
             if ((bitsAllocated % 8) == 0)
             {
@@ -2213,6 +2265,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 2) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "2-4")
+    {
+      if ((vmNum < 2) || (vmNum > 4)) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "2-n")
     {
       if (vmNum < 2) result = EC_ValueMultiplicityViolated;
@@ -2237,6 +2293,14 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     {
       if (vmNum != 4) result = EC_ValueMultiplicityViolated;
     }
+    else if (vmStr == "4-5")
+    {
+      if ((vmNum < 4) || (vmNum > 5)) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "4-4n")
+    {
+      if ((vmNum % 4) != 0) result = EC_ValueMultiplicityViolated;
+    }
     else if (vmStr == "5")
     {
       if (vmNum != 5) result = EC_ValueMultiplicityViolated;
@@ -2248,6 +2312,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     else if (vmStr == "6")
     {
       if (vmNum != 6) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "6-n")
+    {
+      if (vmNum < 6) result = EC_ValueMultiplicityViolated;
     }
     else if (vmStr == "7")
     {
@@ -2264,6 +2332,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
     else if (vmStr == "9")
     {
       if (vmNum != 9) result = EC_ValueMultiplicityViolated;
+    }
+    else if (vmStr == "11")
+    {
+      if (vmNum != 11) result = EC_ValueMultiplicityViolated;
     }
     else if (vmStr == "16")
     {

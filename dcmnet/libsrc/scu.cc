@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2022, OFFIS e.V.
+ *  Copyright (C) 2008-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/dcmnet/diutil.h"    /* for dcmnet logger */
 #include "dcmtk/dcmnet/scu.h"
 #include "dcmtk/ofstd/ofmem.h" /* for OFunique_ptr */
+#include "dcmtk/ofstd/ofstd.h"
 
 
 #ifdef WITH_ZLIB
@@ -55,6 +56,7 @@ DcmSCU::DcmSCU()
     , m_verbosePCMode(OFFalse)
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
+    , m_secureConnectionEnabled(OFFalse)
 {
     OFStandard::initializeNetwork();
 }
@@ -149,7 +151,7 @@ OFCondition DcmSCU::initNetwork()
         DCMNET_ERROR("Maximum length of local host name '" << localHost << "' is longer than maximum of 62 characters");
         return EC_IllegalCall; // TODO: need to find better error code
     }
-    sprintf(peerHost, "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort));
+    OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", m_peer.c_str(), OFstatic_cast(int, m_peerPort));
     ASC_setPresentationAddresses(m_params, localHost.c_str(), peerHost);
 
     /* Add presentation contexts */
@@ -337,6 +339,8 @@ OFCondition DcmSCU::useSecureConnection(DcmTransportLayer* tlayer)
     OFCondition cond = ASC_setTransportLayer(m_net, tlayer, OFFalse /* do not take over ownership */);
     if (cond.good())
         cond = ASC_setTransportLayerType(m_params, OFTrue /* use TLS */);
+
+    if (cond.good()) m_secureConnectionEnabled = OFTrue;
     return cond;
 }
 
@@ -788,8 +792,8 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
                             << OFstatic_cast(unsigned int, pcid) << ": abstract syntax does not match SOP class UID");
             }
             /* Try to convert to the negotiated transfer syntax */
-            DcmXfer netXfer = DcmXfer(transferSyntax.c_str()).getXfer();
-            if (netXfer.getXfer() != xferSyntax)
+            DcmXfer netXfer(transferSyntax.c_str());
+            if (netXfer != xferSyntax)
             {
                 DCMNET_INFO("Converting transfer syntax: " << xfer.getXferName() << " -> " << netXfer.getXferName());
                 cond = dataset->chooseRepresentation(netXfer.getXfer(), NULL);
@@ -1613,10 +1617,14 @@ OFCondition DcmSCU::handleFINDResponse(const T_ASC_PresentationContextID /* pres
 /* ************************************************************************* */
 
 // Send C-CANCEL-REQ and, therefore, ends current C-FIND, -MOVE or -GET session
-OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
+OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID,
+                                      const Sint32 msgIDBeingRespondedTo)
 {
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
+
+    if (msgIDBeingRespondedTo > 65535 || msgIDBeingRespondedTo < -1)
+        return EC_IllegalParameter;
 
     /* Prepare DIMSE data structures for issuing request */
     OFCondition cond;
@@ -1628,18 +1636,27 @@ OFCondition DcmSCU::sendCANCELRequest(const T_ASC_PresentationContextID presID)
     T_DIMSE_C_CancelRQ* req = &(msg.msg.CCancelRQ);
     // Set type of message
     msg.CommandField = DIMSE_C_CANCEL_RQ;
-    /* Set message ID responded to. A new message ID is _not_ needed so
-       we do not increment the message ID here but instead have to give the
-       message ID that was used last.
-       Note that that it is required to actually use the message ID of the last
-       C-FIND/GET/MOVE that was issued on this presentation context channel.
-       However, since we only support synchronous association mode so far,
-       it is enough to take the last message ID used at all.
-       For asynchronous operation, we would have to lookup the message ID
-       of the last C-FIND/GET/MOVE request issued and thus, store this
-       information after sending it.
-     */
-    req->MessageIDBeingRespondedTo = m_assoc->nextMsgID - 1;
+
+    if (msgIDBeingRespondedTo != -1)
+    {
+        req->MessageIDBeingRespondedTo = OFstatic_cast(Uint16, msgIDBeingRespondedTo);
+    }
+    else
+    {
+        /* Set message ID responded to. A new message ID is _not_ needed so
+           we do not increment the message ID here but instead have to give the
+           message ID that was used last.
+           Note that that it is required to actually use the message ID of the last
+           C-FIND/GET/MOVE that was issued on this presentation context channel.
+           However, since we only support synchronous association mode so far,
+           it is enough to take the last message ID used at all.
+           For asynchronous operation, we would have to lookup the message ID
+           of the last C-FIND/GET/MOVE request issued and thus, store this
+           information after sending it.
+         */
+        req->MessageIDBeingRespondedTo = m_assoc->nextMsgID - 1;
+    }
+
     // Announce dataset
     req->DataSetType = DIMSE_DATASET_NULL;
 
@@ -1773,7 +1790,7 @@ OFCondition DcmSCU::sendACTIONRequest(const T_ASC_PresentationContextID presID,
     rspStatusCode                  = actionRsp.DimseStatus;
 
     // Check whether there is a dataset to be received
-    if (actionRsp.DataSetType == DIMSE_DATASET_PRESENT)
+    if (actionRsp.DataSetType != DIMSE_DATASET_NULL)
     {
         // this should never happen
         DcmDataset* tempDataset = NULL;
@@ -1913,7 +1930,7 @@ OFCondition DcmSCU::sendEVENTREPORTRequest(const T_ASC_PresentationContextID pre
     rspStatusCode                            = eventReportRsp.DimseStatus;
 
     // Check whether there is a dataset to be received
-    if (eventReportRsp.DataSetType == DIMSE_DATASET_PRESENT)
+    if (eventReportRsp.DataSetType != DIMSE_DATASET_NULL)
     {
         // this should never happen
         DcmDataset* tempDataset = NULL;
@@ -2188,7 +2205,7 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
     }
 
     // If requested, we need to receive the dataset containing the received instance
-    if (response.msg.NCreateRSP.DataSetType == DIMSE_DATASET_PRESENT)
+    if (response.msg.NCreateRSP.DataSetType != DIMSE_DATASET_NULL)
     {
         DcmDataset* respDataset = OFnullptr;
         result = receiveDIMSEDataset(&pcid, &respDataset);
@@ -2320,7 +2337,7 @@ OFCondition DcmSCU::sendNSETRequest(const T_ASC_PresentationContextID presID,
     }
 
     // If requested, we need to receive the dataset containing the received instance
-    if (response.msg.NSetRSP.DataSetType == DIMSE_DATASET_PRESENT)
+    if (response.msg.NSetRSP.DataSetType != DIMSE_DATASET_NULL)
     {
         DcmDataset* respDataset = OFnullptr;
         result = receiveDIMSEDataset(&pcid, &respDataset);
@@ -2594,7 +2611,7 @@ Uint32 DcmSCU::getMaxReceivePDULength() const
 
 OFBool DcmSCU::getTLSEnabled() const
 {
-    return OFFalse;
+    return m_secureConnectionEnabled;
 }
 
 T_DIMSE_BlockingMode DcmSCU::getDIMSEBlockingMode() const

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -173,138 +173,11 @@ DCMTK_DCMNET_EXPORT int dcmtk_flock(int fd, int operation);
 #endif /* !HAVE_FLOCK */
 #endif
 
-#ifndef HAVE_PROTOTYPE_GETHOSTNAME
-#ifdef HAVE_GETHOSTNAME
-/* gethostname is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
-END_EXTERN_C
-#else
-#ifndef __MINGW32__
-/* define gethostname ourselves (except on MinGW, where this is defined
-   in a Windows specific header
-*/
-DCMTK_DCMNET_EXPORT int gethostname(char* name, int namelen);
-#endif
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_GETSOCKOPT
-#ifdef HAVE_GETSOCKOPT
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int getsockopt(int s, int level, int optname, char *optval, int *optlen);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_SETSOCKOPT
-#ifdef HAVE_SETSOCKOPT
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int setsockopt(int s, int level, int optname, const char *optval, int optlen);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_LISTEN
-#ifdef HAVE_LISTEN
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int listen(int s, int backlog);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_SOCKET
-#ifdef HAVE_SOCKET
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int socket(int domain, int type, int protocol);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_CONNECT
-#ifdef HAVE_CONNECT
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int connect(int s, struct sockaddr *name, int namelen);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_SELECT
-#ifdef HAVE_SELECT
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int select(int nfds, fd_set *readfds, fd_set *writefds,
-	   fd_set *exceptfds, struct timeval *timeout);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_BIND
-#ifdef HAVE_BIND
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int bind(int s, const struct sockaddr *name, int namelen);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_ACCEPT
-#ifdef HAVE_ACCEPT
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int accept(int s, struct sockaddr *addr, int *addrlen);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_GETSOCKNAME
-#ifdef HAVE_GETSOCKNAME
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int getsockname(int s, struct sockaddr *name, int *namelen);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
 #ifndef HAVE_PROTOTYPE_WAITPID
 #ifdef HAVE_WAITPID
 /* it is in the libraries but we have no prototype */
 BEGIN_EXTERN_C
 DCMTK_DCMNET_EXPORT int waitpid(pid_t pid, int *statusp, int options);
-END_EXTERN_C
-#else
-/* don't know how to emulate */
-#endif
-#endif
-
-#ifndef HAVE_PROTOTYPE_WAIT3
-#ifdef HAVE_WAIT3
-/* it is in the libraries but we have no prototype */
-BEGIN_EXTERN_C
-DCMTK_DCMNET_EXPORT int wait3(int *statusp, int options, struct rusage *rusage);
 END_EXTERN_C
 #else
 /* don't know how to emulate */
