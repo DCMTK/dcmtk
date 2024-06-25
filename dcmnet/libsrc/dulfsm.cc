@@ -2255,8 +2255,22 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     int s;
 #endif
     struct linger sockarg;
-
-    if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
+	
+    // ipv6 address was not parsing properly, so corrected the below code.
+    // convert the char array to a std::string
+    std::string addressString(params->calledPresentationAddress);
+    // find the last colon in the string to split the node and port
+    size_t lastColonPos = addressString.find_last_of(':');
+    if (lastColonPos != std::string::npos) {
+        // extract node and port from the string
+        std::string nodeStr = addressString.substr(0, lastColonPos);
+        std::string portStr = addressString.substr(lastColonPos + 1);
+        // copy node string into node char array
+        strncpy_s(node, sizeof(node), nodeStr.c_str(), _TRUNCATE);
+        // convert port string to integer
+        port = std::stoi(portStr);
+    }
+    else
     {
         char buf[1024];
         OFStandard::snprintf(buf, sizeof(buf), "Illegal service parameter: %s", params->calledPresentationAddress);
