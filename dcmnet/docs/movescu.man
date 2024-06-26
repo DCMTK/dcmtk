@@ -647,6 +647,7 @@ be changed with the \e --prefer options (see above).  Using option
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+EncapsulatedUncompressedExplicitVRLittleEndianTr.S.  1.2.840.10008.1.2.1.98
 DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50

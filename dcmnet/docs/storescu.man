@@ -504,7 +504,7 @@ following transfer syntaxes are supported:
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
 JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
@@ -524,6 +524,8 @@ HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
 HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
+
+(*) if compiled with zlib support enabled (see \e --version output)
 
 Additional Storage SOP Classes and Transfer Syntaxes can be used with the
 so-called "association negotiation profiles" (see below).

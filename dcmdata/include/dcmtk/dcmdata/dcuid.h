@@ -427,11 +427,13 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 */
 
 /// Implicit VR Little Endian: Default Transfer Syntax for DICOM
-#define UID_LittleEndianImplicitTransferSyntax          "1.2.840.10008.1.2"
+#define UID_LittleEndianImplicitTransferSyntax           "1.2.840.10008.1.2"
 /// Explicit VR Little Endian
 #define UID_LittleEndianExplicitTransferSyntax           "1.2.840.10008.1.2.1"
 /// Explicit VR Big Endian - RETIRED
 #define UID_BigEndianExplicitTransferSyntax              "1.2.840.10008.1.2.2"
+/// Encapsulated Uncompressed Explicit VR Little Endian
+#define UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.98"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /** JPEG Baseline (Process 1): Default Transfer Syntax

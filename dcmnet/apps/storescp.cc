@@ -1007,7 +1007,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 10
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 20
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 30
-                                     NULL };                                                       // +1
+                                     NULL, NULL };                                                 // +2
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -1303,16 +1303,17 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         transferSyntaxes[25] = UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax;
         transferSyntaxes[26] = UID_HighThroughputJPEG2000ImageCompressionTransferSyntax;
         transferSyntaxes[27] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[28] = UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax;
         if (gLocalByteOrder == EBO_LittleEndian)
         {
-          transferSyntaxes[28] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[29] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-          transferSyntaxes[28] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[29] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[30] = UID_BigEndianExplicitTransferSyntax;
+        } else {
+          transferSyntaxes[29] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[30] = UID_LittleEndianExplicitTransferSyntax;
         }
-        transferSyntaxes[30] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 31;
+        transferSyntaxes[31] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 32;
       } else {
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
@@ -2023,7 +2024,7 @@ static OFCondition storeSCP(
       // create unique filename by generating a temporary UID and using ".X." as an infix
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
-      OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, 
+      OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR,
         dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         buf, opt_fileNameExtension.c_str());
     }

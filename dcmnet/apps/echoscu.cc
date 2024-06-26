@@ -68,6 +68,7 @@ static const char* transferSyntaxes[] = {
       UID_LittleEndianImplicitTransferSyntax, /* default xfer syntax first */
       UID_LittleEndianExplicitTransferSyntax,
       UID_BigEndianExplicitTransferSyntax,
+      UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax,
       UID_JPEGProcess1TransferSyntax,
       UID_JPEGProcess2_4TransferSyntax,
       UID_JPEGProcess3_5TransferSyntax,
