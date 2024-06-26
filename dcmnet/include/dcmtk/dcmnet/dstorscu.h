@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,6 +53,9 @@
  *        SOP class.  This is not (yet) implemented since the re-encoding of compressed
  *        datasets is not supported.  Nevertheless, depending on the options used, the default
  *        transfer syntax for the uncompressed case is always proposed (if possible).
+ *    \li Also the handling of the encapsulated uncompressed transfer syntax is still rather
+ *        limited, mainly because transcoding to the other uncompressed transfer syntaxes,
+ *        which use native format, is not yet implemented by "dcmdata".
  */
 class DCMTK_DCMNET_EXPORT DcmStorageSCU
   : public DcmSCU

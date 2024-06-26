@@ -716,7 +716,31 @@ OFCondition DcmStorageSCU::addPresentationContexts()
                             status = addPresentationContext(sopClassUID, transferSyntaxes);
                         }
                     }
-                    // uncompressed case: always propose all three transfer syntaxes without compression
+                    // check whether encapsulated format is used and pixel data is uncompressed
+                    // (special case since transcoding of encapsulated uncompressed transfer syntax
+                    //  to native format is not yet supported)
+                    else if (xfer.usesEncapsulatedFormat() && !xfer.isPixelDataCompressed())
+                    {
+                        // create list of proposed transfer syntaxes
+                        transferSyntaxes.clear();
+                        transferSyntaxes.push_back((*transferEntry)->TransferSyntaxUID.c_str());
+                        if (AllowIllegalProposalMode)
+                        {
+                            // warn that we cannot transcode the SOP instance (if required)
+                            DCMNET_WARN("transfer syntax uses encapsulated format and pixel data is uncompressed," << OFendl
+                                << "  but as we do not support transcoding to native format yet, we will not propose the Default Transfer Syntax" << OFendl
+                                << "  (which might result in a violation of the DICOM standard if it is not proposed in another presentation context)");
+                        } else  {
+                            // warn that we cannot transcode the SOP instance (if required)
+                            DCMNET_WARN("transfer syntax uses encapsulated format and pixel data is uncompressed," << OFendl
+                                << "  but we do not support transcoding to native format yet and, therefore, hope that it is not needed");
+                            // we hope that the SCP accepts encapsulated uncompressed transfer syntax
+                            transferSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+                        }
+                        // call the inherited method from the base class doing the real work
+                        status = addPresentationContext(sopClassUID, transferSyntaxes);
+                    }
+                    // uncompressed case (native format): always propose all three transfer syntaxes without compression
                     else
                     {
                         // call the inherited method from the base class doing the real work
