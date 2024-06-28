@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,13 @@
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrimgfr.h"
 #include "dcmtk/dcmsr/dsrimgse.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrimgvl.h
+ *  @brief definitions for class DSRImageReferenceValue
+ */
 
 
 /*-----------------------*
@@ -112,24 +119,24 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      */
     DSRImageReferenceValue &operator=(const DSRImageReferenceValue &referenceValue);
 
-    /** comparison operator "equal".
-     *  Please note that the optional icon image is not used for comparing the two values.
-     ** @param  referenceValue  image reference value that should be compared to the current one
-     ** @return OFTrue if both image reference values are equal, OFFalse otherwise
-     */
-    OFBool operator==(const DSRImageReferenceValue &referenceValue) const;
-
-    /** comparison operator "not equal".
-     *  Please note that the optional icon image is not used for comparing the two values.
-     ** @param  referenceValue  image reference value that should be compared to the current one
-     ** @return OFTrue if both image reference values are not equal, OFFalse otherwise
-     */
-    OFBool operator!=(const DSRImageReferenceValue &referenceValue) const;
-
     /** clear all internal variables.
      *  Since an empty image reference is invalid the reference becomes invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether values are "equal".
+     *  Please note that the optional icon image is not used for comparing the two values.
+     ** @param  referenceValue  image reference value that should be compared to the current one
+     ** @return OFTrue if both image reference values are equal, OFFalse otherwise
+     */
+    OFBool isEqual(const DSRImageReferenceValue &referenceValue) const;
+
+    /** check whether values are "not equal".
+     *  Please note that the optional icon image is not used for comparing the two values.
+     ** @param  referenceValue  image reference value that should be compared to the current one
+     ** @return OFTrue if both image reference values are not equal, OFFalse otherwise
+     */
+    OFBool isNotEqual(const DSRImageReferenceValue &referenceValue) const;
 
     /** check whether the current image reference value is valid.
      *  The reference value is valid if both SOP class UID and SOP instance UID are valid (see
@@ -509,6 +516,30 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
     /// icon image from Icon Image Sequence (optional)
     DicomImage *IconImage;
 };
+
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRImageReferenceValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRImageReferenceValue &lhs,
+                                     const DSRImageReferenceValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRImageReferenceValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRImageReferenceValue &lhs,
+                                     const DSRImageReferenceValue &rhs);
 
 
 #endif

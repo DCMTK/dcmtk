@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2018, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,32 +47,6 @@ DSRSCoord3DTreeNode::~DSRSCoord3DTreeNode()
 }
 
 
-OFBool DSRSCoord3DTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRSpatialCoordinates3DValue::operator==(OFstatic_cast(const DSRSCoord3DTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
-OFBool DSRSCoord3DTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRSpatialCoordinates3DValue::operator!=(OFstatic_cast(const DSRSCoord3DTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
 DSRSCoord3DTreeNode *DSRSCoord3DTreeNode::clone() const
 {
     return new DSRSCoord3DTreeNode(*this);
@@ -83,6 +57,32 @@ void DSRSCoord3DTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     DSRSpatialCoordinates3DValue::clear();
+}
+
+
+OFBool DSRSCoord3DTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRSpatialCoordinates3DValue::isEqual(OFstatic_cast(const DSRSCoord3DTreeNode &, node).getValue());
+    }
+    return result;
+}
+
+
+OFBool DSRSCoord3DTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRSpatialCoordinates3DValue::isNotEqual(OFstatic_cast(const DSRSCoord3DTreeNode &, node).getValue());
+    }
+    return result;
 }
 
 
@@ -184,4 +184,20 @@ OFCondition DSRSCoord3DTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &do
         docStream << OFendl;
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRSCoord3DTreeNode &lhs,
+                  const DSRSCoord3DTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRSCoord3DTreeNode &lhs,
+                  const DSRSCoord3DTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

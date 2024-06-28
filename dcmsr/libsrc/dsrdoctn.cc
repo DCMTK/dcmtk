@@ -79,24 +79,6 @@ DSRDocumentTreeNode::~DSRDocumentTreeNode()
 }
 
 
-OFBool DSRDocumentTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* only very basic information is used for comparing the two nodes */
-    return (RelationshipType == node.RelationshipType) &&
-           (ValueType == node.ValueType) &&
-           (ConceptName == node.ConceptName);
-}
-
-
-OFBool DSRDocumentTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* only very basic information is used for comparing the two nodes */
-    return (RelationshipType != node.RelationshipType) ||
-           (ValueType != node.ValueType) ||
-           (ConceptName != node.ConceptName);
-}
-
-
 void DSRDocumentTreeNode::clear()
 {
     MarkFlag = OFFalse;
@@ -109,6 +91,24 @@ void DSRDocumentTreeNode::clear()
     MappingResourceUID.clear();
     MACParameters.clear();
     DigitalSignatures.clear();
+}
+
+
+OFBool DSRDocumentTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* only very basic information is used for comparing the two nodes */
+    return (RelationshipType == node.RelationshipType) &&
+           (ValueType == node.ValueType) &&
+           (ConceptName == node.ConceptName);
+}
+
+
+OFBool DSRDocumentTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* only very basic information is used for comparing the two nodes */
+    return (RelationshipType != node.RelationshipType) ||
+           (ValueType != node.ValueType) ||
+           (ConceptName != node.ConceptName);
 }
 
 
@@ -1389,4 +1389,20 @@ OFBool DSRDocumentTreeNode::checkTemplateIdentification(const OFString &template
     else if (!templateIdentifier.empty() && !mappingResource.empty())
         result = OFTrue;
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRDocumentTreeNode &lhs,
+                  const DSRDocumentTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRDocumentTreeNode &lhs,
+                  const DSRDocumentTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

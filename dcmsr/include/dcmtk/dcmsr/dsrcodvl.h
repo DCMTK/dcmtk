@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,13 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 
 #include "dcmtk/ofstd/ofexbl.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrcodvl.h
+ *  @brief definitions for classes DSRBasicCodedEntry and DSRCodedEntryValue
+ */
 
 
 /*----------------------*
@@ -197,45 +204,45 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      */
     DSRCodedEntryValue &operator=(const DSRCodedEntryValue &codedEntryValue);
 
-    /** comparison operator "equal".
+    /** clear all internal variables.
+     *  Since an empty code is invalid the code becomes invalid afterwards.
+     */
+    virtual void clear();
+
+    /** check whether codes are "equal".
      *  Two codes are equal if the code value, the coding scheme designator and the (optional)
      *  coding scheme version are equal.  The code meaning or attributes from the "Enhanced
      *  Encoding Mode" are not used for this check.
      ** @param  codedEntryValue  code that should be compared to the current one
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
-    OFBool operator==(const DSRCodedEntryValue &codedEntryValue) const;
+    OFBool isEqual(const DSRCodedEntryValue &codedEntryValue) const;
 
-    /** comparison operator "not equal".
+    /** check whether codes are "not equal".
      *  Two codes are not equal if either the code value or the coding scheme designator
      *  or the (optional) coding scheme version are not equal.  The code meaning is not
      *  used for this check.
      ** @param  codedEntryValue  code that should be compared to the current one
      ** @return OFTrue if both codes are not equal, OFFalse otherwise
      */
-    OFBool operator!=(const DSRCodedEntryValue &codedEntryValue) const;
+    OFBool isNotEqual(const DSRCodedEntryValue &codedEntryValue) const;
 
-    /** comparison operator "equal".
+    /** check whether codes are "equal".
      *  Two codes are equal if the code value, the coding scheme designator and the (optional)
      *  coding scheme version are equal.  The code meaning is not used for this check.
      ** @param  basicCodedEntry  code that should be compared to the current one
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
-    OFBool operator==(const DSRBasicCodedEntry &basicCodedEntry) const;
+    OFBool isEqual(const DSRBasicCodedEntry &basicCodedEntry) const;
 
-    /** comparison operator "not equal".
+    /** check whether codes are "not equal".
      *  Two codes are not equal if either the code value or the coding scheme designator
      *  or the (optional) coding scheme version are not equal.  The code meaning is not
      *  used for this check.
      ** @param  basicCodedEntry  code that should be compared to the current one
      ** @return OFTrue if both codes are not equal, OFFalse otherwise
      */
-    OFBool operator!=(const DSRBasicCodedEntry &basicCodedEntry) const;
-
-    /** clear all internal variables.
-     *  Since an empty code is invalid the code becomes invalid afterwards.
-     */
-    virtual void clear();
+    OFBool isNotEqual(const DSRBasicCodedEntry &basicCodedEntry) const;
 
     /** check whether the current code is valid.  This check only covers the "Basic Coded Entry
      *  Attributes".  An empty code is not valid.  See checkCode() for details.
@@ -739,6 +746,10 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
 };
 
 
+/*------------------------*
+ *  i/o stream operators  *
+ *------------------------*/
+
 /** output stream operator for coded entry values.
  *  Internally, the DSRCodedEntryValue::print() method is used, i.e. the output looks
  *  like this: (1234,99_OFFIS_DCMTK,"Code Meaning") or (cm,UCUM[1.4],"centimeter")
@@ -747,7 +758,48 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
  *  @return reference to output stream
  */
 DCMTK_DCMSR_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
-                                                     const DSRCodedEntryValue& codedEntryValue);
+                                                     const DSRCodedEntryValue &codedEntryValue);
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRCodedEntryValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRCodedEntryValue &lhs,
+                                     const DSRCodedEntryValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRCodedEntryValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRCodedEntryValue &lhs,
+                                     const DSRCodedEntryValue &rhs);
+
+/** equality operator.
+ *  Internally, the DSRCodedEntryValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRCodedEntryValue &lhs,
+                                     const DSRBasicCodedEntry &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRCodedEntryValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRCodedEntryValue &lhs,
+                                     const DSRBasicCodedEntry &rhs);
 
 
 #endif

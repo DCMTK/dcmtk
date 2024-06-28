@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,13 @@
 
 #include "dcmtk/dcmsr/dsrtree.h"
 #include "dcmtk/dcmsr/dsrcodvl.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrdoctn.h
+ *  @brief definitions for class DSRDocumentTreeNode
+ */
 
 
 /*-----------------------*
@@ -87,24 +94,6 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      */
     virtual ~DSRDocumentTreeNode();
 
-    /** comparison operator "equal".
-     *  Two tree nodes are regarded as equal if the relationship type, the value type and the
-     *  concept name are equal.  Other information is not used unless implemented in a derived
-     *  class.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
-     */
-    virtual OFBool operator==(const DSRDocumentTreeNode &node) const;
-
-    /** comparison operator "not equal".
-     *  Two tree nodes are regarded as not equal if either the relationship type or the value
-     *  type or the concept name are not equal.  Other information is not used unless implemented
-     *  in a derived class.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
-     */
-    virtual OFBool operator!=(const DSRDocumentTreeNode &node) const;
-
     /** clone this tree node (abstract).
      *  Internally, the copy constructor is used, so the corresponding comments apply.
      ** @return copy of this tree node
@@ -115,6 +104,24 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  This does not apply to the relationship and value type since they are never changed.
      */
     virtual void clear();
+
+    /** check whether nodes are "equal".
+     *  Two tree nodes are regarded as equal if the relationship type, the value type and the
+     *  concept name are equal.  Other information is not used unless implemented in a derived
+     *  class.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
+     */
+    virtual OFBool isEqual(const DSRDocumentTreeNode &node) const;
+
+    /** check whether nodes are "not equal".
+     *  Two tree nodes are regarded as not equal if either the relationship type or the value
+     *  type or the concept name are not equal.  Other information is not used unless implemented
+     *  in a derived class.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
+     */
+    virtual OFBool isNotEqual(const DSRDocumentTreeNode &node) const;
 
     /** check whether the content item is valid.
      *  The content item is valid if the relationship type and the value type are both not invalid.
@@ -778,6 +785,29 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
     DSRDocumentTreeNode();
     DSRDocumentTreeNode &operator=(const DSRDocumentTreeNode &);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRDocumentTreeNode::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRDocumentTreeNode &lhs,
+                                     const DSRDocumentTreeNode &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRDocumentTreeNode::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRDocumentTreeNode& lhs,
+                                     const DSRDocumentTreeNode& rhs);
 
 
 #endif

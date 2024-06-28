@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,6 +38,13 @@
 #include "dcmtk/dcmsr/dsrwavvl.h"
 
 
+// include this file in doxygen documentation
+
+/** @file dsrcitem.h
+ *  @brief definitions for class DSRContentItem
+ */
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -65,21 +72,21 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
      */
     virtual ~DSRContentItem();
 
-    /** comparison operator "equal".
+    /** check whether content items are "equal".
      *  Two content items are regarded as equal if the comparison operator of the referenced
      *  document tree nodes says so.
      ** @param  item  content item that should be compared to the current one
      ** @return OFTrue if both content items are equal, OFFalse otherwise
      */
-    virtual OFBool operator==(const DSRContentItem &item) const;
+    virtual OFBool isEqual(const DSRContentItem &item) const;
 
-    /** comparison operator "not equal".
+    /** check whether content items are "not equal".
      *  Two content items are regarded as not equal if the comparison operator of the
      *  referenced document tree nodes says so.
      ** @param  item  content item that should be compared to the current one
      ** @return OFTrue if both content items are not equal, OFFalse otherwise
      */
-    virtual OFBool operator!=(const DSRContentItem &item) const;
+    virtual OFBool isNotEqual(const DSRContentItem &item) const;
 
     /** check for validity/completeness.
      *  Applicable to all content items.
@@ -628,6 +635,29 @@ class DCMTK_DCMSR_EXPORT DSRContentItem
 
     DSRContentItem &operator=(const DSRContentItem &);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRContentItem::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRContentItem &lhs,
+                                     const DSRContentItem &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRContentItem::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRContentItem &lhs,
+                                     const DSRContentItem &rhs);
 
 
 #endif

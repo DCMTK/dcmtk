@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,13 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrtypes.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrcomvl.h
+ *  @brief definitions for class DSRCompositeReferenceValue
+ */
 
 
 /*---------------------*
@@ -74,22 +81,22 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      */
     DSRCompositeReferenceValue &operator=(const DSRCompositeReferenceValue &referenceValue);
 
-    /** comparison operator "equal"
-     ** @param  referenceValue  reference value that should be compared to the current one
-     ** @return OFTrue if both composite reference values are equal, OFFalse otherwise
-     */
-    OFBool operator==(const DSRCompositeReferenceValue &referenceValue) const;
-
-    /** comparison operator "not equal"
-     ** @param  referenceValue  reference value that should be compared to the current one
-     ** @return OFTrue if both composite reference values are not equal, OFFalse otherwise
-     */
-    OFBool operator!=(const DSRCompositeReferenceValue &referenceValue) const;
-
     /** clear all internal variables.
      *  Since an empty reference value is invalid the reference becomes invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether values are "equal"
+     ** @param  referenceValue  reference value that should be compared to the current one
+     ** @return OFTrue if both composite reference values are equal, OFFalse otherwise
+     */
+    OFBool isEqual(const DSRCompositeReferenceValue &referenceValue) const;
+
+    /** check whether values are "not equal"
+     ** @param  referenceValue  reference value that should be compared to the current one
+     ** @return OFTrue if both composite reference values are not equal, OFFalse otherwise
+     */
+    OFBool isNotEqual(const DSRCompositeReferenceValue &referenceValue) const;
 
     /** check whether the current reference value is valid.
      *  The reference value is valid if SOP class UID and SOP instance UID are valid.  See
@@ -394,6 +401,29 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
     /// reference SOP instance UID (VR=UI, type 1)
     OFString SOPInstanceUID;
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRCompositeReferenceValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRCompositeReferenceValue &lhs,
+                                     const DSRCompositeReferenceValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRCompositeReferenceValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRCompositeReferenceValue &lhs,
+                                     const DSRCompositeReferenceValue &rhs);
 
 
 #endif

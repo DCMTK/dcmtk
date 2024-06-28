@@ -56,32 +56,6 @@ DSRIncludedTemplateTreeNode::~DSRIncludedTemplateTreeNode()
 }
 
 
-OFBool DSRIncludedTemplateTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = (ReferencedTemplate.get() == OFstatic_cast(const DSRIncludedTemplateTreeNode &, node).ReferencedTemplate.get());
-    }
-    return result;
-}
-
-
-OFBool DSRIncludedTemplateTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = (ReferencedTemplate.get() != OFstatic_cast(const DSRIncludedTemplateTreeNode &, node).ReferencedTemplate.get());
-    }
-    return result;
-}
-
-
 DSRIncludedTemplateTreeNode *DSRIncludedTemplateTreeNode::clone() const
 {
     return new DSRIncludedTemplateTreeNode(*this);
@@ -92,6 +66,32 @@ void DSRIncludedTemplateTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     ReferencedTemplate.reset();
+}
+
+
+OFBool DSRIncludedTemplateTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = (ReferencedTemplate.get() == OFstatic_cast(const DSRIncludedTemplateTreeNode &, node).ReferencedTemplate.get());
+    }
+    return result;
+}
+
+
+OFBool DSRIncludedTemplateTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = (ReferencedTemplate.get() != OFstatic_cast(const DSRIncludedTemplateTreeNode &, node).ReferencedTemplate.get());
+    }
+    return result;
 }
 
 
@@ -260,4 +260,20 @@ OFCondition DSRIncludedTemplateTreeNode::setTemplateIdentification(const OFStrin
 {
     /* invalid: no manual setting of template identification allowed */
     return EC_IllegalCall;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRIncludedTemplateTreeNode &lhs,
+                  const DSRIncludedTemplateTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRIncludedTemplateTreeNode &lhs,
+                  const DSRIncludedTemplateTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

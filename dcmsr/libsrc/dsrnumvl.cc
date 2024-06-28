@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,24 +117,6 @@ DSRNumericMeasurementValue &DSRNumericMeasurementValue::operator=(const DSRNumer
 }
 
 
-OFBool DSRNumericMeasurementValue::operator==(const DSRNumericMeasurementValue &numericMeasurement) const
-{
-    /* only the basic information is used for comparing the two values */
-    return (NumericValue == numericMeasurement.NumericValue) &&
-           (MeasurementUnit == numericMeasurement.MeasurementUnit) &&
-           (ValueQualifier == numericMeasurement.ValueQualifier);
-}
-
-
-OFBool DSRNumericMeasurementValue::operator!=(const DSRNumericMeasurementValue &numericMeasurement) const
-{
-    /* only the basic information is used for comparing the two values */
-    return (NumericValue != numericMeasurement.NumericValue) ||
-           (MeasurementUnit != numericMeasurement.MeasurementUnit) ||
-           (ValueQualifier != numericMeasurement.ValueQualifier);
-}
-
-
 void DSRNumericMeasurementValue::clear()
 {
     NumericValue.clear();
@@ -143,6 +125,24 @@ void DSRNumericMeasurementValue::clear()
     FloatingPointValue.clear();
     RationalNumeratorValue.clear();
     RationalDenominatorValue.clear();
+}
+
+
+OFBool DSRNumericMeasurementValue::isEqual(const DSRNumericMeasurementValue &numericMeasurement) const
+{
+    /* only the basic information is used for comparing the two values */
+    return (NumericValue == numericMeasurement.NumericValue) &&
+           (MeasurementUnit == numericMeasurement.MeasurementUnit) &&
+           (ValueQualifier == numericMeasurement.ValueQualifier);
+}
+
+
+OFBool DSRNumericMeasurementValue::isNotEqual(const DSRNumericMeasurementValue &numericMeasurement) const
+{
+    /* only the basic information is used for comparing the two values */
+    return (NumericValue != numericMeasurement.NumericValue) ||
+           (MeasurementUnit != numericMeasurement.MeasurementUnit) ||
+           (ValueQualifier != numericMeasurement.ValueQualifier);
 }
 
 
@@ -768,11 +768,27 @@ OFCondition DSRNumericMeasurementValue::checkCurrentValue() const
 }
 
 
-// output operators
+// i/o stream operators
 
 STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
                                   const DSRNumericMeasurementValue &numericMeasurement)
 {
     numericMeasurement.print(stream, 0 /*flags*/);
     return stream;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRNumericMeasurementValue &lhs,
+                  const DSRNumericMeasurementValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRNumericMeasurementValue &lhs,
+                  const DSRNumericMeasurementValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -71,7 +71,16 @@ DSRTemporalCoordinatesValue &DSRTemporalCoordinatesValue::operator=(const DSRTem
 }
 
 
-OFBool DSRTemporalCoordinatesValue::operator==(const DSRTemporalCoordinatesValue &coordinatesValue) const
+void DSRTemporalCoordinatesValue::clear()
+{
+    TemporalRangeType = DSRTypes::TRT_invalid;
+    SamplePositionList.clear();
+    TimeOffsetList.clear();
+    DateTimeList.clear();
+}
+
+
+OFBool DSRTemporalCoordinatesValue::isEqual(const DSRTemporalCoordinatesValue &coordinatesValue) const
 {
     return (TemporalRangeType == coordinatesValue.TemporalRangeType) &&
            (SamplePositionList == coordinatesValue.SamplePositionList) &&
@@ -80,21 +89,12 @@ OFBool DSRTemporalCoordinatesValue::operator==(const DSRTemporalCoordinatesValue
 }
 
 
-OFBool DSRTemporalCoordinatesValue::operator!=(const DSRTemporalCoordinatesValue &coordinatesValue) const
+OFBool DSRTemporalCoordinatesValue::isNotEqual(const DSRTemporalCoordinatesValue &coordinatesValue) const
 {
     return (TemporalRangeType != coordinatesValue.TemporalRangeType) ||
            (SamplePositionList != coordinatesValue.SamplePositionList) ||
            (TimeOffsetList != coordinatesValue.TimeOffsetList) ||
            (DateTimeList != coordinatesValue.DateTimeList);
-}
-
-
-void DSRTemporalCoordinatesValue::clear()
-{
-    TemporalRangeType = DSRTypes::TRT_invalid;
-    SamplePositionList.clear();
-    TimeOffsetList.clear();
-    DateTimeList.clear();
 }
 
 
@@ -375,4 +375,20 @@ OFCondition DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRan
         result = SR_EC_InvalidValue;
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRTemporalCoordinatesValue &lhs,
+                  const DSRTemporalCoordinatesValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRTemporalCoordinatesValue &lhs,
+                  const DSRTemporalCoordinatesValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

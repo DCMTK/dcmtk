@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,32 +49,6 @@ DSRImageTreeNode::~DSRImageTreeNode()
 }
 
 
-OFBool DSRImageTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRImageReferenceValue::operator==(OFstatic_cast(const DSRImageTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
-OFBool DSRImageTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRImageReferenceValue::operator!=(OFstatic_cast(const DSRImageTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
 DSRImageTreeNode *DSRImageTreeNode::clone() const
 {
     return new DSRImageTreeNode(*this);
@@ -85,6 +59,32 @@ void DSRImageTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     DSRImageReferenceValue::clear();
+}
+
+
+OFBool DSRImageTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRImageReferenceValue::isEqual(OFstatic_cast(const DSRImageTreeNode &, node).getValue());
+    }
+    return result;
+}
+
+
+OFBool DSRImageTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRImageReferenceValue::isNotEqual(OFstatic_cast(const DSRImageTreeNode &, node).getValue());
+    }
+    return result;
 }
 
 
@@ -174,4 +174,20 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
         docStream << OFendl;
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRImageTreeNode &lhs,
+                  const DSRImageTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRImageTreeNode &lhs,
+                  const DSRImageTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2023, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,13 @@
 #include "dcmtk/dcmsr/dsrtlist.h"
 
 
+// include this file in doxygen documentation
+
+/** @file dsrsc3gr.h
+ *  @brief definitions for class DSRGraphicData3DItem
+ */
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -54,20 +61,20 @@ class DCMTK_DCMSR_EXPORT DSRGraphicData3DItem
     {
     }
 
-    /** comparison operator
+    /** check whether items are "equal"
      ** @param  item  item with which the (x,y,z) triplet should be compared
      ** @return OFTrue if both triplets are equal, OFFalse otherwise
      */
-    inline OFBool operator==(const DSRGraphicData3DItem &item) const
+    inline OFBool isEqual(const DSRGraphicData3DItem &item) const
     {
         return (item.XCoord == XCoord) && (item.YCoord == YCoord) && (item.ZCoord == ZCoord);
     }
 
-    /** comparison operator
+    /** check whether items are "not equal"
      ** @param  item  item with which the (x,y,z) triplet should be compared
      ** @return OFTrue if not equal, OFFalse if equal
      */
-    inline OFBool operator!=(const DSRGraphicData3DItem &item) const
+    inline OFBool isNotEqual(const DSRGraphicData3DItem &item) const
     {
         return (item.XCoord != XCoord) || (item.YCoord != YCoord) || (item.ZCoord != ZCoord);
     }
@@ -172,6 +179,29 @@ class DCMTK_DCMSR_EXPORT DSRGraphicData3DList
      */
     OFCondition putString(const char *stringValue);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRGraphicData3DItem::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRGraphicData3DItem &lhs,
+                                     const DSRGraphicData3DItem &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRGraphicData3DItem::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRGraphicData3DItem &lhs,
+                                     const DSRGraphicData3DItem &rhs);
 
 
 #endif

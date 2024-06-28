@@ -68,10 +68,26 @@ DSRByReferenceTreeNode::~DSRByReferenceTreeNode()
 }
 
 
-OFBool DSRByReferenceTreeNode::operator==(const DSRDocumentTreeNode &node) const
+DSRByReferenceTreeNode *DSRByReferenceTreeNode::clone() const
+{
+    return new DSRByReferenceTreeNode(*this);
+}
+
+
+void DSRByReferenceTreeNode::clear()
+{
+    DSRDocumentTreeNode::clear();
+    ValidReference = OFFalse;
+    ReferencedContentItem.clear();
+    ReferencedNodeID = 0;
+    TargetValueType = VT_invalid;
+}
+
+
+OFBool DSRByReferenceTreeNode::isEqual(const DSRDocumentTreeNode &node) const
 {
     /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
     if (result)
     {
         /* it's safe to cast the type since the value type has already been checked */
@@ -89,10 +105,10 @@ OFBool DSRByReferenceTreeNode::operator==(const DSRDocumentTreeNode &node) const
 }
 
 
-OFBool DSRByReferenceTreeNode::operator!=(const DSRDocumentTreeNode &node) const
+OFBool DSRByReferenceTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
 {
     /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
     if (!result)
     {
         /* it's safe to cast the type since the value type has already been checked */
@@ -107,22 +123,6 @@ OFBool DSRByReferenceTreeNode::operator!=(const DSRDocumentTreeNode &node) const
         }
     }
     return result;
-}
-
-
-DSRByReferenceTreeNode *DSRByReferenceTreeNode::clone() const
-{
-    return new DSRByReferenceTreeNode(*this);
-}
-
-
-void DSRByReferenceTreeNode::clear()
-{
-    DSRDocumentTreeNode::clear();
-    ValidReference = OFFalse;
-    ReferencedContentItem.clear();
-    ReferencedNodeID = 0;
-    TargetValueType = VT_invalid;
 }
 
 
@@ -342,4 +342,20 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 {
     /* invalid: no template identification allowed */
     return EC_IllegalCall;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRByReferenceTreeNode &lhs,
+                  const DSRByReferenceTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRByReferenceTreeNode &lhs,
+                  const DSRByReferenceTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

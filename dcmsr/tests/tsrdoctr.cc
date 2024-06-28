@@ -173,7 +173,7 @@ OFTEST(dcmsr_compareNodes)
     /* create an "incompatible" node */
     DSRNumTreeNode numNode(DSRTypes::RT_contains);
     /* and compare it to the initial node */
-    OFCHECK(numNode.operator!=(node)); // this resolves operator ambiguity in C++20
+    OFCHECK(numNode != node);
     delete newNode;
     /* try the same with an "included template" tree node */
     DSRIncludedTemplateTreeNode templNode1(DSRSharedSubTemplate(NULL), DSRTypes::RT_contains);

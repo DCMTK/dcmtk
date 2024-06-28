@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2018, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,7 +72,16 @@ DSRSpatialCoordinates3DValue &DSRSpatialCoordinates3DValue::operator=(const DSRS
 }
 
 
-OFBool DSRSpatialCoordinates3DValue::operator==(const DSRSpatialCoordinates3DValue &coordinatesValue) const
+void DSRSpatialCoordinates3DValue::clear()
+{
+    GraphicType = DSRTypes::GT3_invalid;
+    GraphicDataList.clear();
+    FrameOfReferenceUID.clear();
+    FiducialUID.clear();
+}
+
+
+OFBool DSRSpatialCoordinates3DValue::isEqual(const DSRSpatialCoordinates3DValue &coordinatesValue) const
 {
     return (GraphicType == coordinatesValue.GraphicType) &&
            (GraphicDataList == coordinatesValue.GraphicDataList) &&
@@ -81,21 +90,12 @@ OFBool DSRSpatialCoordinates3DValue::operator==(const DSRSpatialCoordinates3DVal
 }
 
 
-OFBool DSRSpatialCoordinates3DValue::operator!=(const DSRSpatialCoordinates3DValue &coordinatesValue) const
+OFBool DSRSpatialCoordinates3DValue::isNotEqual(const DSRSpatialCoordinates3DValue &coordinatesValue) const
 {
     return (GraphicType != coordinatesValue.GraphicType) ||
            (GraphicDataList != coordinatesValue.GraphicDataList) ||
            (FrameOfReferenceUID != coordinatesValue.FrameOfReferenceUID) ||
            (FiducialUID != coordinatesValue.FiducialUID);
-}
-
-
-void DSRSpatialCoordinates3DValue::clear()
-{
-    GraphicType = DSRTypes::GT3_invalid;
-    GraphicDataList.clear();
-    FrameOfReferenceUID.clear();
-    FiducialUID.clear();
 }
 
 
@@ -422,4 +422,20 @@ OFCondition DSRSpatialCoordinates3DValue::checkFiducialUID(const OFString &fiduc
     /* fiducial UID might be empty */
     return fiducialUID.empty() ? EC_Normal
                                : DcmUniqueIdentifier::checkStringValue(fiducialUID, "1");
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRSpatialCoordinates3DValue &lhs,
+                  const DSRSpatialCoordinates3DValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRSpatialCoordinates3DValue &lhs,
+                  const DSRSpatialCoordinates3DValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

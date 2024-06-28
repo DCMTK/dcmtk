@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,6 +31,13 @@
 #include "dcmtk/dcmdata/dcvrfd.h"
 #include "dcmtk/dcmdata/dcvrsl.h"
 #include "dcmtk/dcmdata/dcvrul.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrnumvl.h
+ *  @brief definitions for class DSRNumericMeasurementValue
+ */
 
 
 /*---------------------*
@@ -99,16 +106,21 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      */
     DSRNumericMeasurementValue &operator=(const DSRNumericMeasurementValue &numericMeasurement);
 
-    /** comparison operator "equal".
+    /** clear all internal variables.
+     *  Use this method to create an empty numeric measurement value.
+     */
+    virtual void clear();
+
+    /** check whether values are "equal".
      *  Two numeric measurement values are equal if the numeric value, the measurement unit
      *  and the value qualifier are equal.  Other (additional) information is not used.
      ** @param  numericMeasurement  numeric measurement value that should be compared to the
      *                              current one
      ** @return OFTrue if both numeric measurement values are equal, OFFalse otherwise
      */
-    OFBool operator==(const DSRNumericMeasurementValue &numericMeasurement) const;
+    OFBool isEqual(const DSRNumericMeasurementValue &numericMeasurement) const;
 
-    /** comparison operator "not equal".
+    /** check whether values are "not equal".
      *  Two numeric measurement values are not equal if either the numeric value or the
      *  measurement unit or the value qualifier are not equal.  Other (additional) information
      *  is not used for comparison.
@@ -116,12 +128,7 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
      *                              current one
      ** @return OFTrue if both numeric measurement values are not equal, OFFalse otherwise
      */
-    OFBool operator!=(const DSRNumericMeasurementValue &numericMeasurement) const;
-
-    /** clear all internal variables.
-     *  Use this method to create an empty numeric measurement value.
-     */
-    virtual void clear();
+    OFBool isNotEqual(const DSRNumericMeasurementValue &numericMeasurement) const;
 
     /** check whether the current numeric measurement value is valid.
      *  The value is valid if isEmpty() is true or both the numeric value and the measurement
@@ -545,6 +552,10 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
 };
 
 
+/*------------------------*
+ *  i/o stream operators  *
+ *------------------------*/
+
 /** output stream operator for numeric measurement values.
  *  Internally, the DSRNumericMeasurementValue::print() method is used, i.e. the output
  *  looks like this: "3.5" (cm,UCUM[1.4],"centimeter") or "empty" (if the value is empty)
@@ -555,6 +566,29 @@ class DCMTK_DCMSR_EXPORT DSRNumericMeasurementValue
  */
 DCMTK_DCMSR_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
                                                      const DSRNumericMeasurementValue &numericMeasurement);
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRNumericMeasurementValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRNumericMeasurementValue &lhs,
+                                     const DSRNumericMeasurementValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRNumericMeasurementValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRNumericMeasurementValue &lhs,
+                                     const DSRNumericMeasurementValue &rhs);
 
 
 #endif

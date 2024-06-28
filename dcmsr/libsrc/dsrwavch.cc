@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -192,4 +192,34 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
         }
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRWaveformChannelItem &lhs,
+                  const DSRWaveformChannelItem &rhs)
+{
+  return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRWaveformChannelItem &lhs,
+                  const DSRWaveformChannelItem &rhs)
+{
+  return lhs.isNotEqual(rhs);
+}
+
+
+OFBool operator<(const DSRWaveformChannelItem &lhs,
+                 const DSRWaveformChannelItem &rhs)
+{
+  return lhs.isLessThan(rhs);
+}
+
+
+OFBool operator>(const DSRWaveformChannelItem &lhs,
+                 const DSRWaveformChannelItem &rhs)
+{
+  return lhs.isGreaterThan(rhs);
 }

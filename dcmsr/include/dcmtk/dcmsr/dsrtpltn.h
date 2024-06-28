@@ -30,6 +30,13 @@
 #include "dcmtk/dcmsr/dsrstpl.h"
 
 
+// include this file in doxygen documentation
+
+/** @file dsrtpltn.h
+ *  @brief definitions for class DSRIncludedTemplateTreeNode
+ */
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -61,23 +68,6 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      */
     virtual ~DSRIncludedTemplateTreeNode();
 
-    /** comparison operator "equal".
-     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
-     *  regards them as "equal" (same types and concept names) and the stored values are equal.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
-     */
-    virtual OFBool operator==(const DSRDocumentTreeNode &node) const;
-
-    /** comparison operator "not equal".
-     *  Two tree nodes are not equal if either the comparison operator of the base class
-     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
-     *  the stored values are not equal.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
-     */
-    virtual OFBool operator!=(const DSRDocumentTreeNode &node) const;
-
     /** clone this tree node.
      *  Internally, the copy constructor is used, so the corresponding comments apply.
      ** @return copy of this tree node
@@ -88,6 +78,23 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      *  Please note that the content item becomes invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether nodes are "equal".
+     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
+     *  regards them as "equal" (same types and concept names) and the stored values are equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
+     */
+    virtual OFBool isEqual(const DSRDocumentTreeNode &node) const;
+
+    /** check whether nodes are "not equal".
+     *  Two tree nodes are not equal if either the comparison operator of the base class
+     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
+     *  the stored values are not equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
+     */
+    virtual OFBool isNotEqual(const DSRDocumentTreeNode &node) const;
 
     /** check whether the content item is valid.
      *  The content item is valid if the base class is valid and the reference to the
@@ -260,6 +267,29 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
     DSRIncludedTemplateTreeNode();
     DSRIncludedTemplateTreeNode &operator=(const DSRIncludedTemplateTreeNode &);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRIncludedTemplateTreeNode::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRIncludedTemplateTreeNode &lhs,
+                                     const DSRIncludedTemplateTreeNode &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRIncludedTemplateTreeNode::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRIncludedTemplateTreeNode &lhs,
+                                     const DSRIncludedTemplateTreeNode &rhs);
 
 
 #endif

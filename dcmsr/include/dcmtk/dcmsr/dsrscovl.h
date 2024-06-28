@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,13 @@
 
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrscogr.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrscovl.h
+ *  @brief definitions for class DSRSpatialCoordinatesValue
+ */
 
 
 /*---------------------*
@@ -68,25 +75,25 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinatesValue
      */
     DSRSpatialCoordinatesValue &operator=(const DSRSpatialCoordinatesValue &coordinatesValue);
 
-    /** comparison operator "equal"
-     ** @param  coordinatesValue  spatial coordinates value that should be compared to the
-     *                            current one
-     ** @return OFTrue if both spatial coordinates values are equal, OFFalse otherwise
-     */
-    OFBool operator==(const DSRSpatialCoordinatesValue &coordinatesValue) const;
-
-    /** comparison operator "not equal"
-     ** @param  coordinatesValue  spatial coordinates value that should be compared to the
-     *                            current one
-     ** @return OFTrue if both spatial coordinates values are not equal, OFFalse otherwise
-     */
-    OFBool operator!=(const DSRSpatialCoordinatesValue &coordinatesValue) const;
-
     /** clear all internal variables.
      *  Graphic type is set to DSRTypes::GT_invalid.  Since an empty list of graphic data is
      *  invalid the spatial coordinates value becomes invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether values are "equal"
+     ** @param  coordinatesValue  spatial coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both spatial coordinates values are equal, OFFalse otherwise
+     */
+    OFBool isEqual(const DSRSpatialCoordinatesValue &coordinatesValue) const;
+
+    /** check whether values are "not equal"
+     ** @param  coordinatesValue  spatial coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both spatial coordinates values are not equal, OFFalse otherwise
+     */
+    OFBool isNotEqual(const DSRSpatialCoordinatesValue &coordinatesValue) const;
 
     /** check whether the current spatial coordinates value is valid.
      *  The value is valid if the graphic type is not DSRTypes::GT_invalid and the graphic data
@@ -278,6 +285,29 @@ class DCMTK_DCMSR_EXPORT DSRSpatialCoordinatesValue
     /// Pixel Origin Interpretation (VR=CS, VM=1, type 1C)
      // - tbd: conditional attribute not yet supported
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRSpatialCoordinatesValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRSpatialCoordinatesValue &lhs,
+                                     const DSRSpatialCoordinatesValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRSpatialCoordinatesValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRSpatialCoordinatesValue &lhs,
+                                     const DSRSpatialCoordinatesValue &rhs);
 
 
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,24 +72,24 @@ DSRCompositeReferenceValue &DSRCompositeReferenceValue::operator=(const DSRCompo
 }
 
 
-OFBool DSRCompositeReferenceValue::operator==(const DSRCompositeReferenceValue &referenceValue) const
+void DSRCompositeReferenceValue::clear()
+{
+    SOPClassUID.clear();
+    SOPInstanceUID.clear();
+}
+
+
+OFBool DSRCompositeReferenceValue::isEqual(const DSRCompositeReferenceValue &referenceValue) const
 {
     return (SOPClassUID == referenceValue.SOPClassUID) &&
            (SOPInstanceUID == referenceValue.SOPInstanceUID);
 }
 
 
-OFBool DSRCompositeReferenceValue::operator!=(const DSRCompositeReferenceValue &referenceValue) const
+OFBool DSRCompositeReferenceValue::isNotEqual(const DSRCompositeReferenceValue &referenceValue) const
 {
     return (SOPClassUID != referenceValue.SOPClassUID) ||
            (SOPInstanceUID != referenceValue.SOPInstanceUID);
-}
-
-
-void DSRCompositeReferenceValue::clear()
-{
-    SOPClassUID.clear();
-    SOPInstanceUID.clear();
 }
 
 
@@ -439,4 +439,20 @@ OFCondition DSRCompositeReferenceValue::checkCurrentValue(const OFBool reportWar
     if (result.good())
         result = checkSOPInstanceUID(SOPInstanceUID, reportWarnings);
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRCompositeReferenceValue &lhs,
+                  const DSRCompositeReferenceValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRCompositeReferenceValue &lhs,
+                  const DSRCompositeReferenceValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

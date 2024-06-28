@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,13 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrdoctn.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrcontn.h
+ *  @brief definitions for class DSRContainerTreeNode
+ */
 
 
 /*---------------------*
@@ -61,23 +68,6 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
      */
     virtual ~DSRContainerTreeNode();
 
-    /** comparison operator "equal".
-     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
-     *  regards them as "equal" (same types and concept names) and the stored values are equal.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
-     */
-    virtual OFBool operator==(const DSRDocumentTreeNode &node) const;
-
-    /** comparison operator "not equal".
-     *  Two tree nodes are not equal if either the comparison operator of the base class
-     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
-     *  the stored values are not equal.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
-     */
-    virtual OFBool operator!=(const DSRDocumentTreeNode &node) const;
-
     /** clone this tree node.
      *  Internally, the copy constructor is used, so the corresponding comments apply.
      ** @return copy of this tree node
@@ -88,6 +78,23 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
      *  Please note that the content item might become invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether nodes are "equal".
+     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
+     *  regards them as "equal" (same types and concept names) and the stored values are equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
+     */
+    virtual OFBool isEqual(const DSRDocumentTreeNode &node) const;
+
+    /** check whether nodes are "not equal".
+     *  Two tree nodes are not equal if either the comparison operator of the base class
+     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
+     *  the stored values are not equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
+     */
+    virtual OFBool isNotEqual(const DSRDocumentTreeNode &node) const;
 
     /** check whether the content item is valid.
      *  The content item is valid if the base class is valid, the value is valid (see hasValidValue()),
@@ -220,6 +227,29 @@ class DCMTK_DCMSR_EXPORT DSRContainerTreeNode
     DSRContainerTreeNode();
     DSRContainerTreeNode &operator=(const DSRContainerTreeNode &);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRContainerTreeNode::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRContainerTreeNode &lhs,
+                                     const DSRContainerTreeNode &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRContainerTreeNode::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRContainerTreeNode &lhs,
+                                     const DSRContainerTreeNode &rhs);
 
 
 #endif

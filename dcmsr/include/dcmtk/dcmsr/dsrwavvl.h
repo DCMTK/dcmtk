@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,13 @@
 #include "dcmtk/dcmsr/dsrtypes.h"
 #include "dcmtk/dcmsr/dsrcomvl.h"
 #include "dcmtk/dcmsr/dsrwavch.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrwavvl.h
+ *  @brief definitions for class DSRWaveformReferenceValue
+ */
 
 
 /*---------------------*
@@ -77,22 +84,22 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
      */
     DSRWaveformReferenceValue &operator=(const DSRWaveformReferenceValue &referenceValue);
 
-    /** comparison operator "equal"
-     ** @param  referenceValue  waveform reference value that should be compared to the current one
-     ** @return OFTrue if both waveform reference values are equal, OFFalse otherwise
-     */
-    OFBool operator==(const DSRWaveformReferenceValue &referenceValue) const;
-
-    /** comparison operator "not equal"
-     ** @param  referenceValue  waveform reference value that should be compared to the current one
-     ** @return OFTrue if both waveform reference values are not equal, OFFalse otherwise
-     */
-    OFBool operator!=(const DSRWaveformReferenceValue &referenceValue) const;
-
     /** clear all internal variables.
      *  Since an empty waveform reference is invalid the reference becomes invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether values are "equal"
+     ** @param  referenceValue  waveform reference value that should be compared to the current one
+     ** @return OFTrue if both waveform reference values are equal, OFFalse otherwise
+     */
+    OFBool isEqual(const DSRWaveformReferenceValue &referenceValue) const;
+
+    /** check whether values are "not equal"
+     ** @param  referenceValue  waveform reference value that should be compared to the current one
+     ** @return OFTrue if both waveform reference values are not equal, OFFalse otherwise
+     */
+    OFBool isNotEqual(const DSRWaveformReferenceValue &referenceValue) const;
 
     /** check whether the content is short.
      *  This method is used to check whether the rendered output of this content item can be
@@ -230,6 +237,29 @@ class DCMTK_DCMSR_EXPORT DSRWaveformReferenceValue
     /// list of referenced waveform channels (associated DICOM VR=US, VM=2-2n, type 1C)
     DSRWaveformChannelList ChannelList;
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRWaveformReferenceValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRWaveformReferenceValue &lhs,
+                                     const DSRWaveformReferenceValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRWaveformReferenceValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRWaveformReferenceValue &lhs,
+                                     const DSRWaveformReferenceValue &rhs);
 
 
 #endif

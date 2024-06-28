@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,32 +49,6 @@ DSRWaveformTreeNode::~DSRWaveformTreeNode()
 }
 
 
-OFBool DSRWaveformTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRWaveformReferenceValue::operator==(OFstatic_cast(const DSRWaveformTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
-OFBool DSRWaveformTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRWaveformReferenceValue::operator!=(OFstatic_cast(const DSRWaveformTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
 DSRWaveformTreeNode *DSRWaveformTreeNode::clone() const
 {
     return new DSRWaveformTreeNode(*this);
@@ -85,6 +59,32 @@ void DSRWaveformTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     DSRWaveformReferenceValue::clear();
+}
+
+
+OFBool DSRWaveformTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRWaveformReferenceValue::isEqual(OFstatic_cast(const DSRWaveformTreeNode &, node).getValue());
+    }
+    return result;
+}
+
+
+OFBool DSRWaveformTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRWaveformReferenceValue::isNotEqual(OFstatic_cast(const DSRWaveformTreeNode &, node).getValue());
+    }
+    return result;
 }
 
 
@@ -174,4 +174,20 @@ OFCondition DSRWaveformTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &do
         docStream << OFendl;
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRWaveformTreeNode &lhs,
+                  const DSRWaveformTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRWaveformTreeNode &lhs,
+                  const DSRWaveformTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }
