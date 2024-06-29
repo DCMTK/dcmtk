@@ -540,10 +540,70 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
     const OFBool hasEscapeChar = checkForEscapeCharacter(fromString, fromLength);
     if (EncodingConverters.empty() || (!hasEscapeChar && delimiters.empty()))
     {
-        DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
-            << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
-        // no code extensions according to ISO 2022 used - this is the simple case
-        status = DefaultEncodingConverter.convertString(fromString, fromLength, toString, OFTrue /*clearMode*/);
+        if (delimiters.empty())
+        {
+            // no code extensions according to ISO 2022 used and no delimiters - this is the simple case
+            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+                << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
+            status = DefaultEncodingConverter.convertString(fromString, fromLength, toString, OFTrue /*clearMode*/);
+        } else {
+            // no code extensions according to ISO 2022 used, but delimiters
+            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+                << convertToLengthLimitedOctalString(fromString, fromLength)
+                << "' (with delimiters '" << delimiters << "')");
+
+            toString.clear();
+            size_t pos = 0;
+            const char *firstChar = fromString;
+            const char *currentChar = fromString;
+
+            // iterate over all characters of the string (as long as there is no error)
+            while ((pos < fromLength) && status.good())
+            {
+                const char c0 = *currentChar++;
+
+                // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
+                if ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (delimiters.find(c0) != OFString_npos))
+                {
+                    // convert the sub-string (before the delimiter) with the current character set
+                    const size_t convertLength = currentChar - firstChar - 1;
+                    if (convertLength > 0)
+                    {
+                        // output some debug information
+                        DCMDATA_TRACE("    Converting sub-string '"
+                            << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+                        status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+                        if (status.bad())
+                            DCMDATA_TRACE("    -> ERROR: " << status.text());
+                    }
+
+                    // output some debug information
+                    DCMDATA_TRACE("    Appending delimiter '"
+                        << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
+                        << "' to the output");
+                    // don't forget to append the delimiter
+                    toString += c0;
+
+                    // start new sub-string after delimiter
+                    firstChar = currentChar;
+                }
+                ++pos;
+            }
+            if (status.good())
+            {
+                // convert any remaining characters from the input string
+                const size_t convertLength = currentChar - firstChar;
+                if (convertLength > 0)
+                {
+                    // output some debug information
+                    DCMDATA_TRACE("    Converting remaining sub-string '"
+                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+                    status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+                    if (status.bad())
+                        DCMDATA_TRACE("    -> ERROR: " << status.text());
+                }
+            }
+        }
     } else {
         if (delimiters.empty())
         {
