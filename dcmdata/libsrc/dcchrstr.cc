@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -168,7 +168,19 @@ OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converte
     {
         OFString resultStr;
         // convert string to selected character string and replace the element value
-        status = converter.convertString(str, len, resultStr, getDelimiterChars());
+        const DcmTag& tag = getTag();
+        if ((tag.getGTag() & 1) && (tag.getETag() <= 0xff) && (tag.getETag() >= 0x10))
+        {
+            // special handling for private creator elements: treat the '~' character
+            // as a delimiter, i.e. never convert it. Needed for ISO_IR 13 datasets.
+            OFString delimiters = getDelimiterChars();
+            delimiters += "~";
+            status = converter.convertString(str, len, resultStr, delimiters);
+        }
+        else
+        {
+            status = converter.convertString(str, len, resultStr, getDelimiterChars());
+        }
         if (status.good())
         {
             // check whether the value has changed during the conversion (slows down the process?)
