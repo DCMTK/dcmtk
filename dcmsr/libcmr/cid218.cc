@@ -5,8 +5,8 @@
  *
  *  Source file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2024b
- *  File created on 2024-04-03 11:12:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024c
+ *  File created on 2024-07-04 10:26:17 by J. Riesmeier
  *
  */
 

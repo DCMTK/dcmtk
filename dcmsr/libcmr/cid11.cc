@@ -5,8 +5,8 @@
  *
  *  Source file for class CID11_AdministrationRoute
  *
- *  Generated automatically from DICOM PS 3.16-2024b
- *  File created on 2024-04-03 11:12:29 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024c
+ *  File created on 2024-07-04 10:26:13 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 11 (Administration Route)
 #define CONTEXT_GROUP_NUMBER  "11"
-#define CONTEXT_GROUP_VERSION "20200117"
+#define CONTEXT_GROUP_VERSION "20240611"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.9"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -174,7 +174,7 @@ CID11_AdministrationRoute::CodeList &CID11_AdministrationRoute::getCodes()
         Codes->insert(OFMake_pair(NasalRoute, DSRBasicCodedEntry("46713006", "SCT", "Nasal route")));
         Codes->insert(OFMake_pair(IntradermalRoute, DSRBasicCodedEntry("372464004", "SCT", "Intradermal route")));
         Codes->insert(OFMake_pair(IntratumorRoute, DSRBasicCodedEntry("447122006", "SCT", "Intratumor route")));
-        Codes->insert(OFMake_pair(IntracorpusCavernosumRoute, DSRBasicCodedEntry("445769006", "SCT", "Intracorpus cavernosum route")));
+        Codes->insert(OFMake_pair(IntracorpusCavernosumRoute, DSRBasicCodedEntry("1259221004", "SCT", "Intracorpus cavernosum route")));
     }
     /* should never be NULL */
     return *Codes;
