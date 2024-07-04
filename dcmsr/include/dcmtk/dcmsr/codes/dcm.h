@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2024b
- *  File created on 2024-04-03 10:40:38 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024c
+ *  File created on 2024-07-04 10:08:05 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4720
-// - retired: 204
+// total number of codes: 4784
+// - retired: 206
 // - no name: 27
 // - not unique: 17
 
@@ -1448,7 +1448,7 @@
 #define CODE_DCM_AgatstonScoringMethod                                     DSRBasicCodedEntry("112055", "DCM", "Agatston scoring method")
 #define CODE_DCM_VolumeScoringMethod                                       DSRBasicCodedEntry("112056", "DCM", "Volume scoring method")
 #define CODE_DCM_MassScoringMethod                                         DSRBasicCodedEntry("112057", "DCM", "Mass scoring method")
-#define CODE_DCM_CalciumScore                                              DSRBasicCodedEntry("112058", "DCM", "Calcium score")
+#define CODE_DCM_RETIRED_CalciumScore                                      DSRBasicCodedEntry("112058", "DCM", "Calcium score")
 #define CODE_DCM_PrimaryComplex                                            DSRBasicCodedEntry("112059", "DCM", "Primary complex")
 #define CODE_DCM_Oligemia                                                  DSRBasicCodedEntry("112060", "DCM", "Oligemia")
 #define CODE_DCM_AbnormalLines_1D                                          DSRBasicCodedEntry("112061", "DCM", "Abnormal lines (1D)")
@@ -1543,7 +1543,7 @@
 #define CODE_DCM_Linear                                                    DSRBasicCodedEntry("112150", "DCM", "Linear")
 #define CODE_DCM_Profusion                                                 DSRBasicCodedEntry("112151", "DCM", "Profusion")
 #define CODE_DCM_SilhouetteSign                                            DSRBasicCodedEntry("112152", "DCM", "Silhouette sign")
-#define CODE_DCM_Subpleural                                                DSRBasicCodedEntry("112153", "DCM", "Subpleural")
+#define CODE_DCM_RETIRED_Subpleural                                        DSRBasicCodedEntry("112153", "DCM", "Subpleural")
 #define CODE_DCM_BatWingDistribution                                       DSRBasicCodedEntry("112154", "DCM", "Bat's wing distribution")
 #define CODE_DCM_ButterflyDistribution                                     DSRBasicCodedEntry("112155", "DCM", "Butterfly distribution")
 #define CODE_DCM_Centrilobular                                             DSRBasicCodedEntry("112156", "DCM", "Centrilobular")
@@ -2461,6 +2461,8 @@
 #define CODE_DCM_RTPreTreatmentConsistencyCheck                            DSRBasicCodedEntry("121374", "DCM", "RT Pre-Treatment Consistency Check")
 #define CODE_DCM_AssessmentByComparison                                    DSRBasicCodedEntry("121375", "DCM", "Assessment By Comparison")
 #define CODE_DCM_AssessmentByRules                                         DSRBasicCodedEntry("121376", "DCM", "Assessment By Rules")
+#define CODE_DCM_ComposedWithRadiobiologicalEffects                        DSRBasicCodedEntry("121377", "DCM", "Composed with radiobiological effects")
+#define CODE_DCM_ComposedWithWeightingForFractionsDelivered                DSRBasicCodedEntry("121378", "DCM", "Composed with weighting for fractions delivered")
 #define CODE_DCM_ActiveIngredientUndilutedConcentration                    DSRBasicCodedEntry("121380", "DCM", "Active Ingredient Undiluted Concentration")
 #define CODE_DCM_ContrastBolusIngredientOpaque                             DSRBasicCodedEntry("121381", "DCM", "Contrast/Bolus Ingredient Opaque")
 #define CODE_DCM_QuantityAdministered                                      DSRBasicCodedEntry("121382", "DCM", "Quantity administered")
@@ -2539,6 +2541,9 @@
 #define CODE_DCM_RTTreatmentQAByRTIonPlanDoseCheck                         DSRBasicCodedEntry("121733", "DCM", "RT Treatment QA by RT Ion Plan Dose Check")
 #define CODE_DCM_RTTreatmentQAWithRTIonPlanDifferenceCheck                 DSRBasicCodedEntry("121734", "DCM", "RT Treatment QA with RT Ion Plan Difference Check")
 #define CODE_DCM_RTBrachyTreatment                                         DSRBasicCodedEntry("121735", "DCM", "RT Brachy Treatment")
+#define CODE_DCM_RTImageGuidedPatientPositioningAndTreatmentDelivery       DSRBasicCodedEntry("121736", "DCM", "RT Image-Guided Patient Positioning and Treatment Delivery")
+#define CODE_DCM_RTPatientPositionAcquisition_MR                           DSRBasicCodedEntry("121737", "DCM", "RT Patient Position Acquisition, MR")
+#define CODE_DCM_RTPatientPositionRegistration_MR                          DSRBasicCodedEntry("121738", "DCM", "RT Patient Position Registration, MR")
 #define CODE_DCM_TreatmentDeliveryType                                     DSRBasicCodedEntry("121740", "DCM", "Treatment Delivery Type")
 #define CODE_DCM_PatientCalledToProcedureRoom                              DSRBasicCodedEntry("122001", "DCM", "Patient called to procedure room")
 #define CODE_DCM_PatientAdmittedToProcedureRoom                            DSRBasicCodedEntry("122002", "DCM", "Patient admitted to procedure room")
@@ -3636,6 +3641,8 @@
 #define CODE_DCM_GeometricCenterpoint                                      DSRBasicCodedEntry("128137", "DCM", "Geometric Centerpoint")
 #define CODE_DCM_CenterOfMass                                              DSRBasicCodedEntry("128138", "DCM", "Center of Mass")
 #define CODE_DCM_SeedPoint                                                 DSRBasicCodedEntry("128139", "DCM", "Seed point")
+#define CODE_DCM_RepresentativePoint                                       DSRBasicCodedEntry("128140", "DCM", "Representative point")
+#define CODE_DCM_BoundaryPoint                                             DSRBasicCodedEntry("128141", "DCM", "Boundary point")
 #define CODE_DCM_ImpairedRenalFunction                                     DSRBasicCodedEntry("128144", "DCM", "Impaired Renal Function")
 #define CODE_DCM_LaserCrossHairs                                           DSRBasicCodedEntry("128151", "DCM", "Laser Cross-hairs")
 #define CODE_DCM_AcquiredVolume                                            DSRBasicCodedEntry("128160", "DCM", "Acquired Volume")
@@ -4029,6 +4036,7 @@
 #define CODE_DCM_ImageUsedAsReferenceImageForTreatment                     DSRBasicCodedEntry("129204", "DCM", "Image used as Reference Image for Treatment")
 #define CODE_DCM_RegistrationUsedInPlanning                                DSRBasicCodedEntry("129210", "DCM", "Registration used in Planning")
 #define CODE_DCM_RegistrationCreatedDuringTreatment                        DSRBasicCodedEntry("129211", "DCM", "Registration created during Treatment")
+#define CODE_DCM_DoseFromPriorTreatment                                    DSRBasicCodedEntry("129212", "DCM", "Dose from prior Treatment")
 #define CODE_DCM_CoilMarker                                                DSRBasicCodedEntry("129301", "DCM", "Coil Marker")
 #define CODE_DCM_CylinderMarker                                            DSRBasicCodedEntry("129303", "DCM", "Cylinder Marker")
 #define CODE_DCM_WireMarker                                                DSRBasicCodedEntry("129305", "DCM", "Wire Marker")
@@ -4768,5 +4776,61 @@
 #define CODE_DCM_BeamEnergyInterlock                                       DSRBasicCodedEntry("130831", "DCM", "Beam Energy Interlock")
 #define CODE_DCM_SkinLesionColor                                           DSRBasicCodedEntry("130832", "DCM", "Skin lesion color")
 #define CODE_DCM_PreSurgicalAnatomy                                        DSRBasicCodedEntry("130833", "DCM", "Pre-surgical anatomy")
+#define CODE_DCM_SleepStageN1                                              DSRBasicCodedEntry("130834", "DCM", "Sleep Stage N1")
+#define CODE_DCM_SleepStageN2                                              DSRBasicCodedEntry("130835", "DCM", "Sleep Stage N2")
+#define CODE_DCM_SleepStageN3                                              DSRBasicCodedEntry("130836", "DCM", "Sleep Stage N3")
+#define CODE_DCM_SeatPanHeight                                             DSRBasicCodedEntry("130840", "DCM", "Seat Pan Height")
+#define CODE_DCM_SeatPanPitchAngle                                         DSRBasicCodedEntry("130841", "DCM", "Seat Pan Pitch Angle")
+#define CODE_DCM_BackrestPitchAngle                                        DSRBasicCodedEntry("130842", "DCM", "Backrest Pitch Angle")
+#define CODE_DCM_ShinRestPosition                                          DSRBasicCodedEntry("130843", "DCM", "Shin Rest Position")
+#define CODE_DCM_HeelStopPosition                                          DSRBasicCodedEntry("130844", "DCM", "Heel Stop Position")
+#define CODE_DCM_LeftArmRestPosition                                       DSRBasicCodedEntry("130845", "DCM", "Left Arm Rest Position")
+#define CODE_DCM_LeftArmRestPitchAngle                                     DSRBasicCodedEntry("130846", "DCM", "Left Arm Rest Pitch Angle")
+#define CODE_DCM_LeftArmRestRollAngle                                      DSRBasicCodedEntry("130847", "DCM", "Left Arm Rest Roll Angle")
+#define CODE_DCM_RightArmRestPosition                                      DSRBasicCodedEntry("130848", "DCM", "Right Arm Rest Position")
+#define CODE_DCM_RightArmRestPitchAngle                                    DSRBasicCodedEntry("130849", "DCM", "Right Arm Rest Pitch Angle")
+#define CODE_DCM_RightArmRestRollAngle                                     DSRBasicCodedEntry("130850", "DCM", "Right Arm Rest Roll Angle")
+#define CODE_DCM_HandGripsPresence                                         DSRBasicCodedEntry("130851", "DCM", "Hand Grips Presence")
+#define CODE_DCM_ShinRest                                                  DSRBasicCodedEntry("130852", "DCM", "Shin Rest")
+#define CODE_DCM_HeelStop                                                  DSRBasicCodedEntry("130853", "DCM", "Heel Stop")
+#define CODE_DCM_HandGrips                                                 DSRBasicCodedEntry("130854", "DCM", "Hand Grips")
+#define CODE_DCM_SeatPan                                                   DSRBasicCodedEntry("130855", "DCM", "Seat Pan")
+#define CODE_DCM_PatternEvent                                              DSRBasicCodedEntry("130860", "DCM", "Pattern Event")
+#define CODE_DCM_EEGAnnotation                                             DSRBasicCodedEntry("130861", "DCM", "EEG Annotation")
+#define CODE_DCM_EMGAnnotation                                             DSRBasicCodedEntry("130862", "DCM", "EMG Annotation")
+#define CODE_DCM_EOGAnnotation                                             DSRBasicCodedEntry("130863", "DCM", "EOG Annotation")
+#define CODE_DCM_DeviceRelatedAndEnvironmentRelatedEvent                   DSRBasicCodedEntry("130864", "DCM", "Device-related and Environment-related Event")
+#define CODE_DCM_PatientConsciousness                                      DSRBasicCodedEntry("130865", "DCM", "Patient Consciousness")
+#define CODE_DCM_ECGAnnotation                                             DSRBasicCodedEntry("130866", "DCM", "ECG Annotation")
+#define CODE_DCM_NeurophysiologyRecordingAnnotations                       DSRBasicCodedEntry("130867", "DCM", "Neurophysiology Recording Annotations")
+#define CODE_DCM_NeurophysiologyPostHocReviewAnnotations                   DSRBasicCodedEntry("130868", "DCM", "Neurophysiology Post-hoc Review Annotations")
+#define CODE_DCM_NeurophysiologyAutomatedAnalysisAnnotations               DSRBasicCodedEntry("130869", "DCM", "Neurophysiology Automated Analysis Annotations")
+#define CODE_DCM_WaveformAnnotations                                       DSRBasicCodedEntry("130870", "DCM", "Waveform Annotations")
+#define CODE_DCM_ProcedureAnnotated                                        DSRBasicCodedEntry("130871", "DCM", "Procedure annotated")
+#define CODE_DCM_WaveformAnnotationGroup                                   DSRBasicCodedEntry("130872", "DCM", "Waveform Annotation Group")
+#define CODE_DCM_WaveformAnnotationGroupNumber                             DSRBasicCodedEntry("130873", "DCM", "Waveform Annotation Group Number")
+#define CODE_DCM_WaveformAnnotationGroupLabel                              DSRBasicCodedEntry("130874", "DCM", "Waveform Annotation Group Label")
+#define CODE_DCM_WaveformAnnotationModifier                                DSRBasicCodedEntry("130875", "DCM", "Waveform Annotation Modifier")
+#define CODE_DCM_AnnotationNote                                            DSRBasicCodedEntry("130876", "DCM", "Annotation Note")
+#define CODE_DCM_WaveformLibrary                                           DSRBasicCodedEntry("130877", "DCM", "Waveform Library")
+#define CODE_DCM_WaveformLibraryGroup                                      DSRBasicCodedEntry("130878", "DCM", "Waveform Library Group")
+#define CODE_DCM_WaveformLibraryEntryMultiplexGroupDescriptors             DSRBasicCodedEntry("130879", "DCM", "Waveform Library Entry Multiplex Group Descriptors")
+#define CODE_DCM_MultiplexGroupNumber                                      DSRBasicCodedEntry("130880", "DCM", "Multiplex Group Number")
+#define CODE_DCM_MultiplexGroupUID                                         DSRBasicCodedEntry("130881", "DCM", "Multiplex Group UID")
+#define CODE_DCM_SamplingFrequency                                         DSRBasicCodedEntry("130882", "DCM", "Sampling Frequency")
+#define CODE_DCM_NumberOfChannels                                          DSRBasicCodedEntry("130883", "DCM", "Number of Channels")
+#define CODE_DCM_AcquisitionDateTime                                       DSRBasicCodedEntry("130884", "DCM", "Acquisition DateTime")
+#define CODE_DCM_SynchronizationFrameOfReferenceUID                        DSRBasicCodedEntry("130885", "DCM", "Synchronization Frame of Reference UID")
+#define CODE_DCM_LineNoiseArtifact                                         DSRBasicCodedEntry("130886", "DCM", "Line noise artifact")
+#define CODE_DCM_VideoRecordingon                                          DSRBasicCodedEntry("130887", "DCM", "Video recording on")
+#define CODE_DCM_VideoRecordingOff                                         DSRBasicCodedEntry("130888", "DCM", "Video recording off")
+#define CODE_DCM_PreamplifierConnected                                     DSRBasicCodedEntry("130889", "DCM", "Preamplifier connected")
+#define CODE_DCM_PreamplifierDisconnected                                  DSRBasicCodedEntry("130890", "DCM", "Preamplifier disconnected")
+#define CODE_DCM_BreakoutBoxConnected                                      DSRBasicCodedEntry("130891", "DCM", "Breakout box connected")
+#define CODE_DCM_BreakoutBoxDisconnected                                   DSRBasicCodedEntry("130892", "DCM", "Breakout box disconnected")
+#define CODE_DCM_EventButtonPressed                                        DSRBasicCodedEntry("130893", "DCM", "Event button pressed")
+#define CODE_DCM_EventButtonTest                                           DSRBasicCodedEntry("130894", "DCM", "Event button test")
+#define CODE_DCM_TapTestBegin                                              DSRBasicCodedEntry("130895", "DCM", "Tap test begin")
+#define CODE_DCM_TapTestEnd                                                DSRBasicCodedEntry("130896", "DCM", "Tap test end")
 
 #endif
