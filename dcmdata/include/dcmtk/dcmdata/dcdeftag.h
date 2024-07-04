@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-04-03 10:10:36
+**   Date: 2024-07-04 10:04:27
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2024-04-03 10:10:36"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2024-07-04 10:04:27"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5097
+** Number of entries: 5102
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -433,6 +433,7 @@
 #define DCM_PatientTelephoneNumbers              DcmTagKey(0x0010, 0x2154)
 #define DCM_PatientTelecomInformation            DcmTagKey(0x0010, 0x2155)
 #define DCM_EthnicGroup                          DcmTagKey(0x0010, 0x2160)
+#define DCM_EthnicGroupCodeSequence              DcmTagKey(0x0010, 0x2161)
 #define DCM_Occupation                           DcmTagKey(0x0010, 0x2180)
 #define DCM_SmokingStatus                        DcmTagKey(0x0010, 0x21a0)
 #define DCM_AdditionalPatientHistory             DcmTagKey(0x0010, 0x21b0)
@@ -4213,6 +4214,7 @@
 #define DCM_TableTopVerticalPositionTolerance    DcmTagKey(0x300a, 0x0051)
 #define DCM_TableTopLongitudinalPositionTolerance DcmTagKey(0x300a, 0x0052)
 #define DCM_TableTopLateralPositionTolerance     DcmTagKey(0x300a, 0x0053)
+#define DCM_TableTopPositionAlignmentUID         DcmTagKey(0x300a, 0x0054)
 #define DCM_RTPlanRelationship                   DcmTagKey(0x300a, 0x0055)
 #define DCM_FractionGroupSequence                DcmTagKey(0x300a, 0x0070)
 #define DCM_FractionGroupNumber                  DcmTagKey(0x300a, 0x0071)
@@ -4778,6 +4780,9 @@
 #define DCM_PatientSupportDisplacementSequence   DcmTagKey(0x300a, 0x079c)
 #define DCM_DisplacementReferenceLocationCodeSequence DcmTagKey(0x300a, 0x079d)
 #define DCM_RTRadiationSetDeliveryUsage          DcmTagKey(0x300a, 0x079e)
+#define DCM_PatientTreatmentPreparationSequence  DcmTagKey(0x300a, 0x079f)
+#define DCM_PatientToEquipmentRelationshipSequence DcmTagKey(0x300a, 0x07a0)
+#define DCM_ImagingEquipmentToTreatmentDeliveryDeviceRelationshipSequence DcmTagKey(0x300a, 0x07a1)
 #define DCM_ReferencedRTPlanSequence             DcmTagKey(0x300c, 0x0002)
 #define DCM_ReferencedBeamSequence               DcmTagKey(0x300c, 0x0004)
 #define DCM_ReferencedBeamNumber                 DcmTagKey(0x300c, 0x0006)

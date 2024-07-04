@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2024b and PS 3.7-2024b.
-# File created on 2024-04-03 10:08:11 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2024c and PS 3.7-2024c.
+# File created on 2024-07-04 10:02:47 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -394,6 +394,7 @@
 (0010,2154)	SH	PatientTelephoneNumbers	1-n	DICOM
 (0010,2155)	LT	PatientTelecomInformation	1	DICOM
 (0010,2160)	SH	EthnicGroup	1	DICOM
+(0010,2161)	SQ	EthnicGroupCodeSequence	1	DICOM
 (0010,2180)	SH	Occupation	1	DICOM
 (0010,21A0)	CS	SmokingStatus	1	DICOM
 (0010,21B0)	LT	AdditionalPatientHistory	1	DICOM
@@ -3840,6 +3841,7 @@
 (300A,0051)	DS	TableTopVerticalPositionTolerance	1	DICOM
 (300A,0052)	DS	TableTopLongitudinalPositionTolerance	1	DICOM
 (300A,0053)	DS	TableTopLateralPositionTolerance	1	DICOM
+(300A,0054)	UI	TableTopPositionAlignmentUID	1	DICOM
 (300A,0055)	CS	RTPlanRelationship	1	DICOM
 (300A,0070)	SQ	FractionGroupSequence	1	DICOM
 (300A,0071)	IS	FractionGroupNumber	1	DICOM
@@ -4399,6 +4401,9 @@
 (300A,079C)	SQ	PatientSupportDisplacementSequence	1	DICOM
 (300A,079D)	SQ	DisplacementReferenceLocationCodeSequence	1	DICOM
 (300A,079E)	CS	RTRadiationSetDeliveryUsage	1	DICOM
+(300A,079F)	SQ	PatientTreatmentPreparationSequence	1	DICOM
+(300A,07A0)	SQ	PatientToEquipmentRelationshipSequence	1	DICOM
+(300A,07A1)	SQ	ImagingEquipmentToTreatmentDeliveryDeviceRelationshipSequence	1	DICOM
 (300C,0002)	SQ	ReferencedRTPlanSequence	1	DICOM
 (300C,0004)	SQ	ReferencedBeamSequence	1	DICOM
 (300C,0006)	IS	ReferencedBeamNumber	1	DICOM

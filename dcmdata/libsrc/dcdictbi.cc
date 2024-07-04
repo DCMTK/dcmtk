@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-04-03 10:10:56
+**   Date: 2024-07-04 10:04:28
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -2500,6 +2500,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0010, 0x2160, 0x0010, 0x2160,
       EVR_SH, "EthnicGroup", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0010, 0x2161, 0x0010, 0x2161,
+      EVR_SQ, "EthnicGroupCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x2180, 0x0010, 0x2180,
@@ -27848,6 +27852,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "TableTopLateralPositionTolerance", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x300a, 0x0054, 0x300a, 0x0054,
+      EVR_UI, "TableTopPositionAlignmentUID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x300a, 0x0055, 0x300a, 0x0055,
       EVR_CS, "RTPlanRelationship", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -30106,6 +30114,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x079e, 0x300a, 0x079e,
       EVR_CS, "RTRadiationSetDeliveryUsage", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x079f, 0x300a, 0x079f,
+      EVR_SQ, "PatientTreatmentPreparationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x07a0, 0x300a, 0x07a0,
+      EVR_SQ, "PatientToEquipmentRelationshipSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x07a1, 0x300a, 0x07a1,
+      EVR_SQ, "ImagingEquipmentToTreatmentDeliveryDeviceRelationshipSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300c, 0x0002, 0x300c, 0x0002,
