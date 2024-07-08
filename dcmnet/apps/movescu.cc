@@ -1472,11 +1472,17 @@ static OFCondition storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(ofname.c_str());
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) 
+        {
+          OFStandard::deleteFile(ofname.c_str());
+        }
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(ofname.c_str()); // delete the temporary file
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) 
+        {
+          OFStandard::deleteFile(ofname.c_str()); // delete the temporary file
+        }
 #endif
     }
 
