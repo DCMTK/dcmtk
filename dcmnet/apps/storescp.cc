@@ -2056,7 +2056,7 @@ static OFCondition storeSCP(
         // if this is not the first run and the prospective filename is equal to the last written filename
         // generate one with a serial number (incremented by 1)
         timeNameCounter++;
-        sprintf(imageFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", // millisecond version
+        OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
@@ -2064,7 +2064,7 @@ static OFCondition storeSCP(
       else
       {
         // first run or filenames are different: create filename without serial number
-        sprintf(imageFileName, "%04u%02u%02u%02u%02u%02u%03u.%s%s", // millisecond version
+        OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
@@ -2077,7 +2077,7 @@ static OFCondition storeSCP(
       // Use the SOP instance UID as found in the C-STORE request message as part of the filename
       OFString uid(OFSTRING_GUARD(req->AffectedSOPInstanceUID));
       OFStandard::sanitizeFilename(uid);
-      sprintf(imageFileName, "%s.%s%s", dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+      OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         uid.c_str(), opt_fileNameExtension.c_str());
     }
   }
