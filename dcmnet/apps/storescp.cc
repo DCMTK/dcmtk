@@ -2023,7 +2023,7 @@ static OFCondition storeSCP(
       // create unique filename by generating a temporary UID and using ".X." as an infix
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
-      sprintf(imageFileName, "%s.X.%s%s", dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+      OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR,
         buf, opt_fileNameExtension.c_str());
     }
     else if (opt_timeNames)
