@@ -2024,6 +2024,7 @@ static OFCondition storeSCP(
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
       OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR,
+        dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         buf, opt_fileNameExtension.c_str());
     }
     else if (opt_timeNames)
