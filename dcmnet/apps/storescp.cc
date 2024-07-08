@@ -2083,11 +2083,6 @@ static OFCondition storeSCP(
     }
   }
 
-  // Combine file name and outdir into one path.
-  OFString ofname; // store full path for the output file here
-  OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
-  OFLOG_DEBUG(storescpLogger, "Saving to: " << ofname);
-
   // dump some information if required
   OFString str;
   if (storescpLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -2102,7 +2097,7 @@ static OFCondition storeSCP(
   // initialize some variables
   StoreCallbackData callbackData;
   callbackData.assoc = assoc;
-  callbackData.imageFileName = ofname.c_str();
+  callbackData.imageFileName = imageFileName;
   DcmFileFormat dcmff;
   callbackData.dcmff = &dcmff;
 
@@ -2121,7 +2116,7 @@ static OFCondition storeSCP(
   // DIMSE_storeProvider must be called with certain parameters.
   if (opt_bitPreserving)
   {
-    cond = DIMSE_storeProvider(assoc, presID, req, ofname.c_str(), opt_useMetaheader, NULL,
+    cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader, NULL,
       storeSCPCallback, &callbackData, opt_blockMode, opt_dimse_timeout);
   }
   else
@@ -2139,14 +2134,18 @@ static OFCondition storeSCP(
     if (!opt_ignore)
     {
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-        OFStandard::deleteFile(ofname.c_str());
+      {
+         OFStandard::deleteFile(imageFileName);
+      }
     }
   }
 #ifdef _WIN32
   else if (opt_ignore)
   {
     if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-      OFStandard::deleteFile(ofname.c_str()); // delete the temporary file
+    {
+        OFStandard::deleteFile(imageFileName); // delete the temporary file
+    }
   }
 #endif
 
