@@ -1243,7 +1243,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
 #ifdef DEBUG
             if (block != 0)
             {
-                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << block << ") missing in command file " << strValue << OFendl;
+                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << (unsigned)block << ") missing in command file " << strValue << OFendl;
                 ofConsole.unlockCerr();
             }
 #endif
