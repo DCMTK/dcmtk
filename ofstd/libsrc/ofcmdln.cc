@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1243,7 +1243,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
 #ifdef DEBUG
             if (block != 0)
             {
-                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << block << ") missing in command file " << strValue << OFendl;
+                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << (unsigned)block << ") missing in command file " << strValue << OFendl;
                 ofConsole.unlockCerr();
             }
 #endif
