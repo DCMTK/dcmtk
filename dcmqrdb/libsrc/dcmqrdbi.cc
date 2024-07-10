@@ -2739,6 +2739,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     DcmTagKey descrTag = DCM_ImageComments;
     if (SOPClassUID != NULL)
     {
+        DcmUIDProperties properties;
         /* fill in value depending on SOP class UID (content might be improved) */
         if (strcmp(SOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage) == 0)
         {
@@ -2747,28 +2748,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
         {
             OFStandard::strlcpy(idxRec.InstanceDescription, "Hardcopy Grayscale Image", DESCRIPTION_MAX_LENGTH+1);
             useDescrTag = OFFalse;
-        } else if ((strcmp(SOPClassUID, UID_BasicTextSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_EnhancedSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ComprehensiveSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_Comprehensive3DSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ExtensibleSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ProcedureLogStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_MammographyCADSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_KeyObjectSelectionDocumentStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ChestCADSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ColonCADSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_XRayRadiationDoseSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_EnhancedXRayRadiationDoseSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_SpectaclePrescriptionReportStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_MacularGridThicknessAndVolumeReportStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_ImplantationPlanSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_RadiopharmaceuticalRadiationDoseSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_AcquisitionContextSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_SimplifiedAdultEchoSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_PatientRadiationDoseSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_PerformedImagingAgentAdministrationSRStorage) == 0) ||
-                   (strcmp(SOPClassUID, UID_PlannedImagingAgentAdministrationSRStorage) == 0))
+        } else if (dcmGetPropertiesOfUID(SOPClassUID, properties) && (properties.uidType == EUT_SOPClass) &&
+            (properties.subType == EUST_Storage) && (properties.iodType == EUIT_StructuredReport))
         {
+            /* this is one of the known SR Storage SOP Classes */
             OFString string;
             OFString description = "unknown SR";
             const char *name = dcmFindNameOfUID(SOPClassUID);
