@@ -706,6 +706,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_PlannedImagingAgentAdministrationSRStorage             "1.2.840.10008.5.1.4.1.1.88.74"
 #define UID_PerformedImagingAgentAdministrationSRStorage           "1.2.840.10008.5.1.4.1.1.88.75"
 #define UID_EnhancedXRayRadiationDoseSRStorage                     "1.2.840.10008.5.1.4.1.1.88.76"
+#define UID_WaveformAnnotationSRStorage                            "1.2.840.10008.5.1.4.1.1.88.77"
 #define UID_ContentAssessmentResultsStorage                        "1.2.840.10008.5.1.4.1.1.90.1"
 #define UID_MicroscopyBulkSimpleAnnotationsStorage                 "1.2.840.10008.5.1.4.1.1.91.1"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
