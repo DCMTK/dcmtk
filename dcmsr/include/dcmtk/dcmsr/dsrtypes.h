@@ -547,8 +547,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         DT_PlannedImagingAgentAdministrationSR,
         /// DICOM IOD: Rendition Selection Document
         DT_RenditionSelectionDocument,
+        /// DICOM IOD: Waveform Annotation SR
+        DT_WaveformAnnotationSR,
         /// internal type used to mark the last entry
-        DT_last = DT_RenditionSelectionDocument
+        DT_last = DT_WaveformAnnotationSR
     };
 
     /** SR relationship types

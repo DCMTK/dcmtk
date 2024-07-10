@@ -342,7 +342,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_PatientRadiationDoseSR,                UID_PatientRadiationDoseSRStorage,                   EM_EnhancedEquipment,                                             "SR", "Patient Radiation Dose SR"},
     {DSRTypes::DT_PerformedImagingAgentAdministrationSR, UID_PerformedImagingAgentAdministrationSRStorage,    EM_EnhancedEquipment | EM_Synchronization,                        "SR", "Performed Imaging Agent Administration SR"},
     {DSRTypes::DT_PlannedImagingAgentAdministrationSR,   UID_PlannedImagingAgentAdministrationSRStorage,      EM_EnhancedEquipment,                                             "SR", "Planned Imaging Agent Administration SR"},
-    {DSRTypes::DT_RenditionSelectionDocument,            UID_RenditionSelectionDocumentRealTimeCommunication, EM_EnhancedEquipment | EM_Synchronization | EM_KeyObjectDocument, "KO", "Rendition Selection Document"}
+    {DSRTypes::DT_RenditionSelectionDocument,            UID_RenditionSelectionDocumentRealTimeCommunication, EM_EnhancedEquipment | EM_Synchronization | EM_KeyObjectDocument, "KO", "Rendition Selection Document"},
+    {DSRTypes::DT_WaveformAnnotationSR,                  UID_WaveformAnnotationSRStorage,                     EM_EnhancedEquipment,                                             "SR", "Waveform Annotation SR"}
 };
 
 
@@ -954,7 +955,8 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) && (documentType != DT_EnhancedXRayRadiationDoseSR);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) &&
+        (documentType != DT_EnhancedXRayRadiationDoseSR) && (documentType != DT_WaveformAnnotationSR);
 }
 
 
@@ -1563,6 +1565,7 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
             checker = new DSRRenditionSelectionDocumentConstraintChecker();
             break;
         case DT_EnhancedXRayRadiationDoseSR:
+        case DT_WaveformAnnotationSR:
             /* not yet supported */
             break;
         case DT_invalid:
