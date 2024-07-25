@@ -18,7 +18,7 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  */
-
+#include <cerrno>
 
 #include "dcmtk/config/osconfig.h"
 
