@@ -18,7 +18,6 @@
  *  Purpose: Class for character encoding conversion (Source)
  *
  */
-#include <cerrno>
 
 #include "dcmtk/config/osconfig.h"
 
@@ -26,6 +25,8 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/ofstd/ofconsol.h"
+
+#include <cerrno>
 
 #ifdef HAVE_WINDOWS_H
 #define WIN32_LEAN_AND_MEAN
