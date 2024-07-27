@@ -263,6 +263,55 @@ ENABLE_DCMJPLS_INTERLEAVE_NONE
     DCMTK has been ported to CharLS 2.x, another branch of the JPEG-LS library
     that requires a C++14 compiler, however.
 
+ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::atof() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    cstdio based implementation on all platforms. THIS IS STRONGLY
+    DISCOURAGED because the cstdio based implementation suffers from a
+    race condition that may occur if a different thread changes the
+    locale while OFStandard::atof() is running. In this case, the result
+    returned by OFStandard::atof() may be incorrect. The Windows version
+    is NOT affected by this race condition because Windows offers a
+    propietary version of sscanf where the locale can be passed
+    explicitly. This macro is mutually exclusive with
+    ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION and
+    ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION.
+
+ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::ftoa() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    cstdio based implementation on all platforms. The implementation
+    contains code that addresses changes to the locale, so this is
+    not an issue in ftoa. This macro is mutually exclusive with
+    ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION and
+    ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION.
+
+ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::atof() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    iostream based implementation on all platforms. This macro is mutually
+    exclusive with ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION and
+    ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION.
+
+ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::ftoa() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    iostream based implementation on all platforms. This macro is mutually
+    exclusive with ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION and
+    ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION.
+
 ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
   Affected: all modules
   Type of modification: Re-activates behavior of earlier DCMTK releases
@@ -273,7 +322,7 @@ ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
     other than the period character.
     The implementation used in DCMTK 3.5.2 to 3.6.8 was found to produce
     rounding errors in certain cases and has thus been replaced by an
-    iostream-based implementation.
+    iostream-based implementation. This macro re-activates the old version.
 
 ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
   Affected: all modules
@@ -285,7 +334,7 @@ ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
     other than the period character.
     The implementation used in DCMTK 3.5.2 to 3.6.8 was found to produce
     rounding errors in certain cases and has thus been replaced by an
-    iostream-based implementation.
+    iostream-based implementation. This macro re-activates the old version.
 
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm

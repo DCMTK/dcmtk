@@ -810,7 +810,12 @@ class DCMTK_OFSTD_EXPORT OFStandard
       *  @param flags processing flags. Any of the flags defined below
       *    can be combined by bit-wise or.
       *  @param width width from format (%8d), or 0
-      *  @param precision precision from format (%.3d), or -1
+      *  @param precision precision from format (%.3d),
+      *    -1 for default precision,
+      *    -2, when used with default "%g" format, causes the shortest
+      *        string to be created that can be converted back
+      *        to a double equalling "value". With "%e" or "%f" format,
+      *        prints default precision.
       */
      static void ftoa(char *target,
                       size_t targetSize,

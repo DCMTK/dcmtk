@@ -25,7 +25,9 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oftimer.h"
 #include "dcmtk/ofstd/oflimits.h"
+#include <clocale>
 
 struct tuple
 {
@@ -61,7 +63,6 @@ private:
 
 static const tuple values[] =
 {
-
   tuple(OFnumeric_limits<double>::infinity(), 0, 0, -1,                                 "inf"                   ),
   tuple(-OFnumeric_limits<double>::infinity(), 0, 0, -1,                                "-inf"                  ),
   tuple(-OFnumeric_limits<double>:: quiet_NaN(), 0, 0, -1,                              "nan"                   ),
@@ -173,7 +174,6 @@ static const tuple values[] =
   tuple(0.1,     0, 0, 3,                                                               "0.1"                   ),
   tuple(0.1,     0, 0, 3,                                                               "0.1"                   ),
   tuple(0.1,     0, 0, 10,                                                              "0.1"                   ),
-  tuple(0.1,     0, 0, 17,                                                              "0.1"                   ),
   tuple(0.01,    0, 0, 1,                                                               "0.01"                  ),
   tuple(0.01,    0, 0, 3,                                                               "0.01"                  ),
   tuple(0.01,    0, 0, 5,                                                               "0.01"                  ),
@@ -193,19 +193,19 @@ static const tuple values[] =
   tuple(0.00001, 0, 0, 3,                                                               "1e-05"                 ),
   tuple(0.00001, 0, 0, 5,                                                               "1e-05"                 ),
   tuple(0.00001, 0, 0, 10,                                                              "1e-05"                 ),
-  tuple(0.00001, 0, 0, 17,                                                              "1e-05"                 ),
   tuple(0.0045678901234567, 0, 0, 1,                                                    "0.005"                 ),
   tuple(0.0045678901234567, 0, 0, 3,                                                    "0.00457"               ),
   tuple(0.0045678901234567, 0, 0, 5,                                                    "0.0045679"             ),
   tuple(0.0045678901234567, 0, 0, 12,                                                   "0.00456789012346"      ),
-  tuple(0.0045678901234567, 0, 0, 17,                                                   "0.0045678901234567"    ),
   tuple(0.0005678901234567, 0, 0, 1,                                                    "0.0006"                ),
   tuple(0.0005678901234567, 0, 0, 3,                                                    "0.000568"              ),
   tuple(0.0005678901234567, 0, 0, 5,                                                    "0.00056789"            ),
   tuple(0.0005678901234567, 0, 0, 12,                                                   "0.000567890123457"     ),
-  tuple(0.0005678901234567, 0, 0, 17,                                                   "0.0005678901234567"    ),
+  tuple(0.1,     0, 0, -2,                                                              "0.1"                   ),
+  tuple(0.00001, 0, 0, -2,                                                              "1e-05"                 ),
 
 #ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
+
   // This is the expected output of the new routine
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, -1,                               "1234567890000000012898796547947496515996930375163" ),
@@ -214,9 +214,15 @@ static const tuple values[] =
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,   "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000012898796547947496515996930375163" ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000012898796547947496515996930375163" )
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000012898796547947496515996930375163" ),
+  tuple(0.1,     0, 0, 17,                                                              "0.10000000000000001"   ),
+  tuple(0.00001, 0, 0, 17,                                                              "1.0000000000000001e-05"),
+  tuple(0.0045678901234567, 0, 0, 17,                                                   "0.0045678901234567004" ),
+  tuple(0.0005678901234567, 0, 0, 17,                                                   "0.00056789012345669998"),
+  tuple(0.0005678901234567, 0, 0, -2,                                                   "0.0005678901234567"    )
+
 #else
-  // This is the expected output of the old routine, probably due to rounding errors
+  // This is the expected output of the old routine, due to rounding errors
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000500000000000000000000000000000000" ),
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, -1,                               "1234567890000000500000000000000000000000000000000" ),
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 10,                               "1234567890000000500000000000000000000000000000000" ),
@@ -224,13 +230,17 @@ static const tuple values[] =
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,   "1234567890000000500000000000000000000000000000000" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000500000000000000000000000000000000" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000500000000000000000000000000000000" ),
-  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000500000000000000000000000000000000" )
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000500000000000000000000000000000000" ),
+  tuple(0.0005678901234567, 0, 0, -2,                                                   "0.00056789012345670002"    )
 #endif
 
 };
 
+
 OFTEST(ofstd_ftoa)
 {
+  std::setlocale(LC_ALL, "C");
+
   char buf[50];
   size_t numTuples = sizeof(values)/sizeof(tuple);
   OFString s;
@@ -242,6 +252,21 @@ OFTEST(ofstd_ftoa)
 
     OFCHECK_EQUAL(buf, s);
   }
+
+
+// define this symbol if you want to compare the performance of the
+// alternative implementations of OFStandard::ftoa():
+// #define ENABLE_TIMER_TEST_FOR_FTOA
+
+#ifdef ENABLE_TIMER_TEST_FOR_FTOA
+  std::ofstream outstream("ftoa_performance.txt");
+  OFTimer timer;
+  for (size_t i=0; i < 50000; ++i)
+  {
+     OFStandard::ftoa(buf, 50, 0.5, 0, 0, -2);
+  }
+  outstream << timer << OFendl;
+#endif
 
 #ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
   // regression test for DCMTK issue #860: Make sure that we can convert
@@ -264,6 +289,23 @@ OFTEST(ofstd_ftoa)
   d = OFStandard::atof(buf, &success);
   OFCHECK_EQUAL(OFTrue, success);
   OFCHECK_EQUAL(d, OFnumeric_limits<double>::min());
+
+  // try to activate a locale that uses ',' as a decimal point.
+  // If activating the locale fails, we still continue with the test
+  std::setlocale(LC_ALL, "de_DE");
+  OFStandard::ftoa(buf, 50, 0.1, 0, 0, 3);
+  s = "0.1";
+  OFCHECK_EQUAL(buf, s);
+
+  // try to activate a locale that uses <U066B> as a decimal point.
+  // If activating the locale fails, we still continue with the test
+  std::setlocale(LC_ALL, "ps_AF");
+  OFStandard::ftoa(buf, 50, 0.1, 0, 0, 3);
+  s = "0.1";
+  OFCHECK_EQUAL(buf, s);
+
+  std::setlocale(LC_ALL, "C");
+
 #endif
 
 }

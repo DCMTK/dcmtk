@@ -73,7 +73,7 @@ OFCondition DSRReferencedTimeOffsetList::print(STD_NAMESPACE ostream &stream,
     while (iterator != endPos)
     {
         /* need to convert float to avoid problems with decimal point ('.' or ',') */
-        OFStandard::ftoa(buffer, sizeof(buffer), *iterator, 0, 0, 17 /* DBL_DECIMAL_DIG for DICOM FD */);
+        OFStandard::ftoa(buffer, sizeof(buffer), *iterator, 0, 0, -2 /* print enough digits to permit lossless conversion back to FD */);
         stream << buffer;
         iterator++;
         if (iterator != endPos)
