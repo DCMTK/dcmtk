@@ -2483,7 +2483,6 @@ static void ftoa_convert(
   // set scientific vs fixed format
   if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) oss << STD_NAMESPACE scientific;
   else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) oss << STD_NAMESPACE fixed;
-  else oss << STD_NAMESPACE defaultfloat;
 
   // insert the value into the string stream
   oss << val;
