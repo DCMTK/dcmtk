@@ -493,6 +493,9 @@
 /* Define to 1 if you have the `_findfirst' function. */
 #cmakedefine HAVE__FINDFIRST @HAVE__FINDFIRST@
 
+/* Define to 1 if you have the `_set_output_format' function. */
+#cmakedefine HAVE__SET_OUTPUT_FORMAT @HAVE__SET_OUTPUT_FORMAT@
+
 /* Define to 1 if the compiler supports __FUNCTION__. */
 #cmakedefine HAVE___FUNCTION___MACRO @HAVE___FUNCTION___MACRO@
 

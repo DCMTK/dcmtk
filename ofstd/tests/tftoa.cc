@@ -204,7 +204,7 @@ static const tuple values[] =
   tuple(0.1,     0, 0, -2,                                                              "0.1"                   ),
   tuple(0.00001, 0, 0, -2,                                                              "1e-05"                 ),
 
-#ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
+#if !defined(ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && !defined(HAVE__SET_OUTPUT_FORMAT)
 
   // This is the expected output of the new routine
   tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000012898796547947496515996930375163" ),
@@ -215,6 +215,23 @@ static const tuple values[] =
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000012898796547947496515996930375163" ),
   tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000012898796547947496515996930375163" ),
+  tuple(0.1,     0, 0, 17,                                                              "0.10000000000000001"   ),
+  tuple(0.00001, 0, 0, 17,                                                              "1.0000000000000001e-05"),
+  tuple(0.0045678901234567, 0, 0, 17,                                                   "0.0045678901234567004" ),
+  tuple(0.0005678901234567, 0, 0, 17,                                                   "0.00056789012345669998"),
+  tuple(0.0005678901234567, 0, 0, -2,                                                   "0.0005678901234567"    )
+
+#elif defined(HAVE__SET_OUTPUT_FORMAT)
+
+  // This is the expected output of the old Microsoft Visual C Runtime (VS 2013 and older)
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 0, -1,                                "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, -1,                               "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 10,                               "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_format_f, 20, 0,                                "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 0, -1,   "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, -1,  "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 10,  "1234567890000000000000000000000000000000000000000" ),
+  tuple(1.23456789E89, OFStandard::ftoa_uppercase | OFStandard::ftoa_format_f, 20, 0,   "1234567890000000000000000000000000000000000000000" ),
   tuple(0.1,     0, 0, 17,                                                              "0.10000000000000001"   ),
   tuple(0.00001, 0, 0, 17,                                                              "1.0000000000000001e-05"),
   tuple(0.0045678901234567, 0, 0, 17,                                                   "0.0045678901234567004" ),
@@ -268,10 +285,13 @@ OFTEST(ofstd_ftoa)
   outstream << timer << OFendl;
 #endif
 
-#ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
+#if !defined(ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && !defined(HAVE__SET_OUTPUT_FORMAT)
   // regression test for DCMTK issue #860: Make sure that we can convert
   // OFnumeric_limits<double>::max() into a string, convert the string back to double,
   // with a result equal to OFnumeric_limits<double>::max().
+
+  // This does not work with the old implementation in DCMTK, and old versions
+  // of Microsoft's MSVCRT introduce rounding errors here
 
   OFStandard::ftoa(buf, 50, OFnumeric_limits<double>::max(), OFStandard::ftoa_format_e, 0, 17);
   s = "1.79769313486231571e+308";

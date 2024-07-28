@@ -2356,6 +2356,14 @@ static void ftoa_convert(
 
 #ifdef _WIN32
 
+#ifdef HAVE__SET_OUTPUT_FORMAT
+  // The old Microsoft Visual C Runtime (MSVCRT) used in VS 2013 and older
+  // prints 3 exponent digits by default.  This call changes this.
+  // This function does not exist anymore in the Universal C Runtime
+  // used by VS 2015 or newer, but is still used by MinGW64.
+  _set_output_format(_TWO_DIGIT_EXPONENT);
+#endif
+
   // Windows has an sprintf version where we can explicitly pass a locale
   _locale_t localeInfo = _create_locale(LC_NUMERIC, "C");
   _snprintf_s_l(dst, siz, _TRUNCATE, s.c_str(), localeInfo, val);
