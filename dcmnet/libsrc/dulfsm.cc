@@ -118,6 +118,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 #include <climits>
+#include <cstdlib>
 
 /* At least Solaris doesn't define this */
 #ifndef INADDR_NONE
@@ -2247,7 +2248,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
                       PRIVATE_ASSOCIATIONKEY ** association)
 {
     char node[128];
-    int  port;
+    int  port = 0;
     OFSockAddr server;
 #ifdef _WIN32
     SOCKET s;
@@ -2256,7 +2257,22 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
     struct linger sockarg;
 
-    if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
+    // Split the presentation address into hostname/IP address and port.
+    OFString addressString(params->calledPresentationAddress);
+    // find the last colon in the string to split the node and port
+    size_t lastColonPos = addressString.find_last_of(':');
+    if (lastColonPos != OFString_npos) {
+        // extract node and port from the string
+        OFString nodeStr = addressString.substr(0, lastColonPos);
+        OFString portStr = addressString.substr(lastColonPos + 1);
+
+        // copy node string into node char array
+        OFStandard::strlcpy(node, nodeStr.c_str(), sizeof(node));
+
+        // convert port string to integer
+        port = STD_NAMESPACE atoi(portStr.c_str());
+    }
+    else
     {
         char buf[1024];
         OFStandard::snprintf(buf, sizeof(buf), "Illegal service parameter: %s", params->calledPresentationAddress);
