@@ -57,6 +57,7 @@ DcmSCU::DcmSCU()
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
     , m_secureConnectionEnabled(OFFalse)
+    , m_protocolVersion(-1)
 {
     OFStandard::initializeNetwork();
 }
@@ -133,6 +134,9 @@ OFCondition DcmSCU::initNetwork()
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values are "ANY-SCU" and "ANY-SCP". */
     ASC_setAPTitles(m_params, m_ourAETitle.c_str(), m_peerAETitle.c_str(), NULL);
+
+    /* sets the IP protocol version */
+    if (m_protocolVersion != -1) ASC_setProtocolFamily(m_params, m_protocolVersion);
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
@@ -2595,6 +2599,11 @@ void DcmSCU::setDatasetConversionMode(const OFBool mode)
 void DcmSCU::setProgressNotificationMode(const OFBool mode)
 {
     m_progressNotificationMode = mode;
+}
+
+void DcmSCU::setProtocolVersion(int protocolVersion)
+{
+    m_protocolVersion = protocolVersion;
 }
 
 /* Get methods */

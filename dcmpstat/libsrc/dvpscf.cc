@@ -26,6 +26,20 @@
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
 #include "dcmtk/ofstd/ofstd.h"       /* for class OFStandard */
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#include <windows.h>     /* for GetFileAttributes() */
+#elif defined(HAVE_WINSOCK_H)
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
+#endif /* HAVE_WINDOWS_H */
+
 #ifndef HAVE_WINDOWS_H
 /* some Unix operating systems do not define a prototype for strncasecmp
  * although the function is known.
@@ -96,6 +110,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_PREVIEW                      "PREVIEWSIZE"
 #define L0_PRIVATEKEY                   "PRIVATEKEY"
 #define L0_PRIVATEKEYPASSWORD           "PRIVATEKEYPASSWORD"
+#define L0_PROTOCOL                     "PROTOCOL"
 #define L0_RANDOMSEED                   "RANDOMSEED"
 #define L0_RECEIVER                     "RECEIVER"
 #define L0_RESOLUTION                   "RESOLUTION"
@@ -381,6 +396,19 @@ unsigned short DVConfiguration::getTargetPort(const char *targetID)
   if (c)
   {
     if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+int DVConfiguration::getTargetProtocol(const char *targetID)
+{
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PROTOCOL);
+  int result = -1;
+  if (c)
+  {
+    if (strCompare(c, "AF_INET6", 8) == 0) result = AF_INET6;
+    else if (strCompare(c, "AF_INET", 7) == 0) result = AF_INET;
+    else if (strCompare(c, "AF_UNSPEC", 9) == 0) result = AF_UNSPEC;
   }
   return result;
 }

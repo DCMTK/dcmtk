@@ -86,6 +86,10 @@ int main( int argc, char *argv[] )
   OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",             "-i0",     "use DNS lookup to determine IP protocol");
    cmd.addSubGroup("application entity titles:");
     OFString opt1 = "set my calling AE title (default: ";
     opt1 += APPLICATIONTITLE;
@@ -169,6 +173,13 @@ int main( int argc, char *argv[] )
 
   // set this application's title and the called application's title in the params structure
   ASC_setAPTitles( params, opt_ourTitle, opt_peerTitle, NULL );
+
+  // set the IP protocol version
+  cmd.beginOptionBlock();
+  if (cmd.findOption("--ipv4")) ASC_setProtocolFamily(params, AF_INET);
+  if (cmd.findOption("--ipv6")) ASC_setProtocolFamily(params, AF_INET6);
+  if (cmd.findOption("--ip-auto")) ASC_setProtocolFamily(params, AF_UNSPEC);
+  cmd.endOptionBlock();
 
   // set the transport layer type (type of network connection) in the params structure
   cond = ASC_setTransportLayerType( params, OFFalse );

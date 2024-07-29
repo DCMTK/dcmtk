@@ -173,6 +173,10 @@ main(int argc, char *argv[])
    OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",           "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",           "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",        "-i0",     "use DNS lookup to determine IP protocol");
     cmd.addSubGroup("application entity titles:");
       cmd.addOption("--aetitle",        "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
       cmd.addOption("--call",           "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
@@ -375,6 +379,13 @@ main(int argc, char *argv[])
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+
+    /* set the IP protocol version */
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ipv4")) ASC_setProtocolFamily(params, AF_INET);
+    if (cmd.findOption("--ipv6")) ASC_setProtocolFamily(params, AF_INET6);
+    if (cmd.findOption("--ip-auto")) ASC_setProtocolFamily(params, AF_UNSPEC);
+    cmd.endOptionBlock();
 
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/

@@ -417,6 +417,7 @@ int main(int argc, char *argv[])
     const char *targetDescription = dvi.getTargetDescription(opt_target);
     const char *targetAETitle     = dvi.getTargetAETitle(opt_target);
     unsigned short targetPort     = dvi.getTargetPort(opt_target);
+    int targetProtocol            = dvi.getTargetProtocol(opt_target);
     unsigned long  targetMaxPDU   = dvi.getTargetMaxPDU(opt_target);
     OFBool targetImplicitOnly     = dvi.getTargetImplicitOnly(opt_target);
     OFBool targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_target);
@@ -543,7 +544,12 @@ int main(int argc, char *argv[])
     else if (targetImplicitOnly) verboseParameters << "implicit xfer syntax only";
     else if (targetDisableNewVRs) verboseParameters << "disable post-1993 VRs";
     else verboseParameters << "none";
-    verboseParameters << OFendl;
+    verboseParameters << OFendl << "\tprotocol version: ";
+
+    if (targetProtocol == AF_INET) verboseParameters << "IPv4 only" << OFendl;
+    else if (targetProtocol == AF_INET6) verboseParameters << "IPv6 only" << OFendl;
+    else if (targetProtocol == AF_UNSPEC) verboseParameters << "determined via DNS" << OFendl;
+    else verboseParameters << "default" << OFendl;
 
     verboseParameters << "\tTLS             : ";
     if (useTLS) verboseParameters << "enabled" << OFendl; else verboseParameters << "disabled" << OFendl;
@@ -714,6 +720,8 @@ int main(int argc, char *argv[])
     }
 
     ASC_setAPTitles(params, dvi.getNetworkAETitle(), targetAETitle, NULL);
+
+    if (targetProtocol != -1) ASC_setProtocolFamily(params, targetProtocol);
 
     OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", targetHostname, (int)targetPort);
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);

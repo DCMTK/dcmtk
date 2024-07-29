@@ -95,6 +95,14 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    */
   unsigned short getTargetPort(const char *targetID);
 
+  /** returns the PROTOCOL entry for the communication partner with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present and parsable in the config file, -1 otherwise.
+   */
+  int getTargetProtocol(const char *targetID);
+
   /** returns the TYPE entry for the communication partner with the given
    *  target ID from the configuration file.
    *  @param targetID communication target ID, must be one of the target

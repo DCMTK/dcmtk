@@ -67,6 +67,7 @@ QueryModel              opt_queryModel = QMPatientRoot;
 T_DIMSE_BlockingMode    opt_blockMode = DIMSE_BLOCKING;
 int                     opt_dimse_timeout = 0;
 int                     opt_acse_timeout = 30;
+int                     opt_protocolVersion = -1;
 OFString                opt_outputDirectory = ".";
 static OFList<OFString> overrideKeys;
 
@@ -116,6 +117,10 @@ main(int argc, char *argv[])
       cmd.addOption("--patient",             "-P",      "use patient root information model (default)");
       cmd.addOption("--study",               "-S",      "use study root information model");
       cmd.addOption("--psonly",              "-O",      "use patient/study only information model");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",             "-i0",     "use DNS lookup to determine IP protocol");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
@@ -312,6 +317,13 @@ main(int argc, char *argv[])
     if (cmd.findOption("--abort")) opt_abortAssociation = OFTrue;
     if (cmd.findOption("--ignore")) opt_storageMode = DCMSCU_STORAGE_IGNORE;
 
+    // IP protocol version
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ipv4")) opt_protocolVersion = AF_INET;
+    if (cmd.findOption("--ipv6")) opt_protocolVersion = AF_INET6;
+    if (cmd.findOption("--ip-auto")) opt_protocolVersion = AF_UNSPEC;
+    cmd.endOptionBlock();
+
     // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
     tlsOptions.parseArguments(app, cmd);
 
@@ -398,6 +410,7 @@ main(int argc, char *argv[])
   scu.setPeerPort(OFstatic_cast(Uint16, opt_port));
   scu.setPeerAETitle(opt_peerTitle);
   scu.setVerbosePCMode(opt_showPresentationContexts);
+  if (opt_protocolVersion != -1) scu.setProtocolVersion(opt_protocolVersion);
 
   /* add presentation contexts for get and find (we do not actually need find...)
    * (only uncompressed)

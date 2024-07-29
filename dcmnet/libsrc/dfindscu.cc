@@ -249,7 +249,8 @@ OFCondition DcmFindSCU::performQuery(
     DcmFindSCUCallback *callback,
     OFList<OFString> *fileNameList,
     const char *outputDirectory,
-    const char *extractFilename)
+    const char *extractFilename,
+    int protocolVersion)
 {
     T_ASC_Association *assoc = NULL;
     T_ASC_Parameters *params = NULL;
@@ -281,6 +282,9 @@ OFCondition DcmFindSCU::performQuery(
     /* sets this application's title and the called application's title in the params */
     /* structure. The default values to be set here are "FINDSCU" and "ANY-SCP". */
     ASC_setAPTitles(params, ourTitle, peerTitle, NULL);
+
+    /* set the IP protocol version */
+    if (protocolVersion != -1) ASC_setProtocolFamily(params, protocolVersion);
 
     /* Set the transport layer type (type of network connection) in the params */
     /* structure. The default is an insecure connection; where OpenSSL is  */
