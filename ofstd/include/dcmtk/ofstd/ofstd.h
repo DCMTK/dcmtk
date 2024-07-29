@@ -1072,9 +1072,10 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** This function performs a DNS lookup of an IP address based on a hostname.
      *  If a DNS lookup yields multiple IP addresses, only the first one is returned.
      *  @param name hostname
+     *  @param protocolFamily AF_INET for IPv4, AF_INET6 for IPv6 or AF_UNSPEC for both
      *  @param result a OFSockAddr instance in which the result is stored
      */
-    static void getAddressByHostname(const char *name, OFSockAddr& result);
+    static void getAddressByHostname(const char *name, int protocolFamily, OFSockAddr& result);
 
     /** Thread-safe version of getgrnam.
      *  @param name the group name.

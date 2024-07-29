@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -203,6 +203,7 @@ typedef struct {
 
     OFBool useSecureLayer;
     Sint32 tcpConnectTimeout;
+    int protocol_family;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 /** Enum describing the possible role settings for role negotiation sub items.

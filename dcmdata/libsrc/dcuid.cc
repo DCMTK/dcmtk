@@ -1788,7 +1788,7 @@ static long gethostid(void)
         struct sockaddr_in6 *sin6 = NULL;
         long *lp = NULL;
         OFSockAddr sa;
-        OFStandard::getAddressByHostname(name, sa);
+        OFStandard::getAddressByHostname(name, AF_UNSPEC, sa);
         switch (sa.getFamily())
         {
           case AF_INET:

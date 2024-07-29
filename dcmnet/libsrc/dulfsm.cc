@@ -2295,7 +2295,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     else
     {
         // must be a host name or an IPv6 address
-        OFStandard::getAddressByHostname(node, server);
+        OFStandard::getAddressByHostname(node, params->protocol_family, server);
         if (server.getFamily() == 0)
         {
           char buf2[4095]; // node could be a long string

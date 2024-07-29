@@ -3168,7 +3168,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 }
 
 
-void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
+void OFStandard::getAddressByHostname(const char *name, int protocolFamily, OFSockAddr& result)
 {
   result.clear();
   if (NULL == name) return;
@@ -3177,9 +3177,9 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
   int err = EAI_AGAIN;
   int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
 
-  // filter for the DNS lookup. AF_UNSPEC allows us to support IPv4 and IPv6.
+  // filter for the DNS lookup
   ::addrinfo hint = {};
-  hint.ai_family = AF_UNSPEC;
+  hint.ai_family = protocolFamily;
 
   // perform DNS lookup. Repeat while we receive temporary failures.
   while ((EAI_AGAIN == err) && (rep-- > 0)) err = getaddrinfo(name, NULL, &hint, &result_list);
