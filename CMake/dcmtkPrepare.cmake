@@ -475,8 +475,8 @@ if(WIN32)   # special handling for Windows systems
 
 else()   # ... for non-Windows systems
 
-  # Compiler flags for Mac OS X
-  if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  # Compiler flags for macOS and iOS
+  if(CMAKE_SYSTEM_NAME MATCHES "Darwin" OR CMAKE_SYSTEM_NAME MATCHES "iOS")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_DARWIN_C_SOURCE")
   # Compiler flags for NetBSD
