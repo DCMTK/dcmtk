@@ -664,7 +664,7 @@ public:
     /** Set the IP protocol version
      *  @param protocolVersion [in] The IP protocol version used by the SCP
      */
-    void setProtocolVersion(int protocolVersion);
+    void setProtocolVersion(T_ASC_ProtocolFamily protocolVersion);
 
     /** Set SCP's port number to connect to for association negotiation
      *  @param peerPort [in] The SCP's port number
@@ -1132,7 +1132,7 @@ private:
     OFBool m_secureConnectionEnabled;
 
     /// IP protocol version to be used
-    int m_protocolVersion;
+    T_ASC_ProtocolFamily m_protocolVersion;
 };
 
 #endif // SCU_H

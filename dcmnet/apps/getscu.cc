@@ -67,7 +67,7 @@ QueryModel              opt_queryModel = QMPatientRoot;
 T_DIMSE_BlockingMode    opt_blockMode = DIMSE_BLOCKING;
 int                     opt_dimse_timeout = 0;
 int                     opt_acse_timeout = 30;
-int                     opt_protocolVersion = -1;
+T_ASC_ProtocolFamily    opt_protocolVersion = ASC_AF_Default;
 OFString                opt_outputDirectory = ".";
 static OFList<OFString> overrideKeys;
 
@@ -319,9 +319,9 @@ main(int argc, char *argv[])
 
     // IP protocol version
     cmd.beginOptionBlock();
-    if (cmd.findOption("--ipv4")) opt_protocolVersion = AF_INET;
-    if (cmd.findOption("--ipv6")) opt_protocolVersion = AF_INET6;
-    if (cmd.findOption("--ip-auto")) opt_protocolVersion = AF_UNSPEC;
+    if (cmd.findOption("--ipv4")) opt_protocolVersion = ASC_AF_INET;
+    if (cmd.findOption("--ipv6")) opt_protocolVersion = ASC_AF_INET6;
+    if (cmd.findOption("--ip-auto")) opt_protocolVersion = ASC_AF_UNSPEC;
     cmd.endOptionBlock();
 
     // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
@@ -410,7 +410,7 @@ main(int argc, char *argv[])
   scu.setPeerPort(OFstatic_cast(Uint16, opt_port));
   scu.setPeerAETitle(opt_peerTitle);
   scu.setVerbosePCMode(opt_showPresentationContexts);
-  if (opt_protocolVersion != -1) scu.setProtocolVersion(opt_protocolVersion);
+  scu.setProtocolVersion(opt_protocolVersion);
 
   /* add presentation contexts for get and find (we do not actually need find...)
    * (only uncompressed)

@@ -727,9 +727,9 @@ int main(int argc, char *argv[])
 
     // set the IP protocol version
     cmd.beginOptionBlock();
-    if (cmd.findOption("--ipv4")) ASC_setProtocolFamily(params, AF_INET);
-    if (cmd.findOption("--ipv6")) ASC_setProtocolFamily(params, AF_INET6);
-    if (cmd.findOption("--ip-auto")) ASC_setProtocolFamily(params, AF_UNSPEC);
+    if (cmd.findOption("--ipv4")) ASC_setProtocolFamily(params, ASC_AF_INET);
+    if (cmd.findOption("--ipv6")) ASC_setProtocolFamily(params, ASC_AF_INET6);
+    if (cmd.findOption("--ip-auto")) ASC_setProtocolFamily(params, ASC_AF_UNSPEC);
     cmd.endOptionBlock();
 
     /* Figure out the presentation addresses and copy the */

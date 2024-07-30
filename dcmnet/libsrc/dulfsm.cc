@@ -2294,8 +2294,25 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
     else
     {
+        int family = 0;
+		switch (params->protocol_family)
+		{
+		  case ASC_AF_Default:
+		    family = AF_INET; // for now the default is to use IPv4 only
+            break;
+		  case ASC_AF_INET:
+		    family = AF_INET; // IPv4 only
+            break;
+		  case ASC_AF_INET6:
+		    family = AF_INET6; // IPv6 only
+            break;
+		  case ASC_AF_UNSPEC:
+		    family = AF_UNSPEC; // use DNS lookup to determine protocol
+            break;
+		}
+
         // must be a host name or an IPv6 address
-        OFStandard::getAddressByHostname(node, params->protocol_family, server);
+        OFStandard::getAddressByHostname(node, family, server);
         if (server.getFamily() == 0)
         {
           char buf2[4095]; // node could be a long string

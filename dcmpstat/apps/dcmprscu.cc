@@ -104,7 +104,7 @@ static OFBool         targetSupports12bit   = OFTrue;
 static OFBool         targetPLUTinFilmSession = OFFalse;
 static OFBool         targetRequiresMatchingLUT   = OFTrue;
 static OFBool         targetPreferSCPLUTRendering = OFFalse;
-static int            targetProtocol         = -1;
+static T_ASC_ProtocolFamily targetProtocol  = ASC_AF_Default;
 static OFBool         deletePrintJobs       = OFFalse;
 static OFBool         deleteTerminateJobs   = OFFalse;
 static OFBool         useTLS                = OFFalse;
@@ -996,9 +996,9 @@ int main(int argc, char *argv[])
     else
       OFLOG_INFO(dcmprscuLogger, "  options       : none");
 
-    if (targetProtocol == AF_INET) OFLOG_INFO(dcmprscuLogger,  "  protocol version: IPv4 only");
-    else if (targetProtocol == AF_INET6) OFLOG_INFO(dcmprscuLogger,  "  protocol version: IPv6 only");
-    else if (targetProtocol == AF_UNSPEC) OFLOG_INFO(dcmprscuLogger,  "  protocol version: determined via DNS");
+    if (targetProtocol == ASC_AF_INET) OFLOG_INFO(dcmprscuLogger,  "  protocol version: IPv4 only");
+    else if (targetProtocol == ASC_AF_INET6) OFLOG_INFO(dcmprscuLogger,  "  protocol version: IPv6 only");
+    else if (targetProtocol == ASC_AF_UNSPEC) OFLOG_INFO(dcmprscuLogger,  "  protocol version: determined via DNS");
     else OFLOG_INFO(dcmprscuLogger,  "  protocol version: default");
 
     OFLOG_INFO(dcmprscuLogger, "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported"));

@@ -323,11 +323,11 @@ ASC_setTransportLayerType(
     T_ASC_Parameters * params,
     OFBool useSecureLayer);
 
-/* set IP protocol family (AF_INET, AF_INET6 or AF_UNSPEC */
+/* set IP protocol family */
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_setProtocolFamily(
     T_ASC_Parameters * params,
-    int protocolFamily);
+    T_ASC_ProtocolFamily protocolFamily);
 
  /*
   * Copies the provided Application Titles in the association parameters.

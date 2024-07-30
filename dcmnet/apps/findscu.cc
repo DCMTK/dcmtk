@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     const char *          opt_peerTitle = PEERAPPLICATIONTITLE;
     OFCmdUnsignedInt      opt_port = 104;
     OFCmdUnsignedInt      opt_repeatCount = 1;
-    int                   opt_protocolVersion = -1;
+    T_ASC_ProtocolFamily  opt_protocolVersion = ASC_AF_Default;
     OFList<OFString>      overrideKeys;
     DcmTLSOptions         tlsOptions(NET_REQUESTOR);
 
@@ -243,9 +243,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--ipv4")) opt_protocolVersion = AF_INET;
-      if (cmd.findOption("--ipv6")) opt_protocolVersion = AF_INET6;
-      if (cmd.findOption("--ip-auto")) opt_protocolVersion = AF_UNSPEC;
+      if (cmd.findOption("--ipv4")) opt_protocolVersion = ASC_AF_INET;
+      if (cmd.findOption("--ipv6")) opt_protocolVersion = ASC_AF_INET6;
+      if (cmd.findOption("--ip-auto")) opt_protocolVersion = ASC_AF_UNSPEC;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();

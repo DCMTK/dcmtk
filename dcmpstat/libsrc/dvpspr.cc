@@ -469,7 +469,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   const char *peerAEtitle,
   const char *peerHost,
   int peerPort,
-  int protocolFamily,
+  T_ASC_ProtocolFamily protocolFamily,
   long peerMaxPDU,
   OFBool negotiatePresentationLUT,
   OFBool negotiateAnnotationBox,
@@ -499,7 +499,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   if (cond.bad()) return cond;
 
   ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
-  if (protocolFamily != -1) ASC_setProtocolFamily(params, protocolFamily);
+  ASC_setProtocolFamily(params, protocolFamily);
   OFStandard::snprintf(dnpeerHost, sizeof(dnpeerHost), "%s:%d", peerHost, peerPort);
   ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), dnpeerHost);
 

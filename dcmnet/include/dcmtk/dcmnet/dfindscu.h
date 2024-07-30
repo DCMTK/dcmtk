@@ -307,7 +307,7 @@ public:
     OFList<OFString> *fileNameList = NULL,
     const char *outputDirectory = NULL,
     const char *extractFilename = NULL,
-    int protocolVersion = -1);
+    T_ASC_ProtocolFamily protocolVersion = ASC_AF_Default);
 
   /** static helper function that writes the content of the given dataset
    *  into a DICOM file (using the DICOM file format with metaheader).

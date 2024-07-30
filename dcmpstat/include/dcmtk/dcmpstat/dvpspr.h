@@ -190,7 +190,7 @@ public:
     const char *peerAEtitle,
     const char *peerHost,
     int peerPort,
-    int protocolFamily,
+    T_ASC_ProtocolFamily protocolFamily,
     long peerMaxPDU,
     OFBool negotiatePresentationLUT,
     OFBool negotiateAnnotationBox,

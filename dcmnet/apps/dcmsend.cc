@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     OFBool opt_recurse = OFFalse;
     const char *opt_scanPattern = "";
     const char *opt_reportFilename = "";
-    int opt_protocolVersion = -1;
+    T_ASC_ProtocolFamily opt_protocolVersion = ASC_AF_Default;
     int paramCount = 0;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Simple DICOM storage SCU (sender)", rcsid);
@@ -317,9 +317,9 @@ int main(int argc, char *argv[])
 
         /* network options */
         cmd.beginOptionBlock();
-        if (cmd.findOption("--ipv4")) opt_protocolVersion = AF_INET;
-        if (cmd.findOption("--ipv6")) opt_protocolVersion = AF_INET6;
-        if (cmd.findOption("--ip-auto")) opt_protocolVersion = AF_UNSPEC;
+        if (cmd.findOption("--ipv4")) opt_protocolVersion = ASC_AF_INET;
+        if (cmd.findOption("--ipv6")) opt_protocolVersion = ASC_AF_INET6;
+        if (cmd.findOption("--ip-auto")) opt_protocolVersion = ASC_AF_UNSPEC;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
     storageSCU.setDecompressionMode(opt_decompressionMode);
     storageSCU.setHaltOnUnsuccessfulStoreMode(opt_haltOnUnsuccessfulStore);
     storageSCU.setAllowIllegalProposalMode(opt_allowIllegalProposal);
-    if (opt_protocolVersion != -1) storageSCU.setProtocolVersion(opt_protocolVersion);
+    storageSCU.setProtocolVersion(opt_protocolVersion);
 
     /* output information on the single/multiple associations setting */
     if (opt_multipleAssociations)

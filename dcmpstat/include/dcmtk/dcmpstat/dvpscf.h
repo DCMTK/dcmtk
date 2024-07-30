@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2018, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dctypes.h"    /* for Uint32 */
 #include "dcmtk/dcmpstat/dvpstyp.h"    /* for DVPS enums */
 #include "dcmtk/dcmpstat/dpdefine.h"
+#include "dcmtk/dcmnet/assoc.h" /* for T_ASC_ProtocolFamily */
 
 class OFConfigFile;
 
@@ -99,9 +100,9 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    *  target ID from the configuration file.
    *  @param targetID communication target ID, must be one of the target
    *    identifiers returned by getTargetID().
-   *  @return entry if present and parsable in the config file, -1 otherwise.
+   *  @return entry if present and parsable in the config file, ASC_AF_Default otherwise.
    */
-  int getTargetProtocol(const char *targetID);
+  T_ASC_ProtocolFamily getTargetProtocol(const char *targetID);
 
   /** returns the TYPE entry for the communication partner with the given
    *  target ID from the configuration file.

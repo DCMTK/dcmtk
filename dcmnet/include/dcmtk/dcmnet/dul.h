@@ -176,6 +176,15 @@ public:
   virtual void callback(unsigned long mode) = 0;
 };
 
+enum T_ASC_ProtocolFamily
+{
+  ASC_AF_Default,
+  ASC_AF_INET,
+  ASC_AF_INET6,
+  ASC_AF_UNSPEC
+};
+
+
 typedef struct {
     char applicationContextName[DUL_LEN_NAME + 1];
     char callingAPTitle[DUL_LEN_TITLE + 1];
@@ -203,7 +212,7 @@ typedef struct {
 
     OFBool useSecureLayer;
     Sint32 tcpConnectTimeout;
-    int protocol_family;
+    T_ASC_ProtocolFamily protocol_family;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 /** Enum describing the possible role settings for role negotiation sub items.

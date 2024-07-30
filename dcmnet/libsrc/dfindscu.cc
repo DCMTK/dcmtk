@@ -250,7 +250,7 @@ OFCondition DcmFindSCU::performQuery(
     OFList<OFString> *fileNameList,
     const char *outputDirectory,
     const char *extractFilename,
-    int protocolVersion)
+    T_ASC_ProtocolFamily protocolVersion)
 {
     T_ASC_Association *assoc = NULL;
     T_ASC_Parameters *params = NULL;
@@ -284,7 +284,7 @@ OFCondition DcmFindSCU::performQuery(
     ASC_setAPTitles(params, ourTitle, peerTitle, NULL);
 
     /* set the IP protocol version */
-    if (protocolVersion != -1) ASC_setProtocolFamily(params, protocolVersion);
+    ASC_setProtocolFamily(params, protocolVersion);
 
     /* Set the transport layer type (type of network connection) in the params */
     /* structure. The default is an insecure connection; where OpenSSL is  */

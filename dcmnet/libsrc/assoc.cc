@@ -336,7 +336,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 
     (*params)->DULparams.useSecureLayer = OFFalse;
     (*params)->DULparams.tcpConnectTimeout = tcpConnectTimeout;
-    (*params)->DULparams.protocol_family = AF_INET; // default: IPv4 only
+    (*params)->DULparams.protocol_family = ASC_AF_Default;
     return EC_Normal;
 }
 
@@ -2192,7 +2192,7 @@ ASC_setTransportLayerType(
 OFCondition
 ASC_setProtocolFamily(
     T_ASC_Parameters * params,
-    int protocolFamily)
+    T_ASC_ProtocolFamily protocolFamily)
 {
   if (params == NULL) return ASC_NULLKEY;
   params->DULparams.protocol_family = protocolFamily;

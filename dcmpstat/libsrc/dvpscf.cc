@@ -400,15 +400,15 @@ unsigned short DVConfiguration::getTargetPort(const char *targetID)
   return result;
 }
 
-int DVConfiguration::getTargetProtocol(const char *targetID)
+T_ASC_ProtocolFamily DVConfiguration::getTargetProtocol(const char *targetID)
 {
   const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PROTOCOL);
-  int result = -1;
+  T_ASC_ProtocolFamily result = ASC_AF_Default;
   if (c)
   {
-    if (strCompare(c, "AF_INET6", 8) == 0) result = AF_INET6;
-    else if (strCompare(c, "AF_INET", 7) == 0) result = AF_INET;
-    else if (strCompare(c, "AF_UNSPEC", 9) == 0) result = AF_UNSPEC;
+    if (strCompare(c, "AF_INET6", 8) == 0) result = ASC_AF_INET6;
+    else if (strCompare(c, "AF_INET", 7) == 0) result = ASC_AF_INET;
+    else if (strCompare(c, "AF_UNSPEC", 9) == 0) result = ASC_AF_UNSPEC;
   }
   return result;
 }
