@@ -854,7 +854,7 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
     /* casting the enum to an integer should be safe */
     const int i = OFstatic_cast(int, xfer);
     /* ... but you never know, so double-check this */
-    if ((i < DIM_OF_XferNames) && (XferNames[i].xfer == xfer))
+    if ((0 <= i) && (i < DIM_OF_XferNames) && (XferNames[i].xfer == xfer))
     {
         xferSyn               = XferNames[i].xfer;
         xferID                = XferNames[i].xferID;
