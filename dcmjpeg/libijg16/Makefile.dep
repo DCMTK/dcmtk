@@ -1,6 +1,3 @@
-jaricom.o: jaricom.c jinclude16.h jconfig16.h \
- ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint16.h jerror16.h
 jcapimin.o: jcapimin.c jinclude16.h jconfig16.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib16.h jmorecfg16.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint16.h jerror16.h

@@ -56,6 +56,7 @@ dcmsign.o: dcmsign.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
  ../include/dcmtk/dcmsign/sipurpos.h ../include/dcmtk/dcmsign/dcsighlp.h \
  ../include/dcmtk/dcmsign/sinullpr.h ../include/dcmtk/dcmsign/sisprof.h \
  ../include/dcmtk/dcmsign/sibrsapr.h ../include/dcmtk/dcmsign/siautopr.h \
