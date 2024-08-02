@@ -15,10 +15,9 @@ dcm2img [options] dcmfile-in [bitmap-out]
 \section dcm2img_description DESCRIPTION
 
 The \b dcm2img utility reads a DICOM image, converts the pixel data according
-to the selected image processing options and writes back an image in the
-well-known PGM/PPM (portable gray map / portable pix map), PNG, TIFF, JPEG
-(Joint Photographic Experts Group) or Windows BMP format.  This utility
-supports uncompressed as well as JPEG, JPEG-LS and RLE compressed DICOM images.
+to the selected image processing options and writes back an image in one the
+following general purpose image formats: BMP, PGM/PPM, PNG, TIFF, JPEG, or JPEG-LS.
+This utility supports uncompressed as well as JPEG, JPEG-LS and RLE compressed DICOM images.
 
 \section dcm2img_parameters PARAMETERS
 
@@ -438,8 +437,16 @@ filename generation (only with --frame-range or --all-frames):
 
 image format:
 
+  +oa   --write-auto
+          determine file format from filename extension
+          (default for files)
+
+  # if the output filename contains no extension or an
+  # unknown/unsupported one, a warning is printed an a
+  # BMP file is written (see --write-bmp).
+
   +op   --write-raw-pnm
-          write 8-bit binary PGM/PPM (default for files)
+          write 8-bit binary PGM/PPM
 
   +opb  --write-8-bit-pnm
           write 8-bit ASCII PGM/PPM (default for stdout)

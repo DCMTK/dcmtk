@@ -32,17 +32,19 @@
 #include "dcmtk/dcmimgle/digsdfn.h"      /* for DiGSDFunction */
 #include "dcmtk/dcmjpeg/dipijpeg.h"      /* for dcmimage JPEG plugin */
 #include "dcmtk/dcmjpeg/djdecode.h"      /* for dcmjpeg decoders */
-#include "dcmtk/dcmjpls/djdecode.h"      /* for dcmjpls decoders */
 #include "dcmtk/dcmjpls/dipijpls.h"      /* for dcmimage JPEG-LS plugin */
+#include "dcmtk/dcmjpls/djdecode.h"      /* for dcmjpls decoders */
+#include "dcmtk/oflog/oflog.h"           /* for the logger */
 #include "dcmtk/ofstd/ofcmdln.h"         /* for OFCommandLine */
 #include "dcmtk/ofstd/ofconapp.h"        /* for OFConsoleApplication */
 #include "dcmtk/ofstd/ofstd.h"           /* for OFStandard */
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/oflog/oflog.h"
 
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
 #include "dcmtk/dcmjp2k/dipijp2k.h"      /* for dcmimage JPEG 2000 plugin */
-#endif
+#include "dcmtk/dcmjp2k/d2decode.h"      /* for JasPer based JPEG 2000 decoder */
+#include "dcmtk/dcmjp2k/o2decode.h"      /* for OpenJPEG based JPEG 2000 decoder */
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
 #ifdef WITH_LIBTIFF
 #include "dcmtk/dcmimage/dipitiff.h"     /* for dcmimage TIFF plugin */
@@ -60,9 +62,9 @@
 
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
 # define OFFIS_CONSOLE_APPLICATION "dcm2kimg"
-#else
+#else /* BUILD_DCM2IMG_AS_DCM2KIMG */
 # define OFFIS_CONSOLE_APPLICATION "dcm2img"
-#endif
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
 static OFLogger dcm2imgLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
@@ -77,6 +79,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 /* output file types */
 enum E_FileType
 {
+    EFT_default,
     EFT_RawPNM,
     EFT_8bitPNM,
     EFT_16bitPNM,
@@ -91,8 +94,11 @@ enum E_FileType
     EFT_16bitPNG,
     EFT_JPLS
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
-  , EFT_JP2K
-#endif
+  , EFT_JP2K_CS
+#ifdef WITH_OPENJPEG
+  , EFT_JP2K_FILE
+#endif /* WITH_OPENJPEG */
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 #ifdef PASTEL_COLOR_OUTPUT
    , EFT_PastelPNM
 #endif
@@ -100,6 +106,563 @@ enum E_FileType
 
 
 // ********************************************
+
+static void dumpImageParameters(
+  E_TransferSyntax xfer,
+  DicomImage *di,
+  DcmDataset *dataset,
+  const char *ifname)
+{
+    if ((di == NULL) || (dataset == NULL) || (ifname == NULL)) return;
+
+    /* dump image parameters */
+    OFLOG_INFO(dcm2imgLogger, "dumping image parameters");
+
+    double minVal = 0.0;
+    double maxVal = 0.0;
+    const char *colorModel;
+    const char *SOPClassUID = NULL;
+    const char *SOPInstanceUID = NULL;
+    const char *SOPClassText = NULL;
+    const char *XferText = DcmXfer(xfer).getXferName();
+
+    int minmaxValid = di->getMinMaxValues(minVal, maxVal);
+    colorModel = di->getString(di->getPhotometricInterpretation());
+    if (colorModel == NULL)
+        colorModel = "unknown";
+
+    dataset->findAndGetString(DCM_SOPClassUID, SOPClassUID);
+    dataset->findAndGetString(DCM_SOPInstanceUID, SOPInstanceUID);
+
+    if (SOPInstanceUID == NULL)
+        SOPInstanceUID = "not present";
+    if (SOPClassUID == NULL)
+        SOPClassText = "not present";
+    else
+        SOPClassText = dcmFindNameOfUID(SOPClassUID);
+    if (SOPClassText == NULL)
+        SOPClassText = SOPClassUID;
+
+    char aspectRatio[30];
+    OFStandard::ftoa(aspectRatio, sizeof(aspectRatio), di->getHeightWidthRatio(), OFStandard::ftoa_format_f, 0, 2);
+
+    /* dump some general information */
+    OFLOG_INFO(dcm2imgLogger, "  filename            : " << ifname << OFendl
+        << "  transfer syntax     : " << XferText << OFendl
+        << "  SOP class           : " << SOPClassText << OFendl
+        << "  SOP instance UID    : " << SOPInstanceUID << OFendl
+        << "  columns x rows      : " << di->getWidth() << " x " << di->getHeight() << OFendl
+        << "  bits per sample     : " << di->getDepth() << OFendl
+        << "  color model         : " << colorModel << OFendl
+        << "  pixel aspect ratio  : " << aspectRatio << OFendl
+        << "  number of frames    : " << di->getNumberOfFrames() << " (" << di->getFrameCount() << " processed)");
+    if (di->getFrameTime() > 0)
+        OFLOG_INFO(dcm2imgLogger, "  frame time (in ms)  : " << di->getFrameTime());
+
+    /* dump VOI windows */
+    unsigned long count;
+    OFString explStr, funcStr;
+    count = di->getWindowCount();
+    switch (di->getVoiLutFunction())
+    {
+        case EFV_Default:
+            funcStr = "<default>";
+            break;
+        case EFV_Linear:
+            funcStr = "LINEAR";
+            break;
+        case EFV_Sigmoid:
+            funcStr = "SIGMOID";
+            break;
+    }
+    OFLOG_INFO(dcm2imgLogger, "  VOI LUT function    : " << funcStr);
+    OFLOG_INFO(dcm2imgLogger, "  VOI windows in file : " << di->getWindowCount());
+    unsigned long i;
+    for (i = 0; i < count; i++)
+    {
+        if (di->getVoiWindowExplanation(i, explStr) == NULL)
+            OFLOG_INFO(dcm2imgLogger, "  - <no explanation>");
+        else
+            OFLOG_INFO(dcm2imgLogger, "  - " << explStr);
+    }
+
+    /* dump VOI LUTs */
+    count = di->getVoiLutCount();
+    OFLOG_INFO(dcm2imgLogger, "  VOI LUTs in file    : " << count);
+    for (i = 0; i < count; i++)
+    {
+        if (di->getVoiLutExplanation(i, explStr) == NULL)
+            OFLOG_INFO(dcm2imgLogger, "  - <no explanation>");
+        else
+            OFLOG_INFO(dcm2imgLogger, "  - " << explStr);
+    }
+
+    /* dump presentation LUT shape */
+    OFString shapeStr;
+    switch (di->getPresentationLutShape())
+    {
+        case ESP_Default:
+            shapeStr = "<default>";
+            break;
+        case ESP_Identity:
+            shapeStr = "IDENTITY";
+            break;
+        case ESP_Inverse:
+            shapeStr = "INVERSE";
+            break;
+        case ESP_LinOD:
+            shapeStr = "LIN OD";
+            break;
+    }
+    OFLOG_INFO(dcm2imgLogger, "  presentation shape  : " << shapeStr);
+
+    /* dump overlays */
+    OFLOG_INFO(dcm2imgLogger, "  overlays in file    : " << di->getOverlayCount());
+
+    if (minmaxValid)
+    {
+      char minmaxText[30];
+      OFStandard::ftoa(minmaxText, sizeof(minmaxText), maxVal, OFStandard::ftoa_format_f, 0, 0);
+      OFLOG_INFO(dcm2imgLogger, "  maximum pixel value : " << minmaxText);
+      OFStandard::ftoa(minmaxText, sizeof(minmaxText), minVal, OFStandard::ftoa_format_f, 0, 0);
+      OFLOG_INFO(dcm2imgLogger, "  minimum pixel value : " << minmaxText);
+    }
+}
+
+static DicomImage *convertToGrayscale(DicomImage *di)
+{
+    if (di == NULL) return NULL;
+    OFLOG_INFO(dcm2imgLogger, "converting image to grayscale");
+    DicomImage *newimage = di->createMonochromeImage();
+    if (newimage == NULL)
+    {
+        OFLOG_FATAL(dcm2imgLogger, "Out of memory or cannot convert to monochrome image");
+        return NULL;
+    }
+    else if (newimage->getStatus() != EIS_Normal)
+    {
+        OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(newimage->getStatus()));
+        return NULL;
+    }
+    else
+    {
+        delete di;
+        return newimage;
+    }
+}
+
+static void processOverlayParameters(
+  DicomImage *di,
+  int *overlayArray,
+  EM_Overlay overlayMode,
+  OFCmdFloat foregroundDensity,
+  OFCmdFloat thresholdDensity)
+{
+    if ((di == NULL)||(overlayArray == NULL)) return;
+
+    di->hideAllOverlays();
+    for (unsigned int k = 0; k < 16; k++)
+    {
+        if (overlayArray[k])
+        {
+            if ((overlayArray[k] == 1) || (k < di->getOverlayCount()))
+            {
+                OFLOG_INFO(dcm2imgLogger, "activating overlay plane " << k + 1);
+                if (overlayMode != EMO_Default)
+                {
+                    if (!di->showOverlay(k, overlayMode, foregroundDensity, thresholdDensity))
+                        OFLOG_WARN(dcm2imgLogger, "cannot display overlay plane " << k + 1);
+                } else {
+                    if (!di->showOverlay(k)) /* use default values */
+                        OFLOG_WARN(dcm2imgLogger, "cannot display overlay plane " << k + 1);
+                }
+            }
+        }
+    }
+}
+
+
+static int processVOIParameters(
+  DicomImage *di,
+  int windowType,
+  OFCmdUnsignedInt windowParameter,
+  OFCmdFloat windowCenter,
+  OFCmdFloat windowWidth,
+  EF_VoiLutFunction voiFunction,
+  OFBool ignoreVoiLutDepth,
+  OFCmdUnsignedInt roiLeft,
+  OFCmdUnsignedInt roiTop,
+  OFCmdUnsignedInt roiWidth,
+  OFCmdUnsignedInt roiHeight)
+{
+    if (di == NULL) return 1;
+
+    switch (windowType)
+    {
+        case 1: /* use the n-th VOI window from the image file */
+            if ((windowParameter < 1) || (windowParameter > di->getWindowCount()))
+            {
+                OFLOG_FATAL(dcm2imgLogger, "cannot select VOI window " << windowParameter << ", only "
+                    << di->getWindowCount() << " window(s) in file");
+                return 1;
+            }
+            OFLOG_INFO(dcm2imgLogger, "activating VOI window " << windowParameter);
+            if (!di->setWindow(windowParameter - 1))
+                OFLOG_WARN(dcm2imgLogger, "cannot select VOI window " << windowParameter);
+            break;
+        case 2: /* use the n-th VOI look up table from the image file */
+            if ((windowParameter < 1) || (windowParameter > di->getVoiLutCount()))
+            {
+                OFLOG_FATAL(dcm2imgLogger, "cannot select VOI LUT " << windowParameter << ", only "
+                    << di->getVoiLutCount() << " LUT(s) in file");
+                return 1;
+            }
+            OFLOG_INFO(dcm2imgLogger, "activating VOI LUT " << windowParameter);
+            if (!di->setVoiLut(windowParameter - 1, ignoreVoiLutDepth ? ELM_IgnoreValue : ELM_UseValue))
+                OFLOG_WARN(dcm2imgLogger, "cannot select VOI LUT " << windowParameter);
+            break;
+        case 3: /* Compute VOI window using min-max algorithm */
+            OFLOG_INFO(dcm2imgLogger, "activating VOI window min-max algorithm");
+            if (!di->setMinMaxWindow(0))
+                OFLOG_WARN(dcm2imgLogger, "cannot compute min/max VOI window");
+            break;
+        case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
+            OFLOG_INFO(dcm2imgLogger, "activating VOI window histogram algorithm, ignoring " << windowParameter << "%");
+            if (!di->setHistogramWindow(OFstatic_cast(double, windowParameter)/100.0))
+                OFLOG_WARN(dcm2imgLogger, "cannot compute histogram VOI window");
+            break;
+        case 5: /* Compute VOI window using center and width */
+            OFLOG_INFO(dcm2imgLogger, "activating VOI window center=" << windowCenter << ", width=" << windowWidth);
+            if (!di->setWindow(windowCenter, windowWidth))
+                OFLOG_WARN(dcm2imgLogger, "cannot set VOI window to specified values");
+            break;
+        case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
+            OFLOG_INFO(dcm2imgLogger, "activating VOI window min-max algorithm, ignoring extreme values");
+            if (!di->setMinMaxWindow(1))
+                OFLOG_WARN(dcm2imgLogger, "cannot compute min/max VOI window");
+            break;
+        case 7: /* Compute region of interest VOI window */
+            OFLOG_INFO(dcm2imgLogger, "activating region of interest VOI window");
+            if (!di->setRoiWindow(roiLeft, roiTop, roiWidth, roiHeight))
+                OFLOG_WARN(dcm2imgLogger, "cannot compute region of interest VOI window");
+            break;
+        default: /* no VOI windowing */
+            if (di->isMonochrome())
+            {
+                OFLOG_INFO(dcm2imgLogger, "disabling VOI window computation");
+                if (!di->setNoVoiTransformation())
+                    OFLOG_WARN(dcm2imgLogger, "cannot ignore VOI window");
+            }
+            break;
+    }
+    /* VOI LUT function */
+    if (voiFunction != EFV_Default)
+    {
+        if (voiFunction == EFV_Linear)
+            OFLOG_INFO(dcm2imgLogger, "setting VOI LUT function to LINEAR");
+        else if (voiFunction == EFV_Sigmoid)
+            OFLOG_INFO(dcm2imgLogger, "setting VOI LUT function to SIGMOID");
+        if (!di->setVoiLutFunction(voiFunction))
+            OFLOG_WARN(dcm2imgLogger, "cannot set VOI LUT function");
+    }
+    return 0;
+}
+
+
+static void processPLUTParameters(
+  DicomImage *di,
+  ES_PresentationLut presShape)
+{
+    if (di == NULL) return;
+    if (presShape != ESP_Default)
+    {
+        if (presShape == ESP_Identity)
+            OFLOG_INFO(dcm2imgLogger, "setting presentation LUT shape to IDENTITY");
+        else if (presShape == ESP_Inverse)
+            OFLOG_INFO(dcm2imgLogger, "setting presentation LUT shape to INVERSE");
+        else if (presShape == ESP_LinOD)
+            OFLOG_INFO(dcm2imgLogger, "setting presentation LUT shape to LIN OD");
+        if (!di->setPresentationLutShape(presShape))
+            OFLOG_WARN(dcm2imgLogger, "cannot set presentation LUT shape");
+    }
+}
+
+static DicomImage *performClipping(
+  DicomImage *di,
+  int useClip,
+  int scaleType,
+  OFCmdSignedInt left,
+  OFCmdSignedInt top,
+  OFCmdUnsignedInt width,
+  OFCmdUnsignedInt height)
+{
+    if (di == NULL) return NULL;
+
+    if (useClip && (scaleType == 0))
+    {
+         OFLOG_INFO(dcm2imgLogger, "clipping image to (" << left << "," << top << "," << width
+             << "," << height << ")");
+         DicomImage *newimage = di->createClippedImage(left, top, width, height);
+         if (newimage == NULL)
+         {
+             OFLOG_FATAL(dcm2imgLogger, "clipping to (" << left << "," << top << "," << width
+                 << "," << height << ") failed");
+             return NULL;
+         } else if (newimage->getStatus() != EIS_Normal)
+         {
+             OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(newimage->getStatus()));
+             return NULL;
+         }
+         else
+         {
+             delete di;
+             return newimage;
+         }
+    }
+    return di;
+}
+
+static void performRotation(
+  DicomImage *di,
+  int rotateDegree)
+{
+    if (di == NULL) return;
+    if (rotateDegree > 0)
+    {
+        OFLOG_INFO(dcm2imgLogger, "rotating image by " << rotateDegree << " degrees");
+        if (!di->rotateImage(rotateDegree))
+            OFLOG_WARN(dcm2imgLogger, "cannot rotate image");
+    }
+}
+
+static void performFlip(
+  DicomImage *di,
+  int flipType)
+{
+    if (di == NULL) return;
+    if (flipType > 0)
+    {
+        switch (flipType)
+        {
+            case 1:
+                OFLOG_INFO(dcm2imgLogger, "flipping image horizontally");
+                if (!di->flipImage(1, 0))
+                    OFLOG_WARN(dcm2imgLogger, "cannot flip image");
+                break;
+            case 2:
+                OFLOG_INFO(dcm2imgLogger, "flipping image vertically");
+                if (!di->flipImage(0, 1))
+                    OFLOG_WARN(dcm2imgLogger, "cannot flip image");
+                break;
+            case 3:
+                OFLOG_INFO(dcm2imgLogger, "flipping image horizontally and vertically");
+                if (!di->flipImage(1, 1))
+                    OFLOG_WARN(dcm2imgLogger, "cannot flip image");
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+static DicomImage *performScaling(
+  DicomImage *di,
+  int useClip,
+  int scaleType,
+  OFCmdSignedInt left,
+  OFCmdSignedInt top,
+  OFCmdUnsignedInt width,
+  OFCmdUnsignedInt height,
+  OFCmdFloat scale_factor,
+  OFCmdUnsignedInt scale_size,
+  OFCmdUnsignedInt useInterpolation,
+  int useAspectRatio)
+{
+    if (scaleType > 0)
+    {
+        DicomImage *newimage;
+        if (useClip)
+            OFLOG_INFO(dcm2imgLogger, "clipping image to (" << left << "," << top << "," << width << "," << height << ")");
+        switch (scaleType)
+        {
+            case 1:
+                OFLOG_INFO(dcm2imgLogger, "scaling image, X factor=" << scale_factor
+                    << ", Interpolation=" << OFstatic_cast(int, useInterpolation)
+                    << ", Aspect Ratio=" << (useAspectRatio ? "yes" : "no"));
+                if (useClip)
+                    newimage = di->createScaledImage(left, top, width, height, scale_factor, 0.0,
+                        OFstatic_cast(int, useInterpolation), useAspectRatio);
+                else
+                    newimage = di->createScaledImage(scale_factor, 0.0, OFstatic_cast(int, useInterpolation),
+                        useAspectRatio);
+                break;
+            case 2:
+                OFLOG_INFO(dcm2imgLogger, "scaling image, Y factor=" << scale_factor
+                    << ", Interpolation=" << OFstatic_cast(int, useInterpolation)
+                    << ", Aspect Ratio=" << (useAspectRatio ? "yes" : "no"));
+                if (useClip)
+                    newimage = di->createScaledImage(left, top, width, height, 0.0, scale_factor,
+                        OFstatic_cast(int, useInterpolation), useAspectRatio);
+                else
+                    newimage = di->createScaledImage(0.0, scale_factor, OFstatic_cast(int, useInterpolation),
+                        useAspectRatio);
+                break;
+            case 3:
+                OFLOG_INFO(dcm2imgLogger, "scaling image, X size=" << scale_size
+                    << ", Interpolation=" << OFstatic_cast(int, useInterpolation)
+                    << ", Aspect Ratio=" << (useAspectRatio ? "yes" : "no"));
+                if (useClip)
+                    newimage = di->createScaledImage(left, top, width, height, scale_size, 0,
+                        OFstatic_cast(int, useInterpolation), useAspectRatio);
+                else
+                    newimage = di->createScaledImage(scale_size, 0, OFstatic_cast(int, useInterpolation),
+                        useAspectRatio);
+                break;
+            case 4:
+                OFLOG_INFO(dcm2imgLogger, "scaling image, Y size=" << scale_size
+                    << ", Interpolation=" << OFstatic_cast(int, useInterpolation)
+                    << ", Aspect Ratio=" << (useAspectRatio ? "yes" : "no"));
+                if (useClip)
+                    newimage = di->createScaledImage(left, top, width, height, 0, scale_size,
+                        OFstatic_cast(int, useInterpolation), useAspectRatio);
+                else
+                    newimage = di->createScaledImage(0, scale_size, OFstatic_cast(int, useInterpolation),
+                        useAspectRatio);
+                break;
+            default:
+                OFLOG_INFO(dcm2imgLogger, "internal error: unknown scaling type");
+                newimage = NULL;
+                break;
+        }
+        if (newimage == NULL)
+        {
+            OFLOG_FATAL(dcm2imgLogger, "Out of memory or cannot scale image");
+            return NULL;
+        }
+        else if (newimage->getStatus() != EIS_Normal)
+        {
+            OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(newimage->getStatus()));
+            delete newimage;
+            return NULL;
+        }
+        else
+        {
+            delete di;
+            return newimage;
+        }
+    }
+    return di;
+}
+
+static const char *getDefaultExtension(
+  DicomImage *di,
+  E_FileType fileType)
+{
+    if (di == NULL) return "";
+
+    const char *result = NULL;
+    /* determine default file extension */
+    switch (fileType)
+    {
+      case EFT_BMP:
+      case EFT_8bitBMP:
+      case EFT_24bitBMP:
+      case EFT_32bitBMP:
+        result = "bmp";
+        break;
+      case EFT_JPEG:
+        result = "jpg";
+        break;
+      case EFT_JPLS:
+        result = "jls";
+        break;
+#ifdef BUILD_DCM2IMG_AS_DCM2KIMG
+      case EFT_JP2K_CS:
+        result = "jpc";
+        break;
+#ifdef WITH_OPENJPEG
+      case EFT_JP2K_FILE:
+        result = "jp2";
+        break;
+#endif /* WITH_OPENJPEG */
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
+      case EFT_TIFF:
+        result = "tif";
+        break;
+      case EFT_PNG:
+      case EFT_16bitPNG:
+        result = "png";
+        break;
+      default:
+        if (di->isMonochrome()) result = "pgm"; else result = "ppm";
+        break;
+    }
+    return result;
+}
+
+// case insensitive string comparison
+static OFBool ci_compare(const OFString& str1, const OFString& str2)
+{
+    size_t l = str1.length();
+    if (l != str2.length()) return OFFalse;
+
+    for (size_t i = 0; i < l; ++i) {
+        if (tolower(str1[i]) != tolower(str2[i]))
+            return OFFalse;
+    }
+    return OFTrue;
+}
+
+static E_FileType getFileTypeByExtension(const char *fname)
+{
+    // no filename, return 8-bit ASCII PNM as the default for stdout
+    if (fname == NULL) return EFT_8bitPNM;
+
+    // remove path from filename
+    OFString filename(fname);
+    size_t pos = filename.find_last_of('/');
+    if (pos != OFString_npos) filename = filename.substr(pos + 1);
+    pos = filename.find_last_of('\\');
+    if (pos != OFString_npos) filename = filename.substr(pos + 1);
+
+    // determine filename extension
+    pos = filename.find_last_of('.');
+
+    // no filename extension, return BMP as the default for files
+    if (pos == OFString_npos)
+    {
+        OFLOG_WARN(dcm2imgLogger, "no filename extension specified, writing BMP file.");
+        return EFT_BMP;
+    }
+
+    // copy the extension into a separate string
+    OFString extension = filename.substr(pos + 1);
+    OFString ext;
+    if (ci_compare(extension, OFString("bmp"))) return EFT_BMP;
+    if (ci_compare(extension, OFString("jpg"))) return EFT_JPEG;
+    if (ci_compare(extension, OFString("jpeg"))) return EFT_JPEG;
+    if (ci_compare(extension, OFString("pnm"))) return EFT_RawPNM;
+    if (ci_compare(extension, OFString("pgm"))) return EFT_RawPNM;
+    if (ci_compare(extension, OFString("ppm"))) return EFT_RawPNM;
+    if (ci_compare(extension, OFString("tif"))) return EFT_TIFF;
+    if (ci_compare(extension, OFString("tiff"))) return EFT_TIFF;
+    if (ci_compare(extension, OFString("png"))) return EFT_PNG;
+    if (ci_compare(extension, OFString("jls"))) return EFT_JPLS;
+    if (ci_compare(extension, OFString("jpls"))) return EFT_JPLS;
+#ifdef BUILD_DCM2IMG_AS_DCM2KIMG
+    if (ci_compare(extension, OFString("jpc"))) return EFT_JP2K_CS;
+    if (ci_compare(extension, OFString("j2c"))) return EFT_JP2K_CS;
+#ifdef WITH_OPENJPEG
+    if (ci_compare(extension, OFString("jp2"))) return EFT_JP2K_FILE;
+    if (ci_compare(extension, OFString("j2k"))) return EFT_JP2K_FILE;
+    if (ci_compare(extension, OFString("jpf"))) return EFT_JP2K_FILE;
+    if (ci_compare(extension, OFString("jpg2"))) return EFT_JP2K_FILE;
+#endif /* WITH_OPENJPEG */
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
+
+    OFLOG_WARN(dcm2imgLogger, "unsupported filename extension '" << extension << "', writing BMP file.");
+    return EFT_BMP;
+}
 
 int main(int argc, char *argv[])
 {
@@ -179,9 +742,9 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_tile_size_y = 0;
     OFCmdUnsignedInt opt_levels = 6;
     J2K_Progression opt_progression = EJ2O_progression_lrcp;
-    OFBool opt_jp2_file_format = OFFalse;
 #ifdef WITH_OPENJPEG
     OFBool opt_use_openjpeg = OFTrue;
+    OFCmdUnsignedInt openJPEGNumThreads = 0;
 #endif /* WITH_OPENJPEG */
 #endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
@@ -195,7 +758,7 @@ int main(int argc, char *argv[])
 
     int                 opt_imageInfo = 0;                /* default: no info */
     int                 opt_suppressOutput = 0;           /* default: create output */
-    E_FileType          opt_fileType = EFT_RawPNM;        /* default: 8-bit PGM/PPM */
+    E_FileType          opt_fileType = EFT_default;
                                                           /* (binary for file output and ASCII for stdout) */
     OFCmdUnsignedInt    opt_fileBits = 0;                 /* default: 0 */
     const char *        opt_ifname = NULL;
@@ -381,10 +944,6 @@ int main(int argc, char *argv[])
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
      cmd.addSubGroup("JPEG 2000 format:");
       cmd.addOption("--rendered-lossy",     "+Try",   "lossy compression of rendered image");
-#ifdef WITH_OPENJPEG
-      cmd.addOption("--openjpeg",           "+co",    "encode using OpenJPEG codec (default)");
-      cmd.addOption("--jasper",             "+cj",    "encode using JasPer codec");
-#endif /* WITH_OPENJPEG */
       cmd.addOption("--compression-ratio",   "-r",  1, "[r]atio: double, 0 < r < 1.0 (default: 0.2)",
                                                        "compress with compression ratio r");
       cmd.addOption("--compressed-size",     "-s",  1, "[s]ize: integer",
@@ -397,6 +956,14 @@ int main(int argc, char *argv[])
                                                        "number of wavelet resolution levels");
       cmd.addOption("--progression",         "-po", 1, "LRCP/RLCP/RPCL/PCRL/CPRL (default: LRCP)",
                                                        "progression order for layer, resolution,\ncomponent and position");
+#ifdef WITH_OPENJPEG
+     cmd.addSubGroup("JPEG 2000 codec:");
+      cmd.addOption("--openjpeg",           "+co",    "use OpenJPEG codec (default)");
+
+      cmd.addOption("--jasper",             "+cj",    "use JasPer codec");
+      cmd.addOption("--threads",            "+t",  1, "[t]hreads: integer (default: 1)",
+                                                      "use t threads in the decoder (not with --jasper)");
+#endif /* WITH_OPENJPEG */
 #endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
      cmd.addSubGroup("other transformations:");
@@ -413,7 +980,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--use-frame-counter",  "+Fc",     "use 0-based counter for filenames (default)");
       cmd.addOption("--use-frame-number",   "+Fn",     "use absolute frame number for filenames");
      cmd.addSubGroup("image format:");
-      cmd.addOption("--write-raw-pnm",      "+op",     "write 8-bit binary PGM/PPM (default for files)");
+      cmd.addOption("--write-auto",         "+oa",     "determine file format from filename extension\n(default for files)");
+      cmd.addOption("--write-raw-pnm",      "+op",     "write 8-bit binary PGM/PPM");
       cmd.addOption("--write-8-bit-pnm",    "+opb",    "write 8-bit ASCII PGM/PPM (default for stdout)");
       cmd.addOption("--write-16-bit-pnm",   "+opw",    "write 16-bit ASCII PGM/PPM");
       cmd.addOption("--write-n-bit-pnm",    "+opn", 1, "[n]umber: integer",
@@ -437,7 +1005,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_OPENJPEG
       cmd.addOption("--write-jp2k",         "+o2",     "write JPEG 2000 file");
 #endif /* WITH_OPENJPEG */
-#endif
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
 #ifdef PASTEL_COLOR_OUTPUT
       cmd.addOption("--write-pastel-pnm",   "+op",     "write 8-bit binary PPM with pastel colors\n(early experimental version)");
@@ -904,6 +1472,13 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--openjpeg")) opt_use_openjpeg = OFTrue;
         if (cmd.findOption("--jasper")) opt_use_openjpeg = OFFalse;
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--threads"))
+        {
+            app.checkConflict("--threads", "--jasper", !opt_use_openjpeg);
+             // we limit the number of threads for decoding a single JPEG 2000 frame to 1024, which should be more than enough.
+            app.checkValue(cmd.getValueAndCheckMinMax(openJPEGNumThreads, 1, 1024));
+        }
 #endif /* WITH_OPENJPEG */
 
         if (cmd.findOption("--rendered-lossy"))
@@ -1009,18 +1584,16 @@ int main(int argc, char *argv[])
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
         if (cmd.findOption("--write-jp2k-cs"))
         {
-            opt_fileType = EFT_JP2K;
-            opt_jp2_file_format = OFFalse;
+            opt_fileType = EFT_JP2K_CS;
         }
 #ifdef WITH_OPENJPEG
         if (cmd.findOption("--write-jp2k"))
         {
             app.checkConflict("--write-jp2k", "--jasper", !opt_use_openjpeg);
-            opt_fileType = EFT_JP2K;
-            opt_jp2_file_format = OFTrue;
+            opt_fileType = EFT_JP2K_FILE;
         }
 #endif /* WITH_OPENJPEG */
-#endif
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 #ifdef WITH_LIBTIFF
         if (cmd.findOption("--write-tiff"))
             opt_fileType = EFT_TIFF;
@@ -1035,6 +1608,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-pastel-pnm"))
             opt_fileType = EFT_PastelPNM;
 #endif
+        if (opt_ofname && (opt_fileType == EFT_default|| cmd.findOption("--write-auto")))
+            opt_fileType = getFileTypeByExtension(opt_ofname);
         cmd.endOptionBlock();
     }
 
@@ -1063,6 +1638,24 @@ int main(int argc, char *argv[])
 
     // register JPEG-LS decompression codecs
     DJLSDecoderRegistration::registerCodecs();
+
+#ifdef BUILD_DCM2IMG_AS_DCM2KIMG
+#ifdef WITH_OPENJPEG
+    if (opt_use_openjpeg)
+    {
+        // register global OpenJPEG decompression codecs
+        O2DecoderRegistration::registerCodecs(EJ2UC_default, EJ2PC_restore, OFstatic_cast(int, openJPEGNumThreads), 0 /* decoder flags */, OFTrue, OFTrue);
+    }
+    else
+    {
+        // register global JasPer decompression codecs
+        D2DecoderRegistration::registerCodecs();
+    }
+#else /* WITH_OPENJPEG */
+    // register global JasPer decompression codecs
+    D2DecoderRegistration::registerCodecs();
+#endif /* WITH_OPENJPEG */
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
     DcmFileFormat *dfile = new DcmFileFormat();
     OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL, DCM_MaxReadLength, opt_readMode);
@@ -1138,117 +1731,7 @@ int main(int argc, char *argv[])
 
     if (opt_imageInfo)
     {
-        /* dump image parameters */
-        OFLOG_INFO(dcm2imgLogger, "dumping image parameters");
-
-        double minVal = 0.0;
-        double maxVal = 0.0;
-        const char *colorModel;
-        const char *SOPClassUID = NULL;
-        const char *SOPInstanceUID = NULL;
-        const char *SOPClassText = NULL;
-        const char *XferText = DcmXfer(xfer).getXferName();
-
-        int minmaxValid = di->getMinMaxValues(minVal, maxVal);
-        colorModel = di->getString(di->getPhotometricInterpretation());
-        if (colorModel == NULL)
-            colorModel = "unknown";
-
-        dataset->findAndGetString(DCM_SOPClassUID, SOPClassUID);
-        dataset->findAndGetString(DCM_SOPInstanceUID, SOPInstanceUID);
-
-        if (SOPInstanceUID == NULL)
-            SOPInstanceUID = "not present";
-        if (SOPClassUID == NULL)
-            SOPClassText = "not present";
-        else
-            SOPClassText = dcmFindNameOfUID(SOPClassUID);
-        if (SOPClassText == NULL)
-            SOPClassText = SOPClassUID;
-
-        char aspectRatio[30];
-        OFStandard::ftoa(aspectRatio, sizeof(aspectRatio), di->getHeightWidthRatio(), OFStandard::ftoa_format_f, 0, 2);
-
-        /* dump some general information */
-        OFLOG_INFO(dcm2imgLogger, "  filename            : " << opt_ifname << OFendl
-            << "  transfer syntax     : " << XferText << OFendl
-            << "  SOP class           : " << SOPClassText << OFendl
-            << "  SOP instance UID    : " << SOPInstanceUID << OFendl
-            << "  columns x rows      : " << di->getWidth() << " x " << di->getHeight() << OFendl
-            << "  bits per sample     : " << di->getDepth() << OFendl
-            << "  color model         : " << colorModel << OFendl
-            << "  pixel aspect ratio  : " << aspectRatio << OFendl
-            << "  number of frames    : " << di->getNumberOfFrames() << " (" << di->getFrameCount() << " processed)");
-        if (di->getFrameTime() > 0)
-            OFLOG_INFO(dcm2imgLogger, "  frame time (in ms)  : " << di->getFrameTime());
-
-        /* dump VOI windows */
-        unsigned long count;
-        OFString explStr, funcStr;
-        count = di->getWindowCount();
-        switch (di->getVoiLutFunction())
-        {
-            case EFV_Default:
-                funcStr = "<default>";
-                break;
-            case EFV_Linear:
-                funcStr = "LINEAR";
-                break;
-            case EFV_Sigmoid:
-                funcStr = "SIGMOID";
-                break;
-        }
-        OFLOG_INFO(dcm2imgLogger, "  VOI LUT function    : " << funcStr);
-        OFLOG_INFO(dcm2imgLogger, "  VOI windows in file : " << di->getWindowCount());
-        for (i = 0; i < count; i++)
-        {
-            if (di->getVoiWindowExplanation(i, explStr) == NULL)
-                OFLOG_INFO(dcm2imgLogger, "  - <no explanation>");
-            else
-                OFLOG_INFO(dcm2imgLogger, "  - " << explStr);
-        }
-
-        /* dump VOI LUTs */
-        count = di->getVoiLutCount();
-        OFLOG_INFO(dcm2imgLogger, "  VOI LUTs in file    : " << count);
-        for (i = 0; i < count; i++)
-        {
-            if (di->getVoiLutExplanation(i, explStr) == NULL)
-                OFLOG_INFO(dcm2imgLogger, "  - <no explanation>");
-            else
-                OFLOG_INFO(dcm2imgLogger, "  - " << explStr);
-        }
-
-        /* dump presentation LUT shape */
-        OFString shapeStr;
-        switch (di->getPresentationLutShape())
-        {
-            case ESP_Default:
-                shapeStr = "<default>";
-                break;
-            case ESP_Identity:
-                shapeStr = "IDENTITY";
-                break;
-            case ESP_Inverse:
-                shapeStr = "INVERSE";
-                break;
-            case ESP_LinOD:
-                shapeStr = "LIN OD";
-                break;
-        }
-        OFLOG_INFO(dcm2imgLogger, "  presentation shape  : " << shapeStr);
-
-        /* dump overlays */
-        OFLOG_INFO(dcm2imgLogger, "  overlays in file    : " << di->getOverlayCount());
-
-        if (minmaxValid)
-        {
-          char minmaxText[30];
-          OFStandard::ftoa(minmaxText, sizeof(minmaxText), maxVal, OFStandard::ftoa_format_f, 0, 0);
-          OFLOG_INFO(dcm2imgLogger, "  maximum pixel value : " << minmaxText);
-          OFStandard::ftoa(minmaxText, sizeof(minmaxText), minVal, OFStandard::ftoa_format_f, 0, 0);
-          OFLOG_INFO(dcm2imgLogger, "  minimum pixel value : " << minmaxText);
-        }
+        dumpImageParameters(xfer, di, dataset, opt_ifname);
     }
 
     if (!opt_suppressOutput)
@@ -1263,129 +1746,21 @@ int main(int argc, char *argv[])
         /* convert to grayscale if image is not monochrome */
         if ((opt_convertToGrayscale) && (!di->isMonochrome()))
         {
-             OFLOG_INFO(dcm2imgLogger, "converting image to grayscale");
-
-             DicomImage *newimage = di->createMonochromeImage();
-             if (newimage == NULL)
-             {
-                OFLOG_FATAL(dcm2imgLogger, "Out of memory or cannot convert to monochrome image");
-                return 1;
-             }
-             else if (newimage->getStatus() != EIS_Normal)
-             {
-                OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(newimage->getStatus()));
-                return 1;
-             }
-             else
-             {
-                 delete di;
-                 di = newimage;
-             }
+            di = convertToGrayscale(di);
+            if (di == NULL) return 1;
         }
 
         /* process overlay parameters */
-        di->hideAllOverlays();
-        for (unsigned int k = 0; k < 16; k++)
-        {
-            if (opt_Overlay[k])
-            {
-                if ((opt_Overlay[k] == 1) || (k < di->getOverlayCount()))
-                {
-                    OFLOG_INFO(dcm2imgLogger, "activating overlay plane " << k + 1);
-                    if (opt_OverlayMode != EMO_Default)
-                    {
-                        if (!di->showOverlay(k, opt_OverlayMode, opt_foregroundDensity, opt_thresholdDensity))
-                            OFLOG_WARN(dcm2imgLogger, "cannot display overlay plane " << k + 1);
-                    } else {
-                        if (!di->showOverlay(k)) /* use default values */
-                            OFLOG_WARN(dcm2imgLogger, "cannot display overlay plane " << k + 1);
-                    }
-                }
-            }
-        }
+        processOverlayParameters(di, opt_Overlay, opt_OverlayMode, opt_foregroundDensity, opt_thresholdDensity);
 
         /* process VOI parameters */
-        switch (opt_windowType)
-        {
-            case 1: /* use the n-th VOI window from the image file */
-                if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
-                {
-                    OFLOG_FATAL(dcm2imgLogger, "cannot select VOI window " << opt_windowParameter << ", only "
-                        << di->getWindowCount() << " window(s) in file");
-                    return 1;
-                }
-                OFLOG_INFO(dcm2imgLogger, "activating VOI window " << opt_windowParameter);
-                if (!di->setWindow(opt_windowParameter - 1))
-                    OFLOG_WARN(dcm2imgLogger, "cannot select VOI window " << opt_windowParameter);
-                break;
-            case 2: /* use the n-th VOI look up table from the image file */
-                if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
-                {
-                    OFLOG_FATAL(dcm2imgLogger, "cannot select VOI LUT " << opt_windowParameter << ", only "
-                        << di->getVoiLutCount() << " LUT(s) in file");
-                    return 1;
-                }
-                OFLOG_INFO(dcm2imgLogger, "activating VOI LUT " << opt_windowParameter);
-                if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth ? ELM_IgnoreValue : ELM_UseValue))
-                    OFLOG_WARN(dcm2imgLogger, "cannot select VOI LUT " << opt_windowParameter);
-                break;
-            case 3: /* Compute VOI window using min-max algorithm */
-                OFLOG_INFO(dcm2imgLogger, "activating VOI window min-max algorithm");
-                if (!di->setMinMaxWindow(0))
-                    OFLOG_WARN(dcm2imgLogger, "cannot compute min/max VOI window");
-                break;
-            case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
-                OFLOG_INFO(dcm2imgLogger, "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%");
-                if (!di->setHistogramWindow(OFstatic_cast(double, opt_windowParameter)/100.0))
-                    OFLOG_WARN(dcm2imgLogger, "cannot compute histogram VOI window");
-                break;
-            case 5: /* Compute VOI window using center and width */
-                OFLOG_INFO(dcm2imgLogger, "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth);
-                if (!di->setWindow(opt_windowCenter, opt_windowWidth))
-                    OFLOG_WARN(dcm2imgLogger, "cannot set VOI window to specified values");
-                break;
-            case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
-                OFLOG_INFO(dcm2imgLogger, "activating VOI window min-max algorithm, ignoring extreme values");
-                if (!di->setMinMaxWindow(1))
-                    OFLOG_WARN(dcm2imgLogger, "cannot compute min/max VOI window");
-                break;
-            case 7: /* Compute region of interest VOI window */
-                OFLOG_INFO(dcm2imgLogger, "activating region of interest VOI window");
-                if (!di->setRoiWindow(opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight))
-                    OFLOG_WARN(dcm2imgLogger, "cannot compute region of interest VOI window");
-                break;
-            default: /* no VOI windowing */
-                if (di->isMonochrome())
-                {
-                    OFLOG_INFO(dcm2imgLogger, "disabling VOI window computation");
-                    if (!di->setNoVoiTransformation())
-                        OFLOG_WARN(dcm2imgLogger, "cannot ignore VOI window");
-                }
-                break;
-        }
-        /* VOI LUT function */
-        if (opt_voiFunction != EFV_Default)
-        {
-            if (opt_voiFunction == EFV_Linear)
-                OFLOG_INFO(dcm2imgLogger, "setting VOI LUT function to LINEAR");
-            else if (opt_voiFunction == EFV_Sigmoid)
-                OFLOG_INFO(dcm2imgLogger, "setting VOI LUT function to SIGMOID");
-            if (!di->setVoiLutFunction(opt_voiFunction))
-                OFLOG_WARN(dcm2imgLogger, "cannot set VOI LUT function");
-        }
+        int result = processVOIParameters(di, opt_windowType, opt_windowParameter,
+            opt_windowCenter, opt_windowWidth, opt_voiFunction, opt_ignoreVoiLutDepth,
+            opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight);
+        if (result) return result;
 
         /* process presentation LUT parameters */
-        if (opt_presShape != ESP_Default)
-        {
-            if (opt_presShape == ESP_Identity)
-                OFLOG_INFO(dcm2imgLogger, "setting presentation LUT shape to IDENTITY");
-            else if (opt_presShape == ESP_Inverse)
-                OFLOG_INFO(dcm2imgLogger, "setting presentation LUT shape to INVERSE");
-            else if (opt_presShape == ESP_LinOD)
-                OFLOG_INFO(dcm2imgLogger, "setting presentation LUT shape to LIN OD");
-            if (!di->setPresentationLutShape(opt_presShape))
-                OFLOG_WARN(dcm2imgLogger, "cannot set presentation LUT shape");
-        }
+        processPLUTParameters(di, opt_presShape);
 
         /* change polarity */
         if (opt_changePolarity)
@@ -1396,174 +1771,31 @@ int main(int argc, char *argv[])
         }
 
         /* perform clipping */
-        if (opt_useClip && (opt_scaleType == 0))
-        {
-             OFLOG_INFO(dcm2imgLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width
-                 << "," << opt_height << ")");
-             DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
-             if (newimage == NULL)
-             {
-                 OFLOG_FATAL(dcm2imgLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width
-                     << "," << opt_height << ") failed");
-                 return 1;
-             } else if (newimage->getStatus() != EIS_Normal)
-             {
-                 OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(newimage->getStatus()));
-                 return 1;
-             }
-             else
-             {
-                 delete di;
-                 di = newimage;
-             }
-        }
+        di = performClipping(di, opt_useClip, opt_scaleType, opt_left,
+             opt_top, opt_width, opt_height);
+        if (di == NULL) return 1;
 
         /* perform rotation */
-        if (opt_rotateDegree > 0)
-        {
-            OFLOG_INFO(dcm2imgLogger, "rotating image by " << opt_rotateDegree << " degrees");
-            if (!di->rotateImage(opt_rotateDegree))
-                OFLOG_WARN(dcm2imgLogger, "cannot rotate image");
-        }
+        performRotation(di, opt_rotateDegree);
 
         /* perform flipping */
-        if (opt_flipType > 0)
-        {
-            switch (opt_flipType)
-            {
-                case 1:
-                    OFLOG_INFO(dcm2imgLogger, "flipping image horizontally");
-                    if (!di->flipImage(1, 0))
-                        OFLOG_WARN(dcm2imgLogger, "cannot flip image");
-                    break;
-                case 2:
-                    OFLOG_INFO(dcm2imgLogger, "flipping image vertically");
-                    if (!di->flipImage(0, 1))
-                        OFLOG_WARN(dcm2imgLogger, "cannot flip image");
-                    break;
-                case 3:
-                    OFLOG_INFO(dcm2imgLogger, "flipping image horizontally and vertically");
-                    if (!di->flipImage(1, 1))
-                        OFLOG_WARN(dcm2imgLogger, "cannot flip image");
-                    break;
-                default:
-                    break;
-            }
-        }
+        performFlip(di, opt_flipType);
 
         /* perform scaling */
-        if (opt_scaleType > 0)
-        {
-            DicomImage *newimage;
-            if (opt_useClip)
-                OFLOG_INFO(dcm2imgLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")");
-            switch (opt_scaleType)
-            {
-                case 1:
-                    OFLOG_INFO(dcm2imgLogger, "scaling image, X factor=" << opt_scale_factor
-                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
-                    if (opt_useClip)
-                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
-                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
-                    else
-                        newimage = di->createScaledImage(opt_scale_factor, 0.0, OFstatic_cast(int, opt_useInterpolation),
-                            opt_useAspectRatio);
-                    break;
-                case 2:
-                    OFLOG_INFO(dcm2imgLogger, "scaling image, Y factor=" << opt_scale_factor
-                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
-                    if (opt_useClip)
-                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
-                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
-                    else
-                        newimage = di->createScaledImage(0.0, opt_scale_factor, OFstatic_cast(int, opt_useInterpolation),
-                            opt_useAspectRatio);
-                    break;
-                case 3:
-                    OFLOG_INFO(dcm2imgLogger, "scaling image, X size=" << opt_scale_size
-                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
-                    if (opt_useClip)
-                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
-                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
-                    else
-                        newimage = di->createScaledImage(opt_scale_size, 0, OFstatic_cast(int, opt_useInterpolation),
-                            opt_useAspectRatio);
-                    break;
-                case 4:
-                    OFLOG_INFO(dcm2imgLogger, "scaling image, Y size=" << opt_scale_size
-                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
-                    if (opt_useClip)
-                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
-                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
-                    else
-                        newimage = di->createScaledImage(0, opt_scale_size, OFstatic_cast(int, opt_useInterpolation),
-                            opt_useAspectRatio);
-                    break;
-                default:
-                    OFLOG_INFO(dcm2imgLogger, "internal error: unknown scaling type");
-                    newimage = NULL;
-                    break;
-            }
-            if (newimage == NULL)
-            {
-                OFLOG_FATAL(dcm2imgLogger, "Out of memory or cannot scale image");
-                return 1;
-            }
-            else if (newimage->getStatus() != EIS_Normal)
-            {
-                OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(newimage->getStatus()));
-                return 1;
-            }
-            else
-            {
-                delete di;
-                di = newimage;
-            }
-        }
+        di = performScaling(di, opt_useClip, opt_scaleType, opt_left, opt_top,
+             opt_width, opt_height, opt_scale_factor, opt_scale_size,
+             opt_useInterpolation, opt_useAspectRatio);
+        if (di == NULL) return 1;
 
         /* write selected frame(s) to file */
 
-        int result = 0;
         FILE *ofile = NULL;
         OFString ofname;
-        unsigned int fcount = OFstatic_cast(unsigned int, ((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
-        const char *ofext = NULL;
-        /* determine default file extension */
-        switch (opt_fileType)
-        {
-          case EFT_BMP:
-          case EFT_8bitBMP:
-          case EFT_24bitBMP:
-          case EFT_32bitBMP:
-            ofext = "bmp";
-            break;
-          case EFT_JPEG:
-            ofext = "jpg";
-            break;
-          case EFT_JPLS:
-            ofext = "jls";
-            break;
-#ifdef BUILD_DCM2IMG_AS_DCM2KIMG
-          case EFT_JP2K:
-            if (opt_jp2_file_format) ofext = "jp2"; else ofext = "jpc";
-            break;
-#endif
-          case EFT_TIFF:
-            ofext = "tif";
-            break;
-          case EFT_PNG:
-          case EFT_16bitPNG:
-            ofext = "png";
-            break;
-          default:
-            if (di->isMonochrome()) ofext = "pgm"; else ofext = "ppm";
-            break;
-        }
 
+        /* determine default file extension */
+        const char *ofext = getDefaultExtension(di, opt_fileType);
+
+        unsigned int fcount = OFstatic_cast(unsigned int, ((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
         if (fcount < opt_frameCount)
         {
             OFLOG_WARN(dcm2imgLogger, "cannot select " << opt_frameCount << " frames, limiting to "
@@ -1589,8 +1821,12 @@ int main(int argc, char *argv[])
                     OFSTRINGSTREAM_GETSTR(stream, buffer_str)
                     ofname.assign(buffer_str);
                     OFSTRINGSTREAM_FREESTR(buffer_str)
-                } else
+                }
+                else
+                {
                     ofname.assign(opt_ofname);
+                }
+
                 OFLOG_INFO(dcm2imgLogger, "writing frame " << (opt_frame + frame) << " to " << ofname);
                 ofile = fopen(ofname.c_str(), "wb");
                 if (ofile == NULL)
@@ -1609,31 +1845,40 @@ int main(int argc, char *argv[])
             switch (opt_fileType)
             {
                 case EFT_RawPNM:
+                    OFLOG_INFO(dcm2imgLogger, "writing 8-bit binary PGM/PPM");
                     result = di->writeRawPPM(ofile, 8, frame);
                     break;
                 case EFT_8bitPNM:
+                    OFLOG_INFO(dcm2imgLogger, "writing 8-bit ASCII PGM/PPM");
                     result = di->writePPM(ofile, 8, frame);
                     break;
                 case EFT_16bitPNM:
+                    OFLOG_INFO(dcm2imgLogger, "writing 16-bit ASCII PGM/PPM");
                     result = di->writePPM(ofile, 16, frame);
                     break;
                 case EFT_NbitPNM:
+                    OFLOG_INFO(dcm2imgLogger, "writing " << opt_fileBits << "-bit ASCII PGM/PPM");
                     result = di->writePPM(ofile, OFstatic_cast(int, opt_fileBits), frame);
                     break;
                 case EFT_BMP:
+                    OFLOG_INFO(dcm2imgLogger, (di->isMonochrome() ? "writing 8-bit monochrome BMP" : "writing 24-bit color BMP"));
                     result = di->writeBMP(ofile, 0, frame);
                     break;
                 case EFT_8bitBMP:
+                    OFLOG_INFO(dcm2imgLogger, "writing 8-bit palette BMP");
                     result = di->writeBMP(ofile, 8, frame);
                     break;
                 case EFT_24bitBMP:
+                    OFLOG_INFO(dcm2imgLogger, "writing 24-bit truecolor BMP");
                     result = di->writeBMP(ofile, 24, frame);
                     break;
                 case EFT_32bitBMP:
+                    OFLOG_INFO(dcm2imgLogger, "writing 32-bit truecolor BMP");
                     result = di->writeBMP(ofile, 32, frame);
                     break;
                 case EFT_JPEG:
                     {
+                        OFLOG_INFO(dcm2imgLogger, "writing 8-bit lossy JPEG (baseline)");
                         /* initialize JPEG plugin */
                         DiJPEGPlugin plugin;
                         plugin.setQuality(OFstatic_cast(unsigned int, opt_quality));
@@ -1643,6 +1888,7 @@ int main(int argc, char *argv[])
                     break;
                 case EFT_JPLS:
                     {
+                        OFLOG_INFO(dcm2imgLogger, (opt_true_lossless ? "writing JPEG-LS (raw)" : "writing JPEG-LS (rendered)"));
                         /* initialize JPEG-LS plugin */
                         DiJPLSPlugin plugin;
                         plugin.setTrueLosslessMode(opt_true_lossless);
@@ -1651,7 +1897,14 @@ int main(int argc, char *argv[])
                     }
                     break;
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
-                case EFT_JP2K:
+                case EFT_JP2K_CS:
+#ifdef WITH_OPENJPEG
+                case EFT_JP2K_FILE:
+                        if (opt_fileType == EFT_JP2K_FILE) OFLOG_INFO(dcm2imgLogger, (opt_true_lossless ? "writing JPEG 2000 file (raw)" : "writing JPEG 2000 file (rendered)"));
+                            else OFLOG_INFO(dcm2imgLogger, (opt_true_lossless ? "writing JPEG 2000 code stream (raw)" : "writing JPEG 2000 code stream (rendered)"));
+#else /* WITH_OPENJPEG */
+                        OFLOG_INFO(dcm2imgLogger, (opt_true_lossless ? "writing JPEG 2000 code stream (raw)" : "writing JPEG 2000 code stream (rendered)"));
+#endif /* WITH_OPENJPEG */
                     {
                         /* initialize JPEG 2000 plugin */
                         DiJP2000Plugin plugin;
@@ -1665,16 +1918,17 @@ int main(int argc, char *argv[])
                         plugin.setLevels(opt_levels);
                         plugin.setProgressionOrder(opt_progression);
 #ifdef WITH_OPENJPEG
-                        plugin.useFileFormat(opt_jp2_file_format);
+                        plugin.useFileFormat(opt_fileType == EFT_JP2K_FILE);
                         plugin.useOpenJPEG(opt_use_openjpeg);
 #endif /* WITH_OPENJPEG */
                         result = di->writePluginFormat(&plugin, ofile, frame);
                     }
                     break;
-#endif
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 #ifdef WITH_LIBTIFF
                 case EFT_TIFF:
                     {
+                        OFLOG_INFO(dcm2imgLogger, (di->isMonochrome() ? "writing 8-bit monochrome TIFF" : "writing 24-bit color TIFF"));
                         /* initialize TIFF plugin */
                         DiTIFFPlugin tiffPlugin;
                         tiffPlugin.setCompressionType(opt_tiffCompression);
@@ -1688,6 +1942,8 @@ int main(int argc, char *argv[])
                 case EFT_PNG:
                 case EFT_16bitPNG:
                     {
+                        if (opt_fileType == EFT_PNG) OFLOG_INFO(dcm2imgLogger, (di->isMonochrome() ? "writing 8-bit monochrome PNG" : "writing 24-bit color PNG"));
+                            else OFLOG_INFO(dcm2imgLogger, (di->isMonochrome() ? "writing 16-bit monochrome PNG" : "writing 48-bit color PNG"));
                         /* initialize PNG plugin */
                         DiPNGPlugin pngPlugin;
                         pngPlugin.setInterlaceType(opt_interlace);
@@ -1700,14 +1956,21 @@ int main(int argc, char *argv[])
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
                 case EFT_PastelPNM:
+                    OFLOG_INFO(dcm2imgLogger, "writing 8-bit binary PPM with pastel colors");
                     result = di->writePPM(ofile, MI_PastelColor, frame);
                     break;
 #endif
                 default:
                     if (opt_ofname)
-                        result = di->writeRawPPM(ofile, 8, frame);
+                    {
+                        OFLOG_INFO(dcm2imgLogger, (di->isMonochrome() ? "writing 8-bit monochrome BMP" : "writing 24-bit color BMP"));
+                        result = di->writeBMP(ofile, 0, frame);
+                    }
                     else /* stdout */
+                    {
+                        OFLOG_INFO(dcm2imgLogger, "writing 8-bit ASCII PGM/PPM to stdout");
                         result = di->writePPM(ofile, 8, frame);
+                    }
                     break;
             }
 
@@ -1735,6 +1998,15 @@ int main(int argc, char *argv[])
 
     // deregister JPEG-LS decompression codecs
     DJLSDecoderRegistration::cleanup();
+
+#ifdef BUILD_DCM2IMG_AS_DCM2KIMG
+#ifdef WITH_OPENJPEG
+    if (opt_use_openjpeg) O2DecoderRegistration::cleanup();
+        else D2DecoderRegistration::cleanup();
+#else /* WITH_OPENJPEG */
+    D2DecoderRegistration::cleanup();
+#endif /* WITH_OPENJPEG */
+#endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
     return 0;
 }
