@@ -1675,7 +1675,7 @@ static void mapCharacterAndAppendToString(Uint8 c,
 
 struct StoreCallbackData
 {
-  char* imageFileName;
+  OFString imageFileName;
   DcmFileFormat* dcmff;
   T_ASC_Association* assoc;
 };
@@ -2135,14 +2135,18 @@ static OFCondition storeSCP(
     if (!opt_ignore)
     {
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-        OFStandard::deleteFile(imageFileName);
+      {
+         OFStandard::deleteFile(imageFileName);
+      }
     }
   }
 #ifdef _WIN32
   else if (opt_ignore)
   {
     if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-      OFStandard::deleteFile(imageFileName); // delete the temporary file
+    {
+        OFStandard::deleteFile(imageFileName); // delete the temporary file
+    }
   }
 #endif
 
