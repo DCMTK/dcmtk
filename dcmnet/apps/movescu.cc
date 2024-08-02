@@ -1368,8 +1368,8 @@ storeSCPCallback(
        if ((imageDataSet != NULL) && (*imageDataSet != NULL) && !opt_bitPreserving && !opt_ignore)
        {
          StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData*, callbackData);
-         /* create full path name for the output file */
-         OFString ofname(cbdata->imageFileName);
+         const OFString ofname(cbdata->imageFileName);
+         // check whether output file exists
          if (OFStandard::fileExists(ofname))
          {
            OFLOG_WARN(movescuLogger, "DICOM file already exists, overwriting: " << ofname);
@@ -1486,14 +1486,15 @@ static OFCondition storeSCP(
       {
         if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
         {
-          OFStandard::deleteFile(ofname.c_str());
+          OFStandard::deleteFile(ofname);
         }
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
         if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
         {
-          OFStandard::deleteFile(ofname.c_str()); // delete the temporary file
+          // delete the temporary file
+          OFStandard::deleteFile(ofname);
         }
 #endif
     }
