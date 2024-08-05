@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2017, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,6 +20,7 @@
  *  Profiles. Supports the following profiles:
  *  - General Purpose CD-R Interchange (STD-GEN-CD)
  *  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
+ *  - General Purpose Interchange on BD Media (STD-GEN-BD)
  *  If build with 'BUILD_DCMGPDIR_AS_DCMMKDIR' it also supports:
  *  - General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
  *  - General Purpose DVD Interchange with JPEG 2000 (STD-GEN-DVD-J2K)
@@ -192,7 +193,7 @@ DCMTK_MAIN_FUNCTION
                                                            "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
-        cmd.addOption("--general-purpose",       "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
+        cmd.addOption("--general-purpose",       "-Pgp",   "General Purpose Interchange on CD-R, DVD-RAM\nor BD Media (STD-GEN-CD/DVD-RAM/BD, default)");
         cmd.addOption("--general-dvd-jpeg",      "-Pdv",   "General Purpose DVD Interchange with JPEG\n(STD-GEN-DVD-JPEG)");
         cmd.addOption("--general-dvd-j2k",       "-Pd2",   "General Purpose DVD Interchange with JPEG\n2000 (STD-GEN-DVD-J2K)");
         cmd.addOption("--general-bd-jpeg",       "-Pbd",   "General Purpose BD Interchange with JPEG\n(STD-GEN-BD-JPEG)");

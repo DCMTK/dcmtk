@@ -5335,7 +5335,7 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
     switch(profile)
     {
         case AP_GeneralPurpose:
-            result = "STD-GEN-CD/DVD-RAM";
+            result = "STD-GEN-CD/DVD-RAM/BD";
             break;
         case AP_GeneralPurposeDVDJPEG:
             result = "STD-GEN-DVD-JPEG";
