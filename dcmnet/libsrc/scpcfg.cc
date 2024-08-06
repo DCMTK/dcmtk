@@ -56,6 +56,7 @@ DcmSCPConfig::~DcmSCPConfig()
 DcmSCPConfig::DcmSCPConfig(const DcmSCPConfig &old) :
   m_assocConfig(old.m_assocConfig),
   m_assocCfgProfileName(old.m_assocCfgProfileName),
+  m_implIdentification(old.m_implIdentification),
   m_port(old.m_port),
   m_aetitle(old.m_aetitle),
   m_refuseAssociation(old.m_refuseAssociation),
@@ -81,6 +82,7 @@ DcmSCPConfig& DcmSCPConfig::operator=(const DcmSCPConfig &obj)
   {
     m_assocConfig = obj.m_assocConfig; // performs deep copy
     m_assocCfgProfileName = obj.m_assocCfgProfileName;
+    m_implIdentification = obj.m_implIdentification;
     m_port = obj.m_port;
     m_aetitle = obj.m_aetitle;
     m_refuseAssociation = obj.m_refuseAssociation;
@@ -396,6 +398,18 @@ OFCondition DcmSCPConfig::checkAssociationProfile(const OFString& profileName,
   }
 
   return result;
+}
+
+
+void DcmSCPConfig::setImplementationIdentification(const T_ASC_ImplementationIdentification& implIndetification)
+{
+    m_implIdentification = implIndetification;
+}
+
+
+const T_ASC_ImplementationIdentification& DcmSCPConfig::getImplementationIdentification()
+{
+    return m_implIdentification;
 }
 
 
