@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2019, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -75,8 +75,8 @@ struct OFrvalue_storage
         // copy constructor should be fine for primitive types.
         inline type(const T& pt)
         : t( pt ) {}
-        inline type(const OFrvalue_storage& rhs)
-        : t( rhs.pt ) {}
+        inline type(const type& rhs)
+        : t( rhs.t ) {}
 
         // automatic conversion to the underlying type
         inline operator T&() const { return OFconst_cast( T&, t ); }
