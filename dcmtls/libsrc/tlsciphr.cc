@@ -375,7 +375,7 @@ OFCondition DcmTLSCiphersuiteHandler::setTLSProfile(DcmTLSSecurityProfile profil
       tls13_enabled = OFTrue;
       ciphersuiteList.clear();
       tls13ciphersuiteList.clear();
-      // required TLS 1.0-1.2 ciphersuites as defined in the DICOM profile
+      // required and optional TLS 1.0-1.2 ciphersuites as defined in the DICOM profile
 #ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384
       result = addRequiredCipherSuite("TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256");
       if (result.bad()) return result;

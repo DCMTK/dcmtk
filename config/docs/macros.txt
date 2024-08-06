@@ -106,24 +106,6 @@ DCMTK_GUI
     them to the user or store them in a log file.  See comments in
     ofstd/include/dcmtk/ofstd/ofconsol.h.
 
-DCMTK_IGNORE_BCP195M_CAMELLIA_GCM_REQUIREMENT
-  Affected: dcmtls
-  Type of modification: Enables experimental feature
-  Explanation: Starting with release 3.6.8, DCMTK contains a feature-complete
-    implementation of the "Modified BCP 195 RFC 8996 TLS Secure Transport
-    Connection Profile". Unfortunately, this profile cannot be implemented
-    with any current version of OpenSSL or LibreSSL because the DICOM committee
-    has declared support for the TLS 1.2 Camellia ciphersuites in GCM mode
-    mandatory, and these are not supported in either OpenSSL or LibreSSL.
-    This macro will enable the support for this profile on library and
-    command line tool level, but in a manner that is not fully DICOM compliant
-    (i.e. without the Camellia GCM ciphersuites).
-    Should OpenSSL/LibreSSL add support for these ciphersuites in the
-    future, support for the TLS profile will automatically be enabled
-    when compiling DCMTK against such a future release, because there is
-    a configure test that checks the availability of this feature.
-    This macro is primarily intended for testing purposes.
-
 DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
   Affected: oflog
   Type of modification: Disables feature

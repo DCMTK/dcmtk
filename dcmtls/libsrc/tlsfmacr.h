@@ -33,19 +33,11 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 /* check if we fulfil all requirements for implementing the 
- * Modified BCP 195 RFC 8996 TLS Profile
+ * Modified BCP 195 RFC 8996 TLS Profile. With DICOM CP 2311
+ * making support for Camellia in GCM mode optional, this is now rather simple.
  */
 #ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8
-
-/* all feature tests except Camellia in GCM mode are successful
- * We now check if we either have Camellia in GCM more or have been
- * instructed to ignore this requirement
- */
-#if defined(HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384) \
-  || defined(DCMTK_IGNORE_BCP195M_CAMELLIA_GCM_REQUIREMENT)
-
 #define DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
-#endif
 #endif
 
 #endif /* WITH_OPENSSL */
