@@ -647,7 +647,11 @@
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_SSIZE_T
 #ifdef HAVE_NO_TYPEDEF_SSIZE_T
-#define ssize_t long
+#if defined(_WIN64)
+ typedef __int64 ssize_t;
+#else
+ typedef long ssize_t;
+#endif
 #endif
 
 /* Set typedefs as needed for JasPer library */
