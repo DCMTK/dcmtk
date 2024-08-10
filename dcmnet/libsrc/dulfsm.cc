@@ -2604,7 +2604,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateRequest, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
@@ -2678,7 +2678,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     associateReply;
     BufferGuard buffer;
     unsigned long length = 0;
-    int nbytes;
+    ssize_t nbytes;
     DUL_ASSOCIATESERVICEPARAMETERS localService;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateReply, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
@@ -2759,7 +2759,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
 
@@ -2825,7 +2825,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFCondition cond = constructAbortPDU(abortItems->source, abortItems->reason, &pdu, (*association)->compatibilityMode);
@@ -2879,7 +2879,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFCondition cond = constructReleaseRQPDU(&pdu, (*association)->compatibilityMode);
@@ -2934,7 +2934,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFCondition cond = constructReleaseRPPDU(&pdu);
@@ -3086,7 +3086,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
         head[24];
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     /* construct a stream variable that will contain PDU head information */
