@@ -3662,7 +3662,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
               int timeout, void *p, unsigned long l, unsigned long *rtnLen)
 {
     unsigned char *b;
-    int bytesRead;
+    ssize_t bytesRead;
 
     /* assign buffer to local variable */
     b = (unsigned char *) p;
