@@ -167,14 +167,7 @@ OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converte
     if (status.good() && (str != NULL) && (len > 0))
     {
         OFString resultStr;
-        // convert string to selected character string and replace the element value
-        if (getTag().isPrivateReservation())
-        {
-            // special handling for private creator elements: treat the '~' character
-            // as a delimiter, i.e. never convert it. Needed for ISO_IR 13 datasets.
-            status = converter.convertString(str, len, resultStr, getDelimiterChars() + "~");
-        } else
-            status = converter.convertString(str, len, resultStr, getDelimiterChars());
+        status = converter.convertString(str, len, resultStr, getDelimiterChars());
         if (status.good())
         {
             // check whether the value has changed during the conversion (slows down the process?)
