@@ -335,7 +335,13 @@ three implementations of character set conversion can be used:
 DCMTK selects the built-in module oficonv by default.  Other implementations
 can be activated by the user via the "--enable-charconv" argument (Autoconf)
 or "DCMTK_ENABLE_CHARSET_CONVERSION" (CMake).  Selecting an implementation
-that is not available will be ignored, i.e. the user choice will be overridden.
+that is not available will be ignored, i.e. the user's choice will be overridden.
+
+The exact values that can be chosen for "--enable-charconv" and
+DCMTK_ENABLE_CHARSET_CONVERSION are:
+- "oficonv" (default)
+- "libiconv"
+- "stdlibc" (for DCMTK_ENABLE_CHARSET: "stdlibc (iconv)")
 
 
 LIBICONV SUPPORT
@@ -1066,4 +1072,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-05-25 (Riesmeier)
+Last revised: 2024-08-16 (Onken)
