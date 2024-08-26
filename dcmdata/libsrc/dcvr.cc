@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dctypes.h"
+#include <cstring>
 
 /*
 ** global flags

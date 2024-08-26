@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimgle/didispfn.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include <cstring>
 
 
 #define OFFIS_CONSOLE_APPLICATION "dcod2lum"

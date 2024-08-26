@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2022, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/oflist.h"   /* for class OFList<> */
 #include "dcmtk/dcmdata/dcdefine.h"
+#include <cstring>
 
 #define DcmRLEEncoder_BLOCKSIZE 16384
 
