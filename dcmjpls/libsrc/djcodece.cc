@@ -1152,7 +1152,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
     frameBuffer = new Uint8[buffer_size];
     framePointer = frameBuffer;
-    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
+    result = convertToUninterleaved(frameBuffer, buffer, OFstatic_cast(Uint16, samplesPerPixel), width, height, OFstatic_cast(Uint16, jls_params.bitspersample));
   }
 #endif
 
