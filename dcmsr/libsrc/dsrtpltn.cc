@@ -203,7 +203,8 @@ OFCondition DSRIncludedTemplateTreeNode::renderHTML(STD_NAMESPACE ostream & /*do
                                                     STD_NAMESPACE ostream & /*annexStream*/,
                                                     const size_t /*nestingLevel*/,
                                                     size_t & /*annexNumber*/,
-                                                    const size_t /*flags*/) const
+                                                    const size_t /*flags*/,
+                                                    const char * /*urlPrefix*/) const
 {
     /* invalid: cannot render document with included templates */
     return SR_EC_CannotProcessIncludedTemplates;

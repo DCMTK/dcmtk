@@ -166,13 +166,19 @@ class DCMTK_DCMSR_EXPORT DSRWaveformTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix     URL prefix used for hyperlink to referenced composite object
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
                                               STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
-                                              const size_t flags) const;
+                                              const size_t flags,
+                                              const char *urlPrefix) const;
+
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
 
 
   private:

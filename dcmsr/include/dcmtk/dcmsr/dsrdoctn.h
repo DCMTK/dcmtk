@@ -222,15 +222,19 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
      *  @param  nestingLevel  current nesting level.  Used to render section headings.
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
-     *                        Value is increased automatically by 1 after a new entry has been added.
+     *                        Value is increased automatically by 1 after a new entry has been
+     *                        added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix     optional URL prefix used for hyperlinks to referenced composite
+     *                        objects.  If NULL, the default URL prefix is used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
-                                   const size_t flags) const;
+                                   const size_t flags,
+                                   const char *urlPrefix = NULL) const;
 
     /** check whether content item is digitally signed.
      *  A content item is signed if the DigitalSignaturesSequence exists.  This sequence is read
@@ -602,6 +606,26 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
                                               size_t &annexNumber,
                                               const size_t flags) const;
 
+    /** render content item (value) in HTML/XHTML format.
+     *  This method calls the previous method (without 'urlPrefix').  Derived classes overwrite it
+     *  to render the contents according to their value type.
+     ** @param  docStream     output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been
+     *                        added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix     URL prefix used for hyperlink to referenced composite object
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                              STD_NAMESPACE ostream &annexStream,
+                                              const size_t nestingLevel,
+                                              size_t &annexNumber,
+                                              const size_t flags,
+                                              const char *urlPrefix) const;
+
     /** write common item start (XML tag)
      ** @param  stream          output stream to which the XML document is written
      *  @param  flags           flag used to customize the output (see DSRTypes::XF_xxx)
@@ -712,13 +736,15 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix     optional URL prefix used for hyperlink to referenced composite object
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTMLChildNodes(STD_NAMESPACE ostream &docStream,
                                      STD_NAMESPACE ostream &annexStream,
                                      const size_t nestingLevel,
                                      size_t &annexNumber,
-                                     const size_t flags) const;
+                                     const size_t flags,
+                                     const char *urlPrefix = NULL) const;
 
   // --- static function ---
 

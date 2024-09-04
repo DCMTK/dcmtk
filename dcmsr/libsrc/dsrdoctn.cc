@@ -453,7 +453,8 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
                                             STD_NAMESPACE ostream &annexStream,
                                             const size_t nestingLevel,
                                             size_t &annexNumber,
-                                            const size_t flags) const
+                                            const size_t flags,
+                                            const char *urlPrefix) const
 {
     /* check for validity */
     if (!isValid())
@@ -466,10 +467,10 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
         docStream << "<a " << attrName << "=\"content_item_" << getNodeID() << "\"" << closeElm << ">" << OFendl;
     }
     /* render content item */
-    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags);
+    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, urlPrefix);
     /* render child nodes */
     if (result.good())
-        result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately);
+        result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, urlPrefix);
     else
         printContentItemErrorMessage("Rendering", result, this);
     return result;
@@ -671,6 +672,18 @@ OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream & /
 {
     /* no content to render */
     return EC_Normal;
+}
+
+
+OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                                       STD_NAMESPACE ostream &annexStream,
+                                                       const size_t nestingLevel,
+                                                       size_t &annexNumber,
+                                                       const size_t flags,
+                                                       const char * /*urlPrefix*/) const
+{
+    /* call the real method (without "urlPrefix" parameter) */
+    return renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags);
 }
 
 
@@ -1169,7 +1182,8 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                                                       STD_NAMESPACE ostream &annexStream,
                                                       const size_t nestingLevel,
                                                       size_t &annexNumber,
-                                                      const size_t flags) const
+                                                      const size_t flags,
+                                                      const char *urlPrefix) const
 {
     OFCondition result = EC_Normal;
     /* goto first child of current node */
@@ -1235,7 +1249,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                         docStream << " = ";
                     }
                     /* render HTML code (directly to the reference text) */
-                    result = node->renderHTML(docStream, annexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_renderItemInline);
+                    result = node->renderHTML(docStream, annexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_renderItemInline, urlPrefix);
                 } else {
                     /* render concept name or value type */
                     if (node->getConceptName().getCodeMeaning().empty())
@@ -1251,7 +1265,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                     /* create memory output stream for the temporal annex */
                     OFOStringStream tempAnnexStream;
                     /* render HTML code (directly to the annex) */
-                    result = node->renderHTML(annexStream, tempAnnexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_currentlyInsideAnnex);
+                    result = node->renderHTML(annexStream, tempAnnexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_currentlyInsideAnnex, urlPrefix);
                     annexStream << "</div>" << OFendl;
                     /* use empty paragraph for bottom margin */
                     if (!(flags & HF_XHTML11Compatibility))
@@ -1286,7 +1300,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                 if (newFlags & HF_createFootnoteReferences)
                 {
                     /* render HTML code (without child nodes) */
-                    result = node->renderHTMLContentItem(docStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags);
+                    result = node->renderHTMLContentItem(docStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags, urlPrefix);
                     /* create footnote numbers (individually for each child?) */
                     if (result.good())
                     {
@@ -1302,11 +1316,11 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                         /* render footnote text and reference */
                         createHTMLFootnote(docStream, tempDocStream, footnoteNumber, node->getNodeID(), flags);
                         /* render child nodes to temporary stream */
-                        result = node->renderHTMLChildNodes(tempDocStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags);
+                        result = node->renderHTMLChildNodes(tempDocStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags, urlPrefix);
                     }
                 } else {
                     /* render HTML code (incl. child nodes)*/
-                    result = node->renderHTML(docStream, annexStream, nestingLevel + 1, annexNumber, newFlags);
+                    result = node->renderHTML(docStream, annexStream, nestingLevel + 1, annexNumber, newFlags, urlPrefix);
                 }
                 /* end paragraph */
                 if (flags & HF_renderItemsSeparately)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2018, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -189,13 +189,15 @@ class DCMTK_DCMSR_EXPORT DSRIncludedTemplateTreeNode
      *  @param  nestingLevel  dummy parameter
      *  @param  annexNumber   dummy parameter
      *  @param  flags         dummy parameter
+     *  @param  urlPrefix     dummy parameter
      ** @return always returns SR_EC_CannotProcessIncludedTemplates
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
-                                   const size_t flags) const;
+                                   const size_t flags,
+                                   const char *urlPrefix = NULL) const;
 
     /** set the concept name
      ** @param  conceptName  dummy parameter

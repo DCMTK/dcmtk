@@ -69,8 +69,8 @@ extern DCMTK_DCMSR_EXPORT OFLogger DCM_dcmsrLogger;
 // organization responsible for the private coding scheme
 #define OFFIS_CODING_SCHEME_RESPONSIBLE_ORGANIZATION "OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany"
 
-// protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
-#define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
+// default URL prefix used for HTML hyperlinks to composite objects
+#define DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS "http://localhost/dicom.cgi"
 // URL of the DICOM toolkit DCMTK
 #define DCMTK_INTERNET_URL "https://www.dcmtk.org/"
 

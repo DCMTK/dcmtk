@@ -244,10 +244,11 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
 OFCondition DSRCompositeReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                    STD_NAMESPACE ostream & /*annexStream*/,
                                                    size_t & /*annexNumber*/,
-                                                   const size_t /*flags*/) const
+                                                   const size_t /*flags*/,
+                                                   const char *urlPrefix) const
 {
     /* render reference */
-    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "<a href=\"" << (urlPrefix == NULL ? DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS : urlPrefix);
     docStream << "?composite=" << SOPClassUID << "+" << SOPInstanceUID << "\">";
     /* retrieve name of SOP class (if known) */
     docStream << dcmFindNameOfUID(SOPClassUID.c_str(), "unknown composite object");

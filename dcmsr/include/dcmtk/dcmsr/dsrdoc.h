@@ -196,11 +196,16 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      ** @param  stream      output stream to which the HTML/XHTML document is written
      *  @param  flags       optional flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
+     *  @param  urlPrefix   optional URL prefix used for hyperlinks to referenced composite
+     *                      objects.  If NULL, the default URL prefix is used, which is
+     *                      defined by DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS
+     *                      (http://localhost/dicom.cgi).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &stream,
                                    const size_t flags = 0,
-                                   const char *styleSheet = NULL);
+                                   const char *styleSheet = NULL,
+                                   const char *urlPrefix = NULL);
 
 
   // --- get/set misc attributes ---
@@ -1278,22 +1283,26 @@ class DCMTK_DCMSR_EXPORT DSRDocument
                                const size_t flags);
 
     /** render list of referenced SOP instances in HTML/XHTML format
-     ** @param  stream   output stream to which the HTML/XHTML document is written
-     *  @param  refList  list of referenced SOP instances to be rendered
-     *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  stream     output stream to which the HTML/XHTML document is written
+     *  @param  refList    list of referenced SOP instances to be rendered
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix  optional URL prefix used for hyperlinks to referenced composite objects
      */
     void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRSOPInstanceReferenceList &refList,
-                                 const size_t flags);
+                                 const size_t flags,
+                                 const char *urlPrefix = NULL);
 
     /** render list of referenced SOP instances in HTML/XHTML format
-     ** @param  stream   output stream to which the HTML/XHTML document is written
-     *  @param  refList  list of referenced SOP instances to be rendered
-     *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  stream     output stream to which the HTML/XHTML document is written
+     *  @param  refList    list of referenced SOP instances to be rendered
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix  optional URL prefix used for hyperlinks to referenced composite objects
      */
     void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRReferencedInstanceList &refList,
-                                 const size_t flags);
+                                 const size_t flags,
+                                 const char *urlPrefix = NULL);
 
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID

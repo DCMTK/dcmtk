@@ -178,12 +178,14 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix    optional URL prefix used for hyperlink to referenced composite object
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
-                                   const size_t flags) const;
+                                   const size_t flags,
+                                   const char *urlPrefix = NULL) const;
 
     /** get SOP class UID
      ** @return current SOP class UID (might be invalid or an empty string)

@@ -191,6 +191,10 @@ general rendering:
   +Rt  --section-title-inline
          render section titles inline, not separately
 
+  +Rh  --hyperlink-url-prefix  [p]refix: string
+         use URL prefix p for hyperlinks to composite objects
+         (default: http://localhost/dicom.cgi)
+
 document rendering:
 
   +Dt  --document-type-title

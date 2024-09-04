@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2016, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -244,7 +244,8 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
 
 OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
                                         STD_NAMESPACE ostream &annexStream,
-                                        const size_t flags)
+                                        const size_t flags,
+                                        const char *urlPrefix)
 {
     OFCondition result = SR_EC_InvalidDocumentTree;
     /* check whether document tree is valid */
@@ -262,7 +263,7 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
                 /* update the document tree for output (if needed) */
                 updateTreeForOutput();
                 /* start rendering from root node */
-                result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly);
+                result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly, urlPrefix);
             }
         } else {
             /* tbd: cannot render document with included templates */

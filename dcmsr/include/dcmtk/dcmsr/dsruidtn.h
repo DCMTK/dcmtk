@@ -186,6 +186,10 @@ class DCMTK_DCMSR_EXPORT DSRUIDRefTreeNode
      */
     virtual OFCondition checkValue(const OFString &uidValue) const;
 
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
+
 
   private:
 

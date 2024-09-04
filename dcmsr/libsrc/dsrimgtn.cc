@@ -163,14 +163,15 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
                                                     STD_NAMESPACE ostream &annexStream,
                                                     const size_t /*nestingLevel*/,
                                                     size_t &annexNumber,
-                                                    const size_t flags) const
+                                                    const size_t flags,
+                                                    const char *urlPrefix) const
 {
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Reference */
     if (result.good())
     {
-        result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags);
+        result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, urlPrefix);
         docStream << OFendl;
     }
     return result;

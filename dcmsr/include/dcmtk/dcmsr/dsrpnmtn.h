@@ -201,6 +201,10 @@ class DCMTK_DCMSR_EXPORT DSRPNameTreeNode
      */
     virtual OFCondition checkValue(const OFString &personNameValue) const;
 
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
+
 
   private:
 

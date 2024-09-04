@@ -226,7 +226,8 @@ OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
                                              STD_NAMESPACE ostream &annexStream,
                                              const size_t nestingLevel,
                                              size_t &annexNumber,
-                                             const size_t flags) const
+                                             const size_t flags,
+                                             const char *urlPrefix) const
 {
     /* check for validity */
     if (!isValid())
@@ -237,9 +238,9 @@ OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
     {
         /* section body: render child nodes */
         if (ContinuityOfContent == COC_Continuous)
-            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_renderItemsSeparately);
+            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_renderItemsSeparately, urlPrefix);
         else  // might be invalid
-            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately);
+            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, urlPrefix);
     } else
         printContentItemErrorMessage("Rendering", result, this);
     return result;

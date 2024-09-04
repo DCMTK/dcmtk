@@ -441,10 +441,11 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
 OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                STD_NAMESPACE ostream &annexStream,
                                                size_t &annexNumber,
-                                               const size_t flags) const
+                                               const size_t flags,
+                                               const char *urlPrefix) const
 {
     /* reference: image */
-    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "<a href=\"" << (urlPrefix == NULL ? DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS : urlPrefix);
     docStream << "?image=" << SOPClassUID << "+" << SOPInstanceUID;
     /* reference: pstate */
     if (PresentationState.isValid())

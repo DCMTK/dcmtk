@@ -299,6 +299,10 @@ class DCMTK_DCMSR_EXPORT DSRByReferenceTreeNode
                                                   const OFString &mappingResourceUID = "",
                                                   const OFBool check = OFTrue);
 
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
+
 
   private:
 

@@ -174,6 +174,10 @@ class DCMTK_DCMSR_EXPORT DSRSCoord3DTreeNode
                                               size_t &annexNumber,
                                               const size_t flags) const;
 
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
+
 
   private:
 

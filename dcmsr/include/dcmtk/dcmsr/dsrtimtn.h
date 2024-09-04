@@ -202,6 +202,10 @@ class DCMTK_DCMSR_EXPORT DSRTimeTreeNode
      */
     virtual OFCondition checkValue(const OFString &timeValue) const;
 
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
+
 
   private:
 
