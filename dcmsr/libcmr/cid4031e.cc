@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2023, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4031e_CommonAnatomicRegion
@@ -39,7 +39,7 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"ACJOINT",          CID4031_CommonAnatomicRegion::AcromioclavicularJoint},
     {"ANKLE",            CID4031_CommonAnatomicRegion::AnkleJoint},
     {"BILEDUCT",         CID4031_CommonAnatomicRegion::BileDuct},
-    {"BILIARYTRACT​",     CID4031_CommonAnatomicRegion::BiliaryTract},
+    {"BILIARYTRACT",     CID4031_CommonAnatomicRegion::BiliaryTract},
     {"BLADDER",          CID4031_CommonAnatomicRegion::Bladder},
     {"BREAST",           CID4031_CommonAnatomicRegion::Breast},
     {"BRONCHUS",         CID4031_CommonAnatomicRegion::Bronchus},
@@ -95,11 +95,11 @@ static const DefinedTermTypeMapStruct DefinedTermTypeMap[] =
     {"ORBIT",            CID4031_CommonAnatomicRegion::OrbitalStructure},
     {"PANCREAS",         CID4031_CommonAnatomicRegion::Pancreas},
     {"PANCREATICDUCT",   CID4031_CommonAnatomicRegion::PancreaticDuct},
-    {"PANCBILEDUCT​",     CID4031_CommonAnatomicRegion::PancreaticDuctAndBileDuctSystems},
+    {"PANCBILEDUCT",     CID4031_CommonAnatomicRegion::PancreaticDuctAndBileDuctSystems},
     {"PAROTID",          CID4031_CommonAnatomicRegion::ParotidGland},
     {"PATELLA",          CID4031_CommonAnatomicRegion::Patella},
     {"PELVIS",           CID4031_CommonAnatomicRegion::Pelvis},
-    {"PELVISLOWEXTREMT​", CID4031_CommonAnatomicRegion::PelvisAndLowerExtremities},
+    {"PELVISLOWEXTREMT", CID4031_CommonAnatomicRegion::PelvisAndLowerExtremities},
     {"PHANTOM",          CID4031_CommonAnatomicRegion::Phantom},
     {"PROSTATE",         CID4031_CommonAnatomicRegion::Prostate},
     {"RECTUM",           CID4031_CommonAnatomicRegion::Rectum},
