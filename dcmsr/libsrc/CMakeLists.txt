@@ -70,6 +70,7 @@ DCMTK_ADD_LIBRARY(dcmsr
   dsrtree.cc
   dsrtypes.cc
   dsruidtn.cc
+  dsrwancc.cc
   dsrwavch.cc
   dsrwavtn.cc
   dsrwavvl.cc

@@ -60,6 +60,7 @@
 #include "dcmtk/dcmsr/dsrpficc.h"
 #include "dcmtk/dcmsr/dsrplicc.h"
 #include "dcmtk/dcmsr/dsrrsdcc.h"
+#include "dcmtk/dcmsr/dsrwancc.h"
 
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
@@ -956,7 +957,7 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
     return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) &&
-        (documentType != DT_EnhancedXRayRadiationDoseSR) && (documentType != DT_WaveformAnnotationSR);
+        (documentType != DT_EnhancedXRayRadiationDoseSR);
 }
 
 
@@ -1528,6 +1529,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_XRayRadiationDoseSR:
             checker = new DSRXRayRadiationDoseSRConstraintChecker();
             break;
+        case DT_EnhancedXRayRadiationDoseSR:
+            /* not yet supported */
+            break;
         case DT_SpectaclePrescriptionReport:
             checker = new DSRSpectaclePrescriptionReportConstraintChecker();
             break;
@@ -1564,9 +1568,8 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_RenditionSelectionDocument:
             checker = new DSRRenditionSelectionDocumentConstraintChecker();
             break;
-        case DT_EnhancedXRayRadiationDoseSR:
         case DT_WaveformAnnotationSR:
-            /* not yet supported */
+            checker = new DSRWaveformAnnotationSRConstraintChecker();
             break;
         case DT_invalid:
             /* nothing to do */
