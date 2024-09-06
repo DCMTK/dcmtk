@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2015, OFFIS e.V.
+ *  Copyright (C) 2010-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,10 +62,9 @@ class DCMTK_DCMSR_EXPORT DSRSpectaclePrescriptionReportConstraintChecker
      */
     virtual OFBool isTemplateSupportRequired() const;
 
-    /** get identifier and mapping resource of the root template (if any)
-     ** @param  templateIdentifier  identifier of the root template (might be empty)
+    /** get identifier and mapping resource of the root template
+     ** @param  templateIdentifier  identifier of the root template
      *  @param  mappingResource     mapping resource that defines the root template
-     *                              (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getRootTemplateIdentification(OFString &templateIdentifier,
