@@ -1043,6 +1043,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                      const OFBool allOccurrences = OFFalse,
                                      const OFBool searchIntoSub = OFFalse);
 
+    /** find private element, remove it from the dataset and free the associated memory.
+     *  Applicable to all DICOM value representations (VR).
+     *  @param tag DICOM tag specifying the private attribute to be searched for
+     *  @param allOccurrences flag indicating whether to delete all occurrences of the
+     *    attribute tag or the first one only (implies 'searchIntoSub' to be true)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndDeletePrivateElement(const DcmTag &tag,
+                                            const OFBool allOccurrences = OFFalse,
+                                            const OFBool searchIntoSub = OFFalse);
+
+
     /** looks up the given sequence in the current dataset and deletes the given item.
      *  Applicable to the following VRs: SQ, (pixelSQ).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
