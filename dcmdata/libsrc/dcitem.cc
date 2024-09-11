@@ -1445,25 +1445,25 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                     /* check if we want to stop parsing at this point, in the main dataset only */
                     if ((stopParsingAtElement != DCM_UndefinedTagKey) && (newTag >= stopParsingAtElement) && (ident() == EVR_dataset))
                     {
-                      lastElementComplete = OFTrue;
-                      readStopElem = OFTrue;
-                      DCMDATA_INFO("DcmItem: Element " << newTag.getTagName() << " " << newTag
-                        << " encountered, skipping rest of dataset");
+                        lastElementComplete = OFTrue;
+                        readStopElem = OFTrue;
+                        DCMDATA_DEBUG("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                            << " encountered, skipping rest of dataset (as requested)");
                     }
                     else
                     {
-                      /* read the actual data value which belongs to this element */
-                      /* (attribute) and insert this information into the elementList */
-                      errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
-                      /* if reading was successful, we read the entire data value information */
-                      /* for this element; hence lastElementComplete is true again */
-                      if (errorFlag.good())
-                        lastElementComplete = OFTrue;
+                        /* read the actual data value which belongs to this element */
+                        /* (attribute) and insert this information into the elementList */
+                        errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
+                        /* if reading was successful, we read the entire data value information */
+                        /* for this element; hence lastElementComplete is true again */
+                        if (errorFlag.good())
+                            lastElementComplete = OFTrue;
 
-                      /* in data or command sets, group 0x0001 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed. */
-                      /* (we cannot check for group 0x0000 since we do not know whether we read a data or command set.)*/
-                      if (!newTag.hasValidGroup() || (newTag.getGroup() == 0x0002))
-                          DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
+                        /* in data or command sets, group 0x0001 to 0x0003, 0x0005, 0x0007 and 0xFFFF are not allowed. */
+                        /* (we cannot check for group 0x0000 since we do not know whether we read a data or command set.)*/
+                        if (!newTag.hasValidGroup() || (newTag.getGroup() == 0x0002))
+                            DCMDATA_WARN("DcmItem: Invalid Element " << newTag << " found in data set");
                     }
                 }
             } else {
@@ -1473,8 +1473,9 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                 /* information for this particular element. */
                 DcmObject *dO = elementList->get();
                 if (dO)
-                  errorFlag = dO->read(inStream, xfer, glenc, maxReadLength);
-                  else errorFlag = EC_InternalError; // should never happen
+                    errorFlag = dO->read(inStream, xfer, glenc, maxReadLength);
+                else
+                    errorFlag = EC_InternalError; // should never happen
 
                 /* if reading was successful, we read the entire information */
                 /* for this element; hence lastElementComplete is true */
@@ -1494,8 +1495,8 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                          (dcmStopParsingAfterElement.get() == elementList->get()->getTag()) &&
                           ident() == EVR_dataset)
                     {
-                        DCMDATA_INFO("DcmItem: Element " << newTag.getTagName() << " " << newTag
-                            << " encountered, skipping rest of data set");
+                        DCMDATA_DEBUG("DcmItem: Element " << newTag.getTagName() << " " << newTag
+                            << " encountered, skipping rest of data set (as requested)");
                         readStopElem = OFTrue;
                     }
                 }
@@ -4746,10 +4747,10 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 // Real-world examples of this issue have been reported in 2016.
                 if (dcmConvertVOILUTSequenceOWtoSQ.get())
                 {
-                  // Silently fix the error by interpreting as a sequence.
-                  DcmTag newTag(tag);
-                  newTag.setVR(DcmVR(EVR_SQ)); // on writing we will handle this element as SQ, not OB/OW
-                  newElement = new DcmSequenceOfItems(newTag, length);
+                    // Silently fix the error by interpreting as a sequence.
+                    DcmTag newTag(tag);
+                    newTag.setVR(DcmVR(EVR_SQ)); // on writing we will handle this element as SQ, not OB/OW
+                    newElement = new DcmSequenceOfItems(newTag, length);
                 } else {
 
                     if (dcmIgnoreParsingErrors.get())
