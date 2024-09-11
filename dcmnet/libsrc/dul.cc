@@ -86,7 +86,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-/* sys/socket.h included via dcompat.h - needed for Ultrix */
+/* sys/socket.h included via "dcmtk/ofstd/ofsockad.h" - needed for Ultrix */
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
@@ -103,6 +103,10 @@ BEGIN_EXTERN_C
 #include <tcpd.h>               /* for hosts_ctl */
 int dcmtk_hosts_access(struct request_info *req);
 #endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>              /* for FD_CLOEXEC */
+#endif
+
 /* declare extern "C" typedef for signal handler function pointer */
 typedef void(*mySIG_TYP)(int);
 END_EXTERN_C
@@ -119,6 +123,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/lst.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr and SOCK_CLOEXEC */
 
 #include "dcmtk/dcmnet/dul.h"
 #include "dcmtk/dcmnet/dulstruc.h"
@@ -1705,6 +1710,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             OFSTRINGSTREAM_GETOFSTRING(stream, msg)
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
         }
+
+#ifdef FD_CLOEXEC
+        // prevent socket leakage to child programs executed with exec()
+        int flags = fcntl(sock, F_GETFD, 0);
+        fcntl(sock, F_SETFD, FD_CLOEXEC | flags);
+#endif
     }
 
 #ifdef HAVE_FORK
@@ -1771,7 +1782,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             size_t len2 = strlen(command_argv[i]);
             if ((len2 > 0) && (command_argv[i][len2 - 1] == '\\'))
             {
-	            cmdLine += "\\";
+                cmdLine += "\\";
             }
             cmdLine += "\"";
         }
@@ -2169,8 +2180,24 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 
       /* Create socket for Internet type communication */
       (*key)->networkSpecific.TCP.port = *(int *) parameter;
+
+      // Create socket and prevent leakage of the open socket to processes called with exec()
+      // by using SOCK_CLOEXEC (where available) or FD_CLOEXEC (POSIX.1-2008)
+#ifdef SOCK_CLOEXEC
+      (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
+      sock = (*key)->networkSpecific.TCP.listenSocket;
+#elif defined(FD_CLOEXEC)
       (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
       sock = (*key)->networkSpecific.TCP.listenSocket;
+      if (sock >= 0)
+      {
+          int flags = fcntl(sock, F_GETFD, 0);
+          fcntl(sock, F_SETFD, FD_CLOEXEC | flags);
+      }
+#else
+      (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+      sock = (*key)->networkSpecific.TCP.listenSocket;
+#endif
 
 #ifdef _WIN32
       if (sock == INVALID_SOCKET)

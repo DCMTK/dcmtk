@@ -94,6 +94,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
+
 END_EXTERN_C
 #ifdef DCMTK_HAVE_POLL
 #include <poll.h>
@@ -114,7 +115,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/helpers.h"
-#include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
+#include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr and SOCK_CLOEXEC */
 #include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 #include <climits>
@@ -731,7 +732,7 @@ DUL_InitializeFSM()
                  stateEntries[l_index].actionFunction == NULL; idx2++)
                 if (stateEntries[l_index].action == FSM_FunctionTable[idx2].action) {
                     stateEntries[l_index].actionFunction = FSM_FunctionTable[idx2].actionFunction;
-                    OFStandard::snprintf(stateEntries[l_index].actionName, 
+                    OFStandard::snprintf(stateEntries[l_index].actionName,
                         sizeof(stateEntries[l_index].actionName), "%.*s",
                         (int)(sizeof(stateEntries[l_index].actionName) - 1),
                         FSM_FunctionTable[idx2].actionName);
@@ -740,7 +741,7 @@ DUL_InitializeFSM()
         for (idx2 = 0; idx2 < DIM_OF(Event_Table) &&
              strlen(stateEntries[l_index].eventName) == 0; idx2++) {
             if (stateEntries[l_index].event == Event_Table[idx2].event)
-                OFStandard::snprintf(stateEntries[l_index].eventName, 
+                OFStandard::snprintf(stateEntries[l_index].eventName,
                     sizeof(stateEntries[l_index].eventName), "%.*s",
                     (int)(sizeof(stateEntries[l_index].eventName) - 1),
                     Event_Table[idx2].eventName);
@@ -2295,21 +2296,21 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     else
     {
         int family = 0;
-		switch (params->protocol_family)
-		{
-		  case ASC_AF_Default:
-		    family = AF_INET; // for now the default is to use IPv4 only
+        switch (params->protocol_family)
+        {
+          case ASC_AF_Default:
+            family = AF_INET; // for now the default is to use IPv4 only
             break;
-		  case ASC_AF_INET:
-		    family = AF_INET; // IPv4 only
+          case ASC_AF_INET:
+            family = AF_INET; // IPv4 only
             break;
-		  case ASC_AF_INET6:
-		    family = AF_INET6; // IPv6 only
+          case ASC_AF_INET6:
+            family = AF_INET6; // IPv6 only
             break;
-		  case ASC_AF_UNSPEC:
-		    family = AF_UNSPEC; // use DNS lookup to determine protocol
+          case ASC_AF_UNSPEC:
+            family = AF_UNSPEC; // use DNS lookup to determine protocol
             break;
-		}
+        }
 
         // must be a host name or an IPv6 address
         OFStandard::getAddressByHostname(node, family, server);
@@ -2324,7 +2325,27 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
     const Sint32 connectTimeout = params->tcpConnectTimeout;
 
+#ifdef HAVE_WINSOCK_H
+    u_long arg = TRUE;
+#else
+    int flags = 0;
+#endif
+
+    // Create socket and prevent leakage of the open socket to processes called with exec()
+    // by using SOCK_CLOEXEC (where available) or FD_CLOEXEC (POSIX.1-2008)
+#ifdef SOCK_CLOEXEC
+    s = socket(server.getFamily(), SOCK_STREAM | SOCK_CLOEXEC, 0);
+#elif defined(FD_CLOEXEC)
     s = socket(server.getFamily(), SOCK_STREAM, 0);
+    if (s >= 0)
+    {
+        flags = fcntl(s, F_GETFD, 0);
+        fcntl(s, F_SETFD, FD_CLOEXEC | flags);
+    }
+#else
+    s = socket(server.getFamily(), SOCK_STREAM, 0);
+#endif
+
 #ifdef _WIN32
     if (s == INVALID_SOCKET)
 #else
@@ -2335,12 +2356,6 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
       msg += OFStandard::getLastNetworkErrorCode().message();
       return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
-
-#ifdef HAVE_WINSOCK_H
-    u_long arg = TRUE;
-#else
-    int flags = 0;
-#endif
 
     if (connectTimeout >= 0)
     {
