@@ -58,6 +58,15 @@
 #include <zlib.h>                        /* for zlibVersion() */
 #endif
 
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>                       /*  for O_BINARY */
+#endif
+#ifdef HAVE_IO_H
+#include <io.h>                          /* for setmode() on Windows */
+#endif
+END_EXTERN_C
+
 #define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
 
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
@@ -1837,6 +1846,10 @@ int main(int argc, char *argv[])
             } else {
                 /* output to stdout */
                 ofile = stdout;
+#ifdef _WIN32
+                /* switch stdout to binary mode to prevent LF to CR/LF conversion */
+                setmode(fileno(stdout), O_BINARY);
+#endif
                 OFLOG_INFO(dcm2imgLogger, "writing frame " << (opt_frame + frame) << " to stdout");
             }
 
