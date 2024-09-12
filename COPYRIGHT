@@ -818,7 +818,7 @@ of the BSD license:
 
 ---------------------------------------------------------------------------
 
-The code for the functions OFgetExecutablePath() and OFgetModulePath()
+The code for the function OFgetExecutablePath()
 is derived from the "whereami" library by Gregory Pakosz
 (https://github.com/gpakosz/whereami), which is dual-licensed under the
 WTFPL v2 and MIT licenses. The MIT license is reproduced here:
