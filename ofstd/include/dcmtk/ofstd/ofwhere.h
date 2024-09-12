@@ -56,26 +56,6 @@ BEGIN_EXTERN_C
 DCMTK_OFSTD_EXPORT
 int OFgetExecutablePath(char* out, int capacity, int* dirname_length);
 
-/**
- * Returns the path to the current module.
- *
- * Usage:
- *  - first call `int length = OFgetModulePath(NULL, 0, NULL);` to retrieve the length  of the path
- *  - allocate the destination buffer with `path = (char*)malloc(length + 1);`
- *  - call `OFgetModulePath(path, length, NULL)` again to retrieve the path
- *  - add a terminal NUL character with `path[length] = '\0';`
- *
- * @param out destination buffer, optional
- * @param capacity destination buffer capacity
- * @param dirname_length optional recipient for the length of the dirname part
- *   of the path. Available only when `capacity` is large enough to retrieve the
- *   path.
- *
- * @return the length of the module path on success (without a terminal NUL character), otherwise `-1`
- */
-DCMTK_OFSTD_EXPORT
-int OFgetModulePath(char* out, int capacity, int* dirname_length);
-
 END_EXTERN_C
 
 #endif // #ifndef OFWHERE_H

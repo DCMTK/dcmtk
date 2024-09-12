@@ -31,8 +31,6 @@
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
 #include "dcmtk/ofstd/ofwhere.h"
 
-BEGIN_EXTERN_C
-
 #if defined(__linux__) || defined(__CYGWIN__)
 #undef _DEFAULT_SOURCE
 #define _DEFAULT_SOURCE
@@ -66,14 +64,6 @@ BEGIN_EXTERN_C
 #else
 #error unsupported compiler
 #endif
-#endif
-
-#if defined(_MSC_VER)
-#define WAI_RETURN_ADDRESS() _ReturnAddress()
-#elif defined(__GNUC__)
-#define WAI_RETURN_ADDRESS() __builtin_extract_return_addr(__builtin_return_address(0))
-#else
-#error unsupported compiler
 #endif
 
 #if defined(_WIN32)
@@ -175,37 +165,12 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
   return OFgetModulePath_(NULL, out, capacity, dirname_length);
 }
 
-WAI_NOINLINE 
-int OFgetModulePath(char* out, int capacity, int* dirname_length)
-{
-  HMODULE module;
-  int length = -1;
-
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4054)
-#endif
-  if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCTSTR)WAI_RETURN_ADDRESS(), &module))
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
-  {
-    length = OFgetModulePath_(module, out, capacity, dirname_length);
-  }
-
-  return length;
-}
-
 #elif defined(__linux__) || defined(__CYGWIN__) || defined(__sun) || defined(WAI_USE_PROC_SELF_EXE)
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#if defined(__linux__)
-#include <linux/limits.h>
-#else
 #include <limits.h>
-#endif
 #ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS
 #endif
@@ -282,123 +247,6 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
 #endif
 #include <stdbool.h>
 
-WAI_NOINLINE 
-int OFgetModulePath(char* out, int capacity, int* dirname_length)
-{
-  int length = -1;
-  FILE* maps = NULL;
-
-  for (int r = 0; r < WAI_PROC_SELF_MAPS_RETRY; ++r)
-  {
-    maps = fopen(WAI_PROC_SELF_MAPS, "r");
-    if (!maps)
-      break;
-
-    for (;;)
-    {
-      char buffer[128 + PATH_MAX];
-      uintptr_t low, high;
-      char perms[5];
-      uint64_t offset;
-      uint32_t major, minor, inode;
-      char path[PATH_MAX + 1];
-
-      if (!fgets(buffer, sizeof(buffer), maps))
-        break;
-
-      if (sscanf(buffer, "%" SCNxPTR "-%" SCNxPTR " %s %" SCNx64 " %x:%x %u %" WAI_STRINGIZE(PATH_MAX) "[^\n]\n", &low, &high, perms, &offset, &major, &minor, &inode, path) == 8)
-      {
-        void* _addr = WAI_RETURN_ADDRESS();
-        uintptr_t addr = (uintptr_t)_addr;
-        if (low <= addr && addr <= high)
-        {
-          char* resolved;
-
-          resolved = realpath(path, buffer);
-          if (!resolved)
-            break;
-
-          length = (int)strlen(resolved);
-#if defined(__ANDROID__) || defined(ANDROID)
-          if (length > 4
-              &&buffer[length - 1] == 'k'
-              &&buffer[length - 2] == 'p'
-              &&buffer[length - 3] == 'a'
-              &&buffer[length - 4] == '.')
-          {
-            int fd = open(path, O_RDONLY);
-            if (fd == -1)
-            {
-              length = -1; // retry
-              break;
-            }
-
-            char* begin = (char*)mmap(0, offset, PROT_READ, MAP_SHARED, fd, 0);
-            if (begin == MAP_FAILED)
-            {
-              close(fd);
-              length = -1; // retry
-              break;
-            }
-
-            char* p = begin + offset - 30; // minimum size of local file header
-            while (p >= begin) // scan backwards
-            {
-              if (*((uint32_t*)p) == 0x04034b50UL) // local file header signature found
-              {
-                uint16_t length_ = *((uint16_t*)(p + 26));
-
-                if (length + 2 + length_ < (int)sizeof(buffer))
-                {
-                  memcpy(&buffer[length], "!/", 2);
-                  memcpy(&buffer[length + 2], p + 30, length_);
-                  length += 2 + length_;
-                }
-
-                break;
-              }
-
-              --p;
-            }
-
-            munmap(begin, offset);
-            close(fd);
-          }
-#endif
-          if (length <= capacity)
-          {
-            memcpy(out, resolved, length);
-
-            if (dirname_length)
-            {
-              int i;
-
-              for (i = length - 1; i >= 0; --i)
-              {
-                if (out[i] == '/')
-                {
-                  *dirname_length = i;
-                  break;
-                }
-              }
-            }
-          }
-
-          break;
-        }
-      }
-    }
-
-    fclose(maps);
-    maps = NULL;
-
-    if (length != -1)
-      break;
-  }
-
-  return length;
-}
-
 #elif defined(__APPLE__)
 
 #include <mach-o/dyld.h>
@@ -457,50 +305,6 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
     WAI_FREE(path);
 
   return ok ? length : -1;
-}
-
-WAI_NOINLINE 
-int OFgetModulePath(char* out, int capacity, int* dirname_length)
-{
-  char buffer[PATH_MAX];
-  char* resolved = NULL;
-  int length = -1;
-
-  for(;;)
-  {
-    Dl_info info;
-
-    if (dladdr(WAI_RETURN_ADDRESS(), &info))
-    {
-      resolved = realpath(info.dli_fname, buffer);
-      if (!resolved)
-        break;
-
-      length = (int)strlen(resolved);
-      if (length <= capacity)
-      {
-        memcpy(out, resolved, length);
-
-        if (dirname_length)
-        {
-          int i;
-
-          for (i = length - 1; i >= 0; --i)
-          {
-            if (out[i] == '/')
-            {
-              *dirname_length = i;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    break;
-  }
-
-  return length;
 }
 
 #elif defined(__QNXNTO__)
@@ -563,50 +367,6 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
   fclose(self_exe);
 
   return ok ? length : -1;
-}
-
-
-int OFgetModulePath(char* out, int capacity, int* dirname_length)
-{
-  char buffer[PATH_MAX];
-  char* resolved = NULL;
-  int length = -1;
-
-  for(;;)
-  {
-    Dl_info info;
-
-    if (dladdr(WAI_RETURN_ADDRESS(), &info))
-    {
-      resolved = realpath(info.dli_fname, buffer);
-      if (!resolved)
-        break;
-
-      length = (int)strlen(resolved);
-      if (length <= capacity)
-      {
-        memcpy(out, resolved, length);
-
-        if (dirname_length)
-        {
-          int i;
-
-          for (i = length - 1; i >= 0; --i)
-          {
-            if (out[i] == '/')
-            {
-              *dirname_length = i;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    break;
-  }
-
-  return length;
 }
 
 #elif defined(__DragonFly__) || defined(__FreeBSD__) || \
@@ -781,54 +541,8 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
 
 #endif
 
-WAI_NOINLINE 
-int OFgetModulePath(char* out, int capacity, int* dirname_length)
-{
-  char buffer[PATH_MAX];
-  char* resolved = NULL;
-  int length = -1;
-
-  for(;;)
-  {
-    Dl_info info;
-
-    if (dladdr(WAI_RETURN_ADDRESS(), &info))
-    {
-      resolved = realpath(info.dli_fname, buffer);
-      if (!resolved)
-        break;
-
-      length = (int)strlen(resolved);
-      if (length <= capacity)
-      {
-        memcpy(out, resolved, length);
-
-        if (dirname_length)
-        {
-          int i;
-
-          for (i = length - 1; i >= 0; --i)
-          {
-            if (out[i] == '/')
-            {
-              *dirname_length = i;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    break;
-  }
-
-  return length;
-}
-
 #else
 
 #error unsupported platform
 
 #endif
-
-END_EXTERN_C
