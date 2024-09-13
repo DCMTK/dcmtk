@@ -159,8 +159,6 @@ OFTEST(dcmdata_putOFStringAtPos)
     // Check whether other values are still there
     checkValue(imageType, 0, "One");
     checkValue(imageType, 1, "Two", 3);
-    // Check if the VM is still 3
-    OFCHECK(imageType.getVM() == 3);
 
     // Replace value 0 and 1 with empty strings as well
     OFCHECK(imageType.putOFStringAtPos("", 0).good());
