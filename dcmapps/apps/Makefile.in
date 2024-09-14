@@ -92,18 +92,17 @@ libcharlslibdir = -L$(dcmjplsdir)/libcharls
 libcharlslib = -ldcmtkcharls
 
 LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(ofloginc) $(dcmnetinc) $(dcmdatainc) \
-	$(dcmiodinc) $(dcmimgleinc) $(dcmimageinc) $(dcmqrdbinc) $(dcmtlsinc) $(dcmsigninc) $(dcmsrinc) \
-    $(dcmjpeginc) $(dcmjplsinc)
+	$(dcmiodinc) $(dcmimgleinc) $(dcmimageinc) $(dcmqrdbinc) $(dcmtlsinc) \
+	$(dcmsigninc) $(dcmsrinc) $(dcmjpeginc) $(dcmjplsinc)
 
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
-	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
-	$(ofloglibdir) $(dcmiodlibdir) $(dcmimglelibdir) $(dcmimagelibdir) $(oficonvlibdir) \
-	$(dcmjpeglibdir) $(dcmjplslibdir)
+	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) \
+	$(ofstdlibdir) $(ofloglibdir) $(dcmiodlibdir) $(dcmimglelibdir) \
+	$(dcmimagelibdir) $(oficonvlibdir) $(dcmjpeglibdir) $(dcmjplslibdir)
 
-DCM2IMG_LIBS = $(dcmjpeglib) $(dcmjplslib) $(libcharlslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) \
-    $(ofloglib) $(ofstdlib) $(oficonvlib)  \
-    $(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) \
-	$(CHARCONVLIBS) $(MATHLIBS)
+DCM2IMG_LIBS = $(dcmjpeglib) $(dcmjplslib) $(libcharlslib) $(dcmimagelib) \
+	$(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) \
+	$(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = dcm2img.o
 progs = dcm2img
