@@ -15,7 +15,7 @@ config/Makefile.def
 config/include/dcmtk/config/osconfig.h
 
 # Ignore files and directories created by Autoconf
-configure
+/configure
 config/autom4te.cache/
 
 # Ignore all temporary, log and backup files
@@ -37,6 +37,7 @@ doxygen/dcmtk.tag
 
 # Ignore built binary files
 */tests/tests
+dcmapps/apps/dcm2img
 dcmdata/apps/cda2dcm
 dcmdata/apps/dcm2cda
 dcmdata/apps/dcm2json
