@@ -130,6 +130,16 @@ DCMTK_MERGE_STDERR_TO_STDOUT
     compiling with this macro.  In this case, DICOM files should never be
     written to stdout as this will be unreliable.
 
+DCMTK_USE_OFLOG_LOGGER_IN_STUB
+  Affected: ofstd
+  Type of modification: Selects implementation variant
+  Explanation: The command line application stub defined in ofstub.h that
+    calls another command line tool and forwards the command line option
+    by default prints error messages and warnings to stderr. When compiling
+    with this macro defined, the messages are printed to the oflog logger
+    instead, which, however, increases the executable size and slows down
+    execution a bit.
+
 DCMTK_USE_UNIX_SOCKET_QUEUE
   Affected: ofstd
   Type of modification: Selects implementation variant
