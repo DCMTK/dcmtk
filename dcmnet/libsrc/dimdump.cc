@@ -97,8 +97,8 @@ static void DIMSE_printNStatusString(STD_NAMESPACE ostream& dumpStream, int stat
     case STATUS_N_Cancel:
       dumpStream << "Cancel";
       break;
-    case STATUS_N_AttributeListError:
-      dumpStream << "Attribute list error";
+    case STATUS_N_AttributeListWarning:
+      dumpStream << "Attribute list warning";
       break;
     case STATUS_N_SOPClassNotSupported:
       dumpStream << "SOP Class not supported";

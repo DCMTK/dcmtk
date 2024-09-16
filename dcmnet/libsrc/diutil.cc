@@ -577,8 +577,8 @@ DU_ngetStatusString(Uint16 statusCode)
       case STATUS_N_ResourceLimitation:
           s = "Failure: ResourceLimitation";
           break;
-      case STATUS_N_AttributeListError:
-          s = "Warning: AttributeListError";
+      case STATUS_N_AttributeListWarning:
+          s = "Warning: AttributeListWarning";
           break;
       case STATUS_N_AttributeValueOutOfRange:
           s = "Warning: AttributeValueOutOfRange";
