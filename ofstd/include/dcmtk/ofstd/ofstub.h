@@ -11,7 +11,7 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmimage
+ *  Module:  ofstd
  *
  *  Authors: Marco Eichelberg
  *
