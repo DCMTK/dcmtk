@@ -8,6 +8,7 @@ applications implementing part of the DICOM/MEDICOM Standard.
 DCMTK contains the following sub-packages, each in its own sub-directory:
 
     config   - configuration utilities for DCMTK
+    dcmapps  - a collection of cross-module command line tools
     dcmdata  - a data encoding/decoding library and utility apps
     dcmect   - a library for working with Enhanced CT objects
     dcmfg    - a library for working with functional groups

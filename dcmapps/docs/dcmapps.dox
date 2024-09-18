@@ -1,0 +1,13 @@
+/*!
+
+\page mod_dcmapps dcmapps: a collection of cross-module command line tools
+
+This module contains command line tools that depend on (almost) all other
+DCMTK modules.
+
+\section Tools
+
+This module contains the following command line tools:
+\li \ref dcm2img
+
+*/

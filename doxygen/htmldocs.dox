@@ -9,6 +9,7 @@ implementing part of the DICOM/MEDICOM Standard.
 DCMTK contains the following sub-packages, each in its own sub-directory:
 
 \li \ref mod_config
+\li \ref mod_dcmapps
 \li \ref mod_dcmdata
 \li \ref mod_dcmect
 \li \ref mod_dcmfg
