@@ -14,7 +14,7 @@ dcmgpdir [options] [dcmfile-in...]
 
 \section dcmgpdir_description DESCRIPTION
 
-The \b dcmgpdir tool is deprecated. Use \b dcmmkdir instead, which supports
+The \b dcmgpdir tool is deprecated.  Use \b dcmmkdir instead, which supports
 the same command line parameters, and more.
 
 \section dcmgpdir_see_also SEE ALSO

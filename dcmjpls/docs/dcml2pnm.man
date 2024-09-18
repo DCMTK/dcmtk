@@ -14,7 +14,7 @@ dcml2pnm [options] dcmfile-in [bitmap-out]
 
 \section dcml2pnm_description DESCRIPTION
 
-The \b dcml2pnm tool is deprecated. Use \b dcm2img instead, which supports
+The \b dcml2pnm tool is deprecated.  Use \b dcm2img instead, which supports
 the same command line parameters, and more.
 
 \section dcml2pnm_see_also SEE ALSO
