@@ -595,7 +595,7 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2img_see_also SEE ALSO
 
-<b>dcm2pnm</b>(1), <b>img2dcm</b>(1)
+<b>img2dcm</b>(1)
 
 \section dcm2img_copyright COPYRIGHT
 
