@@ -18,6 +18,7 @@
  *  Purpose: Proxy stub that calls dcm2img
  *
  */
+
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstub.h"
 
