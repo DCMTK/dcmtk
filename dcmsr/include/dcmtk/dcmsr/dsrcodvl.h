@@ -679,8 +679,8 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
      *  Currently, the only checks performed are that the three (two for URN code value)
      *  mandatory string values are non-empty and that all four values conform to the
      *  corresponding VR and VM.  Later on, it might also be checked whether the specified
-     *  code really belongs to the coding
-     *  scheme, etc.  This requires the presence of the relevant code dictionaries, though.
+     *  code really belongs to the coding scheme, etc.  This requires the presence of the
+     *  relevant code dictionaries, though.
      ** @param  codeValue               code value to be checked
      *  @param  codingSchemeDesignator  coding scheme designator to be checked
      *  @param  codingSchemeVersion     coding scheme version to be checked (might be empty)
