@@ -1988,8 +1988,13 @@ int main(int argc, char *argv[])
             }
 
             if (opt_ofname)
-                fclose(ofile);
-
+            {
+                if (fclose(ofile))
+                {
+                    OFLOG_FATAL(dcm2imgLogger, "Error while closing file, content may be incomplete.");
+                    return 1;
+                }
+            }
             if (!result)
             {
                 OFLOG_FATAL(dcm2imgLogger, "cannot write frame");

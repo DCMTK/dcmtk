@@ -985,28 +985,31 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
     if (!fileName.isEmpty())
     {
         DcmWriteCache wcache;
-        DcmOutputStream *fileStream;
+        DcmOutputStream *outStream = NULL;
+        DcmOutputFileStream *fileStream = NULL;
 
         if (fileName.isStandardStream())
         {
             /* use stdout stream */
-            fileStream = new DcmStdoutStream(fileName);
+            outStream = new DcmStdoutStream(fileName);
         } else {
             /* open file for output */
             fileStream = new DcmOutputFileStream(fileName);
+            outStream = fileStream;
         }
 
         /* check stream status */
-        l_error = fileStream->status();
+        l_error = outStream->status();
         if (l_error.good())
         {
             /* write data to file */
             transferInit();
-            l_error = write(*fileStream, writeXfer, encodingType, &wcache, groupLength,
+            l_error = write(*outStream, writeXfer, encodingType, &wcache, groupLength,
                 padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
             transferEnd();
         }
-        delete fileStream;
+        if (l_error.good() && fileStream) l_error = fileStream->fclose();
+        delete outStream;
     }
     return l_error;
 }

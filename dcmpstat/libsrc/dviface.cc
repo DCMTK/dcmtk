@@ -3501,7 +3501,11 @@ OFCondition DVInterface::terminatePrintSpooler()
       fprintf(outf,"#\n# print job created %s\n", timeString.c_str());
       fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
       fprintf(outf,"terminate\n");
-      fclose(outf);
+      if (fclose(outf))
+      {
+        DCMPSTAT_ERROR("Unable to write spooler termination request '" << tempFilename.c_str() << "'");
+        return EC_IllegalCall;
+      }
       if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
       {
         DCMPSTAT_ERROR("Unable to activate spooler termination request '" << spoolFilename.c_str() << "'");
@@ -3811,7 +3815,11 @@ OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
     if (printerOwnerID.size() >0)          fprintf(outf,"owner_id     %s\n", printerOwnerID.c_str());
     if (printerNumberOfCopies >0)          fprintf(outf,"copies       %lu\n", printerNumberOfCopies);
 
-    fclose(outf);
+    if (fclose(outf))
+    {
+      DCMPSTAT_ERROR("Unable to write print job '" << tempFilename.c_str() << "'");
+      return EC_IllegalCall;
+    }
     if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
     {
       DCMPSTAT_ERROR("Unable to activate print job '" << spoolFilename.c_str() << "'");

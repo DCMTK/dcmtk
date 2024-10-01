@@ -1521,7 +1521,7 @@ OFBool OFStandard::copyFile(const OFFilename &sourceFilename,
                     numRead = sourceFile.fread(buffer, 1, COPY_FILE_BUFFER_SIZE);
                 } while ((numRead > 0) && ((numWrite = destFile.fwrite(buffer, 1, numRead)) == numRead));
                 /* check for any errors */
-                if ((sourceFile.error() == 0) && (destFile.error() == 0))
+                if ((sourceFile.error() == 0) && (destFile.error() == 0) && (destFile.fclose() == 0))
                     status = OFTrue;
             }
         }
@@ -2390,7 +2390,7 @@ static void ftoa_convert(
     }
 
     // since the string is null terminated, c+1 must exist if *c is not null
-    if ((*c == OFstatic_cast(char, 0xd9) && *(c+1) == OFstatic_cast(char, 0xab)) || 
+    if ((*c == OFstatic_cast(char, 0xd9) && *(c+1) == OFstatic_cast(char, 0xab)) ||
         (*c == OFstatic_cast(char, 0xab) && *(c+1) == OFstatic_cast(char, 0xd9))) // decimal separator is <U066B> in big endian or little endian byte order
     {
       *c = '.'; // replace first byte with '.'

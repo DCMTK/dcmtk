@@ -364,7 +364,7 @@ static void dumpPresentationState(DVPresentationState &ps)
             oss << " - written." << OFendl;
           else
             oss << " -write error-" << OFendl;
-          fclose(ofile);
+          if (fclose(ofile)) oss << "Error while closing the file, content may be incomplete." << OFendl;;
         } else oss << " -write error-" << OFendl;
       } else {
         oss << "        unable to access overlay data!" << OFendl;
@@ -545,9 +545,9 @@ int main(int argc, char *argv[])
                 {
                     OFLOG_DEBUG(dcmp2pgmLogger, "writing PGM file: " << opt_pgmName);
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
-                    if (fwrite(pixelData, OFstatic_cast(size_t, width), OFstatic_cast(size_t, height), outfile) != OFstatic_cast(size_t, height))
+                    if (fwrite(pixelData, OFstatic_cast(size_t, width), OFstatic_cast(size_t, height), outfile) != OFstatic_cast(size_t, height)
+                        || fclose(outfile) != 0)
                         OFLOG_FATAL(dcmp2pgmLogger, "Can't write output data to file.");
-                    fclose(outfile);
                 } else {
                     OFLOG_FATAL(dcmp2pgmLogger, "Can't create output file.");
                     return 10;

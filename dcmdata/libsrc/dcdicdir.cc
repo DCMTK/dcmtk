@@ -1041,6 +1041,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     }
 
     // outStream is closed here
+    errorFlag = outStream->fclose();
     delete outStream;
 
     OFFilename backupFilename;

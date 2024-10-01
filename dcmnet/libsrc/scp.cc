@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2023, OFFIS e.V.
+ *  Copyright (C) 2009-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1664,6 +1664,7 @@ OFCondition DcmSCP::receiveSTORERequestDataset(T_ASC_PresentationContextID* pres
                                               NULL /*callback*/,
                                               NULL /*callbackData*/);
         }
+        if (cond.good()) cond = filestream->fclose();
         delete filestream;
         if (cond.good())
         {

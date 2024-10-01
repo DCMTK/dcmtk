@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2023, OFFIS e.V.
+ *  Copyright (C) 2007-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -335,7 +335,11 @@ int main(int argc, char *argv[])
         return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
     }
 
-    fclose(pdffile);
+    if(fclose(pdffile))
+    {
+        OFLOG_FATAL(dcm2pdfLogger, "write error in file " << opt_ofname);
+        return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
+    }
 
     OFLOG_INFO(dcm2pdfLogger, "conversion successful");
 

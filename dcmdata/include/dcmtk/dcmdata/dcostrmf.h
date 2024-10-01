@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -96,6 +96,11 @@ public:
    */
   virtual void flush();
 
+  /** closes the file associated with this object.
+   *  Updates the internal status variable in case of an error.
+   */
+  virtual void fclose();
+
 private:
 
   /// private unimplemented copy constructor
@@ -141,6 +146,11 @@ public:
 
   /// destructor
   virtual ~DcmOutputFileStream();
+
+  /** close file
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition fclose();
 
 private:
 

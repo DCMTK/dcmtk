@@ -1361,6 +1361,7 @@ OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID* presID,
             cond = DIMSE_receiveDataSetInFile(
                 m_assoc, m_blockMode, m_dimseTimeout, presID, filestream, NULL /*callback*/, NULL /*callbackData*/);
         }
+        if (cond.good()) cond = filestream->fclose();
         delete filestream;
         if (cond != EC_Normal)
         {

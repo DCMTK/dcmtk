@@ -282,7 +282,10 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream &out,
                             DCMDATA_WARN("DcmOtherByteOtherWord: Some bytes were not written: " << (tobewritten - written));
                     }
                 }
-                fclose(file);
+                if (fclose(file))
+                {
+                    DCMDATA_WARN("DcmOtherByteOtherWord: Closing the output file for pixel data failed, file may be incomplete");
+                }
             } else {
                 DCMDATA_WARN("DcmOtherByteOtherWord: Can't open output file for pixel data: " << fname);
             }
