@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2024c and PS 3.7-2024c.
-# File created on 2024-07-04 10:02:47 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2024d and PS 3.7-2024d.
+# File created on 2024-10-08 09:45:09 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -278,6 +278,7 @@
 (0008,1140)	SQ	ReferencedImageSequence	1	DICOM
 (0008,114A)	SQ	ReferencedInstanceSequence	1	DICOM
 (0008,114B)	SQ	ReferencedRealWorldValueMappingInstanceSequence	1	DICOM
+(0008,114C)	SQ	ReferencedSegmentationSequence	1	DICOM
 (0008,1150)	UI	ReferencedSOPClassUID	1	DICOM
 (0008,1155)	UI	ReferencedSOPInstanceUID	1	DICOM
 (0008,1156)	SQ	DefinitionSourceSequence	1	DICOM
@@ -646,6 +647,98 @@
 (0014,511D)	DS	WedgeChamferHeight	1	DICOM/DICONDE
 (0014,511E)	CS	WedgeCurve	1	DICOM/DICONDE
 (0014,511F)	DS	RadiusAlongWedge	1	DICOM/DICONDE
+(0014,6001)	SQ	ThermalCameraSettingsSequence	1	DICOM/DICONDE
+(0014,6002)	DS	AcquisitionFrameRate	1	DICOM/DICONDE
+(0014,6003)	DS	IntegrationTime	1	DICOM/DICONDE
+(0014,6004)	DS	NumberOfCalibrationFrames	1	DICOM/DICONDE
+(0014,6005)	DS	NumberOfRowsInFullAcquisitionImage	1	DICOM/DICONDE
+(0014,6006)	DS	NumberOfColumnsInFullAcquisitionImage	1	DICOM/DICONDE
+(0014,6007)	SQ	ThermalSourceSettingsSequence	1	DICOM/DICONDE
+(0014,6008)	DS	SourceHorizontalPitch	1	DICOM/DICONDE
+(0014,6009)	DS	SourceVerticalPitch	1	DICOM/DICONDE
+(0014,600A)	DS	SourceHorizontalScanSpeed	1	DICOM/DICONDE
+(0014,600B)	DS	ThermalSourceModulationFrequency	1	DICOM/DICONDE
+(0014,600C)	SQ	InductionSourceSettingSequence	1	DICOM/DICONDE
+(0014,600D)	DS	CoilFrequency	1	DICOM/DICONDE
+(0014,600E)	DS	CurrentAmplitudeAcrossCoil	1	DICOM/DICONDE
+(0014,600F)	SQ	FlashSourceSettingSequence	1	DICOM/DICONDE
+(0014,6010)	DS	FlashDuration	1	DICOM/DICONDE
+(0014,6011)	DS	FlashFrameNumber	1-n	DICOM/DICONDE
+(0014,6012)	SQ	LaserSourceSettingSequence	1	DICOM/DICONDE
+(0014,6013)	DS	HorizontalLaserSpotDimension	1	DICOM/DICONDE
+(0014,6014)	DS	VerticalLaserSpotDimension	1	DICOM/DICONDE
+(0014,6015)	DS	LaserWavelength	1	DICOM/DICONDE
+(0014,6016)	DS	LaserPower	1	DICOM/DICONDE
+(0014,6017)	SQ	ForcedGasSettingSequence	1	DICOM/DICONDE
+(0014,6018)	SQ	VibrationSourceSettingSequence	1	DICOM/DICONDE
+(0014,6019)	DS	VibrationExcitationFrequency	1	DICOM/DICONDE
+(0014,601A)	DS	VibrationExcitationVoltage	1	DICOM/DICONDE
+(0014,601B)	CS	ThermographyDataCaptureMethod	1	DICOM/DICONDE
+(0014,601C)	CS	ThermalTechnique	1	DICOM/DICONDE
+(0014,601D)	SQ	ThermalCameraCoreSequence	1	DICOM/DICONDE
+(0014,601E)	CS	DetectorWavelengthRange	1	DICOM/DICONDE
+(0014,601F)	CS	ThermalCameraCalibrationType	1	DICOM/DICONDE
+(0014,6020)	UV	AcquisitionImageCounter	1	DICOM/DICONDE
+(0014,6021)	DS	FrontPanelTemperature	1	DICOM/DICONDE
+(0014,6022)	DS	AirGapTemperature	1	DICOM/DICONDE
+(0014,6023)	DS	VerticalPixelSize	1	DICOM/DICONDE
+(0014,6024)	DS	HorizontalPixelSize	1	DICOM/DICONDE
+(0014,6025)	ST	DataStreamingProtocol	1-n	DICOM/DICONDE
+(0014,6026)	SQ	LensSequence	1	DICOM/DICONDE
+(0014,6027)	DS	FieldOfView	1	DICOM/DICONDE
+(0014,6028)	LO	LensFilterManufacturer	1	DICOM/DICONDE
+(0014,6029)	CS	CutoffFilterType	1	DICOM/DICONDE
+(0014,602A)	DS	LensFilterCutOffWavelength	1-n	DICOM/DICONDE
+(0014,602B)	SQ	ThermalSourceSequence	1	DICOM/DICONDE
+(0014,602C)	CS	ThermalSourceMotionState	1	DICOM/DICONDE
+(0014,602D)	CS	ThermalSourceMotionType	1	DICOM/DICONDE
+(0014,602E)	SQ	InductionHeatingSequence	1	DICOM/DICONDE
+(0014,602F)	ST	CoilConfigurationID	1	DICOM/DICONDE
+(0014,6030)	DS	NumberOfTurnsInCoil	1	DICOM/DICONDE
+(0014,6031)	CS	ShapeOfIndividualTurn	1	DICOM/DICONDE
+(0014,6032)	DS	SizeOfIndividualTurn	1-n	DICOM/DICONDE
+(0014,6033)	DS	DistanceBetweenTurns	1-n	DICOM/DICONDE
+(0014,6034)	SQ	FlashHeatingSequence	1	DICOM/DICONDE
+(0014,6035)	DS	NumberOfLamps	1	DICOM/DICONDE
+(0014,6036)	ST	FlashSynchronizationProtocol	1	DICOM/DICONDE
+(0014,6037)	CS	FlashModificationStatus	1	DICOM/DICONDE
+(0014,6038)	SQ	LaserHeatingSequence	1	DICOM/DICONDE
+(0014,6039)	LO	LaserManufacturer	1	DICOM/DICONDE
+(0014,603A)	LO	LaserModelNumber	1	DICOM/DICONDE
+(0014,603B)	ST	LaserTypeDescription	1	DICOM/DICONDE
+(0014,603C)	SQ	ForcedGasHeatingSequence	1	DICOM/DICONDE
+(0014,603D)	LO	GasUsedForHeatingCoolingPart	1	DICOM/DICONDE
+(0014,603E)	SQ	VibrationSonicHeatingSequence	1	DICOM/DICONDE
+(0014,603F)	LO	ProbeManufacturer	1	DICOM/DICONDE
+(0014,6040)	LO	ProbeModelNumber	1	DICOM/DICONDE
+(0014,6041)	DS	ApertureSize	1	DICOM/DICONDE
+(0014,6042)	DS	ProbeResonantFrequency	1	DICOM/DICONDE
+(0014,6043)	UT	HeatSourceDescription	1	DICOM/DICONDE
+(0014,6044)	CS	SurfacePreparationWithOpticalCoating	1	DICOM/DICONDE
+(0014,6045)	ST	OpticalCoatingType	1	DICOM/DICONDE
+(0014,6046)	DS	ThermalConductivityOfExposedSurface	1	DICOM/DICONDE
+(0014,6047)	DS	MaterialDensity	1	DICOM/DICONDE
+(0014,6048)	DS	SpecificHeatOfInspectionSurface	1	DICOM/DICONDE
+(0014,6049)	DS	EmissivityOfInspectionSurface	1	DICOM/DICONDE
+(0014,604A)	CS	ElectromagneticClassificationOfInspectionSurface	1-n	DICOM/DICONDE
+(0014,604C)	DS	MovingWindowSize	1	DICOM/DICONDE
+(0014,604D)	CS	MovingWindowType	1	DICOM/DICONDE
+(0014,604E)	DS	MovingWindowWeights	1-n	DICOM/DICONDE
+(0014,604F)	DS	MovingWindowPitch	1	DICOM/DICONDE
+(0014,6050)	CS	MovingWindowPaddingScheme	1	DICOM/DICONDE
+(0014,6051)	DS	MovingWindowPaddingLength	1	DICOM/DICONDE
+(0014,6052)	SQ	SpatialFilteringParametersSequence	1	DICOM/DICONDE
+(0014,6053)	CS	SpatialFilteringScheme	1	DICOM/DICONDE
+(0014,6056)	DS	HorizontalMovingWindowSize	1	DICOM/DICONDE
+(0014,6057)	DS	VerticalMovingWindowSize	1	DICOM/DICONDE
+(0014,6059)	SQ	PolynomialFittingSequence	1	DICOM/DICONDE
+(0014,605A)	CS	FittingDataType	1-n	DICOM/DICONDE
+(0014,605B)	CS	OperationOnTimeAxisBeforeFitting	1	DICOM/DICONDE
+(0014,605C)	CS	OperationOnPixelIntensityBeforeFitting	1	DICOM/DICONDE
+(0014,605D)	DS	OrderOfPolynomial	1	DICOM/DICONDE
+(0014,605E)	CS	IndependentVariableForPolynomialFit	1	DICOM/DICONDE
+(0014,605F)	DS	PolynomialCoefficients	1-n	DICOM/DICONDE
+(0014,6060)	CS	ThermographyPixelDataUnit	1	DICOM/DICONDE
 (0016,0001)	DS	WhitePoint	1	DICOM
 (0016,0002)	DS	PrimaryChromaticities	3	DICOM
 (0016,0003)	UT	BatteryLevel	1	DICOM
@@ -1875,7 +1968,9 @@
 (0022,1622)	CS	OphthalmicVolumetricPropertiesFlag	1	DICOM
 (0022,1624)	FL	OphthalmicAnatomicReferencePointXCoordinate	1	DICOM
 (0022,1626)	FL	OphthalmicAnatomicReferencePointYCoordinate	1	DICOM
+(0022,1627)	SQ	OphthalmicEnFaceVolumeDescriptorSequence	1	DICOM
 (0022,1628)	SQ	OphthalmicEnFaceImageQualityRatingSequence	1	DICOM
+(0022,1629)	CS	OphthalmicEnFaceVolumeDescriptorScope	1	DICOM
 (0022,1630)	DS	QualityThreshold	1	DICOM
 (0022,1640)	SQ	OCTBscanAnalysisAcquisitionParametersSequence	1	DICOM
 (0022,1642)	UL	NumberOfBscansPerFrame	1	DICOM
@@ -2257,12 +2352,12 @@
 (003A,0317)	CS	WaveformAmplifierType	1	DICOM
 (003A,0318)	SQ	FilterLowFrequencyCharacteristicsSequence	1	DICOM
 (003A,0319)	SQ	FilterHighFrequencyCharacteristicsSequence	1	DICOM
-(003A,0320)	SQ	SummarizedFilterLookupTable	1	DICOM
+(003A,0320)	SQ	SummarizedFilterLookupTableSequence	1	DICOM
 (003A,0321)	SQ	NotchFilterCharacteristicsSequence	1	DICOM
 (003A,0322)	CS	WaveformFilterType	1	DICOM
 (003A,0323)	SQ	AnalogFilterCharacteristicsSequence	1	DICOM
 (003A,0324)	DS	AnalogFilterRollOff	1	DICOM
-(003A,0325)	SQ	AnalogFilterType	1	DICOM
+(003A,0325)	SQ	AnalogFilterTypeCodeSequence	1	DICOM
 (003A,0326)	SQ	DigitalFilterCharacteristicsSequence	1	DICOM
 (003A,0327)	IS	DigitalFilterOrder	1	DICOM
 (003A,0328)	SQ	DigitalFilterTypeCodeSequence	1	DICOM
@@ -2823,6 +2918,7 @@
 (0066,0002)	SQ	SurfaceSequence	1	DICOM
 (0066,0003)	UL	SurfaceNumber	1	DICOM
 (0066,0004)	LT	SurfaceComments	1	DICOM
+(0066,0005)	FL	SurfaceOffset	1	DICOM
 (0066,0009)	CS	SurfaceProcessing	1	DICOM
 (0066,000A)	FL	SurfaceProcessingRatio	1	DICOM
 (0066,000B)	LO	SurfaceProcessingDescription	1	DICOM
@@ -3622,6 +3718,7 @@
 (3002,0133)	SQ	EnergyDerivationCodeSequence	1	DICOM
 (3002,0134)	FD	MaximumCumulativeMetersetExposure	1	DICOM
 (3002,0135)	SQ	AcquisitionInitiationSequence	1	DICOM
+(3002,0136)	SQ	RTConeBeamImagingGeometrySequence	1	DICOM
 (3004,0001)	CS	DVHType	1	DICOM
 (3004,0002)	CS	DoseUnits	1	DICOM
 (3004,0004)	CS	DoseType	1	DICOM

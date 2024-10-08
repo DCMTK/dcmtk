@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-07-04 10:04:28
+**   Date: 2024-10-08 09:48:02
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -1154,6 +1154,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x114b, 0x0008, 0x114b,
       EVR_SQ, "ReferencedRealWorldValueMappingInstanceSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x114c, 0x0008, 0x114c,
+      EVR_SQ, "ReferencedSegmentationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1150, 0x0008, 0x1150,
@@ -4076,6 +4080,374 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0014, 0x511f, 0x0014, 0x511f,
       EVR_DS, "RadiusAlongWedge", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6001, 0x0014, 0x6001,
+      EVR_SQ, "ThermalCameraSettingsSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6002, 0x0014, 0x6002,
+      EVR_DS, "AcquisitionFrameRate", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6003, 0x0014, 0x6003,
+      EVR_DS, "IntegrationTime", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6004, 0x0014, 0x6004,
+      EVR_DS, "NumberOfCalibrationFrames", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6005, 0x0014, 0x6005,
+      EVR_DS, "NumberOfRowsInFullAcquisitionImage", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6006, 0x0014, 0x6006,
+      EVR_DS, "NumberOfColumnsInFullAcquisitionImage", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6007, 0x0014, 0x6007,
+      EVR_SQ, "ThermalSourceSettingsSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6008, 0x0014, 0x6008,
+      EVR_DS, "SourceHorizontalPitch", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6009, 0x0014, 0x6009,
+      EVR_DS, "SourceVerticalPitch", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x600a, 0x0014, 0x600a,
+      EVR_DS, "SourceHorizontalScanSpeed", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x600b, 0x0014, 0x600b,
+      EVR_DS, "ThermalSourceModulationFrequency", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x600c, 0x0014, 0x600c,
+      EVR_SQ, "InductionSourceSettingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x600d, 0x0014, 0x600d,
+      EVR_DS, "CoilFrequency", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x600e, 0x0014, 0x600e,
+      EVR_DS, "CurrentAmplitudeAcrossCoil", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x600f, 0x0014, 0x600f,
+      EVR_SQ, "FlashSourceSettingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6010, 0x0014, 0x6010,
+      EVR_DS, "FlashDuration", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6011, 0x0014, 0x6011,
+      EVR_DS, "FlashFrameNumber", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6012, 0x0014, 0x6012,
+      EVR_SQ, "LaserSourceSettingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6013, 0x0014, 0x6013,
+      EVR_DS, "HorizontalLaserSpotDimension", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6014, 0x0014, 0x6014,
+      EVR_DS, "VerticalLaserSpotDimension", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6015, 0x0014, 0x6015,
+      EVR_DS, "LaserWavelength", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6016, 0x0014, 0x6016,
+      EVR_DS, "LaserPower", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6017, 0x0014, 0x6017,
+      EVR_SQ, "ForcedGasSettingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6018, 0x0014, 0x6018,
+      EVR_SQ, "VibrationSourceSettingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6019, 0x0014, 0x6019,
+      EVR_DS, "VibrationExcitationFrequency", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x601a, 0x0014, 0x601a,
+      EVR_DS, "VibrationExcitationVoltage", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x601b, 0x0014, 0x601b,
+      EVR_CS, "ThermographyDataCaptureMethod", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x601c, 0x0014, 0x601c,
+      EVR_CS, "ThermalTechnique", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x601d, 0x0014, 0x601d,
+      EVR_SQ, "ThermalCameraCoreSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x601e, 0x0014, 0x601e,
+      EVR_CS, "DetectorWavelengthRange", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x601f, 0x0014, 0x601f,
+      EVR_CS, "ThermalCameraCalibrationType", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6020, 0x0014, 0x6020,
+      EVR_UV, "AcquisitionImageCounter", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6021, 0x0014, 0x6021,
+      EVR_DS, "FrontPanelTemperature", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6022, 0x0014, 0x6022,
+      EVR_DS, "AirGapTemperature", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6023, 0x0014, 0x6023,
+      EVR_DS, "VerticalPixelSize", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6024, 0x0014, 0x6024,
+      EVR_DS, "HorizontalPixelSize", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6025, 0x0014, 0x6025,
+      EVR_ST, "DataStreamingProtocol", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6026, 0x0014, 0x6026,
+      EVR_SQ, "LensSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6027, 0x0014, 0x6027,
+      EVR_DS, "FieldOfView", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6028, 0x0014, 0x6028,
+      EVR_LO, "LensFilterManufacturer", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6029, 0x0014, 0x6029,
+      EVR_CS, "CutoffFilterType", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x602a, 0x0014, 0x602a,
+      EVR_DS, "LensFilterCutOffWavelength", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x602b, 0x0014, 0x602b,
+      EVR_SQ, "ThermalSourceSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x602c, 0x0014, 0x602c,
+      EVR_CS, "ThermalSourceMotionState", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x602d, 0x0014, 0x602d,
+      EVR_CS, "ThermalSourceMotionType", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x602e, 0x0014, 0x602e,
+      EVR_SQ, "InductionHeatingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x602f, 0x0014, 0x602f,
+      EVR_ST, "CoilConfigurationID", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6030, 0x0014, 0x6030,
+      EVR_DS, "NumberOfTurnsInCoil", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6031, 0x0014, 0x6031,
+      EVR_CS, "ShapeOfIndividualTurn", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6032, 0x0014, 0x6032,
+      EVR_DS, "SizeOfIndividualTurn", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6033, 0x0014, 0x6033,
+      EVR_DS, "DistanceBetweenTurns", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6034, 0x0014, 0x6034,
+      EVR_SQ, "FlashHeatingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6035, 0x0014, 0x6035,
+      EVR_DS, "NumberOfLamps", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6036, 0x0014, 0x6036,
+      EVR_ST, "FlashSynchronizationProtocol", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6037, 0x0014, 0x6037,
+      EVR_CS, "FlashModificationStatus", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6038, 0x0014, 0x6038,
+      EVR_SQ, "LaserHeatingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6039, 0x0014, 0x6039,
+      EVR_LO, "LaserManufacturer", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x603a, 0x0014, 0x603a,
+      EVR_LO, "LaserModelNumber", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x603b, 0x0014, 0x603b,
+      EVR_ST, "LaserTypeDescription", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x603c, 0x0014, 0x603c,
+      EVR_SQ, "ForcedGasHeatingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x603d, 0x0014, 0x603d,
+      EVR_LO, "GasUsedForHeatingCoolingPart", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x603e, 0x0014, 0x603e,
+      EVR_SQ, "VibrationSonicHeatingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x603f, 0x0014, 0x603f,
+      EVR_LO, "ProbeManufacturer", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6040, 0x0014, 0x6040,
+      EVR_LO, "ProbeModelNumber", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6041, 0x0014, 0x6041,
+      EVR_DS, "ApertureSize", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6042, 0x0014, 0x6042,
+      EVR_DS, "ProbeResonantFrequency", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6043, 0x0014, 0x6043,
+      EVR_UT, "HeatSourceDescription", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6044, 0x0014, 0x6044,
+      EVR_CS, "SurfacePreparationWithOpticalCoating", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6045, 0x0014, 0x6045,
+      EVR_ST, "OpticalCoatingType", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6046, 0x0014, 0x6046,
+      EVR_DS, "ThermalConductivityOfExposedSurface", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6047, 0x0014, 0x6047,
+      EVR_DS, "MaterialDensity", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6048, 0x0014, 0x6048,
+      EVR_DS, "SpecificHeatOfInspectionSurface", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6049, 0x0014, 0x6049,
+      EVR_DS, "EmissivityOfInspectionSurface", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x604a, 0x0014, 0x604a,
+      EVR_CS, "ElectromagneticClassificationOfInspectionSurface", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x604c, 0x0014, 0x604c,
+      EVR_DS, "MovingWindowSize", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x604d, 0x0014, 0x604d,
+      EVR_CS, "MovingWindowType", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x604e, 0x0014, 0x604e,
+      EVR_DS, "MovingWindowWeights", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x604f, 0x0014, 0x604f,
+      EVR_DS, "MovingWindowPitch", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6050, 0x0014, 0x6050,
+      EVR_CS, "MovingWindowPaddingScheme", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6051, 0x0014, 0x6051,
+      EVR_DS, "MovingWindowPaddingLength", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6052, 0x0014, 0x6052,
+      EVR_SQ, "SpatialFilteringParametersSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6053, 0x0014, 0x6053,
+      EVR_CS, "SpatialFilteringScheme", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6056, 0x0014, 0x6056,
+      EVR_DS, "HorizontalMovingWindowSize", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6057, 0x0014, 0x6057,
+      EVR_DS, "VerticalMovingWindowSize", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6059, 0x0014, 0x6059,
+      EVR_SQ, "PolynomialFittingSequence", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x605a, 0x0014, 0x605a,
+      EVR_CS, "FittingDataType", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x605b, 0x0014, 0x605b,
+      EVR_CS, "OperationOnTimeAxisBeforeFitting", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x605c, 0x0014, 0x605c,
+      EVR_CS, "OperationOnPixelIntensityBeforeFitting", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x605d, 0x0014, 0x605d,
+      EVR_DS, "OrderOfPolynomial", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x605e, 0x0014, 0x605e,
+      EVR_CS, "IndependentVariableForPolynomialFit", 1, 1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x605f, 0x0014, 0x605f,
+      EVR_DS, "PolynomialCoefficients", 1, -1, "DICOM/DICONDE",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0014, 0x6060, 0x0014, 0x6060,
+      EVR_CS, "ThermographyPixelDataUnit", 1, 1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef ENABLE_PRIVATE_TAGS
@@ -14646,8 +15018,16 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FL, "OphthalmicAnatomicReferencePointYCoordinate", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0022, 0x1627, 0x0022, 0x1627,
+      EVR_SQ, "OphthalmicEnFaceVolumeDescriptorSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0022, 0x1628, 0x0022, 0x1628,
       EVR_SQ, "OphthalmicEnFaceImageQualityRatingSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1629, 0x0022, 0x1629,
+      EVR_CS, "OphthalmicEnFaceVolumeDescriptorScope", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1630, 0x0022, 0x1630,
@@ -19127,7 +19507,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0320, 0x003a, 0x0320,
-      EVR_SQ, "SummarizedFilterLookupTable", 1, 1, "DICOM",
+      EVR_SQ, "SummarizedFilterLookupTableSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0321, 0x003a, 0x0321,
@@ -19147,7 +19527,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0325, 0x003a, 0x0325,
-      EVR_SQ, "AnalogFilterType", 1, 1, "DICOM",
+      EVR_SQ, "AnalogFilterTypeCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x003a, 0x0326, 0x003a, 0x0326,
@@ -22812,6 +23192,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0066, 0x0004, 0x0066, 0x0004,
       EVR_LT, "SurfaceComments", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0066, 0x0005, 0x0066, 0x0005,
+      EVR_FL, "SurfaceOffset", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0066, 0x0009, 0x0066, 0x0009,
@@ -26922,6 +27306,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3002, 0x0135, 0x3002, 0x0135,
       EVR_SQ, "AcquisitionInitiationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3002, 0x0136, 0x3002, 0x0136,
+      EVR_SQ, "RTConeBeamImagingGeometrySequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0001, 0x3004, 0x0001,
