@@ -5,8 +5,8 @@
  *
  *  Source file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2024c
- *  File created on 2024-07-04 10:26:17 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:10 by J. Riesmeier
  *
  */
 
@@ -460,6 +460,8 @@ CID218_QuantitativeImageFeature::CodeList &CID218_QuantitativeImageFeature::getC
         Codes->insert(OFMake_pair(VolumeOfBoundingThreeDimensionalRegion, DSRBasicCodedEntry("121219", "DCM", "Volume of bounding three dimensional region")));
         Codes->insert(OFMake_pair(VolumeOfMesh, DSRBasicCodedEntry("RNU0", "IBSI", "Volume of Mesh")));
         Codes->insert(OFMake_pair(VolumeFromVoxelSummation, DSRBasicCodedEntry("YEKZ", "IBSI", "Volume from Voxel Summation")));
+        Codes->insert(OFMake_pair(NumberOfPixels, DSRBasicCodedEntry("130922", "DCM", "Number of pixels")));
+        Codes->insert(OFMake_pair(NumberOfVoxels, DSRBasicCodedEntry("130923", "DCM", "Number of voxels")));
         Codes->insert(OFMake_pair(SurfaceToVolumeRatio, DSRBasicCodedEntry("2PR5", "IBSI", "Surface to Volume Ratio")));
         Codes->insert(OFMake_pair(Compactness1, DSRBasicCodedEntry("SKGS", "IBSI", "Compactness 1")));
         Codes->insert(OFMake_pair(Compactness2, DSRBasicCodedEntry("BQWJ", "IBSI", "Compactness 2")));

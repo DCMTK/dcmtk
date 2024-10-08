@@ -5,8 +5,8 @@
  *
  *  Source file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2024c
- *  File created on 2024-07-04 10:26:14 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:07 by J. Riesmeier
  *
  */
 
@@ -152,21 +152,15 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(Autorefraction, DSRBasicCodedEntry("AR", "DCM", "Autorefraction")));
         Codes->insert(OFMake_pair(BiomagneticImaging, DSRBasicCodedEntry("BI", "DCM", "Biomagnetic Imaging")));
         Codes->insert(OFMake_pair(BoneMineralDensitometry, DSRBasicCodedEntry("BMD", "DCM", "Bone Mineral Densitometry")));
-        Codes->insert(OFMake_pair(CardiacElectrophysiology, DSRBasicCodedEntry("EPS", "DCM", "Cardiac Electrophysiology")));
         Codes->insert(OFMake_pair(ComputedRadiography, DSRBasicCodedEntry("CR", "DCM", "Computed Radiography")));
         Codes->insert(OFMake_pair(ComputedTomography, DSRBasicCodedEntry("CT", "DCM", "Computed Tomography")));
         Codes->insert(OFMake_pair(ConfocalMicroscopy, DSRBasicCodedEntry("CFM", "DCM", "Confocal Microscopy")));
         Codes->insert(OFMake_pair(Dermoscopy, DSRBasicCodedEntry("DMS", "DCM", "Dermoscopy")));
         Codes->insert(OFMake_pair(Diaphanography, DSRBasicCodedEntry("DG", "DCM", "Diaphanography")));
         Codes->insert(OFMake_pair(DigitalRadiography, DSRBasicCodedEntry("DX", "DCM", "Digital Radiography")));
-        Codes->insert(OFMake_pair(Electrocardiography, DSRBasicCodedEntry("ECG", "DCM", "Electrocardiography")));
-        Codes->insert(OFMake_pair(Electroencephalography, DSRBasicCodedEntry("EEG", "DCM", "Electroencephalography")));
-        Codes->insert(OFMake_pair(Electromyography, DSRBasicCodedEntry("EMG", "DCM", "Electromyography")));
-        Codes->insert(OFMake_pair(Electrooculography, DSRBasicCodedEntry("EOG", "DCM", "Electrooculography")));
         Codes->insert(OFMake_pair(Endoscopy, DSRBasicCodedEntry("ES", "DCM", "Endoscopy")));
         Codes->insert(OFMake_pair(ExternalCameraPhotography, DSRBasicCodedEntry("XC", "DCM", "External-camera Photography")));
         Codes->insert(OFMake_pair(GeneralMicroscopy, DSRBasicCodedEntry("GM", "DCM", "General Microscopy")));
-        Codes->insert(OFMake_pair(HemodynamicWaveform, DSRBasicCodedEntry("HD", "DCM", "Hemodynamic Waveform")));
         Codes->insert(OFMake_pair(IntraOralRadiography, DSRBasicCodedEntry("IO", "DCM", "Intra-oral Radiography")));
         Codes->insert(OFMake_pair(IntravascularOpticalCoherenceTomography, DSRBasicCodedEntry("IVOCT", "DCM", "Intravascular Optical Coherence Tomography")));
         Codes->insert(OFMake_pair(IntravascularUltrasound, DSRBasicCodedEntry("IVUS", "DCM", "Intravascular Ultrasound")));
@@ -187,11 +181,9 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(OpticalSurfaceScanner, DSRBasicCodedEntry("OSS", "DCM", "Optical Surface Scanner")));
         Codes->insert(OFMake_pair(PanoramicXRay, DSRBasicCodedEntry("PX", "DCM", "Panoramic X-Ray")));
         Codes->insert(OFMake_pair(Photoacoustic, DSRBasicCodedEntry("PA", "DCM", "Photoacoustic")));
-        Codes->insert(OFMake_pair(PositionSensor, DSRBasicCodedEntry("POS", "DCM", "Position Sensor")));
         Codes->insert(OFMake_pair(PositronEmissionTomography, DSRBasicCodedEntry("PT", "DCM", "Positron emission tomography")));
         Codes->insert(OFMake_pair(Radiofluoroscopy, DSRBasicCodedEntry("RF", "DCM", "Radiofluoroscopy")));
         Codes->insert(OFMake_pair(RadiographicImaging, DSRBasicCodedEntry("RG", "DCM", "Radiographic imaging")));
-        Codes->insert(OFMake_pair(RespiratoryWaveform, DSRBasicCodedEntry("RESP", "DCM", "Respiratory Waveform")));
         Codes->insert(OFMake_pair(RTImage, DSRBasicCodedEntry("RTIMAGE", "DCM", "RT Image")));
         Codes->insert(OFMake_pair(SlideMicroscopy, DSRBasicCodedEntry("SM", "DCM", "Slide Microscopy")));
         Codes->insert(OFMake_pair(SubjectiveRefraction, DSRBasicCodedEntry("SRF", "DCM", "Subjective Refraction")));
@@ -200,6 +192,14 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(UltrasoundBoneDensitometry, DSRBasicCodedEntry("BDUS", "DCM", "Ultrasound Bone Densitometry")));
         Codes->insert(OFMake_pair(VisualAcuity, DSRBasicCodedEntry("VA", "DCM", "Visual Acuity")));
         Codes->insert(OFMake_pair(XRayAngiography, DSRBasicCodedEntry("XA", "DCM", "X-Ray Angiography")));
+        Codes->insert(OFMake_pair(CardiacElectrophysiology, DSRBasicCodedEntry("EPS", "DCM", "Cardiac Electrophysiology")));
+        Codes->insert(OFMake_pair(Electrocardiography, DSRBasicCodedEntry("ECG", "DCM", "Electrocardiography")));
+        Codes->insert(OFMake_pair(Electroencephalography, DSRBasicCodedEntry("EEG", "DCM", "Electroencephalography")));
+        Codes->insert(OFMake_pair(Electromyography, DSRBasicCodedEntry("EMG", "DCM", "Electromyography")));
+        Codes->insert(OFMake_pair(Electrooculography, DSRBasicCodedEntry("EOG", "DCM", "Electrooculography")));
+        Codes->insert(OFMake_pair(Hemodynamic, DSRBasicCodedEntry("HD", "DCM", "Hemodynamic")));
+        Codes->insert(OFMake_pair(PositionSensor, DSRBasicCodedEntry("POS", "DCM", "Position Sensor")));
+        Codes->insert(OFMake_pair(Respiratory, DSRBasicCodedEntry("RESP", "DCM", "Respiratory")));
     }
     /* should never be NULL */
     return *Codes;

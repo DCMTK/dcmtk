@@ -5,8 +5,8 @@
  *
  *  Header file for class CID42_NumericValueQualifier
  *
- *  Generated automatically from DICOM PS 3.16-2024c
- *  File created on 2024-07-04 10:26:15 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:08 by J. Riesmeier
  *
  */
 

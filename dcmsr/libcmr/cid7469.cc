@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2024c
- *  File created on 2024-07-04 10:26:36 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:23 by J. Riesmeier
  *
  */
 
@@ -18,7 +18,7 @@
 
 // general information on CID 7469 (Generic Intensity and Size Measurement)
 #define CONTEXT_GROUP_NUMBER  "7469"
-#define CONTEXT_GROUP_VERSION "20141110"
+#define CONTEXT_GROUP_VERSION "20240913"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1003"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -340,6 +340,8 @@ CID7469_GenericIntensityAndSizeMeasurement::CodeList &CID7469_GenericIntensityAn
         Codes->insert(OFMake_pair(VolumeOfBoundingThreeDimensionalRegion, DSRBasicCodedEntry("121219", "DCM", "Volume of bounding three dimensional region")));
         Codes->insert(OFMake_pair(VolumeOfMesh, DSRBasicCodedEntry("RNU0", "IBSI", "Volume of Mesh")));
         Codes->insert(OFMake_pair(VolumeFromVoxelSummation, DSRBasicCodedEntry("YEKZ", "IBSI", "Volume from Voxel Summation")));
+        Codes->insert(OFMake_pair(NumberOfPixels, DSRBasicCodedEntry("130922", "DCM", "Number of pixels")));
+        Codes->insert(OFMake_pair(NumberOfVoxels, DSRBasicCodedEntry("130923", "DCM", "Number of voxels")));
     }
     /* should never be NULL */
     return *Codes;
