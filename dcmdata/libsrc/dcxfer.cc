@@ -742,6 +742,48 @@ const S_XferNames XferNames[] =
       EXV_Standard
     },
     // entry #49
+    { UID_JPEGXLLosslessTransferSyntax,
+      "JPEG XL Lossless",
+      EXS_JPEGXLLossless,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EPE_Encapsulated,
+      EPC_LosslessCompressed,
+      OFFalse,
+      0L, 0L,
+      ESC_none,
+      EXV_Standard
+    },
+    // entry #50
+    { UID_JPEGXLJPEGRecompressionTransferSyntax,
+      "JPEG XL JPEG Recompression",
+      EXS_JPEGXLJPEGRecompression,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EPE_Encapsulated,
+      EPC_LossyCompressed,
+      OFFalse,
+      0L, 0L,
+      ESC_none,
+      EXV_Standard
+    },
+    // entry #51
+    { UID_JPEGXLTransferSyntax,
+      "JPEG XL",
+      EXS_JPEGXL,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EPE_Encapsulated,
+      EPC_LossyCompressed,
+      OFFalse,
+      0L, 0L,
+      ESC_none,
+      EXV_Standard
+    },
+    // entry #52
     { UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,
       "High-Throughput JPEG 2000 Image Compression (Lossless Only)",
       EXS_HighThroughputJPEG2000LosslessOnly,
@@ -755,7 +797,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #50
+    // entry #53
     { UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,
       "High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)",
       EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly,
@@ -769,7 +811,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #51
+    // entry #54
     { UID_HighThroughputJPEG2000ImageCompressionTransferSyntax,
       "High-Throughput JPEG 2000 Image Compression",
       EXS_HighThroughputJPEG2000,
@@ -783,7 +825,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #52
+    // entry #55
     { UID_JPIPHTJ2KReferencedTransferSyntax,
       "JPIP HTJ2K Referenced",
       EXS_JPIPHTJ2KReferenced,
@@ -797,7 +839,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #53
+    // entry #56
     { UID_JPIPHTJ2KReferencedDeflateTransferSyntax,
       "JPIP HTJ2K Referenced Deflate",
       EXS_JPIPHTJ2KReferencedDeflate,
@@ -815,7 +857,7 @@ const S_XferNames XferNames[] =
 #endif
       EXV_Standard
     },
-    // entry #54
+    // entry #57
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
       "Private GE Little Endian Implicit with big endian pixel data",
       EXS_PrivateGE_LEI_WithBigEndianPixelData,

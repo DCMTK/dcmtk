@@ -80,7 +80,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..49)
+  -pts  --propose-ts  [n]umber: integer (1..52)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1..128)

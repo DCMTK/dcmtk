@@ -538,7 +538,7 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 
 (*) if compiled with zlib support enabled (see \e --version output)
 
-Additional Storage SOP Classes and Transfer Syntaxes can be used with the
+Additional Storage SOP Classes and transfer syntaxes can be used with the
 so-called "association negotiation profiles" (see below).
 
 The \b storescu application does not support extended negotiation by default.

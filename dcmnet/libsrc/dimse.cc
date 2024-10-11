@@ -363,6 +363,9 @@ getTransferSyntax(
         case EXS_HighThroughputJPEG2000LosslessOnly:
         case EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly:
         case EXS_HighThroughputJPEG2000:
+        case EXS_JPEGXLLossless:
+        case EXS_JPEGXLJPEGRecompression:
+        case EXS_JPEGXL:
         /* OK, these can be supported */
         break;
     default:

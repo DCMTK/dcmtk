@@ -674,6 +674,9 @@ MPEG4StereoHighProfileLevel4_2TransferSyntax         1.2.840.10008.1.2.4.106
 FragmentableMPEG4StereoHighProfileLevel4_2TransferS. 1.2.840.10008.1.2.4.106.1
 HEVCMainProfileLevel5_1TransferSyntax                1.2.840.10008.1.2.4.107
 HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
+JPEGXLLosslesTransferSyntax                          1.2.840.10008.1.2.4.110
+JPEGXLJPEGRecompressionTransferSyntax                1.2.840.10008.1.2.4.111
+JPEGXLTransferSyntax                                 1.2.840.10008.1.2.4.112
 HighThroughputJPEG2000ImageCompressionLossless.Tr.S. 1.2.840.10008.1.2.4.201
 HighThroughputJPEG2000RPCLImageCompressionLoss.Tr.S. 1.2.840.10008.1.2.4.202
 HighThroughputJPEG2000ImageCompressionTransferSynta. 1.2.840.10008.1.2.4.203

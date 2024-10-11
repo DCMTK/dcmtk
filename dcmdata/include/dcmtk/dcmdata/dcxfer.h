@@ -136,18 +136,24 @@ typedef enum {
     EXS_HEVCMainProfileLevel5_1 = 47,
     /// HEVC/H.265 Main 10 Profile / Level 5.1
     EXS_HEVCMain10ProfileLevel5_1 = 48,
+    /// JPEG XL Lossless
+    EXS_JPEGXLLossless = 49,
+    /// JPEG XL JPEG Recompression
+    EXS_JPEGXLJPEGRecompression = 50,
+    /// JPEG XL
+    EXS_JPEGXL = 51,
     /// High-Throughput JPEG 2000 Image Compression (Lossless Only)
-    EXS_HighThroughputJPEG2000LosslessOnly = 49,
+    EXS_HighThroughputJPEG2000LosslessOnly = 52,
     /// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
-    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 50,
+    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 53,
     /// High-Throughput JPEG 2000 Image Compression
-    EXS_HighThroughputJPEG2000 = 51,
+    EXS_HighThroughputJPEG2000 = 54,
     /// JPIP HTJ2K Referenced
-    EXS_JPIPHTJ2KReferenced = 52,
+    EXS_JPIPHTJ2KReferenced = 55,
     /// JPIP HTJ2K Referenced Deflate
-    EXS_JPIPHTJ2KReferencedDeflate = 53,
+    EXS_JPIPHTJ2KReferencedDeflate = 56,
     /// Private GE Little Endian Implicit with big endian pixel data
-    EXS_PrivateGE_LEI_WithBigEndianPixelData = 54
+    EXS_PrivateGE_LEI_WithBigEndianPixelData = 57
 } E_TransferSyntax;
 
 

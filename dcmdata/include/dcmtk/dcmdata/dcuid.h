@@ -526,6 +526,12 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_HEVCMainProfileLevel5_1TransferSyntax                                 "1.2.840.10008.1.2.4.107"
 /// HEVC/H.265 Main 10 Profile / Level 5.1
 #define UID_HEVCMain10ProfileLevel5_1TransferSyntax                               "1.2.840.10008.1.2.4.108"
+/// JPEG XL Lossless
+#define UID_JPEGXLLosslessTransferSyntax                                          "1.2.840.10008.1.2.4.110"
+/// JPEG XL JPEG Recompression
+#define UID_JPEGXLJPEGRecompressionTransferSyntax                                 "1.2.840.10008.1.2.4.111"
+/// JPEG XL
+#define UID_JPEGXLTransferSyntax                                                  "1.2.840.10008.1.2.4.112"
 /// High-Throughput JPEG 2000 Image Compression (Lossless Only)
 #define UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax      "1.2.840.10008.1.2.4.201"
 /// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
