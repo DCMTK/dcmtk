@@ -750,7 +750,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EPE_Encapsulated,
       EPC_LosslessCompressed,
-      OFTrue,
+      OFFalse,
       0L, 0L,
       ESC_none,
       EXV_Standard
@@ -764,7 +764,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EPE_Encapsulated,
       EPC_LosslessCompressed,
-      OFTrue,
+      OFFalse,
       0L, 0L,
       ESC_none,
       EXV_Standard
@@ -778,7 +778,7 @@ const S_XferNames XferNames[] =
       EVT_Explicit,
       EPE_Encapsulated,
       EPC_LossyCompressed,
-      OFTrue,
+      OFFalse,
       0L, 0L,
       ESC_none,
       EXV_Standard
