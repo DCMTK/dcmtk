@@ -93,14 +93,19 @@ DiDocument::DiDocument(DcmObject *object,
             Object = object;
         else
             DCMIMGLE_ERROR("invalid DICOM object passed to constructor (wrong class)");
-        if (Object != NULL)
-        {
+
+        if (Object != NULL) {
+            auto dataset = (Object->ident() == EVR_dataset) ? OFstatic_cast(DcmDataset*, Object) : nullptr;
+
+            if (dataset)
+                dataset->findAndGetOFString(DCM_PhotometricInterpretation, PhotometricInterpretation);
+
             // try to determine the transfer syntax from the given object
             if (Xfer == EXS_Unknown)
             {
                 // check type before casting the object
-                if (Object->ident() == EVR_dataset)
-                    Xfer = OFstatic_cast(DcmDataset *, Object)->getOriginalXfer();
+                if (dataset)
+                    Xfer = dataset->getOriginalXfer();
                 else // could only be an item
                     DCMIMGLE_WARN("can't determine original transfer syntax from given DICOM object");
             }
