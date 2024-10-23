@@ -940,6 +940,7 @@ AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set0_tmp_dh_pkey, OpenSSL, openssl/ssl.h)
 AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set1_sigalgs, OpenSSL, openssl/ssl.h, [SSL_CTX_set1_sigalgs(0,0,0)])
 AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8])
 AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384])
+AC_CHECK_EXT_LIB_COMPILES(TS_VERIFY_CTX_SET0_STORE, OpenSSL, openssl/ts.h, [TS_VERIFY_CTX_set0_store(0,0)])
 
 dnl test presence of functions, constants and macros needed for the dcmsign module
 AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_get_group_name, OpenSSL, openssl/evp.h)
@@ -953,7 +954,6 @@ AH_TEMPLATE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX, [Define if OpenSSL provides
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX) ],
   [AC_MSG_RESULT(no)])
-
 fi
 
 
