@@ -1283,7 +1283,7 @@ OFCondition SiTimeStamp::verifyTSToken(
         TS_VERIFY_CTX_set0_certs(ctx, X509_chain_up_ref(untrusted_certs));
 #else
         TS_VERIFY_CTX_set_store(ctx, tc_store);
-        TS_VERIFY_CTX_set_certs(ctx, untrusted_certs);
+        TS_VERIFY_CTS_set_certs(ctx, untrusted_certs);
 #endif
 
         // run the verification function
