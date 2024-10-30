@@ -225,20 +225,24 @@ void
 DcmVR::setVR(const char* vrName)
 {
     vr = EVR_UNKNOWN;   /* default */
-    if (vrName != NULL)
+    /* Make sure that the passed character string is not empty */
+    if ((vrName != NULL) && (*vrName != '\0'))
     {
-        int found = OFFalse;
-        int i = 0;
-        for (i = 0; (!found && (i < DcmVRDict_DIM)); i++)
+        /* Extract the first two characters from the passed string */
+        const char c1 = *vrName;
+        const char c2 = *(vrName + 1);
+        OFBool found = OFFalse;
+        for (int i = 0; i < DcmVRDict_DIM; i++)
         {
-            /* We only compare the first two characters of the passed string and
-             * never accept a VR that is labeled for internal use only.
+            /* We only compare the first two characters of the passed string
+             * and never accept a VR that is labeled for internal use only.
              */
-            if ((strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) &&
+            if ((DcmVRDict[i].vrName[0] == c1) && (DcmVRDict[i].vrName[1] == c2) &&
                 !(DcmVRDict[i].propertyFlags & DCMVR_PROP_INTERNAL))
             {
                 found = OFTrue;
                 vr = DcmVRDict[i].vr;
+                break;
             }
         }
         /* Workaround: There have been reports of systems transmitting
@@ -250,8 +254,6 @@ DcmVR::setVR(const char* vrName)
          * letters as "real" future VRs (and thus assume extended length).
          * All other VR strings are treated as "illegal" VRs.
          */
-        char c1 = *vrName;
-        char c2 = (c1) ? (*(vrName + 1)) : ('\0');
         if ((c1 == '?') && (c2 == '?')) vr = EVR_UNKNOWN2B;
         if (!found && ((c1 < 'A') || (c1 > 'Z') || (c2 < 'A') || (c2 > 'Z'))) vr = EVR_UNKNOWN2B;
     }
