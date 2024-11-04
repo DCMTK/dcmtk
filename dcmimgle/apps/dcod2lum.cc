@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
                     {
                         while (input.get(c) && (c != '\n') && (c != '\r'));     // skip comments
                     }
-                    else if (!OFStandard::isspace(c))         // skip whitespaces
+                    else if (!OFStandard::isspace(c))                           // skip whitespaces
                     {
                         input.putback(c);
                         if (maxddl == 0)                                        // read maxvalue

@@ -342,7 +342,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                 {
                     while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
                 }
-                else if (!OFStandard::isspace(c))         // skip whitespaces
+                else if (!OFStandard::isspace(c))                           // skip whitespaces
                 {
                     file.putback(c);
                     if (MaxDDLValue == 0)                                   // read maxvalue
