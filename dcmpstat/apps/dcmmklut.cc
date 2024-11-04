@@ -135,7 +135,7 @@ static OFCondition readTextFile(const char *filename,
                 {
                     while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
                 }
-                else if (!isspace(OFstatic_cast(unsigned char, c)))         // skip whitespaces
+                else if (!OFStandard::isspace(c))         // skip whitespaces
                 {
                     file.putback(c);
                     if (inputEntries == 0)                                  // read number of entries

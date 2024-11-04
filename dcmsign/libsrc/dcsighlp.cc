@@ -58,7 +58,7 @@ int DcmSignatureHelper::readNextToken(const char *c, int& pos, DcmTagKey& key, U
   OFString aString;
   int lpos = pos;
   int spos = 0;
-  while(isspace(OFstatic_cast(unsigned char, c[lpos]))) ++lpos; // ignore leading space
+  while(OFStandard::isspace(c[lpos])) ++lpos; // ignore leading space
 
   if (c[lpos]=='\0') return -1; // EOF
   if (c[lpos]=='.')

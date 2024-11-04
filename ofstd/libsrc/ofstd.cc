@@ -2104,7 +2104,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     int fracExp = 0;
 
     // Strip off leading blanks and check for a sign.
-    while (isspace(OFstatic_cast(unsigned char, *p))) ++p;
+    while (OFStandard::isspace(*p)) ++p;
 
     if (*p == '-')
     {
@@ -3519,6 +3519,23 @@ OFString OFStandard::getDefaultConfigurationDir()
 #endif
 }
 
+bool OFStandard::isspace(char ch)
+{
+    // This matches every whitespace character in the default locale,
+    // as documented in https://en.cppreference.com/w/cpp/string/byte/isspace
+    switch (ch)
+    {
+    case ' ':
+    case '\f':
+    case '\n':
+    case '\r':
+    case '\t':
+    case '\v':
+        return true;
+    default:
+        return false;
+    }
+}
 
 #include DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING
 

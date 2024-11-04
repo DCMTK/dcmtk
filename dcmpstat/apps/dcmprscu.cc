@@ -390,7 +390,7 @@ static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
   {
     c = fgetc(infile);
     if ((c==EOF)||(c==13)||(c==10)) finished = OFTrue;
-    else if (isspace(c))
+    else if (OFStandard::isspace(c))
     {
       if (mode==1) mode=2;
       else if (mode==3) value += (char)c;

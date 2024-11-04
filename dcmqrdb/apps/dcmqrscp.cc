@@ -96,7 +96,7 @@ static void mangleAssociationProfileKey(OFString& key)
 {
   for (size_t ui = 0; ui < key.size();)
   {
-    if (!isspace(key[ui]))
+    if (!OFStandard::isspace(key[ui]))
     {
       key[ui] = OFstatic_cast(char, toupper(key[ui]));
       ++ui;

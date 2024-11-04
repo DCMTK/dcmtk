@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -749,7 +749,7 @@ char *DcmQueryRetrieveConfig::skipmnemonic (char *rcline)
       else break;
     }
    while(*help != '\0') {
-      if (!isspace(OFstatic_cast(unsigned char, *help))) help++;    /* Mnemonic */
+      if (!OFStandard::isspace(*help)) help++;    /* Mnemonic */
       else break;
    }
    while(*help != '\0') {
@@ -762,7 +762,7 @@ char *DcmQueryRetrieveConfig::skipmnemonic (char *rcline)
 
 int DcmQueryRetrieveConfig::isgap (char gap)
 {
-   if (isspace(OFstatic_cast(unsigned char, gap)))
+   if (OFStandard::isspace(gap))
       return(1);
    if (gap == '=' || gap == ',' || gap == 10 || gap == 13)
       return(1);

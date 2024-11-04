@@ -586,7 +586,7 @@ int main(int argc, char *argv[])
       const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
       while (*c)
       {
-        if (! isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
+        if (! OFStandard::isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
         ++c;
       }
 
@@ -1344,7 +1344,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
     while (*c)
     {
-      if (!isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
+      if (!OFStandard::isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
       ++c;
     }
 

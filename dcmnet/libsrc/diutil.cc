@@ -107,7 +107,7 @@ DU_stripTrailingSpaces(char *s)
     if (s)
     {
         n = OFstatic_cast(int, strlen(s));
-        for (i = n - 1; i >= 0 && isspace(TO_UCHAR(s[i])); i--)
+        for (i = n - 1; i >= 0 && OFStandard::isspace(s[i]); i--)
             s[i] = '\0';
     }
 }
@@ -120,10 +120,10 @@ DU_stripLeadingSpaces(char *s)
     if (s == NULL) return;
     n = OFstatic_cast(int, strlen(s));
     if (n == 0) return;
-    if (!isspace(TO_UCHAR(s[0]))) return; /* no leading space */
+    if (!OFStandard::isspace(s[0])) return; /* no leading space */
 
     /* first non-space */
-    for (i=0; i<n && isspace(TO_UCHAR(s[i])); i++)
+    for (i=0; i<n && OFStandard::isspace(s[i]); i++)
         /* do nothing, just iterate */
         ;
     if (i<n) {

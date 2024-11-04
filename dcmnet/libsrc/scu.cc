@@ -179,7 +179,7 @@ OFCondition DcmSCU::initNetwork()
             const unsigned char* c = OFreinterpret_cast(const unsigned char*, m_assocConfigProfile.c_str());
             while (*c)
             {
-                if (!isspace(*c))
+                if (!OFStandard::isspace(*c))
                     profileName += OFstatic_cast(char, toupper(*c));
                 ++c;
             }

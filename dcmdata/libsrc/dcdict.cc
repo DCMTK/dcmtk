@@ -142,7 +142,7 @@ stripWhitespace(char* s)
     unsigned char *t;
     unsigned char *p;
     t=p=OFreinterpret_cast(unsigned char *, s);
-    while ((c = *t++) != '\0') if (!isspace(c)) *p++ = c;
+    while ((c = *t++) != '\0') if (!OFStandard::isspace(c)) *p++ = c;
     *p = '\0';
   }
 }
@@ -154,7 +154,7 @@ stripTrailingWhitespace(char* s)
     for
     (
         char* it = s + strlen(s) - 1;
-        it >= s && isspace(OFstatic_cast(unsigned char, *it));
+        it >= s && OFStandard::isspace(*it);
         *it-- = '\0'
     );
     return s;
@@ -169,7 +169,7 @@ stripLeadingWhitespace(char* s)
     unsigned char *t;
     unsigned char *p;
     t=p=OFreinterpret_cast(unsigned char *, s);
-    while (isspace(*t)) t++;
+    while (OFStandard::isspace(*t)) t++;
     while ((c = *t++) != '\0') *p++ = c;
     *p = '\0';
   }
@@ -379,7 +379,7 @@ onlyWhitespace(const char* s)
     int charsFound = OFFalse;
 
     for (size_t i = 0; (!charsFound) && (i < len); ++i) {
-        charsFound = !isspace(OFstatic_cast(unsigned char, s[i]));
+        charsFound = !OFStandard::isspace(s[i]);
     }
     return (!charsFound)? (OFTrue) : (OFFalse);
 }
@@ -403,7 +403,7 @@ isaCommentLine(const char* s)
     OFBool isComment = OFFalse; /* assumption */
     size_t len = strlen(s);
     size_t i = 0;
-    for (i = 0; i < len && isspace(OFstatic_cast(unsigned char, s[i])); ++i) /*loop*/;
+    for (i = 0; i < len && OFStandard::isspace(s[i]); ++i) /*loop*/;
     isComment = (s[i] == DCM_DICT_COMMENT_CHAR);
     return isComment;
 }

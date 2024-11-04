@@ -22,6 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimgle/didispfn.h"
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
                     {
                         while (input.get(c) && (c != '\n') && (c != '\r'));     // skip comments
                     }
-                    else if (!isspace(OFstatic_cast(unsigned char, c)))         // skip whitespaces
+                    else if (!OFStandard::isspace(c))         // skip whitespaces
                     {
                         input.putback(c);
                         if (maxddl == 0)                                        // read maxvalue

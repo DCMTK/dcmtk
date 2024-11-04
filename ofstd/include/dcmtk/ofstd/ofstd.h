@@ -1195,6 +1195,17 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static OFString getDefaultConfigurationDir();
 
+    /** Checks if ch is a whitespace character assuming the default C locale.
+     * The standard ::isspace function is locale-dependent,
+     * which is slow and may lead to surprising behavior.
+     * Further, it is undefined for char values -127-0, requiring the caller to cast
+     * the argument to cast to unsigned char
+     *  @param ch the character to check
+     *  @return true if the character is a whitespace character, false otherwise
+     */
+    static bool isspace(char ch);
+
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
