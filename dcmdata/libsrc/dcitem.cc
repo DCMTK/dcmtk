@@ -1068,11 +1068,11 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* create a corresponding DcmVR object */
         DcmVR vr(vrstr);
 
-        /* if the VR which was read is not a standard VR, print a warning */
+        /* if the VR which was read is not a standard VR (e.g. invalid), print a warning */
         if (!vr.isStandard())
         {
             OFOStringStream oss;
-            oss << "DcmItem: Non-standard VR '"
+            oss << "DcmItem: " << (vr.isInvalid() ? "Invalid" : "Non-standard") << " VR '"
                 << ((OFstatic_cast(unsigned char, vrstr[0]) < 32) ? ' ' : vrstr[0])
                 << ((OFstatic_cast(unsigned char, vrstr[1]) < 32) ? ' ' : vrstr[1]) << "' ("
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
@@ -4846,6 +4846,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
         case EVR_dirRecord :
         case EVR_pixelSQ :
         case EVR_pixelItem :
+        case EVR_invalid :
             l_error = EC_IllegalCall;
             break;
 

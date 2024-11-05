@@ -273,7 +273,10 @@ enum DcmEVR
     EVR_OverlayData,
 
     /// used internally for elements with unknown VR with 2-byte length field in explicit VR
-    EVR_UNKNOWN2B
+    EVR_UNKNOWN2B,
+
+    /// used internally for invalid VRs, e.g. when reading an invalid VR string from a data set
+    EVR_invalid
 };
 
 
@@ -363,7 +366,7 @@ public:
      *  might not be correct.
      *
      *  Also note that DcmItem::checkAndUpdateVR() will in some cases influence
-     *  the VR which is written out.
+     *  the VR that is written out.
      *  @return enumerated VR
      */
     DcmEVR getValidEVR() const;
@@ -388,6 +391,16 @@ public:
      *  @return size of values of this VR
      */
     size_t getValueWidth() const;
+
+    /** returns true if VR is invalid, i.e.\ EVR_invalid
+     *  @return true if VR is invalid, false otherwise
+     */
+    OFBool isInvalid() const;
+
+    /** returns true if VR is unknown, i.e.\ EVR_UNKNOWN or EVR_UNKNOWN2B
+     *  @return true if VR is unknown, false otherwise
+     */
+    OFBool isUnknown() const;
 
     /** returns true if VR is a standard DICOM VR
      *  @return true if VR is a standard DICOM VR, false otherwise

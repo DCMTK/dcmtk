@@ -154,7 +154,7 @@ static const DcmVREntry DcmVRDict[] = {
     { EVR_dirRecord, "dr_EVR_dirRecord", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 
     { EVR_pixelSQ, "ps_EVR_pixelSQ", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
-    /* Moved from internal use to non standard only: necessary to distinguish from "normal" OB */
+    /* Moved from internal use to non-standard only: necessary to distinguish from "normal" OB */
     { EVR_pixelItem, "pi", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
 
     /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
@@ -168,9 +168,11 @@ static const DcmVREntry DcmVRDict[] = {
     /* Overlay Data - only used in ident() */
     { EVR_OverlayData, "OverlayData", &noDelimiters, 0, DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
-    /* illegal VRs, we assume no extended length coding */
+    /* unknown (probably invalid) VR, we assume no extended length coding */
     { EVR_UNKNOWN2B, "??", &noDelimiters, sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
+    /* invalid VR - only used internally, e.g. to abort parsing a data set */
+    { EVR_invalid, "--", &noDelimiters, 0, DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength }
 };
 
 static const int DcmVRDict_DIM = OFstatic_cast(int, sizeof(DcmVRDict) / sizeof(DcmVREntry));
@@ -217,45 +219,68 @@ DcmVR::setVR(DcmEVR evr)
     if ((OFstatic_cast(int, evr) >= 0) && (OFstatic_cast(int, evr) < DcmVRDict_DIM)) {
         vr = evr;
     } else {
-        vr = EVR_UNKNOWN;
+        vr = EVR_invalid;
     }
 }
 
 void
 DcmVR::setVR(const char* vrName)
 {
-    vr = EVR_UNKNOWN;   /* default */
+    vr = EVR_invalid;   /* default */
     /* Make sure that the passed character string is not empty */
     if ((vrName != NULL) && (*vrName != '\0'))
     {
         /* Extract the first two characters from the passed string */
         const char c1 = *vrName;
         const char c2 = *(vrName + 1);
-        OFBool found = OFFalse;
-        for (int i = 0; i < DcmVRDict_DIM; i++)
-        {
-            /* We only compare the first two characters of the passed string
-             * and never accept a VR that is labeled for internal use only.
-             */
-            if ((DcmVRDict[i].vrName[0] == c1) && (DcmVRDict[i].vrName[1] == c2) &&
-                !(DcmVRDict[i].propertyFlags & DCMVR_PROP_INTERNAL))
-            {
-                found = OFTrue;
-                vr = DcmVRDict[i].vr;
-                break;
-            }
-        }
+
         /* Workaround: There have been reports of systems transmitting
          * illegal VR strings in explicit VR (i.e. "??") without using
-         * extended length fields. This is particularly bad because the
-         * DICOM committee has announced that all future VRs will use
-         * extended length. In order to distinguish between these two
-         * variants, we treat all unknown VRs consisting of uppercase
-         * letters as "real" future VRs (and thus assume extended length).
-         * All other VR strings are treated as "illegal" VRs.
+         * extended length fields.
          */
-        if ((c1 == '?') && (c2 == '?')) vr = EVR_UNKNOWN2B;
-        if (!found && ((c1 < 'A') || (c1 > 'Z') || (c2 < 'A') || (c2 > 'Z'))) vr = EVR_UNKNOWN2B;
+        if ((c1 == '?') && (c2 == '?'))
+        {
+            /* We assume a 2-byte length field. */
+            vr = EVR_UNKNOWN2B;
+        } else {
+            OFBool found = OFFalse;
+            for (int i = 0; i < DcmVRDict_DIM; i++)
+            {
+                /* We only compare the first two characters of the passed string. */
+                if ((DcmVRDict[i].vrName[0] == c1) && (DcmVRDict[i].vrName[1] == c2))
+                {
+                    /* Map internal VRs to "unknown" (4-byte length field). */
+                    if (DcmVRDict[i].propertyFlags & DCMVR_PROP_INTERNAL)
+                        vr = EVR_UNKNOWN;
+                    else
+                        vr = DcmVRDict[i].vr;
+                    found = OFTrue;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                /* More workarounds: The VR is unknown (or not yet supported).
+                 * The DICOM committee has announced that all future VRs will
+                 * use extended length.  Therefore, we treat all unknown VR
+                 * strings consisting of uppercase letters as "real" future VRs
+                 * (and thus assume extended length).
+                 * For other unknown VR strings that use characters in a range
+                 * of 32 to 127, we assume a 2-byte length field.
+                 * All other VR strings are treated as invalid VRs (default).
+                 */
+                if ((c1 >= 'A') && (c1 <= 'Z') && (c2 >= 'A') && (c2 <= 'Z'))
+                {
+                    /* Possible future VR, we assume a 4-byte length field. */
+                    vr = EVR_UNKNOWN;
+                }
+                else if ((c1 >= 32) && (c1 <= 127) && (c2 >= 32) && (c2 <= 127))
+                {
+                    /* Non-standard VR, we assume a 2-byte length field. */
+                    vr = EVR_UNKNOWN2B;
+                }
+            }
+        }
     }
 }
 
@@ -412,6 +437,18 @@ DcmVR::getValidVRName() const
 {
     DcmVR avr(getValidEVR());
     return avr.getVRName();
+}
+
+OFBool
+DcmVR::isInvalid() const
+{
+    return (vr == EVR_invalid);
+}
+
+OFBool
+DcmVR::isUnknown() const
+{
+    return (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B);
 }
 
 OFBool
