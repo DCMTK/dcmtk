@@ -1182,24 +1182,26 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static void sanitizeFilename(char *fname);
 
     /** retrieve the name of the default directory for support data.
-     *  On Windows, this method resolves environment variables such as %PROGRAMDATA% in the path,
-     *  on Posix platforms it just returns DEFAULT_SUPPORT_DATA_DIR.
+     *  On Windows, this method resolves environment variables such as
+     *  \%PROGRAMDATA% in the path, on Posix platforms it just returns
+     *  DEFAULT_SUPPORT_DATA_DIR.
      *  @return name of the default directory for support data
      */
     static OFString getDefaultSupportDataDir();
 
     /** retrieve the name of the default directory for configuration files.
-     *  On Windows, this method resolves environment variables such as %PROGRAMDATA% in the path,
-     *  on Posix platforms it just returns DEFAULT_CONFIGURATION_DIR.
+     *  On Windows, this method resolves environment variables such as
+     *  \%PROGRAMDATA% in the path, on Posix platforms it just returns
+     *  DEFAULT_CONFIGURATION_DIR.
      *  @return name of the default directory for configuration files
      */
     static OFString getDefaultConfigurationDir();
 
-    /** Checks if ch is a whitespace character assuming the default C locale.
-     * The standard ::isspace function is locale-dependent,
-     * which is slow and may lead to surprising behavior.
-     * Further, it is undefined for char values -127-0, requiring the caller to cast
-     * the argument to cast to unsigned char
+    /** check if the character is a whitespace character assuming the C locale.
+     *  The standard ::isspace function is locale-dependent, which is slow and
+     *  may lead to surprising behavior.  Further, it is undefined for char
+     *  values -127 to 0, requiring the caller to cast the argument to unsigned
+     *  char.
      *  @param ch the character to check
      *  @return true if the character is a whitespace character, false otherwise
      */

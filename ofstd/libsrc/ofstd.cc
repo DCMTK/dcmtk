@@ -3519,20 +3519,21 @@ OFString OFStandard::getDefaultConfigurationDir()
 #endif
 }
 
+
 bool OFStandard::isspace(char ch)
 {
     // This matches every whitespace character in the default locale,
     // as documented in https://en.cppreference.com/w/cpp/string/byte/isspace
     switch (ch)
     {
-    case ' ':
-    case '\f':
-    case '\n':
-    case '\r':
-    case '\t':
-    case '\v':
+      case ' ':
+      case '\f':
+      case '\n':
+      case '\r':
+      case '\t':
+      case '\v':
         return true;
-    default:
+      default:
         return false;
     }
 }
