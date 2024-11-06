@@ -246,14 +246,13 @@ DcmVR::setVR(const char* vrName)
             OFBool found = OFFalse;
             for (int i = 0; i < DcmVRDict_DIM; i++)
             {
-                /* We only compare the first two characters of the passed string. */
-                if ((DcmVRDict[i].vrName[0] == c1) && (DcmVRDict[i].vrName[1] == c2))
+                /* We only compare the first two characters of the passed string
+                 * and never accept a VR that is labeled for internal use only.
+                 */
+                if ((DcmVRDict[i].vrName[0] == c1) && (DcmVRDict[i].vrName[1] == c2) &&
+                    ((DcmVRDict[i].propertyFlags & DCMVR_PROP_INTERNAL) == 0))
                 {
-                    /* Map internal VRs to "unknown" (4-byte length field). */
-                    if (DcmVRDict[i].propertyFlags & DCMVR_PROP_INTERNAL)
-                        vr = EVR_UNKNOWN;
-                    else
-                        vr = DcmVRDict[i].vr;
+                    vr = DcmVRDict[i].vr;
                     found = OFTrue;
                     break;
                 }
@@ -317,7 +316,7 @@ DcmVR::getValidEVR() const
     ** If the generation of post-1993 VRs is not globally enabled then use OB instead.
     ** We may not want to generate these "new" VRs if other software cannot handle it.
     */
-    DcmEVR oldVR = evr;
+    const DcmEVR oldVR = evr;
     switch (evr) {
         case EVR_UN:
             if (!dcmEnableUnknownVRGeneration.get())
@@ -435,8 +434,7 @@ DcmVR::getVRName() const
 const char*
 DcmVR::getValidVRName() const
 {
-    DcmVR avr(getValidEVR());
-    return avr.getVRName();
+    return DcmVR(getValidEVR()).getVRName();
 }
 
 OFBool
@@ -524,7 +522,7 @@ DcmVR::getMaxValueLength() const
 OFBool
 DcmVR::isEquivalent(const DcmVR& avr) const
 {
-    DcmEVR evr = avr.getEVR();
+    const DcmEVR evr = avr.getEVR();
     if (vr == evr) return OFTrue;
 
     OFBool result = OFFalse;

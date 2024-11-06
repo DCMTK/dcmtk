@@ -305,7 +305,7 @@ public:
     /** constructor.
      *  Please note that only the first two characters of the passed string are
      *  actually checked.  Value Representations that are labeled for internal
-     *  use only are mapped to EVR_UNKNOWN.
+     *  use only are mapped to an unknown VR.  See setVR() for more details.
      *  @param vrName symbolic name of value representation
      */
     DcmVR(const char* vrName)
@@ -330,7 +330,13 @@ public:
     /** assign new VR value by name.
      *  Please note that only the first two characters of the passed string are
      *  actually checked.  Value Representations that are labeled for internal
-     *  use only are mapped to EVR_UNKNOWN.
+     *  use only are ignored, so they are mapped to an unknown VR.  For unknown
+     *  VRs consisting of two uppercase letters, extended length (4 bytes) is
+     *  assumed, since it could be a new DICOM VR that is not yet supported.
+     *  For other unknown VRs consisting of characters in the range of 32 to
+     *  127, a 2-byte length field is assumed.  This also applies to a VR
+     *  string of "??", which has been observed in the wild not to use extended
+     *  length.  All other VR strings are considered invalid.
      *  @param vrName symbolic name of value representation
      */
     void setVR(const char* vrName);
