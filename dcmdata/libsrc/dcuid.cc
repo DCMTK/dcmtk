@@ -364,6 +364,8 @@ static const UIDNameMap uidNameMap[] = {
     // Storage (DICONDE)
     { UID_DICONDE_EddyCurrentImageStorage,                                       "EddyCurrentImageStorage",                                            "DICONDE_EddyCurrentImageStorage",                                    { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
     { UID_DICONDE_EddyCurrentMultiframeImageStorage,                             "EddyCurrentMultiFrameImageStorage",                                  "DICONDE_EddyCurrentMultiframeImageStorage",                          { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICONDE_ThermographyImageStorage,                                      "ThermographyImageStorage",                                           "DICONDE_ThermographyImageStorage",                                   { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICONDE_ThermographyMultiFrameImageStorage,                            "ThermographyMultiFrameImageStorage",                                 "DICONDE_ThermographyMultiFrameImageStorage",                         { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
 
     // Query/Retrieve
     { UID_FINDPatientRootQueryRetrieveInformationModel,                          "PatientRootQueryRetrieveInformationModelFind",                       "FINDPatientRootQueryRetrieveInformationModel",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
@@ -863,6 +865,8 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     // DICONDE
     UID_DICONDE_EddyCurrentImageStorage,
     UID_DICONDE_EddyCurrentMultiframeImageStorage,
+    UID_DICONDE_ThermographyImageStorage,
+    UID_DICONDE_ThermographyMultiFrameImageStorage,
     NULL
 };
 
@@ -1109,6 +1113,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
     // DICONDE
 //  UID_DICONDE_EddyCurrentImageStorage,
 //  UID_DICONDE_EddyCurrentMultiframeImageStorage,
+//  UID_DICONDE_ThermographyImageStorage,
+//  UID_DICONDE_ThermographyMultiFrameImageStorage,
     NULL
 };
 
@@ -1296,6 +1302,8 @@ const char* dcmImageSOPClassUIDs[] = {
     // DICONDE
     UID_DICONDE_EddyCurrentImageStorage,
     UID_DICONDE_EddyCurrentMultiframeImageStorage,
+    UID_DICONDE_ThermographyImageStorage,
+    UID_DICONDE_ThermographyMultiFrameImageStorage,
     NULL
 };
 
@@ -1526,7 +1534,9 @@ static const DcmModalityTable modalities[] = {
     { UID_DICOS_QuadrupoleResonanceStorage,                        "QR",   4096 },
     // DICONDE
     { UID_DICONDE_EddyCurrentImageStorage,                         "EC",   512 * 512 },
-    { UID_DICONDE_EddyCurrentMultiframeImageStorage,               "ECm",  512 * 512 }
+    { UID_DICONDE_EddyCurrentMultiframeImageStorage,               "ECm",  512 * 512 },
+    { UID_DICONDE_ThermographyImageStorage,                        "TG",   512 * 512 },
+    { UID_DICONDE_ThermographyMultiFrameImageStorage,              "TGm",  512 * 512 }
 };
 
 static const int numberOfDcmModalityTableEntries = OFstatic_cast(int, sizeof(modalities) / sizeof(DcmModalityTable));

@@ -775,6 +775,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 // DICONDE Storage
 #define UID_DICONDE_EddyCurrentImageStorage                        "1.2.840.10008.5.1.4.1.1.601.1"
 #define UID_DICONDE_EddyCurrentMultiframeImageStorage              "1.2.840.10008.5.1.4.1.1.601.2"
+#define UID_DICONDE_ThermographyImageStorage                       "1.2.840.10008.5.1.4.1.1.601.3"
+#define UID_DICONDE_ThermographyMultiFrameImageStorage             "1.2.840.10008.5.1.4.1.1.601.4"
 
 // Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
