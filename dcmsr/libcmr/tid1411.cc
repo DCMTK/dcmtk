@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1411_VolumetricROIMeasurements
@@ -331,7 +331,7 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setReferencedSegm
     if (copyTracking && result.good())
     {
         DcmSequenceOfItems *dseq = NULL;
-        /* get SegmentSequence (should always be present) */
+        /* get segment sequence (should always be present) */
         result = dataset.findAndGetSequence(DCM_SegmentSequence, dseq);
         checkElementValue(dseq, DCM_SegmentSequence, "1-n", "1", result, "SegmentDescriptionMacro");
         if (result.good())
