@@ -689,8 +689,8 @@ OFBool DSRImageReferenceValue::appliesToSegment(const Uint16 segmentNumber) cons
 
 OFBool DSRImageReferenceValue::isSegmentationObject(const OFString &sopClassUID) const
 {
-    /* check for all _image_ segmentation SOP classes (according to DICOM PS 3.6-2024d) */
-    return (sopClassUID == UID_SegmentationStorage) || /* (sopClassUID == UID_SurfaceSegmentationStorage) || */
+    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2024d) */
+    return (sopClassUID == UID_SegmentationStorage) || (sopClassUID == UID_SurfaceSegmentationStorage) ||
            (sopClassUID == UID_HeightMapSegmentationStorage) || (sopClassUID == UID_LabelMapSegmentationStorage);
 }
 
