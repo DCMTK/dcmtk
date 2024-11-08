@@ -355,7 +355,8 @@ OFBool DcmItem::checkAndUpdateVR(DcmItem &item,
     OFBool result = OFFalse;
     /* handle special cases where the VR can be determined by some other element values */
     if (((tag == DCM_WaveformData) || (tag == DCM_WaveformPaddingValue) ||
-        (tag == DCM_ChannelMinimumValue) || (tag == DCM_ChannelMaximumValue)) && (tag.getEVR() == EVR_ox))
+        (tag == DCM_ChannelMinimumValue) || (tag == DCM_ChannelMaximumValue)) &&
+        (tag.getEVR() == EVR_ox))
     {
         /* case 1 (WaveformData and others): see section 8.3 in PS 3.5 */
         Uint16 bitsAlloc;
@@ -423,6 +424,7 @@ OFBool DcmItem::checkAndUpdateVR(DcmItem &item,
         result = OFTrue;
     }
     /* currently unhandled:
+     * - LUTData (0028,3006), US or OW
      * - MappedPixelValue (0022,1452), US or SS
      * - RedPaletteColorLookupTableDescriptor (0028,1101), US or SS
      * - GreenPaletteColorLookupTableDescriptor (0028,1102), US or SS
@@ -564,7 +566,6 @@ OFCondition DcmItem::writeJson(STD_NAMESPACE ostream &out,
     return writeJsonExt(out, format, OFTrue, OFFalse);
 }
 
-// ********************************
 
 OFCondition DcmItem::writeJsonExt(STD_NAMESPACE ostream &out,
                                DcmJsonFormat &format,
