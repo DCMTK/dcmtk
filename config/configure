@@ -755,6 +755,7 @@ enable_stl_string
 enable_stl_type_traits
 enable_stl_tuple
 enable_stl_system_error
+enable_stl_atomic
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1432,6 +1433,10 @@ Optional Features:
                           use C++ STL system_error
   --disable-stl-system_error
                           do not use C++ STL system_error
+  --enable-stl-atomic
+                          use C++ STL atomic
+  --disable-stl-atomic
+                          do not use C++ STL atomic
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -7346,6 +7351,18 @@ fi
 
 done
 
+for ac_header in atomic
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "atomic" "ac_cv_header_atomic" "$ac_includes_default"
+if test "x$ac_cv_header_atomic" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_ATOMIC 1
+_ACEOF
+
+fi
+
+done
+
 for ac_header in arpa/inet.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "arpa/inet.h" "ac_cv_header_arpa_inet_h" "$ac_includes_default"
@@ -10401,7 +10418,7 @@ if ${ac_cv_check_std_namespace+:} false; then :
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 10404 "configure"
+#line 10421 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -13348,6 +13365,38 @@ fi
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_system_error" >&5
 $as_echo "$ac_enable_stl_system_error" >&6; }
+
+ac_enable_stl_atomic="auto"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable STL atomic support" >&5
+$as_echo_n "checking whether to enable STL atomic support... " >&6; }
+# Check whether --enable-stl-atomic was given.
+if test "${enable_stl_atomic+set}" = set; then :
+  enableval=$enable_stl_atomic;  case "$enableval" in
+  yes)
+   ac_enable_stl_atomic="yes"
+   ;;
+
+  *)
+    ac_enable_stl_atomic="no"
+    ;;
+  esac
+
+fi
+
+if test "$ac_enable_stl_atomic" = "auto"; then
+  ac_enable_stl_atomic="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_atomic" = "yes"; then
+  if test $ac_cv_header_atomic = yes ; then
+
+$as_echo "#define HAVE_STL_ATOMIC 1" >>confdefs.h
+
+  else
+    ac_enable_stl_atomic="unsupported -> no"
+  fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_atomic" >&5
+$as_echo "$ac_enable_stl_atomic" >&6; }
 
 
 

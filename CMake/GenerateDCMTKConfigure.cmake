@@ -340,6 +340,7 @@ endif()
   CHECK_INCLUDE_FILE_CXX("system_error" HAVE_SYSTEM_ERROR)
   CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE)
   CHECK_INCLUDE_FILE_CXX("type_traits" HAVE_TYPE_TRAITS)
+  CHECK_INCLUDE_FILE_CXX("atomic" HAVE_ATOMIC)
 
 if(NOT APPLE)
   # poll on macOS is unreliable, it first did not exist, then was broken until
@@ -1333,6 +1334,7 @@ DCMTK_ENABLE_STL98_FEATURE("vector")
 DCMTK_ENABLE_STL11_FEATURE("type_traits")
 DCMTK_ENABLE_STL11_FEATURE("tuple")
 DCMTK_ENABLE_STL11_FEATURE("system_error")
+DCMTK_ENABLE_STL11_FEATURE("atomic")
 
 # if at least one modern C++ standard should be supported,
 # enforce setting of __cplusplus macro in VS 2017 and above

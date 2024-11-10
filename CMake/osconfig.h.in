@@ -864,6 +864,9 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* Define if we are supposed to use STL's system_error */
 #cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
 
+/* Define if we are supposed to use STL's atomic */
+#cmakedefine HAVE_STL_ATOMIC @HAVE_STL_ATOMIC@
+
 /* Define if the input iterator category is supported */
 #cmakedefine HAVE_CONTIGUOUS_ITERATOR_CATEGORY @HAVE_CONTIGUOUS_ITERATOR_CATEGORY@
 

@@ -199,39 +199,20 @@ function(DCMTK_CREATE_INSTALL_EXPORTS)
     # Only create fully-fledged CMake export files if we have the related commands
     include("${DCMTK_MACROS_DIR}/CheckCMakeCommandExists.cmake")
     include(CMakePackageConfigHelpers OPTIONAL)
-    CHECK_CMAKE_COMMAND_EXISTS("CONFIGURE_PACKAGE_CONFIG_FILE")
-    CHECK_CMAKE_COMMAND_EXISTS("WRITE_BASIC_PACKAGE_VERSION_FILE")
 
-    if(HAVE_CONFIGURE_PACKAGE_CONFIG_FILE AND HAVE_WRITE_BASIC_PACKAGE_VERSION_FILE)
+    # Create and configure CMake export files
+    include("${DCMTK_MACROS_DIR}/GenerateCMakeExports.cmake")
 
-      # Create and configure CMake export files
-      include("${DCMTK_MACROS_DIR}/GenerateCMakeExports.cmake")
+    # ${DCMTK_INSTALL_CONFIG} and ${DCMTK_CONFIG_VERSION} are
+    # defined within CMake/GenerateCMakeExports.cmake.
+    # Install DCMTKTargets.cmake to install tree
+    install(EXPORT DCMTKTargets FILE DCMTKTargets.cmake NAMESPACE DCMTK::
+            DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
 
-      # ${DCMTK_INSTALL_CONFIG} and ${DCMTK_CONFIG_VERSION} are
-      # defined within CMake/GenerateCMakeExports.cmake.
-      # Install DCMTKTargets.cmake to install tree
-      install(EXPORT DCMTKTargets FILE DCMTKTargets.cmake NAMESPACE DCMTK::
-              DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
+    # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
+    install(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
+            DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
 
-      # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-      install(FILES "${DCMTK_INSTALL_CONFIG}" "${DCMTK_CONFIG_VERSION}"
-              DESTINATION "${DCMTK_INSTALL_CMKDIR}" COMPONENT cmake)
-
-    else()
-
-      # Warning that we use old "configure_file" command
-      message(STATUS "Warning: Using old configure_file() mechanism to produce DCMTKConfig.cmake")
-
-      # Actually configure file
-      configure_file("${DCMTK_MACROS_DIR}/DCMTKConfig.old_cmake.in"
-                     "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" @ONLY)
-
-      # Install DCMTKConfig.cmake and DCMTKConfigVersion.cmake
-      install(FILES "${DCMTK_BINARY_DIR}/DCMTKConfig.cmake" "${DCMTK_BINARY_DIR}/DCMTKConfigVersion.cmake"
-              DESTINATION "${DCMTK_INSTALL_CMKDIR}"
-              COMPONENT cmake)
-
-    endif()
 endfunction()
 
 set(DCMTK_MACROS_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "")

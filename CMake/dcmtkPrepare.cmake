@@ -188,6 +188,7 @@ DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STRING "Enable use of STL string.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TYPE_TRAITS "Enable use of STL type traits.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_SYSTEM_ERROR "Enable use of STL system_error.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_ATOMIC "Enable use of STL atomic.")
 
 # On Windows, the built-in dictionary is default, on Unix the external one.
 # It is not possible to use both, built-in plus external default dictionary.

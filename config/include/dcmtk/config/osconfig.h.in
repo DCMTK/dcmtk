@@ -100,6 +100,9 @@
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
 
+/* Define to 1 if you have the <atomic> header file. */
+#undef HAVE_ATOMIC
+
 /* Define if __attribute__((aligned)) is available. */
 #undef HAVE_ATTRIBUTE_ALIGNED
 
@@ -599,6 +602,9 @@ typedef unsigned short ushort;
 
 /* Define if STL's algorithm should be used. */
 #undef HAVE_STL_ALGORITHM
+
+/* Define if STL's atomic should be used. */
+#undef HAVE_STL_ATOMIC
 
 /* Define if STL's list should be used. */
 #undef HAVE_STL_LIST

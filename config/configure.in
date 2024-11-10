@@ -474,6 +474,7 @@ AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
+AC_CHECK_HEADERS(atomic)
 AC_CHECK_HEADERS(arpa/inet.h)
 AC_CHECK_HEADERS(fcntl.h)
 AC_CHECK_HEADERS(fnmatch.h)
@@ -1711,6 +1712,35 @@ if test "$ac_enable_stl_system_error" = "yes"; then
   AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/syserr.cc"]])], [AC_DEFINE(HAVE_STL_SYSTEM_ERROR, 1, [Define if STL's system_error should be used.])], [ac_enable_stl_system_error="unsupported -> no"])
 fi
 AC_MSG_RESULT($ac_enable_stl_system_error)
+
+ac_enable_stl_atomic="auto"
+AC_MSG_CHECKING(whether to enable STL atomic support)
+AC_ARG_ENABLE(stl-atomic,
+[  --enable-stl-atomic
+                          use C++ STL atomic
+  --disable-stl-atomic
+                          do not use C++ STL atomic],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_atomic="yes"
+   ;;
+
+  *)
+    ac_enable_stl_atomic="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_atomic" = "auto"; then
+  ac_enable_stl_atomic="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_atomic" = "yes"; then
+  if test $ac_cv_header_atomic = yes ; then
+    AC_DEFINE(HAVE_STL_ATOMIC, 1, [Define if STL's atomic should be used.])
+  else
+    ac_enable_stl_atomic="unsupported -> no"
+  fi
+fi
+AC_MSG_RESULT($ac_enable_stl_atomic)
 
 
 dnl -------------------------------------------------------

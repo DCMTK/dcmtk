@@ -20,15 +20,17 @@
  *           Read/Write Lock for multi-thread applications.
  *           class T must have copy constructor and assignment operator.
  *
- *
  */
-
 
 #ifndef OFGLOBAL_H
 #define OFGLOBAL_H
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofthread.h"  /* for class OFBool */
+
+#if defined(HAVE_STL_ATOMIC) && defined(WITH_THREADS)
+#include <atomic>
+#endif
 
 /** Template class which allows to declare global objects that are
  *  protected by a Read/Write Lock if used in multi-thread applications.
@@ -124,5 +126,70 @@ private:
   const OFGlobal<T>& operator=(const OFGlobal<T>& arg);
 
 };
+
+#if defined(HAVE_STL_ATOMIC) && defined(WITH_THREADS)
+/** template specialization for OFGlobal<OFBool> that uses a std::atomic flag
+ *  without read-write lock and is lock-free (and thus much more efficient) on many platforms.
+ */
+template <> class OFGlobal<OFBool>
+{
+public:
+
+  /** constructor.
+   *  @param arg value to which this object is initialised
+   */
+  OFGlobal(const OFBool &arg)
+  : val(arg)
+  {
+  }
+
+  /** destructor.
+   */
+  virtual ~OFGlobal() { }
+
+  /** assigns new value to this object.
+   *  @param arg new value
+   */
+  void set(const OFBool& arg)
+  {
+    val = arg;
+  }
+
+  /** gets the value of this object.
+   *  @param arg return value is assigned to this parameter.
+   */
+  void xget(bool& arg)
+  {
+    arg = val;
+  }
+
+
+  /** returns the value of this object. The result
+   *  is returned by value, not by reference.
+   *  @return value of this object.
+   */
+  OFBool get()
+  {
+    OFBool result(val);
+    return result;
+  }
+
+private:
+
+  /** value of this object
+   */
+  std::atomic<OFBool> val;
+
+  /** unimplemented private default constructor */
+  OFGlobal();
+
+  /** unimplemented private copy constructor */
+  OFGlobal(const OFGlobal<OFBool>& arg);
+
+  /** unimplemented private assignment operator */
+  const OFGlobal<OFBool>& operator=(const OFGlobal<OFBool>& arg);
+
+};
+#endif
 
 #endif
