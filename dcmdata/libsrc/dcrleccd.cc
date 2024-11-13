@@ -635,7 +635,13 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
             bytesToDecode = OFstatic_cast(size_t, inputBytes);
         }
 
-        // last fragment for this RLE stripe
+        // make sure we don't overshoot the buffer size in case of an incorrect byte offset
+        if (fragmentLength < byteOffset + bytesToDecode)
+        {
+          DCMDATA_ERROR("Byte offset in RLE header is wrong.");
+          return EC_CannotChangeRepresentation;
+        }
+
         result = rledecoder.decompress(rleData + byteOffset, bytesToDecode);
 
         // special handling for zero pad byte at the end of the RLE stream
