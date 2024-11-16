@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:04:38 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024e
+ *  File created on 2024-11-16 10:17:26 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4862
-// - retired: 206
+// total number of codes: 4861
+// - retired: 207
 // - no name: 27
 // - not unique: 17
 
@@ -1852,7 +1852,6 @@
 #define CODE_DCM_SegmentedUnconstrained                                    DSRBasicCodedEntry("113268", "DCM", "Segmented-Unconstrained")
 #define CODE_DCM_SegmentedConstrained                                      DSRBasicCodedEntry("113269", "DCM", "Segmented-Constrained")
 #define CODE_DCM_BayesianProbability                                       DSRBasicCodedEntry("113270", "DCM", "Bayesian-Probability")
-#define CODE_DCM_DotDotDot                                                 DSRBasicCodedEntry("...", "DCM", "...")
 #define CODE_DCM_VoxelwiseSelectionOfBValue                                DSRBasicCodedEntry("113285", "DCM", "Voxelwise selection of b-value")
 #define CODE_DCM_VolumeRatio                                               DSRBasicCodedEntry("113288", "DCM", "Volume Ratio")
 #define CODE_DCM_DiffusionCoefficient                                      DSRBasicCodedEntry("113289", "DCM", "Diffusion Coefficient")
@@ -2273,7 +2272,7 @@
 #define CODE_DCM_RETIRED_Conclusions                                       DSRBasicCodedEntry("121076", "DCM", "Conclusions")
 #define CODE_DCM_Conclusion                                                DSRBasicCodedEntry("121077", "DCM", "Conclusion")
 #define CODE_DCM_RETIRED_Addendum                                          DSRBasicCodedEntry("121078", "DCM", "Addendum")
-#define CODE_DCM_Baseline                                                  DSRBasicCodedEntry("121079", "DCM", "Baseline")
+#define CODE_DCM_RETIRED_Baseline                                          DSRBasicCodedEntry("121079", "DCM", "Baseline")
 #define CODE_DCM_BestIllustrationOfFinding                                 DSRBasicCodedEntry("121080", "DCM", "Best illustration of finding")
 #define CODE_DCM_RETIRED_Physician                                         DSRBasicCodedEntry("121081", "DCM", "Physician")
 #define CODE_DCM_RETIRED_Nurse                                             DSRBasicCodedEntry("121082", "DCM", "Nurse")
