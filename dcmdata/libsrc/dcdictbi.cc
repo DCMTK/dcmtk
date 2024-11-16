@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-10-08 09:48:02
+**   Date: 2024-11-16 10:42:05
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -1158,6 +1158,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x114c, 0x0008, 0x114c,
       EVR_SQ, "ReferencedSegmentationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x114d, 0x0008, 0x114d,
+      EVR_SQ, "ReferencedSurfaceSegmentationSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1150, 0x0008, 0x1150,
@@ -15010,6 +15014,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "OphthalmicVolumetricPropertiesFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0022, 0x1623, 0x0022, 0x1623,
+      EVR_FL, "OphthalmicAnatomicReferencePointFrameCoordinate", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0022, 0x1624, 0x0022, 0x1624,
       EVR_FL, "OphthalmicAnatomicReferencePointXCoordinate", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -15032,6 +15040,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0022, 0x1630, 0x0022, 0x1630,
       EVR_DS, "QualityThreshold", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1632, 0x0022, 0x1632,
+      EVR_SQ, "OphthalmicAnatomicReferencePointSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1633, 0x0022, 0x1633,
+      EVR_CS, "OphthalmicAnatomicReferencePointLocalizationType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0022, 0x1634, 0x0022, 0x1634,
+      EVR_IS, "PrimaryAnatomicStructureItemIndex", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0022, 0x1640, 0x0022, 0x1640,
@@ -27353,11 +27373,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0012, 0x3004, 0x0012,
-      EVR_DS, "RETIRED_DoseValue", 1, 1, "DICOM/retired",
+      EVR_DS, "DoseValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0014, 0x3004, 0x0014,
       EVR_CS, "TissueHeterogeneityCorrection", 1, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0016, 0x3004, 0x0016,
+      EVR_SQ, "RecommendedIsodoseLevelSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0040, 0x3004, 0x0040,
@@ -29258,6 +29282,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x02eb, 0x300a, 0x02eb,
       EVR_LT, "CompensatorDescription", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x02ec, 0x300a, 0x02ec,
+      EVR_CS, "CompensatorSurfaceRepresentationFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0302, 0x300a, 0x0302,

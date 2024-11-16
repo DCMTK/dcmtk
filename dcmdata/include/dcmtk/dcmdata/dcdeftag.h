@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-10-08 09:47:28
+**   Date: 2024-11-16 10:42:04
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2024-10-08 09:47:28"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2024-11-16 10:42:04"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5199
+** Number of entries: 5206
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -296,6 +296,7 @@
 #define DCM_ReferencedInstanceSequence           DcmTagKey(0x0008, 0x114a)
 #define DCM_ReferencedRealWorldValueMappingInstanceSequence DcmTagKey(0x0008, 0x114b)
 #define DCM_ReferencedSegmentationSequence       DcmTagKey(0x0008, 0x114c)
+#define DCM_ReferencedSurfaceSegmentationSequence DcmTagKey(0x0008, 0x114d)
 #define DCM_ReferencedSOPClassUID                DcmTagKey(0x0008, 0x1150)
 #define DCM_ReferencedSOPInstanceUID             DcmTagKey(0x0008, 0x1155)
 #define DCM_DefinitionSourceSequence             DcmTagKey(0x0008, 0x1156)
@@ -2070,12 +2071,16 @@
 #define DCM_ScanPatternTypeCodeSequence          DcmTagKey(0x0022, 0x1618)
 #define DCM_ReferencedSurfaceMeshIdentificationSequence DcmTagKey(0x0022, 0x1620)
 #define DCM_OphthalmicVolumetricPropertiesFlag   DcmTagKey(0x0022, 0x1622)
+#define DCM_OphthalmicAnatomicReferencePointFrameCoordinate DcmTagKey(0x0022, 0x1623)
 #define DCM_OphthalmicAnatomicReferencePointXCoordinate DcmTagKey(0x0022, 0x1624)
 #define DCM_OphthalmicAnatomicReferencePointYCoordinate DcmTagKey(0x0022, 0x1626)
 #define DCM_OphthalmicEnFaceVolumeDescriptorSequence DcmTagKey(0x0022, 0x1627)
 #define DCM_OphthalmicEnFaceImageQualityRatingSequence DcmTagKey(0x0022, 0x1628)
 #define DCM_OphthalmicEnFaceVolumeDescriptorScope DcmTagKey(0x0022, 0x1629)
 #define DCM_QualityThreshold                     DcmTagKey(0x0022, 0x1630)
+#define DCM_OphthalmicAnatomicReferencePointSequence DcmTagKey(0x0022, 0x1632)
+#define DCM_OphthalmicAnatomicReferencePointLocalizationType DcmTagKey(0x0022, 0x1633)
+#define DCM_PrimaryAnatomicStructureItemIndex    DcmTagKey(0x0022, 0x1634)
 #define DCM_OCTBscanAnalysisAcquisitionParametersSequence DcmTagKey(0x0022, 0x1640)
 #define DCM_NumberOfBscansPerFrame               DcmTagKey(0x0022, 0x1642)
 #define DCM_BscanSlabThickness                   DcmTagKey(0x0022, 0x1643)
@@ -4089,8 +4094,9 @@
 #define DCM_GridFrameOffsetVector                DcmTagKey(0x3004, 0x000c)
 #define DCM_DoseGridScaling                      DcmTagKey(0x3004, 0x000e)
 #define DCM_RETIRED_RTDoseROISequence            DcmTagKey(0x3004, 0x0010)
-#define DCM_RETIRED_DoseValue                    DcmTagKey(0x3004, 0x0012)
+#define DCM_DoseValue                            DcmTagKey(0x3004, 0x0012)
 #define DCM_TissueHeterogeneityCorrection        DcmTagKey(0x3004, 0x0014)
+#define DCM_RecommendedIsodoseLevelSequence      DcmTagKey(0x3004, 0x0016)
 #define DCM_DVHNormalizationPoint                DcmTagKey(0x3004, 0x0040)
 #define DCM_DVHNormalizationDoseValue            DcmTagKey(0x3004, 0x0042)
 #define DCM_DVHSequence                          DcmTagKey(0x3004, 0x0050)
@@ -4566,6 +4572,7 @@
 #define DCM_CompensatorMillingToolDiameter       DcmTagKey(0x300a, 0x02e8)
 #define DCM_IonRangeCompensatorSequence          DcmTagKey(0x300a, 0x02ea)
 #define DCM_CompensatorDescription               DcmTagKey(0x300a, 0x02eb)
+#define DCM_CompensatorSurfaceRepresentationFlag DcmTagKey(0x300a, 0x02ec)
 #define DCM_RadiationMassNumber                  DcmTagKey(0x300a, 0x0302)
 #define DCM_RadiationAtomicNumber                DcmTagKey(0x300a, 0x0304)
 #define DCM_RadiationChargeState                 DcmTagKey(0x300a, 0x0306)
