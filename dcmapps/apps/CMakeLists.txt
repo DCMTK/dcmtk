@@ -4,6 +4,5 @@ foreach(PROGRAM dcm2img)
 endforeach()
 
 # make sure executables are linked to the corresponding libraries
-foreach(PROGRAM dcm2img)
-  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmpstat dcmdsig dcmsr dcmjpeg dcmjpls dcmimage dcmimgle dcmqrdb dcmnet dcmtls dcmdata oflog oficonv ofstd)
-endforeach()
+DCMTK_TARGET_LINK_MODULES(dcm2img dcmjpeg dcmjpls dcmimage dcmimgle dcmdata oflog oficonv ofstd)
+
