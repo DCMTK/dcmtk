@@ -5,4 +5,3 @@ endforeach()
 
 # make sure executables are linked to the corresponding libraries
 DCMTK_TARGET_LINK_MODULES(dcm2img dcmjpeg dcmjpls dcmimage dcmimgle dcmdata oflog oficonv ofstd)
-
