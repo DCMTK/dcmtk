@@ -835,6 +835,31 @@ void DcmTLSCiphersuiteHandler::printSupportedTLS13Ciphersuites(STD_NAMESPACE ost
   }
 }
 
+void DcmTLSCiphersuiteHandler::printSupportedTLSProfiles(STD_NAMESPACE ostream& os) const
+{
+  // we print the profiles in the same order as used for the command line options
+  os << "- " << lookupProfileName(TSP_Profile_BCP_195_RFC_8996) << " (default)" << OFendl;
+
+#ifdef DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
+  os << "- " << lookupProfileName(TSP_Profile_BCP_195_RFC_8996_Modified) << OFendl;
+#endif
+
+  os << "- " << lookupProfileName(TSP_Profile_BCP195_ND) << " (retired)" << OFendl;
+  os << "- " << lookupProfileName(TSP_Profile_BCP195) << " (retired)" << OFendl;
+  os << "- " << lookupProfileName(TSP_Profile_BCP195_Extended) << " (retired)" << OFendl;
+
+  if (cipher3DESsupported())
+  {
+      os << "- " << lookupProfileName(TSP_Profile_Basic) << " (retired)" << OFendl;
+  }
+  os << "- " << lookupProfileName(TSP_Profile_AES) << " (retired)" << OFendl;
+
+  if (cipherNULLsupported())
+  {
+      os << "- " << lookupProfileName(TSP_Profile_IHE_ATNA_Unencrypted) << " (retired)" << OFendl;
+  }
+}
+
 const char *DcmTLSCiphersuiteHandler::lookupProfileName(DcmTLSSecurityProfile profile)
 {
   switch (profile)

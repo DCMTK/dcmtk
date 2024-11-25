@@ -400,6 +400,14 @@ int main(int argc, char *argv[])
           tlsOptions.printSupportedCiphersuites(app, COUT);
           return 0;
       }
+
+      // check if the command line contains the --list-profiles option
+      if (tlsOptions.listOfProfilesRequested(cmd))
+      {
+          tlsOptions.printSupportedTLSProfiles(app, COUT);
+          return 0;
+      }
+
     }
 
 #ifdef INETD_AVAILABLE

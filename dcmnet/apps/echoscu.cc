@@ -244,6 +244,14 @@ main(int argc, char *argv[])
             tlsOptions.printSupportedCiphersuites(app, COUT);
             return EXITCODE_NO_ERROR;
         }
+
+        // check if the command line contains the --list-profiles option
+        if (tlsOptions.listOfProfilesRequested(cmd))
+        {
+            tlsOptions.printSupportedTLSProfiles(app, COUT);
+            return EXITCODE_NO_ERROR;
+        }
+
       }
 
       /* command line parameters */

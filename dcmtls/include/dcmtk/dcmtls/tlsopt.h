@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2023, OFFIS e.V.
+ *  Copyright (C) 2017-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -93,12 +93,27 @@ public:
      */
     static OFBool listOfCiphersRequested(OFCommandLine& cmd);
 
+    /** checks if the command line option --list-profiles was given.
+     *  In this case the list of supported TLS profiles should be
+     *  printed to stdout and the application should terminate.
+     *  @param cmd the command line that was used
+     *  @return true if --list-profiles option was found, false otherwise.
+     */
+    static OFBool listOfProfilesRequested(OFCommandLine& cmd);
+
     /** print a list of supported ciphersuites to the given output stream
      *  @param app a reference to an OFConsoleApplication object used in the
      *    calling application.
      *  @param os output stream
      */
     static void printSupportedCiphersuites(OFConsoleApplication& app, STD_NAMESPACE ostream& os);
+
+    /** print a list of supported TLS profiles to the given output stream
+     *  @param app a reference to an OFConsoleApplication object used in the
+     *    calling application.
+     *  @param os output stream
+     */
+    static void printSupportedTLSProfiles(OFConsoleApplication& app, STD_NAMESPACE ostream& os);
 
     /** Print OpenSSL library version string.
      *  Does nothing if OpenSSL is not available.

@@ -139,6 +139,9 @@ certification authority:
 
 security profile:
 
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 

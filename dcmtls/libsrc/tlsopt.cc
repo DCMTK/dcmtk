@@ -71,11 +71,25 @@ OFBool DcmTLSOptionsBase::listOfCiphersRequested(OFCommandLine& cmd)
   if (cmd.findOption("--list-ciphers")) return OFTrue;
   return OFFalse;
 }
+
+OFBool DcmTLSOptionsBase::listOfProfilesRequested(OFCommandLine& cmd)
+{
+  if (cmd.findOption("--list-profiles")) return OFTrue;
+  return OFFalse;
+}
+
 #else
+
 OFBool DcmTLSOptionsBase::listOfCiphersRequested(OFCommandLine& /* cmd */)
 {
   return OFFalse;
 }
+
+OFBool DcmTLSOptionsBase::listOfProfilesRequested(OFCommandLine& cmd)
+{
+  return OFFalse;
+}
+
 #endif
 
 #ifdef WITH_OPENSSL
@@ -86,8 +100,22 @@ void DcmTLSOptionsBase::printSupportedCiphersuites(OFConsoleApplication& app, ST
   os << OFendl << "Supported TLS ciphersuites are:" << OFendl;
   csh.printSupportedCiphersuites(os);
 }
+
+void DcmTLSOptionsBase::printSupportedTLSProfiles(OFConsoleApplication& app, STD_NAMESPACE ostream& os)
+{
+  DcmTLSCiphersuiteHandler csh;
+  app.printHeader(OFTrue /*print host identifier*/);
+  os << "Cryptographic algorithms implemented by: " << DcmTLSTransportLayer::getOpenSSLVersionName() << OFendl;
+  os << "\nSupported TLS Secure Transport Connection Profiles are:" << OFendl;
+  csh.printSupportedTLSProfiles(os);
+}
+
 #else
 void DcmTLSOptionsBase::printSupportedCiphersuites(OFConsoleApplication& /* app */, STD_NAMESPACE ostream& /* os */)
+{
+}
+
+void DcmTLSOptionsBase::printSupportedTLSProfiles(OFConsoleApplication& /* app */, STD_NAMESPACE ostream& /* os */)
 {
 }
 #endif
@@ -195,6 +223,7 @@ void DcmTLSOptions::addTLSCommandlineOptions(OFCommandLine& cmd)
       cmd.addOption("--enable-crl-vfy",     "+crv",    "enable leaf CRL verification");
       cmd.addOption("--enable-crl-all",     "+cra",    "enable full chain CRL verification");
     cmd.addSubGroup("security profile:");
+      cmd.addOption("--list-profiles",      "+ph",     "list supported TLS profiles and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--profile-8996",       "+pg",     "BCP 195 RFC 8996 TLS Profile (default)");
 #ifdef DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
       cmd.addOption("--profile-8996-mod",   "+pm",     "Modified BCP 195 RFC 8996 TLS Profile");

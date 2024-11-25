@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2023, OFFIS e.V.
+ *  Copyright (C) 2013-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -174,6 +174,13 @@ int main(int argc, char *argv[])
             if (tlsOptions.listOfCiphersRequested(cmd))
             {
                 tlsOptions.printSupportedCiphersuites(app, COUT);
+                return EXITCODE_NO_ERROR;
+            }
+
+            // check if the command line contains the --list-profiles option
+            if (tlsOptions.listOfProfilesRequested(cmd))
+            {
+                tlsOptions.printSupportedTLSProfiles(app, COUT);
                 return EXITCODE_NO_ERROR;
             }
 
