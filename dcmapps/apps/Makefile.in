@@ -98,7 +98,8 @@ LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(ofloginc) $(dcmnetinc) $(dcmdatainc
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
 	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) \
 	$(ofstdlibdir) $(ofloglibdir) $(dcmiodlibdir) $(dcmimglelibdir) \
-	$(dcmimagelibdir) $(oficonvlibdir) $(dcmjpeglibdir) $(dcmjplslibdir)
+	$(dcmimagelibdir) $(oficonvlibdir) $(dcmjpeglibdir) $(dcmjplslibdir) \
+	$(libcharlslibdir)
 
 DCM2IMG_LIBS = $(dcmjpeglib) $(dcmjplslib) $(libcharlslib) $(dcmimagelib) \
 	$(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) \
