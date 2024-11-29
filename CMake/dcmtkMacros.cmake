@@ -54,6 +54,10 @@ macro(DCMTK_ADD_EXECUTABLE PROGRAM)
             set_target_properties(${PROGRAM} PROPERTIES LINK_FLAGS ${WIN32_STD_OBJECTS})
         endif()
 
+        if(CMAKE_DEBUG_POSTFIX AND USE_DEBUG_POSTFIX_FOR_EXEC)
+            set_property(TARGET ${PROGRAM} APPEND PROPERTY DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
+        endif()
+
         # Collect executable as part of global DCMTK_EXECUTABLE_TARGETS property
         set_property(GLOBAL APPEND PROPERTY DCMTK_EXECUTABLE_TARGETS ${PROGRAM})
 

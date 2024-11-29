@@ -27,7 +27,23 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-
+# Expose CMAKE_DEBUG_POSTFIX to the user and extend it for DLLs and executables.
+#
+# If the user wants to use a different postfix for debug build artifacts, he can set
+# this variable (e.g. to "_d"). This will append _d to all libraries built with
+# the exception of Windows DLLS. If the latter should also have the debug postfix,
+# the USE_DEBUG_POSTFIX_FOR_DLLS option must be enabled.
+# To append the debug postfix to executables (except test programs), the
+# USE_DEBUG_POSTFIX_FOR_EXEC option can be used.
+set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds (default: none).")
+# If enabled, the debug postfix will be used for Windows DLLs as well.
+option(USE_DEBUG_POSTFIX_FOR_DLLS "Use CMAKE_DEBUG_POSTFIX also for DLLs on Windows." OFF)
+# If enabled, the debug postfix will be used for executables (except for test programs).
+option(USE_DEBUG_POSTFIX_FOR_EXEC "Use CMAKE_DEBUG_POSTFIX also for executables." OFF)
+# Check whether the user enabled one of the USE_DEBUG_POSTFIX options but did not set CMAKE_DEBUG_POSTFIX.
+if((USE_DEBUG_POSTFIX_FOR_DLLS OR USE_DEBUG_POSTFIX_FOR_EXEC) AND NOT CMAKE_DEBUG_POSTFIX)
+  message(FATAL_ERROR "USE_DEBUG_POSTFIX_FOR_DLLS or USE_DEBUG_POSTFIX_FOR_EXEC is enabled, but CMAKE_DEBUG_POSTFIX does not have a value.")
+endif()
 # Basic version information
 set(DCMTK_MAJOR_VERSION 3)
 set(DCMTK_MINOR_VERSION 6)
@@ -70,6 +86,10 @@ if(DCMTK_LINK_STATIC)
 else()
     # Shared library version information
     set(DCMTK_LIBRARY_PROPERTIES VERSION "${DCMTK_ABI_VERSION}.${DCMTK_PACKAGE_VERSION}" SOVERSION "${DCMTK_ABI_VERSION}")
+endif()
+
+if(CMAKE_DEBUG_POSTFIX AND USE_DEBUG_POSTFIX_FOR_DLLS)
+    list(APPEND DCMTK_LIBRARY_PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
 endif()
 
 option(DCMTK_PORTABLE_LINUX_BINARIES "Create ELF binaries while statically linking all third party libraries and libstdc++." OFF)
@@ -142,7 +162,6 @@ option(BUILD_APPS "Build command line applications and test programs." ON)
 option(BUILD_SHARED_LIBS "Build with shared libraries." OFF)
 option(BUILD_SINGLE_SHARED_LIBRARY "Build a single DCMTK library." OFF)
 mark_as_advanced(BUILD_SINGLE_SHARED_LIBRARY)
-set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "Library postfix for debug builds. Usually left blank.")
 set(DCMTK_TLS_LIBRARY_POSTFIX "" CACHE STRING "Postfix for libraries that change their ABI when using OpenSSL.")
 # add our CMake modules to the module path, but prefer the ones from CMake.
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules" "${CMAKE_CURRENT_SOURCE_DIR}/${DCMTK_CMAKE_INCLUDE}/CMake/")
