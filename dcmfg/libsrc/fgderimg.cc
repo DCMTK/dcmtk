@@ -21,7 +21,6 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dcdatutl.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmfg/fgderimg.h"
@@ -460,7 +459,7 @@ OFCondition DerivationImageItem::addSourceImageItem(const OFString& file,
     return addSourceImageItem(dataset, purposeOfReference, resultSourceImageItem);
 }
 
-OFCondition DerivationImageItem::addSourceImageItem(DcmDataset* dataset,
+OFCondition DerivationImageItem::addSourceImageItem(DcmItem* dataset,
                                                     const CodeSequenceMacro& purposeOfReference,
                                                     SourceImageItem*& resultSourceImageItem)
 {
@@ -482,7 +481,7 @@ OFCondition DerivationImageItem::addSourceImageItem(DcmDataset* dataset,
     resultSourceImageItem             = NULL;
     OFString sopClass, sopInstance, ts;
     OFCondition result
-        = DcmDataUtil::getSOPInstanceFromDataset(dataset, EXS_Unknown, sopClass, sopInstance, ts /*ignored*/);
+        = DerivationImageItem::getSOPInfoFromItem(dataset, sopClass, sopInstance);
     {
         if (result.good())
             result = item->getImageSOPInstanceReference().setReferencedSOPClassUID(sopClass);
@@ -510,7 +509,7 @@ OFCondition DerivationImageItem::addSourceImageItems(const OFVector<OFString>& f
     DcmFileFormat dcmff;
     OFCondition result;
     DcmDataset* dataset = NULL;
-    OFVector<DcmDataset*> datasets;
+    OFVector<DcmItem*> datasets;
     OFVector<OFString>::const_iterator it = files.begin();
     while (it != files.end())
     {
@@ -527,13 +526,13 @@ OFCondition DerivationImageItem::addSourceImageItems(const OFVector<OFString>& f
     return addSourceImageItems(datasets, purposeOfReference, resultSourceImageItems, skipErrors);
 }
 
-OFCondition DerivationImageItem::addSourceImageItems(const OFVector<DcmDataset*>& datasets,
+OFCondition DerivationImageItem::addSourceImageItems(const OFVector<DcmItem*>& datasets,
                                                      const CodeSequenceMacro& purposeOfReference,
                                                      OFVector<SourceImageItem*>& resultSourceImageItems,
                                                      const OFBool skipErrors)
 {
     OFCondition result;
-    OFVector<DcmDataset*>::const_iterator it = datasets.begin();
+    OFVector<DcmItem*>::const_iterator it = datasets.begin();
     while (it != datasets.end())
     {
         SourceImageItem* resultItem = NULL;
@@ -636,4 +635,24 @@ OFCondition DerivationImageItem::write(DcmItem& itemOfDerivationImageSequence)
                                                               "DerivationImageMacro");
 
     return result;
+}
+
+
+OFCondition DerivationImageItem::getSOPInfoFromItem(DcmItem *dataset,
+                                                   OFString &sopClassUID,
+                                                   OFString &sopInstanceUID)
+{
+  OFCondition status = EC_IllegalParameter;
+  // check for invalid dataset pointer
+  if (dataset != NULL)
+  {
+    DCMDATA_DEBUG("Getting SOP Class UID and SOP Instance UID from DICOM item");
+    sopClassUID.clear();
+    sopInstanceUID.clear();
+
+    status = dataset->findAndGetOFStringArray(DCM_SOPClassUID, sopClassUID);
+    if (status.good()) dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, sopInstanceUID);
+    if (status.good() && (sopClassUID.empty() || sopInstanceUID.empty()) ) status = EC_MissingValue;
+  }
+  return status;
 }
