@@ -196,7 +196,7 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                                                result,
                                                rule->getModule().c_str(),
                                                logLevel);
-                    reset_value_check_result(result, checkValue, *delem);
+                    ignoreAndLogError(result, checkValue, *delem);
                 }
                 if (result.good())
                 {
@@ -777,7 +777,7 @@ void DcmIODUtil::alignFrameOnByteBoundary(Uint8* buf, size_t bufLen, Uint8 numBi
 }
 
 
-void DcmIODUtil::reset_value_check_result(OFCondition& result, const OFBool checkValue, DcmElement& elem)
+void DcmIODUtil::ignoreAndLogError(OFCondition& result, const OFBool checkValue, DcmElement& elem)
 {
     if (!checkValue)
     {

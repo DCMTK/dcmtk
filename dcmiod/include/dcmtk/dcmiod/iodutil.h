@@ -1002,7 +1002,17 @@ public:
      */
     static void alignFrameOnByteBoundary(Uint8* buf, const size_t bufLen, const Uint8 numBits);
 
-    static void reset_value_check_result(OFCondition& result, const OFBool checkValue, DcmElement& elem);
+    /** If checkValue is disabled, the result is reset to EC_Normal and a warning is printed
+     *  to the debug logger.
+     *  @param  result The result to check and reset if applicable. Only error codes
+     *          EC_ValueRepresentationViolated, EC_MaximumLengthViolated, EC_InvalidCharacter
+     *          and EC_ValueMultiplicityViolated are handled; for different error codes,
+     *          the result is not changed and the warning is not printed.
+     *  @param  checkValue If OFTrue, the result is not changed. If OFFalse, the result
+     *          is reset to EC_Normal and a warning is printed to the debug logger.
+     *  @param  elem The element that is checked, used for logging if applicable
+     */
+    static void ignoreAndLogError(OFCondition& result, const OFBool checkValue, DcmElement& elem);
 
 private:
     // We only have static functions so we do not need an instance of
