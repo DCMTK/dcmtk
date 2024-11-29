@@ -1052,20 +1052,28 @@ property.o: property.cc ../include/dcmtk/oflog/config.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
  ../include/dcmtk/oflog/config/defines.h \
  ../include/dcmtk/oflog/helpers/threadcf.h \
- ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tchar.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../include/dcmtk/oflog/streams.h ../include/dcmtk/oflog/tchar.h \
  ../include/dcmtk/oflog/fstreams.h \
  ../include/dcmtk/oflog/helpers/strhelp.h \
  ../include/dcmtk/oflog/tstring.h \
- ../../ofstd/include/dcmtk/ofstd/ofstring.h \
- ../../ofstd/include/dcmtk/ofstd/oftypes.h \
  ../../ofstd/include/dcmtk/ofstd/ofvector.h \
  ../include/dcmtk/oflog/helpers/property.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofutil.h \
- ../../ofstd/include/dcmtk/ofstd/oftraits.h \
  ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
- ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/oflog/internal/internal.h ../include/dcmtk/oflog/ndc.h \
  ../include/dcmtk/oflog/mdc.h ../include/dcmtk/oflog/spi/logevent.h \
  ../../ofstd/include/dcmtk/ofstd/ofmem.h \
