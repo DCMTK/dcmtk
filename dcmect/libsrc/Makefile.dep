@@ -101,7 +101,7 @@ enhanced_ct.o: enhanced_ct.cc \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframefg.h \
- ../../dcmiod/include/dcmtk/dcmiod/modsynchronisation.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modsynchronization.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \

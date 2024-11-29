@@ -116,7 +116,7 @@ t_huge_concat.o: t_huge_concat.cc \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframefg.h \
- ../../dcmiod/include/dcmtk/dcmiod/modsynchronisation.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modsynchronization.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
@@ -250,7 +250,7 @@ t_overflow.o: t_overflow.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframefg.h \
- ../../dcmiod/include/dcmtk/dcmiod/modsynchronisation.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modsynchronization.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
@@ -405,7 +405,7 @@ t_roundtrip.o: t_roundtrip.cc \
  ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframefg.h \
- ../../dcmiod/include/dcmtk/dcmiod/modsynchronisation.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modsynchronization.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \

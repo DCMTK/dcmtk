@@ -325,7 +325,6 @@ dcdatutl.o: dcdatutl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
- ../include/dcmtk/dcmdata/dcdatset.h ../include/dcmtk/dcmdata/dcitem.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
@@ -336,13 +335,14 @@ dcdatutl.o: dcdatutl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
- ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcerror.h \
- ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dctagkey.h \
+ ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dctagkey.h \
  ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
- ../include/dcmtk/dcmdata/dcstack.h ../include/dcmtk/dcmdata/dclist.h \
- ../include/dcmtk/dcmdata/dcpcache.h ../include/dcmtk/dcmdata/dcdeftag.h \
- ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcfilefo.h \
- ../include/dcmtk/dcmdata/dcsequen.h ../include/dcmtk/dcmdata/dcelem.h
+ ../include/dcmtk/dcmdata/dcmetinf.h ../include/dcmtk/dcmdata/dcitem.h \
+ ../include/dcmtk/dcmdata/dcobject.h ../include/dcmtk/dcmdata/dcerror.h \
+ ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dcstack.h \
+ ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcpcache.h \
+ ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcsequen.h \
+ ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcdatset.h
 dcddirif.o: dcddirif.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcddirif.h ../include/dcmtk/dcmdata/dcdicdir.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \

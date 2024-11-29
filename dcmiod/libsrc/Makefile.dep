@@ -2184,7 +2184,7 @@ modsynchronization.o: modsynchronization.cc \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
- ../include/dcmtk/dcmiod/modsynchronisation.h \
+ ../include/dcmtk/dcmiod/modsynchronization.h \
  ../include/dcmtk/dcmiod/modbase.h
 modusfor.o: modusfor.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmiod/modusfor.h ../include/dcmtk/dcmiod/modbase.h \
