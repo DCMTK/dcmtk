@@ -24,25 +24,22 @@ previous version 3.6.8:
   references, transfer syntaxes, code definitions, supported context group
   classes, and directory record types for DICOM standard release 2024e.
 
-- The new JPEG XL and HTJ2K transfer syntaxes as well as the
-  encapsulated uncompressed transfer syntax are now supported for
-  reading/writing. No encoders or decoders are implemented, though.
+- The new JPEG XL and HTJ2K transfer syntaxes as well as the encapsulated
+  uncompressed transfer syntax are now supported for reading/writing.  No
+  encoders or decoders are implemented, though.
 
 - Added new command line tool dcm2img that unifies and replaces the tool
-  dcm2pnm, dcmj2pnm and dcml2pnm, and adds support for JPEG-LS as an
-  export format for image files. The command line options are
-  identical to the older tools, so that dcm2img can serve as a
-  drop-in replacement.
+  dcm2pnm, dcmj2pnm and dcml2pnm, and adds support for JPEG-LS as an export
+  format for image files. The command line options are identical to the older
+  tools, so that dcm2img can serve as a drop-in replacement.
 
-- Added new command line tool dcm2cda that extracts a CDA document from a
-  DICOM Encapsulated CDA Storage SOP Instance and stores it in a separate
-  file.
+- Added new command line tool dcm2cda that extracts a CDA document from a DICOM
+  Encapsulated CDA Storage SOP Instance and stores it in a separate file.
 
--  Added IPv6 support to DCMTK's association requestors.
-   All DCMTK "client" applications that only request outgoing DICOM
-   network associations cano now explicitly select the protocol version
-   to be used. IPv6 support is not yet implemented for association acceptors
-   ("server" applications) yet.
+-  Added IPv6 support to DCMTK's association requestors.  All DCMTK "client"
+   applications that only request outgoing DICOM network associations can now
+   explicitly select the protocol version to be used.  IPv6 support is not yet
+   implemented for association acceptors ("server" applications) yet.
 
 - Various TLS enhancements:
 
@@ -54,27 +51,30 @@ previous version 3.6.8:
     This option prints a list of the TLS Secure Transport Connection Profiles
     supported.
 
-  - Removed support for OpenSSL 1.0.2 and 1.1.0, added support for
-    OpenSSL 3.1.0 to 3.4.0.
+  - Removed support for OpenSSL 1.0.2 and 1.1.0, added support for OpenSSL
+    3.1.0 to 3.4.0.
 
-- DCMTK now requires compilers to provide conformance to C++ 98
-  and supports compilation with newer C++ versions up to C++ 20,
-  which can be enabled via CMake's CMAKE_CXX_STANDARD variable.
-  By default, C++ 11 is now enabled on compilers that support this.
+- DCMTK now requires compilers to provide conformance to C++ 98 and supports
+  compilation with newer C++ versions up to C++ 20, which can be enabled via
+  CMake's CMAKE_CXX_STANDARD variable.  By default, C++ 11 is now enabled on
+  compilers that support this.
 
-- The CMake based configure process now respects CMake's
+- The CMake-based configure process now respects CMake's
   CMAKE_CROSSCOMPILING_EMULATOR variable.
 
-- New, fully standards compliant implementations of
-  OFStandard::atof() and  OFStandard::ftoa(), DCMTK's locale independent
-  conversion routines between floating point numbers and text.
+- New, fully standards compliant implementations of OFStandard::atof() and
+  OFStandard::ftoa(), DCMTK's locale independent conversion routines between
+  floating point numbers and text.
 
-- Removed support for ICU-based charset conversion. Since the oficonv
-  module in DCMTK supports all DICOM Specific Character Sets,
-  the ICU support, which was never complete, has been removed.
+- Removed support for ICU-based charset conversion. Since the oficonv module in
+  DCMTK supports all DICOM Specific Character Sets, the ICU support, which was
+  never complete, has been removed.
 
-- Many configure tests related to outdated compilers or libraries were
-  removed, thus significantly speeding up the configuration process.
+- Many configure tests related to outdated compilers or libraries were removed,
+  thus significantly speeding up the configuration process.
+
+- Fixed various issues that occurred after the official 3.6.8 release.
+  See CHANGES file for details.
 
 Many people have contributed to this new release of DCMTK, appearing here in
 alphabetical order.  Thank you very much for your support!
@@ -101,6 +101,11 @@ alphabetical order.  Thank you very much for your support!
   Sam James <sam@gentoo.org>
   Sobhita Mercy <sobhitamercy@gmail.com>
   Yoshinaga Kosuke <kosuke.yoshinaga@goodmankk.com>
+
+  DCMTK forum users "andreasb", "Fabian Guenther", "nbeck", "Oleh", "saltcreek"
+
+  GitHub users "akaraivanov", "bananabr", "khangthk", "luissantosHCIT",
+    "malaterre", "mrbean-bremen", "percontation", "thewtex"
 
 Members of the DCMTK Team who have worked on this release are:
 
