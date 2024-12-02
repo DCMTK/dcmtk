@@ -934,12 +934,18 @@ static OFCondition
 constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
        unsigned long *rtnLen)
 {
-    unsigned long compatMode = dcmEnableBackwardCompatibility.get();
     max->type = DUL_TYPEMAXLENGTH;
     max->rsv1 = 0;
     max->length = 4;
+
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
+    unsigned long compatMode = dcmEnableBackwardCompatibility.get();
     if (compatMode & 0x8000) max->maxLength = DUL_DULCOMPAT | DUL_DIMSECOMPAT | compatMode;
     else max->maxLength = maxPDU;
+#else
+    max->maxLength = maxPDU;
+#endif
+
     *rtnLen = 8;
 
     return EC_Normal;

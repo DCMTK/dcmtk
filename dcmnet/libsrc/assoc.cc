@@ -1949,12 +1949,14 @@ ASC_requestAssociation(T_ASC_Network * network,
         */
         params->theirMaxPDUReceiveSize = params->DULparams.peerMaxPDU;
 
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
         if (!((params->theirMaxPDUReceiveSize & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
         {
           /* activate compatibility with DCMTK releases prior to 3.0 */
           DUL_activateCompatibilityMode((*assoc)->DULassociation, dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT);
           if (params->modeCallback) params->modeCallback->callback(params->theirMaxPDUReceiveSize);
         }
+#endif
 
         /* create a sendPDVBuffer */
         sendLen = params->theirMaxPDUReceiveSize;
@@ -2017,10 +2019,13 @@ ASC_acknowledgeAssociation(
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
     assoc->params->DULparams.maxPDU = assoc->params->ourMaxPDUReceiveSize;
+
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
     if (!((assoc->params->theirMaxPDUReceiveSize & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
     {
       assoc->params->DULparams.maxPDU = dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT;
     }
+#endif
 
     OFStandard::strlcpy(assoc->params->DULparams.calledImplementationClassUID,
         assoc->params->ourImplementationClassUID, sizeof(assoc->params->DULparams.calledImplementationClassUID));

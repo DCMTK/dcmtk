@@ -1607,6 +1607,7 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
     if (cond.bad())
         return cond;
 
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
     if (pduLength == 4)
     {
       unsigned long mode = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
@@ -1615,6 +1616,7 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->modeCallback->callback(mode);
       }
     }
+#endif
 
     (*association)->protocolState = nextState;
     return DUL_PEERREQUESTEDRELEASE;
@@ -2020,6 +2022,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
                        &pduType, &pduReserve, &pduLength);
     if (cond.bad()) return cond;
 
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
     if (pduLength == 4)
     {
       unsigned long mode = pduReserve << 24 | buffer[0] << 16 | buffer[1] << 8 | buffer[3];
@@ -2028,6 +2031,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->modeCallback->callback(mode);
       }
     }
+#endif
 
     closeTransport(association);
     (*association)->protocolState = nextState;
