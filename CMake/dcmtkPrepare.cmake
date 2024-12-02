@@ -29,9 +29,9 @@ endif()
 
 # Expose CMAKE_DEBUG_POSTFIX to the user and extend it for DLLs and executables.
 #
-# If the user wants to use a different postfix for debug build artifacts, he can set
-# this variable (e.g. to "_d"). This will append _d to all libraries built with
-# the exception of Windows DLLS. If the latter should also have the debug postfix,
+# If the user wants to use a different postfix for debug build artifacts, he can
+# set this variable (e.g. to "_d").  This will append _d to all libraries built
+# with the exception of Windows DLLS.  If the latter should also have the debug
 # the USE_DEBUG_POSTFIX_FOR_DLLS option must be enabled.
 # To append the debug postfix to executables (except test programs), the
 # USE_DEBUG_POSTFIX_FOR_EXEC option can be used.
@@ -44,6 +44,7 @@ option(USE_DEBUG_POSTFIX_FOR_EXEC "Use CMAKE_DEBUG_POSTFIX also for executables.
 if((USE_DEBUG_POSTFIX_FOR_DLLS OR USE_DEBUG_POSTFIX_FOR_EXEC) AND NOT CMAKE_DEBUG_POSTFIX)
   message(FATAL_ERROR "USE_DEBUG_POSTFIX_FOR_DLLS or USE_DEBUG_POSTFIX_FOR_EXEC is enabled, but CMAKE_DEBUG_POSTFIX does not have a value.")
 endif()
+
 # Basic version information
 set(DCMTK_MAJOR_VERSION 3)
 set(DCMTK_MINOR_VERSION 6)
@@ -67,8 +68,8 @@ option(DCMTK_LINK_STATIC "Statically link all libraries and tools with the runti
 # Modify linker flags and libraries for static builds if enabled by the user
 if(DCMTK_LINK_STATIC)
     if (NOT APPLE)
-        # MacOS does not support static libraries. DCMTK_LINK_STATIC is still useful on MacOS though,
-        # since it will create binaries that only depend on MacOS's libc.
+        # MacOS does not support static libraries. DCMTK_LINK_STATIC is still useful on
+        # macOS though, since it will create binaries that only depend on macOS's libc.
         set(CMAKE_EXE_LINKER_FLAGS "-static")
     endif()
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
