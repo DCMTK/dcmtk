@@ -1,7 +1,8 @@
-.TH "dsr2html" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2html" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dsr2html \- Render DICOM SR file and data set to HTML/XHTML
+dsr2html \- Render DICOM SR file and data set to HTML/XHTML 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -184,6 +185,10 @@ general rendering:
   +Rt  --section-title-inline
          render section titles inline, not separately
 
+  +Rh  --hyperlink-url-prefix  [p]refix: string
+         use URL prefix p for hyperlinks to composite objects
+         (default: http://localhost/dicom\&.cgi)
+
 document rendering:
 
   +Dt  --document-type-title
@@ -245,6 +250,7 @@ SimplifiedAdultEchoSRStorage                 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1
 PatientRadiationDoseSRStorage                1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.73
 PlannedImagingAgentAdministrationSRStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.74
 PerformedImagingAgentAdministrationSRStorage 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.75
+WaveformAnnotationSRStorage                  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.77
 .fi
 .PP
 .SS "Character Encoding"
@@ -305,4 +311,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

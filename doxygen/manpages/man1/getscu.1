@@ -1,7 +1,8 @@
-.TH "getscu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "getscu" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-getscu \- DICOM retrieve (C-GET) SCU
+getscu \- DICOM retrieve (C-GET) SCU 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -77,6 +78,17 @@ query information model:
   -O    --psonly
           use patient/study only information model
 
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -139,10 +151,10 @@ preferred storage transfer syntaxes (incoming associations):
           prefer MPEG4 AVC/H\&.264 Stereo HP / Level 4\&.2 TS
 
   +x4   --prefer-hevc
-          prefer HEVC H\&.265 Main Profile / Level 5\&.1 TS
+          prefer HEVC/H\&.265 Main Profile / Level 5\&.1 TS
 
   +x5   --prefer-hevc10
-          prefer HEVC H\&.265 Main 10 Profile / Level 5\&.1 TS
+          prefer HEVC/H\&.265 Main 10 Profile / Level 5\&.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -191,6 +203,128 @@ other network options:
 
         --abort
           abort association instead of releasing it
+.fi
+.PP
+.SS "transport layer security (TLS) options"
+.PP
+.nf
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+  +tla  --anonymous-tls
+          use secure TLS connection without certificate
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [f]ilename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [d]irectory: string
+          add certificates in d to list of certificates
+
+  +crl  --add-crl-file  [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +crv  --enable-crl-vfy
+          enable leaf CRL verification
+
+  +cra  --enable-crl-all
+          enable full chain CRL verification
+
+security profile:
+
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile (retired)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (retired)
+
+  +pz   --profile-bcp195-ex
+          Extended BCP 195 TLS Profile (retired)
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
+ciphersuite:
+
+  +cc   --list-ciphers
+          list supported TLS ciphersuites and exit
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --request-sni  [s]erver name: string
+          request server name s
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
 .fi
 .PP
 .SS "output options"
@@ -473,4 +607,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBfindscu\fP(1), \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

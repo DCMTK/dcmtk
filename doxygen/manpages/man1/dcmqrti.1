@@ -1,7 +1,8 @@
-.TH "dcmqrti" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrti" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmqrti \- The Terminal Initiator Telnet Client Program
+dcmqrti \- The Terminal Initiator Telnet Client Program 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -246,7 +247,7 @@ The 'send' command exists in three forms:
 .PP
 The 'study' keyword means send all images in the current study\&. When invoked with an argument index, the specified study in the current database will be stored\&. The 'series' keyword means send all images in the current series\&. When invoked with an argument index, the specified series in the current study will be stored\&. The 'image' keyword means send the current image\&. When invoked with an argument index, the specified image in the current series will be stored\&.
 .PP
-When an image is stored, a message will be printed of the form:
+When an image is stored, a message will be printed of the form: 
 .PP
 .nf
 ------------------------------------------------------------
@@ -314,9 +315,9 @@ The \fBdcmqrti\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information
+\fI<docdir>/dcmqrcnf\&.txt\fP - configuration information 
 .br
-\fI<docdir>/dcmqrset\&.txt\fP - setup information
+\fI<docdir>/dcmqrset\&.txt\fP - setup information 
 .br
 \fI<etcdir>/dcmqrscp\&.cfg\fP - example configuration file
 .SH "SEE ALSO"
@@ -324,4 +325,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmqrscp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1993-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

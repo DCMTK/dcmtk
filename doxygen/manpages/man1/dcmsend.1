@@ -1,7 +1,8 @@
-.TH "dcmsend" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsend" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmsend \- Simple DICOM storage SCU (sender)
+dcmsend \- Simple DICOM storage SCU (sender) 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -131,6 +132,17 @@ other processing options:
 .SS "network options"
 .PP
 .nf
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -221,7 +233,7 @@ dcmsend -v +sd +r +rd <peer> <port> IMAGES_1 IMAGES_2 test\&.img DICOMDIR *\&.dc
 .PP
 The default option \fI--read-file-only\fP makes sure that only DICOM files (i\&.e\&. the ones with meta-header and magic word 'DICM' after the preamble) are processed\&. Usually, if processing a whole bunch of files, it is also a good idea not to halt on the first invalid input file or if an unsuccessful store was encountered\&. This can be accomplished by using option \fI--no-halt\fP\&. Please note, however, that 'unsuccessful store' does not mean that the DIMSE status of the C-STORE response indicates an error\&. It means that the C-STORE request could not be sent to the storage SCP\&.
 .PP
-If more than 128 presentation contexts are needed, which is the maximum number allowed according to the DICOM standard, a new association is started after the previous one has been completed\&. In cases where this behavior is unwanted, it can be disabled using option \fI--single-association\fP\&. In addition, whether only lossless compressed data sets are decompressed (if needed), which is the default, or also lossy compressed data sets can be specified using the \fI--decompress-xxx\fP options\&.
+If more than 128 Presentation Contexts are needed, which is the maximum number allowed according to the DICOM standard, a new association is started after the previous one has been completed\&. In cases where this behavior is unwanted, it can be disabled using option \fI--single-association\fP\&. In addition, whether only lossless compressed data sets are decompressed (if needed), which is the default, or also lossy compressed data sets can be specified using the \fI--decompress-xxx\fP options\&.
 .PP
 In order to get both an overview and detailed information on the transfer of the DICOM SOP instances, option \fI--create-report-file\fP can be used to create a corresponding text file\&. However, this file is only created as a final step if the application did not terminate before (with an error)\&.
 .SS "Scanning Directories"
@@ -231,16 +243,16 @@ Thus, the third of the above examples will recurse over directories IMAGES_1 and
 .SS "DICOM Conformance"
 Basically, the \fBdcmsend\fP application supports all Storage SOP Classes as an SCU, including private ones\&. By default, the application checks the SOP Class UID of the DICOM file in order to make sure that only valid SOP instances are sent\&. With option \fI--no-uid-checks\fP this check can be disabled\&.
 .PP
-The \fBdcmsend\fP application also supports all Transfer Syntaxes that are defined in the DICOM standard\&. Private transfer syntaxes can only be used if the UID check is disabled with option \fI--no-uid-checks\fP\&. Please note, however, that only a limited number of transfer syntaxes are supported for converting them to the default transfer syntax (Implicit VR Little Endian)\&. With option \fI--list-decoders\fP the transfer syntaxes supported natively or by decoders are listed\&. The output typically looks like the following:
+The \fBdcmsend\fP application also supports all Transfer Syntaxes that are defined in the DICOM standard\&. Private Transfer Syntaxes can only be used if the UID check is disabled with option \fI--no-uid-checks\fP\&. Please note, however, that only a limited number of Transfer Syntaxes are supported for converting them to the DICOM Default Transfer Syntax (Implicit VR Little Endian)\&. With option \fI--list-decoders\fP the Transfer Syntaxes supported natively or by decoders are listed\&. The output typically looks like the following:
 .PP
 .PP
 .nf
-Transfer syntaxes supported natively:
+Transfer Syntaxes supported natively:
 - Little Endian Implicit
 - Little Endian Explicit
 - Big Endian Explicit
 
-Transfer syntaxes supported by decoders:
+Transfer Syntaxes supported by decoders:
 - Deflated Explicit VR Little Endian
 - JPEG Baseline
 - JPEG Extended, Process 2+4
@@ -254,9 +266,9 @@ Transfer syntaxes supported by decoders:
 .fi
 .PP
 .PP
-Since \fBdcmsend\fP tries to be as simple as possible for the user, by default presentation contexts might be proposed to the SCP that are strictly speaking 'illegal'\&. This is because, according to the DICOM standard, the SCU always has to propose the default transfer syntax in at least one presentation context associated with each abstract syntax (i\&.e\&. SOP class)\&. This requirement is waived if the SCU only has access to the SOP instance in lossy compressed form or if the decompressed pixel data would be too large to be encoded\&. With option \fI--no-illegal-proposal\fP the strict DICOM-conformant behavior can be enforced, i\&.e\&. no possibly illegal presentation context will be proposed but the corresponding SOP instance will be rejected (if needed)\&. Please note, however, that the size of the decompressed pixel data is not checked\&.
+Since \fBdcmsend\fP tries to be as simple as possible for the user, by default Presentation Contexts might be proposed to the SCP that are strictly speaking 'illegal'\&. This is because, according to the DICOM standard, the SCU always has to propose the DICOM Default Transfer Syntax in at least one Presentation Context associated with each abstract syntax (i\&.e\&. SOP class)\&. This requirement is waived if the SCU only has access to the SOP instance in lossy compressed form or if the decompressed pixel data would be too large to be encoded\&. With option \fI--no-illegal-proposal\fP the strict DICOM-conformant behavior can be enforced, i\&.e\&. no possibly illegal Presentation Context will be proposed but the corresponding SOP instance will be rejected (if needed)\&. Please note, however, that the size of the decompressed pixel data is not checked\&.
 .PP
-The default transfer syntax for 'Lossless JPEG Compression', 'Lossy JPEG
+The default Transfer Syntax for 'Lossless JPEG Compression', 'Lossy JPEG
 Compression' and so on are not always proposed as also required by the DICOM standard\&. The same limitation applies to other compression schemes\&. See DICOM PS 3\&.5 section 10 for details\&.
 .SH "LOGGING"
 .PP
@@ -317,4 +329,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmrecv\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2011-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2011-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

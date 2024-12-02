@@ -1,7 +1,8 @@
-.TH "echoscu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-echoscu \- DICOM verification (C-ECHO) SCU
+echoscu \- DICOM verification (C-ECHO) SCU 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -56,6 +57,17 @@ port  tcp/ip port number of peer
 .SS "network options"
 .PP
 .nf
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -66,7 +78,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1\&.\&.45)
+  -pts  --propose-ts  [n]umber: integer (1\&.\&.52)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1\&.\&.128)
@@ -149,6 +161,9 @@ certification authority:
 
 security profile:
 
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
@@ -182,7 +197,7 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -296,6 +311,9 @@ FragmentableMPEG4BDcompatibleHighProfileLevel4_1Tr\&. 1\&.2\&.840\&.10008\&.1\&.
 FragmentableMPEG4HighProfileLevel4_2_For2DVideoTr\&.S 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.104\&.1
 FragmentableMPEG4HighProfileLevel4_2_For3DVideoTr\&.S 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.105\&.1
 FragmentableMPEG4StereoHighProfileLevel4_2TransferS 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.106\&.1
+HighThroughputJPEG2000ImageCompressionLossless\&.Tr\&.S 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.201
+HighThroughputJPEG2000RPCLImageCompressionLoss\&.Tr\&.S 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.202
+HighThroughputJPEG2000ImageCompressionTransferSynt\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.203
 .fi
 .PP
 .SH "LOGGING"
@@ -349,4 +367,4 @@ The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

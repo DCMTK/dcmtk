@@ -1,7 +1,8 @@
-.TH "findscu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-findscu \- DICOM query (C-FIND) SCU
+findscu \- DICOM query (C-FIND) SCU 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -76,6 +77,17 @@ query information model:
 
   -O    --psonly
           use patient/study only information model
+
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
 
 application entity titles:
 
@@ -199,6 +211,9 @@ certification authority:
 
 security profile:
 
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
@@ -232,7 +247,7 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -411,4 +426,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

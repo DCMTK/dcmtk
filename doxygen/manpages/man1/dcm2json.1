@@ -1,7 +1,8 @@
-.TH "dcm2json" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2json" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2json \- Convert DICOM file and data set to JSON
+dcm2json \- Convert DICOM file and data set to JSON 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -297,7 +298,7 @@ Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB
 .SS "Numbers as Strings"
 The DICOM standard allows certain numeric DICOM value representations, DS, IS, SV and UV, to be converted either to a JSON number or a JSON string\&. \fBdcm2json\fP converts DS and IS values to JSON numbers if they are valid decimal strings or integer strings, and to strings if they contain any illegal character\&. \fBdcm2json\fP converts SV and UV values to numbers if they are not larger than 9007199254740991ll or smaller than -9007199254740991ll, and to strings otherwise\&. While the JSON specification permits larger numbers, these are the largest integers that JavaScript can handle\&. Therefore, many JSON parsers cannot process larger numbers\&.
 .SS "Character Encoding"
-As required by the DICOM JSON encoding, \fBdcm2json\fP always creates output in Unicode UTF-8 encoding and converts DICOM datasets accordingly\&. If this is not possible, for example because DCMTK has been compiled without either iconv or ICU library, an error is returned\&.
+As required by the DICOM JSON encoding, \fBdcm2json\fP always creates output in Unicode UTF-8 encoding and converts DICOM datasets accordingly\&. If this is not possible, for example because DCMTK has been compiled without character set conversion support, an error is returned\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -351,4 +352,4 @@ The \fBdcm2json\fP utility will attempt to load character set mapping tables\&. 
 The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2016-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2016-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

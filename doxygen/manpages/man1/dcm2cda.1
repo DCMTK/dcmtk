@@ -1,26 +1,26 @@
-.TH "dcm2pdf" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2cda" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2pdf \- Extract PDF file from DICOM encapsulated PDF 
+dcm2cda \- Extract CDA file from DICOM encapsulated CDA 
 .PP
 
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-dcm2pdf [options] dcmfile-in pdffile-out
+dcm2cda [options] dcmfile-in cdafile-out
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcm2pdf\fP utility reads a DICOM file of the Encapsulated PDF Storage SOP Class (\fIdcmfile-in\fP), extracts the embedded PDF document and writes it to an output file (\fIpdffile-out\fP)\&. Optionally a command can be executed after the creation of the PDF file\&.
+The \fBdcm2cda\fP utility reads a DICOM file of the Encapsulated CDA Storage SOP Class (\fIdcmfile-in\fP), extracts the embedded CDA document and writes it to an output file (\fIcdafile-out\fP)\&. Optionally a command can be executed after the creation of the CDA file\&.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 dcmfile-in   DICOM input filename ('-' for stdin)
 
-pdffile-out  PDF output filename
+cdafile-out  CDA output filename
 .fi
 .PP
 .SH "OPTIONS"
@@ -126,18 +126,6 @@ bitstream format of deflated input:
          expect deflated zlib bitstream
 .fi
 .PP
-.SS "processing options"
-execution options: 
-.PP
-.nf
-  -x   --exec  [c]ommand: string
-         execute command c after PDF extraction
-
-.fi
-.PP
-.SH "NOTES"
-.PP
-Option \fI--exec\fP allows for the execution of a certain command line after the creation of the PDF document\&. The command line to be executed is passed to this option as a parameter\&. The specified command line may contain the placeholder '#f', which will be replaced by the PDF filename at run time\&. The specified command line is executed in the foreground, i\&.e\&. \fBpdf2dcm\fP will be blocked until the command terminates\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -145,7 +133,7 @@ The level of logging output of the various command line tools and underlying lib
 In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
 .SH "EXIT CODES"
 .PP
-The \fBdcm2pdf\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+The \fBdcm2cda\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
 .SS "general"
 .PP
 .nf
@@ -167,13 +155,6 @@ EXITCODE_INVALID_INPUT_FILE              22
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
 .fi
 .PP
-.SS "processing errors"
-.PP
-.nf
-EXITCODE_CANNOT_CONVERT_TO_UNICODE       80
-EXITCODE_CANNOT_WRITE_VALID_JSON         81
-.fi
-.PP
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
@@ -183,12 +164,12 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdcm2pdf\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
+The \fBdcm2cda\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
-\fBpdf2dcm\fP(1)
+\fBcda2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2023-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

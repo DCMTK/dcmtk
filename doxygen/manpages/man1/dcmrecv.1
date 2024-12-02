@@ -1,7 +1,8 @@
-.TH "dcmrecv" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmrecv" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmrecv \- Simple DICOM storage SCP (receiver)
+dcmrecv \- Simple DICOM storage SCP (receiver) 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -134,6 +135,9 @@ certification authority:
 
 security profile:
 
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
@@ -167,7 +171,7 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -398,7 +402,7 @@ The \fBdcmrecv\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/asconfig\&.txt\fP - configuration file documentation
+\fI<docdir>/asconfig\&.txt\fP - configuration file documentation 
 .br
 \fI<etcdir>/storescp\&.cfg\fP - example association negotiation profile
 .SH "SEE ALSO"
@@ -406,4 +410,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmsend\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2013-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2013-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

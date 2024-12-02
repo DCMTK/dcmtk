@@ -1,7 +1,8 @@
-.TH "img2dcm" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-img2dcm \- Convert standard image formats into DICOM format
+img2dcm \- Convert standard image formats into DICOM format 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -207,7 +208,7 @@ For converting a general image format into DICOM format, the \fBimg2dcm\fP appli
 .IP "\(bu" 2
 Using the \fI--dataset-from\fP option \fBimg2dcm\fP is forced to import attributes from an existing DICOM file\&. The given DICOM file is fully imported and serves as the basis for all further export operations\&. As an exception, the SOP Instance UID is not copied by this option\&. Also image related data like Rows, Columns etc\&. is exchanged during conversion\&. Note that \fBimg2dcm\fP does not check any other attribute values for validity, e\&.g\&. it does not look into sequences to adapt any attributes to the new object (referenced images etc\&.)\&. Therefore, it is recommended to use the templates in the data directory for (old) SC and VLP objects\&. See also section 'Input Templates'\&. As an alternative to option \fI--dataset-from\fP the mutually exclusive option \fI--dataset-from-xml\fP can be used\&. In this case, however, the file must contain XML data in the format as produced by \fBdcm2xml\fP\&.
 .IP "\(bu" 2
-The \fI--study-from\fP and \fI--series-from\fP options can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. Using \fI--study-from\fP and \fI--series-from\fP at the same time does make sense\&. If both options are provided on the command line, the rightmost option wins\&. The following attributes are taken over:
+The \fI--study-from\fP and \fI--series-from\fP options can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. Using \fI--study-from\fP and \fI--series-from\fP at the same time does make sense\&. If both options are provided on the command line, the rightmost option wins\&. The following attributes are taken over: 
 .PP
 .nf
       Patient Level:
@@ -253,12 +254,14 @@ For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defi
 For Ophthalmic Photography images, XML templates are provided (see sample file \fIOP_template_utf_8\&.xml\fP and \fIOP_template_latin_1\&.xml\fP)\&.
 .PP
 It is possible to use any DICOM file as a template\&. Please note that the complete DICOM dataset is imported; hence, it should be assured that only attributes are present which should be part of the constructed DICOM object\&. The SOP Class UID and the Pixel Data attributes (including attributes like Rows, Columns etc\&.) are not copied but replaced by \fBimg2dcm\fP during conversion\&.
+.SS "Multiframe Images"
+It is possible to convert multiple input files into one DICOM multiframe image if the selected DICOM SOP class supports multiframe\&. In particular, the Multi-frame Secondary Capture SOP Classes support this feature\&. They are selected through the \fI--new-sc\fP command line option\&.
 .SS "Character Sets"
 When an input template is loaded using \fI--dataset-from\fP or \fI--dataset-from-xml\fP, the specific character set of that template is used for the generated DICOM file\&. If the \fI--study-from\fP or \fI--series-from\fP options are used additionally, \fBimg2dcm\fP will try to convert the character set of these attributes to that of the template, and will report an error if that is not possible\&.
 .PP
 If the \fI--study-from\fP or \fI--series-from\fP options are used without a template, the specific character set of this source is used for the generated DICOM file\&. Any keys specified on the command line with the \fI--key\fP option are treated as raw bytes and override any attributes that may already be present due to a template or study/series file\&. Therefore, care should be taken to not specify a specific character set on the command line if one might be loaded from another file\&. It is also the user's responsibility to ensure that attribute values specified on the command line use the correct encoding, as no conversion will take place before the values are stored in the DICOM file\&.
 .SS "Input Plugins"
-The \fBimg2dcm\fP application currently supports the JPEG and the BMP image format as input\&.
+The \fBimg2dcm\fP application currently supports the JPEG, JPEG-LS and the BMP image format as input\&.
 .SS "JPEG Input Plugin"
 For JPEG, the original JPEG from the source file is not decoded but extracted and slightly transformed (e\&.g\&. JFIF header is cut off) to allow fast conversion of even big JPEG files without the need of decoding and re-encoding\&. The JPEG plugin chooses the necessary output transfer syntax automatically depending on the actual encoding of the data inside the JPEG file\&. Therefore, the following Transfer Syntaxes (and their corresponding JPEG encodings) are used by the JPEG plugin:
 .PP
@@ -316,7 +319,7 @@ By default, all APPn markers are cut off from the original JPEG-LS stream\&. How
 .SS "BMP Input Plugin"
 \fBimg2dcm\fP supports BMP as input format\&. However, so far only the most common BMP images are supported\&. In particular, BMP images which use bit fields or run length encoding will be rejected\&. Such images are uncommon\&. Input images will either be converted into a DICOM image with RGB color model and a bit depth of 24, or into an image with MONOCHROME2 color model an 8 bits per pixel\&. There are no specific options for fine-tuning BMP format conversion\&.
 .SS "Output Plugins"
-The desired output SOP Class can be selected on the command line\&. Currently, export plugins for the Secondary Capture Image SOP Class (default, option \fI-sc\fP), the Multiframe Secondary Capture Image SOP Classes (option \fI-nsc\fP), Visible Light Photographic Image SOP Class (option \fI-vl\fP), and the Ophthalmic Photography Image SOP Classes (option \fI-oph\fP) are available\&. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported\&. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes\&.
+The desired output SOP Class can be selected on the command line\&. Currently, export plugins for the Secondary Capture Image SOP Class (default, option \fI-sc\fP), the Multi-frame Secondary Capture Image SOP Classes (option \fI-nsc\fP), Visible Light Photographic Image SOP Class (option \fI-vl\fP), and the Ophthalmic Photography Image SOP Classes (option \fI-oph\fP) are available\&. Please note that the first one is deprecated according to the DICOM standard but is selected as a default because it is widely supported\&. Future versions of \fBimg2dcm\fP might provide further output plugins for other SOP Classes\&.
 .PP
 For the new Secondary Capture SOP Classes, it is not possible to specify which specific SOP Class should be used for output\&. That is because these new SOP classes are differentiated from each other by color depth (1/8/16) and the fact whether the image is black/white or color\&. That is why \fBimg2dcm\fP decides during conversion, which output SOP Class is suitable for a given source image\&.
 .SH "EXAMPLES"
@@ -338,7 +341,7 @@ img2dcm image\&.jpg out\&.dcm -vlp -k 'PatientName=Bond^James'
 .IP "4." 4
 img2dcm image\&.jpg out\&.dcm --series-from template\&.dcm -k 'PatientName=Bond^James'
 .br
- Same as 1), but imports patient/study/series information from DICOM file 'template\&.dcm'\&. Please note that attribute PatientName will contain 'Bond^James' at the end, any value from 'template\&.dcm' will be overwritten\&. That is, because the -k option is applied at the very end of the conversion pipeline (see above)\&.
+ Same as 1), but imports patient/study/series information from DICOM file 'template\&.dcm'\&. Please note that attribute PatientName will contain 'Bond^James' at the end, any value from 'template\&.dcm' will be overwritten\&. That is, because the \fI-k\fP option is applied at the very end of the conversion pipeline (see above)\&.
 .IP "5." 4
 img2dcm image\&.jpg out\&.dcm --no-checks
 .br
@@ -351,6 +354,10 @@ img2dcm image\&.jpg out\&.dcm --no-type1-invent
 img2dcm image\&.jpg out\&.dcm --keep-appn --insist-on-jfif
 .br
  Same as 1), but takes over APPn information like EXIF into the DICOM object's resulting JPEG stream\&. Further, \fI--insist-on-jfif\fP will force \fBimg2dcm\fP to abort if no JFIF information is existent in the source file\&.
+.IP "8." 4
+img2dcm image1\&.jpg image2\&.jpg out\&.dcm --new-sc
+.br
+ Read the JPEG files 'image1\&.jpg' and 'image2\&.jpg', convert to a multiframe image of the appropriate Multi-frame Secondary Capture SOP Class, and save the result to DICOM file 'out\&.dcm'\&.
 .PP
 .SH "LOGGING"
 .PP
@@ -371,9 +378,9 @@ The \fBimg2dcm\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/SC\&.dump\fP - Sample dump file for Secondary Capture images
+\fI<datadir>/SC\&.dump\fP - Sample dump file for Secondary Capture images 
 .br
-\fI<datadir>/VLP\&.dump\fP - Sample dump file for Visible Light Photographic images
+\fI<datadir>/VLP\&.dump\fP - Sample dump file for Visible Light Photographic images 
 .br
 \fI<datadir>/OP_template\&.xml\fP - Sample XML template for Ophthalmic Photography images
 .SH "SEE ALSO"
@@ -381,4 +388,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1), \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

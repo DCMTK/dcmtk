@@ -1,7 +1,8 @@
-.TH "dcm2xml" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2xml \- Convert DICOM file and data set to XML
+dcm2xml \- Convert DICOM file and data set to XML 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -273,7 +274,7 @@ fields (of various VRs)\&.
 The XML character encoding is determined automatically from the DICOM attribute
 (0008,0005) 'Specific Character Set' using the following mapping:
 
-@verbatim
+@verbatim 
 ASCII         (ISO_IR 6)    =>  'UTF-8'
 UTF-8         'ISO_IR 192'  =>  'UTF-8'
 ISO Latin 1   'ISO_IR 100'  =>  'ISO-8859-1'
@@ -373,4 +374,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBxml2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

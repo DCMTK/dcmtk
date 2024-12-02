@@ -1,7 +1,8 @@
-.TH "movescu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "movescu" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-movescu \- DICOM retrieve (C-MOVE) SCU
+movescu \- DICOM retrieve (C-MOVE) SCU 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -139,10 +140,10 @@ preferred network transfer syntaxes (incoming associations):
           prefer MPEG4 AVC/H\&.264 Stereo HP / Level 4\&.2 TS
 
   +x4   --prefer-hevc
-          prefer HEVC H\&.265 Main Profile / Level 5\&.1 TS
+          prefer HEVC/H\&.265 Main Profile / Level 5\&.1 TS
 
   +x5   --prefer-hevc10
-          prefer HEVC H\&.265 Main 10 Profile / Level 5\&.1 TS
+          prefer HEVC/H\&.265 Main Profile / Level 5\&.1 TS
 
   +xr   --prefer-rle
           prefer RLE lossless TS
@@ -479,6 +480,8 @@ DeformableSpatialRegistrationStorage                 1\&.2\&.840\&.10008\&.5\&.1
 SegmentationStorage                                  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.4
 SurfaceSegmentationStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.5
 TractographyResultsStorage                           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.6
+LabelMapSegmentationStorage                          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.7
+HeightMapSegmentationStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.66\&.8
 RealWorldValueMappingStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.67
 SurfaceScanMeshStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.68\&.1
 SurfaceScanPointCloudStorage                         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.68\&.2
@@ -500,6 +503,8 @@ OphthalmicOpticalCoherenceTomogr\&.EnFaceImageStorage  1\&.2\&.840\&.10008\&.5\&
 OphthalmicOpticalCoh\&.Tomogr\&.BscanVolumeAnalysisStor\&. 1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.5\&.8
 VLWholeSlideMicroscopyImageStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.6
 DermoscopicPhotographyImageStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.7
+ConfocalMicroscopyImageStorage                       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.8
+ConfocalMicroscopyTiledPyramidalImageStorage         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.1\&.9
 RETIRED_VLMultiframeImageStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.77\&.2
 LensometryMeasurementsStorage                        1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.78\&.1
 AutorefractionMeasurementsStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.78\&.2
@@ -536,6 +541,7 @@ PatientRadiationDoseSRStorage                        1\&.2\&.840\&.10008\&.5\&.1
 PlannedImagingAgentAdministrationSRStorage           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.74
 PerformedImagingAgentAdministrationSRStorage         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.75
 EnhancedXRayRadiationDoseSRStorage                   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.76
+WaveformAnnotationSRStorage                          1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.88\&.77
 ContentAssessmentResultsStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.90\&.1
 MicroscopyBulkSimpleAnnotationsStorage               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.91\&.1
 EncapsulatedPDFStorage                               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.104\&.1
@@ -584,6 +590,8 @@ DICOS_3DAITStorage                                   1\&.2\&.840\&.10008\&.5\&.1
 DICOS_QuadrupoleResonanceStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.501\&.6
 DICONDE_EddyCurrentImageStorage                      1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.601\&.1
 DICONDE_EddyCurrentMultiframeImageStorage            1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.601\&.2
+DICONDE_ThermographyImageStorage                     1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.601\&.3
+DICONDE_ThermographyMultiFrameImageStorage           1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.1\&.601\&.4
 DRAFT_RTBeamsDeliveryInstructionStorage              1\&.2\&.840\&.10008\&.5\&.1\&.4\&.34\&.1
 RTBeamsDeliveryInstructionStorage                    1\&.2\&.840\&.10008\&.5\&.1\&.4\&.34\&.7
 RTBrachyApplicationSetupDeliveryInstructionStorage   1\&.2\&.840\&.10008\&.5\&.1\&.4\&.34\&.10
@@ -606,6 +614,7 @@ When acting as an SCP, the \fBmovescu\fP application will prefer transfer syntax
 .nf
 LittleEndianImplicitTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2
 LittleEndianExplicitTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.1
+EncapsulatedUncompressedExplicitVRLittleEndianTr\&.S\&.  1\&.2\&.840\&.10008\&.1\&.2\&.1\&.98
 DeflatedExplicitVRLittleEndianTransferSyntax         1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
 BigEndianExplicitTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.2
 JPEGProcess1TransferSyntax                           1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
@@ -616,14 +625,27 @@ JPEGLSLossyTransferSyntax                            1\&.2\&.840\&.10008\&.1\&.2
 JPEG2000LosslessOnlyTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.90
 JPEG2000TransferSyntax                               1\&.2\&.840\&.10008\&.1\&.2\&.4\&.91
 MPEG2MainProfileAtMainLevelTransferSyntax            1\&.2\&.840\&.10008\&.1\&.2\&.4\&.100
+FragmentableMPEG2MainProfile/MainLevelTransferSyntax 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.100\&.1
 MPEG2MainProfileAtHighLevelTransferSyntax            1\&.2\&.840\&.10008\&.1\&.2\&.4\&.101
+FragmentableMPEG2MainProfil/tHighLevelTransferSyntax 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.101\&.1
 MPEG4HighProfileLevel4_1TransferSyntax               1\&.2\&.840\&.10008\&.1\&.2\&.4\&.102
+FragmentableMPEG4HighProfileLevel4_1TransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.102\&.1
 MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.103
+FragmentableMPEG4BDcompatibleHighProfileLevel4_1T\&.S\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.103\&.1
 MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.104
+FragmentableMPEG4HighProfileLevel4_2_For2DVideoTr\&.S\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.104\&.1
 MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.105
+FragmentableMPEG4HighProfileLevel4_2_For3DVideoTr\&.S\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.105\&.1
 MPEG4StereoHighProfileLevel4_2TransferSyntax         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.106
+FragmentableMPEG4StereoHighProfileLevel4_2TransferS\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.106\&.1
 HEVCMainProfileLevel5_1TransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.4\&.107
 HEVCMain10ProfileLevel5_1TransferSyntax              1\&.2\&.840\&.10008\&.1\&.2\&.4\&.108
+JPEGXLLosslesTransferSyntax                          1\&.2\&.840\&.10008\&.1\&.2\&.4\&.110
+JPEGXLJPEGRecompressionTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.4\&.111
+JPEGXLTransferSyntax                                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.112
+HighThroughputJPEG2000ImageCompressionLossless\&.Tr\&.S\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.201
+HighThroughputJPEG2000RPCLImageCompressionLoss\&.Tr\&.S\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.202
+HighThroughputJPEG2000ImageCompressionTransferSynta\&. 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.203
 RLELosslessTransferSyntax                            1\&.2\&.840\&.10008\&.1\&.2\&.5
 .fi
 .PP
@@ -697,4 +719,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBfindscu\fP(1), \fBstorescp\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

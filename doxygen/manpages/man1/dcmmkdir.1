@@ -1,7 +1,8 @@
-.TH "dcmmkdir" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmmkdir \- Create a DICOMDIR file
+dcmmkdir \- Create a DICOMDIR file 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -20,6 +21,8 @@ Currently the following profiles are supported (others might be added later):
 General Purpose CD-R Interchange (STD-GEN-CD)
 .IP "\(bu" 2
 General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
+.IP "\(bu" 2
+General Purpose Interchange on BD Media (STD-GEN-BD)
 .IP "\(bu" 2
 General Purpose DVD Interchange with JPEG (STD-GEN-DVD-JPEG)
 .IP "\(bu" 2
@@ -235,8 +238,8 @@ DICOMDIR file:
 profiles:
 
   -Pgp  --general-purpose
-          General Purpose Interchange on CD-R or DVD-RAM Media
-          (STD-GEN-CD/DVD-RAM, default)
+          General Purpose Interchange on CD-R, DVD-RAM or BD Media
+          (STD-GEN-CD/DVD-RAM/BD, default)
 
   -Pdv  --general-dvd-jpeg
           General Purpose DVD Interchange with JPEG
@@ -427,4 +430,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 

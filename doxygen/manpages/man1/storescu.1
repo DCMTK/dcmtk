@@ -1,7 +1,8 @@
-.TH "storescu" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-storescu \- DICOM storage (C-STORE) SCU
+storescu \- DICOM storage (C-STORE) SCU 
+.PP
 
 .SH "SYNOPSIS"
 .PP
@@ -98,6 +99,17 @@ input files:
 .SS "network options"
 .PP
 .nf
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -176,10 +188,10 @@ proposed transmission transfer syntaxes (not with --config-file):
           propose MPEG4 AVC/H\&.264 Stereo HP / Level 4\&.2 TS only
 
   -x4   --propose-hevc
-          propose HEVC H\&.265 Main Profile / Level 5\&.1 TS only
+          propose HEVC/H\&.265 Main Profile / Level 5\&.1 TS only
 
   -x5   --propose-hevc10
-          propose HEVC H\&.265 Main 10 Profile / Level 5\&.1 TS only
+          propose HEVC/H\&.265 Main Profile / Level 5\&.1 TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -339,6 +351,9 @@ certification authority:
 
 security profile:
 
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
@@ -372,7 +387,7 @@ security profile:
 ciphersuite:
 
   +cc   --list-ciphers
-          show list of supported TLS ciphersuites and exit
+          list supported TLS ciphersuites and exit
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -487,7 +502,7 @@ The default behavior of \fBstorescu\fP is to propose two presentation contexts f
 .nf
 LittleEndianImplicitTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2
 LittleEndianExplicitTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.1
-DeflatedExplicitVRLittleEndianTransferSyntax         1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99
+DeflatedExplicitVRLittleEndianTransferSyntax         1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
 BigEndianExplicitTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.2
 JPEGProcess1TransferSyntax                           1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
 JPEGProcess2_4TransferSyntax                         1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
@@ -509,7 +524,9 @@ RLELosslessTransferSyntax                            1\&.2\&.840\&.10008\&.1\&.2
 .fi
 .PP
 .PP
-Additional Storage SOP Classes and Transfer Syntaxes can be used with the so-called 'association negotiation profiles' (see below)\&.
+(*) if compiled with zlib support enabled (see \fI--version\fP output)
+.PP
+Additional Storage SOP Classes and transfer syntaxes can be used with the so-called 'association negotiation profiles' (see below)\&.
 .PP
 The \fBstorescu\fP application does not support extended negotiation by default\&. However, using an appropriate association negotiation profile (see below) the optional support for extended negotiation can be added to particular SOP classes\&.
 .SS "Association Negotiation Profiles and Configuration Files"
@@ -538,7 +555,7 @@ The \fBstorescu\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/asconfig\&.txt\fP - configuration file documentation
+\fI<docdir>/asconfig\&.txt\fP - configuration file documentation 
 .br
 \fI<etcdir>/storescu\&.cfg\fP - example association negotiation profile
 .SH "SEE ALSO"
@@ -546,4 +563,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
