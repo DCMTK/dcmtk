@@ -7,10 +7,10 @@ PRE-REQUISITES
 ==============
 
 The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
-recommend using the GNU C++ compiler in versions higher than GCC 9.5.0
-(most of the development for this release was done using GNU gcc 12.2.0
-on Debian Linux and GNU gcc 13.2.0 on Ubuntu Linux).  The software is
-also known to compile using Clang and Microsoft Visual Studio.
+recommend using the GNU C++ compiler in versions higher than 9.5.0 (most of the
+development for this release was done using GNU gcc 12.2.0 on Debian Linux and
+GNU gcc 13.2.0 on Ubuntu Linux).  The software is also known to compile using
+Clang and Microsoft Visual Studio.
 
 Compatibility with other C++ compilers is unknown, however, we have tried to
 keep language demands to a minimum.
@@ -228,10 +228,10 @@ Zlib Support
 ------------
 
 DCMTK supports the "Deflated Explicit VR Little Endian" Transfer Syntax, i.e.
-ZIP-compressed network transmission and media storage.
-DCMTK relies on the zlib toolkit (www.zlib.org) for the underlying compression
-routines.  This release of DCMTK is known to compile with zlib releases 1.2.13
-to 1.3.1, although other releases may work as well.
+ZIP-compressed network transmission and media storage.  DCMTK relies on the
+zlib toolkit (www.zlib.org) for the underlying compression routines.  This
+release of DCMTK is known to compile with zlib releases 1.2.13 to 1.3.1,
+although other releases may work as well.
 
 When using CMake, a compiled version of the zlib libraries and include files
 must be available during compilation of DCMTK.  See discussion on CMake below.
@@ -240,10 +240,10 @@ must be available during compilation of DCMTK.  See discussion on CMake below.
 Libtiff Support
 ---------------
 
-DCMTK supports the conversion of DICOM images to TIFF.
-DCMTK relies on the libtiff toolkit (www.libtiff.org) for this purpose.  This
-release of DCMTK is known to compile with libtiff releases 4.5.0 to 4.7.0,
-although other releases may work as well.
+DCMTK supports the conversion of DICOM images to TIFF.  DCMTK relies on the
+libtiff toolkit (www.libtiff.org) for this purpose.  This release of DCMTK is
+known to compile with libtiff releases 4.5.0 to 4.7.0, although other releases
+may work as well.
 
 When using CMake, a compiled version of the libtiff libraries and include files
 must be available during compilation of DCMTK.  See discussion on CMake below.
@@ -252,10 +252,10 @@ must be available during compilation of DCMTK.  See discussion on CMake below.
 Libpng Support
 --------------
 
-DCMTK supports the conversion of DICOM images to PNG.
-DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.  This
-release of DCMTK is known to compile with libpng releases 1.6.39 to 1.6.44,
-although other releases may work as well.
+DCMTK supports the conversion of DICOM images to PNG.  DCMTK relies on the
+libpng toolkit (www.libpng.org) for this purpose.  This release of DCMTK is
+known to compile with libpng releases 1.6.39 to 1.6.44, although other releases
+may work as well.
 
 When using CMake, a compiled version of the libpng libraries and include files
 must be available during compilation of DCMTK.  See discussion on CMake below.
@@ -264,10 +264,10 @@ must be available during compilation of DCMTK.  See discussion on CMake below.
 Libxml2 Support
 ---------------
 
-DCMTK supports the conversion of XML documents to DICOM files.
-DCMTK relies on the libxml2 toolkit (www.libxml.org) for this purpose.  This
-release of DCMTK is known to compile with libxml2 releases 2.9.14 to 2.13.4,
-although other releases may work as well.
+DCMTK supports the conversion of XML documents to DICOM files.  DCMTK relies on
+the libxml2 toolkit (www.libxml.org) for this purpose.  This release of DCMTK
+is known to compile with libxml2 releases 2.9.14 to 2.13.4, although other
+releases may work as well.
 
 When using CMake, if support for XML import is desired, a compiled version of
 the libxml2 (and possibly iconv) libraries and include files must be available
@@ -430,7 +430,7 @@ CMake which will generate suitable build files for all of DCMTK's projects from
 these files.
 
 DCMTK 3.6.9 requires CMake version 3.1.3 or later.  We recommend using the
-latest stable release of CMake (currently version 3.31.0) since newer versions
+latest stable release of CMake (currently version 3.31.1) since newer versions
 of CMake often provide better output in case of errors and are generally easier
 to use (for example, by providing better support for detecting the availability
 of third-party libraries).  If possible, use the CMake version your operating
@@ -1048,4 +1048,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-11-22 (Riesmeier)
+Last revised: 2024-12-02 (Riesmeier)
