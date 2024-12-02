@@ -429,7 +429,7 @@ directories.  In detail, these "CMakeLists.txt" files will serve as an input to
 CMake which will generate suitable build files for all of DCMTK's projects from
 these files.
 
-DCMTK 3.6.9 requires CMake version 3.1.3 or later.  We recommend using the
+DCMTK 3.6.9 requires CMake version 3.7.0 or later.  We recommend using the
 latest stable release of CMake (currently version 3.31.1) since newer versions
 of CMake often provide better output in case of errors and are generally easier
 to use (for example, by providing better support for detecting the availability
