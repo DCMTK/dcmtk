@@ -200,8 +200,16 @@ else()
   set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DOCDIR}-${DCMTK_COMPLETE_PACKAGE_VERSION}")
 
   # These variables are defined as macros in osconfig.h and must end with a path separator
-  GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_CONFIGURATION_DIR CMAKE_INSTALL_SYSCONFDIR SYSCONFDIR)
-  GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_SUPPORT_DATA_DIR CMAKE_INSTALL_DATADIR BINDIR)
+  if(CMAKE_VERSION VERSION_LESS 3.20.0)
+    # CMake versions prior to 3.20 expect the third parameter to be passed in ${dir}
+    set(dir "SYSCONFDIR")
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_CONFIGURATION_DIR CMAKE_INSTALL_SYSCONFDIR)
+    set(dir "BINDIR")
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_SUPPORT_DATA_DIR CMAKE_INSTALL_DATADIR)
+  else()
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_CONFIGURATION_DIR CMAKE_INSTALL_SYSCONFDIR SYSCONFDIR)
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_SUPPORT_DATA_DIR CMAKE_INSTALL_DATADIR BINDIR)
+  endif()
   set(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_DEFAULT_CONFIGURATION_DIR}/")
   set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/")
 
