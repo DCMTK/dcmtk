@@ -85,7 +85,7 @@ OFBool DcmTLSOptionsBase::listOfCiphersRequested(OFCommandLine& /* cmd */)
   return OFFalse;
 }
 
-OFBool DcmTLSOptionsBase::listOfProfilesRequested(OFCommandLine& cmd)
+OFBool DcmTLSOptionsBase::listOfProfilesRequested(OFCommandLine& /* cmd */)
 {
   return OFFalse;
 }
