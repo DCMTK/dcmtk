@@ -15,7 +15,8 @@ Clang and Microsoft Visual Studio.
 Compatibility with other C++ compilers is unknown, however, we have tried to
 keep language demands to a minimum.
 
-You will need several hundred Mbytes of disk space to compile all the software.
+You will need several hundred Mbytes (or even more than a Gbyte) of disk space
+to compile all the software.
 
 
 SUPPORTED SYSTEMS
@@ -212,7 +213,7 @@ KNOWN ISSUES RELATED TO OPENSSL
 The ABI of various DCMTK libraries changes when DCMTK is built with or without
 OpenSSL.  This may result in hard to locate bugs, e.g. when using a command
 line tool that depends on one of those libraries while mixing a non-OpenSSL
-build with an OpenSSL enabled build of DCMTK (for example, when installing an
+build with an OpenSSL-enabled build of DCMTK (for example, when installing an
 OpenSSL-enabled DCMTK on top of a DCMTK installation without OpenSSL support).
 We have introduced a CMake variable called "DCMTK_TLS_LIBRARY_POSTFIX" as a
 workaround.  If you plan on mixing OpenSSL and non-OpenSSL enabled builds (or
@@ -315,7 +316,7 @@ The exact values that can be chosen for "--enable-charconv" and
 DCMTK_ENABLE_CHARSET_CONVERSION are:
 - "oficonv" (default)
 - "libiconv"
-- "stdlibc" (for DCMTK_ENABLE_CHARSET: "stdlibc (iconv)")
+- "stdlibc" (for DCMTK_ENABLE_CHARSET_CONVERSION: "stdlibc (iconv)")
 
 
 LIBICONV SUPPORT
@@ -332,9 +333,9 @@ on CMake below.
 
 SUPPORT FOR ICONV PROVIDED IN THE C STANDARD LIBRARY
 
-DCMTK allows using the iconv implementation provided as part of the C standard
-library on some platforms.  Building DCMTK with this implementation may be
-easier and reduce additional runtime dependencies, but this option should be
+DCMTK allows for using the iconv implementation provided as part of the C
+standard library on some platforms.  Building DCMTK with this implementation may
+be easier and reduce additional runtime dependencies, but this option should be
 used with caution: the iconv implementations from different C standard libraries
 may vary with regard to the supported character sets and functionalities.
 
@@ -356,10 +357,10 @@ included independently from the user's choice, i.e. "--enable-charconv" or
 DCMTK currently has no mechanism to force including a certain "<iconv.h>"
 instead, so this has to be achieved by manually modifying the include paths
 and/or DCMTK's code.  Some platforms (e.g. Arch Linux) even rename the
-"<iconv.h>" provided as part of libiconv to "<libiconv.h>" or the like to avoid
-name collisions.  In this case, the user has to modify DCMTK's source code to
-include the correct file, since we currently don't provide a configuration test
-for it.
+"<iconv.h>" file provided as part of libiconv to "<libiconv.h>" or the like to
+avoid name collisions.  In this case, the user has to modify DCMTK's source code
+to include the correct file, since we currently don't provide a configuration
+test for it.
 
 
 USING THE NATIVE STL
@@ -378,8 +379,8 @@ correctly in some versions of Visual Studio.
 
 It is furthermore possible to enable or disable individual STL features
 independently of the setting provided by "--enable-stl" or "DCMTK_ENABLE_STL"
-respectively: use "--enable-stl-<feature>", "--disable-stl-<feature>" and/or
-"DCMTK_ENABLE_STL_<FEATURE> (ON/OFF)" as appropriate, e.g.
+respectively: use "--enable-stl-<feature>" or "--disable-stl-<feature>", or
+set "DCMTK_ENABLE_STL_<FEATURE>" to "ON" or "OFF" as appropriate, e.g.
 "--disable-stl-vector" or "-DDCMTK_ENABLE_STL_STRING=ON".
 
 
@@ -407,13 +408,13 @@ DCMTK is potentially incompatible with a classic (C++98) build of DCMTK.  This
 setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and
 verified when compiling DCMTK itself or any program that includes it.
 
-Having "CMAKE_CXX_STANDARD" set to "11" or some newer C++ standard will not
+Having "CMAKE_CXX_STANDARD" set to "11" (or some newer C++ standard) will not
 forcibly enable DCMTK to use the respective features but instead trigger running
 some configuration tests and only truly enable the features that are really
 supported (e.g. "std::error_code" is still not implemented as intended on newer
 versions of Visual Studio, so we keep using DCMTK's own implementation there).
 
-Please note that this setting does not depend on enabling the STL features but
+Please note that this setting does not depend on enabling the STL features, but
 not all combinations (e.g. enabling C++11 but disabling "std::string") may work.
 
 
@@ -478,7 +479,7 @@ DCMTKConfig.cmake AND DCMTKTargets.cmake
 ----------------------------------------
 
 CMake permits to write files that describe the DCMTK build configuration
-("DCMTConfig.cmake") as well as all targets (executables and libraries) that
+("DCMTKConfig.cmake") as well as all targets (executables and libraries) that
 have been produced ("DCMTKTargets.cmake").  Those files can be utilized by
 external projects by using CMake's "find_package()" mechanism in "CONFIG" mode
 in order to adapt their own build configuration, and directly make use of all
@@ -488,7 +489,7 @@ These files are written during installation to the installation directory's
 subfolder "/cmake" on Windows systems, and "/lib/cmake/dcmtk" on Unix-like
 systems.  Additionally, these files are written to the main directory of
 CMake's build tree during the build, with all content (e.g. the include
-paths within "DCMTConfig.cmake") pointing to the correct values for the build
+paths within "DCMTKConfig.cmake") pointing to the correct values for the build
 tree.  Thus, even a DCMTK build tree can be used by external projects that
 process these two files.
 
@@ -510,9 +511,9 @@ basically two ways:
 a. Using the "DCMTK_SUPPORT_LIBRARIES_DIR" setting:
 
 On Windows, users sometimes consider these third-party libraries hard to
-compile and integrate with DCMTK.  Therefore, the DCMTK download page offer a
-package pre-built versions of these libraries ("support libraries") for
-Windows.  When this library package should be used, there is single CMake
+compile and integrate with DCMTK.  Therefore, the DCMTK download page offers a
+package with pre-built versions of these libraries ("support libraries") for
+Windows.  When this library package should be used, there is a single CMake
 variable ("DCMTK_SUPPORT_LIBRARIES_DIR") that can be assigned to the main
 directory of the extracted third-party package.  In that case, CMake will find
 and make available all third-party libraries to the DCMTK build and no further
@@ -534,18 +535,18 @@ Through CMake, perform the following steps:
 3. In the entry field "Where to build the binaries:" enter the directory in
    which the libraries and binaries are to be built, e.g. "C:\dcmtk-msvc16".
 4. In the combobox "Build for:" or "Specify the generator for this project:"
-   select the corresponding development environment which shall be used to
-   compile DCMTK (e.g. "Visual Studio 16 2019 Win64").
+   select the corresponding development environment that shall be used to
+   compile the DCMTK (e.g. "Visual Studio 16 2019 Win64").
 5. Go "Configure".  (CMake will look for a corresponding compiler, read in all
    of DCMTK's "CMakeLists.txt" files and perform some tests.  The variables in
    the tabular area will be displayed in red.  These variables can now be set
    in order to turn the support for any of the external libraries on or off.)
 6. Make the corresponding configurations in CMake's user interface.  For
    example, in order to turn on libxml2 support, set the value of variable
-   "DCMTK_WITH_XML" to "ON" and set the value of variable "WITH_LIBXMLINC"
-   to the path where the include files and libraries of libxml2 can be found,
-   e.g. "C:\libxml2-2.13.4".  The support of all other external libraries can
-   be turned on in a similar way:
+   "DCMTK_WITH_XML" to "ON" and set the value of variable "WITH_LIBXMLINC" to
+   the path where the include files and libraries of libxml2 can be found, e.g.
+   "C:\libxml2-2.13.4".  The support of all other external libraries can be
+   turned on in a similar way:
 
      libpng support:
        set "DCMTK_WITH_PNG" to "ON" and
@@ -573,12 +574,12 @@ Through CMake, perform the following steps:
    "DCMTK_WITH_ICONV") to "OFF".
 
    (Please note that the include files of all external libraries are always
-   expected in a directory named "include" below the directory which is
+   expected in a directory named "include" below the directory that is
    specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
    "WITH_OPENSSLINC", "WITH_ZLIBINC" or "WITH_LIBICONVINC".)
 
    (Please note also that the library files of all external libraries are always
-   expected in directory named "lib" below the directory which is specified in
+   expected in directory named "lib" below the directory that is specified in
    "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC", "WITH_OPENSSLINC",
    "WITH_ZLIBINC" or "WITH_LIBICONV".  Moreover, note that the following
    filenames must be used for the corresponding lib files:
@@ -632,7 +633,7 @@ Through CMake, perform the following steps:
       of the "DCMTK_COMPILE_WIN32_MULTITHREADED_DLL" setting (see below).
       Default: ON.
     - DCMTK_COMPILE_WIN32_MULTITHREADED_DLL: Controls the Windows build
-      model.  When this setting is "ON", DCMTK compiled with the
+      model.  When this setting is "ON", DCMTK is compiled with the
       "Multithreaded DLL" build model (/MD or /MDd); when the setting is
       "OFF", DCMTK is compiled with the "Multithreaded" build model
       (/MT or /MTd).  This setting is ignored unless the
@@ -648,7 +649,7 @@ Through CMake, perform the following steps:
     - DCMTK_USE_WIN32_PROGRAMDATA: An experimental setting that will cause
       data files (such as the DICOM dictionary "dicom.dic" and the oficonv
       character set mapping tables) and configuration files to be installed
-      and expected in a subdirectory of the ProgramData directory.
+      and expected in a subdirectory of the "ProgramData" directory.
 
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.)
@@ -681,7 +682,7 @@ Known limitations of DCMTK on the Windows platform:
 Unix with CMake
 ---------------
 
-One key difference when using CMake for building on Unix like systems is that we
+One key difference when using CMake for building on Unix-like systems is that we
 use the "find_package()" mechanism for all external libraries.  Most Unix-like
 systems provide a package manager or even if not at least have a consistent
 approach for where the libraries and include files are installed such that the
@@ -690,10 +691,10 @@ CMake "find_package()" mechanism typically finds them out of the box.
 If that does not work or you want to use a different version of a library than
 the one in the default search paths, you should look at the documentation of
 the respective "find_package()" module to find out which variables need to be
-modified, e.g. "FindZLIB" to control which version of the zlib will be used:
-https://cmake.org/cmake/help/latest/module/FindZLIB.html .
+modified, e.g. "FindZLIB" to control which version of the zlib will be used,
+see: https://cmake.org/cmake/help/latest/module/FindZLIB.html .
 
-The typical way to build DCMTK on Unix like systems with CMake is as follows
+The typical way to build DCMTK on Unix-like systems with CMake is as follows
 (if not using the GUI, in that case look at the description for Windows above):
 
     mkdir dcmtk-3.6.9-build
@@ -711,7 +712,7 @@ available support libraries and then compiled using eight CPU cores
 
 If you want to modify your build configuration, like enabling or disabling some
 features of DCMTK (e.g. PNG support), or if you need to modify the predefined
-build-variables, you can use the curses based CMake configuration tool ccmake.
+build variables, you can use the curses-based CMake configuration tool ccmake.
 First, create the initial build setup (system check) and then call "ccmake":
 
     mkdir dcmtk-3.6.9-build
@@ -724,7 +725,7 @@ of the screen.  When finished, press "c" to generate a new build configuration,
 then quit ccmake.  Now you can continue to build by calling "make" etc.
 
 If you already know the variable names, types and values to set, you can skip
-the "ccmake" step above and can call "cmake" directly with the values set.
+the ccmake step above and call "cmake" directly with the desired values set.
 Example for a build with TCP wrapper disabled:
 
     mkdir dcmtk-3.6.9-build
@@ -736,19 +737,19 @@ The format is "NAME:TYPE=VALUE".  Use ccmake to find out the variable names and
 their types ("BOOL" with "TRUE"/"FALSE" or "STRING").  Some of the more
 important variables are:
 
-    - BUILD_APPS: Build the DCMTK command line tools? Default: ON.
-    - BUILD_SHARED_LIBS: Build the DCMTK libraries as shared libraries?
-      Default: OFF.
-    - CMAKE_BUILD_TYPE: Debug or Release build, default: Release.
-    - CMAKE_INSTALL_PREFIX: Installation prefix, default: "/usr/local".
-    - DCMTK_DEFAULT_DICT: Activate the builtin, external or no DICOM data
-      dictionary on DCMTK startup? Default: builtin on Windows, external on
-      Linux/Posix.
-    - CMAKE_CXX_STANDARD: C++ language version to be used. Default: 11.
-    - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by
-      the STL classes std::string, std::list, std::vector etc. Default: OFF.
-    - OPENSSL_ROOT_DIR: Directory where OpenSSL is installed.
-      Default: search in standard directories for headers and libraries.
+  - BUILD_APPS: Build the DCMTK command line tools? Default: ON.
+  - BUILD_SHARED_LIBS: Build the DCMTK libraries as shared libraries?
+    Default: OFF.
+  - CMAKE_BUILD_TYPE: Debug or Release build.  Default: Release.
+  - CMAKE_INSTALL_PREFIX: Installation prefix.  Default: "/usr/local".
+  - DCMTK_DEFAULT_DICT: Activate the builtin, external or no DICOM data
+    dictionary on DCMTK startup?  Default: builtin on Windows, external on
+    Linux/Posix.
+  - CMAKE_CXX_STANDARD: C++ language version to be used.  Default: 11.
+  - DCMTK_ENABLE_STL: Replace DCMTK's OFString, OFList, OFVector etc. by the
+    STL classes std::string, std::list, std::vector etc.  Default: OFF.
+  - OPENSSL_ROOT_DIR: Directory where OpenSSL is installed.  Default: search
+    in standard directories for headers and libraries.
 
 
 HTML DOCUMENTATION AND MAN PAGES
@@ -763,14 +764,15 @@ Workshop can also be generated allowing to create a single CHM file (compressed
 HTML) from the documentation.  Other output formats (e.g. LaTeX) can be enabled
 by changing the configuration file in the "doxygen" directory.
 
-At the current time, dcmect, dcmfg, dcmiod, dcmimage, dcmimgle, dcmjpeg,
-dcmpmap, dcmpstat, dcmrt, dcmseg, dcmsign, dcmsr, dcmtls, dcmtract, dcmwlm and
-ofstd are completely documented; dcmdata, dcmjpls, dcmnet and oflog are almost
-completely documented.  See FAQ entry: "Where is rest of the documentation?"
+Currently, dcmapps, dcmect, dcmfg, dcmiod, dcmimage, dcmimgle, dcmjpeg, dcmpmap,
+dcmpstat, dcmrt, dcmseg, dcmsign, dcmsr, dcmtls, dcmtract, dcmwlm, oficonv and
+ofstd are completely documented; dcmdata, dcmjpls, dcmnet, dcmqrdb and oflog
+are almost completely documented.  See FAQ entry: "Where is rest of the
+documentation?"
 
 On Unix platforms, man pages for all command line tools are installed during
 the "make install" step.  In order to use them, just add the directory (e.g.
-"/usr/local/share/man") to the "MANPATH" environment variable and try
+"/usr/local/share/man") to the "MANPATH" environment variable and call
 "man dcmdump" to check whether it works.
 
 In order to generate plain text files from the man pages call "make text" in
@@ -782,8 +784,8 @@ DICOM DATA DICTIONARY
 
 Almost all DCMTK tools and libraries require the so-called DICOM data dictionary
 (i.e. information from part 6 of the DICOM standard) to be available in order
-to map the attribute tags to their associated Value Representation (VR), Value
-Multiplicity (VM) and attribute name (official keyword).  The data dictionary
+to map the Attribute Tags to their associated Value Representation (VR), Value
+Multiplicity (VM) and Attribute name (official keyword).  The data dictionary
 can either be loaded from file (default on Unix systems) or be built into the
 respective tool / dcmdata library (default on Windows systems).  The default
 behavior can be changed using appropriate configuration options.
@@ -809,7 +811,7 @@ the CMake variable "DCMTK_ENABLE_BUILTIN_OFICONV_DATA" to "ON".  This behavior
 is enabled by default when DCMTK is compiled into shared libraries (option
 "BUILD_SHARED_LIBS" set to "ON"), and disabled by default otherwise.  Note that
 when using static libraries, the built-in mapping tables will increase the size
-of each executable by ca. 4 MBytes.
+of each executable by approx. 4 MBytes.
 
 The "DCMICONVPATH" environment variable is respected even when built-in mapping
 tables are available.  In this case, the files referred to by "DCMICONVPATH"
@@ -838,7 +840,7 @@ The tests are contained in a module's "tests" subdirectory.  Some tests are
 marked as exhaustive and are only run if explicitly enabled, see below.
 
 When using Autoconf for building DCMTK, all tests can be run via "make check".
-If a test fails, make will stop and the failure reason of the test which failed
+If a test fails, make will stop and the failure reason of the test that failed
 should be visible.  Additionally, you may run the exhaustive unit tests by
 typing "make check-exhaustive".
 
@@ -913,7 +915,7 @@ Step 1 executes the configure scripts in each subdirectory.  First, the system
 capabilities are examined and then Makefiles are generated.  By default,
 executables and other files will be installed (in Step 3) in the directory
 "/usr/local" in the corresponding subdirectories.  If you wish to use another
-install prefix you can use the "--prefix=<path>" flag to configure.  E.g., if
+install prefix you can use the "--prefix=<path>" option to configure.  E.g., if
 you wish to install underneath your home directory in "~/dicom" then you should
 start configure as:
 
@@ -927,8 +929,7 @@ which OpenSSL is installed.  This is usually the directory that has been used as
 "--prefix" when compiling and installing OpenSSL.
 
 For example, if you wish to enable the security enhancements, and OpenSSL is
-installed in "/usr/local/apps/openssl-3.4.0", then you should start configure
-as:
+installed in "/usr/local/apps/openssl-3.4.0", you should start configure as:
 
     ./configure --ignore-deprecation
                 --with-opensslinc=/usr/local/apps/openssl-3.4.0
@@ -952,8 +953,8 @@ standard path), e.g.:
 
 Different configure options can be combined in any order.  "configure --help"
 will print a list of all existing configure options.  "configure --help=short"
-will display only those options specific to the DCMTK.  Useful configure
-options are:
+will display only those options that are specific to the DCMTK.  Useful
+configure options are:
 
   --enable-debug          compile with debug code, don't optimize
   --disable-debug         compile without debug code (default)
@@ -989,7 +990,7 @@ Step 3:
 Step 3 will install the executables and some support files (data dictionary,
 configuration and documentation files).  If you also wish to install the
 libraries and include files then use "make install-lib".  For the HTML
-documentation (see below) use "make install-html" (requires Doxygen to be
+documentation (see above) use "make install-html" (requires Doxygen to be
 installed); "make install-all" installs all of the above.
 
 In case the files should be installed in a temporary directory, e.g. in order
@@ -1024,12 +1025,12 @@ system include files with incorrect ANSI function prototypes.
 You can set environment variables to initialize configure before it is called
 (before Step 1 above):
 
-  Set environment variable CC to the name of your C compiler.
-  Set environment variable CFLAGS to the compile flags of your C compiler.
-  Set environment variable CXX to the name of your C++ compiler.
-  Set environment variable CXXFLAGS to the compile flags of your C++ compiler.
-  Set environment variable LDFLAGS to your linker flags.
-  Set environment variable CPPFLAGS to you preprocessor flags.
+  Set environment variable "CC" to the name of your C compiler.
+  Set environment variable "CFLAGS" to the compile flags of your C compiler.
+  Set environment variable "CXX" to the name of your C++ compiler.
+  Set environment variable "CXXFLAGS" to the compile flags of your C++ compiler.
+  Set environment variable "LDFLAGS" to your linker flags.
+  Set environment variable "CPPFLAGS" to you preprocessor flags.
 
 You do not need to specify all the above environment variables since the
 default settings are sensible for most Unix compilers.  Further influential
@@ -1048,4 +1049,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-12-02 (Riesmeier)
+Last revised: 2024-12-05 (Riesmeier)
