@@ -524,7 +524,6 @@ JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
 JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
 JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
 RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
-
 \endverbatim
 
 (*) if compiled with zlib support enabled
