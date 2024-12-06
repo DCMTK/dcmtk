@@ -52,9 +52,9 @@ further information (e.g. HOWTOs) can be found:
 If you find bugs or other problems with this software, we would appreciate
 hearing about them.  Please send electronic mail to:
 
-        bugs/at/dcmtk/dot/org
+        bugs@dcmtk.org
 
-Please try to describe the problem in detail and if possible give a suggested
+Please try to describe the problem in detail and, if possible, give a suggested
 fix.  For more details on how to contribute, see the CONTRIBUTING.md file.
 
 For general questions on how to compile, install or use the toolkit, we

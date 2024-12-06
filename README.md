@@ -35,6 +35,6 @@ To build and install the DCMTK package, see the [INSTALL](INSTALL) file.  For co
 
 In addition to the API documentation, which is also available [online](https://support.dcmtk.org/docs/), there is a [Wiki](https://support.dcmtk.org/wiki/) system where further information (e.g. HOWTOs) can be found.
 
-If you find bugs or other problems with this software, we would appreciate hearing about them.  Please send electronic mail to bugs/at/dcmtk/dot/org.  Please try to describe the problem in detail and if possible give a suggested fix.  For more details on how to contribute, see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+If you find bugs or other problems with this software, we would appreciate hearing about them.  Please send electronic mail to [bugs@dcmtk.org](mailto:bugs@dcmtk.org).  Please try to describe the problem in detail and, if possible, give a suggested fix.  For more details on how to contribute, see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 For general questions on how to compile, install or use the toolkit, we recommend the [public discussion forum](https://forum.dcmtk.org/).
