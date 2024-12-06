@@ -15,12 +15,12 @@ DCMTK_ADD_EXECUTABLE(mkesdb ${oficonv_SOURCE_DIR}/apps/mkesdb_bison.cc ${oficonv
 DCMTK_TARGET_LINK_MODULES(mkesdb oficonv)
 
 # Custom target "run_flex_and_bison" will rebuild the C++ files using flex and bison.
-if (FLEX_FOUND AND BISON_FOUND)
+if(FLEX_FOUND AND BISON_FOUND)
     ADD_CUSTOM_TARGET(
         run_flex_and_bison
-        COMMAND 
+        COMMAND
           ${FLEX_EXECUTABLE} --outfile=${oficonv_SOURCE_DIR}/apps/mkcsmapper_flex.cc ${CMAKE_CURRENT_SOURCE_DIR}/mkcsmapper.l
-        COMMAND 
+        COMMAND
           ${FLEX_EXECUTABLE} --outfile=${oficonv_SOURCE_DIR}/apps/mkesdb_flex.cc ${CMAKE_CURRENT_SOURCE_DIR}/mkesdb.l
         COMMAND
           ${BISON_EXECUTABLE} --defines=${oficonv_SOURCE_DIR}/apps/mkcsmapper_bison.h --output=${oficonv_SOURCE_DIR}/apps/mkcsmapper_bison.cc ${CMAKE_CURRENT_SOURCE_DIR}/mkcsmapper.y
