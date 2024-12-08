@@ -227,7 +227,7 @@ public:
      *  set which frames or segments from those images have been actually used.
      *  However, such information could be added to the source image item later by
      *  modifying the resulting item handed back to the caller.
-     *  @param  dataset DICOM items that should be referenced by their UID,
+     *  @param  datasets DICOM items that should be referenced by their UID,
      *          must contain SOP Class UID and SOP Instance UID.
      *  @param  purposeOfReference Code representing the purpose of reference
      *          (Defined CID 7202)

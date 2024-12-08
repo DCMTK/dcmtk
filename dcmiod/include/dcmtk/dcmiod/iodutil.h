@@ -965,10 +965,10 @@ public:
     static Uint32 limitMaxFrames(const size_t numFramesPresent, const OFString& warning);
 
     /** Extracts Frame structures from the given pixel data element. Only
-     *  applicable for pixel data with Bits Allocated = 1. Within the pixel data element, all
-     *  frames are packed next to each other, with the end of one frame and the
-     *  beginning of the next frame packed bit by bit next to each other. The
-     *  resulting Frames are a bit-by-bit copy of their original counterpart.
+     *  applicable for pixel data with Bits Allocated = 1. Within the pixel data element,
+     *  all frames are packed next to each other, with the end of one frame and the
+     *  beginning of the next frame packed bit by bit next to each other (right to left!).
+     *  The resulting Frames are a bit-by-bit copy of their original counterpart.
      *  However, their first bit is aligned to the first bit/byte in the Frame,
      *  and the unused bits in the last byte (if any) are zeroed out.
      *  @param  pixData The pixel data to read from
@@ -983,36 +983,15 @@ public:
                                            const size_t bitsPerFrame,
                                            OFVector<DcmIODTypes::Frame*>& results);
 
-    /** Aligns 1 bit per pixel frame data starting at a given bit position in the
-     *  provided buffer with the start of that buffer. This is used to create
-     *  a frame structure where all the bytes (including the first one) only
-     *  contain data from the frame at hand.
-     *  Note that each byte is filled from the right, i.e. the first pixel will
-     *  represented by the bit at the very right of the first byte, and the 9th
-     *  pixel will be in the very right position of the following byte.
-     *  Example:
-     *    3 bytes input buffer: edcbaZYX mlkjihgf utsrqpon
-     *    Result after aligning 3 bits: fghedcba ponmlkji 000utsrq
-     *    The 000 are unused bits and therefore zeroed out in the last byte. Bits
-     *    ZYX will be shifted out which is ok since it does not belong to the
-     *    current frame. See also dcmseg/tests/tutils.cc for more examples.
-     *  @param  buf The address of the memory buffer to shift
-     *  @param  bufLen The length of the buf memory block in bytes
-     *  @param  numBits The number of bits to shift. Must be 0 <= numBits <= 7.
+    /** Resets the given condition to EC_Normal if checkValue is true and
+     *  prints a related message as a warning to the debug logger.
+     *  @param  result The condition to check. Only EC_ValueRepresentationViolated, EC_MaximumLengthViolated,
+     *          EC_InvalidCharacter and EC_ValueMultiplicityViolated are handled. Those codes
+     *          are reset to EC_Normal if the checkValue is OFFalse.
+     *  @param  checkValue If this value is false, the condition is reset to EC_Normal
+     *  @param  elem Used if the condition is reset to EC_Normal to print a warning
      */
-    static void alignFrameOnByteBoundary(Uint8* buf, const size_t bufLen, const Uint8 numBits);
-
-    /** If checkValue is disabled, the result is reset to EC_Normal and a warning is printed
-     *  to the debug logger.
-     *  @param  result The result to check and reset if applicable. Only error codes
-     *          EC_ValueRepresentationViolated, EC_MaximumLengthViolated, EC_InvalidCharacter
-     *          and EC_ValueMultiplicityViolated are handled; for different error codes,
-     *          the result is not changed and the warning is not printed.
-     *  @param  checkValue If OFTrue, the result is not changed. If OFFalse, the result
-     *          is reset to EC_Normal and a warning is printed to the debug logger.
-     *  @param  elem The element that is checked, used for logging if applicable
-     */
-    static void ignoreAndLogError(OFCondition& result, const OFBool checkValue, DcmElement& elem);
+    static void resetConditionIfCheckDisabled(OFCondition& result, const OFBool checkValue, DcmElement& elem);
 
 private:
     // We only have static functions so we do not need an instance of

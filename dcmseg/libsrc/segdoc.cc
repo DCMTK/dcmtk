@@ -28,7 +28,10 @@
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmseg/segdoc.h"
 #include "dcmtk/dcmseg/segment.h"
+#include "dcmtk/dcmseg/segtypes.h"
 #include "dcmtk/dcmseg/segutils.h"
+#include "dcmtk/oflog/loglevel.h"
+#include <cstddef>
 
 // default constructor (protected, instance creation via create() function)
 DcmSegmentation::DcmSegmentation()
@@ -475,6 +478,12 @@ OFCondition DcmSegmentation::addFrame(Uint8* pixData)
             {
                 result = IOD_EC_CannotInsertFrame;
             }
+            // with debug logging enabled, print out the binary frame
+            if (DCM_dcmsegLogger.isEnabledFor(dcmtk::log4cplus::DEBUG_LOG_LEVEL))
+            {
+                DCMSEG_DEBUG("Added binary segmentation frame:");
+                DcmSegUtils::debugDumpBin(frame->pixData, frame->length, "Binary frame", OFTrue);
+            }
         }
         else // fractional
         {
@@ -851,6 +860,17 @@ OFCondition DcmSegmentation::readFrames(DcmItem& dataset)
         {
             return result;
         }
+        // with debug logging enabled, print out the binary frames
+        if (DCM_dcmsegLogger.isEnabledFor(dcmtk::log4cplus::DEBUG_LOG_LEVEL))
+        {
+            DCMSEG_DEBUG("Extracted binary segmentation frame:");
+            for (size_t count = 0; count < m_Frames.size(); count++)
+            {
+                DCMSEG_DEBUG("Frame " << count << ":");
+                DcmIODTypes::Frame* frame = m_Frames[count];
+                DcmSegUtils::debugDumpBin(frame->pixData, frame->length, "Binary frame", OFTrue);
+            }
+        }
     }
     else if (m_SegmentationType == DcmSegTypes::ST_FRACTIONAL)
     {
@@ -1054,14 +1074,9 @@ OFCondition DcmSegmentation::writeFractionalFrames(Uint8* pixData)
 
 OFCondition DcmSegmentation::writeBinaryFrames(Uint8* pixData, Uint16 rows, Uint16 cols, const size_t pixDataLength)
 {
-    // Holds the pixels for all frames. Each bit represents a pixel which is either
-    // 1 (part of segment) or 0 (not part of segment. All frames are directly
-    // concatenated, i.e. there are no unused bits between the frames.
-    memset(pixData, 0, pixDataLength);
-
     // Fill Pixel Data Element
-    concatFrames(m_Frames, pixData, rows * cols);
-    return EC_Normal;
+    // Compute size of all bit-packed frames in bytes
+    return DcmSegUtils::concatBinaryFrames(m_Frames, rows, cols, pixData, pixDataLength);
 }
 
 OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
@@ -1428,51 +1443,3 @@ OFCondition DcmSegmentation::decompress(DcmDataset& dset)
     return result;
 }
 
-void DcmSegmentation::concatFrames(OFVector<DcmIODTypes::Frame*> frames, Uint8* pixData, const size_t bitsPerFrame)
-{
-    // Writing position within the pixData memory
-    Uint8* writePos                               = pixData;
-    OFVector<DcmIODTypes::Frame*>::iterator frame = frames.begin();
-    Uint8 freeBits                                = 0;
-    Uint8 firstByte                               = 0;
-    // Iterate over frames and copy each to pixData memory
-    for (size_t f = 0; frame != frames.end(); f++)
-    {
-        DCMSEG_DEBUG("Packing segmentation frame #" << f + 1 << "/" << frames.size());
-        // Backup first byte of the destination since it may contain bits of the
-        // previous frame; mask out those bits not belonging to previous frame.
-        // This will potentially create some empty bits on the left of the byte,
-        // that the current frame can use to store the its own first bits.
-        firstByte = OFstatic_cast(unsigned char, (writePos[0] << freeBits)) >> freeBits;
-        memcpy(writePos, (*frame)->pixData, (*frame)->length);
-        // If the previous frame left over some unused bits, shift the current frame
-        // that number of bits to the left, and restore the original bits of the
-        // previous frame that are overwritten by the shifting operation.
-        if (freeBits > 0)
-        {
-            DcmSegUtils::alignFrameOnBitPosition(writePos, (*frame)->length, 8 - freeBits);
-            writePos[0] |= firstByte;
-        }
-        // Compute free bits left over from this frame in the previous byte written
-        freeBits = (8 - (((f + 1) * bitsPerFrame) % 8)) % 8;
-        // If we have free bits, the previous byte written to will be the first byte
-        // we write to for the next frame. Otherwise start with a fresh destination
-        // byte.
-        if (freeBits > 0)
-        {
-            writePos = writePos + (*frame)->length - 1;
-        }
-        else
-        {
-            writePos = writePos + (*frame)->length;
-        }
-        // Next frame
-        frame++;
-    }
-    // Through shifting we can have non-zero bits within the unused bits of the
-    // last byte. Fill them with zeros (though not required by the standard).
-    if (freeBits > 0)
-    {
-        *writePos = (OFstatic_cast(unsigned char, *writePos) >> freeBits) << freeBits;
-    }
-}

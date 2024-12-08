@@ -555,19 +555,6 @@ protected:
                                                 Uint32& numberOfFrames,
                                                 OFString& colorModel);
 
-    /** This is the counterpart to the extractFrames() function. It takes a number
-     *  of frames that are in binary segmentation format (i.e. "bit-packed") and
-     *  concatenates them together so the resulting memory block fits the Pixel
-     *  Data format for binary segmentations. Thus method ensure that frames
-     *  are aligned bit for bit concatenated to each other with only (if
-     *  applicable) having unused bits after the last frame.
-     *  @param frames The source frames
-     *  @param pixData The pixel data element data to be filled. Size must be
-     *         at least bitsPerFrame * number of frames.
-     *  @param bitsPerFrame Bits required per frame, usually rows * columns
-     */
-    virtual void concatFrames(OFVector<DcmIODTypes::Frame*> frames, Uint8* pixData, const size_t bitsPerFrame);
-
     /** Add frame to segmentation object.
      *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
      *          Pixel data is copied so it must be freed by the caller.
