@@ -72,6 +72,7 @@ given below:
    Linux 6.8.0     / amd64|x86_64 / GNU gcc 12.3.0    (Ubuntu 24.04.1 LTS)
    Linux 6.8.0     / amd64|x86_64 / GNU gcc 13.2.0    (Ubuntu 24.04.1 LTS)
    Linux 6.8.0     / amd64|x86_64 / GNU gcc 14.2.0    (Ubuntu 24.04.1 LTS)
+   Linux 6.11.0    / amd64|x86_64 / GNU gcc 14.2.0    (Ubuntu 24.10)
    MacOS X 13.4.1  / amd64|x86_64 / Apple Clang 14.0.3
    MacOS X 13.4.1  / amd64|x86_64 / GNU gcc 13.1.0
    MacOS X 13.4.1  / arm64        / Apple Clang 15.0.0
