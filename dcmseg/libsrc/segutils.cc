@@ -83,10 +83,15 @@ OFCondition DcmSegUtils::concatBinaryFrames(const OFVector<DcmIODTypes::Frame*>&
                                             const size_t pixDataLength)
 {
     // Calculate total number of bits required (one per pixel)
-    Uint32 totalBits = rows * cols * frames.size();
+    size_t totalBits =  0;
+    if (!OFStandard::safeMult(OFstatic_cast(size_t,rows)*cols, frames.size(), totalBits))
+    {
+        DCMSEG_ERROR("Too many frames to concatenate");
+        return EC_IllegalParameter;
+    }
 
     // Calculate total number of bytes required (add one byte if totalBits is not a multiple of 8)
-    Uint32 totalBytes = (totalBits + 7) / 8; // +7 to round up to the nearest byte
+    size_t totalBytes = (totalBits + 7) / 8; // +7 to round up to the nearest byte
 
     // Ensure the provided pixDataLength is sufficient
     if (pixDataLength < totalBytes) {

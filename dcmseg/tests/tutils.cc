@@ -33,8 +33,8 @@ OFTEST(dcmseg_packBinaryFrame)
 {
 
     // Check whether the following statically defined frames are packed correctly
-    Uint8 sparseFrame[8] = {1, 1, 1, 1, 0, 0, 0, 0};
-    DcmIODTypes::Frame* packed = DcmSegUtils::packBinaryFrame(sparseFrame, 4, 2);
+    Uint8 sparseFrame1[8] = {1, 1, 1, 1, 0, 0, 0, 0};
+    DcmIODTypes::Frame* packed = DcmSegUtils::packBinaryFrame(sparseFrame1, 4, 2);
     OFCHECK(packed != NULL);
     OFCHECK(packed->length == 1);
     OFCHECK_MSG(packed->pixData[0] == 0b00001111, OFString("Expected 0b00001111, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[0]));
@@ -94,8 +94,8 @@ OFTEST(dcmseg_packBinaryFrame)
         }
 
         // Pack the frame
-        DcmIODTypes::Frame* packed = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
-        OFCHECK(packed != NULL);
+        DcmIODTypes::Frame* packedFrame = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
+        OFCHECK(packedFrame != NULL);
 
         // Check the result
         for (unsigned int j = 0; j < pixelCount; j++)
@@ -103,14 +103,14 @@ OFTEST(dcmseg_packBinaryFrame)
             Uint32 byteIndex = j / 8;
             Uint32 bitIndex = j % 8;
             Uint8 mask = 1 << bitIndex;
-            if ((sparseFrame[j] != 0) != ((packed->pixData[byteIndex] & mask) != 0))
+            if ((sparseFrame[j] != 0) != ((packedFrame->pixData[byteIndex] & mask) != 0))
             {
                 OFCHECK_FAIL("Failed for row " << j / cols << " and column " << j % cols);
             }
         }
 
         delete[] sparseFrame;
-        delete packed;
+        delete packedFrame;
     }
 }
 
