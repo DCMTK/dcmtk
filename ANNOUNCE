@@ -29,6 +29,10 @@ previous version 3.6.8:
 
   - Also updated the DICOMDIR generation code and tools accordingly.
 
+- Fix binary segmentations with certain dimensions (some cases where number
+  of total bits per frame not divisible by 8) which have been broken when being
+  serialized into a dataset.
+
 - The new JPEG XL and HTJ2K transfer syntaxes as well as the encapsulated
   uncompressed transfer syntax are now supported for reading and writing, i.e.
   for both files and network transfer.  However, encoders or decoders have not
@@ -135,6 +139,7 @@ alphabetical order.  Thank you very much for your support!
   Martin Zeiser of the Cisco Talos team <vulndiscovery@external.cisco.com>
   Mathieu Malaterre <mathieu.malaterre@gmail.com>
   Matt McCormick <matt.mccormick@kitware.com>
+  Melanie Michels <melanie.michels@snkeos.com>
   Nils Bars <nils.bars@rub.de>
   Peter Klotz <peter.klotz@siemens-healthineers.com>
   Phileas Lebada <phileas@contextflow.com>
