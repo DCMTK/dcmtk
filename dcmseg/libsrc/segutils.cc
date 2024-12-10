@@ -42,7 +42,7 @@ DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(const Uint8* pixelData, const U
     }
 
     // Calculate total number of bytes required
-    Uint32 totalBytes = (totalBits + 7) / 8; // +7 to round up to the nearest byte
+    size_t totalBytes = (totalBits + 7) / 8; // +7 to round up to the nearest byte
 
     // Allocate memory for the packed bit array
     Uint8* packedData = new Uint8[totalBytes];
