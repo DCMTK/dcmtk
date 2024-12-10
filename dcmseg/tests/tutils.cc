@@ -24,6 +24,7 @@
 #include "dcmtk/dcmiod/iodtypes.h"
 #include "dcmtk/dcmseg/segutils.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define bufLen 4
 
@@ -77,11 +78,11 @@ OFTEST(dcmseg_packBinaryFrame)
     // as in the packing/unpacking code to make sure we address the right bit.
     // Use a random number of cols and rows (each between 1 and 100).
     // If the packed frame is not correct, the test fails.
-
+    unsigned int now = OFstatic_cast(unsigned int, time(NULL));
     for (unsigned int i = 0; i < 1000; i++)
     {
-        Uint16 cols = rand() % 100 + 1;
-        Uint16 rows = rand() % 100 + 1;
+        Uint16 cols = OFrand_r(now) % 100 + 1;
+        Uint16 rows = OFrand_r(now) % 100 + 1;
         Uint16 pixelCount = cols * rows;
 
         Uint8* sparseFrame = new Uint8[pixelCount];
@@ -90,7 +91,7 @@ OFTEST(dcmseg_packBinaryFrame)
         // Create a random sparse frame
         for (unsigned int j = 0; j < pixelCount; j++)
         {
-            sparseFrame[j] = (rand() % 2) ? 1 : 0;
+            sparseFrame[j] =  OFrand_r(now) % 2;
         }
 
         // Pack the frame
@@ -120,11 +121,11 @@ OFTEST(dcmseg_packAndUnpackBinaryFrame)
     // Make 1000 iterations, using a random number of cols and rows (each between 1 and 100).
     // In each iteration, create a random "sparse" frame, pack it, unpack it and compare the result.
     // If the result is not the same, the test fails.
-
+    unsigned int now = OFstatic_cast(unsigned int, time(NULL));
     for (unsigned int i = 0; i < 1000; i++)
     {
-        Uint16 cols = rand() % 100 + 1;
-        Uint16 rows = rand() % 100 + 1 ;
+        Uint16 cols = OFrand_r(now) % 100 + 1;
+        Uint16 rows = OFrand_r(now) % 100 + 1 ;
         Uint16 pixelCount = cols * rows;
 
         Uint8* sparseFrame = new Uint8[pixelCount];
@@ -135,7 +136,7 @@ OFTEST(dcmseg_packAndUnpackBinaryFrame)
         // Create a random sparse frame
         for (unsigned int j = 0; j < pixelCount; j++)
         {
-            sparseFrame[j] = (rand() % 2) ? 1 : 0;
+            sparseFrame[j] = OFrand_r(now) % 2;
         }
 
         // Pack and unpack the frame
@@ -154,8 +155,8 @@ OFTEST(dcmseg_packAndUnpackBinaryFrame)
 
     // Do the same with frame completely 0, and 1 (i.e. all bits set), respectively
     for (int i = 0; i < 10; ++i) {
-        Uint16 rows = rand() % 100 + 1;
-        Uint16 cols = rand() % 100 + 1;
+        Uint16 rows = OFrand_r(now) % 100 + 1;
+        Uint16 cols = OFrand_r(now) % 100 + 1;
         Uint16 pixelCount = rows * cols;
 
         Uint8* sparseFrame = new Uint8[pixelCount];
