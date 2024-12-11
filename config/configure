@@ -2847,7 +2847,7 @@ ac_config_headers="$ac_config_headers include/dcmtk/config/osconfig.h"
 
 PACKAGE_VERSION_NUMBER=369
 PACKAGE_VERSION_SUFFIX=""
-PACKAGE_DATE=""
+PACKAGE_DATE="2024-12-11"
 
 cat >>confdefs.h <<_ACEOF
 #define PACKAGE_VERSION_NUMBER ${PACKAGE_VERSION_NUMBER}
