@@ -1168,7 +1168,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
     compressedSize = OFstatic_cast(unsigned long, bytesWritten);
-    fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), compressed_buffer_size, compressedSize, djcp->getUseFFbitstreamPadding());
+    fixPaddingIfNecessary(OFstatic_cast(Uint8 *, compressed_buffer), compressed_buffer_size, compressedSize, djcp->getUseFFbitstreamPadding());
     result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressedSize, fragmentSize);
   }
 
