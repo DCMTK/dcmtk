@@ -48,17 +48,17 @@ endif()
 # Basic version information
 set(DCMTK_MAJOR_VERSION 3)
 set(DCMTK_MINOR_VERSION 6)
-set(DCMTK_BUILD_VERSION 8)
+set(DCMTK_BUILD_VERSION 9)
 # The ABI is not guaranteed to be stable between different snapshots/releases,
 # so this particular version number is increased for each snapshot or release.
-set(DCMTK_ABI_VERSION 18)
+set(DCMTK_ABI_VERSION 19)
 
 # Package "release" settings (some are currently unused and, therefore, disabled)
 set(DCMTK_PACKAGE_NAME "dcmtk")
-set(DCMTK_PACKAGE_DATE "DEV")
+set(DCMTK_PACKAGE_DATE "2024-12-11")
 set(DCMTK_PACKAGE_VERSION "${DCMTK_MAJOR_VERSION}.${DCMTK_MINOR_VERSION}.${DCMTK_BUILD_VERSION}")
 set(DCMTK_PACKAGE_VERSION_NUMBER ${DCMTK_MAJOR_VERSION}${DCMTK_MINOR_VERSION}${DCMTK_BUILD_VERSION})
-set(DCMTK_PACKAGE_VERSION_SUFFIX "+")
+set(DCMTK_PACKAGE_VERSION_SUFFIX "")
 #set(DCMTK_PACKAGE_TARNAME "dcmtk-${DCMTK_PACKAGE_VERSION}")
 #set(DCMTK_PACKAGE_STRING "dcmtk ${DCMTK_PACKAGE_VERSION}")
 #set(DCMTK_PACKAGE_BUGREPORT "bugs@dcmtk.org")
