@@ -1,14 +1,13 @@
-.TH "findscu" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-findscu \- DICOM query (C-FIND) SCU 
-.PP
+findscu \- DICOM query (C-FIND) SCU
 
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-findscu [options] peer port [dcmfile-in\&.\&.\&.]
+findscu [options] peer port [dcmfile-in...]
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -61,7 +60,7 @@ dcmfile-in  DICOM query file(s)
 .nf
 override matching keys:
 
-  -k    --key  [k]ey: gggg,eeee='str', path or dictionary name='str'
+  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
           override matching key
 
 query information model:
@@ -145,7 +144,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
         --repeat  [n]umber: integer
@@ -285,7 +284,7 @@ peer authentication:
 .nf
 general:
 
-  -od   --output-directory  [d]irectory: string (default: '\&.')
+  -od   --output-directory  [d]irectory: string (default: ".")
           write output files to existing directory d
 
 automatic data correction:
@@ -305,10 +304,10 @@ C-FIND responses:
           do not output responses to the logger
 
   -X    --extract
-          extract responses to DICOM file (rsp0001\&.dcm\&.\&.\&.)
+          extract responses to DICOM file (rsp0001.dcm...)
 
   -Xx   --extract-xml
-          extract responses to XML file (rsp0001\&.xml\&.\&.\&.)
+          extract responses to XML file (rsp0001.xml...)
 
   -Xs   --extract-xml-single  [f]ilename: string
           extract all responses to given XML file f
@@ -335,7 +334,7 @@ Individual attributes of each file sent can be modified or supplemented using th
 .PP
 .PP
 .nf
-findscu -P -k '(0010,0010)=HEWETT*' caesar 5678 patqry\&.dcm
+findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
@@ -347,7 +346,7 @@ Also \fI-k\fP accepts dictionary names instead of element tags for specifying DI
 .PP
 .PP
 .nf
-findscu -P -k PatientName='HEWETT*' caesar 5678 patqry\&.dcm
+findscu -P -k PatientName="HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
@@ -355,7 +354,7 @@ It is also possible to specify sequences, items and nested attributes using the 
 .PP
 .PP
 .nf
-findscu -W -k '(0040,0100)[0]\&.Modality=CT' caesar 5678
+findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
 .fi
 .PP
 .PP
@@ -374,10 +373,10 @@ The \fBfindscu\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
-FINDPatientRootQueryRetrieveInformationModel       1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.2\&.1\&.1
-FINDStudyRootQueryRetrieveInformationModel         1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.2\&.2\&.1
-FINDPatientStudyOnlyQueryRetrieveInformationModel  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.1\&.2\&.3\&.1
-FINDModalityWorklistInformationModel               1\&.2\&.840\&.10008\&.5\&.1\&.4\&.31
+FINDPatientRootQueryRetrieveInformationModel       1.2.840.10008.5.1.4.1.2.1.1
+FINDStudyRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.2.1
+FINDPatientStudyOnlyQueryRetrieveInformationModel  1.2.840.10008.5.1.4.1.2.3.1
+FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
 .fi
 .PP
 .PP
@@ -385,10 +384,10 @@ The \fBfindscu\fP application will propose presentation contexts for one of the 
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2
-LittleEndianExplicitTransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.1
-DeflatedExplicitVRLittleEndianTransferSyntax       1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
-BigEndianExplicitTransferSyntax                    1\&.2\&.840\&.10008\&.1\&.2\&.2
+LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax       1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
@@ -426,4 +425,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

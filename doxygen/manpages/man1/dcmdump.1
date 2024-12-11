@@ -1,14 +1,13 @@
-.TH "dcmdump" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmdump \- Dump DICOM file and data set 
-.PP
+dcmdump \- Dump DICOM file and data set
 
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-dcmdump [options] dcmfile-in\&.\&.\&.
+dcmdump [options] dcmfile-in...
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -20,7 +19,7 @@ If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .PP
 .nf
-dcmfile-in  DICOM input file or directory to be dumped ('-' for stdin)
+dcmfile-in  DICOM input file or directory to be dumped ("-" for stdin)
 .fi
 .PP
 .SH "OPTIONS"
@@ -107,9 +106,9 @@ long tag values:
          load very long tag values (default)
 
   -M   --load-short
-         do not load very long values (e\&.g\&. pixel data)
+         do not load very long values (e.g. pixel data)
 
-  +R   --max-read-length  [k]bytes: integer (4\&.\&.4194302, default: 4)
+  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
          set threshold for long values to k kbytes
 
 parsing of file meta information:
@@ -192,7 +191,7 @@ handling of VOI LUT Sequence with OW VR and explicit length:
   +vi  --illegal-voi-conv
          convert illegal VOI LUT to SQ
 
-handling of explicit length pixel data for encaps\&. transfer syntaxes:
+handling of explicit length pixel data for encaps. transfer syntaxes:
 
   -pe  --abort-expl-pixdata
          abort on explicit length pixel data (default)
@@ -210,10 +209,10 @@ general handling of parser errors:
 
 other parsing options:
 
-  +st  --stop-after-elem  [t]ag: 'gggg,eeee' or dictionary name
+  +st  --stop-after-elem  [t]ag: "gggg,eeee" or dictionary name
          stop parsing after element specified by t
 
-  +sb  --stop-before-elem [t]ag: 'gggg,eeee' or dictionary name
+  +sb  --stop-before-elem [t]ag: "gggg,eeee" or dictionary name
          stop parsing before element specified by t
 
          # only considers elements on main dataset level and also
@@ -310,7 +309,7 @@ error handling:
 
 searching:
 
-  +P   --search  [t]ag: 'gggg,eeee' or dictionary name
+  +P   --search  [t]ag: "gggg,eeee" or dictionary name
          print the textual dump of tag t
          this option can be specified multiple times
          (default: the complete file is printed)
@@ -323,7 +322,7 @@ searching:
 
   +p   --prepend
          prepend sequence hierarchy to printed tag,
-         denoted by: (gggg,eeee)\&.(gggg,eeee)\&.*
+         denoted by: (gggg,eeee).(gggg,eeee).*
          (only when used with --search)
 
   -p   --no-prepend
@@ -332,7 +331,7 @@ searching:
 writing:
 
   +W   --write-pixel  [d]irectory: string
-         write pixel data to a \&.raw file stored in d
+         write pixel data to a .raw file stored in d
          (little endian, filename created automatically)
 .fi
 .PP
@@ -365,4 +364,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

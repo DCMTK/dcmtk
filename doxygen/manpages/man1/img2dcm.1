@@ -1,14 +1,13 @@
-.TH "img2dcm" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-img2dcm \- Convert standard image formats into DICOM format 
-.PP
+img2dcm \- Convert standard image formats into DICOM format
 
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-img2dcm [options] imgfile-in\&.\&.\&. dcmfile-out
+img2dcm [options] imgfile-in... dcmfile-out
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -20,7 +19,7 @@ The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format 
 .nf
 imgfile-in   image input filename
 
-dcmfile-out  DICOM output filename ('-' for stdout)
+dcmfile-out  DICOM output filename ("-" for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -142,7 +141,7 @@ character set conversion of study/series file:
 
 other processing options:
 
-  -k    --key  [k]ey: gggg,eeee='str', path or dictionary name='str'
+  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
           add further attribute
 .fi
 .PP
@@ -208,7 +207,7 @@ For converting a general image format into DICOM format, the \fBimg2dcm\fP appli
 .IP "\(bu" 2
 Using the \fI--dataset-from\fP option \fBimg2dcm\fP is forced to import attributes from an existing DICOM file\&. The given DICOM file is fully imported and serves as the basis for all further export operations\&. As an exception, the SOP Instance UID is not copied by this option\&. Also image related data like Rows, Columns etc\&. is exchanged during conversion\&. Note that \fBimg2dcm\fP does not check any other attribute values for validity, e\&.g\&. it does not look into sequences to adapt any attributes to the new object (referenced images etc\&.)\&. Therefore, it is recommended to use the templates in the data directory for (old) SC and VLP objects\&. See also section 'Input Templates'\&. As an alternative to option \fI--dataset-from\fP the mutually exclusive option \fI--dataset-from-xml\fP can be used\&. In this case, however, the file must contain XML data in the format as produced by \fBdcm2xml\fP\&.
 .IP "\(bu" 2
-The \fI--study-from\fP and \fI--series-from\fP options can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. Using \fI--study-from\fP and \fI--series-from\fP at the same time does make sense\&. If both options are provided on the command line, the rightmost option wins\&. The following attributes are taken over: 
+The \fI--study-from\fP and \fI--series-from\fP options can be used to import patient, study and series information from an existing DICOM file\&. If \fI--series-from\fP is specified, then the given DICOM file is opened by \fBimg2dcm\fP and all mandatory information down to the series level is imported\&. Note that this includes patient, study and series information\&. In case of \fI--study-from\fP, the series information is excluded\&. Using \fI--study-from\fP and \fI--series-from\fP at the same time does make sense\&. If both options are provided on the command line, the rightmost option wins\&. The following attributes are taken over:
 .PP
 .nf
       Patient Level:
@@ -247,7 +246,7 @@ For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defi
 .PP
 .PP
 .nf
-  dump2dcm SC\&.dump SC\&.dcm
+  dump2dcm SC.dump SC.dcm
 .fi
 .PP
 .PP
@@ -378,9 +377,9 @@ The \fBimg2dcm\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/SC\&.dump\fP - Sample dump file for Secondary Capture images 
+\fI<datadir>/SC\&.dump\fP - Sample dump file for Secondary Capture images
 .br
-\fI<datadir>/VLP\&.dump\fP - Sample dump file for Visible Light Photographic images 
+\fI<datadir>/VLP\&.dump\fP - Sample dump file for Visible Light Photographic images
 .br
 \fI<datadir>/OP_template\&.xml\fP - Sample XML template for Ophthalmic Photography images
 .SH "SEE ALSO"
@@ -388,4 +387,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1), \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2007-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

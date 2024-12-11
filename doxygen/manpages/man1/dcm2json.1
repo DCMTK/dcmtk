@@ -1,8 +1,7 @@
-.TH "dcm2json" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2json" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2json \- Convert DICOM file and data set to JSON 
-.PP
+dcm2json \- Convert DICOM file and data set to JSON
 
 .SH "SYNOPSIS"
 .PP
@@ -20,7 +19,7 @@ If \fBdcm2json\fP reads a raw data set (DICOM data without a file format meta-he
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted ('-' for stdin)
+dcmfile-in   DICOM input filename to be converted ("-" for stdin)
 
 jsonfile-out JSON output filename (default: stdout)
 .fi
@@ -137,154 +136,154 @@ The basic structure of the JSON output created from a DICOM file looks like the 
 .PP
 .nf
 {
-    '00080005': {
-        'vr': 'CS',
-        'Value': [
-            'ISO_IR 192'
+    "00080005": {
+        "vr": "CS",
+        "Value": [
+            "ISO_IR 192"
         ]
     },
-    '00080020': {
-        'vr': 'DT',
-        'Value': [
-            '20130409'
+    "00080020": {
+        "vr": "DT",
+        "Value": [
+            "20130409"
         ]
     },
-    '00080030': {
-        'vr': 'TM',
-        'Value': [
-            '131600\&.0000'
+    "00080030": {
+        "vr": "TM",
+        "Value": [
+            "131600.0000"
         ]
     },
-    '00080050': {
-        'vr': 'SH',
-        'Value': [
-            '11235813'
+    "00080050": {
+        "vr": "SH",
+        "Value": [
+            "11235813"
         ]
     },
-    '00080056': {
-        'vr': 'CS',
-        'Value': [
-            'ONLINE'
+    "00080056": {
+        "vr": "CS",
+        "Value": [
+            "ONLINE"
         ]
     },
-    '00080061': {
-        'vr': 'CS',
-        'Value': [
-            'CT',
-            'PET'
+    "00080061": {
+        "vr": "CS",
+        "Value": [
+            "CT",
+            "PET"
         ]
     },
-    '00080090': {
-        'vr': 'PN',
-        'Value': [
+    "00080090": {
+        "vr": "PN",
+        "Value": [
           {
-            'Alphabetic': '^Bob^^Dr\&.'
+            "Alphabetic": "^Bob^^Dr."
           }
         ]
     },
-    '00081190': {
-        'vr': 'UR',
-        'Value': [
-            'http://wado\&.nema\&.org/studies/
-            1\&.2\&.392\&.200036\&.9116\&.2\&.2\&.2\&.1762893313\&.1029997326\&.945873'
+    "00081190": {
+        "vr": "UR",
+        "Value": [
+            "http://wado.nema.org/studies/
+            1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
         ]
     },
-    '00090010': {
-        'vr': 'LO',
-        'Value': [
-            'Vendor A'
+    "00090010": {
+        "vr": "LO",
+        "Value": [
+            "Vendor A"
         ]
     },
-    '00091002': {
-        'vr': 'UN',
-        'InlineBinary': 'z0x9c8v7'
+    "00091002": {
+        "vr": "UN",
+        "InlineBinary": "z0x9c8v7"
     },
-    '00100010': {
-        'vr': 'PN',
-        'Value': [
+    "00100010": {
+        "vr": "PN",
+        "Value": [
           {
-            'Alphabetic': 'Wang^XiaoDong'
+            "Alphabetic": "Wang^XiaoDong"
           }
         ]
     },
-    '00100020': {
-        'vr': 'LO',
-        'Value': [
-            '12345'
+    "00100020": {
+        "vr": "LO",
+        "Value": [
+            "12345"
         ]
     },
-    '00100021': {
-        'vr': 'LO',
-        'Value': [
-            'Hospital A'
+    "00100021": {
+        "vr": "LO",
+        "Value": [
+            "Hospital A"
         ]
     },
-    '00100030': {
-        'vr': 'DA',
-        'Value': [
-            '19670701'
+    "00100030": {
+        "vr": "DA",
+        "Value": [
+            "19670701"
         ]
     },
-    '00100040': {
-        'vr': 'CS',
-        'Value': [
-            'M'
+    "00100040": {
+        "vr": "CS",
+        "Value": [
+            "M"
         ]
     },
-    '00101002': {
-        'vr': 'SQ',
-        'Value': [
+    "00101002": {
+        "vr": "SQ",
+        "Value": [
             {
-                '00100020': {
-                    'vr': 'LO',
-                    'Value': [
-                        '54321'
+                "00100020": {
+                    "vr": "LO",
+                    "Value": [
+                        "54321"
                     ]
                 },
-                '00100021': {
-                    'vr': 'LO',
-                    'Value': [
-                        'Hospital B'
+                "00100021": {
+                    "vr": "LO",
+                    "Value": [
+                        "Hospital B"
                     ]
                 }
             },
             {
-                '00100020': {
-                    'vr': 'LO',
-                    'Value': [
-                        '24680'
+                "00100020": {
+                    "vr": "LO",
+                    "Value": [
+                        "24680"
                     ]
                 },
-                '00100021': {
-                    'vr': 'LO',
-                    'Value': [
-                        'Hospital C'
+                "00100021": {
+                    "vr": "LO",
+                    "Value": [
+                        "Hospital C"
                     ]
                 }
             }
         ]
     },
-    '0020000D': {
-        'vr': 'UI',
-        'Value': [
-            '1\&.2\&.392\&.200036\&.9116\&.2\&.2\&.2\&.1762893313\&.1029997326\&.945873'
+    "0020000D": {
+        "vr": "UI",
+        "Value": [
+            "1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
         ]
     },
-    '00200010': {
-        'vr': 'SH',
-        'Value': [
-            '11235813'
+    "00200010": {
+        "vr": "SH",
+        "Value": [
+            "11235813"
         ]
     },
-    '00201206': {
-        'vr': 'IS',
-        'Value': [
+    "00201206": {
+        "vr": "IS",
+        "Value": [
             4
         ]
     },
-    '00201208': {
-        'vr': 'IS',
-        'Value': [
+    "00201208": {
+        "vr": "IS",
+        "Value": [
             942
         ]
     }
@@ -352,4 +351,4 @@ The \fBdcm2json\fP utility will attempt to load character set mapping tables\&. 
 The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2016-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2016-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,8 +1,7 @@
-.TH "dcmrecv" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmrecv" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmrecv \- Simple DICOM storage SCP (receiver) 
-.PP
+dcmrecv \- Simple DICOM storage SCP (receiver)
 
 .SH "SYNOPSIS"
 .PP
@@ -79,7 +78,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
   -dhl  --disable-host-lookup  disable hostname lookup
@@ -215,7 +214,7 @@ peer authentication:
 .nf
 general:
 
-  -od   --output-directory  [d]irectory: string (default: '\&.')
+  -od   --output-directory  [d]irectory: string (default: ".")
           write received objects to existing directory d
 
 subdirectory generation:
@@ -262,7 +261,7 @@ A typical use case of \fBdcmrecv\fP is to receive SOP instances that are sent fr
 .PP
 .PP
 .nf
-dcmrecv --verbose <port> --config-file storescp\&.cfg default
+dcmrecv --verbose <port> --config-file storescp.cfg default
 .fi
 .PP
 .PP
@@ -270,9 +269,9 @@ If you prefer some automatically created subdirectory structure, shorter file na
 .PP
 .PP
 .nf
-dcmrecv -v -xf storescp\&.cfg default <port> --series-date-subdir
+dcmrecv -v -xf storescp.cfg default <port> --series-date-subdir
                                            --short-unique-names
-                                           --filename-extension \&.dcm
+                                           --filename-extension .dcm
 .fi
 .PP
 .PP
@@ -280,7 +279,7 @@ In case of very large SOP instances or if the dataset should be written exactly 
 .PP
 .PP
 .nf
-dcmrecv -v -xf storescp\&.cfg default <port> --bit-preserving
+dcmrecv -v -xf storescp.cfg default <port> --bit-preserving
 .fi
 .PP
 .PP
@@ -314,7 +313,7 @@ By default, the filenames for storing the received DICOM datasets are generated 
 .PP
 .PP
 .nf
-<short-modality-prefix>\&.<sop-instance-uid><filename-extension>
+<short-modality-prefix>.<sop-instance-uid><filename-extension>
 .fi
 .PP
 .PP
@@ -324,7 +323,7 @@ The option \fI--unique-filenames\fP makes sure that each received DICOM dataset 
 .PP
 .PP
 .nf
-<short-modality-prefix>\&.X\&.<unique-identifier><filename-extension>
+<short-modality-prefix>.X.<unique-identifier><filename-extension>
 .fi
 .PP
 .PP
@@ -342,7 +341,7 @@ Finally, option \fI--system-time-names\fP allows for generating filenames based 
 .PP
 .PP
 .nf
-<date><time>\&.<short-modality-prefix><filename-extension>
+<date><time>.<short-modality-prefix><filename-extension>
 .fi
 .PP
 .PP
@@ -402,7 +401,7 @@ The \fBdcmrecv\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<docdir>/asconfig\&.txt\fP - configuration file documentation 
+\fI<docdir>/asconfig\&.txt\fP - configuration file documentation
 .br
 \fI<etcdir>/storescp\&.cfg\fP - example association negotiation profile
 .SH "SEE ALSO"
@@ -410,4 +409,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmsend\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2013-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2013-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

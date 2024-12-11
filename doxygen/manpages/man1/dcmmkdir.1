@@ -1,14 +1,13 @@
-.TH "dcmmkdir" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmmkdir \- Create a DICOMDIR file 
-.PP
+dcmmkdir \- Create a DICOMDIR file
 
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-dcmmkdir [options] [dcmfile-in\&.\&.\&.]
+dcmmkdir [options] [dcmfile-in...]
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -127,15 +126,15 @@ DICOMDIR identifiers:
 
   +F    --fileset-id  [i]d: string
           use specific file-set ID
-          (default: DCMTK_MEDIA_DEMO, '' for none)
+          (default: DCMTK_MEDIA_DEMO, "" for none)
 
   +R    --descriptor  [f]ilename: string
           add a file-set descriptor file ID
-          (e\&.g\&. README, default: no descriptor)
+          (e.g. README, default: no descriptor)
 
   +C    --char-set  [c]harset: string
           add a specific character set for descriptor
-          (default: 'ISO_IR 100' if descriptor present)
+          (default: "ISO_IR 100" if descriptor present)
 
 reading:
 
@@ -213,7 +212,7 @@ icon images:
           add monochrome icon image on IMAGE level
           (default for cardiac profiles)
 
-  -Xs   --icon-image-size  [s]ize: integer (1\&.\&.128)
+  -Xs   --icon-image-size  [s]ize: integer (1..128)
           width and height of the icon image (in pixel)
           (fixed: 128 for XA, 64 for CT/MR profile)
 
@@ -266,24 +265,24 @@ profiles:
           (STD-GEN-BD-MPEG2-MPHL)
 
   -Pba  --general-bd-mpeg4-hp
-          General Purpose BD Interchange with MPEG-4 AVC/H\&.264
-          HiP@Level4\&.1 (STD-GEN-BD-MPEG4-HPLV41)
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41)
 
   -Pbb  --general-bd-mpeg4-hpbd
-          General Purpose BD Interchange with MPEG-4 AVC/H\&.264
-          BD-Compatible HiP@Level4\&.1 (STD-GEN-BD-MPEG4-HPLV41BD)
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          BD-Compatible HiP@Level4.1 (STD-GEN-BD-MPEG4-HPLV41BD)
 
         --general-bd-mpeg4-hp2d
-          General Purpose BD Interchange with MPEG-4 AVC/H\&.264
-          HiP@Level4\&.2 for 2D video (STD-GEN-BD-MPEG4-HPLV42-2D)
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.2 for 2D video (STD-GEN-BD-MPEG4-HPLV42-2D)
 
         --general-bd-mpeg4-hp3d
-          General Purpose BD Interchange with MPEG-4 AVC/H\&.264
-          HiP@Level4\&.2 for 3D video (STD-GEN-BD-MPEG4-HPLV42-3D)
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          HiP@Level4.2 for 3D video (STD-GEN-BD-MPEG4-HPLV42-3D)
 
         --general-bd-mpeg4-hpst
-          General Purpose BD Interchange with MPEG-4 AVC/H\&.264
-          Stereo HiP@Level4\&.2 (STD-GEN-BD-MPEG4-SHPLV42)
+          General Purpose BD Interchange with MPEG-4 AVC/H.264
+          Stereo HiP@Level4.2 (STD-GEN-BD-MPEG4-SHPLV42)
 
   -Pfl  --usb-and-flash-jpeg
           General Purpose USB/Flash Memory Interchange with JPEG
@@ -430,4 +429,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2001-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

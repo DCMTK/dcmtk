@@ -1,8 +1,7 @@
-.TH "dcmdspfn" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdspfn" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmdspfn \- Export standard display curves to a text file 
-.PP
+dcmdspfn \- Export standard display curves to a text file
 
 .SH "SYNOPSIS"
 .PP
@@ -96,7 +95,7 @@ dcmfile-in  DICOM input filename to be dumped
 
   +Cf  --curve-fitting  [n]umber: integer
          use polynomial curve fitting algorithm with order n
-         (0\&.\&.99, default: file setting or cubic spline)
+         (0..99, default: file setting or cubic spline)
 .fi
 .PP
 .SS "output options"
@@ -132,11 +131,11 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "FILES"
 .PP
-\fI<datadir>/camera\&.lut\fP - sample characteristics file of a camera 
+\fI<datadir>/camera\&.lut\fP - sample characteristics file of a camera
 .br
-\fI<datadir>/monitor\&.lut\fP - sample characteristics file of a monitor 
+\fI<datadir>/monitor\&.lut\fP - sample characteristics file of a monitor
 .br
-\fI<datadir>/printer\&.lut\fP - sample characteristics file of a printer 
+\fI<datadir>/printer\&.lut\fP - sample characteristics file of a printer
 .br
 \fI<datadir>/scanner\&.lut\fP - sample characteristics file of a scanner
 .SH "SEE ALSO"
@@ -144,4 +143,4 @@ In addition, one or more command files can be specified using an '@' sign as a p
 \fBdconvlum\fP(1), \fBdcod2lum\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1999-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1999-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,8 +1,7 @@
-.TH "dcm2img" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2img" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2img \- Convert DICOM image to standard image format 
-.PP
+dcm2img \- Convert DICOM image to standard image format
 
 .SH "SYNOPSIS"
 .PP
@@ -18,7 +17,7 @@ The \fBdcm2img\fP utility reads a DICOM image, converts the pixel data according
 .PP
 .PP
 .nf
-dcmfile-in  DICOM input filename to be converted ('-' for stdin)
+dcmfile-in  DICOM input filename to be converted ("-" for stdin)
 
 bitmap-out  output filename to be written (default: stdout)
 .fi
@@ -131,7 +130,7 @@ scaling:
           ignore pixel aspect ratio when scaling
 
   +i    --interpolate  [n]umber of algorithm: integer
-          use interpolation when scaling (1\&.\&.4, default: 1)
+          use interpolation when scaling (1..4, default: 1)
 
   -i    --no-interpolation
           no interpolation when scaling
@@ -178,31 +177,31 @@ workaround options for incorrect encodings (JPEG compressed images only):
           enable workaround for JPEG lossless images
           with overflow in predictor 6
 
-  # DICOM images with 16 bits/pixel have been observed 'in the wild'
+  # DICOM images with 16 bits/pixel have been observed "in the wild"
   # that are compressed with lossless JPEG and need special handling
   # because the encoder produced an 16-bit integer overflow in predictor
-  # 6, which needs to be compensated (reproduced) during decompression\&.
+  # 6, which needs to be compensated (reproduced) during decompression.
   # This flag enables a correct decompression of such faulty images, but
   # at the same time will cause an incorrect decompression of correctly
-  # compressed images\&. Use with care\&.
+  # compressed images. Use with care.
 
   +wi   --workaround-incpl
           enable workaround for incomplete JPEG data
 
   # This option causes dcm2img to ignore incomplete JPEG data
   # at the end of a compressed fragment and to start decompressing
-  # the next frame from the next fragment (if any)\&. This permits
-  # images with incomplete JPEG data to be decoded\&.
+  # the next frame from the next fragment (if any). This permits
+  # images with incomplete JPEG data to be decoded.
 
   +wc   --workaround-cornell
           enable workaround for 16-bit JPEG lossless
           Cornell images with Huffman table overflow
 
   # One of the first open-source implementations of lossless JPEG
-  # compression, the 'Cornell' library, has a well-known bug that leads
+  # compression, the "Cornell" library, has a well-known bug that leads
   # to invalid values in the Huffmann table when images with 16 bit/sample
-  # are compressed\&. This flag enables a workaround that permits such
-  # images to be decoded correctly\&.
+  # are compressed. This flag enables a workaround that permits such
+  # images to be decoded correctly.
 
 modality LUT transformation:
 
@@ -264,30 +263,30 @@ overlay:
           do not display overlays
 
   +O    --display-overlay  [n]umber: integer
-          display overlay n (0\&.\&.16, 0=all, default: +O 0)
+          display overlay n (0..16, 0=all, default: +O 0)
 
   +Omr  --ovl-replace
-          use overlay mode 'Replace'
+          use overlay mode "Replace"
           (default for Graphic overlays)
 
   +Omt  --ovl-threshold
-          use overlay mode 'Threshold Replace'
+          use overlay mode "Threshold Replace"
 
   +Omc  --ovl-complement
-          use overlay mode 'Complement'
+          use overlay mode "Complement"
 
   +Omv  --ovl-invert
-          use overlay mode 'Invert Bitmap'
+          use overlay mode "Invert Bitmap"
 
   +Omi  --ovl-roi
-          use overlay mode 'Region of Interest'
+          use overlay mode "Region of Interest"
           (default for ROI overlays)
 
   +Osf  --set-foreground  [d]ensity: float
-          set overlay foreground density (0\&.\&.1, default: 1)
+          set overlay foreground density (0..1, default: 1)
 
   +Ost  --set-threshold  [d]ensity: float
-          set overlay threshold density (0\&.\&.1, default: 0\&.5)
+          set overlay threshold density (0..1, default: 0.5)
 
 display LUT transformation:
 
@@ -378,7 +377,7 @@ PNG format:
 
 JPEG format:
 
-  +Jq   --compr-quality  [q]uality: integer (0\&.\&.100, default: 90)
+  +Jq   --compr-quality  [q]uality: integer (0..100, default: 90)
           quality value for compression (in percent)
 
   +Js4  --sample-444
@@ -443,7 +442,7 @@ image format:
 
   # If the output filename contains no extension or an
   # unknown/unsupported one, a warning is printed and a BMP file
-  # is written (see --write-bmp)\&.
+  # is written (see --write-bmp).
 
   +op   --write-raw-pnm
           write 8-bit binary PGM/PPM
@@ -455,7 +454,7 @@ image format:
           write 16-bit ASCII PGM/PPM
 
   +opn  --write-n-bit-pnm  [n]umber: integer
-          write n-bit ASCII PGM/PPM (1\&.\&.32)
+          write n-bit ASCII PGM/PPM (1..32)
 
   +ob   --write-bmp
           write 8-bit (monochrome) or 24-bit (color) BMP
@@ -508,19 +507,20 @@ The \fI--write-png\fP option is only available when DCMTK has been configured an
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
-LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
-BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
-JPEGLSLosslessTransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.80
-JPEGLSLossyTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.4\&.81
-JPEGProcess10_12TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.55
-JPEGProcess14SV1TransferSyntax                 1\&.2\&.840\&.10008\&.1\&.2\&.4\&.70
-JPEGProcess14TransferSyntax                    1\&.2\&.840\&.10008\&.1\&.2\&.4\&.57
-JPEGProcess1TransferSyntax                     1\&.2\&.840\&.10008\&.1\&.2\&.4\&.50
-JPEGProcess2_4TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.51
-JPEGProcess6_8TransferSyntax                   1\&.2\&.840\&.10008\&.1\&.2\&.4\&.53
-RLELosslessTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.5.fi
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGLSLosslessTransferSyntax                   1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                      1.2.840.10008.1.2.4.81
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+.fi
 .PP
 .PP
 (*) if compiled with zlib support enabled
@@ -543,11 +543,11 @@ The \fBdcm2img\fP utility will attempt to load DICOM data dictionaries specified
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "FILES"
 .PP
-\fI<datadir>/camera\&.lut\fP - sample characteristics file of a camera 
+\fI<datadir>/camera\&.lut\fP - sample characteristics file of a camera
 .br
-\fI<datadir>/monitor\&.lut\fP - sample characteristics file of a monitor 
+\fI<datadir>/monitor\&.lut\fP - sample characteristics file of a monitor
 .br
-\fI<datadir>/printer\&.lut\fP - sample characteristics file of a printer 
+\fI<datadir>/printer\&.lut\fP - sample characteristics file of a printer
 .br
 \fI<datadir>/scanner\&.lut\fP - sample characteristics file of a scanner
 .SH "SEE ALSO"
@@ -555,4 +555,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 2001-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

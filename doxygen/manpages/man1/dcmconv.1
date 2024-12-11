@@ -1,8 +1,7 @@
-.TH "dcmconv" 1 "Mon Dec 16 2024 12:00:01" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmconv \- Convert DICOM file encoding 
-.PP
+dcmconv \- Convert DICOM file encoding
 
 .SH "SYNOPSIS"
 .PP
@@ -18,9 +17,9 @@ The \fBdcmconv\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs an enc
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted ('-' for stdin)
+dcmfile-in   DICOM input filename to be converted ("-" for stdin)
 
-dcmfile-out  DICOM output filename to write to ('-' for stdout)
+dcmfile-out  DICOM output filename to write to ("-" for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -165,7 +164,7 @@ handling of VOI LUT Sequence with OW VR and explicit length:
   +vi  --illegal-voi-conv
          convert illegal VOI LUT to SQ
 
-handling of explicit length pixel data for encaps\&. transfer syntaxes:
+handling of explicit length pixel data for encaps. transfer syntaxes:
 
   -pe  --abort-expl-pixdata
          abort on explicit length pixel data (default)
@@ -183,7 +182,7 @@ general handling of parser errors:
 
 other parsing options:
 
-  +st  --stop-after-elem  [t]ag: 'gggg,eeee' or dictionary name
+  +st  --stop-after-elem  [t]ag: "gggg,eeee" or dictionary name
          stop parsing after element specified by t
 
 automatic data correction:
@@ -352,4 +351,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&. 
+Copyright (C) 1994-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
