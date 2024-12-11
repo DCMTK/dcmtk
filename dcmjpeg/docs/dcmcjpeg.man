@@ -707,6 +707,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmcjpeg_copyright COPYRIGHT
 
-Copyright (C) 2001-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

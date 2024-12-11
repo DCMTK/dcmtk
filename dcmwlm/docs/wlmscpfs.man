@@ -515,6 +515,6 @@ It is an error if no data dictionary can be loaded.
 
 \section wlmscpfs_copyright COPYRIGHT
 
-Copyright (C) 1996-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
