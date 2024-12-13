@@ -141,6 +141,11 @@ static OFString getLastErrorString()
   return OFString();
 }
 
+#elif defined(__APPLE__)
+
+#include <crt_externs.h>
+#define environ (*_NSGetEnviron())
+
 #else /* _WIN32 */
 
 extern char** environ; // required to exist by the Single Unix Specification
