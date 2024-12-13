@@ -29,7 +29,7 @@ jobs:
       - name: Download DCMTK Support libraries
         shell: pwsh
         run: |
-          C:\msys64\usr\bin\wget.exe -O dcmtk_support.zip https://dicom.offis.de/download/dcmtk/dcmtk368/support/dcmtk-3.6.8-win64-support-MD-msvc-17.4.zip
+          C:\msys64\usr\bin\wget.exe -O dcmtk_support.zip https://dicom.offis.de/download/dcmtk/dcmtk369/support/dcmtk-3.6.9-win64-support-MD-msvc-17.8.zip
 
       # Uncompress support libraries into directory c:\dcmtk_support\libs.
       # We rename the original directory to libs so that the rest of the script
@@ -60,7 +60,7 @@ jobs:
           echo "Step 2"
           cd ${{ github.workspace }}\dcmtk-build
           echo "Step 3"
-          cmake -G "Visual Studio 17 2022" -Ax64 -DDCMTK_MODULES:STR="ofstd;oflog;oficonv;dcmdata;dcmimgle;dcmimage;dcmjpeg;dcmjpls;dcmtls;dcmnet;dcmsr;dcmsign;dcmwlm;dcmqrdb;dcmpstat;dcmrt;dcmiod;dcmfg;dcmseg;dcmtract;dcmpmap;dcmect" -DDCMTK_ENABLE_BUILTIN_OFICONV_DATA:BOOL=On -DBUILD_SHARED_LIBS:BOOL=ON -DDCMTK_SUPPORT_LIBRARIES_DIR:PATH=c:\dcmtk_support\libs -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}  ${{ github.workspace }}
+          cmake -G "Visual Studio 17 2022" -Ax64 -DDCMTK_MODULES:STR="ofstd;oflog;oficonv;dcmdata;dcmimgle;dcmimage;dcmjpeg;dcmjpls;dcmtls;dcmnet;dcmsr;dcmsign;dcmwlm;dcmqrdb;dcmpstat;dcmrt;dcmiod;dcmfg;dcmseg;dcmtract;dcmpmap;dcmect;dcmapps" -DDCMTK_ENABLE_BUILTIN_OFICONV_DATA:BOOL=On -DBUILD_SHARED_LIBS:BOOL=ON -DDCMTK_SUPPORT_LIBRARIES_DIR:PATH=c:\dcmtk_support\libs -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}  ${{ github.workspace }}
 
       - name: Build dcmtk
         run: |
