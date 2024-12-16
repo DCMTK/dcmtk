@@ -950,7 +950,7 @@ const void *DiMonoImage::getOutputPlane(const int) const
 
 void DiMonoImage::deleteOverlayData()
 {
-    delete OFstatic_cast(char *, OverlayData);    // type cast necessary to avoid compiler warnings using gcc 2.95
+    delete[] OFstatic_cast(char *, OverlayData);
     OverlayData = NULL;
 }
 
