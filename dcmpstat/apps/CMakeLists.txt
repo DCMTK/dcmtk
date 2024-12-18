@@ -8,9 +8,9 @@ endforeach()
 
 # make sure executables are linked to the corresponding libraries
 foreach(PROGRAM dcmp2pgm dcmprscp dcmprscu dcmpsmk dcmpschk dcmpsprt dcmpsrcv dcmpssnd)
-  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmpstat dcmdsig dcmsr dcmimage dcmimgle dcmqrdb dcmnet dcmtls dcmdata oflog ofstd)
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmpstat dcmdsig dcmsr dcmimage dcmimgle dcmqrdb dcmtls)
 endforeach()
 
 foreach(PROGRAM dcmmkcrv dcmmklut)
-  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmdsig dcmsr dcmimage dcmimgle dcmdata oflog ofstd)
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmdsig dcmsr dcmimage dcmimgle)
 endforeach()
