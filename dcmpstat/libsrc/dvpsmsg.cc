@@ -279,6 +279,10 @@ void DVPSIPCClient::requestConnection()
 {
   if (connection) return; // connection already open
 
+  OFSockAddr server;
+  OFStandard::getAddressByHostname("localhost", AF_INET, server);
+  if (server.size() == 0) return;
+
 #ifdef _WIN32
   SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
   if (s == INVALID_SOCKET) return;
@@ -286,8 +290,7 @@ void DVPSIPCClient::requestConnection()
   int s = socket(AF_INET, SOCK_STREAM, 0);
   if (s < 0) return;
 #endif
-  OFSockAddr server;
-  OFStandard::getAddressByHostname("localhost", AF_INET, server);
+
   server.setPort(OFstatic_cast(unsigned short, htons(OFstatic_cast(unsigned short, port))));
 
   if (connect(s, server.getSockaddr(), server.size()) < 0)
