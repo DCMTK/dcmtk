@@ -98,27 +98,20 @@ OFCondition DcmQuantColorTable::computeHistogram(
 
   // compute initial maxval
   maxval = OFstatic_cast(DcmQuantComponent, -1);
-  DcmQuantColorHashTable *htable = NULL;
 
   // attempt to make a histogram of the colors, unclustered.
   // If at first we don't succeed, lower maxval to increase color
   // coherence and try again.  This will eventually terminate.
-  OFBool done = OFFalse;
-  while (! done)
+  do
   {
-    htable = new DcmQuantColorHashTable();
-    numColors = htable->addToHashTable(image, maxval, maxcolors);
-    if (numColors > 0) done = OFTrue;
-    else
-    {
-      delete htable;
+      DcmQuantColorHashTable htable;
+      if (htable.addToHashTable(image, maxval, maxcolors) > 0)
+      {
+          numColors = htable.createHistogram(array);
+          return EC_Normal;
+      }
       maxval = maxval/2;
-    }
-  }
-
-  numColors = htable->createHistogram(array);
-  delete htable;
-  return EC_Normal;
+  } while (OFTrue);
 }
 
 
