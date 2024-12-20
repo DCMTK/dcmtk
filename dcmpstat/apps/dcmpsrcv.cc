@@ -47,6 +47,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmpstat/dcmpstat.h"
+#include "dcmtk/dcmpstat/dvpsri.h"     /* for dcmPresentationStateValidationMode */
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -854,11 +855,24 @@ int main(int argc, char *argv[])
     unsigned short networkPort    = dvi.getTargetPort(opt_cfgID);
     unsigned long  networkMaxPDU  = dvi.getTargetMaxPDU(opt_cfgID);
     const char *networkAETitle    = dvi.getTargetAETitle(opt_cfgID);
+    const char *validationMode    = dvi.getTargetValidationMode(opt_cfgID);
     if (networkAETitle==NULL) networkAETitle = dvi.getNetworkAETitle();
     unsigned short messagePort    = dvi.getMessagePort();   /* port number for IPC */
     OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen();
     OFBool useTLS = dvi.getTargetUseTLS(opt_cfgID);
     OFBool notifyTermination      = OFTrue;  // notify IPC server of application termination
+
+    if (validationMode)
+    {
+      OFString vmode(validationMode);
+      if (vmode == "STD") dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_standard);
+      else if (vmode == "RELATED") dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_accept_Presentation_and_Processing);
+      else if (vmode == "RELAXED") dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_accept_all);
+      else
+      {
+        OFLOG_WARN(dcmpsrcvLogger, "unknown validation mode '" << vmode << "', ignoring");
+      }
+    }
 
 #ifdef WITH_OPENSSL
     /* TLS directory */

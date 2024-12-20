@@ -71,7 +71,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_DESCRIPTION                  "DESCRIPTION"
 #define L0_DETAILEDLOG                  "DETAILEDLOG"
 #define L0_DICOMNAME                    "DICOMNAME"
-#define L0_DIFFIEHELLMANPARAMETERS      "DIFFIEHELLMANPARAMETERS"   
+#define L0_DIFFIEHELLMANPARAMETERS      "DIFFIEHELLMANPARAMETERS"
 #define L0_DIRECTORY                    "DIRECTORY"
 #define L0_DISABLENEWVRS                "DISABLENEWVRS"
 #define L0_DISPLAYFORMAT                "DISPLAYFORMAT"
@@ -134,6 +134,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_USEPEMFORMAT                 "USEPEMFORMAT"
 #define L0_USERKEYDIRECTORY             "USERKEYDIRECTORY"
 #define L0_USETLS                       "USETLS"
+#define L0_VALIDATIONMODE               "VALIDATIONMODE"
 #define L0_WIDTH                        "WIDTH"
 #define L1_APPLICATION                  "APPLICATION"
 #define L1_DATABASE                     "DATABASE"
@@ -224,7 +225,7 @@ static int strCompare(const char *str1, const char *str2, size_t len)
   return _strnicmp(str1, str2, len);
 #else
   return strncasecmp(str1, str2, len);
-#endif    
+#endif
 }
 
 
@@ -1303,7 +1304,7 @@ const char *DVConfiguration::getTargetPrinterAnnotationDisplayFormatID(const cha
   copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION), 1, value);
   if (value.length()) return value.c_str(); else return NULL;
 }
-    
+
 Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 {
   OFString value;
@@ -1329,6 +1330,11 @@ const char *DVConfiguration::getTLSCACertificateFolder()
 OFBool DVConfiguration::getTLSPEMFormat()
 {
   return getConfigBoolEntry(L2_GENERAL, L1_TLS, L0_USEPEMFORMAT, OFTrue);
+}
+
+const char *DVConfiguration::getTargetValidationMode(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_VALIDATIONMODE);
 }
 
 OFBool DVConfiguration::getTargetBitPreservingMode(const char *targetID)

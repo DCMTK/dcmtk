@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2022, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,6 +31,7 @@
 #include "dcmtk/dcmnet/dul.h"
 #include "dcmtk/dcmpstat/dcmpstat.h"
 #include "dcmtk/dcmpstat/dvpshlp.h"
+#include "dcmtk/dcmpstat/dvpsri.h"     /* for dcmPresentationStateValidationMode */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -138,6 +139,11 @@ int main(int argc, char *argv[])
        cmd.addOption("--location-media",      "-lm", 2, "[f]ilesetID, fileset[UID]: string",
                                                         "image located on storage medium");
 
+    cmd.addGroup("validation options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--validate-std",                    "images referenced by GSPS must belong to the\nsame SOP class (default)");
+     cmd.addOption("--validate-related",                "images referenced by GSPS may belong to related\n'for presentation' and 'for processing'\nSOP class");
+     cmd.addOption("--validate-relaxed",                "images referenced by GSPS may be any SOP class");
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("output transfer syntax:");
        cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as image file (default)");
@@ -240,6 +246,13 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(opt_filesetID));
           app.checkValue(cmd.getValue(opt_filesetUID));
       }
+      cmd.endOptionBlock();
+
+      /* validation options */
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--validate-std")) dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_standard);
+      if (cmd.findOption("--validate-related")) dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_accept_Presentation_and_Processing);
+      if (cmd.findOption("--validate-relaxed")) dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_accept_all);
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();

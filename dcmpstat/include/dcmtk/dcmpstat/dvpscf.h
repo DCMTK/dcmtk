@@ -160,6 +160,14 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    */
   OFBool getTargetBitPreservingMode(const char *targetID);
 
+  /** returns the VALIDATIONMODE entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getTargetValidationMode(const char *targetID);
+
   /** returns the CORRECTUIDPADDING entry for the storage peer with the given
    *  target ID from the configuration file.
    *  @param targetID communication target ID, must be one of the target
@@ -398,7 +406,7 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    */
   OFBool getTargetPrinterSupportsAnnotationBoxSOPClass(const char *targetID);
 
-  /** returns OFTrue if an SESSIONLABELANNOTATION entry for the printer 
+  /** returns OFTrue if an SESSIONLABELANNOTATION entry for the printer
    *  with the given target ID from the configuration file exists and is true.
    *  @param targetID communication target ID, must be one of the target
    *    identifiers returned by getTargetID() for peer type DVPSE_printerAny.
@@ -414,7 +422,7 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    *  @return value if present, NULL otherwise.
    */
   const char *getTargetPrinterAnnotationDisplayFormatID(const char *targetID, OFString& value);
-  
+
   /** returns the first value from the ANNOTATION entry for the printer
    *  with the given target ID from the configuration file.
    *  @param targetID communication target ID, must be one of the target
@@ -422,7 +430,7 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    *  @return value if present, 0 otherwise.
    */
   Uint16 getTargetPrinterAnnotationPosition(const char *targetID);
-  
+
   /** returns the number of distinct values (separated by backslash characters)
    *  in the FILMSIZEID entry for the printer with the given
    *  target ID from the configuration file.
@@ -604,7 +612,7 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    */
   OFLogger::LogLevel getLogLevel();
 
-  /** returns the port on which the GUI application accepts notification 
+  /** returns the port on which the GUI application accepts notification
    *  messages from the network processes.
    *  Value is taken from the section GENERAL/APPLICATION/MESSAGEPORT
    *  in the config file.
@@ -945,22 +953,22 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
   double getVOIPresetWindowWidth(const char *modality, Uint32 idx);
 
   /* TLS settings */
-  
-  /** returns the directory in which TLS related files (certificates, keys, 
-   *  random data, Diffie-Hellman parameters etc.) are located. 
+
+  /** returns the directory in which TLS related files (certificates, keys,
+   *  random data, Diffie-Hellman parameters etc.) are located.
    *  @return TLS directory path, NULL if absent.
    */
   const char *getTLSFolder();
 
-  /** returns the directory in which certificates of the trusted 
-   *  Certification Authorities are located. 
+  /** returns the directory in which certificates of the trusted
+   *  Certification Authorities are located.
    *  @return TLS CA Certificate directory path, NULL if absent.
    */
   const char *getTLSCACertificateFolder();
 
   /** returns the file format used for certificates, keys and Diffie-Hellman
    *  parameters. OFTrue for PEM ("privacy enhanced mail") format, OFFalse for
-   *  DER ("distinguished encoding rules") format.  
+   *  DER ("distinguished encoding rules") format.
    *  @return OFTrue for PEM (default), OFFalse for DER.
    */
   OFBool getTLSPEMFormat();
@@ -968,7 +976,7 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
   /* User login settings */
 
   /** returns the directory in which user certificates and keys
-   *  are located. 
+   *  are located.
    *  @return User key/certificate directory path, NULL if absent.
    */
   const char *getUserCertificateFolder();
@@ -992,7 +1000,7 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    */
   const char *getUserLogin(const char *userID);
 
-  /** returns the human readable name for the given user. 
+  /** returns the human readable name for the given user.
    *  If absent in the config file, returns NULL.
    *  @param userID user ID as returned by getUserID()
    *  @return name for the given user
