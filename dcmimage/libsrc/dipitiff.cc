@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,6 +37,9 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#if TIFFLIB_VERSION < 20050912
+#error TIFF library versions prior to 3.7.4 are not supported by DCMTK
+#endif
 
 DiTIFFPlugin::DiTIFFPlugin()
 : DiPluginFormat()
@@ -63,26 +66,24 @@ int DiTIFFPlugin::write(
     int stream_fd = fileno(stream);
 
 
-#ifdef HAVE_WINDOWS_H
+#ifdef _WIN32
 
-#if TIFFLIB_VERSION < 20050912
-#error TIFF library versions prior to 3.7.4 are not supported by DCMTK on Win32 - critical API change!
-#endif
-
-/* Older versions of libtiff expected a Win32 HANDLE when compiled on Windows
- * instead of a file descriptor. The code below was needed to make that work.
- * Libtiff version 3.7.4 and newer are known to use a file descriptor instead,
- * but it is not completely clear at which libtiff release the API change happened.
+/* On Windows, TIFFFdOpen() expects a Windows HANDLE (which is a pointer type)
+ * instead of a file descriptor, but passes the file descriptor as an int.
+ * Despite HANDLE being a 64-bit type on Win64 and int being 32-bit, this is
+ * apparently safe, because Win64 guarantees to only use 32-bit handles,
+ * for interoperability reasons, as documented here:
  *
- * #ifdef __CYGWIN__
- *   stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
- * #else
- *   stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
- * #endif
+ * https://docs.microsoft.com/en-us/windows/win32/winprog64/interprocess-communication
+ *
+ * Therefore, we use _get_osfhandle() to access the HANDLE underlying the file descriptor.
  */
 
-#elif TIFFLIB_VERSION < 20041016
-#error TIFF library versions prior to 3.7.0 are not supported by DCMTK - TIFFCleanup is missing!
+#ifdef __CYGWIN__
+  stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
+#else
+  stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
+#endif
 #endif
 
     /* create bitmap with 8 bits per sample */
