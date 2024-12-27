@@ -68,23 +68,25 @@ int DiTIFFPlugin::write(
 
 #ifdef _WIN32
 
-/* On Windows, TIFFFdOpen() expects a Windows HANDLE (which is a pointer type)
- * instead of a file descriptor, but passes the file descriptor as an int.
- * Despite HANDLE being a 64-bit type on Win64 and int being 32-bit, this is
- * apparently safe, because Win64 guarantees to only use 32-bit handles,
- * for interoperability reasons, as documented here:
- *
- * https://docs.microsoft.com/en-us/windows/win32/winprog64/interprocess-communication
- *
- * Therefore, we use _get_osfhandle() to access the HANDLE underlying the file descriptor.
- */
+    /* On Windows, TIFFFdOpen() expects a Windows HANDLE (which is a pointer
+     * type) instead of a file descriptor, but passes the file descriptor as an
+     * int.  Despite HANDLE being a 64-bit type on Win64 and int being 32-bit,
+     * this is apparently safe, because Win64 guarantees to only use 32-bit
+     * handles, for interoperability reasons, as documented here:
+     *
+     *   https://docs.microsoft.com/en-us/windows/win32/winprog64/interprocess-communication
+     *
+     * Therefore, we use _get_osfhandle() to access the HANDLE underlying the
+     * file descriptor.
+     */
 
 #ifdef __CYGWIN__
-  stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
+    stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
 #else
-  stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
+    stream_fd = OFstatic_cast(int, _get_osfhandle(stream_fd));
 #endif
-#endif
+
+#endif /* _WIN32 */
 
     /* create bitmap with 8 bits per sample */
     void *data = OFconst_cast(void *, image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/));
@@ -162,9 +164,10 @@ int DiTIFFPlugin::write(
             offset += bytesperrow;
           }
           TIFFFlushData(tif);
+
           /* Clean up internal structures and free memory.
            * However, the file will be closed by the caller, therefore
-           * TIFFClose(tif) is not called.
+           * TIFFClose() is not called.
            */
           TIFFCleanup(tif);
         }
@@ -184,15 +187,18 @@ void DiTIFFPlugin::setCompressionType(DiTIFFCompression ctype)
   compressionType = ctype;
 }
 
+
 void DiTIFFPlugin::setLZWPredictor(DiTIFFLZWPredictor pred)
 {
   predictor = pred;
 }
 
+
 void DiTIFFPlugin::setRowsPerStrip(unsigned long rows)
 {
   rowsPerStrip = rows;
 }
+
 
 OFString DiTIFFPlugin::getLibraryVersionString()
 {
