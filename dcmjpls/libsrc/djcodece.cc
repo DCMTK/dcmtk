@@ -100,6 +100,14 @@ OFBool DJLSEncoderBase::canChangeCoding(
 }
 
 
+Uint16 DJLSEncoderBase::decodedBitsAllocated(
+    Uint16 /* bitsAllocated */,
+    Uint16 /* bitsStored */) const
+{
+  return 0;
+}
+
+
 OFCondition DJLSEncoderBase::decode(
     const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * /* pixSeq */,

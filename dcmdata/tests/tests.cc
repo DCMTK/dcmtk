@@ -126,4 +126,6 @@ OFTEST_REGISTER(dcmdata_xferLookup_2);
 OFTEST_REGISTER(dcmdata_xferLookup_3);
 OFTEST_REGISTER(dcmdata_xferLookup_4);
 OFTEST_REGISTER(dcmdata_putOFStringAtPos);
+OFTEST_REGISTER(dcmdata_uncompressedFrameSize);
+
 OFTEST_MAIN("dcmdata")

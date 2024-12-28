@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2023, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -207,6 +207,19 @@ public:
   virtual OFBool canChangeCoding(
     const E_TransferSyntax oldRepType,
     const E_TransferSyntax newRepType) const = 0;
+
+  /** determines the effective value of BitsAllocated that a dataset will have
+   *  after decompression of an image with the given values for bitsAllocated
+   *  and bitsStored. This may differ from the bitsAllocated parameter for example
+   *  if that value is not a multiple of 8. Returns zero if an image with the
+   *  given parameters cannot be decoded with this codec.
+   *  @param bitsAllocated current value of Bits Allocated
+   *  @param bitsStored current value of Bits Stored
+   *  @return value of BitsAllocated after decompression, 0 if no decompression possible
+   */
+  virtual Uint16 decodedBitsAllocated(
+    Uint16 bitsAllocated,
+    Uint16 bitsStored) const = 0;
 
   /** determine color model of the decompressed image
    *  @param fromParam representation parameter of current compressed
@@ -509,6 +522,21 @@ public:
     DcmPixelSequence *fromPixSeq,
     DcmItem *dataset,
     OFString &decompressedColorModel);
+
+  /** determines the effective value of BitsAllocated that a dataset will have
+   *  after decompression of an image with the given values for bitsAllocated
+   *  and bitsStored. This may differ from the bitsAllocated parameter for example
+   *  if that value is not a multiple of 8. Returns zero if an image with the
+   *  given parameters cannot be decoded.
+   *  @param fromType transfer syntax to decode from
+   *  @param bitsAllocated current value of Bits Allocated
+   *  @param bitsStored current value of Bits Stored
+   *  @return value of BitsAllocated after decompression, 0 if no decompression possible
+   */
+  static Uint16 decodedBitsAllocated(
+    const DcmXfer & fromType,
+    Uint16 bitsAllocated,
+    Uint16 bitsStored);
 
 private:
 

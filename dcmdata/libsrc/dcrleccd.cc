@@ -60,6 +60,20 @@ OFBool DcmRLECodecDecoder::canChangeCoding(
 }
 
 
+Uint16 DcmRLECodecDecoder::decodedBitsAllocated(
+    Uint16 bitsAllocated,
+    Uint16 /* bitsStored */) const
+{
+    // The RLE decoder only supports images where BitsAllocated is a multiple of 8.
+    if ((bitsAllocated < 8)||(bitsAllocated % 8 != 0)) return 0;
+
+    // RLE cannot support more than 120 bits/sample (15 bands) in DICOM
+    if (bitsAllocated > 120) return 0;
+
+    return bitsAllocated;
+}
+
+
 OFCondition DcmRLECodecDecoder::decode(
     const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * pixSeq,

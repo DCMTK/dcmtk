@@ -2000,6 +2000,17 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
 }
 
 
+Uint16 DcmElement::decodedBitsAllocated(
+      Uint16 bitsAllocated,
+      Uint16 bitsStored) const
+{
+  // Note: This method only handles the uncompressed case.
+  // A different implementation is provided in class DcmPixelData.
+  if (bitsStored > bitsAllocated) return 0;
+  return bitsAllocated;
+}
+
+
 // the following macro makes the source code more readable and easier to maintain
 
 #define GET_AND_CHECK_UINT16_VALUE(tag, variable)                                                                   \
@@ -2029,6 +2040,7 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
         Uint16 cols = 0;
         Uint16 samplesPerPixel = 0;
         Uint16 bitsAllocated = 0;
+        Uint16 bitsStored = 0;
         Sint32 numberOfFrames = 1;
         OFString photometricInterpretation;
 
@@ -2091,7 +2103,15 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
             /* see PS3.3 Table C.7-11c: "Bits Allocated (0028,0100) shall be either 1, or a multiple of 8." */
             else if ((bitsAllocated == 0) || ((bitsAllocated > 1) && (bitsAllocated % 8 != 0)))
                 DCMDATA_WARN("DcmElement: Dubious value (" << bitsAllocated << ") for element BitsAllocated " << DCM_BitsAllocated);
+
+            GET_AND_CHECK_UINT16_VALUE(DCM_BitsStored, bitsStored)
+            else if (bitsStored > bitsAllocated)
+            {
+                DCMDATA_WARN("DcmElement: Dubious value (" << bitsStored << ") for element BitsStored " << DCM_BitsAllocated << " larger than value of BitsAllocated " << DCM_BitsAllocated);
+                result = EC_InvalidValue;
+            }
         }
+
         /* if all checks were passed... */
         if (result.good())
         {
@@ -2129,26 +2149,42 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
                    DCMDATA_WARN("DcmElement: failed to compute size of PixelData element");
             }
 
-            /* compute frame size (TODO: check for 32-bit integer overflow?) */
-            if ((bitsAllocated % 8) == 0)
+            // Determine the effective value for Bits Allocated, taking into account compression
+            Uint16 effectiveBitsAllocated = decodedBitsAllocated(bitsAllocated, bitsStored);
+            if (effectiveBitsAllocated == 0)
             {
-                const Uint16 bytesAllocated = bitsAllocated / 8;
-                frameSize = bytesAllocated * rows * cols * samplesPerPixel;
+                DCMDATA_WARN("DcmElement: Encapsulated image with BitsAllocated=" << bitsAllocated << " and BitsStored=" << bitsStored << " cannot be decoded");
+                result = EC_InvalidValue;
             }
             else
             {
-                /* need to split calculation in order to avoid integer overflow for large pixel data */
-                const Uint32 v1 = rows * cols * samplesPerPixel;
-                const Uint32 v2 = (bitsAllocated / 8) * v1;
-                const Uint32 v3 = ((bitsAllocated % 8) * v1 + 7) / 8;
-            //  # old code: frameSize = (bitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
-                frameSize = v2 + v3;
+                /* compute frame size */
+                if ((effectiveBitsAllocated % 8) == 0)
+                {
+                    const Uint16 bytesAllocated = effectiveBitsAllocated / 8;
+                    const Uint32 v1 = rows * cols * samplesPerPixel;
+                    frameSize = bytesAllocated * v1;
+                    if (frameSize / bytesAllocated != v1)
+                    {
+                        DCMDATA_WARN("DcmElement: frame size too large, 32-bit integer overflow");
+                        result = EC_InvalidValue;
+                    }
+                }
+                else
+                {
+                    // Split the calculation in order to avoid integer overflow for large pixel data.
+                    // # old code: frameSize = (effectiveBitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
+                    const Uint32 v1 = rows * cols * samplesPerPixel;
+                    const Uint32 v2 = (effectiveBitsAllocated / 8) * v1;
+                    const Uint32 v3 = ((effectiveBitsAllocated % 8) * v1 + 7) / 8;
+                    frameSize = v2 + v3;
+                }
             }
-        } else {
-            /* in case of error, return a frame size of 0 */
-            frameSize = 0;
         }
     }
+
+    /* in case of error, return a frame size of 0 */
+    if (result.bad()) frameSize = 0;
     return result;
 }
 

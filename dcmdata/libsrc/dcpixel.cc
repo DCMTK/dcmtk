@@ -1356,3 +1356,21 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
     // pixel data is encapsulated, return error
     return EC_CannotWriteJsonInlineBinary;
 }
+
+
+Uint16 DcmPixelData::decodedBitsAllocated(
+      Uint16 bitsAllocated,
+      Uint16 bitsStored) const
+{
+    if (bitsStored > bitsAllocated) return 0;
+    if (existUnencapsulated || (original == repListEnd))
+    {
+        // we have uncompressed pixel data or pixel data is empty
+        return DcmElement::decodedBitsAllocated(bitsAllocated, bitsStored);
+    }
+    else
+    {
+       return DcmCodecList::decodedBitsAllocated((*original)->repType, bitsAllocated, bitsStored);
+    }
+}
+

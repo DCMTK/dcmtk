@@ -896,6 +896,19 @@ class DCMTK_DCMDATA_EXPORT DcmElement
     static OFCondition checkVM(const unsigned long vmNum,
                                const OFString &vmStr);
 
+    /** determines the effective value of BitsAllocated that a dataset will have
+     *  after decompression of an image with the given values for bitsAllocated
+     *  and bitsStored. This may differ from the bitsAllocated parameter for example
+     *  if that value is not a multiple of 8. Returns zero if an image with the
+     *  given parameters cannot be decoded.
+     *  @param bitsAllocated current value of Bits Allocated
+     *  @param bitsStored current value of Bits Stored
+     *  @return effective value of BitsAllocated, 0 if no decompression possible
+     */
+    virtual Uint16 decodedBitsAllocated(
+      Uint16 bitsAllocated,
+      Uint16 bitsStored) const;
+
   protected:
 
     /** This function returns this element's value. The returned value corresponds to the
