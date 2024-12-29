@@ -522,10 +522,10 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
         tmpin = *in;
         szrin = szrout = 0;
         ret = mbtocsx(&sc->sc_src_encoding, &csid, &idx, &tmpin,
-            *inbytes, &szrin, cv->cv_shared->ci_hooks);
+            *inbytes, &szrin, cv->ci_hooks);
 
         if (ret != 0 && (ret != EILSEQ ||
-            !cv->cv_shared->ci_discard_ilseq)) {
+            !cv->ci_discard_ilseq)) {
                 goto err;
         } else if (ret == EILSEQ) {
                 /*
@@ -565,18 +565,18 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
                  * Some software depends on this behavior
                  * though this is against POSIX specification.
                  */
-                if (cv->cv_shared->ci_ilseq_invalid != 0) {
+                if (cv->ci_ilseq_invalid != 0) {
                         ret = EILSEQ;
                         goto err;
                 }
                 inval++;
                 szrout = 0;
                 if ((((flags & _CITRUS_ICONV_F_HIDE_INVALID) == 0) &&
-                    !cv->cv_shared->ci_discard_ilseq) &&
+                    !cv->ci_discard_ilseq) &&
                     is->is_use_invalid) {
                     ret = wctombx(&sc->sc_dst_encoding,
                         *out, *outbytes, is->is_invalid,
-                        &szrout, cv->cv_shared->ci_hooks);
+                        &szrout, cv->ci_hooks);
                     if (ret)
                         goto err;
                 }
@@ -587,7 +587,7 @@ _citrus_iconv_std_iconv_convert(struct _citrus_iconv * cv,
         /* csid/index -> mb */
         ret = cstombx(&sc->sc_dst_encoding,
             *out, *outbytes, csid, idx, &szrout,
-            cv->cv_shared->ci_hooks);
+            cv->ci_hooks);
         if (ret)
             goto err;
 next:

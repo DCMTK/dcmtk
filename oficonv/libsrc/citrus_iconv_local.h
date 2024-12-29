@@ -110,14 +110,14 @@ struct _citrus_iconv_shared {
     _citrus_module_t                          ci_module;
     unsigned int                              ci_used_count;
     char                                     *ci_convname;
-    bool                                      ci_discard_ilseq;
-    struct iconv_hooks                       *ci_hooks;
-    bool                                      ci_ilseq_invalid;
 };
 
 struct _citrus_iconv {
     struct _citrus_iconv_shared *cv_shared;
     void                        *cv_closure;
+    struct iconv_hooks          *ci_hooks;
+    bool                         ci_discard_ilseq;
+    bool                         ci_ilseq_invalid;
 };
 
 #endif

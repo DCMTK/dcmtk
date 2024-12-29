@@ -113,9 +113,9 @@ _iconv_open(const char *out, const char *in, struct _citrus_iconv *handle)
         return ((iconv_t)-1);
     }
 
-    handle->cv_shared->ci_discard_ilseq = strcasestr(out, "//IGNORE");
-    handle->cv_shared->ci_ilseq_invalid = false;
-    handle->cv_shared->ci_hooks = NULL;
+    handle->ci_discard_ilseq = strcasestr(out, "//IGNORE");
+    handle->ci_ilseq_invalid = false;
+    handle->ci_hooks = NULL;
 
     return ((iconv_t)(void *)handle);
 }
@@ -342,22 +342,22 @@ OFiconvctl(iconv_t cd, int request, void *argument)
     case ICONV_SET_TRANSLITERATE:
         return  ((*i == 1) ? 0 : -1);
     case ICONV_GET_DISCARD_ILSEQ:
-        *i = cv->cv_shared->ci_discard_ilseq ? 1 : 0;
+        *i = cv->ci_discard_ilseq ? 1 : 0;
         return (0);
     case ICONV_SET_DISCARD_ILSEQ:
-        cv->cv_shared->ci_discard_ilseq = *i;
+        cv->ci_discard_ilseq = *i;
         return (0);
     case ICONV_SET_HOOKS:
-        cv->cv_shared->ci_hooks = hooks;
+        cv->ci_hooks = hooks;
         return (0);
     case ICONV_SET_FALLBACKS:
         errno = EOPNOTSUPP;
         return (-1);
     case ICONV_GET_ILSEQ_INVALID:
-        *i = cv->cv_shared->ci_ilseq_invalid ? 1 : 0;
+        *i = cv->ci_ilseq_invalid ? 1 : 0;
         return (0);
     case ICONV_SET_ILSEQ_INVALID:
-        cv->cv_shared->ci_ilseq_invalid = *i;
+        cv->ci_ilseq_invalid = *i;
         return (0);
     default:
         errno = EINVAL;
