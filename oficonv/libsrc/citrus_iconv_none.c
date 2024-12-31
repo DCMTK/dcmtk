@@ -120,9 +120,9 @@ _citrus_iconv_none_iconv_convert(struct _citrus_iconv * ci ,
         len = *outbytes;
     }
     memcpy(*out, *in, len);
-    in += len;
+    *in += len;
     *inbytes -= len;
-    out += len;
+    *out += len;
     *outbytes -= len;
     *invalids = 0;
     if (e2big)
