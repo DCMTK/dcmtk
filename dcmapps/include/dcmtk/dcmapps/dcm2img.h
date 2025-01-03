@@ -640,7 +640,7 @@ static E_FileType getFileTypeByExtension(const char *fname)
     // no filename extension, return BMP as the default for files
     if (pos == OFString_npos)
     {
-        OFLOG_WARN(dcm2imgLogger, "no filename extension specified, writing BMP file.");
+        OFLOG_WARN(dcm2imgLogger, "no filename extension specified, writing BMP file");
         return EFT_BMP;
     }
 
@@ -669,7 +669,7 @@ static E_FileType getFileTypeByExtension(const char *fname)
 #endif /* WITH_OPENJPEG */
 #endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
-    OFLOG_WARN(dcm2imgLogger, "unsupported filename extension '" << extension << "', writing BMP file.");
+    OFLOG_WARN(dcm2imgLogger, "unsupported filename extension '" << extension << "', writing BMP file");
     return EFT_BMP;
 }
 
@@ -767,8 +767,7 @@ int main(int argc, char *argv[])
 
     int                 opt_imageInfo = 0;                /* default: no info */
     int                 opt_suppressOutput = 0;           /* default: create output */
-    E_FileType          opt_fileType = EFT_default;
-                                                          /* (binary for file output and ASCII for stdout) */
+    E_FileType          opt_fileType = EFT_default;       /* default: auto */
     OFCmdUnsignedInt    opt_fileBits = 0;                 /* default: 0 */
     const char *        opt_ifname = NULL;
     const char *        opt_ofname = NULL;
@@ -1592,9 +1591,7 @@ int main(int argc, char *argv[])
             opt_fileType = EFT_JPLS;
 #ifdef BUILD_DCM2IMG_AS_DCM2KIMG
         if (cmd.findOption("--write-jp2k-cs"))
-        {
             opt_fileType = EFT_JP2K_CS;
-        }
 #ifdef WITH_OPENJPEG
         if (cmd.findOption("--write-jp2k"))
         {
@@ -1617,11 +1614,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-pastel-pnm"))
             opt_fileType = EFT_PastelPNM;
 #endif
-        if (cmd.findOption("--write-auto") || ((opt_fileType == EFT_default)))
-        {
-            if (opt_ofname)
-                opt_fileType = getFileTypeByExtension(opt_ofname);
-        }
+        if (cmd.findOption("--write-auto"))
+            opt_fileType = EFT_default;
         cmd.endOptionBlock();
     }
 
@@ -1635,8 +1629,13 @@ int main(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    if (opt_suppressOutput && opt_ofname)
-        OFLOG_WARN(dcm2imgLogger, "ignoring parameter bitmap-out because of option --no-output");
+    if (opt_ofname)
+    {
+        if (opt_suppressOutput)
+            OFLOG_WARN(dcm2imgLogger, "ignoring parameter bitmap-out because of option --no-output");
+        else if (opt_fileType == EFT_default)
+            opt_fileType = getFileTypeByExtension(opt_ofname);
+    }
 
     OFLOG_INFO(dcm2imgLogger, "reading DICOM file: " << opt_ifname);
 
@@ -1994,7 +1993,7 @@ int main(int argc, char *argv[])
             {
                 if (fclose(ofile))
                 {
-                    OFLOG_FATAL(dcm2imgLogger, "Error while closing file, content may be incomplete.");
+                    OFLOG_FATAL(dcm2imgLogger, "error while closing file, content may be incomplete");
                     return 1;
                 }
             }
