@@ -171,6 +171,10 @@ private:
     /// pointer to current node in list
     DcmListNode *currentNode;
 
+    /// the current absolute position that is maintained in order to avoid O(n) lookup
+    /// when essentially iterating the elements using `seek_to`
+    unsigned long currentAbsolutePosition;
+
     /// number of elements in list
     unsigned long cardinality;
  
