@@ -19,31 +19,7 @@
  *
  */
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dclist.h"
-
-
-// *****************************************
-// *** DcmListNode *************************
-// *****************************************
-
-
-DcmListNode::DcmListNode( DcmObject *obj )
-  : nextNode(NULL),
-    prevNode(NULL),
-    objNodeValue(obj)
-{
-}
-
-
-// ********************************
-
-
-DcmListNode::~DcmListNode()
-{
-}
 
 
 // *****************************************
@@ -52,10 +28,7 @@ DcmListNode::~DcmListNode()
 
 
 DcmList::DcmList()
-  : firstNode(NULL),
-    lastNode(NULL),
-    currentNode(NULL),
-    cardinality(0)
+  : current(objects.end())
 {
 }
 
@@ -65,17 +38,7 @@ DcmList::DcmList()
 
 DcmList::~DcmList()
 {
-    if ( !DcmList::empty() )                      // list is not empty !
-    {
-        lastNode->nextNode = NULL;                // set to 0 for safety reasons
-        do {
-            DcmListNode *temp = firstNode;
-            firstNode = firstNode->nextNode;
-            // delete temp->objNodeValue;         // dangerous!
-            delete temp;
-        } while ( firstNode != NULL );
-        currentNode = firstNode = lastNode = NULL;
-    }
+    deleteAllElements();
 }
 
 
@@ -84,19 +47,7 @@ DcmList::~DcmList()
 
 DcmObject *DcmList::append( DcmObject *obj )
 {
-    if ( obj != NULL )
-    {
-        if ( DcmList::empty() )                        // list is empty !
-            currentNode = firstNode = lastNode = new DcmListNode(obj);
-        else
-        {
-            DcmListNode *node = new DcmListNode(obj);
-            lastNode->nextNode = node;
-            node->prevNode = lastNode;
-            currentNode = lastNode = node;
-        }
-        cardinality++;
-    } // obj == NULL
+    current = objects.insert(objects.end(), obj);
     return obj;
 }
 
@@ -106,19 +57,7 @@ DcmObject *DcmList::append( DcmObject *obj )
 
 DcmObject *DcmList::prepend( DcmObject *obj )
 {
-    if ( obj != NULL )
-    {
-        if ( DcmList::empty() )                        // list is empty !
-            currentNode = firstNode = lastNode = new DcmListNode(obj);
-        else
-        {
-            DcmListNode *node = new DcmListNode(obj);
-            node->nextNode = firstNode;
-            firstNode->prevNode = node;
-            currentNode = firstNode = node;
-        }
-        cardinality++;
-    } // obj == NULL
+    current = objects.insert(objects.begin(), obj);
     return obj;
 }
 
@@ -132,8 +71,7 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
     {
         if ( DcmList::empty() )                 // list is empty !
         {
-            currentNode = firstNode = lastNode = new DcmListNode(obj);
-            cardinality++;
+            DcmList::append(obj);
         }
         else {
             if ( pos==ELP_last )
@@ -146,30 +84,12 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
                 DcmList::append( obj );         // cardinality++;
             else if ( pos == ELP_prev )         // insert before current node
             {
-                DcmListNode *node = new DcmListNode(obj);
-                if ( currentNode->prevNode == NULL )
-                    firstNode = node;           // insert at the beginning
-                else
-                    currentNode->prevNode->nextNode = node;
-                node->prevNode = currentNode->prevNode;
-                node->nextNode = currentNode;
-                currentNode->prevNode = node;
-                currentNode = node;
-                cardinality++;
+                current = objects.insert(current, obj);
             }
             else //( pos==ELP_next || pos==ELP_atpos )
                                                 // insert after current node
             {
-                DcmListNode *node = new DcmListNode(obj);
-                if ( currentNode->nextNode == NULL )
-                    lastNode = node;            // append to the end
-                else
-                    currentNode->nextNode->prevNode = node;
-                node->nextNode = currentNode->nextNode;
-                node->prevNode = currentNode;
-                currentNode->nextNode = node;
-                currentNode = node;
-                cardinality++;
+                current = objects.insert(std::next(current), obj);
             }
         }
     } // obj == NULL
@@ -183,7 +103,6 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
 DcmObject *DcmList::remove()
 {
     DcmObject *tempobj;
-    DcmListNode *tempnode;
 
     if ( DcmList::empty() )                        // list is empty !
         return NULL;
@@ -191,22 +110,8 @@ DcmObject *DcmList::remove()
         return NULL;                               // current node is 0
     else
     {
-        tempnode = currentNode;
-
-        if ( currentNode->prevNode == NULL )
-            firstNode = currentNode->nextNode;     // delete first element
-        else
-            currentNode->prevNode->nextNode = currentNode->nextNode;
-
-        if ( currentNode->nextNode == NULL )
-            lastNode = currentNode->prevNode;      // delete last element
-        else
-            currentNode->nextNode->prevNode = currentNode->prevNode;
-
-        currentNode = currentNode->nextNode;
-        tempobj = tempnode->value();
-        delete tempnode;
-        cardinality--;
+        tempobj = *current;
+        current = objects.erase(current);
         return tempobj;
     }
 }
@@ -229,23 +134,29 @@ DcmObject *DcmList::seek( E_ListPos pos )
     switch (pos)
     {
         case ELP_first :
-            currentNode = firstNode;
+            current = objects.begin();
             break;
         case ELP_last :
-            currentNode = lastNode;
+            if (objects.empty())
+            	current = objects.end();
+            else
+                current = std::prev(objects.end());
             break;
         case ELP_prev :
             if ( DcmList::valid() )
-                currentNode = currentNode->prevNode;
+                if (current == objects.begin())
+                    current = objects.end();
+                else
+                    --current;
             break;
         case ELP_next :
             if ( DcmList::valid() )
-                currentNode = currentNode->nextNode;
+                ++current;
             break;
         default:
             break;
     }
-    return DcmList::valid() ? currentNode->value() : NULL;
+    return DcmList::valid() ? *current : NULL;
 }
 
 
@@ -254,23 +165,11 @@ DcmObject *DcmList::seek( E_ListPos pos )
 
 DcmObject *DcmList::seek_to(unsigned long absolute_position)
 {
-    if (absolute_position < cardinality / 2)
-    {
-        /* iterate over first half of the list */
-        seek( ELP_first );
-        for (unsigned long i = 0; i < absolute_position; i++)
-            seek( ELP_next );
-    }
-    else if (absolute_position < cardinality)
-    {
-        /* iterate over second half of the list (starting from the end) */
-        seek( ELP_last );
-        for (unsigned long i = absolute_position + 1; i < cardinality; i++)
-            seek( ELP_prev );
-    } else {
-        /* invalid position */
-        currentNode = NULL;
-    }
+    if (absolute_position < objects.size())
+        current = objects.begin() + absolute_position;
+    else
+        current = objects.end();
+
     return get( ELP_atpos );
 }
 
@@ -280,29 +179,8 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 
 void DcmList::deleteAllElements()
 {
-    unsigned long numElements = cardinality;
-    DcmListNode* tmpNode = NULL;
-    DcmObject* tmpObject = NULL;
-    // delete all elements
-    for (unsigned long i = 0; i < numElements; i++)
-    {
-        // always select first node so no search is necessary
-        tmpNode = firstNode;
-        // clear value of node
-        tmpObject = tmpNode->value();
-        if (tmpObject != NULL)
-        {
-          // delete load of selected list node
-          delete tmpObject;
-          tmpObject = NULL;
-        }
-        firstNode = tmpNode->nextNode;
-        // delete the list node itself
-        delete tmpNode;
-    }
-    // reset all attributes for later use
-    firstNode = NULL;
-    lastNode = NULL;
-    currentNode = NULL;
-    cardinality = 0;
+    for (DcmObject* object : objects)
+        delete object;
+    objects.clear();
+    current = objects.end();
 }

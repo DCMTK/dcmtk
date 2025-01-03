@@ -22,52 +22,12 @@
 #ifndef DCLIST_H
 #define DCLIST_H
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include "dcmtk/ofstd/ofcast.h"
-#include "dcmtk/ofstd/oftypes.h"
-
 #include "dcmtk/dcmdata/dcobject.h"
+
+#include <deque>
 
 /// index indicating "end of list"
 const unsigned long DCM_EndOfListIndex = OFstatic_cast(unsigned long, -1L);
-
-/** helper class maintaining an entry in a DcmList double-linked list
- */
-class DCMTK_DCMDATA_EXPORT DcmListNode 
-{
-
-public:
-    /** constructor
-     *  @param obj object to be maintained by this list node
-     */
-    DcmListNode( DcmObject *obj );
-
-    /// destructor
-    ~DcmListNode();
-
-    /// return pointer to object maintained by this list node
-    inline DcmObject *value() { return objNodeValue; } 
-
-private:
-    friend class DcmList;
-
-    /// pointer to next node in double-linked list
-    DcmListNode *nextNode;
-
-    /// pointer to previous node in double-linked list
-    DcmListNode *prevNode;
-
-    /// pointer to DcmObject instance maintained by this list entry
-    DcmObject *objNodeValue;
-
-    /// private undefined copy constructor 
-    DcmListNode(const DcmListNode &);
-
-    /// private undefined copy assignment operator 
-    DcmListNode &operator=(const DcmListNode &);
-
-};
 
 /// list position indicator
 typedef enum
@@ -101,13 +61,13 @@ public:
     /// destructor
     ~DcmList();
 
-    /** insert object at end of list
+    /** insert object at end of list and make it be the "current" one
      *  @param obj pointer to object
      *  @return pointer to object
      */
     DcmObject *append(  DcmObject *obj );
 
-    /** insert object at start of list
+    /** insert object at start of list and make it be the "current" one
      *  @param obj pointer to object
      *  @return pointer to object
      */
@@ -153,27 +113,19 @@ public:
     void deleteAllElements();
 
     /// return cardinality of list
-    inline unsigned long card() const { return cardinality; }
+    inline unsigned long card() const { return static_cast<unsigned long>(objects.size()); }
 
     /// return true if list is empty, false otherwise
-    inline OFBool empty(void) const { return firstNode == NULL; }
+    inline OFBool empty(void) const { return objects.empty(); }
 
     /// return true if current node exists, false otherwise
-    inline OFBool valid(void) const { return currentNode != NULL; }
+    inline OFBool valid(void) const { return current != objects.end(); }
 
 private:
-    /// pointer to first node in list
-    DcmListNode *firstNode;
+    std::deque<DcmObject*> objects;
 
-    /// pointer to last node in list
-    DcmListNode *lastNode;
+    std::deque<DcmObject*>::iterator current;
 
-    /// pointer to current node in list
-    DcmListNode *currentNode;
-
-    /// number of elements in list
-    unsigned long cardinality;
- 
     /// private undefined copy constructor 
     DcmList &operator=(const DcmList &);
 
