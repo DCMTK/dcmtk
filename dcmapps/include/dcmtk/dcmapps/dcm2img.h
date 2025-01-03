@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1617,8 +1617,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-pastel-pnm"))
             opt_fileType = EFT_PastelPNM;
 #endif
-        if (opt_ofname && (opt_fileType == EFT_default|| cmd.findOption("--write-auto")))
-            opt_fileType = getFileTypeByExtension(opt_ofname);
+        if (cmd.findOption("--write-auto") || ((opt_fileType == EFT_default)))
+        {
+            if (opt_ofname)
+                opt_fileType = getFileTypeByExtension(opt_ofname);
+        }
         cmd.endOptionBlock();
     }
 
