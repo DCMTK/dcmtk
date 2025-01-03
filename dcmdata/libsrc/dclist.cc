@@ -24,6 +24,8 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dclist.h"
 
+#include <limits>
+
 
 // *****************************************
 // *** DcmListNode *************************
@@ -51,10 +53,20 @@ DcmListNode::~DcmListNode()
 // *****************************************
 
 
+namespace
+{
+    static const unsigned long invalidAbsolutePosition = std::numeric_limits<unsigned long>::max();
+}
+
+
+// ********************************
+
+
 DcmList::DcmList()
   : firstNode(NULL),
     lastNode(NULL),
     currentNode(NULL),
+    currentAbsolutePosition(invalidAbsolutePosition),
     cardinality(0)
 {
 }
@@ -75,6 +87,7 @@ DcmList::~DcmList()
             delete temp;
         } while ( firstNode != NULL );
         currentNode = firstNode = lastNode = NULL;
+        currentAbsolutePosition = invalidAbsolutePosition;
     }
 }
 
@@ -95,6 +108,7 @@ DcmObject *DcmList::append( DcmObject *obj )
             node->prevNode = lastNode;
             currentNode = lastNode = node;
         }
+        currentAbsolutePosition = cardinality;
         cardinality++;
     } // obj == NULL
     return obj;
@@ -117,6 +131,7 @@ DcmObject *DcmList::prepend( DcmObject *obj )
             firstNode->prevNode = node;
             currentNode = firstNode = node;
         }
+        currentAbsolutePosition = 0;
         cardinality++;
     } // obj == NULL
     return obj;
@@ -133,6 +148,7 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
         if ( DcmList::empty() )                 // list is empty !
         {
             currentNode = firstNode = lastNode = new DcmListNode(obj);
+            currentAbsolutePosition = 0;
             cardinality++;
         }
         else {
@@ -155,6 +171,7 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
                 node->nextNode = currentNode;
                 currentNode->prevNode = node;
                 currentNode = node;
+                currentAbsolutePosition++;
                 cardinality++;
             }
             else //( pos==ELP_next || pos==ELP_atpos )
@@ -169,6 +186,7 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
                 node->prevNode = currentNode;
                 currentNode->nextNode = node;
                 currentNode = node;
+                currentAbsolutePosition++;
                 cardinality++;
             }
         }
@@ -206,6 +224,7 @@ DcmObject *DcmList::remove()
         currentNode = currentNode->nextNode;
         tempobj = tempnode->value();
         delete tempnode;
+        // NB: no need to update currentAbsolutePosition
         cardinality--;
         return tempobj;
     }
@@ -230,17 +249,37 @@ DcmObject *DcmList::seek( E_ListPos pos )
     {
         case ELP_first :
             currentNode = firstNode;
+            if ( DcmList::valid() )
+                currentAbsolutePosition = 0;
+            else
+                currentAbsolutePosition = invalidAbsolutePosition;
             break;
         case ELP_last :
             currentNode = lastNode;
+            if ( DcmList::valid() )
+                currentAbsolutePosition = cardinality - 1;
+            else
+                currentAbsolutePosition = invalidAbsolutePosition;
             break;
         case ELP_prev :
             if ( DcmList::valid() )
+            {
                 currentNode = currentNode->prevNode;
+                if ( DcmList::valid() )
+                    currentAbsolutePosition--;
+                else
+                    currentAbsolutePosition = invalidAbsolutePosition;
+            }
             break;
         case ELP_next :
             if ( DcmList::valid() )
+            {
                 currentNode = currentNode->nextNode;
+                if ( DcmList::valid() )
+                    currentAbsolutePosition++;
+                else
+                    currentAbsolutePosition = invalidAbsolutePosition;
+            }
             break;
         default:
             break;
@@ -254,6 +293,41 @@ DcmObject *DcmList::seek( E_ListPos pos )
 
 DcmObject *DcmList::seek_to(unsigned long absolute_position)
 {
+    if (absolute_position >= cardinality)
+    {
+        /* invalid position */
+        currentNode = NULL;
+        currentAbsolutePosition = invalidAbsolutePosition;
+        return get( ELP_atpos );
+    }
+
+    if (currentAbsolutePosition != invalidAbsolutePosition)
+    {
+        const unsigned long distance = absolute_position >= currentAbsolutePosition
+            ? absolute_position - currentAbsolutePosition
+            : currentAbsolutePosition - absolute_position;
+
+        // Are we seeking to a position that is closer to the current position, than to
+        // the start or end of the sequence? This is often the case, if we are using
+        // `seek_to` to essentially iterate over the sequence, for example. If so, then
+        // let's start iterating from the current position. Often the position we want 
+        // is simply the next position (or maybe the previous one). Let's make those
+        // use cases be O(1), and not O(n).
+        if (distance <= absolute_position && distance < cardinality - absolute_position)
+        {
+            if (currentAbsolutePosition <= absolute_position)
+                while (currentAbsolutePosition < absolute_position)
+                    seek( ELP_next );
+            else
+                while (currentAbsolutePosition > absolute_position)
+                    seek( ELP_prev );
+
+            return get( ELP_atpos );
+        }
+    }
+
+    // Iterate from the start or the end of the list.
+
     if (absolute_position < cardinality / 2)
     {
         /* iterate over first half of the list */
@@ -261,15 +335,13 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
         for (unsigned long i = 0; i < absolute_position; i++)
             seek( ELP_next );
     }
-    else if (absolute_position < cardinality)
+    else
     {
+        assert(absolute_position < cardinality);
         /* iterate over second half of the list (starting from the end) */
         seek( ELP_last );
         for (unsigned long i = absolute_position + 1; i < cardinality; i++)
             seek( ELP_prev );
-    } else {
-        /* invalid position */
-        currentNode = NULL;
     }
     return get( ELP_atpos );
 }
@@ -304,5 +376,6 @@ void DcmList::deleteAllElements()
     firstNode = NULL;
     lastNode = NULL;
     currentNode = NULL;
+    currentAbsolutePosition = invalidAbsolutePosition;
     cardinality = 0;
 }
