@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2023, OFFIS e.V.
+ *  Copyright (C) 2016-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,7 +132,7 @@ void DcmJsonFormat::normalizeDecimalString(OFString &value)
 void DcmJsonFormat::normalizeIntegerString(OFString &value)
 {
     // remove all plus characters that may occur in the string.
-    // These are permitted in DICOM but not in Json.
+    // These are permitted in DICOM but not in JSON.
     size_t pos;
     while (OFString_npos != (pos = value.find('+')))
       value.erase(pos,1);

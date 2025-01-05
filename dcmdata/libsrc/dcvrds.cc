@@ -309,25 +309,27 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                 switch (format.getJsonNumStringPolicy())
                 {
                   case DcmJsonFormat::NSP_auto:
-                    if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
+                    if (isValid)
+                        DcmJsonFormat::printNumberDecimal(out, value);
                     else
                     {
-                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to Json string.");
+                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
                         DcmJsonFormat::printValueString(out, value);
                     }
                     break;
                   case DcmJsonFormat::NSP_always_number:
-                    if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
+                    if (isValid)
+                        DcmJsonFormat::printNumberDecimal(out, value);
                     else
                     {
-                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', aborting conversion to Json.");
+                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', aborting conversion to JSON.");
                         return EC_CannotWriteStringAsJsonNumber;
                     }
                     break;
                   case DcmJsonFormat::NSP_always_string:
-                    if (! isValid)
+                    if (!isValid)
                     {
-                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to Json string.");
+                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
                     }
                     DcmJsonFormat::printValueString(out, value);
                     break;
@@ -344,25 +346,27 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                     switch (format.getJsonNumStringPolicy())
                     {
                       case DcmJsonFormat::NSP_auto:
-                        if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
+                        if (isValid)
+                            DcmJsonFormat::printNumberDecimal(out, value);
                         else
                         {
-                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to Json string.");
+                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
                             DcmJsonFormat::printValueString(out, value);
                         }
                         break;
                       case DcmJsonFormat::NSP_always_number:
-                        if (isValid) DcmJsonFormat::printNumberDecimal(out, value);
+                        if (isValid)
+                            DcmJsonFormat::printNumberDecimal(out, value);
                         else
                         {
-                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', aborting conversion to Json.");
+                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', aborting conversion to JSON.");
                             return EC_CannotWriteStringAsJsonNumber;
                         }
                         break;
                       case DcmJsonFormat::NSP_always_string:
-                        if (! isValid)
+                        if (!isValid)
                         {
-                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to Json string.");
+                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
                         }
                         DcmJsonFormat::printValueString(out, value);
                         break;
