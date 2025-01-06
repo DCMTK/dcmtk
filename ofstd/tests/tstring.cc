@@ -309,11 +309,11 @@ OFTEST(ofstd_OFString_conversion)
 
   // convert an OFString containing a null byte to std::string
   a.at(1)= '\0';
-  STD_NAMESPACE string c = OFString_to_std_string(a);
-  OFCHECK_EQUAL(c.length(), 3);
-  OFCHECK_EQUAL(c.at(0), 'A');
-  OFCHECK_EQUAL(c.at(1), '\0');
-  OFCHECK_EQUAL(c.at(2), 'C');
+  STD_NAMESPACE string cc = OFString_to_std_string(a);
+  OFCHECK_EQUAL(cc.length(), 3);
+  OFCHECK_EQUAL(cc.at(0), 'A');
+  OFCHECK_EQUAL(cc.at(1), '\0');
+  OFCHECK_EQUAL(cc.at(2), 'C');
 
   // convert a std::string to OFString
   OFString d = std_string_to_OFString(b);
@@ -323,7 +323,7 @@ OFTEST(ofstd_OFString_conversion)
   OFCHECK_EQUAL(d.at(2), 'C');
 
   // convert a std::string containing a null byte to OFString
-  OFString e = std_string_to_OFString(c);
+  OFString e = std_string_to_OFString(cc);
   OFCHECK_EQUAL(e.length(), 3);
   OFCHECK_EQUAL(e.at(0), 'A');
   OFCHECK_EQUAL(e.at(1), '\0');
