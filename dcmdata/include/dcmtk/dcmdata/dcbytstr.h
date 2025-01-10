@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -475,7 +475,7 @@ private:
 /** @name string normalization flags.
  *  These flags can be used with normalizeString() to specify the extent of normalization.
  */
-//@{
+///@{
 
 /// delete trailing spaces
 const OFBool DELETE_TRAILING = OFTrue;
@@ -484,7 +484,7 @@ const OFBool DELETE_LEADING = OFTrue;
 /// handle string as multi-valued (components separated by a backslash)
 const OFBool MULTIPART = OFTrue;
 
-//@}
+///@}
 
 
 /* Function to get part out of a String for VM > 1 */

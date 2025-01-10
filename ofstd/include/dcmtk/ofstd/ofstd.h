@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -827,7 +827,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      /** @name ftoa() processing flags.
       *  These flags can be combined by bit-wise or.
       */
-     //@{
+     ///@{
 
      /// Use scientific format (equivalent to %e or %E in printf),
      /// instead of the default, which is equivalent to %g or %G.
@@ -854,7 +854,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      /// pad with zeroes instead of blanks
      static const unsigned int ftoa_zeropad;
 
-     //@}
+     ///@}
 
     /** makes the current process sleep until seconds seconds have
      *  elapsed or a signal arrives which is not ignored

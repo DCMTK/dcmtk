@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,7 +121,7 @@ class DSRIODConstraintChecker;
  *  These error codes can be used in addition to the general purpose
  *  codes defined in module dcmdata.
  */
-//@{
+///@{
 
 /// error: the document type (SOP class UID) is unknown or not supported
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnknownDocumentType;
@@ -225,7 +225,7 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidTemplateStructure;
 /// error: cannot process document tree with included templates
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotProcessIncludedTemplates;
 
-//@}
+///@}
 
 
 /*---------------------*
@@ -248,7 +248,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      *  These flags can be combined and passed to the read() methods.
      *  The 'shortcut' flags can be used for common combinations.
      */
-    //@{
+    ///@{
 
     /// read digital signatures from dataset
     static const size_t RF_readDigitalSignatures;
@@ -270,7 +270,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// show the currently processed content item (e.g. "1.2.3")
     static const size_t RF_showCurrentlyProcessedItem;
-    //@}
+    ///@}
 
 
     /** @name renderHTML() flags
@@ -278,7 +278,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      *  Please note that only the 'external' flags can be used from outside
      *  this library.  The 'shortcut' flags can be used for common combinations.
      */
-    //@{
+    ///@{
 
     /// external: never expand child nodes inline
     static const size_t HF_neverExpandChildrenInline;
@@ -351,14 +351,14 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// shortcut: filter all flags that are only used internally
     static const size_t HF_internalUseOnly;
-    //@}
+    ///@}
 
 
     /** @name read/writeXML() flags
      *  These flags can be combined and passed to the read/writeXML() methods.
      *  The 'shortcut' flags can be used for common combinations.
      */
-    //@{
+    ///@{
 
     /// write: write all tags even if their value is empty
     static const size_t XF_writeEmptyTags;
@@ -401,14 +401,14 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// shortcut: combines all XF_xxxAsAttribute write flags (see above)
     static const size_t XF_encodeEverythingAsAttribute;
-    //@}
+    ///@}
 
 
     /** @name print() flags
      *  These flags can be combined and passed to the print() methods.
      *  The 'shortcut' flags can be used for common combinations.
      */
-    //@{
+    ///@{
 
     /// print item position ("1.2.3") instead of line indentation
     static const size_t PF_printItemPosition;
@@ -460,13 +460,13 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// shortcut: print all codes (combines all PF_printXxxCodes flags, see above)
     static const size_t PF_printAllCodes;
-    //@}
+    ///@}
 
 
     /** @name checkByReferenceRelationships() modes
      *  These modes can be combined and passed to the checkByReferenceRelationships() method.
      */
-    //@{
+    ///@{
 
     /// update the position string using the node ID
     static const size_t CM_updatePositionString;
@@ -476,13 +476,13 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /// reset the reference target flag for all nodes
     static const size_t CM_resetReferenceTargetFlag;
-    //@}
+    ///@}
 
 
     /** @name checkByReferenceRelationships() bit masks
      *  These bit masks are used to "filter" valid flags passed to checkByReferenceRelationships().
      */
-    //@{
+    ///@{
 
     /// bit mask (filter) for valid print flags (see PF_xxx)
     static const size_t CB_maskPrintFlags;
@@ -490,7 +490,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /// bit mask (filter) for valid read flags (see RF_xxx)
     static const size_t CB_maskReadFlags;
 
-    //@}
+    ///@}
 
 
   // --- type definitions ---
