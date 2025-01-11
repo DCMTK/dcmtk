@@ -889,7 +889,7 @@ int DiImage::writeBMP(FILE *stream,
                 result = 1;
         }
         /* delete pixel data */
-        delete OFstatic_cast(char *, data);     // type cast necessary to avoid compiler warnings using gcc >2.95
+        delete[] OFstatic_cast(char *, data);
     }
     return result;
 }
