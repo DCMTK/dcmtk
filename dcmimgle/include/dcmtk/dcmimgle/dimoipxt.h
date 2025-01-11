@@ -72,9 +72,9 @@ class DiMonoInputPixelTemplate
                 rescale(pixel);                     // "copy" or reference pixel data
                 this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
             }
-            /* erase empty part of the buffer (= blacken the background) */
+            /* erase empty part of the buffer (= fill the background with the smallest possible value) */
             if ((this->Data != NULL) && (this->InputCount < this->Count))
-                OFBitmanipTemplate<T3>::zeroMem(this->Data + this->InputCount, this->Count - this->InputCount);
+                OFBitmanipTemplate<T3>::setMem(this->Data + this->InputCount, OFstatic_cast(T3, this->Modality->getAbsMinimum()), this->Count - this->InputCount);
         }
     }
 
