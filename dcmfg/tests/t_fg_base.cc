@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022-2024, OFFIS e.V.
+ *  Copyright (C) 2022-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,4 +46,5 @@ OFTEST(dcmfg_fgbase_fgunknown)
     FGUnknown* fg_copy = OFstatic_cast(FGUnknown*, fg.clone());
     OFCHECK(fg_copy != NULL);
     OFCHECK(fg.compare(*fg_copy) == 0);
+    delete fg_copy;
 }

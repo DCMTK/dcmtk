@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024, OFFIS e.V.
+ *  Copyright (C) 2024-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -130,6 +130,9 @@ OFTEST(dcmdata_uncompressedFrameSize)
             OFCHECK(0 == px->decodedBitsAllocated(13, 8));
             OFCHECK(16 == px->decodedBitsAllocated(16, 8));
             OFCHECK(64 == px->decodedBitsAllocated(64, 8));
+
+            // avoid memory leak
+            DcmRLEDecoderRegistration::cleanup();
         }
     }
 }

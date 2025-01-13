@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, OFFIS e.V.
+ *  Copyright (C) 2015-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -72,6 +72,7 @@ OFTEST(dcmseg_packBinaryFrame)
     OFCHECK_MSG(packed->pixData[2] == 0b00010000, OFString("Expected 0b00010000, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[2]));
     OFCHECK_MSG(packed->pixData[3] == 0b01000010, OFString("Expected 0b01000010, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[3]));
     OFCHECK_MSG(packed->pixData[4] == 0b00000000, OFString("Expected 0b00000000, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[4]));
+    delete packed;
 
     // In 1000 iterations create sparse frames and pack them. Check whether the
     // packed frame is correct. This is not bullet proof but we use the same addressing
@@ -206,6 +207,10 @@ OFTEST(dcmseg_concatBinaryFrames)
     OFCHECK_MSG(pixData[0] == 0b11111111, OFString("Expected 0b11111111, got ") + DcmSegUtils::debugByte2Bin(pixData[0]));
     OFCHECK_MSG(pixData[1] == 0b11101111, OFString("Expected 0b11101111, got ") + DcmSegUtils::debugByte2Bin(pixData[1]));
     OFCHECK_MSG(pixData[2] == 0b11111111, OFString("Expected 0b11111111, got ") + DcmSegUtils::debugByte2Bin(pixData[2]));
+    // avoid memory leaks
+    delete packed1;
+    delete packed2;
+    delete[] pixData;
 }
 
 // Test DcmSegUtils::debugByte2Bin()
