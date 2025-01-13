@@ -338,7 +338,8 @@ static void
 /*ARGSUSED*/
 _citrus_mapper_zone_mapper_uninit(struct _citrus_csmapper *cm )
 {
-    (void) cm;
+    if (cm && cm->cm_closure)
+        free(cm->cm_closure);
 }
 
 static int

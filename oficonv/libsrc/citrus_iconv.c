@@ -134,7 +134,7 @@ open_shared(struct _citrus_iconv_shared * * rci,
     int ret;
 
 #ifdef DCMTK_ENABLE_ICONV_PASSTHROUGH
-    /* 
+    /*
      * Use a pass-through when the (src,dest) encodings are the same.
      */
     module = (strcmp(src, dst) != 0) ? "iconv_std" : "iconv_none";
@@ -387,7 +387,7 @@ _citrus_iconv_close_nofree(struct _citrus_iconv *cv)
     }
 }
 
-const char
+char
 *_citrus_iconv_canonicalize(const char *name)
 {
     char *buf;

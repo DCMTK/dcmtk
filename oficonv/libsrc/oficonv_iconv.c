@@ -302,10 +302,8 @@ out:
         OF__iconv_free_list(list, sz);
 }
 
-const char
-*OFiconv_canonicalize(const char *name)
+char *OFiconv_canonicalize(const char *name)
 {
-
     return (_citrus_iconv_canonicalize(name));
 }
 
