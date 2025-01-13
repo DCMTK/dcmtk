@@ -514,9 +514,7 @@ endif()
     set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} iphlpapi ws2_32 netapi32 wsock32)
   endif()
 
-  if(HAVE_FENV_H)
-    set(HEADERS ${HEADERS} fenv.h)
-  endif()
+  set(HEADERS ${HEADERS} fenv.h)
 
   # std::vsnprintf and std::vsnprintf need the C++ version of the headers.
   # We just assume they exist when the C version was found
