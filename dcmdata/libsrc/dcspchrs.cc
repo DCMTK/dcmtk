@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2024, OFFIS e.V.
+ *  Copyright (C) 2011-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -540,304 +540,11 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
     const OFBool hasEscapeChar = checkForEscapeCharacter(fromString, fromLength);
     if (EncodingConverters.empty() || (!hasEscapeChar && delimiters.empty()))
     {
-        if (delimiters.empty())
-        {
-            // no code extensions according to ISO 2022 used and no delimiters - this is the simple case
-            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
-                << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
-            status = DefaultEncodingConverter.convertString(fromString, fromLength, toString, OFTrue /*clearMode*/);
-        } else {
-            // no code extensions according to ISO 2022 used, but delimiters
-            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
-                << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with delimiters '" << delimiters << "')");
-
-            toString.clear();
-            size_t pos = 0;
-            const char *firstChar = fromString;
-            const char *currentChar = fromString;
-
-            // iterate over all characters of the string (as long as there is no error)
-            while ((pos < fromLength) && status.good())
-            {
-                const char c0 = *currentChar++;
-
-                // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
-                if ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (delimiters.find(c0) != OFString_npos))
-                {
-                    // convert the sub-string (before the delimiter) with the current character set
-                    const size_t convertLength = currentChar - firstChar - 1;
-                    if (convertLength > 0)
-                    {
-                        // output some debug information
-                        DCMDATA_TRACE("    Converting sub-string '"
-                            << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
-                        status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
-                        if (status.bad())
-                            DCMDATA_TRACE("    -> ERROR: " << status.text());
-                    }
-
-                    // output some debug information
-                    DCMDATA_TRACE("    Appending delimiter '"
-                        << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
-                        << "' to the output");
-                    // don't forget to append the delimiter
-                    toString += c0;
-
-                    // start new sub-string after delimiter
-                    firstChar = currentChar;
-                }
-                ++pos;
-            }
-            if (status.good())
-            {
-                // convert any remaining characters from the input string
-                const size_t convertLength = currentChar - firstChar;
-                if (convertLength > 0)
-                {
-                    // output some debug information
-                    DCMDATA_TRACE("    Converting remaining sub-string '"
-                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
-                    status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
-                    if (status.bad())
-                        DCMDATA_TRACE("    -> ERROR: " << status.text());
-                }
-            }
-        }
+        // convert string without code extensions according to ISO 2022
+        status = convertStringWithoutCodeExtensions(fromString, fromLength, toString, delimiters);
     } else {
-        if (delimiters.empty())
-        {
-            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
-                << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with code extensions)");
-        } else {
-            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
-                << convertToLengthLimitedOctalString(fromString, fromLength)
-                << "' (with " << (hasEscapeChar ? "code extensions and " : "")
-                << "delimiters '" << delimiters << "')");
-        }
-        // code extensions according to ISO 2022 (possibly) used, so we need to check
-        // for particular escape sequences in order to switch between character sets
-        toString.clear();
-        size_t pos = 0;
-        // some (extended) character sets use more than 1 byte per character
-        // (however, the default character set always uses a single byte)
-        unsigned char bytesPerChar = 1;
-        // check whether '=' is a delimiter, as it is used in PN values
-        OFBool isFirstGroup = (delimiters.find('=') != OFString_npos);
-        // by default, we expect that delimiters can be checked by their corresponding ASCII codes
-        // (this implies that the default character set is not "ISO 2022 IR 87" or "ISO 2022 IR 159")
-        OFBool checkDelimiters = OFTrue;
-        const char *firstChar = fromString;
-        const char *currentChar = fromString;
-        // initially, use the default descriptor
-        OFCharacterEncoding converter = DefaultEncodingConverter;
-        DCMDATA_TRACE("  Starting with the default character set");
-        // iterate over all characters of the string (as long as there is no error)
-        while ((pos < fromLength) && status.good())
-        {
-            const char c0 = *currentChar++;
-            // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
-            const OFBool isEscape = (c0 == '\033');
-            const OFBool isDelimiter = checkDelimiters &&
-                ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (delimiters.find(c0) != OFString_npos));
-            if (isEscape || isDelimiter)
-            {
-                // convert the sub-string (before the delimiter) with the current character set
-                const size_t convertLength = currentChar - firstChar - 1;
-                if (convertLength > 0)
-                {
-                    // output some debug information
-                    DCMDATA_TRACE("    Converting sub-string '"
-                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
-                    status = converter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
-                    if (status.bad())
-                        DCMDATA_TRACE("    -> ERROR: " << status.text());
-                }
-                // check whether this was the first component group of a PN value
-                if (isDelimiter && (c0 == '='))
-                    isFirstGroup = OFFalse;
-            }
-            // the ESC character is used to explicitly switch between character sets
-            if (isEscape)
-            {
-                // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
-                if (isFirstGroup)
-                {
-                    DCMDATA_WARN("DcmSpecificCharacterSet: Escape sequences shall not be used "
-                        << "in the first component group of a Person Name (PN), using them anyway");
-                }
-                // we need at least two more characters to determine the new character set
-                size_t escLength = 2;
-                if (pos + escLength < fromLength)
-                {
-                    OFString key;
-                    const char c1 = *currentChar++;
-                    const char c2 = *currentChar++;
-                    char c3 = '\0';
-                    if ((c1 == 0x28) && (c2 == 0x42))       // ASCII
-                        key = "ISO 2022 IR 6";
-                    else if ((c1 == 0x2d) && (c2 == 0x41))  // Latin alphabet No. 1
-                        key = "ISO 2022 IR 100";
-                    else if ((c1 == 0x2d) && (c2 == 0x42))  // Latin alphabet No. 2
-                        key = "ISO 2022 IR 101";
-                    else if ((c1 == 0x2d) && (c2 == 0x43))  // Latin alphabet No. 3
-                        key = "ISO 2022 IR 109";
-                    else if ((c1 == 0x2d) && (c2 == 0x44))  // Latin alphabet No. 4
-                        key = "ISO 2022 IR 110";
-                    else if ((c1 == 0x2d) && (c2 == 0x4c))  // Cyrillic
-                        key = "ISO 2022 IR 144";
-                    else if ((c1 == 0x2d) && (c2 == 0x47))  // Arabic
-                        key = "ISO 2022 IR 127";
-                    else if ((c1 == 0x2d) && (c2 == 0x46))  // Greek
-                        key = "ISO 2022 IR 126";
-                    else if ((c1 == 0x2d) && (c2 == 0x48))  // Hebrew
-                        key = "ISO 2022 IR 138";
-                    else if ((c1 == 0x2d) && (c2 == 0x4d))  // Latin alphabet No. 5
-                        key = "ISO 2022 IR 148";
-                    else if ((c1 == 0x2d) && (c2 == 0x62))  // Latin alphabet No. 9
-                        key = "ISO 2022 IR 203";
-                    else if ((c1 == 0x29) && (c2 == 0x49))  // Japanese, JIS X0201, G1 set (Katakana)
-                        key = "ISO 2022 IR 13";
-                    else if ((c1 == 0x28) && (c2 == 0x4a))  // Japanese, JIS X0201, G0 set (Romaji, i.e. ASCII)
-                        key = "ISO 2022 IR 13";
-                    else if ((c1 == 0x2d) && (c2 == 0x54))  // Thai
-                        key = "ISO 2022 IR 166";
-                    else if ((c1 == 0x24) && (c2 == 0x42))  // Japanese (multi-byte), JIS X0208 (Kanji)
-                        key = "ISO 2022 IR 87";
-                    else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte), JIS X0212 (Supplementary Kanji set)
-                    {
-                        escLength = 3;
-                        // do we still have another character in the string?
-                        if (pos + escLength < fromLength)
-                        {
-                            c3 = *currentChar++;
-                            if (c3 == 0x44)
-                                key = "ISO 2022 IR 159";
-                        }
-                    }
-                    else if ((c1 == 0x24) && (c2 == 0x29)) // might be Korean or Chinese
-                    {
-                        escLength = 3;
-                        // do we still have another character in the string?
-                        if (pos + escLength < fromLength)
-                        {
-                            c3 = *currentChar++;
-                            if (c3 == 0x43)                // Korean (single- and multi-byte)
-                                key = "ISO 2022 IR 149";
-                            else if (c3 == 0x41)           // Simplified Chinese (multi-byte)
-                                key = "ISO 2022 IR 58";
-                        }
-                    }
-                    // check whether a valid escape sequence has been found
-                    if (key.empty())
-                    {
-                        OFOStringStream stream;
-                        stream << "Cannot convert character set: Illegal escape sequence 'ESC "
-                            << STD_NAMESPACE dec << STD_NAMESPACE setfill('0')
-                            << STD_NAMESPACE setw(2) << OFstatic_cast(int, c1 >> 4) << "/"
-                            << STD_NAMESPACE setw(2) << OFstatic_cast(int, c1 & 0x0f) << " "
-                            << STD_NAMESPACE setw(2) << OFstatic_cast(int, c2 >> 4) << "/"
-                            << STD_NAMESPACE setw(2) << OFstatic_cast(int, c2 & 0x0f);
-                        if (escLength == 3)
-                        {
-                            stream << " " << STD_NAMESPACE setw(2) << OFstatic_cast(int, c3 >> 4) << "/"
-                                << STD_NAMESPACE setw(2) << OFstatic_cast(int, c3 & 0x0f);
-                        }
-                        stream  << "' found" << OFStringStream_ends;
-                        OFSTRINGSTREAM_GETOFSTRING(stream, message)
-                        status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
-                    }
-                    if (status.good())
-                    {
-                        DCMDATA_TRACE("  Switching to character set '" << key << "'");
-                        T_EncodingConvertersMap::const_iterator it = EncodingConverters.find(key);
-                        // check whether the descriptor was found in the map, i.e. properly declared in (0008,0005)
-                        if (it != EncodingConverters.end())
-                        {
-                            converter = it->second;
-                            // special case: these Japanese character sets replace the ASCII part (G0 code area),
-                            // so according to DICOM PS 3.5 Section 6.2.1.2 an explicit switch to the default is required
-                            checkDelimiters = (key != "ISO 2022 IR 87") && (key != "ISO 2022 IR 159");
-                            // determine number of bytes per character (used by the selected character set)
-                            if ((key == "ISO 2022 IR 87") || (key == "ISO 2022 IR 159") || (key == "ISO 2022 IR 58"))
-                            {
-                                DCMDATA_TRACE("    Now using 2 bytes per character");
-                                bytesPerChar = 2;
-                            }
-                            else if (key == "ISO 2022 IR 149")
-                            {
-                                DCMDATA_TRACE("    Now using 1 or 2 bytes per character");
-                                bytesPerChar = 0;      // special handling for single- and multi-byte
-                            } else {
-                                DCMDATA_TRACE("    Now using 1 byte per character");
-                                bytesPerChar = 1;
-                            }
-                        } else {
-                            OFOStringStream stream;
-                            stream << "Cannot convert character set: Escape sequence refers to character set '" << key << "' that "
-                                "was not declared in SpecificCharacterSet (0008,0005)" << OFStringStream_ends;
-                            OFSTRINGSTREAM_GETOFSTRING(stream, message)
-                            status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
-                        }
-                    }
-                    pos += escLength;
-                }
-                // check whether the escape sequence was complete
-                if (status.good() && (pos >= fromLength))
-                {
-                    OFOStringStream stream;
-                    stream << "Cannot convert character set: Incomplete escape sequence (" << (escLength + 1)
-                        << " bytes expected) at the end of the string to be converted" << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETOFSTRING(stream, message)
-                    status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
-                }
-                // do not copy the escape sequence to the output
-                firstChar = currentChar;
-            }
-            // the HT, LF, FF, CR character or other delimiters (depending on the VR) also cause a switch
-            else if (isDelimiter)
-            {
-                // output some debug information
-                DCMDATA_TRACE("    Appending delimiter '"
-                    << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
-                    << "' to the output");
-                // don't forget to append the delimiter
-                toString += c0;
-                // use the default descriptor again (see DICOM PS 3.5)
-                if (converter != DefaultEncodingConverter)
-                {
-                    DCMDATA_TRACE("  Switching back to the default character set (because a delimiter was found)");
-                    converter = DefaultEncodingConverter;
-                    checkDelimiters = OFTrue;
-                }
-                // start new sub-string after delimiter
-                firstChar = currentChar;
-            }
-            // skip remaining bytes of current character (if any)
-            else if (bytesPerChar != 1)
-            {
-                const size_t skipBytes = (bytesPerChar > 0) ? (bytesPerChar - 1) : ((c0 & 0x80) ? 1 : 0);
-                if (pos + skipBytes < fromLength)
-                    currentChar += skipBytes;
-                pos += skipBytes;
-            }
-            ++pos;
-        }
-        if (status.good())
-        {
-            // convert any remaining characters from the input string
-            const size_t convertLength = currentChar - firstChar;
-            if (convertLength > 0)
-            {
-                // output some debug information
-                DCMDATA_TRACE("    Converting remaining sub-string '"
-                    << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
-                status = converter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
-                if (status.bad())
-                    DCMDATA_TRACE("    -> ERROR: " << status.text());
-            }
-        }
+        // convert string with code extensions according to ISO 2022
+        status = convertStringWithCodeExtensions(fromString, fromLength, toString, delimiters, hasEscapeChar);
     }
     if (status.good())
     {
@@ -857,18 +564,326 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
 }
 
 
-OFBool DcmSpecificCharacterSet::isConversionAvailable()
+OFCondition DcmSpecificCharacterSet::convertStringWithoutCodeExtensions(const char *fromString,
+                                                                        const size_t fromLength,
+                                                                        OFString &toString,
+                                                                        const OFString &delimiters)
 {
-    // just call the appropriate function from the underlying class
-    return OFCharacterEncoding::isLibraryAvailable();
+    OFCondition status = EC_Normal;
+    // any delimiters defined?
+    if (delimiters.empty())
+    {
+        // case 1: no code extensions used and no delimiters defined - this is the simple case
+        DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+            << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
+        status = DefaultEncodingConverter.convertString(fromString, fromLength, toString, OFTrue /*clearMode*/);
+    } else {
+        // case 2: no code extensions used, but delimiters defined
+        DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+            << convertToLengthLimitedOctalString(fromString, fromLength)
+            << "' (with delimiters '" << delimiters << "')");
+
+        toString.clear();
+        size_t pos = 0;
+        const char *firstChar = fromString;
+        const char *currentChar = fromString;
+        // iterate over all characters of the string (as long as there is no error)
+        while ((pos < fromLength) && status.good())
+        {
+            const char c0 = *currentChar++;
+            // check for characters HT, LF, FF, CR or any other specified delimiter
+            const OFBool isDelimiter =  ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
+                (delimiters.find(c0) != OFString_npos));
+            if (isDelimiter)
+            {
+                // convert the sub-string (before the delimiter) with the current character set
+                const size_t convertLength = currentChar - firstChar - 1;
+                if (convertLength > 0)
+                {
+                    // output some debug information
+                    DCMDATA_TRACE("    Converting sub-string '"
+                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+                    status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+                    if (status.bad())
+                        DCMDATA_TRACE("    -> ERROR: " << status.text());
+                }
+                // output some debug information
+                DCMDATA_TRACE("    Appending delimiter '"
+                    << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
+                    << "' to the output");
+                // don't forget to append the delimiter
+                toString += c0;
+                // start new sub-string after delimiter
+                firstChar = currentChar;
+            }
+            ++pos;
+        }
+        if (status.good())
+        {
+            // convert any remaining characters from the input string
+            const size_t convertLength = currentChar - firstChar;
+            if (convertLength > 0)
+            {
+                // output some debug information
+                DCMDATA_TRACE("    Converting remaining sub-string '"
+                    << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+                status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+                if (status.bad())
+                    DCMDATA_TRACE("    -> ERROR: " << status.text());
+            }
+        }
+    }
+    return status;
 }
 
 
-size_t DcmSpecificCharacterSet::countCharactersInUTF8String(const OFString &utf8String)
+OFCondition DcmSpecificCharacterSet::convertStringWithCodeExtensions(const char *fromString,
+                                                                     const size_t fromLength,
+                                                                     OFString &toString,
+                                                                     const OFString &delimiters,
+                                                                     const OFBool hasEscapeChar)
 {
-    // just call the appropriate function from the underlying class
-    return OFCharacterEncoding::countCharactersInUTF8String(utf8String);
+    OFCondition status = EC_Normal;
+    // any delimiters defined?
+    if (delimiters.empty())
+    {
+        // case 3: code extensions used, but no delimiters defined
+        DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+            << convertToLengthLimitedOctalString(fromString, fromLength)
+            << "' (with code extensions)");
+    } else {
+        // case 4: code extensions used and delimiters defined
+        DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+            << convertToLengthLimitedOctalString(fromString, fromLength)
+            << "' (with " << (hasEscapeChar ? "code extensions and " : "")
+            << "delimiters '" << delimiters << "')");
+    }
+    // code extensions according to ISO 2022 (possibly) used, so we need to check
+    // for particular escape sequences in order to switch between character sets
+    toString.clear();
+    size_t pos = 0;
+    // some (extended) character sets use more than 1 byte per character
+    // (however, the default character set always uses a single byte)
+    unsigned char bytesPerChar = 1;
+    // check whether '=' is a delimiter, as it is used in PN values
+    OFBool isFirstGroup = (delimiters.find('=') != OFString_npos);
+    // by default, we expect that delimiters can be checked by their corresponding ASCII codes
+    // (this implies that the default character set is not "ISO 2022 IR 87" or "ISO 2022 IR 159")
+    OFBool checkDelimiters = OFTrue;
+    const char *firstChar = fromString;
+    const char *currentChar = fromString;
+    // initially, use the default descriptor
+    OFCharacterEncoding converter = DefaultEncodingConverter;
+    DCMDATA_TRACE("  Starting with the default character set");
+    // iterate over all characters of the string (as long as there is no error)
+    while ((pos < fromLength) && status.good())
+    {
+        const char c0 = *currentChar++;
+        // check for characters ESC, HT, LF, FF, CR or any other specified delimiter
+        const OFBool isEscape = (c0 == '\033');
+        const OFBool isDelimiter = checkDelimiters &&
+            ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (delimiters.find(c0) != OFString_npos));
+        if (isEscape || isDelimiter)
+        {
+            // convert the sub-string (before the delimiter) with the current character set
+            const size_t convertLength = currentChar - firstChar - 1;
+            if (convertLength > 0)
+            {
+                // output some debug information
+                DCMDATA_TRACE("    Converting sub-string '"
+                    << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+                status = converter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+                if (status.bad())
+                    DCMDATA_TRACE("    -> ERROR: " << status.text());
+            }
+            // check whether this was the first component group of a PN value
+            if (isDelimiter && (c0 == '='))
+                isFirstGroup = OFFalse;
+        }
+        // the ESC character is used to explicitly switch between character sets
+        if (isEscape)
+        {
+            // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
+            if (isFirstGroup)
+            {
+                DCMDATA_WARN("DcmSpecificCharacterSet: Escape sequences shall not be used "
+                    << "in the first component group of a Person Name (PN), using them anyway");
+            }
+            // we need at least two more characters to determine the new character set
+            size_t escLength = 2;
+            if (pos + escLength < fromLength)
+            {
+                OFString key;
+                const char c1 = *currentChar++;
+                const char c2 = *currentChar++;
+                char c3 = '\0';
+                if ((c1 == 0x28) && (c2 == 0x42))       // ASCII
+                    key = "ISO 2022 IR 6";
+                else if ((c1 == 0x2d) && (c2 == 0x41))  // Latin alphabet No. 1
+                    key = "ISO 2022 IR 100";
+                else if ((c1 == 0x2d) && (c2 == 0x42))  // Latin alphabet No. 2
+                    key = "ISO 2022 IR 101";
+                else if ((c1 == 0x2d) && (c2 == 0x43))  // Latin alphabet No. 3
+                    key = "ISO 2022 IR 109";
+                else if ((c1 == 0x2d) && (c2 == 0x44))  // Latin alphabet No. 4
+                    key = "ISO 2022 IR 110";
+                else if ((c1 == 0x2d) && (c2 == 0x4c))  // Cyrillic
+                    key = "ISO 2022 IR 144";
+                else if ((c1 == 0x2d) && (c2 == 0x47))  // Arabic
+                    key = "ISO 2022 IR 127";
+                else if ((c1 == 0x2d) && (c2 == 0x46))  // Greek
+                    key = "ISO 2022 IR 126";
+                else if ((c1 == 0x2d) && (c2 == 0x48))  // Hebrew
+                    key = "ISO 2022 IR 138";
+                else if ((c1 == 0x2d) && (c2 == 0x4d))  // Latin alphabet No. 5
+                    key = "ISO 2022 IR 148";
+                else if ((c1 == 0x2d) && (c2 == 0x62))  // Latin alphabet No. 9
+                    key = "ISO 2022 IR 203";
+                else if ((c1 == 0x29) && (c2 == 0x49))  // Japanese, JIS X0201, G1 set (Katakana)
+                    key = "ISO 2022 IR 13";
+                else if ((c1 == 0x28) && (c2 == 0x4a))  // Japanese, JIS X0201, G0 set (Romaji, i.e. ASCII)
+                    key = "ISO 2022 IR 13";
+                else if ((c1 == 0x2d) && (c2 == 0x54))  // Thai
+                    key = "ISO 2022 IR 166";
+                else if ((c1 == 0x24) && (c2 == 0x42))  // Japanese (multi-byte), JIS X0208 (Kanji)
+                    key = "ISO 2022 IR 87";
+                else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte), JIS X0212 (Supplementary Kanji set)
+                {
+                    escLength = 3;
+                    // do we still have another character in the string?
+                    if (pos + escLength < fromLength)
+                    {
+                        c3 = *currentChar++;
+                        if (c3 == 0x44)
+                            key = "ISO 2022 IR 159";
+                    }
+                }
+                else if ((c1 == 0x24) && (c2 == 0x29)) // might be Korean or Chinese
+                {
+                    escLength = 3;
+                    // do we still have another character in the string?
+                    if (pos + escLength < fromLength)
+                    {
+                        c3 = *currentChar++;
+                        if (c3 == 0x43)                // Korean (single- and multi-byte)
+                            key = "ISO 2022 IR 149";
+                        else if (c3 == 0x41)           // Simplified Chinese (multi-byte)
+                            key = "ISO 2022 IR 58";
+                    }
+                }
+                // check whether a valid escape sequence has been found
+                if (key.empty())
+                {
+                    OFOStringStream stream;
+                    stream << "Cannot convert character set: Illegal escape sequence 'ESC "
+                        << STD_NAMESPACE dec << STD_NAMESPACE setfill('0')
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c1 >> 4) << "/"
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c1 & 0x0f) << " "
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c2 >> 4) << "/"
+                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c2 & 0x0f);
+                    if (escLength == 3)
+                    {
+                        stream << " " << STD_NAMESPACE setw(2) << OFstatic_cast(int, c3 >> 4) << "/"
+                            << STD_NAMESPACE setw(2) << OFstatic_cast(int, c3 & 0x0f);
+                    }
+                    stream  << "' found" << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETOFSTRING(stream, message)
+                    status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
+                }
+                if (status.good())
+                {
+                    DCMDATA_TRACE("  Switching to character set '" << key << "'");
+                    T_EncodingConvertersMap::const_iterator it = EncodingConverters.find(key);
+                    // check whether the descriptor was found in the map, i.e. properly declared in (0008,0005)
+                    if (it != EncodingConverters.end())
+                    {
+                        converter = it->second;
+                        // special case: these Japanese character sets replace the ASCII part (G0 code area),
+                        // so according to DICOM PS 3.5 Section 6.2.1.2 an explicit switch to the default is required
+                        checkDelimiters = (key != "ISO 2022 IR 87") && (key != "ISO 2022 IR 159");
+                        // determine number of bytes per character (used by the selected character set)
+                        if ((key == "ISO 2022 IR 87") || (key == "ISO 2022 IR 159") || (key == "ISO 2022 IR 58"))
+                        {
+                            DCMDATA_TRACE("    Now using 2 bytes per character");
+                            bytesPerChar = 2;
+                        }
+                        else if (key == "ISO 2022 IR 149")
+                        {
+                            DCMDATA_TRACE("    Now using 1 or 2 bytes per character");
+                            bytesPerChar = 0;      // special handling for single- and multi-byte
+                        } else {
+                            DCMDATA_TRACE("    Now using 1 byte per character");
+                            bytesPerChar = 1;
+                        }
+                    } else {
+                        OFOStringStream stream;
+                        stream << "Cannot convert character set: Escape sequence refers to character set '" << key << "' that "
+                            "was not declared in SpecificCharacterSet (0008,0005)" << OFStringStream_ends;
+                        OFSTRINGSTREAM_GETOFSTRING(stream, message)
+                        status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
+                    }
+                }
+                pos += escLength;
+            }
+            // check whether the escape sequence was complete
+            if (status.good() && (pos >= fromLength))
+            {
+                OFOStringStream stream;
+                stream << "Cannot convert character set: Incomplete escape sequence (" << (escLength + 1)
+                    << " bytes expected) at the end of the string to be converted" << OFStringStream_ends;
+                OFSTRINGSTREAM_GETOFSTRING(stream, message)
+                status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
+            }
+            // do not copy the escape sequence to the output
+            firstChar = currentChar;
+        }
+        // the HT, LF, FF, CR character or other delimiters (depending on the VR) also cause a switch
+        else if (isDelimiter)
+        {
+            // output some debug information
+            DCMDATA_TRACE("    Appending delimiter '"
+                << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
+                << "' to the output");
+            // don't forget to append the delimiter
+            toString += c0;
+            // use the default descriptor again (see DICOM PS 3.5)
+            if (converter != DefaultEncodingConverter)
+            {
+                DCMDATA_TRACE("  Switching back to the default character set (because a delimiter was found)");
+                converter = DefaultEncodingConverter;
+                checkDelimiters = OFTrue;
+            }
+            // start new sub-string after delimiter
+            firstChar = currentChar;
+        }
+        // skip remaining bytes of current character (if any)
+        else if (bytesPerChar != 1)
+        {
+            const size_t skipBytes = (bytesPerChar > 0) ? (bytesPerChar - 1) : ((c0 & 0x80) ? 1 : 0);
+            if (pos + skipBytes < fromLength)
+                currentChar += skipBytes;
+            pos += skipBytes;
+        }
+        ++pos;
+    }
+    if (status.good())
+    {
+        // convert any remaining characters from the input string
+        const size_t convertLength = currentChar - firstChar;
+        if (convertLength > 0)
+        {
+            // output some debug information
+            DCMDATA_TRACE("    Converting remaining sub-string '"
+                << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+            status = converter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+            if (status.bad())
+                DCMDATA_TRACE("    -> ERROR: " << status.text());
+        }
+    }
+    return status;
 }
+
+
 
 
 OFBool DcmSpecificCharacterSet::checkForEscapeCharacter(const char *strValue,
@@ -904,4 +919,20 @@ OFString DcmSpecificCharacterSet::convertToLengthLimitedOctalString(const char *
     }
     // return string by-value (in order to avoid another parameter)
     return octalString;
+}
+
+
+// static helper functions
+
+OFBool DcmSpecificCharacterSet::isConversionAvailable()
+{
+    // just call the appropriate function from the underlying class
+    return OFCharacterEncoding::isLibraryAvailable();
+}
+
+
+size_t DcmSpecificCharacterSet::countCharactersInUTF8String(const OFString &utf8String)
+{
+    // just call the appropriate function from the underlying class
+    return OFCharacterEncoding::countCharactersInUTF8String(utf8String);
 }
