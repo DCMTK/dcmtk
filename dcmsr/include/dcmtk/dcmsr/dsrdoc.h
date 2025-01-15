@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1064,14 +1064,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** create a new document.
      *  A new SOP instance is only created if the current document type was valid/supported.
-     *  Please note that the current document is deleted (cleared).
+     *  Please note that the current document is deleted (cleared) by this method.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition createNewDocument();
 
     /** create a new document of the specified type.
      *  A new SOP instance is only created if the current document type was valid/supported.
-     *  Please note that the current document is deleted by this method.
+     *  Please note that the current document is deleted (cleared) by this method.
      ** @param  documentType  type of the new SR document (see DSRTypes::E_DocumentType)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
