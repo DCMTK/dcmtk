@@ -40,19 +40,31 @@ OFTEST(dcmdata_sequenceInsert)
     DcmSequenceOfItems sequence(DCM_OtherPatientIDsSequence);
     /* add a large number of items to the sequence */
     unsigned long counter = 0;
+    DcmItem* initiallyInsertedItems[NUMBER_OF_ITEMS];
     for (unsigned long i = 0; i < NUMBER_OF_ITEMS; ++i)
     {
-        if (sequence.insert(new DcmItem()).good())
+        DcmItem* item = new DcmItem();
+        initiallyInsertedItems[i] = item;
+        if (sequence.insert(item).good())
             ++counter;
     }
     /* check whether that worked (for-loop shouldn't take too long) */
     OFCHECK_EQUAL(counter, NUMBER_OF_ITEMS);
     /* access specific items (performance should be no issue) */
-    OFCHECK(sequence.getItem(0) != NULL);
-    OFCHECK(sequence.getItem(2) != NULL);
+    OFCHECK(sequence.getItem(0) == initiallyInsertedItems[0]);
+    OFCHECK(sequence.getItem(2) == initiallyInsertedItems[2]);
     OFCHECK(sequence.getItem(NUMBER_OF_ITEMS) == NULL);
-    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) != NULL);
-    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) != NULL);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) == initiallyInsertedItems[NUMBER_OF_ITEMS - 1]);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) == initiallyInsertedItems[NUMBER_OF_ITEMS - 2]);
+    /* insert a single item before the current item */
+    DcmItem* item = new DcmItem();
+    OFBool before = true;
+    OFCHECK(sequence.insertAtCurrentPos(item, before).good());
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) == item);
+    /* the items after the new item should have been shifted by one */
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) == initiallyInsertedItems[NUMBER_OF_ITEMS - 2]);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS) == initiallyInsertedItems[NUMBER_OF_ITEMS - 1]);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS + 1) == NULL);
 }
 
 

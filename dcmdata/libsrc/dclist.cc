@@ -171,7 +171,7 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
                 node->nextNode = currentNode;
                 currentNode->prevNode = node;
                 currentNode = node;
-                currentAbsolutePosition++;
+                // NB: no need to update currentAbsolutePosition
                 cardinality++;
             }
             else //( pos==ELP_next || pos==ELP_atpos )
