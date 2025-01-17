@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1076,8 +1076,10 @@ DcmMetaInfo *DcmFileFormat::getMetaInfo()
 {
     errorFlag = EC_Normal;
     DcmMetaInfo *meta = NULL;
-    if (itemList->seek_to(0) != NULL && itemList->get()->ident() == EVR_metainfo)
-        meta = OFstatic_cast(DcmMetaInfo *, itemList->get());
+    // the meta information is the first item
+    DcmObject *object = itemList->seek(ELP_first);
+    if (object != NULL && object->ident() == EVR_metainfo)
+        meta = OFstatic_cast(DcmMetaInfo *, object);
     else
         errorFlag = EC_IllegalCall;
     return meta;
@@ -1091,8 +1093,10 @@ DcmDataset *DcmFileFormat::getDataset()
 {
     errorFlag = EC_Normal;
     DcmDataset *data = NULL;
-    if (itemList->seek_to(1) != NULL && itemList->get()->ident() == EVR_dataset)
-        data = OFstatic_cast(DcmDataset *, itemList->get());
+    // the dataset is the last item
+    DcmObject *object = itemList->seek(ELP_last);
+    if (object != NULL && object->ident() == EVR_dataset)
+        data = OFstatic_cast(DcmDataset *, object);
     else
         errorFlag = EC_IllegalCall;
     return data;
@@ -1106,7 +1110,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 {
     errorFlag = EC_Normal;
     DcmDataset *data = NULL;
-    if (itemList->seek_to(1) != NULL && itemList->get()->ident() == EVR_dataset)
+    // the dataset is the last item
+    DcmObject *object = itemList->seek(ELP_last);
+    if (object != NULL && object->ident() == EVR_dataset)
     {
         data = OFstatic_cast(DcmDataset *, itemList->remove());
         // forget about the parent
