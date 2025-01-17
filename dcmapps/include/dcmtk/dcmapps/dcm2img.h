@@ -678,6 +678,8 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, consoleDescription, rcsid);
     OFCommandLine cmd;
 
+    int exitCode = 0;
+
     E_FileReadMode      opt_readMode = ERM_autoDetect;    /* default: fileformat or dataset */
     E_TransferSyntax    opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
 
@@ -1668,19 +1670,26 @@ int main(int argc, char *argv[])
 #endif /* WITH_OPENJPEG */
 #endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
+    DcmDataset *dataset = NULL;
+    DicomImage *di = NULL;
+    DiDisplayFunction *disp = NULL;
+    E_TransferSyntax xfer = EXS_Unknown;
+
     DcmFileFormat *dfile = new DcmFileFormat();
     OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL, DCM_MaxReadLength, opt_readMode);
 
     if (cond.bad())
     {
         OFLOG_FATAL(dcm2imgLogger, cond.text() << ": reading file: " << opt_ifname);
-        return 1;
+        delete dfile;
+        exitCode = 1;
+        goto cleanup;
     }
 
     OFLOG_INFO(dcm2imgLogger, "preparing pixel data");
 
-    DcmDataset *dataset = dfile->getDataset();
-    E_TransferSyntax xfer = dataset->getOriginalXfer();
+    dataset = dfile->getDataset();
+    xfer = dataset->getOriginalXfer();
 
     Sint32 frameCount;
     if (dataset->findAndGetSint32(DCM_NumberOfFrames, frameCount).bad())
@@ -1696,21 +1705,22 @@ int main(int argc, char *argv[])
         opt_compatibilityMode |= CIF_UsePartialAccessToPixelData;
     }
 
-    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
+    di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
     {
         OFLOG_FATAL(dcm2imgLogger, "Out of memory");
-        return 1;
+        exitCode = 1;
+        goto cleanup;
     }
 
     if (di->getStatus() != EIS_Normal)
     {
         OFLOG_FATAL(dcm2imgLogger, DicomImage::getString(di->getStatus()));
-        return 1;
+        exitCode = 1;
+        goto cleanup;
     }
 
     /* create & set display function */
-    DiDisplayFunction *disp = NULL;
     if (!opt_displayFile.empty())
     {
         if (opt_displayFunction == 1)
@@ -1751,14 +1761,19 @@ int main(int argc, char *argv[])
         if (opt_frame != di->getFirstFrame() + 1)
         {
             OFLOG_FATAL(dcm2imgLogger, "cannot select frame " << opt_frame << ", invalid frame number");
-            return 1;
+            exitCode = 1;
+            goto cleanup;
         }
 
         /* convert to grayscale if image is not monochrome */
         if ((opt_convertToGrayscale) && (!di->isMonochrome()))
         {
             di = convertToGrayscale(di);
-            if (di == NULL) return 1;
+            if (di == NULL)
+            {
+                exitCode = 1;
+                goto cleanup;
+            }
         }
 
         /* process overlay parameters */
@@ -1768,7 +1783,11 @@ int main(int argc, char *argv[])
         int result = processVOIParameters(di, opt_windowType, opt_windowParameter,
             opt_windowCenter, opt_windowWidth, opt_voiFunction, opt_ignoreVoiLutDepth,
             opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight);
-        if (result) return result;
+        if (result)
+        {
+            exitCode = result;
+            goto cleanup;
+        }
 
         /* process presentation LUT parameters */
         processPLUTParameters(di, opt_presShape);
@@ -1784,7 +1803,11 @@ int main(int argc, char *argv[])
         /* perform clipping */
         di = performClipping(di, opt_useClip, opt_scaleType, opt_left,
              opt_top, opt_width, opt_height);
-        if (di == NULL) return 1;
+        if (di == NULL)
+        {
+            exitCode = 1;
+            goto cleanup;
+        }
 
         /* perform rotation */
         performRotation(di, opt_rotateDegree);
@@ -1796,7 +1819,11 @@ int main(int argc, char *argv[])
         di = performScaling(di, opt_useClip, opt_scaleType, opt_left, opt_top,
              opt_width, opt_height, opt_scale_factor, opt_scale_size,
              opt_useInterpolation, opt_useAspectRatio);
-        if (di == NULL) return 1;
+        if (di == NULL)
+        {
+            exitCode = 1;
+            goto cleanup;
+        }
 
         /* write selected frame(s) to file */
 
@@ -1843,7 +1870,8 @@ int main(int argc, char *argv[])
                 if (ofile == NULL)
                 {
                     OFLOG_FATAL(dcm2imgLogger, "cannot create file " << ofname);
-                    return 1;
+                    exitCode = 1;
+                    goto cleanup;
                 }
             } else {
                 /* output to stdout */
@@ -1994,19 +2022,24 @@ int main(int argc, char *argv[])
                 if (fclose(ofile))
                 {
                     OFLOG_FATAL(dcm2imgLogger, "error while closing file, content may be incomplete");
-                    return 1;
+                    exitCode = 1;
+                    goto cleanup;
                 }
             }
             if (!result)
             {
                 OFLOG_FATAL(dcm2imgLogger, "cannot write frame");
-                return 1;
+                exitCode = 1;
+                goto cleanup;
             }
         }
     }
 
     /* done, now cleanup. */
     OFLOG_INFO(dcm2imgLogger, "cleaning up memory");
+
+  cleanup:
+
     delete di;
     delete disp;
 
@@ -2028,5 +2061,5 @@ int main(int argc, char *argv[])
 #endif /* WITH_OPENJPEG */
 #endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 
-    return 0;
+    return exitCode;
 }
