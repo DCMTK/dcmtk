@@ -103,20 +103,20 @@ public:
 
     /** insert object at end of list
      *  @param obj pointer to object
-     *  @return pointer to object
+     *  @return pointer to object, or NULL if object cannot be inserted
      */
     DcmObject *append(DcmObject *obj);
 
     /** insert object at start of list
      *  @param obj pointer to object
-     *  @return pointer to object
+     *  @return pointer to object, or NULL if object cannot be inserted
      */
     DcmObject *prepend(DcmObject *obj);
 
     /** insert object relative to current position and indicator
      *  @param obj pointer to object
      *  @param pos position indicator
-     *  @return pointer to object
+     *  @return pointer to object, or NULL if object cannot be inserted
      */
     DcmObject *insert(DcmObject *obj,
                       const E_ListPos pos = ELP_next);

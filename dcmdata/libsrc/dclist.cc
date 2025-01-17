@@ -52,6 +52,7 @@ DcmListNode::~DcmListNode()
 // *****************************************
 
 
+// value should be identical to DCM_EndOfListIndex, e.g. 0xffffffff for 32 bit
 static const unsigned long invalidListPosition = OFnumeric_limits<unsigned long>::max();
 
 
@@ -73,7 +74,7 @@ DcmList::DcmList()
 
 DcmList::~DcmList()
 {
-    if (!DcmList::empty())                         // list is not empty !
+    if (!DcmList::empty())
     {
         lastNode->nextNode = NULL;                 // set to 0 for safety reasons
         do {
@@ -95,17 +96,25 @@ DcmObject *DcmList::append(DcmObject *obj)
 {
     if (obj != NULL)
     {
-        if (DcmList::empty())                      // list is empty !
+        if (DcmList::empty())
+        {
             currentNode = firstNode = lastNode = new DcmListNode(obj);
-        else
+            currentPosition = cardinality;
+            cardinality++;
+        }
+        // check whether object can be inserted
+        else if (cardinality < DCM_EndOfListIndex)
         {
             DcmListNode *node = new DcmListNode(obj);
             lastNode->nextNode = node;
             node->prevNode = lastNode;
             currentNode = lastNode = node;
+            currentPosition = cardinality;
+            cardinality++;
+        } else {
+            DCMDATA_DEBUG("DcmList::append() cannot insert object, maximum number of entries reached");
+            obj = NULL;
         }
-        currentPosition = cardinality;
-        cardinality++;
     } // obj == NULL
     return obj;
 }
@@ -118,17 +127,25 @@ DcmObject *DcmList::prepend(DcmObject *obj)
 {
     if (obj != NULL)
     {
-        if (DcmList::empty())                      // list is empty !
+        if (DcmList::empty())
+        {
             currentNode = firstNode = lastNode = new DcmListNode(obj);
-        else
+            currentPosition = 0;
+            cardinality++;
+        }
+        // check whether object can be inserted
+        else if (cardinality < DCM_EndOfListIndex)
         {
             DcmListNode *node = new DcmListNode(obj);
             node->nextNode = firstNode;
             firstNode->prevNode = node;
             currentNode = firstNode = node;
+            currentPosition = 0;
+            cardinality++;
+        } else {
+            DCMDATA_DEBUG("DcmList::prepend() cannot insert object, maximum number of entries reached");
+            obj = NULL;
         }
-        currentPosition = 0;
-        cardinality++;
     } // obj == NULL
     return obj;
 }
@@ -141,13 +158,15 @@ DcmObject *DcmList::insert(DcmObject *obj, const E_ListPos pos)
 {
     if (obj != NULL)
     {
-        if (DcmList::empty())                      // list is empty !
+        if (DcmList::empty())
         {
             currentNode = firstNode = lastNode = new DcmListNode(obj);
             currentPosition = 0;
             cardinality++;
         }
-        else {
+        // check whether object can be inserted
+        else if (cardinality < DCM_EndOfListIndex)
+        {
             if (pos == ELP_last)                   // insert at the end
                 DcmList::append(obj);
             else if (pos == ELP_first)             // insert at the beginning
@@ -185,6 +204,9 @@ DcmObject *DcmList::insert(DcmObject *obj, const E_ListPos pos)
                 currentPosition++;
                 cardinality++;
             }
+        } else {
+            DCMDATA_DEBUG("DcmList::insert() cannot insert object, maximum number of entries reached");
+            obj = NULL;
         }
     } // obj == NULL
     return obj;
@@ -199,7 +221,7 @@ DcmObject *DcmList::remove()
     DcmObject *tempobj;
     DcmListNode *tempnode;
 
-    if (DcmList::empty())                          // list is empty !
+    if (DcmList::empty())
         return NULL;
     else if (!DcmList::valid())
         return NULL;                               // current node is 0
