@@ -294,7 +294,17 @@ DcmObject *DcmList::seek_to(const unsigned long absolute_position)
         // invalid position
         currentNode = NULL;
         currentPosition = invalidListPosition;
-        return get(ELP_atpos);
+        return NULL;
+    }
+    else if (absolute_position == 0)
+    {
+        // first item in the list
+        return seek(ELP_first);
+    }
+    else if (absolute_position == cardinality - 1)
+    {
+        // last item in the list
+        return seek(ELP_last);
     }
     else if (currentPosition != invalidListPosition)
     {
