@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
+#include "dcmtk/ofstd/oflimits.h"    /* for OFnumeric_limits<> */
 
 #include "dcmtk/dcmimgle/dimopxt.h"
 #include "dcmtk/dcmimgle/diinpx.h"
@@ -72,9 +73,16 @@ class DiMonoInputPixelTemplate
                 rescale(pixel);                     // "copy" or reference pixel data
                 this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
             }
-            /* erase empty part of the buffer (= fill the background with the smallest possible value) */
+            /* erase empty part of the buffer */
             if ((this->Data != NULL) && (this->InputCount < this->Count))
-                OFBitmanipTemplate<T3>::setMem(this->Data + this->InputCount, OFstatic_cast(T3, this->Modality->getAbsMinimum()), this->Count - this->InputCount);
+            {
+                /* that means, fill the background with the smallest value that is possible */
+                const T3 minOut = OFnumeric_limits<T3>::min();
+                const T3 background = (this->Modality->getAbsMinimum() < OFstatic_cast(double, minOut)) ? minOut : OFstatic_cast(T3, this->Modality->getAbsMinimum());
+                const size_t count = (this->Count - this->InputCount);
+                DCMIMGLE_DEBUG("filing empty part of the intermediate pixel data (" << count << " pixels) with value = " << OFstatic_cast(double, background));
+                OFBitmanipTemplate<T3>::setMem(this->Data + this->InputCount, background, count);
+            }
         }
     }
 
