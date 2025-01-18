@@ -60,11 +60,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_mskanji.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-
-
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>

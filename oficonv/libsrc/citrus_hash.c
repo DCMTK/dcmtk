@@ -27,11 +27,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_hash.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-
-
 #include <stdio.h>
 #include <string.h>
 

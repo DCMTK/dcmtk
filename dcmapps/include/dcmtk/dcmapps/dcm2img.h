@@ -59,9 +59,7 @@
 #endif
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>                       /*  for O_BINARY */
-#endif
 #ifdef HAVE_IO_H
 #include <io.h>                          /* for setmode() on Windows */
 #endif

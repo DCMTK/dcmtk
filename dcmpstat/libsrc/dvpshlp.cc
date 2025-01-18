@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,9 +27,7 @@
 #include "dcmtk/dcmdata/dctk.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* for fork */
-#endif
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>    /* for waitpid */
 #endif

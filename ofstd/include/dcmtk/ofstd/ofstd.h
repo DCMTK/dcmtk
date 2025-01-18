@@ -45,9 +45,7 @@ END_EXTERN_C
 #endif
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>  /* for size_t */
-#endif
 END_EXTERN_C
 
 /* Check if we are using glibc in a version where readdir() is known to be

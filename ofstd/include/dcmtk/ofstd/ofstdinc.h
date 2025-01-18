@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,11 +37,7 @@ using namespace std;
 
 // define STD_NAMESPACE to std:: if the standard namespace exists
 #ifndef STD_NAMESPACE
-#ifdef HAVE_STD_NAMESPACE
 #define STD_NAMESPACE std::
-#else
-#define STD_NAMESPACE
-#endif
 #endif
 
 /* Print an error message in case some user code still uses the now unsupported

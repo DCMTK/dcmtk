@@ -32,9 +32,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/oficonv/oidefine.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <wchar.h>
 #include <stdint.h>
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -64,9 +64,7 @@
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"   /* for DcmQueryRetrieveDatabaseStatus */
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* for fork */
-#endif
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>    /* for waitpid */
 #endif
@@ -76,9 +74,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h> /* for wait3 */
 #endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat, fstat */
-#endif
 #ifdef HAVE_SYS_UTIME_H
 #include <sys/utime.h>   /* for utime */
 #endif

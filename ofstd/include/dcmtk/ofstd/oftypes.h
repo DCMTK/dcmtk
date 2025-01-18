@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2024, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,9 +79,7 @@ inline std::ostream& operator<<( std::ostream& o, OFnullptr_t /* unused */ )
 
 #include <cstddef>
 BEGIN_EXTERN_C
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
 #include <inttypes.h>
 END_EXTERN_C
 

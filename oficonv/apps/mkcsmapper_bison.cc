@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.5.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -46,10 +46,10 @@
    USER NAME SPACE" below.  */
 
 /* Identify Bison output, and Bison version.  */
-#define YYBISON 30705
+#define YYBISON 30802
 
 /* Bison version string.  */
-#define YYBISON_VERSION "3.7.5"
+#define YYBISON_VERSION "3.8.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -98,9 +98,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -303,7 +301,7 @@ static void	put32(void *, size_t, uint32_t);
 static void	set_range(uint32_t, uint32_t);
 static void	set_src(linear_zone_t *, uint32_t, uint32_t);
 
-#line 307 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 305 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -531,12 +529,18 @@ typedef int yy_state_fast_t;
 # define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -752,14 +756,14 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   256,   256,   259,   260,   261,   262,   263,   264,   265,
-     266,   267,   269,   270,   271,   272,   274,   275,   277,   278,
-     281,   285,   286,   287,   288,   290,   291,   293,   294,   296,
-     297,   299,   301,   303,   307,   311,   317,   320,   324,   328,
-     332,   333
+       0,   254,   254,   257,   258,   259,   260,   261,   262,   263,
+     264,   265,   267,   268,   269,   270,   272,   273,   275,   276,
+     279,   283,   284,   285,   286,   288,   289,   291,   292,   294,
+     295,   297,   299,   301,   305,   309,   315,   318,   322,   326,
+     330,   331
 };
 #endif
 
@@ -792,17 +796,6 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_int16 yytoknum[] =
-{
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,    45,    47,
-      61
-};
-#endif
-
 #define YYPACT_NINF (-39)
 
 #define yypact_value_is_default(Yyn) \
@@ -813,8 +806,8 @@ static const yytype_int16 yytoknum[] =
 #define yytable_value_is_error(Yyn) \
   0
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
+/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+   STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
      -39,    12,    -1,   -39,     3,     4,     7,     9,    10,    11,
@@ -826,9 +819,9 @@ static const yytype_int8 yypact[] =
       14,    25,   -39
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE does not specify something else to do.  Zero
+   means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        3,     0,     0,     1,     0,     0,     0,     0,     0,     0,
@@ -840,7 +833,7 @@ static const yytype_int8 yydefact[] =
       20,     0,    17
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
+/* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
      -39,   -39,   -39,   -39,   -39,   -39,   -38,   -39,   -39,   -39,
@@ -848,7 +841,7 @@ static const yytype_int8 yypgoto[] =
      -39,   -20
 };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
+/* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
        0,     1,     2,    13,    14,    23,    26,    58,    15,    27,
@@ -856,9 +849,9 @@ static const yytype_int8 yydefgoto[] =
       45,    32
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+   positive, shift that token.  If negative, reduce the rule whose
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
       36,    47,     4,     5,     6,     7,     8,     9,    10,    33,
@@ -877,8 +870,8 @@ static const yytype_int8 yycheck[] =
       20,    19,    18,    -1,    19
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+   state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,    22,    23,     0,     3,     4,     5,     6,     7,     8,
@@ -890,7 +883,7 @@ static const yytype_int8 yystos[] =
       16,    27,    19
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    21,    22,    23,    23,    23,    23,    23,    23,    23,
@@ -900,7 +893,7 @@ static const yytype_int8 yyr1[] =
       42,    42
 };
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     3,     0,     2,     2,     2,     2,     2,     2,
@@ -919,6 +912,7 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
+#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -959,10 +953,7 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
-# ifndef YY_LOCATION_PRINT
-#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-# endif
+
 
 
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
@@ -989,10 +980,6 @@ yy_symbol_value_print (FILE *yyo,
   YY_USE (yyoutput);
   if (!yyvaluep)
     return;
-# ifdef YYPRINT
-  if (yykind < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
-# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
@@ -1177,6 +1164,7 @@ yyparse (void)
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yychar = YYEMPTY; /* Cause a token to be read.  */
+
   goto yysetstate;
 
 
@@ -1202,7 +1190,7 @@ yysetstate:
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    goto yyexhaustedlab;
+    YYNOMEM;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1230,7 +1218,7 @@ yysetstate:
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        goto yyexhaustedlab;
+        YYNOMEM;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1241,7 +1229,7 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          goto yyexhaustedlab;
+          YYNOMEM;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
@@ -1262,6 +1250,7 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1375,169 +1364,169 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* file: property mapping lns  */
-#line 257 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 255 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 { dump_file(); }
-#line 1381 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1370 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 12: /* name: R_NAME L_STRING  */
-#line 269 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 267 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { set_name((yyvsp[0].s_value)); (yyvsp[0].s_value) = NULL; }
-#line 1387 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1376 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 13: /* type: R_TYPE types  */
-#line 270 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 268 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                { set_type((yyvsp[0].i_value)); }
-#line 1393 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1382 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 14: /* types: R_ROWCOL  */
-#line 271 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 269 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                            { (yyval.i_value) = R_ROWCOL; }
-#line 1399 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1388 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 15: /* range: L_IMM '-' L_IMM  */
-#line 272 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 270 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { set_range((yyvsp[-2].i_value), (yyvsp[0].i_value)); }
-#line 1405 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1394 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 18: /* src_zone: R_SRC_ZONE zone  */
-#line 277 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 275 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { set_src_zone((yyvsp[0].i_value)); }
-#line 1411 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1400 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 19: /* zone: range  */
-#line 278 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 276 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                         {
 			(yyval.i_value) = 32;
 		}
-#line 1419 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1408 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 20: /* zone: range '/' range '/' ranges L_IMM  */
-#line 281 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 279 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                                    {
 			(yyval.i_value) = (yyvsp[0].i_value);
 		}
-#line 1427 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1416 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 21: /* dst_invalid: R_DST_INVALID L_IMM  */
-#line 285 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 283 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                       { set_dst_invalid((yyvsp[0].i_value)); }
-#line 1433 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1422 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 22: /* dst_ilseq: R_DST_ILSEQ L_IMM  */
-#line 286 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 284 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                     { set_dst_ilseq((yyvsp[0].i_value)); }
-#line 1439 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1428 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 23: /* dst_unit_bits: R_DST_UNIT_BITS L_IMM  */
-#line 287 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 285 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                         { set_dst_unit_bits((yyvsp[0].i_value)); }
-#line 1445 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1434 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 24: /* oob_mode: R_OOB_MODE oob_mode_sel  */
-#line 288 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 286 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                           { set_oob_mode((yyvsp[0].i_value)); }
-#line 1451 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1440 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 25: /* oob_mode_sel: R_INVALID  */
-#line 290 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 288 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                             { (yyval.i_value) = _CITRUS_MAPPER_STD_OOB_NONIDENTICAL; }
-#line 1457 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1446 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 26: /* oob_mode_sel: R_ILSEQ  */
-#line 291 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 289 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                           { (yyval.i_value) = _CITRUS_MAPPER_STD_OOB_ILSEQ; }
-#line 1463 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1452 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 28: /* begin_map: R_BEGIN_MAP lns  */
-#line 294 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 292 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                                   { setup_map(); }
-#line 1469 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1458 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 31: /* map_elem: src '=' dst  */
-#line 300 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 298 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 { store(&(yyvsp[-2].lz_value), (yyvsp[0].i_value), 0); }
-#line 1475 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1464 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 32: /* map_elem: src '=' L_IMM '-'  */
-#line 302 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 300 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 { store(&(yyvsp[-3].lz_value), (yyvsp[-1].i_value), 1); }
-#line 1481 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1470 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 33: /* dst: L_IMM  */
-#line 304 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 302 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			(yyval.i_value) = (yyvsp[0].i_value);
 		}
-#line 1489 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1478 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 34: /* dst: R_INVALID  */
-#line 308 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 306 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			(yyval.i_value) = dst_invalid;
 		}
-#line 1497 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1486 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 35: /* dst: R_ILSEQ  */
-#line 312 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 310 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			(yyval.i_value) = dst_ilseq;
 		}
-#line 1505 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1494 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 36: /* src: %empty  */
-#line 317 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 315 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), src_next, src_next);
 		}
-#line 1513 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1502 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 37: /* src: L_IMM  */
-#line 321 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 319 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), (yyvsp[0].i_value), (yyvsp[0].i_value));
 		}
-#line 1521 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1510 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 38: /* src: L_IMM '-' L_IMM  */
-#line 325 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 323 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), (yyvsp[-2].i_value), (yyvsp[0].i_value));
 		}
-#line 1529 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1518 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
   case 39: /* src: '-' L_IMM  */
-#line 329 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 327 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
                 {
 			set_src(&(yyval.lz_value), src_next, (yyvsp[0].i_value));
 		}
-#line 1537 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1526 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
     break;
 
 
-#line 1541 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
+#line 1530 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper_bison.cc"
 
       default: break;
     }
@@ -1619,6 +1608,7 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
+  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -1679,7 +1669,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
 /*-----------------------------------.
@@ -1687,24 +1677,22 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
-#if !defined yyoverflow
-/*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+/*-----------------------------------------------------------.
+| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
+`-----------------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  goto yyreturn;
-#endif
+  goto yyreturnlab;
 
 
-/*-------------------------------------------------------.
-| yyreturn -- parsing is finished, clean up and return.  |
-`-------------------------------------------------------*/
-yyreturn:
+/*----------------------------------------------------------.
+| yyreturnlab -- parsing is finished, clean up and return.  |
+`----------------------------------------------------------*/
+yyreturnlab:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at
@@ -1731,7 +1719,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 335 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 333 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
 
 
 static void
@@ -1993,7 +1981,7 @@ set_src_zone(uint32_t val)
 		if (rowcol_len <= 32 / rowcol_bits)
 			break;
 	/*FALLTHROUGH*/
-	default: 
+	default:
 		goto bad;
 	}
 	rowcol_mask = 1u << (rowcol_bits - 1);

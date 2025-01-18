@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2024, OFFIS e.V.
+ *  Copyright (C) 2006-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,9 +33,7 @@
 #include <cerrno>
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>       /* needed for struct _stati64 on Win32 */
-#endif
 END_EXTERN_C
 
 #ifdef HAVE_UNIX_H

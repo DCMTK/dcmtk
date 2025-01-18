@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2021-2024, OFFIS e.V.
+ *  Copyright (C) 2021-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,9 +31,7 @@
 #include <io.h>
 #else // _WIN32
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>  // for struct DIR, opendir()
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2016, OFFIS e.V.
+ *  Copyright (C) 2011-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,12 +29,8 @@
 #include "dcmtk/ofstd/oftypes.h"     /* for OFBool */
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for O_RDWR */
-#endif
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDWR */
-#endif
 END_EXTERN_C
 
 /** this class manages the lifetime of a temporary file. The file will be

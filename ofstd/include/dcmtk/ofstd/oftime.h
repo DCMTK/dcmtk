@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,9 +26,7 @@
 #include "dcmtk/config/osconfig.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>    /* for struct time_t */
-#endif
+#include <sys/types.h>    /* for struct time_t */
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstring.h"      /* for class OFString */

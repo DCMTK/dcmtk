@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022-2024, OFFIS e.V.
+ *  Copyright (C) 2022-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,18 +38,12 @@ BEGIN_EXTERN_C
 #if defined(HAVE_MQUEUE_H) && !defined(__FreeBSD__)
 #include <mqueue.h>
 #endif
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
 #ifdef HAVE_SYS_MSG_H
 #include <sys/msg.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 #ifdef DCMTK_HAVE_POLL
 #include <poll.h>

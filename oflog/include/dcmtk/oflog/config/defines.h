@@ -32,14 +32,10 @@
 #endif
 
 /* */
-#ifdef HAVE_SYS_TYPES_H
 #define DCMTK_LOG4CPLUS_HAVE_SYS_TYPES_H
-#endif
 
 /* */
-#ifdef HAVE_SYS_STAT_H
 #define DCMTK_LOG4CPLUS_HAVE_SYS_STAT_H
-#endif
 
 /* */
 #ifdef HAVE_SYS_SYSCALL_H
@@ -70,9 +66,7 @@
 #endif
 
 /* */
-#ifdef HAVE_FCNTL_H
 #define DCMTK_LOG4CPLUS_HAVE_FCNTL_H
-#endif
 
 /* */
 #define DCMTK_LOG4CPLUS_HAVE_STDARG_H
@@ -106,9 +100,7 @@
 #endif
 
 /* */
-#ifdef HAVE_GETPID
 #define DCMTK_LOG4CPLUS_HAVE_GETPID
-#endif
 
 /* */
 #ifdef HAVE_PROTOTYPE_GETTIMEOFDAY
@@ -181,9 +173,7 @@
 #endif
 
 /* */
-#ifdef HAVE_STAT
 #define DCMTK_LOG4CPLUS_HAVE_STAT
-#endif
 
 /* */
 #ifdef WITH_THREADS
@@ -260,9 +250,7 @@
 #endif
 
 /* */
-#ifdef HAVE_VSNPRINTF
 #define DCMTK_LOG4CPLUS_HAVE_VSNPRINTF
-#endif
 
 /* */
 #ifdef HAVE_PROTOTYPE_STD__VSNPRINTF

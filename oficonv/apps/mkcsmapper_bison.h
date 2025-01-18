@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.5.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -77,7 +77,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 237 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
+#line 235 "/home/meichel/dicom/dcmtk-full/public/oficonv/apps/mkcsmapper.y"
 
 	uint32_t	 i_value;
 	char		*s_value;
@@ -94,6 +94,8 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_HOME_MEICHEL_DICOM_DCMTK_FULL_PUBLIC_OFICONV_APPS_MKCSMAPPER_BISON_H_INCLUDED  */

@@ -1,6 +1,6 @@
-// 
-// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use. 
-// 
+//
+// (C) Jan de Vaan 2007-2010, all rights reserved. See the accompanying "License.txt" for licensed use.
+//
 
 #ifndef CHARLS_ENCODERSTRATEGY
 #define CHARLS_ENCODERSTRATEGY
@@ -24,16 +24,16 @@ public:
      bitpos(0),
      _isFFWritten(false),
      _bytesWritten(0)
-    
+
   {
   }
 
-  virtual ~EncoderStrategy() 
+  virtual ~EncoderStrategy()
   {
   }
 
   LONG PeekByte();
-  
+
   void OnLineBegin(LONG cpixel, void* ptypeBuffer, LONG pixelStride)
   {
     _processLine->NewLineRequested(ptypeBuffer, cpixel, pixelStride);
@@ -42,7 +42,7 @@ public:
   void OnLineEnd(LONG /*cpixel*/, void* /*ptypeBuffer*/, LONG /*pixelStride*/) { }
 
     virtual void SetPresets(const JlsCustomParameters& presets) = 0;
-    
+
   virtual size_t EncodeScan(const void* rawData, BYTE **ptr, size_t *size, size_t offset, bool compare) = 0;
 
 protected:
@@ -80,7 +80,7 @@ protected:
 
      valcurrent |= value >> -bitpos;
      Flush();
-   
+
      // A second flush may be required if extra marker-detect bits were needed and not all bits could be written.
      if (bitpos < 0)
      {
@@ -101,7 +101,7 @@ protected:
       AppendToBitStream(0, (bitpos - 1) % 8);
     else
       AppendToBitStream(0, bitpos % 8);
-    
+
     Flush();
     ASSERT(bitpos == 0x20);
   }
@@ -125,27 +125,27 @@ protected:
       {
         write(BYTE(valcurrent >> 24));
         _isFFWritten = (*_position)[_current_offset - 1] == 0xFF;
-        valcurrent = valcurrent << 8;     
+        valcurrent = valcurrent << 8;
         bitpos += 8;
       }
 
     }
-    
+
   }
 
-  size_t GetLength() 
-  { 
-    return _bytesWritten - (bitpos -32)/8; 
+  size_t GetLength()
+  {
+    return _bytesWritten - (bitpos -32)/8;
   }
 
 
   inlinehint void AppendOnesToBitStream(LONG length)
   {
-    AppendToBitStream((1 << length) - 1, length); 
+    AppendToBitStream((1 << length) - 1, length);
   }
 
 
-  OFunique_ptr<DecoderStrategy> _qdecoder; 
+  OFunique_ptr<DecoderStrategy> _qdecoder;
 
 protected:
   JlsParameters _info;
@@ -154,11 +154,7 @@ private:
   static BYTE *re_alloc(BYTE *old_ptr, size_t *old_size)
   {
     size_t new_size = *old_size * 2;
-#ifdef HAVE_STD__NOTHROW
     BYTE *new_ptr = new(std::nothrow) BYTE[new_size];
-#else
-    BYTE *new_ptr = new BYTE[new_size];
-#endif
     if (new_ptr == NULL) {
       throw alloc_fail();
     }
@@ -185,7 +181,7 @@ private:
 
   unsigned int valcurrent;
   LONG bitpos;
-  
+
   // encoding
   BYTE **_position;
   size_t *_size;

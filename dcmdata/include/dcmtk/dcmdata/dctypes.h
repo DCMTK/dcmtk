@@ -28,10 +28,8 @@
 #include "dcmtk/dcmdata/dcdefine.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 /* needed e.g. on Solaris for definition of size_t */
 #include <sys/types.h>
-#endif
 END_EXTERN_C
 
 /*

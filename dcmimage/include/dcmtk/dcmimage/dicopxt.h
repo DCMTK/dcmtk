@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,16 +125,9 @@ class DiColorPixelTemplate
      */
     virtual ~DiColorPixelTemplate()
     {
-#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
-        /* use a non-throwing delete (if available) */
         operator delete[] (Data[0], std::nothrow);
         operator delete[] (Data[1], std::nothrow);
         operator delete[] (Data[2], std::nothrow);
-#else
-        delete[] Data[0];
-        delete[] Data[1];
-        delete[] Data[2];
-#endif
     }
 
     /** get integer representation
@@ -556,20 +549,8 @@ class DiColorPixelTemplate
             /* allocate data buffer for the 3 planes */
             for (int j = 0; j < 3; j++)
             {
-#ifdef HAVE_STD__NOTHROW
                 /* use a non-throwing new here (if available) because the allocated buffer can be huge */
                 Data[j] = new (std::nothrow) T[Count];
-#else
-                /* make sure that the pointer is set to NULL in case of error */
-                try
-                {
-                    Data[j] = new T[Count];
-                }
-                catch (STD_NAMESPACE bad_alloc const &)
-                {
-                    Data[j] = NULL;
-                }
-#endif
                 if (Data[j] != NULL)
                 {
                     /* erase empty part of the buffer (=blacken the background) */
