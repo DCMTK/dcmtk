@@ -254,20 +254,20 @@ int main(int argc, char *argv[])
         if (status.good())
         {
             DcmDataset *dset = dfile.getDataset();
-            if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
+            /* check for SpecificCharacterSet on any data set level */
+            if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
             {
-                /* check for SpecificCharacterSet on any data set level */
-                if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
+                /* convert entire DICOM file or data set to UTF-8 encoding */
+                status = dfile.convertToUTF8();
+                if (status.bad())
                 {
-                    /* convert entire DICOM file or data set to UTF-8 encoding */
-                    status = dfile.convertToUTF8();
-                    if (status.bad())
-                    {
-                        OFLOG_FATAL(dcm2jsonLogger, status.text() << ": converting file to UTF-8: " << ifname);
-                        result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
-                    }
+                    OFLOG_FATAL(dcm2jsonLogger, status.text() << ": converting file to UTF-8: " << ifname);
+                    result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
                 }
-                else
+            }
+            else
+            {
+                if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
                 {
                     OFLOG_ERROR(dcm2jsonLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) element "
                         << "absent (at all levels of the data set) but extended characters used in file: " << ifname);
