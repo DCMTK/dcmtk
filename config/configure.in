@@ -224,8 +224,6 @@ AC_CHECK_TYPES(uint64_t)
 
 AC_CHECK_TYPES(char16_t)
 
-AC_CHECK_TYPES([sigjmp_buf], [], [], [[#include <setjmp.h>]])
-
 dnl -------------------------------------------------------
 dnl Check for libc library functions
 dnl -------------------------------------------------------
@@ -233,26 +231,20 @@ dnl -------------------------------------------------------
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS(gethostid sysinfo)
-AC_CHECK_FUNCS(itoa atoll)
-AC_CHECK_FUNCS(bcmp)
-AC_CHECK_FUNCS(getpid mktemp mkstemp)
-AC_CHECK_FUNCS(stat)
+AC_CHECK_FUNCS(atoll)
+AC_CHECK_FUNCS(mkstemp)
 AC_CHECK_FUNCS(malloc_debug)
-AC_CHECK_FUNCS(strdup index rindex access)
 AC_CHECK_FUNCS(uname cuserid getlogin getlogin_r)
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(flock lockf)
-AC_CHECK_FUNCS(listen)
 AC_CHECK_FUNCS(gethostbyname_r)
 AC_CHECK_FUNCS(gethostbyaddr_r getgrnam_r getpwnam_r)
-AC_CHECK_FUNCS(getrusage)
 AC_CHECK_FUNCS(gettimeofday)
 AC_CHECK_FUNCS(waitpid)
 AC_CHECK_FUNCS(getuid geteuid setuid getpwnam getgrnam)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
-AC_CHECK_FUNCS(vsnprintf)
 AC_CHECK_FUNCS(popen pclose)
 AC_CHECK_FUNCS(readdir_r)
 AC_FUNC_FSEEKO
@@ -261,24 +253,10 @@ dnl -------------------------------------------------------
 dnl Check for header files and functions needed by oflog
 dnl -------------------------------------------------------
 
-AC_DEFUN([TYPE_SOCKLEN_T],
-[
-AH_TEMPLATE(socklen_t, [Define to int if undefined.])
-AC_CACHE_CHECK([for socklen_t], ac_cv_type_socklen_t,
-[
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
-   #include <sys/socket.h>]], [[socklen_t len = 42; return 0;]])],[ac_cv_type_socklen_t=yes],[ac_cv_type_socklen_t=no])
-])
-  if test $ac_cv_type_socklen_t != yes; then
-    AC_DEFINE(socklen_t, int)
-  fi
-])
-
 AC_CHECK_FUNCS(ftime gmtime_r localtime_r lstat nanosleep fcntl)
 AC_CHECK_FUNCS(htons htonl ntohs ntohl)
 AC_CHECK_HEADERS(netinet/in.h)
 AC_CHECK_HEADERS(syslog.h)
-TYPE_SOCKLEN_T
 
 AH_TEMPLATE(HAVE_ENAMETOOLONG, [Define if your system provides ENAMETOOLONG errno value.])
 AC_COMPILE_IFELSE(
@@ -299,23 +277,10 @@ AC_CHECK_FUNCS(fgetln)
 AC_CHECK_PROTOTYPE(strcasestr, string.h)
 
 dnl -------------------------------------------------------
-dnl Check for libm library functions
-dnl -------------------------------------------------------
-
-SAVELIBS="$LIBS"
-LIBS="$LIBS -lm"
-AC_CHECK_FUNCS(finite)
-LIBS="$SAVELIBS"
-
-dnl -------------------------------------------------------
 dnl Perform remaining tests with C++ compiler
 dnl -------------------------------------------------------
 
 AC_LANG(C++)
-
-AC_CXX_STD_NOTHROW
-AC_CXX_NOTHROW_DELETE
-AC_CXX_STATIC_ASSERT
 
 dnl -------------------------------------------------------
 dnl Check for Debug Mode
@@ -416,18 +381,6 @@ dnl -------------------------------------------------------
 
 AC_CHECK_GXXLIB
 
-dnl Some C++ compilers have problems with recursive main calls
-dnl (e.g. Sun C++ 4.2). In this case we must test another function
-dnl to link.
-AC_CHECK_LIB(nsl, main)
-if test $ac_cv_lib_nsl_main = no ; then
-AC_CHECK_LIB(nsl, gethostbyname)
-fi
-AC_CHECK_LIB(socket, main)
-if test $ac_cv_lib_socket_main = no ; then
-AC_CHECK_LIB(socket, socket)
-fi
-
 dnl Some newer versions of OpenSSL must be linked against libdl.
 dnl We just check whether libdl exists and in this case always
 dnl add -ldl to OPENSSLLIBS. The same applies for OPENJPEG.
@@ -476,14 +429,12 @@ AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
 AC_CHECK_HEADERS(atomic)
 AC_CHECK_HEADERS(arpa/inet.h)
-AC_CHECK_HEADERS(fcntl.h)
 AC_CHECK_HEADERS(fnmatch.h)
 AC_CHECK_HEADERS(grp.h)
 AC_CHECK_HEADERS(ieeefp.h)
 AC_CHECK_HEADERS(io.h)
 AC_CHECK_HEADERS(iostream)
 AC_CHECK_HEADERS(libc.h)
-AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(mqueue.h)
 AC_CHECK_HEADERS(new)
 AC_CHECK_HEADERS(netdb.h)
@@ -491,22 +442,18 @@ AC_CHECK_HEADERS(pthread.h)
 AC_CHECK_HEADERS(pwd.h)
 AC_CHECK_HEADERS(semaphore.h)
 AC_CHECK_HEADERS(cstddef)
-AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(strings.h)
 AC_CHECK_HEADERS(synch.h)
-AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
 AC_CHECK_HEADERS(sys/msg.h)
 AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_HEADERS(sys/select.h)
 AC_CHECK_HEADERS(sys/socket.h)
-AC_CHECK_HEADERS(sys/stat.h)
 AC_CHECK_HEADERS(sys/syscall.h)
 AC_CHECK_HEADERS(sys/systeminfo.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_HEADERS(sys/timeb.h)
-AC_CHECK_HEADERS(sys/types.h)
 AC_CHECK_HEADERS(sys/un.h)
 AC_CHECK_HEADERS(sys/utime.h)
 AC_CHECK_HEADERS(sys/utsname.h)
@@ -737,11 +684,8 @@ dnl ------------------------------------------------------------
 AC_TYPEDEF(ssize_t, long)
 AC_TYPEDEF(pid_t, int)
 AC_C_CHAR_UNSIGNED
-AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long)
-AC_CHECK_SIZEOF(float)
-AC_CHECK_SIZEOF(double)
 AC_CHECK_SIZEOF(void *)
 AC_STRUCT_TM
 AC_MY_SYMBOL_EXISTS([__FUNCTION__])
@@ -756,12 +700,7 @@ dnl The following AC_CHECK_* macros _must_ have corresponding entries in
 dnl the acconfig.h file.  This is because the macros are specific to the
 dnl DCMTK project and are not supported by GNU autoheader.
 
-AC_CHECK_PROTOTYPE(feenableexcept, fenv.h)
 AC_CHECK_PROTOTYPE(_stricmp, string.h)
-AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(finite, math.h)
-AC_CHECK_PROTOTYPE(std::isinf, cmath)
-AC_CHECK_PROTOTYPE(std::isnan, cmath)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
 AC_CHECK_PROTOTYPE(gethostbyname_r, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostbyaddr_r, libc.h unistd.h stdlib.h netdb.h)
@@ -770,23 +709,18 @@ AC_CHECK_PROTOTYPE(strerror_r, string.h)
 if test $ac_cv_prototype_strerror_r = yes ; then
 AC_CHECK_CHARP_STRERROR_R(string.h)
 fi
-AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(gettimeofday, sys/time.h unistd.h)
-AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
-AC_CHECK_PROTOTYPE(mkstemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(strcasecmp, string.h)
 AC_CHECK_PROTOTYPE(strncasecmp, string.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(vsnprintf, stdio.h stdarg.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 
+
 dnl -------------------------------------------------------
 dnl Check for the usage of standard C++ headers
 dnl -------------------------------------------------------
 
-AC_CHECK_STD_NAMESPACE
-AC_CHECK_COMPILES(std::vfprintf, cstdarg cstdio,
-  [FILE *stream; va_list ap; std::vfprintf(stream, "", ap);])
 AC_CHECK_COMPILES(std::vsnprintf, cstdarg cstdio,
   [char buf[256]; va_list ap; std::vsnprintf(buf, 0, "", ap);])
 
@@ -1156,10 +1090,8 @@ AS_HELP_STRING([--without-libwrap], [don't include libwrap support])],
     #endif
     /* on some platforms, tcpd.h needs stdio.h */
     #include <stdio.h>
-    #ifdef HAVE_SYS_TYPES_H
     /* on some platforms, tcpd.h needs sys/types.h */
     #include <sys/types.h>
-    #endif
     #include <tcpd.h>
     #ifdef __cplusplus
     }
@@ -1791,13 +1723,6 @@ AC_TRY_COMPILE([#include <sys/syscall.h>],
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_SYS_GETTID) ],
   [AC_MSG_RESULT(no)])
-
-
-dnl -------------------------------------------------------
-dnl Test for defined iterator categories
-dnl -------------------------------------------------------
-
-AC_CHECK_ITERATOR_CATEGORY([contiguous],[HAVE_CONTIGUOUS_ITERATOR_CATEGORY])
 
 
 dnl -------------------------------------------------------

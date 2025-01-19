@@ -88,9 +88,6 @@
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif
 
-/* Define to 1 if you have the `access' function. */
-#undef HAVE_ACCESS
-
 /* Define to 1 if you have the <alloca.h> header file. */
 #undef HAVE_ALLOCA_H
 
@@ -112,18 +109,12 @@
 /* Define if the compiler supports __attribute__((deprecated("message"))). */
 #undef HAVE_ATTRIBUTE_DEPRECATED_MSG
 
-/* Define to 1 if you have the `bcmp' function. */
-#undef HAVE_BCMP
-
 /* Define to 1 if the system has the type `char16_t'. */
 #undef HAVE_CHAR16_T
 
 /* Define if your system declares the return type of strerror_r as char *
    instead of int. */
 #undef HAVE_CHARP_STRERROR_R
-
-/* Define if the contiguous iterator category is supported. */
-#undef HAVE_CONTIGUOUS_ITERATOR_CATEGORY
 
 /* Define to 1 if you have the <cstddef> header file. */
 #undef HAVE_CSTDDEF
@@ -166,14 +157,8 @@
 /* Define to 1 if you have the `fcntl' function. */
 #undef HAVE_FCNTL
 
-/* Define to 1 if you have the <fcntl.h> header file. */
-#undef HAVE_FCNTL_H
-
 /* Define to 1 if you have the `fgetln' function. */
 #undef HAVE_FGETLN
-
-/* Define to 1 if you have the `finite' function. */
-#undef HAVE_FINITE
 
 /* Define to 1 if you have the `flock' function. */
 #undef HAVE_FLOCK
@@ -217,17 +202,11 @@
 /* Define to 1 if you have the `getlogin_r' function. */
 #undef HAVE_GETLOGIN_R
 
-/* Define to 1 if you have the `getpid' function. */
-#undef HAVE_GETPID
-
 /* Define to 1 if you have the `getpwnam' function. */
 #undef HAVE_GETPWNAM
 
 /* Define to 1 if you have the `getpwnam_r' function. */
 #undef HAVE_GETPWNAM_R
-
-/* Define to 1 if you have the `getrusage' function. */
-#undef HAVE_GETRUSAGE
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
@@ -253,19 +232,8 @@
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #undef HAVE_IEEEFP_H
 
-/* Define to 1 if you have the `index' function. */
-#undef HAVE_INDEX
-
 /* Define to 1 if the system has the type `int64_t'. */
 #undef HAVE_INT64_T
-
-/* Define if your system declares argument 3 of accept() as int * instead of
-   size_t * or socklen_t *. */
-#undef HAVE_INTP_ACCEPT
-
-/* Define if your system declares argument 5 of getsockopt() as int * instead
-   of size_t * or socklen_t. */
-#undef HAVE_INTP_GETSOCKOPT
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -276,26 +244,14 @@
 /* Define to 1 if you have the <io.h> header file. */
 #undef HAVE_IO_H
 
-/* Define to 1 if you have the `itoa' function. */
-#undef HAVE_ITOA
-
 /* Define to 1 if you have the <langinfo.h> header file. */
 #undef HAVE_LANGINFO_H
 
 /* Define to 1 if you have the <libc.h> header file. */
 #undef HAVE_LIBC_H
 
-/* Define to 1 if you have the `nsl' library (-lnsl). */
-#undef HAVE_LIBNSL
-
 /* Define to 1 if you have the <libpng/png.h> header file. */
 #undef HAVE_LIBPNG_PNG_H
-
-/* Define to 1 if you have the `socket' library (-lsocket). */
-#undef HAVE_LIBSOCKET
-
-/* Define to 1 if you have the `listen' function. */
-#undef HAVE_LISTEN
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
@@ -312,17 +268,11 @@
 /* Define to 1 if you have the `malloc_debug' function. */
 #undef HAVE_MALLOC_DEBUG
 
-/* Define to 1 if you have the <malloc.h> header file. */
-#undef HAVE_MALLOC_H
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
-
-/* Define to 1 if you have the `mktemp' function. */
-#undef HAVE_MKTEMP
 
 /* Define to 1 if you have the <mqueue.h> header file. */
 #undef HAVE_MQUEUE_H
@@ -347,9 +297,6 @@
 
 /* Define to 1 if you have the <new> header file. */
 #undef HAVE_NEW
-
-/* Define if the compiler supports operator delete (std::nothrow). */
-#undef HAVE_NOTHROW_DELETE
 
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #undef HAVE_NO_TYPEDEF_PID_T
@@ -482,12 +429,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `popen' function. */
 #undef HAVE_POPEN
 
-/* Define if your system has a prototype for feenableexcept in fenv.h. */
-#undef HAVE_PROTOTYPE_FEENABLEEXCEPT
-
-/* Define if your system has a prototype for finite in math.h. */
-#undef HAVE_PROTOTYPE_FINITE
-
 /* Define if your system has a prototype for flock in sys/file.h. */
 #undef HAVE_PROTOTYPE_FLOCK
 
@@ -506,24 +447,6 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h. */
 #undef HAVE_PROTOTYPE_GETTIMEOFDAY
-
-/* Define if your system has a prototype for mkstemp in libc.h unistd.h
-   stdlib.h. */
-#undef HAVE_PROTOTYPE_MKSTEMP
-
-/* Define if your system has a prototype for mktemp in libc.h unistd.h
-   stdlib.h. */
-#undef HAVE_PROTOTYPE_MKTEMP
-
-/* Define if your system has a prototype for std::isinf in cmath. */
-#undef HAVE_PROTOTYPE_STD__ISINF
-
-/* Define if your system has a prototype for std::isnan in cmath. */
-#undef HAVE_PROTOTYPE_STD__ISNAN
-
-/* Define if your system has a prototype for std::vfprintf in cstdarg cstdio.
-   */
-#undef HAVE_PROTOTYPE_STD__VFPRINTF
 
 /* Define if your system has a prototype for std::vsnprintf in cstdarg cstdio.
    */
@@ -567,38 +490,20 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `readdir_r' function. */
 #undef HAVE_READDIR_R
 
-/* Define to 1 if you have the `rindex' function. */
-#undef HAVE_RINDEX
-
 /* Define to 1 if you have the <semaphore.h> header file. */
 #undef HAVE_SEMAPHORE_H
 
 /* Define to 1 if you have the `setuid' function. */
 #undef HAVE_SETUID
 
-/* Define to 1 if the system has the type `sigjmp_buf'. */
-#undef HAVE_SIGJMP_BUF
-
 /* Define to 1 if you have the `sleep' function. */
 #undef HAVE_SLEEP
-
-/* Define to 1 if you have the `stat' function. */
-#undef HAVE_STAT
-
-/* Define if the compiler supports static_assert. */
-#undef HAVE_STATIC_ASSERT
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
-
-/* Define if ANSI standard C++ includes use std namespace. */
-#undef HAVE_STD_NAMESPACE
-
-/* Define if the compiler supports std::nothrow. */
-#undef HAVE_STD__NOTHROW
 
 /* Define if STL's algorithm should be used. */
 #undef HAVE_STL_ALGORITHM
@@ -633,9 +538,6 @@ typedef unsigned short ushort;
 /* Define if STL's vector should be used. */
 #undef HAVE_STL_VECTOR
 
-/* Define to 1 if you have the `strdup' function. */
-#undef HAVE_STRDUP
-
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
@@ -666,9 +568,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
 #undef HAVE_SYS_DIR_H
-
-/* Define to 1 if you have the <sys/errno.h> header file. */
-#undef HAVE_SYS_ERRNO_H
 
 /* Define to 1 if you have the <sys/file.h> header file. */
 #undef HAVE_SYS_FILE_H
@@ -758,9 +657,6 @@ typedef unsigned short ushort;
 /* Define if variable-length arrays are supported in C. */
 #undef HAVE_VLA
 
-/* Define to 1 if you have the `vsnprintf' function. */
-#undef HAVE_VSNPRINTF
-
 /* Define to 1 if you have the `waitpid' function. */
 #undef HAVE_WAITPID
 
@@ -812,20 +708,11 @@ typedef unsigned short ushort;
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
-/* The size of `double', as computed by sizeof. */
-#undef SIZEOF_DOUBLE
-
-/* The size of `float', as computed by sizeof. */
-#undef SIZEOF_FLOAT
-
 /* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
 /* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
-
-/* The size of `short', as computed by sizeof. */
-#undef SIZEOF_SHORT
 
 /* The size of `void *', as computed by sizeof. */
 #undef SIZEOF_VOID_P
@@ -917,9 +804,6 @@ typedef unsigned short ushort;
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
 #endif
-
-/* Define to int if undefined. */
-#undef socklen_t
 
 #if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
 #error \
