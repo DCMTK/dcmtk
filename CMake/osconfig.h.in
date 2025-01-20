@@ -194,9 +194,6 @@
 /* Define to 1 if you have readdir_r */
 #cmakedefine HAVE_READDIR_R @HAVE_READDIR_R@
 
-/* Define if your system has a prototype for feenableexcept in fenv.h */
-#cmakedefine HAVE_PROTOTYPE_FEENABLEEXCEPT @HAVE_PROTOTYPE_FEENABLEEXCEPT@
-
 /* Define to 1 if your has a prototype for `TryAcquireSRWLockShared' in windows.h (Win32 only). */
 #cmakedefine HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED @HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED@
 
@@ -984,6 +981,7 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #pragma GCC poison HAVE_PROTOTYPE_NANOSLEEP
 #pragma GCC poison HAVE_PROTOTYPE_STD__FINITE
 #pragma GCC poison HAVE_PROTOTYPE_WAIT3
+#pragma GCC poison HAVE_PROTOTYPE_FEENABLEEXCEPT
 #pragma GCC poison HAVE_PROTOTYPE__FPCLASSF
 #pragma GCC poison HAVE_RINDEX
 #pragma GCC poison HAVE_SIGJMP_BUF
@@ -1042,6 +1040,7 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* #undef HAVE_PROTOTYPE_NANOSLEEP */
 /* #undef HAVE_PROTOTYPE_STD__FINITE */
 /* #undef HAVE_PROTOTYPE_WAIT3 */
+/* #undef HAVE_PROTOTYPE_FEENABLEEXCEPT */
 /* #undef HAVE_PROTOTYPE__FPCLASSF */
 /* #undef HAVE_RINDEX */
 /* #undef HAVE_SIGJMP_BUF */
