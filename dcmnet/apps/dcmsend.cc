@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     OFBool opt_recurse = OFFalse;
     const char *opt_scanPattern = "";
     const char *opt_reportFilename = "";
-
+    T_ASC_ProtocolFamily opt_protocolVersion = ASC_AF_Default;
     int paramCount = 0;
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Simple DICOM storage SCU (sender)", rcsid);
@@ -188,6 +188,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--no-uid-checks",       "-nuc",    "do not check UID values of input files");
 
     cmd.addGroup("network options:");
+      cmd.addSubGroup("IP protocol version:");
+        cmd.addOption("--ipv4",                "-i4",     "use IPv4 only (default)");
+        cmd.addOption("--ipv6",                "-i6",     "use IPv6 only");
+        cmd.addOption("--ip-auto",             "-i0",     "use DNS lookup to determine IP protocol");
       cmd.addSubGroup("application entity titles:");
         cmd.addOption("--aetitle",             "-aet", 1, "[a]etitle: string",
                                                           "set my calling AE title (default: " APPLICATIONTITLE ")");
@@ -312,6 +316,12 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--no-uid-checks")) opt_checkUIDValues = OFFalse;
 
         /* network options */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--ipv4")) opt_protocolVersion = ASC_AF_INET;
+        if (cmd.findOption("--ipv6")) opt_protocolVersion = ASC_AF_INET6;
+        if (cmd.findOption("--ip-auto")) opt_protocolVersion = ASC_AF_UNSPEC;
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
         if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
@@ -457,6 +467,7 @@ int main(int argc, char *argv[])
     storageSCU.setDecompressionMode(opt_decompressionMode);
     storageSCU.setHaltOnUnsuccessfulStoreMode(opt_haltOnUnsuccessfulStore);
     storageSCU.setAllowIllegalProposalMode(opt_allowIllegalProposal);
+    storageSCU.setProtocolVersion(opt_protocolVersion);
 
     /* output information on the single/multiple associations setting */
     if (opt_multipleAssociations)

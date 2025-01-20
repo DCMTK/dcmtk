@@ -315,6 +315,7 @@ getTransferSyntax(
         case EXS_LittleEndianImplicit:
         case EXS_LittleEndianExplicit:
         case EXS_BigEndianExplicit:
+        case EXS_EncapsulatedUncompressedLittleEndianExplicit:
         case EXS_JPEGProcess1:
         case EXS_JPEGProcess2_4:
         case EXS_JPEGProcess3_5:
@@ -334,6 +335,9 @@ getTransferSyntax(
         case EXS_JPEGProcess29:
         case EXS_JPEGProcess14SV1:
         case EXS_RLELossless:
+#ifdef WITH_ZLIB
+        case EXS_DeflatedLittleEndianExplicit:
+#endif
         case EXS_JPEGLSLossless:
         case EXS_JPEGLSLossy:
         case EXS_JPEG2000LosslessOnly:
@@ -359,9 +363,9 @@ getTransferSyntax(
         case EXS_HighThroughputJPEG2000LosslessOnly:
         case EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly:
         case EXS_HighThroughputJPEG2000:
-#ifdef WITH_ZLIB
-        case EXS_DeflatedLittleEndianExplicit:
-#endif
+        case EXS_JPEGXLLossless:
+        case EXS_JPEGXLJPEGRecompression:
+        case EXS_JPEGXL:
         /* OK, these can be supported */
         break;
     default:

@@ -332,7 +332,11 @@ int main(int argc, char* argv[])
         return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
     }
 
-    fclose(cdafile);
+    if(fclose(cdafile))
+    {
+        OFLOG_FATAL(dcm2cdaLogger, "write error in file " << opt_ofname);
+        return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
+    }
 
     OFLOG_INFO(dcm2cdaLogger, "conversion successful");
 

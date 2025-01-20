@@ -94,6 +94,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
+
 END_EXTERN_C
 #ifdef DCMTK_HAVE_POLL
 #include <poll.h>
@@ -114,10 +115,11 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmlayer.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/helpers.h"
-#include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr */
+#include "dcmtk/ofstd/ofsockad.h" /* for class OFSockAddr and SOCK_CLOEXEC */
 #include "dcmtk/ofstd/ofstd.h"
 #include <ctime>
 #include <climits>
+#include <cstdlib>
 
 /* At least Solaris doesn't define this */
 #ifndef INADDR_NONE
@@ -730,7 +732,7 @@ DUL_InitializeFSM()
                  stateEntries[l_index].actionFunction == NULL; idx2++)
                 if (stateEntries[l_index].action == FSM_FunctionTable[idx2].action) {
                     stateEntries[l_index].actionFunction = FSM_FunctionTable[idx2].actionFunction;
-                    OFStandard::snprintf(stateEntries[l_index].actionName, 
+                    OFStandard::snprintf(stateEntries[l_index].actionName,
                         sizeof(stateEntries[l_index].actionName), "%.*s",
                         (int)(sizeof(stateEntries[l_index].actionName) - 1),
                         FSM_FunctionTable[idx2].actionName);
@@ -739,7 +741,7 @@ DUL_InitializeFSM()
         for (idx2 = 0; idx2 < DIM_OF(Event_Table) &&
              strlen(stateEntries[l_index].eventName) == 0; idx2++) {
             if (stateEntries[l_index].event == Event_Table[idx2].event)
-                OFStandard::snprintf(stateEntries[l_index].eventName, 
+                OFStandard::snprintf(stateEntries[l_index].eventName,
                     sizeof(stateEntries[l_index].eventName), "%.*s",
                     (int)(sizeof(stateEntries[l_index].eventName) - 1),
                     Event_Table[idx2].eventName);
@@ -1605,6 +1607,7 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
     if (cond.bad())
         return cond;
 
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
     if (pduLength == 4)
     {
       unsigned long mode = buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3];
@@ -1613,6 +1616,7 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->modeCallback->callback(mode);
       }
     }
+#endif
 
     (*association)->protocolState = nextState;
     return DUL_PEERREQUESTEDRELEASE;
@@ -2018,6 +2022,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
                        &pduType, &pduReserve, &pduLength);
     if (cond.bad()) return cond;
 
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
     if (pduLength == 4)
     {
       unsigned long mode = pduReserve << 24 | buffer[0] << 16 | buffer[1] << 8 | buffer[3];
@@ -2026,6 +2031,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->modeCallback->callback(mode);
       }
     }
+#endif
 
     closeTransport(association);
     (*association)->protocolState = nextState;
@@ -2247,7 +2253,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
                       PRIVATE_ASSOCIATIONKEY ** association)
 {
     char node[128];
-    int  port;
+    int  port = 0;
     OFSockAddr server;
 #ifdef _WIN32
     SOCKET s;
@@ -2256,7 +2262,22 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
     struct linger sockarg;
 
-    if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
+    // Split the presentation address into hostname/IP address and port.
+    OFString addressString(params->calledPresentationAddress);
+    // find the last colon in the string to split the node and port
+    size_t lastColonPos = addressString.find_last_of(':');
+    if (lastColonPos != OFString_npos) {
+        // extract node and port from the string
+        OFString nodeStr = addressString.substr(0, lastColonPos);
+        OFString portStr = addressString.substr(lastColonPos + 1);
+
+        // copy node string into node char array
+        OFStandard::strlcpy(node, nodeStr.c_str(), sizeof(node));
+
+        // convert port string to integer
+        port = STD_NAMESPACE atoi(portStr.c_str());
+    }
+    else
     {
         char buf[1024];
         OFStandard::snprintf(buf, sizeof(buf), "Illegal service parameter: %s", params->calledPresentationAddress);
@@ -2278,8 +2299,25 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     }
     else
     {
+        int family = 0;
+        switch (params->protocol_family)
+        {
+          case ASC_AF_Default:
+            family = AF_INET; // for now the default is to use IPv4 only
+            break;
+          case ASC_AF_INET:
+            family = AF_INET; // IPv4 only
+            break;
+          case ASC_AF_INET6:
+            family = AF_INET6; // IPv6 only
+            break;
+          case ASC_AF_UNSPEC:
+            family = AF_UNSPEC; // use DNS lookup to determine protocol
+            break;
+        }
+
         // must be a host name or an IPv6 address
-        OFStandard::getAddressByHostname(node, server);
+        OFStandard::getAddressByHostname(node, family, server);
         if (server.getFamily() == 0)
         {
           char buf2[4095]; // node could be a long string
@@ -2291,7 +2329,27 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
     const Sint32 connectTimeout = params->tcpConnectTimeout;
 
+#ifdef HAVE_WINSOCK_H
+    u_long arg = TRUE;
+#else
+    int flags = 0;
+#endif
+
+    // Create socket and prevent leakage of the open socket to processes called with exec()
+    // by using SOCK_CLOEXEC (where available) or FD_CLOEXEC (POSIX.1-2008)
+#ifdef SOCK_CLOEXEC
+    s = socket(server.getFamily(), SOCK_STREAM | SOCK_CLOEXEC, 0);
+#elif defined(FD_CLOEXEC)
     s = socket(server.getFamily(), SOCK_STREAM, 0);
+    if (s >= 0)
+    {
+        flags = fcntl(s, F_GETFD, 0);
+        fcntl(s, F_SETFD, FD_CLOEXEC | flags);
+    }
+#else
+    s = socket(server.getFamily(), SOCK_STREAM, 0);
+#endif
+
 #ifdef _WIN32
     if (s == INVALID_SOCKET)
 #else
@@ -2302,12 +2360,6 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
       msg += OFStandard::getLastNetworkErrorCode().message();
       return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
-
-#ifdef HAVE_WINSOCK_H
-    u_long arg = TRUE;
-#else
-    int flags = 0;
-#endif
 
     if (connectTimeout >= 0)
     {
@@ -2571,7 +2623,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateRequest, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
@@ -2645,7 +2697,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     associateReply;
     BufferGuard buffer;
     unsigned long length = 0;
-    int nbytes;
+    ssize_t nbytes;
     DUL_ASSOCIATESERVICEPARAMETERS localService;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateReply, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
@@ -2726,7 +2778,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
 
@@ -2792,7 +2844,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFCondition cond = constructAbortPDU(abortItems->source, abortItems->reason, &pdu, (*association)->compatibilityMode);
@@ -2846,7 +2898,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFCondition cond = constructReleaseRQPDU(&pdu, (*association)->compatibilityMode);
@@ -2901,7 +2953,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     BufferGuard buffer;
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     OFCondition cond = constructReleaseRPPDU(&pdu);
@@ -3053,7 +3105,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
         head[24];
     unsigned long
         length;
-    int
+    ssize_t
         nbytes;
 
     /* construct a stream variable that will contain PDU head information */
@@ -3629,7 +3681,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
               int timeout, void *p, unsigned long l, unsigned long *rtnLen)
 {
     unsigned char *b;
-    int bytesRead;
+    ssize_t bytesRead;
 
     /* assign buffer to local variable */
     b = (unsigned char *) p;

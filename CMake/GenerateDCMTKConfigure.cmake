@@ -200,8 +200,18 @@ else()
   set(CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DOCDIR}-${DCMTK_COMPLETE_PACKAGE_VERSION}")
 
   # These variables are defined as macros in osconfig.h and must end with a path separator
-  set(DCMTK_DEFAULT_CONFIGURATION_DIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}/")
-  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${CMAKE_INSTALL_FULL_DATADIR}/")
+  if(CMAKE_VERSION VERSION_LESS 3.20.0)
+    # CMake versions prior to 3.20 expect the third parameter to be passed in ${dir}
+    set(dir "SYSCONFDIR")
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_CONFIGURATION_DIR CMAKE_INSTALL_SYSCONFDIR)
+    set(dir "BINDIR")
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_SUPPORT_DATA_DIR CMAKE_INSTALL_DATADIR)
+  else()
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_CONFIGURATION_DIR CMAKE_INSTALL_SYSCONFDIR SYSCONFDIR)
+    GNUInstallDirs_get_absolute_install_dir(DCMTK_DEFAULT_SUPPORT_DATA_DIR CMAKE_INSTALL_DATADIR BINDIR)
+  endif()
+  set(DCMTK_DEFAULT_CONFIGURATION_DIR "${DCMTK_DEFAULT_CONFIGURATION_DIR}/")
+  set(DCMTK_DEFAULT_SUPPORT_DATA_DIR "${DCMTK_DEFAULT_SUPPORT_DATA_DIR}/")
 
   # Set dictionary path to the data dir inside install main dir (prefix).
   if(DCMTK_DEFAULT_DICT STREQUAL "external")
@@ -340,6 +350,7 @@ endif()
   CHECK_INCLUDE_FILE_CXX("system_error" HAVE_SYSTEM_ERROR)
   CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE)
   CHECK_INCLUDE_FILE_CXX("type_traits" HAVE_TYPE_TRAITS)
+  CHECK_INCLUDE_FILE_CXX("atomic" HAVE_ATOMIC)
 
 if(NOT APPLE)
   # poll on macOS is unreliable, it first did not exist, then was broken until
@@ -503,9 +514,7 @@ endif()
     set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} iphlpapi ws2_32 netapi32 wsock32)
   endif()
 
-  if(HAVE_FENV_H)
-    set(HEADERS ${HEADERS} fenv.h)
-  endif()
+  set(HEADERS ${HEADERS} fenv.h)
 
   # std::vsnprintf and std::vsnprintf need the C++ version of the headers.
   # We just assume they exist when the C version was found
@@ -529,6 +538,7 @@ endif()
   endif()
 
   CHECK_FUNCTION_EXISTS(_findfirst HAVE__FINDFIRST)
+  CHECK_FUNCTION_EXISTS(_set_output_format HAVE__SET_OUTPUT_FORMAT)
   CHECK_FUNCTION_EXISTS(access HAVE_ACCESS)
   CHECK_FUNCTION_EXISTS(atoll HAVE_ATOLL)
   CHECK_FUNCTION_EXISTS(bcmp HAVE_BCMP)
@@ -1332,6 +1342,7 @@ DCMTK_ENABLE_STL98_FEATURE("vector")
 DCMTK_ENABLE_STL11_FEATURE("type_traits")
 DCMTK_ENABLE_STL11_FEATURE("tuple")
 DCMTK_ENABLE_STL11_FEATURE("system_error")
+DCMTK_ENABLE_STL11_FEATURE("atomic")
 
 # if at least one modern C++ standard should be supported,
 # enforce setting of __cplusplus macro in VS 2017 and above

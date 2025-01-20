@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1500_MeasurementReport
@@ -46,7 +46,7 @@
 
 /** @name specific error conditions for TID 1500 (and included templates) in module dcmsr/cmr
  */
-//@{
+///@{
 
 /// error: there is no measurement report to add content items to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementReport;
@@ -57,7 +57,7 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidSegmentationObject;
 /// error: the given DICOM object is not a real world value mapping object
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidRealWorldValueMappingObject;
 
-//@}
+///@}
 
 
 /*---------------------*

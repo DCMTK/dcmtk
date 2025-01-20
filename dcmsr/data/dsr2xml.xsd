@@ -742,6 +742,7 @@
       <xsd:enumeration value="Performed Imaging Agent Administration SR"/>
       <xsd:enumeration value="Planned Imaging Agent Administration SR"/>
       <xsd:enumeration value="Rendition Selection Document"/>
+      <xsd:enumeration value="Waveform Annotation SR"/>
     </xsd:restriction>
   </xsd:simpleType>
 

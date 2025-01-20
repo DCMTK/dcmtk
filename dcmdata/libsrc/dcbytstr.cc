@@ -544,7 +544,7 @@ OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
         // Otherwise replace existing old value (length > 1)
         else
         {
-            str = str.replace(leftPos+1, rightPos - leftPos, stringVal);
+            str = str.replace(leftPos+1, rightPos - leftPos - 1, stringVal);
         }
         // Finally re-insert all values include new value
         result = putOFStringArray( str );

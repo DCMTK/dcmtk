@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1243,7 +1243,10 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const wchar_t *argV
 #ifdef DEBUG
             if (block != 0)
             {
-                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << block << ") missing in command file " << strValue << OFendl;
+                // Right now the code below prints the character code of the 'block' wchar_t character instead
+                // of the character itself. This is an interim solution until a proper conversion function
+                // is added in the future in order to print the original character.
+                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << OFstatic_cast(unsigned, block) << ") missing in command file " << strValue << OFendl;
                 ofConsole.unlockCerr();
             }
 #endif

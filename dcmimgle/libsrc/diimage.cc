@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -549,12 +549,18 @@ void DiImage::convertPixelData()
     {
         const unsigned long fsize = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns) *
             OFstatic_cast(unsigned long, SamplesPerPixel);
-        if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) ||
-            (BitsStored > OFstatic_cast(Uint16, HighBit + 1)))
+        if ((BitsAllocated < 1) || (BitsStored < 1))
         {
             ImageStatus = EIS_InvalidValue;
-            DCMIMGLE_ERROR("invalid values for 'BitsAllocated' (" << BitsAllocated << "), "
-                << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ")");
+            DCMIMGLE_ERROR("invalid value(s) for 'BitsAllocated' (" << BitsAllocated << "), "
+                << "and/or 'BitsStored' (" << BitsStored << ")");
+            return;
+        }
+        else if ((BitsAllocated < BitsStored) || (BitsAllocated <= HighBit) || ((BitsStored - 1) > HighBit))
+        {
+            ImageStatus = EIS_InvalidValue;
+            DCMIMGLE_ERROR("invalid combination of values for 'BitsAllocated' (" << BitsAllocated << "), "
+                << "'BitsStored' (" << BitsStored << ") and 'HighBit' (" << HighBit << ")");
             return;
         }
         else if ((evr == EVR_OB) && (BitsStored <= 8))
@@ -883,7 +889,7 @@ int DiImage::writeBMP(FILE *stream,
                 result = 1;
         }
         /* delete pixel data */
-        delete OFstatic_cast(char *, data);     // type cast necessary to avoid compiler warnings using gcc >2.95
+        delete[] OFstatic_cast(char *, data);
     }
     return result;
 }

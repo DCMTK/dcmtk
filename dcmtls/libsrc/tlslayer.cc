@@ -1454,7 +1454,7 @@ OFCondition DcmTLSTransportLayer::convertOpenSSLError(unsigned long errorCode, O
       OFCondition cond;
       OFSTRINGSTREAM_GETSTR( os, c )
       if (logAsError) DCMTLS_ERROR(c);
-      cond = makeOFCondition(OFM_dcmtls, DCMTLS_EC_SSL_Offset + ERR_GET_REASON(errorCode), OF_error,  c);
+      cond = makeOFCondition(OFM_dcmtls, OFstatic_cast(unsigned short, DCMTLS_EC_SSL_Offset + ERR_GET_REASON(errorCode)), OF_error,  c);
       OFSTRINGSTREAM_FREESTR( c )
 
       return cond;

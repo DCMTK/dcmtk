@@ -994,9 +994,10 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
     const char *knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
     };
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 10
-                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 20
-                                       NULL };                                                      // +1
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 10
+                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 20
+                                       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 30
+                                       NULL, NULL, NULL, NULL, NULL };                               // +5
     int numTransferSyntaxes;
     OFString temp_str;
 
@@ -1188,25 +1189,39 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
             transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
             transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
             transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-            transferSyntaxes[9] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
-            transferSyntaxes[10] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
-            transferSyntaxes[11] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
-            transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
-            transferSyntaxes[13] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
-            transferSyntaxes[14] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
-            transferSyntaxes[15] = UID_HEVCMainProfileLevel5_1TransferSyntax;
-            transferSyntaxes[16] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
-            transferSyntaxes[17] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+            transferSyntaxes[9] = UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax;
+            transferSyntaxes[10] = UID_MPEG2MainProfileAtHighLevelTransferSyntax;
+            transferSyntaxes[11] = UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax;
+            transferSyntaxes[12] = UID_MPEG4HighProfileLevel4_1TransferSyntax;
+            transferSyntaxes[13] = UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax;
+            transferSyntaxes[14] = UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+            transferSyntaxes[15] = UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax;
+            transferSyntaxes[16] = UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+            transferSyntaxes[17] = UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax;
+            transferSyntaxes[18] = UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+            transferSyntaxes[19] = UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax;
+            transferSyntaxes[20] = UID_MPEG4StereoHighProfileLevel4_2TransferSyntax;
+            transferSyntaxes[21] = UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax;
+            transferSyntaxes[22] = UID_HEVCMainProfileLevel5_1TransferSyntax;
+            transferSyntaxes[23] = UID_HEVCMain10ProfileLevel5_1TransferSyntax;
+            transferSyntaxes[24] = UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax;
+            transferSyntaxes[25] = UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax;
+            transferSyntaxes[26] = UID_HighThroughputJPEG2000ImageCompressionTransferSyntax;
+            transferSyntaxes[27] = UID_JPEGXLLosslessTransferSyntax;
+            transferSyntaxes[28] = UID_JPEGXLJPEGRecompressionTransferSyntax;
+            transferSyntaxes[29] = UID_JPEGXLTransferSyntax;
+            transferSyntaxes[30] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+            transferSyntaxes[31] = UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax;
             if (gLocalByteOrder == EBO_LittleEndian)
             {
-              transferSyntaxes[18] = UID_LittleEndianExplicitTransferSyntax;
-              transferSyntaxes[19] = UID_BigEndianExplicitTransferSyntax;
+              transferSyntaxes[32] = UID_LittleEndianExplicitTransferSyntax;
+              transferSyntaxes[33] = UID_BigEndianExplicitTransferSyntax;
             } else {
-              transferSyntaxes[18] = UID_BigEndianExplicitTransferSyntax;
-              transferSyntaxes[19] = UID_LittleEndianExplicitTransferSyntax;
+              transferSyntaxes[32] = UID_BigEndianExplicitTransferSyntax;
+              transferSyntaxes[33] = UID_LittleEndianExplicitTransferSyntax;
             }
-            transferSyntaxes[20] = UID_LittleEndianImplicitTransferSyntax;
-            numTransferSyntaxes = 21;
+            transferSyntaxes[34] = UID_LittleEndianImplicitTransferSyntax;
+            numTransferSyntaxes = 35;
           } else {
             /* We prefer explicit transfer syntaxes.
              * If we are running on a Little Endian machine we prefer
@@ -1286,7 +1301,7 @@ static OFCondition echoSCP(
 
 struct StoreCallbackData
 {
-    char *imageFileName;
+    OFString imageFileName;
     DcmFileFormat *dcmff;
     T_ASC_Association *assoc;
 };
@@ -1356,9 +1371,8 @@ storeSCPCallback(
        if ((imageDataSet != NULL) && (*imageDataSet != NULL) && !opt_bitPreserving && !opt_ignore)
        {
          StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData*, callbackData);
-         /* create full path name for the output file */
-         OFString ofname;
-         OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, cbdata->imageFileName, OFTrue /* allowEmptyDirName */);
+         const OFString ofname(cbdata->imageFileName);
+         // check whether output file exists
          if (OFStandard::fileExists(ofname))
          {
            OFLOG_WARN(movescuLogger, "DICOM file already exists, overwriting: " << ofname);
@@ -1429,6 +1443,10 @@ static OFCondition storeSCP(
         OFStandard::sanitizeFilename(imageFileName);
     }
 
+    // generate target path to write data
+    OFString ofname;
+    OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, imageFileName, OFTrue /* allowEmptyDirName */);
+
     OFString temp_str;
     if (movescuLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
@@ -1441,7 +1459,7 @@ static OFCondition storeSCP(
 
     StoreCallbackData callbackData;
     callbackData.assoc = assoc;
-    callbackData.imageFileName = imageFileName;
+    callbackData.imageFileName = ofname;
     DcmFileFormat dcmff;
     callbackData.dcmff = &dcmff;
 
@@ -1456,7 +1474,7 @@ static OFCondition storeSCP(
 
     if (opt_bitPreserving)
     {
-      cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
+      cond = DIMSE_storeProvider(assoc, presID, req, ofname.c_str(), opt_useMetaheader,
         NULL, storeSCPCallback, OFreinterpret_cast(void*, &callbackData), opt_blockMode, opt_dimse_timeout);
     } else {
       cond = DIMSE_storeProvider(assoc, presID, req, NULL, opt_useMetaheader,
@@ -1469,11 +1487,18 @@ static OFCondition storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName);
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
+        {
+          OFStandard::deleteFile(ofname);
+        }
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) OFStandard::deleteFile(imageFileName); // delete the temporary file
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
+        {
+          // delete the temporary file
+          OFStandard::deleteFile(ofname);
+        }
 #endif
     }
 

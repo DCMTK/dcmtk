@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,13 @@
 #include "dcmtk/dcmsr/dsrtlist.h"
 
 
+// include this file in doxygen documentation
+
+/** @file dsrwavch.h
+ *  @brief definitions for class DSRWaveformChannelItem
+ */
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -51,38 +58,38 @@ class DCMTK_DCMSR_EXPORT DSRWaveformChannelItem
     {
     }
 
-    /** comparison operator
+    /** check whether items are "equal"
      ** @param  item  item with which the (m,c) pair should be compared
      ** @return OFTrue if both pairs are equal, OFFalse otherwise
      */
-    inline OFBool operator==(const DSRWaveformChannelItem &item) const
+    inline OFBool isEqual(const DSRWaveformChannelItem &item) const
     {
         return (item.MultiplexGroupNumber == MultiplexGroupNumber) && (item.ChannelNumber == ChannelNumber);
     }
 
-    /** comparison operator
+    /** check whether items are "not equal"
      ** @param  item  item with which the (m,c) pair should be compared
      ** @return OFTrue if not equal, OFFalse if equal
      */
-    inline OFBool operator!=(const DSRWaveformChannelItem &item) const
+    inline OFBool isNotEqual(const DSRWaveformChannelItem &item) const
     {
         return (item.MultiplexGroupNumber != MultiplexGroupNumber) || (item.ChannelNumber != ChannelNumber);
     }
 
-    /** comparison operator
+    /** check whether this item is "less than" the given item
      ** @param  item  item with which the (m,c) pair should be compared
      ** @return OFTrue if smaller. ChannelNumber takes precedence over MultiplexGroupNumber.
      */
-    inline OFBool operator<(const DSRWaveformChannelItem &item) const
+    inline OFBool isLessThan(const DSRWaveformChannelItem &item) const
     {
         return (ChannelNumber < item.ChannelNumber) || ((ChannelNumber == item.ChannelNumber) && (MultiplexGroupNumber < item.MultiplexGroupNumber));
     }
 
-    /** comparison operator
+    /** check whether this item is "greater than" the given item
      ** @param  item  item with which the (m,c) pair should be compared
      ** @return OFTrue if greater. ChannelNumber takes precedence over MultiplexGroupNumber.
      */
-    inline OFBool operator>(const DSRWaveformChannelItem &item) const
+    inline OFBool isGreaterThan(const DSRWaveformChannelItem &item) const
     {
         return (ChannelNumber > item.ChannelNumber) || ((ChannelNumber == item.ChannelNumber) && (MultiplexGroupNumber > item.MultiplexGroupNumber));
     }
@@ -183,6 +190,47 @@ class DCMTK_DCMSR_EXPORT DSRWaveformChannelList
      */
     OFCondition putString(const char *stringValue);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRWaveformChannelItem::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRWaveformChannelItem &lhs,
+                                     const DSRWaveformChannelItem &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRWaveformChannelItem::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRWaveformChannelItem &lhs,
+                                     const DSRWaveformChannelItem &rhs);
+
+/** less-than operator.
+ *  Internally, the DSRWaveformChannelItem::isLessThan() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' is less than 'rhs', OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator<(const DSRWaveformChannelItem &lhs,
+                                    const DSRWaveformChannelItem &rhs);
+
+/** greater-than operator.
+ *  Internally, the DSRWaveformChannelItem::isGreaterThan() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' is greater than 'rhs', OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator>(const DSRWaveformChannelItem &lhs,
+                                    const DSRWaveformChannelItem &rhs);
 
 
 #endif

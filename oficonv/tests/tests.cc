@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022, OFFIS e.V.
+ *  Copyright (C) 2022-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,5 +108,8 @@ OFTEST_REGISTER(oficonv_open_into);
 OFTEST_REGISTER(oficonv__iconv);
 OFTEST_REGISTER(oflocale_charset);
 OFTEST_REGISTER(oficonvctl);
+
+// finally clean up memory
+OFTEST_REGISTER(oficonv_cleanup);
 
 OFTEST_MAIN("oficonv")

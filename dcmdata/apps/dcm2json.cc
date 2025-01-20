@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2016-2022, OFFIS e.V.
+*  Copyright (C) 2016-2025, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -254,50 +254,25 @@ int main(int argc, char *argv[])
         if (status.good())
         {
             DcmDataset *dset = dfile.getDataset();
-            OFString csetString;
-            if (dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, csetString).good())
+            if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
             {
-                if (csetString.compare("ISO_IR 6") == 0)
+                /* check for SpecificCharacterSet on any data set level */
+                if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
                 {
-                    /* SpecificCharacterSet indicates ASCII without extended characters.
-                     * If this is true, no conversion is necessary. Check for extended characters.
-                     */
-                    if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
-                    {
-                        OFLOG_FATAL(dcm2jsonLogger, "dataset contains extended characters but SpecificCharacterSet (0008,0005) is 'ISO_IR 6'");
-                        result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
-                    }
-                }
-                else if (csetString.compare("ISO_IR 192") == 0)
-                {
-                    /* DICOM dataset is already in UTF-8, no conversion necessary */
-                }
-                else
-                {
-                    /* we have a character set other than ASCII or UTF-8. Perform conversion. */
-#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
-                    /* convert all DICOM strings to UTF-8 */
-                    OFLOG_INFO(dcm2jsonLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
-                    status = dset->convertToUTF8();
+                    /* convert entire DICOM file or data set to UTF-8 encoding */
+                    status = dfile.convertToUTF8();
                     if (status.bad())
                     {
                         OFLOG_FATAL(dcm2jsonLogger, status.text() << ": converting file to UTF-8: " << ifname);
                         result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
                     }
-#else
-                    OFLOG_FATAL(dcm2jsonLogger, "character set conversion not available");
-                    result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
-#endif
                 }
-            }
-            else
-            {
-              /* SpecificCharacterSet not present */
-              if (dset->containsExtendedCharacters(OFFalse /*checkAllStrings*/))
-              {
-                  OFLOG_FATAL(dcm2jsonLogger, "dataset contains extended characters but no SpecificCharacterSet (0008,0005)");
-                  result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
-              }
+                else
+                {
+                    OFLOG_ERROR(dcm2jsonLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) element "
+                        << "absent (at all levels of the data set) but extended characters used in file: " << ifname);
+                    result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
+                }
             }
 
             if (result == 0)

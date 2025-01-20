@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2017, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for common error constants used in TID 14xx/15xx
@@ -32,7 +32,7 @@
 
 /** @name specific error conditions for TID 1500 (and included templates) in module dcmsr/cmr
  */
-//@{
+///@{
 
 /// error: there is no measurement report to add content items to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoMeasurementReport;
@@ -45,6 +45,6 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidSegmentationObject;
 /// error: the given DICOM object is not a real world value mapping object
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_InvalidRealWorldValueMappingObject;
 
-//@}
+///@}
 
 #endif

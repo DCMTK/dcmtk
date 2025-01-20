@@ -25,7 +25,7 @@
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmiod/iodutil.h"
-#include "dcmtk/dcmiod/modsynchronisation.h"
+#include "dcmtk/dcmiod/modsynchronization.h"
 
 const OFString IODSynchronizationModule::m_ModuleName = "SynchronizationModule";
 

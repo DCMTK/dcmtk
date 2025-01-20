@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This code is inspired by quicktest.
@@ -514,7 +514,7 @@ public: \
  *  These macros can be used for doing various checks in test cases. In case
  *  their check fails, they emit a descriptive message explaining the problem.
  */
-//@{
+///@{
 
 /** Check if a condition is true. Can only be used inside OFTEST().
  *  @param condition condition to check
@@ -561,6 +561,6 @@ public: \
         OFTestManager::instance().currentTest().recordFailure(__FILE__, __LINE__, str___); \
     } while (0)
 
-//@}
+///@}
 
 #endif

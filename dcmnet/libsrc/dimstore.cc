@@ -467,6 +467,11 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
         } else {
           /* if no error occurred, receive data and write it to the file */
           cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout, &presIdData, filestream, privCallback, &callbackCtx);
+
+          /* if the file was successfully written, close the file and check the return code */
+          if (cond.good()) cond = filestream->fclose();
+
+          /* deleting the file stream will also close the file if it is still open */
           delete filestream;
           if (cond != EC_Normal)
           {

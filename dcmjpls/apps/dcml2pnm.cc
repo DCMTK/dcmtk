@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2011, OFFIS e.V.
+ *  Copyright (C) 2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,15 +13,16 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Uli Schlachter
+ *  Authors: Marco Eichelberg
  *
- *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage/dcmjpls library.
+ *  Purpose: Proxy stub that calls dcm2img
  *
  */
 
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstub.h"
 
-// compile "dcm2pnm" with dcmjpls support
-#define BUILD_DCM2PNM_AS_DCML2PNM
-
-// include full implementation of "dcm2pnm"
-#include "../../dcmimage/apps/dcm2pnm.cc"
+int main(int argc, char** argv)
+{
+    return OFstub_main(argc, argv, "dcml2pnm", "dcm2img");
+}

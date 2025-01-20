@@ -375,7 +375,7 @@ OFCondition DcmTLSCiphersuiteHandler::setTLSProfile(DcmTLSSecurityProfile profil
       tls13_enabled = OFTrue;
       ciphersuiteList.clear();
       tls13ciphersuiteList.clear();
-      // required TLS 1.0-1.2 ciphersuites as defined in the DICOM profile
+      // required and optional TLS 1.0-1.2 ciphersuites as defined in the DICOM profile
 #ifdef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384
       result = addRequiredCipherSuite("TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256");
       if (result.bad()) return result;
@@ -832,6 +832,31 @@ void DcmTLSCiphersuiteHandler::printSupportedTLS13Ciphersuites(STD_NAMESPACE ost
   {
     if (ciphersuiteSupported[i])
        os << "  " << globalTLS13CipherSuiteList[i].TLSname << OFendl;
+  }
+}
+
+void DcmTLSCiphersuiteHandler::printSupportedTLSProfiles(STD_NAMESPACE ostream& os) const
+{
+  // we print the profiles in the same order as used for the command line options
+  os << "- " << lookupProfileName(TSP_Profile_BCP_195_RFC_8996) << " (default)" << OFendl;
+
+#ifdef DCMTK_Modified_BCP195_RFC8996_TLS_Profile_Supported
+  os << "- " << lookupProfileName(TSP_Profile_BCP_195_RFC_8996_Modified) << OFendl;
+#endif
+
+  os << "- " << lookupProfileName(TSP_Profile_BCP195_ND) << " (retired)" << OFendl;
+  os << "- " << lookupProfileName(TSP_Profile_BCP195) << " (retired)" << OFendl;
+  os << "- " << lookupProfileName(TSP_Profile_BCP195_Extended) << " (retired)" << OFendl;
+
+  if (cipher3DESsupported())
+  {
+      os << "- " << lookupProfileName(TSP_Profile_Basic) << " (retired)" << OFendl;
+  }
+  os << "- " << lookupProfileName(TSP_Profile_AES) << " (retired)" << OFendl;
+
+  if (cipherNULLsupported())
+  {
+      os << "- " << lookupProfileName(TSP_Profile_IHE_ATNA_Unencrypted) << " (retired)" << OFendl;
   }
 }
 

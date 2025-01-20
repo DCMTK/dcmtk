@@ -336,6 +336,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 
     (*params)->DULparams.useSecureLayer = OFFalse;
     (*params)->DULparams.tcpConnectTimeout = tcpConnectTimeout;
+    (*params)->DULparams.protocol_family = ASC_AF_Default;
     return EC_Normal;
 }
 
@@ -1948,12 +1949,14 @@ ASC_requestAssociation(T_ASC_Network * network,
         */
         params->theirMaxPDUReceiveSize = params->DULparams.peerMaxPDU;
 
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
         if (!((params->theirMaxPDUReceiveSize & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
         {
           /* activate compatibility with DCMTK releases prior to 3.0 */
           DUL_activateCompatibilityMode((*assoc)->DULassociation, dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT);
           if (params->modeCallback) params->modeCallback->callback(params->theirMaxPDUReceiveSize);
         }
+#endif
 
         /* create a sendPDVBuffer */
         sendLen = params->theirMaxPDUReceiveSize;
@@ -2016,10 +2019,13 @@ ASC_acknowledgeAssociation(
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
     assoc->params->DULparams.maxPDU = assoc->params->ourMaxPDUReceiveSize;
+
+#ifdef DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
     if (!((assoc->params->theirMaxPDUReceiveSize & DUL_MAXPDUCOMPAT) ^ DUL_DULCOMPAT))
     {
       assoc->params->DULparams.maxPDU = dcmEnableBackwardCompatibility.get() | DUL_DULCOMPAT | DUL_DIMSECOMPAT;
     }
+#endif
 
     OFStandard::strlcpy(assoc->params->DULparams.calledImplementationClassUID,
         assoc->params->ourImplementationClassUID, sizeof(assoc->params->DULparams.calledImplementationClassUID));
@@ -2185,6 +2191,16 @@ ASC_setTransportLayerType(
 {
   if (params == NULL) return ASC_NULLKEY;
   params->DULparams.useSecureLayer = useSecureLayer;
+  return EC_Normal;
+}
+
+OFCondition
+ASC_setProtocolFamily(
+    T_ASC_Parameters * params,
+    T_ASC_ProtocolFamily protocolFamily)
+{
+  if (params == NULL) return ASC_NULLKEY;
+  params->DULparams.protocol_family = protocolFamily;
   return EC_Normal;
 }
 

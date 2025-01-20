@@ -180,6 +180,7 @@ private:
     /// in write function: pointer to current pixel sequence
     DcmPixelSequence * pixelSeqForWrite;
 
+
     /** check if this element should be written unencapsulated, even though an
      *  encapsulated transfer syntax is used. In other words, this checks if
      *  this pixel data element is on the main level on the dataset or not.
@@ -694,6 +695,20 @@ public:
     virtual OFCondition getDecompressedColorModel(
         DcmItem *dataset,
         OFString &decompressedColorModel);
+
+   /** determines the effective value of BitsAllocated that a dataset will have
+     *  after decompression of an image with the given values for bitsAllocated
+     *  and bitsStored. This may differ from the bitsAllocated parameter for example
+     *  if that value is not a multiple of 8. Returns zero if an image with the
+     *  given parameters cannot be decoded.
+     *  @param bitsAllocated current value of Bits Allocated
+     *  @param bitsStored current value of Bits Stored
+     *  @return effective value of BitsAllocated, 0 if no decompression possible
+     */
+    virtual Uint16 decodedBitsAllocated(
+      Uint16 bitsAllocated,
+      Uint16 bitsStored) const;
+
 };
 
 #endif

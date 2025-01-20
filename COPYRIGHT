@@ -506,7 +506,7 @@ The dcmrt sub-package is covered by the following copyright
 
 ---------------------------------------------------------------------------
 
-Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany.
+Copyright (C) 2008-2024, OFFIS e.V. and ICSMED AG, Oldenburg, Germany.
 Copyright (C) 2013-2024, J. Riesmeier, Oldenburg, Germany.
 All rights reserved.
 
@@ -815,6 +815,70 @@ of the BSD license:
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+---------------------------------------------------------------------------
+
+The code for the function OFgetExecutablePath()
+is derived from the "whereami" library by Gregory Pakosz
+(https://github.com/gpakosz/whereami), which is dual-licensed under the
+WTFPL v2 and MIT licenses. The MIT license is reproduced here:
+
+/*
+ * Copyright (c) 2024 Gregory Pakosz
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+---------------------------------------------------------------------------
+
+The implementation of the argvToCommandLine() function in ofstub.cc
+is derived from an implementation with the following license:
+
+// The function argvToCommandLine() is derived from an implementation
+// with the following copyright statement:
+//
+// Copyright (c) 2011-2015 Ryan Prichard
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
+
+
+---------------------------------------------------------------------------
+
+The implementation of the getLastErrorString() function in ofstub.cc
+is derived from an implementation by Orjan Westin published under
+the BSD license (without further specification).
 
 ---------------------------------------------------------------------------
 

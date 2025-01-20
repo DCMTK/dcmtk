@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,13 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrtypes.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrstrvl.h
+ *  @brief definitions for class DSRStringValue
+ */
 
 
 /*---------------------*
@@ -67,26 +74,26 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
      */
     DSRStringValue &operator=(const DSRStringValue &stringValue);
 
-    /** comparison operator "equal".
+    /** clear all internal variables.
+     *  Please note that the string value might become invalid afterwards.
+     */
+    virtual void clear();
+
+    /** check whether values are "equal".
      *  Please note that padding or other non-significant characters are not removed before
      *  comparing the two values, i.e. a simple character-by-character comparison is used.
      ** @param  stringValue  string value that should be compared to the current one
      ** @return OFTrue if both string values are equal, OFFalse otherwise
      */
-    OFBool operator==(const DSRStringValue &stringValue) const;
+    OFBool isEqual(const DSRStringValue &stringValue) const;
 
-    /** comparison operator "not equal".
+    /** check whether values are "not equal".
      *  Please note that padding or other non-significant characters are not removed before
      *  comparing the two values, i.e. a simple character-by-character comparison is used.
      ** @param  stringValue  string value that should be compared to the current one
      ** @return OFTrue if both string values are not equal, OFFalse otherwise
      */
-    OFBool operator!=(const DSRStringValue &stringValue) const;
-
-    /** clear all internal variables.
-     *  Please note that the string value might become invalid afterwards.
-     */
-    virtual void clear();
+    OFBool isNotEqual(const DSRStringValue &stringValue) const;
 
     /** check whether the current code is valid.
      *  See checkValue() for details.
@@ -220,6 +227,29 @@ class DCMTK_DCMSR_EXPORT DSRStringValue
     /// string value (various VRs, type 1)
     OFString Value;
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRStringValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRStringValue &lhs,
+                                     const DSRStringValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRStringValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRStringValue &lhs,
+                                     const DSRStringValue &rhs);
 
 
 #endif

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -173,7 +173,7 @@ struct DCMTK_DCMDATA_EXPORT DCMTypes
     /** @name print() flags.
      *  These flags can be combined and passed to the print() methods.
      */
-    //@{
+    ///@{
 
     /// shorten long tag values (e.g. long texts, pixel data)
     static const size_t PF_shortenLongTagValues;
@@ -192,12 +192,12 @@ struct DCMTK_DCMDATA_EXPORT DCMTypes
 
     /// use ANSI escape codes for output
     static const size_t PF_useANSIEscapeCodes;
-    //@}
+    ///@}
 
     /** @name writeXML() flags.
      *  These flags can be combined and passed to the writeXML() methods.
      */
-    //@{
+    ///@{
 
     /// add document type definition (DTD). DCMTK-specific format only.
     static const size_t XF_addDocumentType;
@@ -226,12 +226,12 @@ struct DCMTK_DCMDATA_EXPORT DCMTypes
     /// The default is to use the DCMTK-specific format.
     static const size_t XF_useNativeModel;
 
-    //@}
+    ///@}
 
     /** @name convertCharacterSet() flags.
      *  These flags can be combined and passed to the convertCharacterSet() methods.
      */
-    //@{
+    ///@{
 
     /// try to approximate characters that cannot be represented through similar
     /// looking characters.  See DcmSpecificCharacterSet::getTransliterationMode().
@@ -241,7 +241,7 @@ struct DCMTK_DCMDATA_EXPORT DCMTypes
     /// See DcmSpecificCharacterSet::getDiscardIllegalSequenceMode().
     static const size_t CF_discardIllegal;
 
-    //@}
+    ///@}
 };
 
 

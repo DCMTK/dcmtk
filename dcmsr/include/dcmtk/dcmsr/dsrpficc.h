@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2019-2024, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -34,7 +34,7 @@
  *---------------------*/
 
 /** Class for checking the relationship content constraints of the Performed Imaging Agent
- *  Administration SR  IOD.
+ *  Administration SR IOD.
  *  According to DICOM PS 3.3: "The document shall be constructed from TID 11020
  *  (Performed Imaging Agent Administration) invoked at the root node."
  */
@@ -62,10 +62,9 @@ class DCMTK_DCMSR_EXPORT DSRPerformedImagingAgentAdministrationSRConstraintCheck
      */
     virtual OFBool isTemplateSupportRequired() const;
 
-    /** get identifier and mapping resource of the root template (if any)
-     ** @param  templateIdentifier  identifier of the root template (might be empty)
+    /** get identifier and mapping resource of the root template
+     ** @param  templateIdentifier  identifier of the root template
      *  @param  mappingResource     mapping resource that defines the root template
-     *                              (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getRootTemplateIdentification(OFString &templateIdentifier,

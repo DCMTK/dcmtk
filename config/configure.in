@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(dcmtk, 3.6.8, [bugs@dcmtk.org], [dcmtk-3.6.8], [https://www.dcmtk.org/])
+AC_INIT(dcmtk, 3.6.9, [bugs@dcmtk.org], [dcmtk-3.6.9], [https://www.dcmtk.org/])
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADERS(include/dcmtk/config/osconfig.h)
@@ -10,7 +10,7 @@ dnl -------------------------------------------------------
 dnl Additional Package Information
 dnl -------------------------------------------------------
 
-PACKAGE_VERSION_NUMBER=368
+PACKAGE_VERSION_NUMBER=369
 PACKAGE_VERSION_SUFFIX="+"
 PACKAGE_DATE="DEV"
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER,${PACKAGE_VERSION_NUMBER},[Define to the version number of this package.])
@@ -474,6 +474,7 @@ AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
+AC_CHECK_HEADERS(atomic)
 AC_CHECK_HEADERS(arpa/inet.h)
 AC_CHECK_HEADERS(fcntl.h)
 AC_CHECK_HEADERS(fnmatch.h)
@@ -940,6 +941,7 @@ AC_CHECK_EXT_LIB_PROTOTYPE(SSL_CTX_set0_tmp_dh_pkey, OpenSSL, openssl/ssl.h)
 AC_CHECK_EXT_LIB_COMPILES(SSL_CTX_set1_sigalgs, OpenSSL, openssl/ssl.h, [SSL_CTX_set1_sigalgs(0,0,0)])
 AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_AES_256_CCM_8])
 AC_CHECK_EXT_LIB_COMPILES(TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384, OpenSSL, openssl/ssl.h, [TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384])
+AC_CHECK_EXT_LIB_COMPILES(TS_VERIFY_CTX_SET0_STORE, OpenSSL, openssl/ts.h, [TS_VERIFY_CTX_set0_store(0,0)])
 
 dnl test presence of functions, constants and macros needed for the dcmsign module
 AC_CHECK_EXT_LIB_PROTOTYPE(EVP_PKEY_get_group_name, OpenSSL, openssl/evp.h)
@@ -953,7 +955,6 @@ AH_TEMPLATE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX, [Define if OpenSSL provides
   [ AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX) ],
   [AC_MSG_RESULT(no)])
-
 fi
 
 
@@ -1711,6 +1712,35 @@ if test "$ac_enable_stl_system_error" = "yes"; then
   AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/syserr.cc"]])], [AC_DEFINE(HAVE_STL_SYSTEM_ERROR, 1, [Define if STL's system_error should be used.])], [ac_enable_stl_system_error="unsupported -> no"])
 fi
 AC_MSG_RESULT($ac_enable_stl_system_error)
+
+ac_enable_stl_atomic="auto"
+AC_MSG_CHECKING(whether to enable STL atomic support)
+AC_ARG_ENABLE(stl-atomic,
+[  --enable-stl-atomic
+                          use C++ STL atomic
+  --disable-stl-atomic
+                          do not use C++ STL atomic],
+[ case "$enableval" in
+  yes)
+   ac_enable_stl_atomic="yes"
+   ;;
+
+  *)
+    ac_enable_stl_atomic="no"
+    ;;
+  esac ]
+)
+if test "$ac_enable_stl_atomic" = "auto"; then
+  ac_enable_stl_atomic="$ac_enable_stl"
+fi
+if test "$ac_enable_stl_atomic" = "yes"; then
+  if test $ac_cv_header_atomic = yes ; then
+    AC_DEFINE(HAVE_STL_ATOMIC, 1, [Define if STL's atomic should be used.])
+  else
+    ac_enable_stl_atomic="unsupported -> no"
+  fi
+fi
+AC_MSG_RESULT($ac_enable_stl_atomic)
 
 
 dnl -------------------------------------------------------

@@ -46,106 +46,114 @@ typedef enum {
     EXS_LittleEndianExplicit = 2,
     /// Explicit VR Big Endian
     EXS_BigEndianExplicit = 3,
+    /// Encapsulated Uncompressed Explicit VR Little Endian
+    EXS_EncapsulatedUncompressedLittleEndianExplicit = 4,
     /// JPEG Baseline (lossy)
-    EXS_JPEGProcess1 = 4,
+    EXS_JPEGProcess1 = 5,
     /// JPEG Extended Sequential (lossy, 8/12 bit)
-    EXS_JPEGProcess2_4 = 5,
+    EXS_JPEGProcess2_4 = 6,
     /// JPEG Extended Sequential (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess3_5 = 6,
+    EXS_JPEGProcess3_5 = 7,
     /// JPEG Spectral Selection, Non-Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess6_8 = 7,
+    EXS_JPEGProcess6_8 = 8,
     /// JPEG Spectral Selection, Non-Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess7_9 = 8,
+    EXS_JPEGProcess7_9 = 9,
     /// JPEG Full Progression, Non-Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess10_12 = 9,
+    EXS_JPEGProcess10_12 = 10,
     /// JPEG Full Progression, Non-Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess11_13 = 10,
+    EXS_JPEGProcess11_13 = 11,
     /// JPEG Lossless with any selection value
-    EXS_JPEGProcess14 = 11,
+    EXS_JPEGProcess14 = 12,
     /// JPEG Lossless with any selection value, arithmetic coding
-    EXS_JPEGProcess15 = 12,
+    EXS_JPEGProcess15 = 13,
     /// JPEG Extended Sequential, Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess16_18 = 13,
+    EXS_JPEGProcess16_18 = 14,
     /// JPEG Extended Sequential, Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess17_19 = 14,
+    EXS_JPEGProcess17_19 = 15,
     /// JPEG Spectral Selection, Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess20_22 = 15,
+    EXS_JPEGProcess20_22 = 16,
     /// JPEG Spectral Selection, Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess21_23 = 16,
+    EXS_JPEGProcess21_23 = 17,
     /// JPEG Full Progression, Hierarchical (lossy, 8/12 bit)
-    EXS_JPEGProcess24_26 = 17,
+    EXS_JPEGProcess24_26 = 18,
     /// JPEG Full Progression, Hierarchical (lossy, 8/12 bit), arithmetic coding
-    EXS_JPEGProcess25_27 = 18,
+    EXS_JPEGProcess25_27 = 19,
     /// JPEG Lossless, Hierarchical
-    EXS_JPEGProcess28 = 19,
+    EXS_JPEGProcess28 = 20,
     /// JPEG Lossless, Hierarchical, arithmetic coding
-    EXS_JPEGProcess29 = 20,
+    EXS_JPEGProcess29 = 21,
     /// JPEG Lossless, Selection Value 1
-    EXS_JPEGProcess14SV1 = 21,
+    EXS_JPEGProcess14SV1 = 22,
     /// Run Length Encoding (lossless)
-    EXS_RLELossless = 22,
+    EXS_RLELossless = 23,
     /// Deflated Explicit VR Little Endian
-    EXS_DeflatedLittleEndianExplicit = 23,
+    EXS_DeflatedLittleEndianExplicit = 24,
     /// JPEG-LS (lossless)
-    EXS_JPEGLSLossless = 24,
+    EXS_JPEGLSLossless = 25,
     /// JPEG-LS (lossless or near-lossless mode)
-    EXS_JPEGLSLossy = 25,
+    EXS_JPEGLSLossy = 26,
     /// JPEG 2000 (lossless)
-    EXS_JPEG2000LosslessOnly = 26,
+    EXS_JPEG2000LosslessOnly = 27,
     /// JPEG 2000 (lossless or lossy)
-    EXS_JPEG2000 = 27,
+    EXS_JPEG2000 = 28,
     /// JPEG 2000 part 2 multi-component extensions (lossless)
-    EXS_JPEG2000MulticomponentLosslessOnly = 28,
+    EXS_JPEG2000MulticomponentLosslessOnly = 29,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 29,
+    EXS_JPEG2000Multicomponent = 30,
     /// JPIP Referenced
-    EXS_JPIPReferenced = 30,
+    EXS_JPIPReferenced = 31,
     /// JPIP Referenced Deflate
-    EXS_JPIPReferencedDeflate = 31,
+    EXS_JPIPReferencedDeflate = 32,
     /// MPEG2 Main Profile at Main Level
-    EXS_MPEG2MainProfileAtMainLevel = 32,
+    EXS_MPEG2MainProfileAtMainLevel = 33,
     /// Fragmentable MPEG2 Main Profile / Main Level
-    EXS_FragmentableMPEG2MainProfileMainLevel = 33,
+    EXS_FragmentableMPEG2MainProfileMainLevel = 34,
     /// MPEG2 Main Profile at High Level
-    EXS_MPEG2MainProfileAtHighLevel = 34,
+    EXS_MPEG2MainProfileAtHighLevel = 35,
     /// Fragmentable MPEG2 Main Profile / High Level
-    EXS_FragmentableMPEG2MainProfileHighLevel = 35,
+    EXS_FragmentableMPEG2MainProfileHighLevel = 36,
     /// MPEG4 High Profile / Level 4.1
-    EXS_MPEG4HighProfileLevel4_1 = 36,
+    EXS_MPEG4HighProfileLevel4_1 = 37,
     /// Fragmentable MPEG4 High Profile / Level 4.1
-    EXS_FragmentableMPEG4HighProfileLevel4_1 = 37,
+    EXS_FragmentableMPEG4HighProfileLevel4_1 = 38,
     /// MPEG4 BD-compatible High Profile / Level 4.1
-    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 38,
+    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 39,
     /// Fragmentable MPEG4 BD-compatible High Profile / Level 4.1
-    EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1 = 39,
+    EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1 = 40,
     /// MPEG4 High Profile / Level 4.2 For 2D Video
-    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 40,
+    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 41,
     /// Fragmentable MPEG4 High Profile / Level 4.2 For 2D Video
-    EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo = 41,
+    EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo = 42,
     /// MPEG4 High Profile / Level 4.2 For 3D Video
-    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 42,
+    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 43,
     /// Fragmentable MPEG4 Stereo High Profile / Level 4.2
-    EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo = 43,
+    EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo = 44,
     /// MPEG4 Stereo High Profile / Level 4.2
-    EXS_MPEG4StereoHighProfileLevel4_2 = 44,
+    EXS_MPEG4StereoHighProfileLevel4_2 = 45,
     /// Fragmentable HEVC/H.265 Main Profile / Level 5.1
-    EXS_FragmentableMPEG4StereoHighProfileLevel4_2 = 45,
+    EXS_FragmentableMPEG4StereoHighProfileLevel4_2 = 46,
     /// HEVC/H.265 Main Profile / Level 5.1
-    EXS_HEVCMainProfileLevel5_1 = 46,
+    EXS_HEVCMainProfileLevel5_1 = 47,
     /// HEVC/H.265 Main 10 Profile / Level 5.1
-    EXS_HEVCMain10ProfileLevel5_1 = 47,
+    EXS_HEVCMain10ProfileLevel5_1 = 48,
+    /// JPEG XL Lossless
+    EXS_JPEGXLLossless = 49,
+    /// JPEG XL JPEG Recompression
+    EXS_JPEGXLJPEGRecompression = 50,
+    /// JPEG XL
+    EXS_JPEGXL = 51,
     /// High-Throughput JPEG 2000 Image Compression (Lossless Only)
-    EXS_HighThroughputJPEG2000LosslessOnly = 48,
+    EXS_HighThroughputJPEG2000LosslessOnly = 52,
     /// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
-    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 49,
+    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 53,
     /// High-Throughput JPEG 2000 Image Compression
-    EXS_HighThroughputJPEG2000 = 50,
+    EXS_HighThroughputJPEG2000 = 54,
     /// JPIP HTJ2K Referenced
-    EXS_JPIPHTJ2KReferenced = 51,
+    EXS_JPIPHTJ2KReferenced = 55,
     /// JPIP HTJ2K Referenced Deflate
-    EXS_JPIPHTJ2KReferencedDeflate = 52,
+    EXS_JPIPHTJ2KReferencedDeflate = 56,
     /// Private GE Little Endian Implicit with big endian pixel data
-    EXS_PrivateGE_LEI_WithBigEndianPixelData = 53
+    EXS_PrivateGE_LEI_WithBigEndianPixelData = 57
 } E_TransferSyntax;
 
 

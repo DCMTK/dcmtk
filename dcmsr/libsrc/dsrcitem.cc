@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,22 +78,22 @@ DSRContentItem::~DSRContentItem()
 }
 
 
-OFBool DSRContentItem::operator==(const DSRContentItem &item) const
+OFBool DSRContentItem::isEqual(const DSRContentItem &item) const
 {
     OFBool result = (TreeNode == item.TreeNode);
     /* call comparison operator (if referenced tree nodes are not the same) */
     if (!result && (TreeNode != NULL) && (item.TreeNode != NULL))
-        result = TreeNode->operator==(*item.TreeNode);
+        result = TreeNode->isEqual(*item.TreeNode);
     return result;
 }
 
 
-OFBool DSRContentItem::operator!=(const DSRContentItem &item) const
+OFBool DSRContentItem::isNotEqual(const DSRContentItem &item) const
 {
     OFBool result = (TreeNode != item.TreeNode);
     /* call comparison operator (if referenced tree nodes are not the same) */
     if (result && (TreeNode != NULL) && (item.TreeNode != NULL))
-        result = TreeNode->operator!=(*item.TreeNode);
+        result = TreeNode->isNotEqual(*item.TreeNode);
     return result;
 }
 
@@ -789,4 +789,20 @@ void DSRContentItem::swap(DSRContentItem &item)
     /* swap members */
     OFswap(TreeNode, item.TreeNode);
     OFswap(DeleteTreeNode, item.DeleteTreeNode);
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRContentItem &lhs,
+                  const DSRContentItem &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRContentItem &lhs,
+                  const DSRContentItem &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

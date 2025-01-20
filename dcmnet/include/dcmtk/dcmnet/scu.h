@@ -661,6 +661,11 @@ public:
      */
     void setPeerAETitle(const OFString& peerAETitle);
 
+    /** Set the IP protocol version
+     *  @param protocolVersion [in] The IP protocol version used by the SCP
+     */
+    void setProtocolVersion(T_ASC_ProtocolFamily protocolVersion);
+
     /** Set SCP's port number to connect to for association negotiation
      *  @param peerPort [in] The SCP's port number
      */
@@ -1125,6 +1130,9 @@ private:
 
     /// Flag indicating whether secure mode has been enabled (default: disabled)
     OFBool m_secureConnectionEnabled;
+
+    /// IP protocol version to be used
+    T_ASC_ProtocolFamily m_protocolVersion;
 };
 
 #endif // SCU_H

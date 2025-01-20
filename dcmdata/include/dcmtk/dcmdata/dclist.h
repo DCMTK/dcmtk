@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,20 +34,20 @@ const unsigned long DCM_EndOfListIndex = OFstatic_cast(unsigned long, -1L);
 
 /** helper class maintaining an entry in a DcmList double-linked list
  */
-class DCMTK_DCMDATA_EXPORT DcmListNode 
+class DCMTK_DCMDATA_EXPORT DcmListNode
 {
 
 public:
     /** constructor
      *  @param obj object to be maintained by this list node
      */
-    DcmListNode( DcmObject *obj );
+    DcmListNode(DcmObject *obj);
 
     /// destructor
     ~DcmListNode();
 
     /// return pointer to object maintained by this list node
-    inline DcmObject *value() { return objNodeValue; } 
+    inline DcmObject *value() { return objNodeValue; }
 
 private:
     friend class DcmList;
@@ -61,10 +61,10 @@ private:
     /// pointer to DcmObject instance maintained by this list entry
     DcmObject *objNodeValue;
 
-    /// private undefined copy constructor 
+    /// private undefined copy constructor
     DcmListNode(const DcmListNode &);
 
-    /// private undefined copy assignment operator 
+    /// private undefined copy assignment operator
     DcmListNode &operator=(const DcmListNode &);
 
 };
@@ -89,10 +89,10 @@ typedef enum
 } E_ListPos;
 
 /** double-linked list class that maintains pointers to DcmObject instances.
- *  The remove operation does not delete the object pointed to, however,
- *  the destructor will delete all elements pointed to
+ *  The remove operation does not delete the object pointed to, however, the
+ *  destructor will delete all elements the list points to.
  */
-class DCMTK_DCMDATA_EXPORT DcmList 
+class DCMTK_DCMDATA_EXPORT DcmList
 {
 public:
     /// constructor
@@ -103,23 +103,23 @@ public:
 
     /** insert object at end of list
      *  @param obj pointer to object
-     *  @return pointer to object
+     *  @return pointer to object, or NULL if object cannot be inserted
      */
-    DcmObject *append(  DcmObject *obj );
+    DcmObject *append(DcmObject *obj);
 
     /** insert object at start of list
      *  @param obj pointer to object
-     *  @return pointer to object
+     *  @return pointer to object, or NULL if object cannot be inserted
      */
-    DcmObject *prepend( DcmObject *obj );
+    DcmObject *prepend(DcmObject *obj);
 
     /** insert object relative to current position and indicator
      *  @param obj pointer to object
      *  @param pos position indicator
-     *  @return pointer to object
+     *  @return pointer to object, or NULL if object cannot be inserted
      */
-    DcmObject *insert(  DcmObject *obj,
-                        E_ListPos pos = ELP_next );
+    DcmObject *insert(DcmObject *obj,
+                      const E_ListPos pos = ELP_next);
 
     /** remove current entry from list, return element
      *  @return pointer to removed element, which is not deleted
@@ -130,36 +130,36 @@ public:
      *  @param pos position indicator
      *  @return pointer to object
      */
-    DcmObject *get(     E_ListPos pos = ELP_atpos );
+    DcmObject *get(const E_ListPos pos = ELP_atpos);
 
     /** seek within element in list to given position
      *  (i.e. set current element to given position)
      *  @param pos position indicator
      *  @return pointer to new current object
      */
-    DcmObject *seek(    E_ListPos pos = ELP_next );
+    DcmObject *seek(const E_ListPos pos = ELP_next);
 
     /** seek within element in list to given element index
      *  (i.e. set current element to given index)
      *  @param absolute_position position index < card()
      *  @return pointer to new current object
      */
-    DcmObject *seek_to(unsigned long absolute_position);
+    DcmObject *seek_to(const unsigned long absolute_position);
 
-    /** Remove and delete all elements from list. Thus, the 
-     *  elements' memory is also freed by this operation. The list
-     *  is empty after calling this function.
-     */  
+    /** remove and delete all elements from list. Thus, the elements' memory
+     *  is also freed by this operation. The list is empty after calling this
+     *  function.
+     */
     void deleteAllElements();
 
     /// return cardinality of list
     inline unsigned long card() const { return cardinality; }
 
     /// return true if list is empty, false otherwise
-    inline OFBool empty(void) const { return firstNode == NULL; }
+    inline OFBool empty() const { return firstNode == NULL; }
 
     /// return true if current node exists, false otherwise
-    inline OFBool valid(void) const { return currentNode != NULL; }
+    inline OFBool valid() const { return currentNode != NULL; }
 
 private:
     /// pointer to first node in list
@@ -171,10 +171,15 @@ private:
     /// pointer to current node in list
     DcmListNode *currentNode;
 
+    /// current position in list.
+    /// The position is maintained in order to avoid O(n) lookup
+    /// when essentially iterating the elements using seek_to().
+    unsigned long currentPosition;
+
     /// number of elements in list
     unsigned long cardinality;
- 
-    /// private undefined copy constructor 
+
+    /// private undefined copy constructor
     DcmList &operator=(const DcmList &);
 
     /** private undefined copy assignment operator

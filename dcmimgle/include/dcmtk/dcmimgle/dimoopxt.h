@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -643,9 +643,9 @@ class DiMonoOutputPixelTemplate
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double lowvalue = OFstatic_cast(double, low);
-                const double outrange = OFstatic_cast(double, high) - lowvalue + 1;   // output range
-                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());        // number of LUT entries
-                DCMIMGLE_TRACE("intermediate pixel data - absmin: " << absmin << ", absmax: " << absmax);
+                const double outrange = OFstatic_cast(double, high) - lowvalue;       // output range
+                const unsigned long ocnt = determineOptimizationCount(inter->getAbsMaxRange());    // number of LUT entries
+                DCMIMGLE_TRACE("intermediate pixel data - absmin: " << absmin << ", absmax: " << absmax << ", absrange: " << inter->getAbsMaxRange());
                 const T1 *p = pixel + start;
                 T3 *q = Data;
                 unsigned long i;
@@ -656,7 +656,7 @@ class DiMonoOutputPixelTemplate
                     createDisplayLUT(dlut, disp, plut->getBits());
                     Uint32 value;                                                     // presentation LUT is always unsigned
                     const double gradient1 = OFstatic_cast(double, plut->getCount()) / inter->getAbsMaxRange();
-                    const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
+                    const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange() - 1);
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
@@ -722,7 +722,7 @@ class DiMonoOutputPixelTemplate
                     }
                 } else {                                                              // has no presentation LUT
                     createDisplayLUT(dlut, disp, inter->getBits());
-                    const double gradient = outrange / (inter->getAbsMaxRange());
+                    const double gradient = outrange / (inter->getAbsMaxRange() - 1);
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;

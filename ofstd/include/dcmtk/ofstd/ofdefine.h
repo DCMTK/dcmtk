@@ -26,8 +26,6 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofexport.h"
 
-#include <cstring>
-
 #ifdef ofstd_EXPORTS
 #define DCMTK_OFSTD_EXPORT DCMTK_DECL_EXPORT
 #else

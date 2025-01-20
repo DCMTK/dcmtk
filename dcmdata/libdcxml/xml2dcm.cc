@@ -224,32 +224,32 @@ OFCondition DcmXMLParseHelper::createNewElement(
             dcmTagKey.set(OFstatic_cast(Uint16, group), OFstatic_cast(Uint16, elem));
             DcmTag dcmTag(dcmTagKey);
             /* convert vr string */
-            DcmVR dcmVR(OFreinterpret_cast(char *, elemVR));
-            DcmEVR dcmEVR = dcmVR.getEVR();
-            if (dcmEVR == EVR_UNKNOWN)
+            const DcmVR dcmVR(OFreinterpret_cast(char *, elemVR));
+            if (dcmVR.isUnknown() || dcmVR.isInvalid())
             {
                 /* check whether "vr" attribute exists */
                 if (elemVR == NULL)
                 {
                     DCMDATA_WARN("missing 'vr' attribute for " << dcmTag
-                        << ", using unknown VR");
+                        << ", using the tag's VR (" << dcmTag.getVR().getVRName() << ")");
                 } else {
-                    DCMDATA_WARN("invalid 'vr' attribute (" << elemVR
-                        << ") for " << dcmTag << ", using unknown VR");
+                    DCMDATA_WARN("invalid 'vr' attribute (" << elemVR << ") for " << dcmTag
+                        << ", using the tag's VR (" << dcmTag.getVR().getVRName() << ")");
                 }
-            }
-            /* check for correct vr */
-            const DcmEVR tagEVR = dcmTag.getEVR();
-            if ((tagEVR != dcmEVR) && (dcmEVR != EVR_UNKNOWN) && (tagEVR != EVR_UNKNOWN) &&
-                ((dcmTagKey != DCM_LUTData) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS) && (dcmEVR != EVR_OW))) &&
-                ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
-                (((tagEVR != EVR_ox) && (tagEVR != EVR_px)) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
-            {
-                DCMDATA_WARN("element " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
-                    << "), correct is " << dcmTag.getVR().getVRName());
-            }
-            if (dcmEVR != EVR_UNKNOWN)
+            } else {
+                const DcmEVR dcmEVR = dcmVR.getEVR();
+                const DcmEVR tagEVR = dcmTag.getEVR();
+                /* check for correct vr */
+                if ((tagEVR != dcmEVR) && (tagEVR != EVR_UNKNOWN) &&
+                    ((dcmTagKey != DCM_LUTData) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS) && (dcmEVR != EVR_OW))) &&
+                    ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
+                    (((tagEVR != EVR_ox) && (tagEVR != EVR_px)) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
+                {
+                    DCMDATA_WARN("element " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
+                        << "), correct is '" << dcmTag.getVR().getVRName() << "'");
+                }
                 dcmTag.setVR(dcmVR);
+            }
             /* create DICOM element */
             result = DcmItem::newDicomElementWithVR(newElem, dcmTag);
         } else {

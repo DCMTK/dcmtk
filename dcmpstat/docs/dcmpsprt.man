@@ -313,6 +313,6 @@ configuration files
 
 \section dcmpsprt_copyright COPYRIGHT
 
-Copyright (C) 1999-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

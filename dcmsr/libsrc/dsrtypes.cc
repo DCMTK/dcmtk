@@ -60,6 +60,7 @@
 #include "dcmtk/dcmsr/dsrpficc.h"
 #include "dcmtk/dcmsr/dsrplicc.h"
 #include "dcmtk/dcmsr/dsrrsdcc.h"
+#include "dcmtk/dcmsr/dsrwancc.h"
 
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
@@ -342,7 +343,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_PatientRadiationDoseSR,                UID_PatientRadiationDoseSRStorage,                   EM_EnhancedEquipment,                                             "SR", "Patient Radiation Dose SR"},
     {DSRTypes::DT_PerformedImagingAgentAdministrationSR, UID_PerformedImagingAgentAdministrationSRStorage,    EM_EnhancedEquipment | EM_Synchronization,                        "SR", "Performed Imaging Agent Administration SR"},
     {DSRTypes::DT_PlannedImagingAgentAdministrationSR,   UID_PlannedImagingAgentAdministrationSRStorage,      EM_EnhancedEquipment,                                             "SR", "Planned Imaging Agent Administration SR"},
-    {DSRTypes::DT_RenditionSelectionDocument,            UID_RenditionSelectionDocumentRealTimeCommunication, EM_EnhancedEquipment | EM_Synchronization | EM_KeyObjectDocument, "KO", "Rendition Selection Document"}
+    {DSRTypes::DT_RenditionSelectionDocument,            UID_RenditionSelectionDocumentRealTimeCommunication, EM_EnhancedEquipment | EM_Synchronization | EM_KeyObjectDocument, "KO", "Rendition Selection Document"},
+    {DSRTypes::DT_WaveformAnnotationSR,                  UID_WaveformAnnotationSRStorage,                     EM_EnhancedEquipment,                                             "SR", "Waveform Annotation SR"}
 };
 
 
@@ -954,7 +956,8 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) && (documentType != DT_EnhancedXRayRadiationDoseSR);
+    return (documentType != DT_invalid) && (documentType != DT_ExtensibleSR) &&
+        (documentType != DT_EnhancedXRayRadiationDoseSR);
 }
 
 
@@ -1526,6 +1529,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_XRayRadiationDoseSR:
             checker = new DSRXRayRadiationDoseSRConstraintChecker();
             break;
+        case DT_EnhancedXRayRadiationDoseSR:
+            /* not yet supported */
+            break;
         case DT_SpectaclePrescriptionReport:
             checker = new DSRSpectaclePrescriptionReportConstraintChecker();
             break;
@@ -1562,8 +1568,8 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_RenditionSelectionDocument:
             checker = new DSRRenditionSelectionDocumentConstraintChecker();
             break;
-        case DT_EnhancedXRayRadiationDoseSR:
-            /* not yet supported */
+        case DT_WaveformAnnotationSR:
+            checker = new DSRWaveformAnnotationSRConstraintChecker();
             break;
         case DT_invalid:
             /* nothing to do */

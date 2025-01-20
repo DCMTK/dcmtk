@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
     const char *          opt_peerTitle = PEERAPPLICATIONTITLE;
     OFCmdUnsignedInt      opt_port = 104;
     OFCmdUnsignedInt      opt_repeatCount = 1;
+    T_ASC_ProtocolFamily  opt_protocolVersion = ASC_AF_Default;
     OFList<OFString>      overrideKeys;
     DcmTLSOptions         tlsOptions(NET_REQUESTOR);
 
@@ -123,6 +124,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--patient",            "-P",      "use patient root information model");
       cmd.addOption("--study",              "-S",      "use study root information model");
       cmd.addOption("--psonly",             "-O",      "use patient/study only information model");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",               "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",               "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",            "-i0",     "use DNS lookup to determine IP protocol");
     cmd.addSubGroup("application entity titles:");
       cmd.addOption("--aetitle",            "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
       cmd.addOption("--call",               "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
@@ -210,6 +215,14 @@ int main(int argc, char *argv[])
             tlsOptions.printSupportedCiphersuites(app, COUT);
             return 0;
         }
+
+        // check if the command line contains the --list-profiles option
+        if (tlsOptions.listOfProfilesRequested(cmd))
+        {
+            tlsOptions.printSupportedTLSProfiles(app, COUT);
+            return 0;
+        }
+
       }
 
       /* command line parameters */
@@ -236,6 +249,12 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--ipv4")) opt_protocolVersion = ASC_AF_INET;
+      if (cmd.findOption("--ipv6")) opt_protocolVersion = ASC_AF_INET6;
+      if (cmd.findOption("--ip-auto")) opt_protocolVersion = ASC_AF_UNSPEC;
+      cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--propose-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
@@ -455,7 +474,8 @@ int main(int argc, char *argv[])
       NULL, /* we want to use the default callback */
       &fileNameList,
       opt_outputDirectory.c_str(),
-      opt_extractXMLFilename.c_str());
+      opt_extractXMLFilename.c_str(),
+      opt_protocolVersion);
 
     // make sure that an appropriate exit code is returned
     int exitCode = cond.good() ? 0 : 2;

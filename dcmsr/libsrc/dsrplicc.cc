@@ -121,7 +121,7 @@ OFBool DSRPlannedImagingAgentAdministrationSRConstraintChecker::checkContentRela
         else if ((relationshipType == RT_hasProperties) && (sourceValueType == VT_PName))
         {
             result = (targetValueType == VT_Text) || (targetValueType == VT_Code)   || (targetValueType == VT_DateTime) ||
-                     (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) ||(targetValueType == VT_PName);
+                     (targetValueType == VT_Date) || (targetValueType == VT_UIDRef) || (targetValueType == VT_PName);
         }
         /* row 8 of the table */
         else if ((relationshipType == RT_inferredFrom) &&

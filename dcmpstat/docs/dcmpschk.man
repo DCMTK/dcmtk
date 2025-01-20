@@ -72,6 +72,20 @@ dcmfile-in  presentation state file(s) to be checked
          use config file f for the logger
 \endverbatim
 
+\subsection dcmpschk_validation_options validation options
+\verbatim
+       --validate-std
+         images referenced by GSPS must belong to the
+         same SOP class (default)
+
+       --validate-related
+         images referenced by GSPS may belong to related
+         'for presentation' and 'for processing' SOP class
+
+       --validate-relaxed
+         images referenced by GSPS may be any SOP class
+\endverbatim
+
 \section dcmpschk_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -131,6 +145,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpschk_copyright COPYRIGHT
 
-Copyright (C) 2000-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

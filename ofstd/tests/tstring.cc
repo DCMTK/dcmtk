@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2019, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,6 +37,7 @@
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
 
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstrhlp.h"
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
 
@@ -294,4 +295,37 @@ OFTEST(ofstd_OFString_identity_2)
 OFTEST(ofstd_OFString_identity_3)
 {
   identitytest(X+Y+N+X+Y+N, "A string that will be used in identitytest but is otherwise just another useless string.");
+}
+
+OFTEST(ofstd_OFString_conversion)
+{
+  // convert an OFString to std::string
+  OFString a("ABC");
+  STD_NAMESPACE string b = OFString_to_std_string(a);
+  OFCHECK_EQUAL(b.length(), 3);
+  OFCHECK_EQUAL(b.at(0), 'A');
+  OFCHECK_EQUAL(b.at(1), 'B');
+  OFCHECK_EQUAL(b.at(2), 'C');
+
+  // convert an OFString containing a null byte to std::string
+  a.at(1)= '\0';
+  STD_NAMESPACE string cc = OFString_to_std_string(a);
+  OFCHECK_EQUAL(cc.length(), 3);
+  OFCHECK_EQUAL(cc.at(0), 'A');
+  OFCHECK_EQUAL(cc.at(1), '\0');
+  OFCHECK_EQUAL(cc.at(2), 'C');
+
+  // convert a std::string to OFString
+  OFString d = std_string_to_OFString(b);
+  OFCHECK_EQUAL(d.length(), 3);
+  OFCHECK_EQUAL(d.at(0), 'A');
+  OFCHECK_EQUAL(d.at(1), 'B');
+  OFCHECK_EQUAL(d.at(2), 'C');
+
+  // convert a std::string containing a null byte to OFString
+  OFString e = std_string_to_OFString(cc);
+  OFCHECK_EQUAL(e.length(), 3);
+  OFCHECK_EQUAL(e.at(0), 'A');
+  OFCHECK_EQUAL(e.at(1), '\0');
+  OFCHECK_EQUAL(e.at(2), 'C');
 }

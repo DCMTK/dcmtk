@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -176,14 +176,27 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                 switch (format.getJsonNumStringPolicy())
                 {
                   case DcmJsonFormat::NSP_auto:
-                    if (isValid) DcmJsonFormat::printNumberInteger(out, value);
-                    else DcmJsonFormat::printValueString(out, value);
+                    if (isValid)
+                        DcmJsonFormat::printNumberInteger(out, value);
+                    else
+                    {
+                        DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                        DcmJsonFormat::printValueString(out, value);
+                    }
                     break;
                   case DcmJsonFormat::NSP_always_number:
                     if (isValid) DcmJsonFormat::printNumberInteger(out, value);
-                    else return EC_CannotWriteStringAsJsonNumber;
+                    else
+                    {
+                        DCMDATA_WARN("Encountered illegal IS value '" << value << "', aborting conversion to JSON.");
+                        return EC_CannotWriteStringAsJsonNumber;
+                    }
                     break;
                   case DcmJsonFormat::NSP_always_string:
+                    if (!isValid)
+                    {
+                        DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                    }
                     DcmJsonFormat::printValueString(out, value);
                     break;
                 }
@@ -199,14 +212,28 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                     switch (format.getJsonNumStringPolicy())
                     {
                       case DcmJsonFormat::NSP_auto:
-                        if (isValid) DcmJsonFormat::printNumberInteger(out, value);
-                        else DcmJsonFormat::printValueString(out, value);
+                        if (isValid)
+                            DcmJsonFormat::printNumberInteger(out, value);
+                        else
+                        {
+                            DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                            DcmJsonFormat::printValueString(out, value);
+                        }
                         break;
                       case DcmJsonFormat::NSP_always_number:
-                        if (isValid) DcmJsonFormat::printNumberInteger(out, value);
-                        else return EC_CannotWriteStringAsJsonNumber;
+                        if (isValid)
+                            DcmJsonFormat::printNumberInteger(out, value);
+                        else
+                        {
+                            DCMDATA_WARN("Encountered illegal IS value '" << value << "', aborting conversion to JSON.");
+                            return EC_CannotWriteStringAsJsonNumber;
+                        }
                         break;
                       case DcmJsonFormat::NSP_always_string:
+                        if (!isValid)
+                        {
+                            DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                        }
                         DcmJsonFormat::printValueString(out, value);
                         break;
                     }

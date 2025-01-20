@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7469_GenericIntensityAndSizeMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2024b
- *  File created on 2024-04-03 11:12:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:23 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 7469 - Generic Intensity and Size Measurement.
- *  (type: extensible, version: 20141110)
+ *  (type: extensible, version: 20240913)
  */
 class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurement
   : public DSRContextGroup
@@ -421,7 +421,11 @@ class DCMTK_CMR_EXPORT CID7469_GenericIntensityAndSizeMeasurement
         /// (RNU0,IBSI,"Volume of Mesh"), included from CID 7472
         VolumeOfMesh,
         /// (YEKZ,IBSI,"Volume from Voxel Summation"), included from CID 7472
-        VolumeFromVoxelSummation
+        VolumeFromVoxelSummation,
+        /// (130922,DCM,"Number of pixels")
+        NumberOfPixels,
+        /// (130923,DCM,"Number of voxels")
+        NumberOfVoxels
     };
 
     /** (default) constructor

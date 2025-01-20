@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -94,7 +94,7 @@ int DcmLongText::compare(const DcmElement& rhs) const
     /* check whether values are equal */
     OFString thisValue, rhsValue;
     myThis->getOFStringArray(thisValue);
-    myThis->getOFStringArray(rhsValue);
+    myRhs->getOFStringArray(rhsValue);
     return thisValue.compare(rhsValue);
 }
 

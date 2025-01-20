@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -131,28 +131,6 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
 }
 
 
-OFBool DSRImageReferenceValue::operator==(const DSRImageReferenceValue &referenceValue) const
-{
-    /* the optional icon image is not used for comparison */
-    return DSRCompositeReferenceValue::operator==(referenceValue) &&
-           (FrameList == referenceValue.FrameList) &&
-           (SegmentList == referenceValue.SegmentList) &&
-           (PresentationState == referenceValue.PresentationState) &&
-           (RealWorldValueMapping == referenceValue.RealWorldValueMapping);
-}
-
-
-OFBool DSRImageReferenceValue::operator!=(const DSRImageReferenceValue &referenceValue) const
-{
-    /* the optional icon image is not used for comparison */
-    return DSRCompositeReferenceValue::operator!=(referenceValue) ||
-           (FrameList != referenceValue.FrameList) ||
-           (SegmentList != referenceValue.SegmentList) ||
-           (PresentationState != referenceValue.PresentationState) ||
-           (RealWorldValueMapping != referenceValue.RealWorldValueMapping);
-}
-
-
 void DSRImageReferenceValue::clear()
 {
     DSRCompositeReferenceValue::clear();
@@ -161,6 +139,28 @@ void DSRImageReferenceValue::clear()
     PresentationState.clear();
     RealWorldValueMapping.clear();
     deleteIconImage();
+}
+
+
+OFBool DSRImageReferenceValue::isEqual(const DSRImageReferenceValue &referenceValue) const
+{
+    /* the optional icon image is not used for comparison */
+    return DSRCompositeReferenceValue::isEqual(referenceValue) &&
+           (FrameList == referenceValue.FrameList) &&
+           (SegmentList == referenceValue.SegmentList) &&
+           (PresentationState == referenceValue.PresentationState) &&
+           (RealWorldValueMapping == referenceValue.RealWorldValueMapping);
+}
+
+
+OFBool DSRImageReferenceValue::isNotEqual(const DSRImageReferenceValue &referenceValue) const
+{
+    /* the optional icon image is not used for comparison */
+    return DSRCompositeReferenceValue::isNotEqual(referenceValue) ||
+           (FrameList != referenceValue.FrameList) ||
+           (SegmentList != referenceValue.SegmentList) ||
+           (PresentationState != referenceValue.PresentationState) ||
+           (RealWorldValueMapping != referenceValue.RealWorldValueMapping);
 }
 
 
@@ -441,10 +441,11 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
 OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                STD_NAMESPACE ostream &annexStream,
                                                size_t &annexNumber,
-                                               const size_t flags) const
+                                               const size_t flags,
+                                               const char *urlPrefix) const
 {
     /* reference: image */
-    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "<a href=\"" << (urlPrefix == NULL ? DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS : urlPrefix);
     docStream << "?image=" << SOPClassUID << "+" << SOPInstanceUID;
     /* reference: pstate */
     if (PresentationState.isValid())
@@ -688,8 +689,9 @@ OFBool DSRImageReferenceValue::appliesToSegment(const Uint16 segmentNumber) cons
 
 OFBool DSRImageReferenceValue::isSegmentationObject(const OFString &sopClassUID) const
 {
-    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2023c) */
-    return (sopClassUID == UID_SegmentationStorage) || (sopClassUID == UID_SurfaceSegmentationStorage);
+    /* check for all segmentation SOP classes (according to DICOM PS 3.6-2024d) */
+    return (sopClassUID == UID_SegmentationStorage) || (sopClassUID == UID_SurfaceSegmentationStorage) ||
+           (sopClassUID == UID_HeightMapSegmentationStorage) || (sopClassUID == UID_LabelMapSegmentationStorage);
 }
 
 
@@ -780,4 +782,20 @@ OFCondition DSRImageReferenceValue::checkCurrentValue(const OFBool reportWarning
     if (result.good())
         result = checkListData(SOPClassUID, FrameList, SegmentList, reportWarnings);
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRImageReferenceValue &lhs,
+                  const DSRImageReferenceValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRImageReferenceValue &lhs,
+                  const DSRImageReferenceValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,32 @@
 
 class DCMTK_DCMPSTAT_EXPORT DVPSReferencedImage
 {
+public:
+    /** SOPClassUID Validation Mode
+     */
+    enum E_ClassValidationMode
+    {
+        /** enforce the rule specified in DICOM Part 3, C.11.11,
+         *  that the referenced SOP class must be same for all images
+         *  referenced by a presentation state.
+         */
+        CVM_standard,
+
+        /** somewhat relax the rule that the referenced SOP class must
+         *  be same for all images referenced by a presentation state
+         *  by permitting instances of related "for presentation" and
+         *  "for processing" SOP classes to be referenced from one
+         *  presentation state.
+         */
+
+        CVM_accept_Presentation_and_Processing,
+
+        /** ignore the rule that the referenced SOP class must
+         *  be same for all images referenced by a presentation state
+         */
+        CVM_accept_all
+    };
+
 public:
   /// default constructor
   DVPSReferencedImage();
@@ -169,5 +195,11 @@ private:
   unsigned long frameCacheEntries;
 
 };
+
+/** This flag defines the validation mode applied when reading presentation
+ *  states. See definition of enum E_ClassValidationMode for details.
+ *  The default is CVM_standard.
+ */
+extern DCMTK_DCMPSTAT_EXPORT OFGlobal<DVPSReferencedImage::E_ClassValidationMode> dcmPresentationStateValidationMode;
 
 #endif

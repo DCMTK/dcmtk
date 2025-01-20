@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -62,21 +62,21 @@ DSRStringValue &DSRStringValue::operator=(const DSRStringValue &stringValue)
 }
 
 
-OFBool DSRStringValue::operator==(const DSRStringValue &stringValue) const
+void DSRStringValue::clear()
+{
+    Value.clear();
+}
+
+
+OFBool DSRStringValue::isEqual(const DSRStringValue &stringValue) const
 {
     return (Value == stringValue.Value);
 }
 
 
-OFBool DSRStringValue::operator!=(const DSRStringValue &stringValue) const
+OFBool DSRStringValue::isNotEqual(const DSRStringValue &stringValue) const
 {
     return (Value != stringValue.Value);
-}
-
-
-void DSRStringValue::clear()
-{
-    Value.clear();
 }
 
 
@@ -218,4 +218,20 @@ OFCondition DSRStringValue::checkValue(const OFString &stringValue) const
 OFCondition DSRStringValue::checkCurrentValue() const
 {
     return checkValue(Value);
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRStringValue &lhs,
+                  const DSRStringValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRStringValue &lhs,
+                  const DSRStringValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

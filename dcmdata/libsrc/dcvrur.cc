@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2018, OFFIS e.V.
+ *  Copyright (C) 2014-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,7 +84,7 @@ int DcmUniversalResourceIdentifierOrLocator::compare(const DcmElement& rhs) cons
     /* check whether values are equal */
     OFString thisValue, rhsValue;
     myThis->getOFStringArray(thisValue);
-    myThis->getOFStringArray(rhsValue);
+    myRhs->getOFStringArray(rhsValue);
     return thisValue.compare(rhsValue);
 }
 

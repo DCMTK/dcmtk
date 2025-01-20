@@ -59,6 +59,17 @@ port  tcp/ip port number of peer
 
 \subsection echoscu_network_options network options
 \verbatim
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -69,7 +80,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..48)
+  -pts  --propose-ts  [n]umber: integer (1..52)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1..128)
@@ -150,6 +161,9 @@ certification authority:
           enable full chain CRL verification
 
 security profile:
+
+  +ph   --list-profiles
+          list supported TLS profiles and exit
 
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)

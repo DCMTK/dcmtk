@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (c) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class DRTTypes
@@ -50,7 +50,7 @@
  *  These error codes can be used in addition to the general purpose
  *  codes defined in module dcmdata.
  */
-//@{
+///@{
 
 /// error: a value is invalid according to the standard
 extern DCMTK_DCMRT_EXPORT const OFConditionConst RT_EC_InvalidValue;
@@ -61,7 +61,7 @@ extern DCMTK_DCMRT_EXPORT const OFConditionConst RT_EC_UnsupportedValue;
 /// error: the object is invalid, see isValid() method in IOD class
 extern DCMTK_DCMRT_EXPORT const OFConditionConst RT_EC_InvalidObject;
 
-//@}
+///@}
 
 
 // global definitions for logging mechanism provided by the oflog module

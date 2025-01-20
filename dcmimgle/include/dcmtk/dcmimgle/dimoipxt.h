@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofdiag.h"      /* for DCMTK_DIAGNOSTIC macros */
+#include "dcmtk/ofstd/oflimits.h"    /* for OFnumeric_limits<> */
 
 #include "dcmtk/dcmimgle/dimopxt.h"
 #include "dcmtk/dcmimgle/diinpx.h"
@@ -55,16 +56,16 @@ class DiMonoInputPixelTemplate
                              DiMonoModality *modality)
       : DiMonoPixelTemplate<T3>(pixel, modality)
     {
-        if ((pixel != NULL) && (this->Count > 0))
+        if ((pixel != NULL) && (this->Modality != NULL) && (this->Count > 0))
         {
             // check whether to apply any modality transform
-            if ((this->Modality != NULL) && this->Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
+            if (this->Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
                 modlut(pixel);
                 // ignore modality LUT min/max values since the image does not necessarily have to use all LUT entries
                 this->determineMinMax();
             }
-            else if ((this->Modality != NULL) && this->Modality->hasRescaling())
+            else if (this->Modality->hasRescaling())
             {
                 rescale(pixel, this->Modality->getRescaleSlope(), this->Modality->getRescaleIntercept());
                 this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
@@ -72,9 +73,16 @@ class DiMonoInputPixelTemplate
                 rescale(pixel);                     // "copy" or reference pixel data
                 this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
             }
-            /* erase empty part of the buffer (= blacken the background) */
+            /* erase empty part of the buffer */
             if ((this->Data != NULL) && (this->InputCount < this->Count))
-                OFBitmanipTemplate<T3>::zeroMem(this->Data + this->InputCount, this->Count - this->InputCount);
+            {
+                /* that means, fill the background with the smallest value that is possible */
+                const T3 minOut = OFnumeric_limits<T3>::min();
+                const T3 background = (this->Modality->getAbsMinimum() < OFstatic_cast(double, minOut)) ? minOut : OFstatic_cast(T3, this->Modality->getAbsMinimum());
+                const size_t count = (this->Count - this->InputCount);
+                DCMIMGLE_DEBUG("filing empty part of the intermediate pixel data (" << count << " pixels) with value = " << OFstatic_cast(double, background));
+                OFBitmanipTemplate<T3>::setMem(this->Data + this->InputCount, background, count);
+            }
         }
     }
 

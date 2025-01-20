@@ -25,9 +25,13 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants and macros */
+#include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/ofstd/ofstd.h"
 
+OFGlobal<DVPSReferencedImage::E_ClassValidationMode> dcmPresentationStateValidationMode(DVPSReferencedImage::CVM_standard);
+
 /* --------------- class DVPSReferencedImage --------------- */
+
 
 DVPSReferencedImage::DVPSReferencedImage()
 : referencedSOPClassUID(DCM_ReferencedSOPClassUID)
@@ -58,11 +62,11 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
   DcmStack stack;
 
   flushCache();
-  
+
   READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, referencedSOPClassUID)
   READ_FROM_DATASET(DcmUniqueIdentifier, EVR_UI, referencedSOPInstanceUID)
   READ_FROM_DATASET(DcmIntegerString, EVR_IS, referencedFrameNumber)
-  
+
   /* Now perform basic sanity checks */
 
   if (referencedSOPClassUID.getLength() == 0)
@@ -94,7 +98,7 @@ OFCondition DVPSReferencedImage::write(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
-  
+
   ADD_TO_DATASET(DcmUniqueIdentifier, referencedSOPClassUID)
   ADD_TO_DATASET(DcmUniqueIdentifier, referencedSOPInstanceUID)
   if (referencedFrameNumber.getLength() >0) { ADD_TO_DATASET(DcmIntegerString, referencedFrameNumber) }
@@ -104,19 +108,64 @@ OFCondition DVPSReferencedImage::write(DcmItem &dset)
 
 OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
 {
-  OFBool result = OFTrue;
+  E_ClassValidationMode classValidationMode = dcmPresentationStateValidationMode.get();
   if (sopclassuid.empty()) referencedSOPClassUID.getOFString(sopclassuid, 0);
-  else 
+  else
   {
     OFString currentUID;
     referencedSOPClassUID.getOFString(currentUID, 0);
-    if (currentUID != sopclassuid)
+    switch (classValidationMode)
     {
-      result = OFFalse;
-      DCMPSTAT_WARN("images of different SOP classes referenced in presentation state");
+       // we accept all combinations of SOP classes
+       case CVM_accept_all:
+         if (currentUID != sopclassuid)
+         {
+             DCMPSTAT_INFO("images of different SOP classes referenced in presentation state");
+         }
+         return OFTrue;
+         /* break; */
+
+       // we accept only related SOP classes
+       case CVM_accept_Presentation_and_Processing:
+         if (currentUID != sopclassuid)
+         {
+            if (  ( sopclassuid == UID_BreastProjectionXRayImageStorageForPresentation && currentUID == UID_BreastProjectionXRayImageStorageForProcessing )
+               || ( sopclassuid == UID_BreastProjectionXRayImageStorageForProcessing && currentUID == UID_BreastProjectionXRayImageStorageForPresentation )
+               || ( sopclassuid == UID_DigitalIntraOralXRayImageStorageForPresentation && currentUID == UID_DigitalIntraOralXRayImageStorageForProcessing )
+               || ( sopclassuid == UID_DigitalIntraOralXRayImageStorageForProcessing && currentUID == UID_DigitalIntraOralXRayImageStorageForPresentation )
+               || ( sopclassuid == UID_DigitalMammographyXRayImageStorageForPresentation && currentUID == UID_DigitalMammographyXRayImageStorageForProcessing )
+               || ( sopclassuid == UID_DigitalMammographyXRayImageStorageForProcessing && currentUID == UID_DigitalMammographyXRayImageStorageForPresentation )
+               || ( sopclassuid == UID_DigitalXRayImageStorageForPresentation && currentUID == UID_DigitalXRayImageStorageForProcessing )
+               || ( sopclassuid == UID_DigitalXRayImageStorageForProcessing && currentUID == UID_DigitalXRayImageStorageForPresentation )
+               || ( sopclassuid == UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation && currentUID == UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing )
+               || ( sopclassuid == UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing && currentUID == UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation )
+               || ( sopclassuid == UID_DICOS_DigitalXRayImageStorageForPresentation && currentUID == UID_DICOS_DigitalXRayImageStorageForProcessing )
+               || ( sopclassuid == UID_DICOS_DigitalXRayImageStorageForProcessing && currentUID == UID_DICOS_DigitalXRayImageStorageForPresentation ) )
+            {
+                DCMPSTAT_INFO("images of different (but related) SOP classes referenced in presentation state");
+                return OFTrue;
+            }
+            else
+            {
+                DCMPSTAT_WARN("images of different SOP classes referenced in presentation state");
+                return OFFalse;
+            }
+         }
+         return OFTrue;
+         /* break; */
+
+       // we accept only the same SOP classes, as required by the DICOM standard
+       case CVM_standard:
+         if (currentUID != sopclassuid)
+         {
+             DCMPSTAT_WARN("images of different SOP classes referenced in presentation state");
+             return OFFalse;
+         }
+         else return OFTrue;
+         /* break; */
     }
   }
-  return result;
+  return OFTrue;
 }
 
 void DVPSReferencedImage::setSOPClassUID(const char *uid)
@@ -150,7 +199,7 @@ OFBool DVPSReferencedImage::isSOPInstanceUID(const char *uid)
 
 OFCondition DVPSReferencedImage::getImageReference(
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames)
 {
   OFCondition result = referencedSOPClassUID.getOFString(sopclassUID,0);
@@ -204,7 +253,7 @@ OFBool DVPSReferencedImage::appliesToFrame(unsigned long frame)
   {
     val = (Sint32) frame;
     for (i=0; i<frameCacheEntries; i++) if (val == frameCache[i]) return OFTrue;
-    return OFFalse;    
+    return OFFalse;
   }
   return OFTrue; // referencedFrameNumber seems to contain garbage.
 }
@@ -227,14 +276,14 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
   unsigned long i;
   char str[20];
   OFString aString;
-  
+
   updateCache();
   referencedFrameNumber.clear();
   if (frameCache)
   {
-    for (i=0; i<frameCacheEntries; i++) 
+    for (i=0; i<frameCacheEntries; i++)
     {
-      if (frameCache[i] != (Sint32)frame) 
+      if (frameCache[i] != (Sint32)frame)
       {
       	if (aString.size() ==0) OFStandard::snprintf(str, sizeof(str), "%ld", (long)(frameCache[i]));
           else OFStandard::snprintf(str, sizeof(str), "\\%ld", (long)(frameCache[i]));
@@ -242,7 +291,7 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
       }
     }
   } else {
-    for (i=1; i<=numberOfFrames; i++) 
+    for (i=1; i<=numberOfFrames; i++)
     {
       if (i != frame)
       {

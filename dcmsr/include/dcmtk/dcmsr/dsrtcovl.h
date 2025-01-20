@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,13 @@
 #include "dcmtk/dcmsr/dsrtcodt.h"
 #include "dcmtk/dcmsr/dsrtcosp.h"
 #include "dcmtk/dcmsr/dsrtcoto.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrtcovl.h
+ *  @brief definitions for class DSRTemporalCoordinatesValue
+ */
 
 
 /*---------------------*
@@ -70,25 +77,25 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
      */
     DSRTemporalCoordinatesValue &operator=(const DSRTemporalCoordinatesValue &coordinatesValue);
 
-    /** comparison operator "equal"
-     ** @param  coordinatesValue  temporal coordinates value that should be compared to the
-     *                            current one
-     ** @return OFTrue if both temporal coordinates values are equal, OFFalse otherwise
-     */
-    OFBool operator==(const DSRTemporalCoordinatesValue &coordinatesValue) const;
-
-    /** comparison operator "not equal"
-     ** @param  coordinatesValue  temporal coordinates value that should be compared to the
-     *                            current one
-     ** @return OFTrue if both temporal coordinates values are not equal, OFFalse otherwise
-     */
-    OFBool operator!=(const DSRTemporalCoordinatesValue &coordinatesValue) const;
-
     /** clear all internal variables.
      *  Temporal range type is set to DSRTypes::TRT_invalid.  Since an empty list of graphic data
      *  is invalid the temporal coordinates value becomes invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether values are "equal"
+     ** @param  coordinatesValue  temporal coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both temporal coordinates values are equal, OFFalse otherwise
+     */
+    OFBool isEqual(const DSRTemporalCoordinatesValue &coordinatesValue) const;
+
+    /** check whether values are "not equal"
+     ** @param  coordinatesValue  temporal coordinates value that should be compared to the
+     *                            current one
+     ** @return OFTrue if both temporal coordinates values are not equal, OFFalse otherwise
+     */
+    OFBool isNotEqual(const DSRTemporalCoordinatesValue &coordinatesValue) const;
 
     /** check whether the current temporal coordinates value is valid.
      *  The value is valid if the temporal range type is not DSRTypes::TRT_invalid and the other
@@ -275,6 +282,29 @@ class DCMTK_DCMSR_EXPORT DSRTemporalCoordinatesValue
     /// list of referenced date/time (associated DICOM VR=DT, VM=1-n, type 1C)
     DSRReferencedDateTimeList       DateTimeList;
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRTemporalCoordinatesValue::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRTemporalCoordinatesValue &lhs,
+                                     const DSRTemporalCoordinatesValue &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRTemporalCoordinatesValue::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRTemporalCoordinatesValue &lhs,
+                                     const DSRTemporalCoordinatesValue &rhs);
 
 
 #endif

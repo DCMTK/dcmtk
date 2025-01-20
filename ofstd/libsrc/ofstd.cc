@@ -54,8 +54,9 @@
  *  is" without express or implied warranty.
  *
  *
- *  The code for OFStandard::ftoa has been derived from an implementation
- *  which carries the following copyright notice:
+ *  The code for OFStandard::ftoa that is used when DCMTK is compiled
+ *  with the macro ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION has been derived
+ *  from an implementation that carries the following copyright notice:
  *
  *  Copyright (c) 1988 Regents of the University of California.
  *  All rights reserved.  See COPYRIGHT file for details.
@@ -115,6 +116,7 @@ END_EXTERN_C
 
 
 #include <cmath>
+#include <clocale>
 #include <cstring>       /* for memset() */
 #include <sstream>
 
@@ -180,6 +182,57 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofgrp.h"
 #include "dcmtk/ofstd/ofpwd.h"
 #include "dcmtk/ofstd/ofoption.h"
+
+// check mutually exclusive feature macros for the implementations of OFStandard::atof() and OFStandard::ftoa()
+
+#if defined (ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION) && defined (ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION)
+#error The macros ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION and ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION must not both be defined
+#endif
+
+#if defined (ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION) && defined (ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION)
+#error The macros ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION and ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION must not both be defined
+#endif
+
+#if defined (ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION) && defined (ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION)
+#error The macros ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION and ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION must not both be defined
+#endif
+
+#if defined (ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION) && defined (ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION)
+#error The macros ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION and ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION must not both be defined
+#endif
+
+#if defined (ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && defined (ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION)
+#error The macros ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION and ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION must not both be defined
+#endif
+
+#if defined (ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && defined (ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION)
+#error The macros ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION and ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION must not both be defined
+#endif
+
+// define defaults for OFStandard::atof() and OFStandard::ftoa()
+#if !defined(ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION) && !defined(ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION) && !defined(ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION)
+#ifdef _WIN32
+// on Windows, the iostream-based implementation of atof is extremely slow,
+// and we do have a locale independent version of sscanf. Use this version.
+#define ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+#else
+// on other platforms, we assume that the iobased-implementation, being the
+// cleanest one, is appropriate. This is known to be the case for gcc and clang with glibc.
+#define ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION
+#endif
+#endif
+
+#if !defined(ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && !defined(ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION) && !defined(ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION)
+#ifdef _WIN32
+// on Windows, the iostream-based implementation of atof is extremely slow,
+// and we do have a locale independent version of sscanf. Use this version.
+#define ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+#else
+// on other platforms, we assume that the iobased-implementation, being the
+// cleanest one, is appropriate. This is known to be the case for gcc and clang with glibc.
+#define ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION
+#endif
+#endif
 
 // maximum number of repetitions for EAI_AGAIN
 #define DCMTK_MAX_EAI_AGAIN_REPETITIONS 5
@@ -1468,7 +1521,7 @@ OFBool OFStandard::copyFile(const OFFilename &sourceFilename,
                     numRead = sourceFile.fread(buffer, 1, COPY_FILE_BUFFER_SIZE);
                 } while ((numRead > 0) && ((numWrite = destFile.fwrite(buffer, 1, numRead)) == numRead));
                 /* check for any errors */
-                if ((sourceFile.error() == 0) && (destFile.error() == 0))
+                if ((sourceFile.error() == 0) && (destFile.error() == 0) && (destFile.fclose() == 0))
                     status = OFTrue;
             }
         }
@@ -1928,7 +1981,8 @@ double OFStandard::atof(const char *s, OFBool *success)
     // erase leading whitespace
     ss.erase(0, ss.find_first_not_of("\t "));
 
-    // handle NaN as a special case, since iostream does not
+    // handle NaN as a special case, since iostream does not.
+    // sscanf may or may not handle this case internally, depending on the version of the C standard implemented. NaN and inf will be supported in C99.
     if ((ss.length() >= 3) && (ss[0] == 'n' || ss[0] == 'N') && (ss[1] == 'a' || ss[1] == 'A') && (ss[2] == 'n' || ss[2] == 'N'))
     {
         if (success) *success = OFTrue;
@@ -1949,6 +2003,8 @@ double OFStandard::atof(const char *s, OFBool *success)
         return -OFnumeric_limits<double>::infinity();
     }
 
+#ifdef ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION
+
     // create an input string stream
     STD_NAMESPACE istringstream iss(s);
 
@@ -1958,6 +2014,42 @@ double OFStandard::atof(const char *s, OFBool *success)
 
     // convert string to double and set success flag
     if ((iss >> d) && success) *success = OFTrue;
+
+#else /* ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION */
+
+#ifdef _WIN32
+
+    // Windows has a sscanf version where we can explicitly pass a locale
+    _locale_t localeInfo = _create_locale(LC_NUMERIC, "C");
+    if (_sscanf_l(ss.c_str(),"%lf",localeInfo,&d) == 1 && success ) *success = OFTrue;
+    _free_locale(localeInfo);
+
+#else /* _WIN32 */
+
+    // handle the case that the decimal separator expected by sscanf is not "."
+    size_t separator_pos = ss.find('.');
+    if (separator_pos != STD_NAMESPACE string::npos)
+    {
+        struct lconv *loc = localeconv();
+        if (loc && loc->decimal_point && (0 != strcmp(".", loc->decimal_point)))
+        {
+          // current locale is using a different decimal separator.
+          // Replace "." by the separator expected by sscanf.
+          ss.erase(separator_pos, 1);
+          ss.insert(separator_pos, loc->decimal_point);
+        }
+    }
+
+    // note that there is a race condition here. If another thread calls
+    // setlocale() between our calls to localeconv() and sscanf(), then
+    // things may go wrong, i.e. the conversion may yield an incorrect result
+    // because the separator character expected by sscanf has suddenly changed.
+    if (sscanf(ss.c_str(),"%lf",&d) == 1 && success ) *success = OFTrue;
+
+#endif /* _WIN32 */
+
+#endif /* ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION */
+
   }
   return d;
 }
@@ -2012,7 +2104,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     int fracExp = 0;
 
     // Strip off leading blanks and check for a sign.
-    while (isspace(OFstatic_cast(unsigned char, *p))) ++p;
+    while (OFStandard::isspace(*p)) ++p;
 
     if (*p == '-')
     {
@@ -2182,29 +2274,22 @@ double OFStandard::atof(const char *s, OFBool *success)
 
 #endif /* ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION */
 
+/* binary "and" mask for format flags */
+#define FTOA_FORMAT_MASK 0x03
+/* default precision is 6 digits */
+#define FTOA_DEFPREC 6
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
 #define FTOA_MAXEXP          308
 /* 128 bit fraction takes up 39 decimal digits; max reasonable precision */
 #define FTOA_MAXFRACT        39
-/* default precision */
-#define FTOA_DEFPREC         6
 /* internal buffer size for ftoa code */
 #define FTOA_BUFSIZE         (FTOA_MAXEXP+FTOA_MAXFRACT+1)
 
-#define FTOA_TODIGIT(c)      ((c) - '0')
-#define FTOA_TOCHAR(n)       ((n) + '0')
+#ifndef ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
 
-#define FTOA_FORMAT_MASK 0x03 /* and mask for format flags */
-#define FTOA_FORMAT_E         OFStandard::ftoa_format_e
-#define FTOA_FORMAT_F         OFStandard::ftoa_format_f
-#define FTOA_FORMAT_UPPERCASE OFStandard::ftoa_uppercase
-#define FTOA_ALTERNATE_FORM   OFStandard::ftoa_alternate
-#define FTOA_LEFT_ADJUSTMENT  OFStandard::ftoa_leftadj
-#define FTOA_ZEROPAD          OFStandard::ftoa_zeropad
+#ifndef ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION
 
-#ifdef DISABLE_OFSTD_FTOA
-
-void OFStandard::ftoa(
+static void ftoa_convert(
   char *dst,
   size_t siz,
   double val,
@@ -2213,8 +2298,6 @@ void OFStandard::ftoa(
   int prec)
 {
   // this version of the function uses snprintf to format the output string.
-  // Since we have to assemble the snprintf format string, this version might
-  // even be slower than the alternative implementation.
 
   char buf[FTOA_BUFSIZE];
   OFString s("%"); // this will become the format string
@@ -2237,22 +2320,28 @@ void OFStandard::ftoa(
   }
 
   // determine format character
-  if (flags & FTOA_FORMAT_UPPERCASE)
+  if (flags & OFStandard::ftoa_uppercase)
   {
-    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'E';
-    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f'; // there is no uppercase for 'f'
-    else fmtch = 'G';
+    if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) fmtch = 'E';
+    else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) fmtch = 'f'; // there is no uppercase for 'f'
+    else
+    {
+      fmtch = 'G';
+    }
   }
   else
   {
-    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'e';
-    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f';
-    else fmtch = 'g';
+    if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) fmtch = 'e';
+    else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) fmtch = 'f';
+    else
+    {
+      fmtch = 'g';
+    }
   }
 
-  if (flags & FTOA_ALTERNATE_FORM) s += "#";
-  if (flags & FTOA_LEFT_ADJUSTMENT) s += "-";
-  if (flags & FTOA_ZEROPAD) s += "0";
+  if (flags & OFStandard::ftoa_alternate) s += "#";
+  if (flags & OFStandard::ftoa_leftadj) s += "-";
+  if (flags & OFStandard::ftoa_zeropad) s += "0";
   if (width > 0)
   {
     OFStandard::snprintf(buf, sizeof(buf), "%d", width);
@@ -2265,11 +2354,192 @@ void OFStandard::ftoa(
   }
   s += fmtch;
 
-  OFStandard::snprintf(buf, sizeof(buf), s.c_str(), val);
-  OFStandard::strlcpy(dst, buf, siz);
+#ifdef _WIN32
+
+#ifdef HAVE__SET_OUTPUT_FORMAT
+  // The old Microsoft Visual C Runtime (MSVCRT) used in VS 2013 and older
+  // prints 3 exponent digits by default.  This call changes this.
+  // This function does not exist anymore in the Universal C Runtime
+  // used by VS 2015 or newer, but is still used by MinGW64.
+  _set_output_format(_TWO_DIGIT_EXPONENT);
+#endif
+
+  // Windows has an sprintf version where we can explicitly pass a locale
+  _locale_t localeInfo = _create_locale(LC_NUMERIC, "C");
+  _snprintf_s_l(dst, siz, _TRUNCATE, s.c_str(), localeInfo, val);
+  _free_locale(localeInfo);
+
+#else /* _WIN32 */
+
+  // On other platforms, we use snprintf() and fix the decimal separator afterwards
+  OFStandard::snprintf(dst, siz, s.c_str(), val);
+
+  // adjust for the decimal separator of the locale, which may be different from '.'
+  // Since the locale may change at any time, we try doing this without actually accessing the current locale info
+  char *c = dst;
+  size_t c_len = siz; // remaining buffer size
+  OFBool replaced = OFFalse;
+  while (*c)
+  {
+    if (*c == 0) return; // end of string
+    if (*c == '.') return; // decimal separator is '.', nothing to do
+    if (*c == ',') // decimal separator is ','; adjust and return
+    {
+      *c = '.';
+      return;
+    }
+
+    // since the string is null terminated, c+1 must exist if *c is not null
+    if ((*c == OFstatic_cast(char, 0xd9) && *(c+1) == OFstatic_cast(char, 0xab)) ||
+        (*c == OFstatic_cast(char, 0xab) && *(c+1) == OFstatic_cast(char, 0xd9))) // decimal separator is <U066B> in big endian or little endian byte order
+    {
+      *c = '.'; // replace first byte with '.'
+      ++c;
+      --c_len;
+      // c_len cannot be zero at this point, but we check anyway
+      if (c_len > 0) memmove(c, c+1,  c_len - 1); // move rest of the string one byte ahead. memmove works with overlapping memory areas.
+      return;
+    }
+
+    if ((*c >= '0' && *c <= '9') ||
+       (*c == '-') || (*c == '+') ||
+       (*c == 'E') || (*c == 'e') || (*c == ' '))
+    {
+      // not a decimal separator, skip
+      ++c;
+      --c_len;
+    }
+    else
+    {
+      // unknown character. We assume this is a decimal separator.
+      // We also assume that it might be a multi-byte UTF-8 sequence. We replace the
+      // first unknown character with '.', then continue and delete all other unknown characters.
+      if (replaced)
+      {
+        // this is not the first unknown character. Delete character, then continue.
+        if (c_len > 0) memmove(c, c+1,  c_len - 1); // move rest of the string one byte ahead. memmove works with overlapping memory areas.
+        // we do not advance c here, continue at this position with the now shorter remaining string
+      }
+      else
+      {
+        // this is the first unknown character. Replace with '.'
+        *c = '.';
+        ++c;
+        --c_len;
+        replaced = OFTrue;
+      }
+    }
+  }
+#endif /* _WIN32 */
 }
 
-#else
+#else /* ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION */
+
+static void ftoa_convert(
+  char *dst,
+  size_t siz,
+  double val,
+  unsigned int flags,
+  int width,
+  int prec)
+{
+  // if target string is NULL or zero bytes long, bail out.
+  if (!dst || !siz) return;
+
+  // check if val is NAN
+  if (OFMath::isnan(val))
+  {
+    OFStandard::strlcpy(dst, "nan", siz);
+    return;
+  }
+
+  // check if val is infinity
+  if (OFMath::isinf(val))
+  {
+    if (val < 0)
+        OFStandard::strlcpy(dst, "-inf", siz);
+        else OFStandard::strlcpy(dst, "inf", siz);
+    return;
+  }
+
+  // create an output string stream
+  STD_NAMESPACE ostringstream oss;
+
+  // create a locale object for the C locale and activate it in the stream
+  STD_NAMESPACE locale mylocale("C");
+  oss.imbue(mylocale);
+
+  // set width
+  if (width > 0) oss << STD_NAMESPACE setw(width);
+
+  // set adjustment
+  if (flags & OFStandard::ftoa_leftadj) oss << STD_NAMESPACE left;
+
+  // set precision
+  if (prec < 0) prec = FTOA_DEFPREC;
+  oss << STD_NAMESPACE setprecision(prec);
+
+  // set uppercase
+  if (flags & OFStandard::ftoa_uppercase) oss << STD_NAMESPACE uppercase;
+
+  // set alternate form
+  if (flags & OFStandard::ftoa_alternate) oss << STD_NAMESPACE showpoint;
+
+  // set zero padding
+  if (flags & OFStandard::ftoa_zeropad) oss << STD_NAMESPACE setfill('0') << STD_NAMESPACE internal;
+
+  // set scientific vs fixed format
+  if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) oss << STD_NAMESPACE scientific;
+  else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) oss << STD_NAMESPACE fixed;
+
+  // insert the value into the string stream
+  oss << val;
+
+  // create a string object and store the stream content
+  STD_NAMESPACE string os;
+  os = oss.str();
+
+  // copy string into target buffer
+  OFStandard::strlcpy(dst, os.c_str(), siz);
+
+  return;
+}
+
+#endif /* ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION */
+
+void OFStandard::ftoa(
+  char *dst,
+  size_t siz,
+  double val,
+  unsigned int flags,
+  int width,
+  int prec)
+{
+  // special handling for g/G format and precision -2
+  if ((prec == -2) && ((flags & FTOA_FORMAT_MASK) == 0))
+  {
+    // first attempt conversion with precision=16
+    ftoa_convert(dst, siz, val, flags, width, 16);
+
+    // and check if round-trip is exact
+    OFBool success = OFFalse;
+    double d = OFStandard::atof(dst, &success);
+    if (!success || d != val)
+    {
+      // really need precision 17 (DBL_DECIMAL_DIG)
+      ftoa_convert(dst, siz, val, flags, width, prec);
+    }
+  }
+  else
+  {
+    ftoa_convert(dst, siz, val, flags, width, prec);
+  }
+}
+
+#else /* ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION */
+
+#define FTOA_TODIGIT(c)      ((c) - '0')
+#define FTOA_TOCHAR(n)       ((n) + '0')
 
 /** internal helper class that maintains a string buffer
  *  to which characters can be written. If the string buffer
@@ -2469,7 +2739,7 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
        * if precision required or alternate flag set, add in a
        * decimal point.
        */
-      if (prec || flags & FTOA_ALTERNATE_FORM) *t++ = '.';
+      if (prec || flags & OFStandard::ftoa_alternate) *t++ = '.';
 
       /* if requires more precision and some fraction left */
       if (fract)
@@ -2493,7 +2763,7 @@ eformat:
       if (expcnt)
       {
         *t++ = *++p;
-        if (prec || flags&FTOA_ALTERNATE_FORM)
+        if (prec || flags&OFStandard::ftoa_alternate)
                 *t++ = '.';
         /* if requires more precision and some integer left */
         for (; prec && ++p < endp; --prec)
@@ -2521,12 +2791,12 @@ eformat:
                         break;
         }
         *t++ = OFstatic_cast(char, FTOA_TOCHAR(OFstatic_cast(int, tmp)));
-        if (prec || flags&FTOA_ALTERNATE_FORM) *t++ = '.';
+        if (prec || flags&OFStandard::ftoa_alternate) *t++ = '.';
       }
       else
       {
         *t++ = '0';
-        if (prec || flags&FTOA_ALTERNATE_FORM) *t++ = '.';
+        if (prec || flags&OFStandard::ftoa_alternate) *t++ = '.';
       }
 
       /* if requires more precision and some fraction left */
@@ -2547,7 +2817,7 @@ eformat:
       for (; prec--; *t++ = '0');
 
       /* unless alternate flag, trim any g/G format trailing 0's */
-      if (gformat && !(flags&FTOA_ALTERNATE_FORM))
+      if (gformat && !(flags&OFStandard::ftoa_alternate))
       {
         while (t > startp && *--t == '0') /* nothing */;
         if (*t == '.') --t;
@@ -2594,7 +2864,7 @@ eformat:
        * if precision required or alternate flag set, add in a
        * decimal point.  If no digits yet, add in leading 0.
        */
-      if (prec || flags&FTOA_ALTERNATE_FORM)
+      if (prec || flags&OFStandard::ftoa_alternate)
       {
         dotrim = 1;
         *t++ = '.';
@@ -2623,7 +2893,7 @@ eformat:
         }
       }
       /* alternate format, adds 0's for precision, else trim 0's */
-      if (flags&FTOA_ALTERNATE_FORM) for (; prec--; *t++ = '0') /* nothing */;
+      if (flags&OFStandard::ftoa_alternate) for (; prec--; *t++ = '0') /* nothing */;
       else if (dotrim)
       {
         while (t > startp && *--t == '0') /* nothing */;
@@ -2670,16 +2940,16 @@ void OFStandard::ftoa(
   FTOAStringBuffer sb(FTOA_BUFSIZE+1);
 
   // determine format character
-  if (flags & FTOA_FORMAT_UPPERCASE)
+  if (flags & OFStandard::ftoa_uppercase)
   {
-    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'E';
-    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f'; // there is no uppercase for 'f'
+    if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) fmtch = 'E';
+    else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) fmtch = 'f'; // there is no uppercase for 'f'
     else fmtch = 'G';
   }
   else
   {
-    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'e';
-    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f';
+    if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_e) fmtch = 'e';
+    else if ((flags & FTOA_FORMAT_MASK) == OFStandard::ftoa_format_f) fmtch = 'f';
     else fmtch = 'g';
   }
 
@@ -2687,10 +2957,11 @@ void OFStandard::ftoa(
   // so buffer size stays rational.
   if (prec > FTOA_MAXFRACT)
   {
-    if ((fmtch != 'g' && fmtch != 'G') || (flags&FTOA_ALTERNATE_FORM)) fpprec = prec - FTOA_MAXFRACT;
+    if ((fmtch != 'g' && fmtch != 'G') || (flags&OFStandard::ftoa_alternate)) fpprec = prec - FTOA_MAXFRACT;
     prec = FTOA_MAXFRACT;
   }
   else if (prec == -1) prec = FTOA_DEFPREC;
+  else if (prec == -2) prec = 17;
 
   /*
    * softsign avoids negative 0 if val is < 0 and
@@ -2713,12 +2984,12 @@ void OFStandard::ftoa(
   if (softsign) sign = '-';
   char *t = *buf ? buf : buf + 1;
 
-  /* At this point, `t' points to a string which (if not flags&FTOA_LEFT_ADJUSTMENT)
-   * should be padded out to `width' places.  If flags&FTOA_ZEROPAD, it should
+  /* At this point, `t' points to a string which (if not flags&OFStandard::ftoa_leftadj)
+   * should be padded out to `width' places.  If flags&OFStandard::ftoa_zeropad, it should
    * first be prefixed by any sign or other prefix; otherwise, it should be
    * blank padded before the prefix is emitted.  After any left-hand
    * padding, print the string proper, then emit zeroes required by any
-   * leftover floating precision; finally, if FTOA_LEFT_ADJUSTMENT, pad with blanks.
+   * leftover floating precision; finally, if OFStandard::ftoa_leftadj, pad with blanks.
    *
    * compute actual size, so we know how much to pad
    */
@@ -2726,7 +2997,7 @@ void OFStandard::ftoa(
   if (sign) fieldsz++;
 
   /* right-adjusting blank padding */
-  if ((flags & (FTOA_LEFT_ADJUSTMENT|FTOA_ZEROPAD)) == 0 && width)
+  if ((flags & (OFStandard::ftoa_leftadj|OFStandard::ftoa_zeropad)) == 0 && width)
   {
     for (n = fieldsz; n < width; n++) sb.put(' ');
   }
@@ -2735,7 +3006,7 @@ void OFStandard::ftoa(
   if (sign) sb.put(sign);
 
   /* right-adjusting zero padding */
-  if ((flags & (FTOA_LEFT_ADJUSTMENT|FTOA_ZEROPAD)) == FTOA_ZEROPAD)
+  if ((flags & (OFStandard::ftoa_leftadj|OFStandard::ftoa_zeropad)) == OFStandard::ftoa_zeropad)
           for (n = fieldsz; n < width; n++)
                   sb.put('0');
 
@@ -2747,7 +3018,7 @@ void OFStandard::ftoa(
   while (--fpprec >= 0) sb.put('0');
 
   /* left-adjusting padding (always blank) */
-  if (flags & FTOA_LEFT_ADJUSTMENT)
+  if (flags & OFStandard::ftoa_leftadj)
           for (n = fieldsz; n < width; n++)
                   sb.put(' ');
 
@@ -2759,7 +3030,7 @@ void OFStandard::ftoa(
   if (c) OFStandard::strlcpy(dst, c, siz); else *dst = 0;
 }
 
-#endif /* DISABLE_OFSTD_FTOA */
+#endif /* ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION */
 
 
 unsigned int OFStandard::my_sleep(unsigned int seconds)
@@ -2897,7 +3168,7 @@ OFString OFStandard::getHostnameByAddress(const char* addr, int len, int type)
 }
 
 
-void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
+void OFStandard::getAddressByHostname(const char *name, int protocolFamily, OFSockAddr& result)
 {
   result.clear();
   if (NULL == name) return;
@@ -2906,10 +3177,9 @@ void OFStandard::getAddressByHostname(const char *name, OFSockAddr& result)
   int err = EAI_AGAIN;
   int rep = DCMTK_MAX_EAI_AGAIN_REPETITIONS;
 
-  // filter for the DNS lookup. Since DCMTK does not yet fully support IPv6,
-  // we only look for IPv4 addresses.
+  // filter for the DNS lookup
   ::addrinfo hint = {};
-  hint.ai_family = AF_INET;
+  hint.ai_family = protocolFamily;
 
   // perform DNS lookup. Repeat while we receive temporary failures.
   while ((EAI_AGAIN == err) && (rep-- > 0)) err = getaddrinfo(name, NULL, &hint, &result_list);
@@ -3249,6 +3519,24 @@ OFString OFStandard::getDefaultConfigurationDir()
 #endif
 }
 
+
+bool OFStandard::isspace(char ch)
+{
+    // This matches every whitespace character in the default locale,
+    // as documented in https://en.cppreference.com/w/cpp/string/byte/isspace
+    switch (ch)
+    {
+      case ' ':
+      case '\f':
+      case '\n':
+      case '\r':
+      case '\t':
+      case '\v':
+        return true;
+      default:
+        return false;
+    }
+}
 
 #include DCMTK_DIAGNOSTIC_IGNORE_STRICT_ALIASING_WARNING
 

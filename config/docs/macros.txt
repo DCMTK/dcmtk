@@ -60,6 +60,13 @@ DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
     0x0102 if backwards compatibility with ACR-NEMA is desired.  If this is
     important, compile with this macro enabled.
 
+DCMTK_ENABLE_OUTDATED_DCMTK_WORKAROUND
+  Affected: dcmnet
+  Type of modification: Activates feature
+  Explanation: If compiled with this macro, some workarounds for backwards
+    compatibility with very old DCMTK releases dating back to 1994-95
+    are re-enabled.
+
 DCMTK_ENABLE_ICONV_PASSTHROUGH
   Affected: oficonv
   Type of modification: Activates feature
@@ -106,24 +113,6 @@ DCMTK_GUI
     them to the user or store them in a log file.  See comments in
     ofstd/include/dcmtk/ofstd/ofconsol.h.
 
-DCMTK_IGNORE_BCP195M_CAMELLIA_GCM_REQUIREMENT
-  Affected: dcmtls
-  Type of modification: Enables experimental feature
-  Explanation: Starting with release 3.6.8, DCMTK contains a feature-complete
-    implementation of the "Modified BCP 195 RFC 8996 TLS Secure Transport
-    Connection Profile". Unfortunately, this profile cannot be implemented
-    with any current version of OpenSSL or LibreSSL because the DICOM committee
-    has declared support for the TLS 1.2 Camellia ciphersuites in GCM mode
-    mandatory, and these are not supported in either OpenSSL or LibreSSL.
-    This macro will enable the support for this profile on library and
-    command line tool level, but in a manner that is not fully DICOM compliant
-    (i.e. without the Camellia GCM ciphersuites).
-    Should OpenSSL/LibreSSL add support for these ciphersuites in the
-    future, support for the TLS profile will automatically be enabled
-    when compiling DCMTK against such a future release, because there is
-    a configure test that checks the availability of this feature.
-    This macro is primarily intended for testing purposes.
-
 DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
   Affected: oflog
   Type of modification: Disables feature
@@ -147,6 +136,15 @@ DCMTK_MERGE_STDERR_TO_STDOUT
     mixed into the DICOM file.  The old behavior can be re-activated by
     compiling with this macro.  In this case, DICOM files should never be
     written to stdout as this will be unreliable.
+
+DCMTK_USE_OFLOG_LOGGER_IN_STUB
+  Affected: ofstd
+  Type of modification: Selects implementation variant
+  Explanation: The command line application stub defined in ofstub.h that calls
+    another command line tool and forwards the command line option by default
+    prints error messages and warnings to stderr.  When compiling with this
+    macro defined, the messages are printed to the oflog logger instead, which,
+    however, increases the executable size and slows down execution a bit.
 
 DCMTK_USE_UNIX_SOCKET_QUEUE
   Affected: ofstd
@@ -197,15 +195,6 @@ DISABLE_NAGLE_ALGORITHM
     The default behavior can be changed by setting the environment variable
     TCP_NODELAY accordingly (see config/docs/envvars.txt or
     /usr/local/share/doc/dcmtk-<VERSION>/envvars.txt).
-
-DISABLE_OFSTD_FTOA
-  Affected: all modules
-  Type of modification: Disables feature
-  Explanation: By default, DCMTK uses its own implementation to convert double
-    numbers to strings to in a locale-independent manner.
-    This flag forces DCMTK to use the standard sprintf() function instead, which
-    is locale dependent, i.e. cannot be used with locales such as German since
-    DICOM decimal strings always use the Posix locale.
 
 DISABLE_PORT_PERMISSION_CHECK
   Affected: most/all network server tools
@@ -272,6 +261,55 @@ ENABLE_DCMJPLS_INTERLEAVE_NONE
     DCMTK has been ported to CharLS 2.x, another branch of the JPEG-LS library
     that requires a C++14 compiler, however.
 
+ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::atof() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    cstdio based implementation on all platforms. THIS IS STRONGLY
+    DISCOURAGED because the cstdio based implementation suffers from a
+    race condition that may occur if a different thread changes the
+    locale while OFStandard::atof() is running. In this case, the result
+    returned by OFStandard::atof() may be incorrect. The Windows version
+    is NOT affected by this race condition because Windows offers a
+    propietary version of sscanf where the locale can be passed
+    explicitly. This macro is mutually exclusive with
+    ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION and
+    ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION.
+
+ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::ftoa() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    cstdio based implementation on all platforms. The implementation
+    contains code that addresses changes to the locale, so this is
+    not an issue in ftoa. This macro is mutually exclusive with
+    ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION and
+    ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION.
+
+ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::atof() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    iostream based implementation on all platforms. This macro is mutually
+    exclusive with ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION and
+    ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION.
+
+ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Activates feature
+  Explanation: The implementation of OFStandard::ftoa() by default uses
+    iostreams on Posix platforms and cstdio on Windows, because on Windows
+    this is much faster. This macro can be defined to enable the
+    iostream based implementation on all platforms. This macro is mutually
+    exclusive with ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION and
+    ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION.
+
 ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
   Affected: all modules
   Type of modification: Re-activates behavior of earlier DCMTK releases
@@ -282,7 +320,19 @@ ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
     other than the period character.
     The implementation used in DCMTK 3.5.2 to 3.6.8 was found to produce
     rounding errors in certain cases and has thus been replaced by an
-    iostream-based implementation.
+    iostream-based implementation. This macro re-activates the old version.
+
+ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION
+  Affected: all modules
+  Type of modification: Re-activates behavior of earlier DCMTK releases
+  Explanation: DCMTK provides an implementation of ftoa() in class OFStandard
+    that converts double numbers to strings in a locale-independent manner,
+    whereas sprintf(), ftoa() etc. depend on the global setting of the
+    locale for the current process and may expect a decimal point character
+    other than the period character.
+    The implementation used in DCMTK 3.5.2 to 3.6.8 was found to produce
+    rounding errors in certain cases and has thus been replaced by an
+    iostream-based implementation. This macro re-activates the old version.
 
 EXPERIMENTAL_READ_FROM_FILE
   Affected: dump2dcm

@@ -400,6 +400,14 @@ int main(int argc, char *argv[])
           tlsOptions.printSupportedCiphersuites(app, COUT);
           return 0;
       }
+
+      // check if the command line contains the --list-profiles option
+      if (tlsOptions.listOfProfilesRequested(cmd))
+      {
+          tlsOptions.printSupportedTLSProfiles(app, COUT);
+          return 0;
+      }
+
     }
 
 #ifdef INETD_AVAILABLE
@@ -586,7 +594,7 @@ int main(int argc, char *argv[])
       const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
       while (*c)
       {
-        if (! isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
+        if (! OFStandard::isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
         ++c;
       }
 
@@ -1007,7 +1015,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 10
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 20
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 30
-                                     NULL };                                                       // +1
+                                     NULL, NULL, NULL, NULL, NULL };                               // +5
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -1302,17 +1310,21 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         transferSyntaxes[24] = UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax;
         transferSyntaxes[25] = UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax;
         transferSyntaxes[26] = UID_HighThroughputJPEG2000ImageCompressionTransferSyntax;
-        transferSyntaxes[27] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[27] = UID_JPEGXLLosslessTransferSyntax;
+        transferSyntaxes[28] = UID_JPEGXLJPEGRecompressionTransferSyntax;
+        transferSyntaxes[29] = UID_JPEGXLTransferSyntax;
+        transferSyntaxes[30] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[31] = UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax;
         if (gLocalByteOrder == EBO_LittleEndian)
         {
-          transferSyntaxes[28] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[29] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[32] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[33] = UID_BigEndianExplicitTransferSyntax;
         } else {
-          transferSyntaxes[28] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[29] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[32] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[33] = UID_LittleEndianExplicitTransferSyntax;
         }
-        transferSyntaxes[30] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 31;
+        transferSyntaxes[34] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 35;
       } else {
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
@@ -1340,7 +1352,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
     while (*c)
     {
-      if (!isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
+      if (!OFStandard::isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
       ++c;
     }
 
@@ -1674,7 +1686,7 @@ static void mapCharacterAndAppendToString(Uint8 c,
 
 struct StoreCallbackData
 {
-  char* imageFileName;
+  OFString imageFileName;
   DcmFileFormat* dcmff;
   T_ASC_Association* assoc;
 };
@@ -2023,7 +2035,7 @@ static OFCondition storeSCP(
       // create unique filename by generating a temporary UID and using ".X." as an infix
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
-      OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, 
+      OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR,
         dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         buf, opt_fileNameExtension.c_str());
     }
@@ -2134,14 +2146,18 @@ static OFCondition storeSCP(
     if (!opt_ignore)
     {
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-        OFStandard::deleteFile(imageFileName);
+      {
+         OFStandard::deleteFile(imageFileName);
+      }
     }
   }
 #ifdef _WIN32
   else if (opt_ignore)
   {
     if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
-      OFStandard::deleteFile(imageFileName); // delete the temporary file
+    {
+        OFStandard::deleteFile(imageFileName); // delete the temporary file
+    }
   }
 #endif
 

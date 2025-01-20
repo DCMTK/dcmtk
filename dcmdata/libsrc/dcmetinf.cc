@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -405,8 +405,10 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
         errorFlag = EC_IllegalCall;
     else
     {
-        Xfer = xfer;
+        if (getTransferState() == ERW_init)
+            Xfer = xfer;
         E_TransferSyntax newxfer = xfer;
+
         // figure out if the stream reported an error
         errorFlag = inStream.status();
         if (errorFlag.good() && inStream.eos())
@@ -427,7 +429,8 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                     fStartPosition = inStream.tell();
                     setLengthField(0);
                 }
-            }
+            } else newxfer = Xfer; // use stored transfer syntax which was determined from preamble
+
             if (getTransferState() == ERW_inWork && getLengthField() == 0)
             {
                 if (inStream.avail() < OFstatic_cast(offile_off_t, DCM_GroupLengthElementLength))

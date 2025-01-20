@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2020, OFFIS e.V.
+ *  Copyright (C) 2012-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -67,7 +67,8 @@ DcmSCPConfig::DcmSCPConfig(const DcmSCPConfig &old) :
   m_verbosePCMode(old.m_verbosePCMode),
   m_connectionTimeout(old.m_connectionTimeout),
   m_respondWithCalledAETitle(old.m_respondWithCalledAETitle),
-  m_progressNotificationMode(old.m_progressNotificationMode)
+  m_progressNotificationMode(old.m_progressNotificationMode),
+  m_tLayer(old.m_tLayer)
 {
   // nothing more to do
 }
@@ -93,6 +94,7 @@ DcmSCPConfig& DcmSCPConfig::operator=(const DcmSCPConfig &obj)
     m_connectionTimeout = obj.m_connectionTimeout;
     m_respondWithCalledAETitle = obj.m_respondWithCalledAETitle;
     m_progressNotificationMode = obj.m_progressNotificationMode;
+    m_tLayer = obj.m_tLayer;
   }
   return *this;
 }
@@ -379,7 +381,7 @@ OFCondition DcmSCPConfig::checkAssociationProfile(const OFString& profileName,
   const unsigned char *c = OFreinterpret_cast(const unsigned char *, profileName.c_str());
   while (*c)
   {
-    if (! isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
+    if (! OFStandard::isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
     ++c;
   }
   /* check profile */
@@ -474,7 +476,7 @@ OFString DcmSCPConfig::mangleProfileName(const OFString& profile) const
   OFString mangledName;
   while (*c)
   {
-    if (! isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
+    if (! OFStandard::isspace(*c)) mangledName += OFstatic_cast(char, toupper(*c));
     ++c;
   }
   return mangledName;

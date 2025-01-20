@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -137,11 +137,14 @@ class DCMTK_DCMSR_EXPORT DSRDocumentTree
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
      *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
      *  @param  flags        optional flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix    optional URL prefix used for hyperlinks to referenced composite
+     *                       objects.  If NULL, the default URL prefix is used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
-                                   const size_t flags = 0);
+                                   const size_t flags = 0,
+                                   const char *urlPrefix = NULL);
 
     /** get document type
      ** @return current document type (might be DSRTypes::DT_invalid)

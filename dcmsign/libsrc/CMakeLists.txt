@@ -29,6 +29,6 @@ else()
   DCMTK_TARGET_LINK_LIBRARIES(dcmdsig ${OPENSSL_LIBS})
 endif()
 
-if (TARGET dcmdsig)
+if(TARGET dcmdsig)
   set_property(TARGET dcmdsig PROPERTY OUTPUT_NAME "dcmdsig${DCMTK_TLS_LIBRARY_POSTFIX}")
 endif()

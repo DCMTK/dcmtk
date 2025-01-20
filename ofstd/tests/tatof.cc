@@ -28,6 +28,19 @@
 #include "dcmtk/ofstd/oftest.h"
 
 #include <cmath>
+#include <clocale>
+
+#if !defined(ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION) && !defined(ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION) && !defined(ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION)
+#ifdef _WIN32
+// on Windows, the iostream-based implementation of atof is extremely slow,
+// and we do have a locale independent version of sscanf. Use this version.
+#define ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+#else
+// on other platforms, we assume that the iobased-implementation, being the
+// cleanest one, is appropriate. This is known to be the case for gcc and clang with glibc.
+#define ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION
+#endif
+#endif
 
 struct ValuePair
 {
@@ -66,13 +79,15 @@ const ValuePair vp[] =
 
   // very large numbers that produce an overflow during conversion to double
   // cause undefined behavior in std::atof().
-  // Our old implementation (used in DCMTK 3.5.2 to 3.6.8) returned
-  // HUGE_VAL and success, our new implementation returns an error instead,
-  // as the iostream classes do. Here we check both cases.
 #ifdef ENABLE_OLD_OFSTD_ATOF_IMPLEMENTATION
+  // Our old implementation (used in DCMTK 3.5.2 to 3.6.8) returns HUGE_VAL and success
   {"1.7976931348623157E+1000", HUGE_VAL, OFTrue},
-#else
+#elif defined(ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION)
+  // The iostream based implementation returns an error
   {"1.7976931348623157E+1000", 0.0, OFFalse},
+#else
+  // The sscanf based implementation returns infinitiy and success
+  {"1.7976931348623157E+1000", OFnumeric_limits<double>::infinity(), OFTrue},
 #endif
 
   // underflow should be reported as zero, but on some platforms that support
@@ -90,6 +105,8 @@ const ValuePair vp[] =
 
 OFTEST(ofstd_atof)
 {
+  std::setlocale(LC_ALL, "C");
+
   size_t numVp = sizeof(vp)/sizeof(ValuePair);
   double d1, d2, delta;
   OFBool r = OFFalse;
@@ -122,4 +139,18 @@ OFTEST(ofstd_atof)
       }
     }
   }
+
+  // try to activate a locale that uses ',' as a decimal point.
+  // If activating the locale fails, we still continue with the test
+  std::setlocale(LC_ALL, "de_DE");
+  d2 = OFStandard::atof("1.5", &r);
+  OFCHECK_EQUAL(1.5, d2);
+
+  // try to activate a locale that uses <U066B> as a decimal point.
+  // If activating the locale fails, we still continue with the test
+  std::setlocale(LC_ALL, "ps_AF");
+  d2 = OFStandard::atof("1.5", &r);
+  OFCHECK_EQUAL(1.5, d2);
+
+  std::setlocale(LC_ALL, "C");
 }

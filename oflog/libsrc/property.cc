@@ -34,6 +34,7 @@
 #include <locale>
 #include <fstream>
 #include <sstream>
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/oflog/streams.h"
 #include "dcmtk/oflog/fstreams.h"
 #include "dcmtk/oflog/helpers/strhelp.h"
@@ -61,7 +62,7 @@ is_space (tchar ch)
 #if defined (DCMTK_OFLOG_UNICODE)
     return STD_NAMESPACE iswspace (ch);
 #else
-    return isspace (OFstatic_cast(unsigned char, ch));
+    return OFStandard::isspace (ch);
 #endif
 }
 
@@ -185,8 +186,8 @@ Properties::Properties(const tstring& inputFile, unsigned flags) : data()
 
 
 
-void 
-Properties::init(tistream& input) 
+void
+Properties::init(tistream& input)
 {
     if (! input)
         return;
@@ -200,8 +201,8 @@ Properties::init(tistream& input)
         tstring::size_type const buffLen = buffer.size ();
         if (buffLen == 0 || buffer[0] == PROPERTIES_COMMENT_CHAR)
             continue;
-        
-        // Check if we have a trailing \r because we are 
+
+        // Check if we have a trailing \r because we are
         // reading a properties file produced on Windows.
         if (buffer[buffLen-1] == DCMTK_LOG4CPLUS_TEXT('\r'))
             // Remove trailing 'Windows' \r.
@@ -221,7 +222,7 @@ Properties::init(tistream& input)
 
 
 
-Properties::~Properties() 
+Properties::~Properties()
 {
 }
 
@@ -247,7 +248,7 @@ Properties::exists(tchar const * key) const
 
 
 tstring const &
-Properties::getProperty(const tstring& key) const 
+Properties::getProperty(const tstring& key) const
 {
     return get_property_worker (key);
 }
@@ -272,7 +273,7 @@ Properties::getProperty(const tstring& key, const tstring& defaultVal) const
 
 
 OFVector<tstring>
-Properties::propertyNames() const 
+Properties::propertyNames() const
 {
     OFVector<tstring> tmp;
     for (StringMap::const_iterator it=data.begin(); it!=data.end(); ++it)
@@ -298,7 +299,7 @@ Properties::removeProperty(const log4cplus::tstring& key)
 }
 
 
-Properties 
+Properties
 Properties::getPropertySubset(const log4cplus::tstring& prefix) const
 {
     Properties ret;

@@ -34,16 +34,20 @@
 #ifdef HAVE_WINDOWS_H
 
 #include <windows.h>
-#define WLOCK(lock)  AcquireSRWLockExclusive(lock);
-#define UNLOCK(lock) ReleaseSRWLockExclusive(lock);
+#define WLOCK(lock)   AcquireSRWLockExclusive(lock);
+#define UNLOCK(lock)  ReleaseSRWLockExclusive(lock);
+#define RLOCK(lock)   AcquireSRWLockShared(lock);
+#define UNRLOCK(lock) ReleaseSRWLockShared(lock);
 
 #else /* HAVE_WINDOWS_H */
 
 #ifdef HAVE_PTHREAD_H
 
 #include <pthread.h>
-#define WLOCK(lock)  pthread_rwlock_wrlock(lock);
-#define UNLOCK(lock) pthread_rwlock_unlock(lock);
+#define WLOCK(lock)   pthread_rwlock_wrlock(lock);
+#define UNLOCK(lock)  pthread_rwlock_unlock(lock);
+#define RLOCK(lock)   pthread_rwlock_rdlock(lock);
+#define UNRLOCK(lock) pthread_rwlock_unlock(lock);
 
 #else /* HAVE_PTHREAD_H */
 
@@ -55,8 +59,10 @@
 
 #else /* WITH_THREADS */
 
-#define WLOCK(lock)  /* nothing */ ;
-#define UNLOCK(lock) /* nothing */ ;
+#define WLOCK(lock)   /* nothing */ ;
+#define UNLOCK(lock)  /* nothing */ ;
+#define RLOCK(lock)   /* nothing */ ;
+#define UNRLOCK(lock) /* nothing */ ;
 
 #endif /* WITH_THREADS */
 

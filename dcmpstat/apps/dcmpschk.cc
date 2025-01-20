@@ -28,6 +28,7 @@
 #include "dcmtk/dcmdata/dctk.h"        /* for class DcmDataset */
 #include "dcmtk/dcmnet/dul.h"
 #include "dcmtk/dcmpstat/dcmpstat.h"   /* for DcmPresentationState */
+#include "dcmtk/dcmpstat/dvpsri.h"     /* for dcmPresentationStateValidationMode */
 #include "dcmtk/ofstd/ofstd.h"
 
 #ifdef WITH_ZLIB
@@ -911,7 +912,7 @@ static int checkfile(const char *filename)
 }
 
 #define SHORTCOL 3
-#define LONGCOL 12
+#define LONGCOL 18
 
 int main(int argc, char *argv[])
 {
@@ -936,6 +937,11 @@ int main(int argc, char *argv[])
      cmd.addOption("--version",            "print version information and exit", OFCommandLine::AF_Exclusive);
      OFLog::addOptions(cmd);
 
+    cmd.addGroup("validation options:");
+     cmd.addOption("--validate-std",       "images referenced by GSPS must belong to the\nsame SOP class (default)");
+     cmd.addOption("--validate-related",   "images referenced by GSPS may belong to related\n'for presentation' and 'for processing' SOP class");
+     cmd.addOption("--validate-relaxed",   "images referenced by GSPS may be any SOP class");
+
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv))
@@ -956,12 +962,20 @@ int main(int argc, char *argv[])
          }
       }
 
+      /* validation options */
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--validate-std")) dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_standard);
+      if (cmd.findOption("--validate-related")) dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_accept_Presentation_and_Processing);
+      if (cmd.findOption("--validate-relaxed")) dcmPresentationStateValidationMode.set(DVPSReferencedImage::CVM_accept_all);
+      cmd.endOptionBlock();
+
       /* options */
       OFLog::configureFromCommandLine(cmd, app);
     }
 
     /* print resource identifier */
     OFLOG_DEBUG(dcmpschkLogger, rcsid << OFendl);
+
 
     int paramCount = cmd.getParamCount();
     for (int param=1; param <= paramCount; param++)

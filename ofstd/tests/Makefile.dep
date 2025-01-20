@@ -106,7 +106,8 @@ tftoa.o: tftoa.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofdiag.h ../include/dcmtk/ofstd/diag/push.def \
  ../include/dcmtk/ofstd/diag/useafree.def \
  ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/oflimits.h \
- ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
+ ../include/dcmtk/ofstd/oftimer.h
 tipc.o: tipc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/ofipc.h ../include/dcmtk/ofstd/ofdefine.h \
  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofexport.h \

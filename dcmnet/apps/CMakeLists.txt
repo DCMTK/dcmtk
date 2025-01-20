@@ -26,8 +26,8 @@ if(WITH_OPENSSL)
 endif()
 
 # make sure executables are linked to the corresponding libraries
-foreach(PROGRAM dcmrecv dcmsend echoscu findscu getscu movescu storescp storescu termscu)
-  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmnet dcmdata oflog ofstd)
+foreach(PROGRAM dcmsend movescu termscu)
+  DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmnet)
 endforeach()
 foreach(PROGRAM dcmrecv echoscu findscu storescp storescu getscu)
   DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmtls)

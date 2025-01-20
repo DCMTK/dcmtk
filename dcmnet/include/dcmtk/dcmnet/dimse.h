@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -238,7 +238,8 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^
 #define STATUS_N_Success                                                0x0000
 #define STATUS_N_Refused_NotAuthorized                                  0x0124
 #define STATUS_N_Cancel                                                 0xfe00
-#define STATUS_N_AttributeListError                                     0x0107
+#define STATUS_N_AttributeListError                                     0x0107  // deprecated, will be removed in a future version
+#define STATUS_N_AttributeListWarning                                   0x0107
 #define STATUS_N_SOPClassNotSupported                                   0x0122
 #define STATUS_N_ClassInstanceConflict                                  0x0119
 #define STATUS_N_DuplicateSOPInstance                                   0x0111

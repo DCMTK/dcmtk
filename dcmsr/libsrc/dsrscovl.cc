@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,7 +68,15 @@ DSRSpatialCoordinatesValue &DSRSpatialCoordinatesValue::operator=(const DSRSpati
 }
 
 
-OFBool DSRSpatialCoordinatesValue::operator==(const DSRSpatialCoordinatesValue &coordinatesValue) const
+void DSRSpatialCoordinatesValue::clear()
+{
+    GraphicType = DSRTypes::GT_invalid;
+    GraphicDataList.clear();
+    FiducialUID.clear();
+}
+
+
+OFBool DSRSpatialCoordinatesValue::isEqual(const DSRSpatialCoordinatesValue &coordinatesValue) const
 {
     return (GraphicType == coordinatesValue.GraphicType) &&
            (GraphicDataList == coordinatesValue.GraphicDataList) &&
@@ -76,19 +84,11 @@ OFBool DSRSpatialCoordinatesValue::operator==(const DSRSpatialCoordinatesValue &
 }
 
 
-OFBool DSRSpatialCoordinatesValue::operator!=(const DSRSpatialCoordinatesValue &coordinatesValue) const
+OFBool DSRSpatialCoordinatesValue::isNotEqual(const DSRSpatialCoordinatesValue &coordinatesValue) const
 {
     return (GraphicType != coordinatesValue.GraphicType) ||
            (GraphicDataList != coordinatesValue.GraphicDataList) ||
            (FiducialUID != coordinatesValue.FiducialUID);
-}
-
-
-void DSRSpatialCoordinatesValue::clear()
-{
-    GraphicType = DSRTypes::GT_invalid;
-    GraphicDataList.clear();
-    FiducialUID.clear();
 }
 
 
@@ -368,4 +368,20 @@ OFCondition DSRSpatialCoordinatesValue::checkFiducialUID(const OFString &fiducia
     /* fiducial UID might be empty */
     return fiducialUID.empty() ? EC_Normal
                                : DcmUniqueIdentifier::checkStringValue(fiducialUID, "1");
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRSpatialCoordinatesValue &lhs,
+                  const DSRSpatialCoordinatesValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRSpatialCoordinatesValue &lhs,
+                  const DSRSpatialCoordinatesValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

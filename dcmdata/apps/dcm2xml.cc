@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2022, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -105,13 +105,32 @@ static OFCondition checkCharacterSet(const char *ifname,
             /* SpecificCharacterSet is not present in the dataset */
             if (dset->containsExtendedCharacters(checkAllStrings))
             {
+                OFString sopClass;
+                /* check whether this file is a DICOMDIR */
+                const OFBool isDICOMDIR = dfile.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good() &&
+                    (sopClass == UID_MediaStorageDirectoryStorage);
                 if (defaultCharset == NULL)
                 {
-                    /* the dataset contains non-ASCII characters that really should not be there */
-                    OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
-                        << "element absent (on the main data set level) but extended characters used in file: " << ifname);
-                    OFLOG_DEBUG(dcm2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
-                    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");;
+                    if (isDICOMDIR)
+                    {
+                        /* check for SpecificCharacterSet on any data set level */
+                        if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
+                        {
+                            /* for now, we assume that everything is ok */
+                            result = EC_Normal;
+                        } else {
+                            OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) element "
+                                << "absent (at all levels of the data set) but extended characters used in file: " << ifname);
+                            OFLOG_DEBUG(dcm2xmlLogger, "try using option --charset-assume to manually specify an appropriate character set");
+                            result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");
+                        }
+                    } else {
+                        /* the dataset contains non-ASCII characters that really should not be there */
+                        OFLOG_ERROR(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) element "
+                            << "absent (at the main level of the data set) but extended characters used in file: " << ifname);
+                        OFLOG_DEBUG(dcm2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
+                        result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");
+                    }
                 } else {
                     result = EC_Normal;
                     csetString = defaultCharset;
@@ -164,17 +183,11 @@ static OFCondition checkCharacterSet(const char *ifname,
                             << defaultCharset << "' specified with option --charset-assume not supported");
                         result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Cannot select character set");
                     }
-                    if (result.good())
+                    if (result.good() && !isDICOMDIR)
                     {
-                        OFString sopClass;
-                        /* check whether this file is a DICOMDIR */
-                        if (dfile.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).bad() ||
-                            (sopClass != UID_MediaStorageDirectoryStorage))
-                        {
-                            OFLOG_INFO(dcm2xmlLogger, "inserting SpecificCharacterSet (0008,0005) element with value '" << csetString << "'");
-                            /* insert the SpecificCharacterSet (0008,0005) element with new value */
-                            result = dset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, csetString);
-                        }
+                        OFLOG_INFO(dcm2xmlLogger, "inserting SpecificCharacterSet (0008,0005) element with value '" << csetString << "'");
+                        /* insert the SpecificCharacterSet (0008,0005) element with new value */
+                        result = dset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, csetString);
                     }
                 }
             } else {
@@ -204,13 +217,12 @@ static OFCondition convertCharacterSet(const char *ifname,
     OFCondition result = EC_IllegalParameter;
     if (ifname != NULL)
     {
-        DcmDataset *dset = dfile.getDataset();
         /* convert all DICOM strings to UTF-8 (if requested) */
         if (convertToUTF8)
         {
             OFLOG_INFO(dcm2xmlLogger, "converting all element values that are affected by SpecificCharacterSet (0008,0005) to UTF-8");
             /* expect that SpecificCharacterSet contains the correct value (defined term) */
-            result = dset->convertToUTF8();
+            result = dfile.convertToUTF8();
             if (result.good())
             {
                 /* if conversion was successful, set XML character encoding accordingly */
@@ -224,7 +236,7 @@ static OFCondition convertCharacterSet(const char *ifname,
                 (sopClass == UID_MediaStorageDirectoryStorage))
             {
                 /* ... with one or more SpecificCharacterSet elements */
-                if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
+                if (dfile.getDataset()->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
                 {
                     OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": this is a DICOMDIR file, which can contain more than one "
                         << "SpecificCharacterSet (0008,0005) element ... using option --convert-to-utf8 is strongly recommended");

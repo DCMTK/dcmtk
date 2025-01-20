@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2023, OFFIS e.V.
+ *  Copyright (C) 2018-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -393,6 +393,11 @@ public:
    *  @param os output stream
    */
   void printSupportedTLS13Ciphersuites(STD_NAMESPACE ostream& os) const;
+
+  /** print a list of supported TLS profiles to the given output stream
+   *  @param os output stream
+   */
+  void printSupportedTLSProfiles(STD_NAMESPACE ostream& os) const;
 
   /** returns the number of known TLS 1.0-1.2 ciphersuites.
    *  @return number of known ciphersuites

@@ -81,6 +81,17 @@ query information model:
   -O    --psonly
           use patient/study only information model
 
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -201,6 +212,9 @@ certification authority:
           enable full chain CRL verification
 
 security profile:
+
+  +ph   --list-profiles
+          list supported TLS profiles and exit
 
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)

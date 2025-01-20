@@ -2,7 +2,7 @@
 find_program(XXD_EXECUTABLE NAMES "xxd" "xxd.exe")
 mark_as_advanced(XXD_EXECUTABLE)
 
-if (TARGET mkcsmapper AND TARGET mkesdb)
+if(TARGET mkcsmapper AND TARGET mkesdb)
   ADD_CUSTOM_TARGET(
     oficonv_data_files
       # convert the ASCII ".src" files into binary ".mps" files
@@ -161,7 +161,7 @@ if (TARGET mkcsmapper AND TARGET mkesdb)
   )
 endif()
 
-if (XXD_EXECUTABLE)
+if(XXD_EXECUTABLE)
   ADD_CUSTOM_TARGET(
     oficonv_data_library
       # convert the binary csmapper and esdb files into C++ header files

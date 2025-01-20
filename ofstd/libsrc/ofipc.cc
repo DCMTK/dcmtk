@@ -401,7 +401,7 @@ OFCondition OFIPCMessageQueueServer::createQueue(const char *name, Uint32 port)
   // create empty temporary file based on queue name and port number
   FILE *tmpfile = fopen(namestr.c_str(),"wb");
   if (tmpfile == NULL) return EC_IPCMessageQueueFailure;
-  (void) fclose (tmpfile);
+  if (fclose(tmpfile)) return EC_IPCMessageQueueFailure;
 
   // use ftok() to generate a key_t identifier for the queue
   key_t key = ftok(namestr.c_str(), 'D' /* for DCMTK */ );

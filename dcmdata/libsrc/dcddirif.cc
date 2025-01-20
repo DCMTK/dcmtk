@@ -699,7 +699,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_SimplifiedAdultEchoSRStorage) ||
              compare(sopClass, UID_PatientRadiationDoseSRStorage) ||
              compare(sopClass, UID_PerformedImagingAgentAdministrationSRStorage) ||
-             compare(sopClass, UID_PlannedImagingAgentAdministrationSRStorage))
+             compare(sopClass, UID_PlannedImagingAgentAdministrationSRStorage) ||
+             compare(sopClass, UID_WaveformAnnotationSRStorage))
     {
         result = ERT_SRDocument;
     }
@@ -5334,7 +5335,7 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
     switch(profile)
     {
         case AP_GeneralPurpose:
-            result = "STD-GEN-CD/DVD-RAM";
+            result = "STD-GEN-CD/DVD-RAM/BD";
             break;
         case AP_GeneralPurposeDVDJPEG:
             result = "STD-GEN-DVD-JPEG";

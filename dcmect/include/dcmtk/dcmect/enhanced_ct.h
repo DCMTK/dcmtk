@@ -35,7 +35,7 @@
 #include "dcmtk/dcmiod/modimagepixel.h"
 #include "dcmtk/dcmiod/modmultiframedimension.h"
 #include "dcmtk/dcmiod/modmultiframefg.h"
-#include "dcmtk/dcmiod/modsynchronisation.h"
+#include "dcmtk/dcmiod/modsynchronization.h"
 #include "dcmtk/dcmdata/dcvrdt.h"
 #include "dcmtk/dcmdata/dcvrds.h"
 #include "dcmtk/dcmdata/dcvrfd.h"
@@ -57,7 +57,7 @@ class IODImagePixelModule;
  *    - General Series (via iodimage.h)
  *    - Enhanced CT Series (via this class)
  *    - Frame of Reference (via iodimage.h)
- *    - Synchronization (via modsynchronisation.h)
+ *    - Synchronization (via modsynchronization.h)
  *    - General Equipment (via iodimage.h)
  *    - Enhanced General Equipment (via modenhequipment.h)
  *    - Image Pixel (via this class)
@@ -376,14 +376,14 @@ public:
      *  @param  enabled If OFTrue, Synchronization Module will be written,
      *          otherwise not.
      */
-    virtual void setIODSynchronisationModuleEnabled(const OFBool enabled);
+    virtual void setIODSynchronizationModuleEnabled(const OFBool enabled);
 
     /** Returns whether Synchronization Module is enabled for writing
      *  the Enhanced CT object.
      *  @return OFTrue, if Synchronization Module will be written,
      *          OFFalse otherwise.
      */
-    virtual OFBool getIODSynchronisationModuleEnabled();
+    virtual OFBool getIODSynchronizationModuleEnabled();
 
     /** Get General Equipment Module
      *  @return a reference to the General Equipment Module
@@ -717,11 +717,11 @@ private:
     struct GetFramesVisitor;
 
     /// Synchronization Module
-    IODSynchronizationModule m_SynchronisationModule;
+    IODSynchronizationModule m_SynchronizationModule;
 
     /// Denote whether Synchronization Module is enabled (OFTrue)
     /// or ignored (OFFalse) on writing and checking.
-    OFBool m_SynchronisationModuleEnabled;
+    OFBool m_SynchronizationModuleEnabled;
 
     /// IODEnhancedEquipmentModule
     IODEnhGeneralEquipmentModule m_EnhancedGeneralEquipmentModule;

@@ -104,6 +104,7 @@ static OFBool         targetSupports12bit   = OFTrue;
 static OFBool         targetPLUTinFilmSession = OFFalse;
 static OFBool         targetRequiresMatchingLUT   = OFTrue;
 static OFBool         targetPreferSCPLUTRendering = OFFalse;
+static T_ASC_ProtocolFamily targetProtocol  = ASC_AF_Default;
 static OFBool         deletePrintJobs       = OFFalse;
 static OFBool         deleteTerminateJobs   = OFFalse;
 static OFBool         useTLS                = OFFalse;
@@ -215,7 +216,7 @@ static OFCondition spoolStoredPrintFile(
 
     result = printHandler.negotiateAssociation(
       tlayer, dvi.getNetworkAETitle(),
-      targetAETitle, targetHostname, targetPort, targetMaxPDU,
+      targetAETitle, targetHostname, targetPort, targetProtocol, targetMaxPDU,
       targetSupportsPLUT, targetSupportsAnnotation, targetImplicitOnly);
 
     if (result.bad())
@@ -389,7 +390,7 @@ static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
   {
     c = fgetc(infile);
     if ((c==EOF)||(c==13)||(c==10)) finished = OFTrue;
-    else if (isspace(c))
+    else if (OFStandard::isspace(OFstatic_cast(char, c)))
     {
       if (mode==1) mode=2;
       else if (mode==3) value += (char)c;
@@ -795,6 +796,7 @@ int main(int argc, char *argv[])
     targetPLUTinFilmSession     = dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
     targetRequiresMatchingLUT   = dvi.getTargetPrinterPresentationLUTMatchRequired(opt_printer);
     targetPreferSCPLUTRendering = dvi.getTargetPrinterPresentationLUTPreferSCPRendering(opt_printer);
+    targetProtocol              = dvi.getTargetProtocol(opt_printer);
     deletePrintJobs             = dvi.getSpoolerDeletePrintJobs();
     deleteTerminateJobs         = dvi.getSpoolerAlwaysDeleteTerminateJobs();
     useTLS                      = dvi.getTargetUseTLS(opt_printer);
@@ -993,6 +995,12 @@ int main(int argc, char *argv[])
       OFLOG_INFO(dcmprscuLogger, "  options       : disable post-1993 VRs");
     else
       OFLOG_INFO(dcmprscuLogger, "  options       : none");
+
+    if (targetProtocol == ASC_AF_INET) OFLOG_INFO(dcmprscuLogger,  "  protocol version: IPv4 only");
+    else if (targetProtocol == ASC_AF_INET6) OFLOG_INFO(dcmprscuLogger,  "  protocol version: IPv6 only");
+    else if (targetProtocol == ASC_AF_UNSPEC) OFLOG_INFO(dcmprscuLogger,  "  protocol version: determined via DNS");
+    else OFLOG_INFO(dcmprscuLogger,  "  protocol version: default");
+
     OFLOG_INFO(dcmprscuLogger, "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported"));
     OFLOG_INFO(dcmprscuLogger, "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported"));
     OFLOG_INFO(dcmprscuLogger, "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported"));

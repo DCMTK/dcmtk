@@ -100,6 +100,9 @@
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
 
+/* Define to 1 if you have the <atomic> header file. */
+#undef HAVE_ATOMIC
+
 /* Define if __attribute__((aligned)) is available. */
 #undef HAVE_ATTRIBUTE_ALIGNED
 
@@ -451,6 +454,10 @@ typedef unsigned short ushort;
    TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 in <openssl/ssl.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384
 
+/* Define if OpenSSL provides a prototype for TS_VERIFY_CTX_SET0_STORE in
+   <openssl/ts.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE
+
 /* Define to 1 if you have the <openssl/provider.h> header file. */
 #undef HAVE_OPENSSL_PROVIDER_H
 
@@ -595,6 +602,9 @@ typedef unsigned short ushort;
 
 /* Define if STL's algorithm should be used. */
 #undef HAVE_STL_ALGORITHM
+
+/* Define if STL's atomic should be used. */
+#undef HAVE_STL_ATOMIC
 
 /* Define if STL's list should be used. */
 #undef HAVE_STL_LIST

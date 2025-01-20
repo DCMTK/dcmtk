@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -167,7 +167,6 @@ OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converte
     if (status.good() && (str != NULL) && (len > 0))
     {
         OFString resultStr;
-        // convert string to selected character string and replace the element value
         status = converter.convertString(str, len, resultStr, getDelimiterChars());
         if (status.good())
         {

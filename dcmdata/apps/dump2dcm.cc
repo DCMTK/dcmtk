@@ -138,7 +138,7 @@ stripWhitespace(char *s)
 
     p = s;
     while (*s != '\0') {
-        if (isspace(TO_UCHAR(*s)) == OFFalse) {
+        if (OFStandard::isspace(*s) == OFFalse) {
             *p++ = *s;
         }
         s++;
@@ -150,7 +150,7 @@ static char *
 stripTrailingWhitespace(char *s)
 {
     if (s == NULL) return s;
-    for (size_t i = strlen(s); i > 0 && isspace(TO_UCHAR(s[--i])); s[i] = '\0');
+    for (size_t i = strlen(s); i > 0 && OFStandard::isspace(s[--i]); s[i] = '\0');
     return s;
 }
 
@@ -161,7 +161,7 @@ stripPrecedingWhitespace(char *s)
     char *p;
     if (s == NULL) return s;
 
-    for(p = s; *p && isspace(TO_UCHAR(*p)); p++)
+    for(p = s; *p && OFStandard::isspace(*p); p++)
         ;
 
     return p;
@@ -170,7 +170,7 @@ stripPrecedingWhitespace(char *s)
 static OFBool
 onlyWhitespace(const char *s)
 {
-    while(*s) if (!isspace(TO_UCHAR(*s++)))
+    while(*s) if (!OFStandard::isspace(*s++))
         return OFFalse;
     return OFTrue;
 }
@@ -201,7 +201,7 @@ static OFBool
 isaCommentLine(const char *s)
 {
     // skip leading spaces
-    while(isspace(TO_UCHAR(*s))) ++s;
+    while(OFStandard::isspace(*s)) ++s;
     return *s == DCM_DumpCommentChar;
 }
 

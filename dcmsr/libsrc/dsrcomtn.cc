@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -50,32 +50,6 @@ DSRCompositeTreeNode::~DSRCompositeTreeNode()
 }
 
 
-OFBool DSRCompositeTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRCompositeReferenceValue::operator==(OFstatic_cast(const DSRCompositeTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
-OFBool DSRCompositeTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRCompositeReferenceValue::operator!=(OFstatic_cast(const DSRCompositeTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
 DSRCompositeTreeNode *DSRCompositeTreeNode::clone() const
 {
     return new DSRCompositeTreeNode(*this);
@@ -86,6 +60,32 @@ void DSRCompositeTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     DSRCompositeReferenceValue::clear();
+}
+
+
+OFBool DSRCompositeTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRCompositeReferenceValue::isEqual(OFstatic_cast(const DSRCompositeTreeNode &, node).getValue());
+    }
+    return result;
+}
+
+
+OFBool DSRCompositeTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRCompositeReferenceValue::isNotEqual(OFstatic_cast(const DSRCompositeTreeNode &, node).getValue());
+    }
+    return result;
 }
 
 
@@ -158,15 +158,32 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
                                                         STD_NAMESPACE ostream &annexStream,
                                                         const size_t /* nestingLevel */,
                                                         size_t &annexNumber,
-                                                        const size_t flags) const
+                                                        const size_t flags,
+                                                        const char *urlPrefix) const
 {
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Reference */
     if (result.good())
     {
-        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags);
+        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, urlPrefix);
         docStream << OFendl;
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRCompositeTreeNode &lhs,
+                  const DSRCompositeTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRCompositeTreeNode &lhs,
+                  const DSRCompositeTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

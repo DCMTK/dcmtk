@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2012, OFFIS e.V.
+ *  Copyright (C) 1998-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -175,6 +175,7 @@ public:
    *  @param peerAEtitle the printer's called aetitle
    *  @param peerHost hostname/IP address of the printer
    *  @param peerPort port number of the printer
+   *  @param protocolFamily protocol family (AF_INET, AF_INET6, AF_UNSPEC or -1 for default)
    *  @param peerMaxPDU maximum PDU size to negotiate, must be between 8192 and 65536.
    *  @param negotiatePresentationLUT if true, Presentation LUT SOP Class is negotiated
    *  @param negotiateAnnotationBox if true, Basic Annotation Box SOP Class is negotiated
@@ -189,6 +190,7 @@ public:
     const char *peerAEtitle,
     const char *peerHost,
     int peerPort,
+    T_ASC_ProtocolFamily protocolFamily,
     long peerMaxPDU,
     OFBool negotiatePresentationLUT,
     OFBool negotiateAnnotationBox,

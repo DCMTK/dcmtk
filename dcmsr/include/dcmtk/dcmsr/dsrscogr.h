@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,13 @@
 #include "dcmtk/dcmsr/dsrtlist.h"
 
 
+// include this file in doxygen documentation
+
+/** @file dsrscogr.h
+ *  @brief definitions for class DSRGraphicDataItem
+ */
+
+
 /*---------------------*
  *  class declaration  *
  *---------------------*/
@@ -51,38 +58,38 @@ class DCMTK_DCMSR_EXPORT DSRGraphicDataItem
     {
     }
 
-    /** comparison operator
+    /** check whether items are "equal"
      ** @param  item  item with which the (column,row) pair should be compared
      ** @return OFTrue if both pairs are equal, OFFalse otherwise
      */
-    inline OFBool operator==(const DSRGraphicDataItem &item) const
+    inline OFBool isEqual(const DSRGraphicDataItem &item) const
     {
         return (item.Column == Column) && (item.Row == Row);
     }
 
-    /** comparison operator
+    /** check whether items are "not equal"
      ** @param  item  item with which the (column,row) pair should be compared
      ** @return OFTrue if not equal, OFFalse if equal
      */
-    inline OFBool operator!=(const DSRGraphicDataItem &item) const
+    inline OFBool isNotEqual(const DSRGraphicDataItem &item) const
     {
         return (item.Column != Column) || (item.Row != Row);
     }
 
-    /** comparison operator
+    /** check whether this item is "less than" the given item
      ** @param  item  item with which the (column,row) pair should be compared
      ** @return OFTrue if smaller. Row takes precedence over column.
      */
-    inline OFBool operator<(const DSRGraphicDataItem &item) const
+    inline OFBool isLessThan(const DSRGraphicDataItem &item) const
     {
         return (Row < item.Row) || ((Row == item.Row) && (Column < item.Column));
     }
 
-    /** comparison operator
+    /** check whether this item is "greater than" the given item
      ** @param  item  item with which the (column,row) pair should be compared
      ** @return OFTrue if greater. Row takes precedence over column.
      */
-    inline OFBool operator>(const DSRGraphicDataItem &item) const
+    inline OFBool isGreaterThan(const DSRGraphicDataItem &item) const
     {
         return (Row > item.Row) || ((Row == item.Row) && (Column > item.Column));
     }
@@ -181,6 +188,47 @@ class DCMTK_DCMSR_EXPORT DSRGraphicDataList
      */
     OFCondition putString(const char *stringValue);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRGraphicDataItem::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRGraphicDataItem &lhs,
+                                     const DSRGraphicDataItem &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRGraphicDataItem::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRGraphicDataItem &lhs,
+                                     const DSRGraphicDataItem &rhs);
+
+/** less-than operator.
+ *  Internally, the DSRGraphicDataItem::isLessThan() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' is less than 'rhs', OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator<(const DSRGraphicDataItem &lhs,
+                                    const DSRGraphicDataItem &rhs);
+
+/** greater-than operator.
+ *  Internally, the DSRGraphicDataItem::isGreaterThan() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' is greater than 'rhs', OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator>(const DSRGraphicDataItem &lhs,
+                                    const DSRGraphicDataItem &rhs);
 
 
 #endif

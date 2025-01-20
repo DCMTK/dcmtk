@@ -493,6 +493,9 @@
 /* Define to 1 if you have the `_findfirst' function. */
 #cmakedefine HAVE__FINDFIRST @HAVE__FINDFIRST@
 
+/* Define to 1 if you have the `_set_output_format' function. */
+#cmakedefine HAVE__SET_OUTPUT_FORMAT @HAVE__SET_OUTPUT_FORMAT@
+
 /* Define to 1 if the compiler supports __FUNCTION__. */
 #cmakedefine HAVE___FUNCTION___MACRO @HAVE___FUNCTION___MACRO@
 
@@ -644,7 +647,11 @@
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_SSIZE_T
 #ifdef HAVE_NO_TYPEDEF_SSIZE_T
-#define ssize_t long
+#if defined(_WIN64)
+ typedef __int64 ssize_t;
+#else
+ typedef long ssize_t;
+#endif
 #endif
 
 /* Set typedefs as needed for JasPer library */
@@ -857,6 +864,9 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* Define if we are supposed to use STL's system_error */
 #cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
 
+/* Define if we are supposed to use STL's atomic */
+#cmakedefine HAVE_STL_ATOMIC @HAVE_STL_ATOMIC@
+
 /* Define if the input iterator category is supported */
 #cmakedefine HAVE_CONTIGUOUS_ITERATOR_CATEGORY @HAVE_CONTIGUOUS_ITERATOR_CATEGORY@
 
@@ -885,6 +895,9 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 
 /* Define if we have OpenSSL with the TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 macro */
 #cmakedefine HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384 @HAVE_OPENSSL_PROTOTYPE_TLS1_TXT_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384@
+
+/* Define if we have OpenSSL with the TS_VERIFY_CTX_set0_store() function */
+#cmakedefine HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE @HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE@
 
 /* Define if we have OpenSSL with the new typedef of EVP_MD_CTX as struct evp_md_ctx_st */
 #cmakedefine HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX @HAVE_OPENSSL_DECLARATION_NEW_EVP_MD_CTX@

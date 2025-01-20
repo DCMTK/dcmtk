@@ -27,6 +27,8 @@ DCMTK_ADD_LIBRARY(ofstd
   ofmath.cc
   ofsockad.cc
   ofrand.cc
+  ofwhere.c
+  ofstub.cc
 )
 
 DCMTK_TARGET_LINK_LIBRARIES(ofstd config ${CHARSET_CONVERSION_LIBS} ${SOCKET_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})

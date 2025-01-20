@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -237,6 +237,8 @@ int main(int argc, char* argv[])
         }
     }
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
+
+    if (filename) fclose(fout);
 
     dcmDataDict.wrunlock();
     return 0;

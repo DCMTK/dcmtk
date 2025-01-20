@@ -101,6 +101,17 @@ input files:
 
 \subsection storescu_network_options network options
 \verbatim
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use DNS lookup to determine IP protocol
+
 application entity titles:
 
   -aet  --aetitle  [a]etitle: string
@@ -341,6 +352,9 @@ certification authority:
 
 security profile:
 
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
   +pg   --profile-8996
           BCP 195 RFC 8996 TLS Profile (default)
 
@@ -504,7 +518,7 @@ following transfer syntaxes are supported:
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99 (*)
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
 JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
@@ -525,7 +539,9 @@ HEVCMain10ProfileLevel5_1TransferSyntax              1.2.840.10008.1.2.4.108
 RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 \endverbatim
 
-Additional Storage SOP Classes and Transfer Syntaxes can be used with the
+(*) if compiled with zlib support enabled (see \e --version output)
+
+Additional Storage SOP Classes and transfer syntaxes can be used with the
 so-called "association negotiation profiles" (see below).
 
 The \b storescu application does not support extended negotiation by default.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2018, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,8 +55,7 @@ extern DCMTK_DCMIMGLE_EXPORT OFLogger DCM_dcmimgleLogger;
 
 /** @name configuration flags
  */
-
-//@{
+///@{
 
 /// compatibility with old ACR-NEMA images
 const unsigned long CIF_AcrNemaCompatibility         = 0x0000001;
@@ -98,7 +97,8 @@ const unsigned long CIF_DecompressCompletePixelData  = 0x0000800;
 
 /// never access embedded overlays since this requires to load and uncompress the complete pixel data
 const unsigned long CIF_NeverAccessEmbeddedOverlays  = 0x0001000;
-//@}
+
+///@}
 
 
 // / true color color mode (for monochrome images only)

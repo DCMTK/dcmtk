@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -176,6 +176,15 @@ public:
   virtual void callback(unsigned long mode) = 0;
 };
 
+enum T_ASC_ProtocolFamily
+{
+  ASC_AF_Default,
+  ASC_AF_INET,
+  ASC_AF_INET6,
+  ASC_AF_UNSPEC
+};
+
+
 typedef struct {
     char applicationContextName[DUL_LEN_NAME + 1];
     char callingAPTitle[DUL_LEN_TITLE + 1];
@@ -203,6 +212,7 @@ typedef struct {
 
     OFBool useSecureLayer;
     Sint32 tcpConnectTimeout;
+    T_ASC_ProtocolFamily protocol_family;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 /** Enum describing the possible role settings for role negotiation sub items.
@@ -406,7 +416,7 @@ typedef enum {
 */
 
 #define DUL_DULCOMPAT     2768240730UL
-#define DUL_DIMSECOMPAT   1114095UL
+#define DUL_DIMSECOMPAT   1245184UL
 #define DUL_MAXPDUCOMPAT  4278190335UL
 
 /* Define the function prototypes for this facility.

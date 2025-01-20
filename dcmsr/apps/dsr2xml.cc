@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -86,7 +86,7 @@ static OFCondition checkCharacterSet(const char *ifname,
                     OFLOG_ERROR(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
                         << "element absent (on the main data set level) but extended characters used in file: " << ifname);
                     OFLOG_DEBUG(dsr2xmlLogger, "use option --charset-assume to manually specify an appropriate character set");
-                    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");;
+                    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");
                 } else {
                     result = EC_Normal;
                     csetString = defaultCharset;

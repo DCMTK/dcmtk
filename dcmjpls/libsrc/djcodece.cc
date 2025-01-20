@@ -100,6 +100,14 @@ OFBool DJLSEncoderBase::canChangeCoding(
 }
 
 
+Uint16 DJLSEncoderBase::decodedBitsAllocated(
+    Uint16 /* bitsAllocated */,
+    Uint16 /* bitsStored */) const
+{
+  return 0;
+}
+
+
 OFCondition DJLSEncoderBase::decode(
     const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * /* pixSeq */,
@@ -1152,7 +1160,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
     frameBuffer = new Uint8[buffer_size];
     framePointer = frameBuffer;
-    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
+    result = convertToUninterleaved(frameBuffer, buffer, OFstatic_cast(Uint16, samplesPerPixel), width, height, OFstatic_cast(Uint16, jls_params.bitspersample));
   }
 #endif
 
@@ -1168,7 +1176,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
     compressedSize = OFstatic_cast(unsigned long, bytesWritten);
-    fixPaddingIfNecessary(OFstatic_cast(Uint8 *, buffer), compressed_buffer_size, compressedSize, djcp->getUseFFbitstreamPadding());
+    fixPaddingIfNecessary(OFstatic_cast(Uint8 *, compressed_buffer), compressed_buffer_size, compressedSize, djcp->getUseFFbitstreamPadding());
     result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressedSize, fragmentSize);
   }
 

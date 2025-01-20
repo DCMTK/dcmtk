@@ -1,0 +1,132 @@
+#
+#	Makefile for dcmapps/apps
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+oficonvdir = $(top_srcdir)/../oficonv
+oficonvinc = -I$(oficonvdir)/include
+oficonvlibdir = -L$(oficonvdir)/libsrc
+oficonvlib = -loficonv
+
+ofstddir = $(top_srcdir)/../ofstd
+ofstdinc = -I$(ofstddir)/include
+ofstdlibdir = -L$(ofstddir)/libsrc
+ofstdlib = -lofstd
+
+oflogdir = $(top_srcdir)/../oflog
+ofloginc = -I$(oflogdir)/include
+ofloglibdir = -L$(oflogdir)/libsrc
+ofloglib = -loflog
+
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmdatainc = -I$(dcmdatadir)/include
+dcmdatalibdir = -L$(dcmdatadir)/libsrc
+dcmdatalib = -ldcmdata
+
+dcmioddir = $(top_srcdir)/../dcmiod
+dcmiodinc = -I$(dcmioddir)/include
+dcmiodlibdir = -L$(dcmioddir)/libsrc
+dcmiodlib = -ldcmiod
+
+dcmnetdir = $(top_srcdir)/../dcmnet
+dcmnetinc = -I$(dcmnetdir)/include
+dcmnetlibdir = -L$(dcmnetdir)/libsrc
+dcmnetlib = -ldcmnet
+
+dcmimgledir = $(top_srcdir)/../dcmimgle
+dcmimgleinc = -I$(dcmimgledir)/include
+dcmimglelibdir = -L$(dcmimgledir)/libsrc
+dcmimglelib = -ldcmimgle
+
+dcmimagedir = $(top_srcdir)/../dcmimage
+dcmimageinc = -I$(dcmimagedir)/include
+dcmimagelibdir = -L$(dcmimagedir)/libsrc
+dcmimagelib = -ldcmimage
+
+dcmpstatdir = $(top_srcdir)/../dcmpstat
+dcmpstatinc = -I$(dcmpstatdir)/include
+dcmpstatlibdir = -L$(dcmpstatdir)/libsrc
+dcmpstatlib = -ldcmpstat
+
+dcmqrdbdir = $(top_srcdir)/../dcmqrdb
+dcmqrdbinc = -I$(dcmqrdbdir)/include
+dcmqrdblibdir = -L$(dcmqrdbdir)/libsrc
+dcmqrdblib = -ldcmqrdb
+
+dcmtlsdir = $(top_srcdir)/../dcmtls
+dcmtlsinc = -I$(dcmtlsdir)/include
+dcmtlslibdir = -L$(dcmtlsdir)/libsrc
+dcmtlslib = -ldcmtls
+
+dcmsigndir = $(top_srcdir)/../dcmsign
+dcmsigninc = -I$(dcmsigndir)/include
+dcmsignlibdir = -L$(dcmsigndir)/libsrc
+dcmsignlib = -ldcmdsig
+
+dcmsrdir = $(top_srcdir)/../dcmsr
+dcmsrinc = -I$(dcmsrdir)/include
+dcmsrlibdir = -L$(dcmsrdir)/libsrc
+dcmsrlib = -ldcmsr
+
+dcmjpegdir = $(top_srcdir)/../dcmjpeg
+dcmjpeginc = -I$(dcmjpegdir)/include
+dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/libijg12 -L$(dcmjpegdir)/libijg16
+dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
+
+dcmjplsdir = $(top_srcdir)/../dcmjpls
+dcmjplsinc = -I$(dcmjplsdir)/include
+dcmjplslibdir = -L$(dcmjplsdir)/libsrc
+dcmjplslib = -ldcmjpls
+
+libcharlsdir = $(dcmjplsdir)
+libcharlslibdir = -L$(dcmjplsdir)/libcharls
+libcharlslib = -ldcmtkcharls
+
+LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(ofloginc) $(dcmnetinc) $(dcmdatainc) \
+	$(dcmiodinc) $(dcmimgleinc) $(dcmimageinc) $(dcmqrdbinc) $(dcmtlsinc) \
+	$(dcmsigninc) $(dcmsrinc) $(dcmjpeginc) $(dcmjplsinc)
+
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
+	$(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) \
+	$(ofstdlibdir) $(ofloglibdir) $(dcmiodlibdir) $(dcmimglelibdir) \
+	$(dcmimagelibdir) $(oficonvlibdir) $(dcmjpeglibdir) $(dcmjplslibdir) \
+	$(libcharlslibdir)
+
+DCM2IMG_LIBS = $(dcmjpeglib) $(dcmjplslib) $(libcharlslib) $(dcmimagelib) \
+	$(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) \
+	$(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+
+objs = dcm2img.o
+progs = dcm2img
+
+all: $(progs)
+
+dcm2img: dcm2img.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcm2img.o $(DCM2IMG_LIBS) $(LIBS)
+
+install: all
+	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
+	for prog in $(progs); do \
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && $(STRIP) $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
+	done
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean:
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+include $(DEP)

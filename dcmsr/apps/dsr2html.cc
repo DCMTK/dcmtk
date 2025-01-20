@@ -86,7 +86,7 @@ static OFCondition checkCharacterSet(const char *ifname,
                     OFLOG_ERROR(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": SpecificCharacterSet (0008,0005) "
                         << "element absent (on the main data set level) but extended characters used in file: " << ifname);
                     OFLOG_DEBUG(dsr2htmlLogger, "use option --charset-assume to manually specify an appropriate character set");
-                    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");;
+                    result = makeOFCondition(OFM_dcmdata, EC_CODE_CannotSelectCharacterSet, OF_error, "Missing Specific Character Set");
                 } else {
                     result = EC_Normal;
                     csetString = defaultCharset;
@@ -169,6 +169,7 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
                               const char *ifname,
                               DcmFileFormat &dfile,
                               const char *cssName,
+                              const char *urlPrefix,
                               const size_t readFlags,
                               const size_t renderFlags)
 {
@@ -181,7 +182,7 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
         if (result.good())
         {
             /* render document in HTML format and write it to the output stream */
-            result = dsrdoc.renderHTML(out, renderFlags, cssName);
+            result = dsrdoc.renderHTML(out, renderFlags, cssName, urlPrefix);
         } else {
             OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text() << ") parsing file: " << ifname);
             /* make sure that the caller does not report this error, too */
@@ -201,6 +202,7 @@ int main(int argc, char *argv[])
     size_t opt_readFlags = 0;
     size_t opt_renderFlags = DSRTypes::HF_renderDcmtkFootnote;
     const char *opt_cssName = NULL;
+    const char *opt_urlPrefix = NULL;
     const char *opt_defaultCharset = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
@@ -267,6 +269,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--always-expand-inline", "+Ra",    "always expand content items inline");
         cmd.addOption("--render-full-data",     "+Rd",    "render full data of content items");
         cmd.addOption("--section-title-inline", "+Rt",    "render section titles inline, not separately");
+        cmd.addOption("--hyperlink-url-prefix", "+Rh", 1, "[p]refix: string",
+                                                          "use URL prefix p for hyperlinks to composite\nobjects (default: " DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS ")");
       cmd.addSubGroup("document rendering:");
         cmd.addOption("--document-type-title",  "+Dt",    "use document type as document title (default)");
         cmd.addOption("--patient-info-title",   "+Dp",    "use patient information as document title");
@@ -423,6 +427,9 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--section-title-inline"))
             opt_renderFlags |= DSRTypes::HF_renderSectionTitlesInline;
 
+        if (cmd.findOption("--hyperlink-url-prefix"))
+            app.checkValue(cmd.getValue(opt_urlPrefix));
+
         /* document rendering */
         cmd.beginOptionBlock();
         if (cmd.findOption("--document-type-title"))
@@ -499,7 +506,7 @@ int main(int argc, char *argv[])
                     if (stream.good())
                     {
                         /* render to output file */
-                        status = renderFile(stream, ifname, dfile, opt_cssName, opt_readFlags, opt_renderFlags);
+                        status = renderFile(stream, ifname, dfile, opt_cssName, opt_urlPrefix, opt_readFlags, opt_renderFlags);
                         if (status.bad() && (status != EC_InternalError))
                         {
                             OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing file: "<< ofname);
@@ -509,7 +516,7 @@ int main(int argc, char *argv[])
                         result = 1;
                 } else {
                     /* use standard output */
-                    status = renderFile(COUT, ifname, dfile, opt_cssName, opt_readFlags, opt_renderFlags);
+                    status = renderFile(COUT, ifname, dfile, opt_cssName, opt_urlPrefix, opt_readFlags, opt_renderFlags);
                     if (status.bad() && (status != EC_InternalError))
                     {
                         OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") writing to standard output");

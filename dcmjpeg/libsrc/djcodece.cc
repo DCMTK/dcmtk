@@ -75,6 +75,14 @@ OFBool DJCodecEncoder::canChangeCoding(
 }
 
 
+Uint16 DJCodecEncoder::decodedBitsAllocated(
+    Uint16 /* bitsAllocated */,
+    Uint16 /* bitsStored */) const
+{
+  return 0;
+}
+
+
 OFCondition DJCodecEncoder::decode(
   const DcmRepresentationParameter * /* fromRepParam */,
   DcmPixelSequence * /* pixSeq */,

@@ -655,7 +655,7 @@ int DicomImage::writePPM(const char *filename,
             filename = fname;
         FILE *stream = fopen(filename, "w");                // open text file for writing
         int ok = writePPM(stream, bits, frame);
-        fclose(stream);
+        if (fclose(stream)) ok = 0;
         return ok;
     }
     return 0;
@@ -701,7 +701,7 @@ int DicomImage::writeRawPPM(const char *filename,
         if (stream != NULL)
         {
             int ok = Image->writeRawPPM(stream, frame, Image->getBits(bits));
-            fclose(stream);
+            if (fclose(stream)) ok = 0;
             return ok;
         }
     }
@@ -736,7 +736,7 @@ int DicomImage::writeBMP(const char *filename,
         if (stream != NULL)
         {
             int ok = Image->writeBMP(stream, frame, bits);
-            fclose(stream);
+            if (fclose(stream)) ok = 0;
             return ok;
         }
     }
@@ -774,7 +774,7 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
         if (stream != NULL)
         {
             int ok = plugin->write(Image, stream, frame);
-            fclose(stream);
+            if (fclose(stream)) ok = 0;
             return ok;
         }
     }

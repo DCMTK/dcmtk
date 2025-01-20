@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2023, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,24 +69,24 @@ DSRWaveformReferenceValue &DSRWaveformReferenceValue::operator=(const DSRWavefor
 }
 
 
-OFBool DSRWaveformReferenceValue::operator==(const DSRWaveformReferenceValue &referenceValue) const
-{
-    return DSRCompositeReferenceValue::operator==(referenceValue) &&
-           (ChannelList == referenceValue.ChannelList);
-}
-
-
-OFBool DSRWaveformReferenceValue::operator!=(const DSRWaveformReferenceValue &referenceValue) const
-{
-    return DSRCompositeReferenceValue::operator!=(referenceValue) ||
-           (ChannelList != referenceValue.ChannelList);
-}
-
-
 void DSRWaveformReferenceValue::clear()
 {
     DSRCompositeReferenceValue::clear();
     ChannelList.clear();
+}
+
+
+OFBool DSRWaveformReferenceValue::isEqual(const DSRWaveformReferenceValue &referenceValue) const
+{
+    return DSRCompositeReferenceValue::isEqual(referenceValue) &&
+           (ChannelList == referenceValue.ChannelList);
+}
+
+
+OFBool DSRWaveformReferenceValue::isNotEqual(const DSRWaveformReferenceValue &referenceValue) const
+{
+    return DSRCompositeReferenceValue::isNotEqual(referenceValue) ||
+           (ChannelList != referenceValue.ChannelList);
 }
 
 
@@ -195,10 +195,11 @@ OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset) const
 OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                   STD_NAMESPACE ostream &annexStream,
                                                   size_t &annexNumber,
-                                                  const size_t flags) const
+                                                  const size_t flags,
+                                                  const char *urlPrefix) const
 {
     /* render reference */
-    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "<a href=\"" << (urlPrefix == NULL ? DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS : urlPrefix);
     docStream << "?waveform=" << SOPClassUID << "+" << SOPInstanceUID;
     if (!ChannelList.isEmpty())
     {
@@ -294,4 +295,20 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
         }
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRWaveformReferenceValue &lhs,
+                  const DSRWaveformReferenceValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRWaveformReferenceValue &lhs,
+                  const DSRWaveformReferenceValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

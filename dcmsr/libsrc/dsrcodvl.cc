@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -189,42 +189,6 @@ DSRCodedEntryValue &DSRCodedEntryValue::operator=(const DSRCodedEntryValue &code
 }
 
 
-OFBool DSRCodedEntryValue::operator==(const DSRCodedEntryValue &codedEntryValue) const
-{
-    /* Code Meaning is not used for comparing the two codes, also the "Enhanced Encoding Mode" is not taken into account */
-    return (CodeValue == codedEntryValue.CodeValue) &&
-           (CodingSchemeDesignator == codedEntryValue.CodingSchemeDesignator) &&
-           (CodingSchemeVersion == codedEntryValue.CodingSchemeVersion);
-}
-
-
-OFBool DSRCodedEntryValue::operator!=(const DSRCodedEntryValue &codedEntryValue) const
-{
-    /* Code Meaning is not used for comparing the two codes, also the "Enhanced Encoding Mode" is not taken into account */
-    return (CodeValue != codedEntryValue.CodeValue) ||
-           (CodingSchemeDesignator != codedEntryValue.CodingSchemeDesignator) ||
-           (CodingSchemeVersion != codedEntryValue.CodingSchemeVersion);
-}
-
-
-OFBool DSRCodedEntryValue::operator==(const DSRBasicCodedEntry &basicCodedEntry) const
-{
-    /* Code Meaning is not used for comparing the two codes */
-    return (CodeValue == basicCodedEntry.CodeValue) &&
-           (CodingSchemeDesignator == basicCodedEntry.CodingSchemeDesignator) &&
-           (CodingSchemeVersion == basicCodedEntry.CodingSchemeVersion);
-}
-
-
-OFBool DSRCodedEntryValue::operator!=(const DSRBasicCodedEntry &basicCodedEntry) const
-{
-    /* Code Meaning is not used for comparing the two codes */
-    return (CodeValue != basicCodedEntry.CodeValue) ||
-           (CodingSchemeDesignator != basicCodedEntry.CodingSchemeDesignator) ||
-           (CodingSchemeVersion != basicCodedEntry.CodingSchemeVersion);
-}
-
-
 void DSRCodedEntryValue::clear()
 {
     CodeValueType = DSRTypes::CVT_Short /* should not be "auto" */;
@@ -238,6 +202,42 @@ void DSRCodedEntryValue::clear()
     ContextGroupVersion.clear();
     ContextGroupLocalVersion.clear();
     ContextGroupExtensionCreatorUID.clear();
+}
+
+
+OFBool DSRCodedEntryValue::isEqual(const DSRCodedEntryValue &codedEntryValue) const
+{
+    /* Code Meaning is not used for comparing the two codes, also the "Enhanced Encoding Mode" is not taken into account */
+    return (CodeValue == codedEntryValue.CodeValue) &&
+           (CodingSchemeDesignator == codedEntryValue.CodingSchemeDesignator) &&
+           (CodingSchemeVersion == codedEntryValue.CodingSchemeVersion);
+}
+
+
+OFBool DSRCodedEntryValue::isNotEqual(const DSRCodedEntryValue &codedEntryValue) const
+{
+    /* Code Meaning is not used for comparing the two codes, also the "Enhanced Encoding Mode" is not taken into account */
+    return (CodeValue != codedEntryValue.CodeValue) ||
+           (CodingSchemeDesignator != codedEntryValue.CodingSchemeDesignator) ||
+           (CodingSchemeVersion != codedEntryValue.CodingSchemeVersion);
+}
+
+
+OFBool DSRCodedEntryValue::isEqual(const DSRBasicCodedEntry &basicCodedEntry) const
+{
+    /* Code Meaning is not used for comparing the two codes */
+    return (CodeValue == basicCodedEntry.CodeValue) &&
+           (CodingSchemeDesignator == basicCodedEntry.CodingSchemeDesignator) &&
+           (CodingSchemeVersion == basicCodedEntry.CodingSchemeVersion);
+}
+
+
+OFBool DSRCodedEntryValue::isNotEqual(const DSRBasicCodedEntry &basicCodedEntry) const
+{
+    /* Code Meaning is not used for comparing the two codes */
+    return (CodeValue != basicCodedEntry.CodeValue) ||
+           (CodingSchemeDesignator != basicCodedEntry.CodingSchemeDesignator) ||
+           (CodingSchemeVersion != basicCodedEntry.CodingSchemeVersion);
 }
 
 
@@ -821,11 +821,41 @@ DSRTypes::E_CodeValueType DSRCodedEntryValue::determineCodeValueType(const OFStr
 }
 
 
-// output operators
+// i/o stream operators
 
 STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
                                   const DSRCodedEntryValue& codedEntryValue)
 {
     codedEntryValue.print(stream, OFTrue /*printCodeValue*/, DSRTypes::PF_printEmptyCodes /*flags*/);
     return stream;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRCodedEntryValue &lhs,
+                  const DSRCodedEntryValue &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRCodedEntryValue &lhs,
+                  const DSRCodedEntryValue &rhs)
+{
+    return lhs.isNotEqual(rhs);
+}
+
+
+OFBool operator==(const DSRCodedEntryValue &lhs,
+                  const DSRBasicCodedEntry &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRCodedEntryValue &lhs,
+                  const DSRBasicCodedEntry &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

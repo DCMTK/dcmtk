@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class TID1600_ImageLibrary
@@ -36,7 +36,7 @@
 
 /** @name specific error conditions for TID 1600 in module dcmsr/cmr
  */
-//@{
+///@{
 
 /// error: there is no image library to add image groups to
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibrary;
@@ -55,7 +55,7 @@ extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntryDescrip
 /// normal: there are no (common) image library entry descriptors to be moved (to the image group)
 extern DCMTK_CMR_EXPORT const OFConditionConst CMR_EC_NoImageLibraryEntryDescriptorsToBeMoved;
 
-//@}
+///@}
 
 
 /*---------------------*

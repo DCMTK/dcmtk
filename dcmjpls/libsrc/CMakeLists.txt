@@ -10,6 +10,7 @@ DCMTK_ADD_LIBRARY(dcmjpls
   djcodecd.cc
   djutils.cc
   djcodece.cc
+  dipijpls.cc
 )
 
 DCMTK_TARGET_LINK_MODULES(dcmjpls ofstd oflog dcmdata dcmimgle dcmimage dcmtkcharls)

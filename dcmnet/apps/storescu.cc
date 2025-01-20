@@ -217,6 +217,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--no-rename",            "-rn",     "do not rename processed files (default)");
       cmd.addOption("--rename",               "+rn",     "append .done/.bad to processed files");
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                 "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                 "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",              "-i0",     "use DNS lookup to determine IP protocol");
     cmd.addSubGroup("application entity titles:");
       cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", "set my calling AE title (default: " APPLICATIONTITLE ")");
       cmd.addOption("--call",                 "-aec", 1, "[a]etitle: string", "set called AE title of peer (default: " PEERAPPLICATIONTITLE ")");
@@ -332,6 +336,14 @@ int main(int argc, char *argv[])
             tlsOptions.printSupportedCiphersuites(app, COUT);
             return 0;
         }
+
+        // check if the command line contains the --list-profiles option
+        if (tlsOptions.listOfProfilesRequested(cmd))
+        {
+            tlsOptions.printSupportedTLSProfiles(app, COUT);
+            return 0;
+        }
+
       }
 
       /* command line parameters */
@@ -721,6 +733,13 @@ int main(int argc, char *argv[])
     /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
+    // set the IP protocol version
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ipv4")) ASC_setProtocolFamily(params, ASC_AF_INET);
+    if (cmd.findOption("--ipv6")) ASC_setProtocolFamily(params, ASC_AF_INET6);
+    if (cmd.findOption("--ip-auto")) ASC_setProtocolFamily(params, ASC_AF_UNSPEC);
+    cmd.endOptionBlock();
+
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
     OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
@@ -741,7 +760,7 @@ int main(int argc, char *argv[])
       const unsigned char *c = OFreinterpret_cast(const unsigned char *, opt_profileName);
       while (*c)
       {
-        if (!isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
+        if (!OFStandard::isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
         ++c;
       }
 

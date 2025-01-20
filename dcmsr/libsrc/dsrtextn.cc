@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -60,31 +60,6 @@ DSRTextTreeNode::~DSRTextTreeNode()
 }
 
 
-OFBool DSRTextTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRStringValue::operator==(OFstatic_cast(const DSRTextTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
-OFBool DSRTextTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRStringValue::operator!=(OFstatic_cast(const DSRTextTreeNode &, node).getValue());
-    }
-    return result;
-}
-
 
 DSRTextTreeNode *DSRTextTreeNode::clone() const
 {
@@ -96,6 +71,32 @@ void DSRTextTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     DSRStringValue::clear();
+}
+
+
+OFBool DSRTextTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRStringValue::isEqual(OFstatic_cast(const DSRTextTreeNode &, node).getValue());
+    }
+    return result;
+}
+
+
+OFBool DSRTextTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRStringValue::isNotEqual(OFstatic_cast(const DSRTextTreeNode &, node).getValue());
+    }
+    return result;
 }
 
 
@@ -199,4 +200,20 @@ OFCondition DSRTextTreeNode::checkValue(const OFString &textValue) const
     if (result.good())
         result = DcmUnlimitedText::checkStringValue(textValue, "UNKNOWN");
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRTextTreeNode &lhs,
+                  const DSRTextTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRTextTreeNode &lhs,
+                  const DSRTextTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

@@ -133,6 +133,7 @@ tdump.o: tdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
  ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
@@ -141,12 +142,11 @@ tdump.o: tdump.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
  ../include/dcmtk/dcmnet/dimse.h ../include/dcmtk/dcmnet/dicom.h \
- ../include/dcmtk/dcmnet/cond.h \
- ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
- ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dcompat.h \
- ../include/dcmtk/dcmnet/lst.h ../include/dcmtk/dcmnet/dul.h \
- ../include/dcmtk/dcmnet/extneg.h ../include/dcmtk/dcmnet/dcuserid.h \
- ../include/dcmtk/dcmnet/dntypes.h ../include/dcmtk/dcmnet/assoc.h \
+ ../include/dcmtk/dcmnet/cond.h ../include/dcmtk/dcmnet/dndefine.h \
+ ../include/dcmtk/dcmnet/dcompat.h ../include/dcmtk/dcmnet/lst.h \
+ ../include/dcmtk/dcmnet/dul.h ../include/dcmtk/dcmnet/extneg.h \
+ ../include/dcmtk/dcmnet/dcuserid.h ../include/dcmtk/dcmnet/dntypes.h \
+ ../include/dcmtk/dcmnet/assoc.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
@@ -263,6 +263,7 @@ tpool.o: tpool.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -328,19 +329,17 @@ tpool.o: tpool.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrov.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmnet/assoc.h \
- ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
- ../include/dcmtk/dcmnet/dicom.h ../include/dcmtk/dcmnet/cond.h \
- ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dcompat.h \
- ../include/dcmtk/dcmnet/lst.h ../include/dcmtk/dcmnet/dul.h \
- ../include/dcmtk/dcmnet/extneg.h ../include/dcmtk/dcmnet/dcuserid.h \
- ../include/dcmtk/dcmnet/dntypes.h ../include/dcmtk/dcmnet/dimse.h \
- ../include/dcmtk/dcmnet/diutil.h ../include/dcmtk/dcmnet/scpcfg.h \
- ../include/dcmtk/dcmnet/dcasccff.h ../include/dcmtk/dcmnet/dcasccfg.h \
- ../include/dcmtk/dcmnet/dccftsmp.h ../include/dcmtk/dcmnet/dccfuidh.h \
- ../include/dcmtk/dcmnet/dccfpcmp.h ../include/dcmtk/dcmnet/dccfrsmp.h \
- ../include/dcmtk/dcmnet/dccfenmp.h ../include/dcmtk/dcmnet/dccfprmp.h \
- ../include/dcmtk/dcmnet/scu.h
+ ../include/dcmtk/dcmnet/assoc.h ../include/dcmtk/dcmnet/dicom.h \
+ ../include/dcmtk/dcmnet/cond.h ../include/dcmtk/dcmnet/dndefine.h \
+ ../include/dcmtk/dcmnet/dcompat.h ../include/dcmtk/dcmnet/lst.h \
+ ../include/dcmtk/dcmnet/dul.h ../include/dcmtk/dcmnet/extneg.h \
+ ../include/dcmtk/dcmnet/dcuserid.h ../include/dcmtk/dcmnet/dntypes.h \
+ ../include/dcmtk/dcmnet/dimse.h ../include/dcmtk/dcmnet/diutil.h \
+ ../include/dcmtk/dcmnet/scpcfg.h ../include/dcmtk/dcmnet/dcasccff.h \
+ ../include/dcmtk/dcmnet/dcasccfg.h ../include/dcmtk/dcmnet/dccftsmp.h \
+ ../include/dcmtk/dcmnet/dccfuidh.h ../include/dcmtk/dcmnet/dccfpcmp.h \
+ ../include/dcmtk/dcmnet/dccfrsmp.h ../include/dcmtk/dcmnet/dccfenmp.h \
+ ../include/dcmtk/dcmnet/dccfprmp.h ../include/dcmtk/dcmnet/scu.h
 tscuscp.o: tscuscp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oftest.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
@@ -402,6 +401,7 @@ tscuscp.o: tscuscp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -467,19 +467,17 @@ tscuscp.o: tscuscp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrov.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmnet/assoc.h \
- ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
- ../include/dcmtk/dcmnet/dicom.h ../include/dcmtk/dcmnet/cond.h \
- ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dcompat.h \
- ../include/dcmtk/dcmnet/lst.h ../include/dcmtk/dcmnet/dul.h \
- ../include/dcmtk/dcmnet/extneg.h ../include/dcmtk/dcmnet/dcuserid.h \
- ../include/dcmtk/dcmnet/dntypes.h ../include/dcmtk/dcmnet/dimse.h \
- ../include/dcmtk/dcmnet/diutil.h ../include/dcmtk/dcmnet/scpcfg.h \
- ../include/dcmtk/dcmnet/dcasccff.h ../include/dcmtk/dcmnet/dcasccfg.h \
- ../include/dcmtk/dcmnet/dccftsmp.h ../include/dcmtk/dcmnet/dccfuidh.h \
- ../include/dcmtk/dcmnet/dccfpcmp.h ../include/dcmtk/dcmnet/dccfrsmp.h \
- ../include/dcmtk/dcmnet/dccfenmp.h ../include/dcmtk/dcmnet/dccfprmp.h \
- ../include/dcmtk/dcmnet/scu.h
+ ../include/dcmtk/dcmnet/assoc.h ../include/dcmtk/dcmnet/dicom.h \
+ ../include/dcmtk/dcmnet/cond.h ../include/dcmtk/dcmnet/dndefine.h \
+ ../include/dcmtk/dcmnet/dcompat.h ../include/dcmtk/dcmnet/lst.h \
+ ../include/dcmtk/dcmnet/dul.h ../include/dcmtk/dcmnet/extneg.h \
+ ../include/dcmtk/dcmnet/dcuserid.h ../include/dcmtk/dcmnet/dntypes.h \
+ ../include/dcmtk/dcmnet/dimse.h ../include/dcmtk/dcmnet/diutil.h \
+ ../include/dcmtk/dcmnet/scpcfg.h ../include/dcmtk/dcmnet/dcasccff.h \
+ ../include/dcmtk/dcmnet/dcasccfg.h ../include/dcmtk/dcmnet/dccftsmp.h \
+ ../include/dcmtk/dcmnet/dccfuidh.h ../include/dcmtk/dcmnet/dccfpcmp.h \
+ ../include/dcmtk/dcmnet/dccfrsmp.h ../include/dcmtk/dcmnet/dccfenmp.h \
+ ../include/dcmtk/dcmnet/dccfprmp.h ../include/dcmtk/dcmnet/scu.h
 tscusession.o: tscusession.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmnet/scp.h ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
@@ -528,6 +526,7 @@ tscusession.o: tscusession.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -599,9 +598,8 @@ tscusession.o: tscusession.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrol.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrov.h \
  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
- ../include/dcmtk/dcmnet/assoc.h \
- ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
- ../include/dcmtk/dcmnet/dicom.h ../include/dcmtk/dcmnet/cond.h \
+ ../include/dcmtk/dcmnet/assoc.h ../include/dcmtk/dcmnet/dicom.h \
+ ../include/dcmtk/dcmnet/cond.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
  ../include/dcmtk/dcmnet/dndefine.h ../include/dcmtk/dcmnet/dcompat.h \
  ../include/dcmtk/dcmnet/lst.h ../include/dcmtk/dcmnet/dul.h \

@@ -5,8 +5,8 @@
  *
  *  Header file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2024b
- *  File created on 2024-04-03 11:12:33 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:10 by J. Riesmeier
  *
  */
 
@@ -662,6 +662,10 @@ class DCMTK_CMR_EXPORT CID218_QuantitativeImageFeature
         VolumeOfMesh,
         /// (YEKZ,IBSI,"Volume from Voxel Summation"), included from CID 7472
         VolumeFromVoxelSummation,
+        /// (130922,DCM,"Number of pixels"), included from CID 7469
+        NumberOfPixels,
+        /// (130923,DCM,"Number of voxels"), included from CID 7469
+        NumberOfVoxels,
         /// (2PR5,IBSI,"Surface to Volume Ratio"), included from CID 7477
         SurfaceToVolumeRatio,
         /// (SKGS,IBSI,"Compactness 1"), included from CID 7477

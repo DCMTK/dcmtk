@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2019, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -284,6 +284,7 @@ public:
    *    If NULL, the current directory is used.
    *  @param extractFilename filename used to store the response datasets when extractResponses is
    *    set to FEM_singleXMLFile.
+   *  @param protocolVersion IP protocol version to be used
    *  @return EC_Normal if successful, an error code otherwise.
    */
   OFCondition performQuery(
@@ -305,7 +306,8 @@ public:
     DcmFindSCUCallback *callback = NULL,
     OFList<OFString> *fileNameList = NULL,
     const char *outputDirectory = NULL,
-    const char *extractFilename = NULL);
+    const char *extractFilename = NULL,
+    T_ASC_ProtocolFamily protocolVersion = ASC_AF_Default);
 
   /** static helper function that writes the content of the given dataset
    *  into a DICOM file (using the DICOM file format with metaheader).

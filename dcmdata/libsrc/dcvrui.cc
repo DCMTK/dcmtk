@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -193,7 +193,6 @@ OFCondition DcmUniqueIdentifier::putString(const char *stringVal,
 
 // ********************************
 
-
 OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
 {
     /* get string data */
@@ -217,7 +216,7 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
                 size_t curPos = 0;
                 for (size_t i = 0; i < len; i++)
                 {
-                   if (!isspace(OFstatic_cast(unsigned char, value[i])))
+                   if (!OFStandard::isspace(value[i]))
                       value[curPos++] = value[i];
                 }
                 /* there was at least one space character in the string */

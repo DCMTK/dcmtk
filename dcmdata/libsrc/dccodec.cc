@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2023, OFFIS e.V.
+ *  Copyright (C) 1997-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -513,6 +513,40 @@ OFCondition DcmCodecList::decodeFrame(
     }
 #ifdef WITH_THREADS
   } else result = EC_IllegalCall;
+#endif
+  return result;
+}
+
+
+Uint16 DcmCodecList::decodedBitsAllocated(
+  const DcmXfer & fromType,
+  Uint16 bitsAllocated,
+  Uint16 bitsStored)
+{
+#ifdef WITH_THREADS
+  if (! codecLock.initialized()) return 0; // should never happen
+#endif
+  Uint16 result = 0;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+#ifdef WITH_THREADS
+  OFReadWriteLocker locker(codecLock);
+  if (0 == locker.rdlock())
+  {
+#endif
+    E_TransferSyntax fromXfer = fromType.getXfer();
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
+      {
+        result = (*first)->codec->decodedBitsAllocated(bitsAllocated, bitsStored);
+        first = last;
+      } else ++first;
+    }
+#ifdef WITH_THREADS
+  } else result = 0;
 #endif
   return result;
 }

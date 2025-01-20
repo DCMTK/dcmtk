@@ -67,7 +67,6 @@
 #include "dcmtk/dcmdata/dcpixseq.h"
 #include "dcmtk/dcmdata/dcdict.h"
 
-
 template <typename StringType>
 static void checkStringBased(
     const DcmTagKey& key,
@@ -114,6 +113,17 @@ static void checkStringBased(
     threeValues = twoValues + "\\"; threeValues += shortVal;
     obj1.putOFStringArray(twoValues);
     obj2.putOFStringArray(threeValues);
+    OFCHECK(obj1.compare(obj2) < 0);
+    OFCHECK(obj1 < obj2);
+    OFCHECK(obj1 <= obj2);
+    // Reverse test should yield opposite result
+    OFCHECK(obj2.compare(obj1) > 0);
+    OFCHECK(obj2 > obj1);
+    OFCHECK(obj2 >= obj1);
+
+    // Check same number of values (1), same length, but different content
+    obj1.putOFStringArray("A");
+    obj2.putOFStringArray("B");
     OFCHECK(obj1.compare(obj2) < 0);
     OFCHECK(obj1 < obj2);
     OFCHECK(obj1 <= obj2);

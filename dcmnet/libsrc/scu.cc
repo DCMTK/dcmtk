@@ -57,6 +57,7 @@ DcmSCU::DcmSCU()
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
     , m_secureConnectionEnabled(OFFalse)
+    , m_protocolVersion(ASC_AF_Default)
 {
     OFStandard::initializeNetwork();
 }
@@ -134,6 +135,9 @@ OFCondition DcmSCU::initNetwork()
     /* structure. The default values are "ANY-SCU" and "ANY-SCP". */
     ASC_setAPTitles(m_params, m_ourAETitle.c_str(), m_peerAETitle.c_str(), NULL);
 
+    /* sets the IP protocol version */
+    ASC_setProtocolFamily(m_params, m_protocolVersion);
+
     /* Figure out the presentation addresses and copy the */
     /* corresponding values into the association parameters.*/
     DIC_NODENAME peerHost;
@@ -175,7 +179,7 @@ OFCondition DcmSCU::initNetwork()
             const unsigned char* c = OFreinterpret_cast(const unsigned char*, m_assocConfigProfile.c_str());
             while (*c)
             {
-                if (!isspace(*c))
+                if (!OFStandard::isspace(*c))
                     profileName += OFstatic_cast(char, toupper(*c));
                 ++c;
             }
@@ -1357,6 +1361,7 @@ OFCondition DcmSCU::handleSTORERequestFile(T_ASC_PresentationContextID* presID,
             cond = DIMSE_receiveDataSetInFile(
                 m_assoc, m_blockMode, m_dimseTimeout, presID, filestream, NULL /*callback*/, NULL /*callbackData*/);
         }
+        if (cond.good()) cond = filestream->fclose();
         delete filestream;
         if (cond != EC_Normal)
         {
@@ -2595,6 +2600,11 @@ void DcmSCU::setDatasetConversionMode(const OFBool mode)
 void DcmSCU::setProgressNotificationMode(const OFBool mode)
 {
     m_progressNotificationMode = mode;
+}
+
+void DcmSCU::setProtocolVersion(T_ASC_ProtocolFamily protocolVersion)
+{
+    m_protocolVersion = protocolVersion;
 }
 
 /* Get methods */

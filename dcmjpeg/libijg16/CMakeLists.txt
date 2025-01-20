@@ -1,6 +1,5 @@
 # create library from source files
 DCMTK_ADD_LIBRARY(ijg16
-  jaricom.c
   jcapimin.c
   jcapistd.c
   jcarith.c

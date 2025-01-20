@@ -80,7 +80,8 @@ const unsigned short OFM_dcmect   = 35;
  *  These constants can be used in addition to the general purpose ones
  *  defined in module ofstd.
  */
-//@{
+///@{
+
 /// Invalid tag
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidTag;
 /// Tag not found
@@ -186,9 +187,11 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownUIDName;
 /// Cannot write IS/DS string as JSON number
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteStringAsJsonNumber;
 
-//@}
+///@}
 
-// status code constants
+/** @name status code constants for module dcmdata.
+ */
+///@{
 
 /// error, cannot select specific character set
 extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotSelectCharacterSet;
@@ -198,5 +201,7 @@ extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertCharacterS
 extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotConvertToXML;
 /// error, cannot determine start fragment (of compressed pixel data)
 extern DCMTK_DCMDATA_EXPORT const unsigned short EC_CODE_CannotDetermineStartFragment;
+
+///@}
 
 #endif /* !DCERROR_H */

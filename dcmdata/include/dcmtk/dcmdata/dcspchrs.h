@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2017, OFFIS e.V.
+ *  Copyright (C) 2011-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,7 +36,7 @@ class DcmItem;
 
 /** A class for managing and converting between different DICOM character sets.
  *  The conversion relies on the OFCharacterEncoding class, which again relies
- *  on an underlying character encoding library (e.g. libiconv or ICU).
+ *  on an underlying character encoding library (e.g. oficonv or libiconv).
  *  @note Please note that a current limitation is that only a single value is
  *    allowed for the destination character set (i.e. no code extensions).  Of
  *    course, for the source character set, also multiple values are supported.
@@ -254,6 +254,37 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      */
     OFCondition selectCharacterSetWithCodeExtensions(const unsigned long sourceVM);
 
+    /** convert the given string from the selected source character set (without
+     *  code extensions) to the selected destination character set
+     *  @param  fromString  input string to be converted
+     *  @param  fromLength  length of the input string (in bytes)
+     *  @param  toString    reference to variable where to store the converted
+     *                      string
+     *  @param  delimiters  string of characters regarded as delimiters
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition convertStringWithoutCodeExtensions(const char *fromString,
+                                                   const size_t fromLength,
+                                                   OFString &toString,
+                                                   const OFString &delimiters);
+
+    /** convert the given string from the selected source character set(s) to
+     *  the selected destination character set.  This method supports code
+     *  extension techniques according to ISO 2022 for the input string.
+     *  @param  fromString     input string to be converted
+     *  @param  fromLength     length of the input string (in bytes)
+     *  @param  toString       reference to variable where to store the
+     *                         converted string
+     *  @param  delimiters     string of characters regarded as delimiters
+     *  @param  hasEscapeChar  flag indicating wether the input string contains
+     *                         one or more escape characters (ESC)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition convertStringWithCodeExtensions(const char *fromString,
+                                                const size_t fromLength,
+                                                OFString &toString,
+                                                const OFString &delimiters,
+                                                const OFBool hasEscapeChar);
 
     /** check whether the given string contains at least one escape character
      *  (ESC), because it is used for code extension techniques like ISO 2022

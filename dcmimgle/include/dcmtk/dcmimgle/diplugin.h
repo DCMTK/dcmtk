@@ -26,6 +26,8 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmimgle/didefine.h"
 
+#include <cstdio>
+
 
 /*------------------------*
  *  forward declarations  *

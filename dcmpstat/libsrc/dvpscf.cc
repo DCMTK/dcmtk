@@ -26,6 +26,20 @@
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
 #include "dcmtk/ofstd/ofstd.h"       /* for class OFStandard */
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#include <windows.h>     /* for GetFileAttributes() */
+#elif defined(HAVE_WINSOCK_H)
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
+#endif /* HAVE_WINDOWS_H */
+
 #ifndef HAVE_WINDOWS_H
 /* some Unix operating systems do not define a prototype for strncasecmp
  * although the function is known.
@@ -57,7 +71,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_DESCRIPTION                  "DESCRIPTION"
 #define L0_DETAILEDLOG                  "DETAILEDLOG"
 #define L0_DICOMNAME                    "DICOMNAME"
-#define L0_DIFFIEHELLMANPARAMETERS      "DIFFIEHELLMANPARAMETERS"   
+#define L0_DIFFIEHELLMANPARAMETERS      "DIFFIEHELLMANPARAMETERS"
 #define L0_DIRECTORY                    "DIRECTORY"
 #define L0_DISABLENEWVRS                "DISABLENEWVRS"
 #define L0_DISPLAYFORMAT                "DISPLAYFORMAT"
@@ -96,6 +110,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_PREVIEW                      "PREVIEWSIZE"
 #define L0_PRIVATEKEY                   "PRIVATEKEY"
 #define L0_PRIVATEKEYPASSWORD           "PRIVATEKEYPASSWORD"
+#define L0_PROTOCOL                     "PROTOCOL"
 #define L0_RANDOMSEED                   "RANDOMSEED"
 #define L0_RECEIVER                     "RECEIVER"
 #define L0_RESOLUTION                   "RESOLUTION"
@@ -119,6 +134,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_USEPEMFORMAT                 "USEPEMFORMAT"
 #define L0_USERKEYDIRECTORY             "USERKEYDIRECTORY"
 #define L0_USETLS                       "USETLS"
+#define L0_VALIDATIONMODE               "VALIDATIONMODE"
 #define L0_WIDTH                        "WIDTH"
 #define L1_APPLICATION                  "APPLICATION"
 #define L1_DATABASE                     "DATABASE"
@@ -209,7 +225,7 @@ static int strCompare(const char *str1, const char *str2, size_t len)
   return _strnicmp(str1, str2, len);
 #else
   return strncasecmp(str1, str2, len);
-#endif    
+#endif
 }
 
 
@@ -381,6 +397,19 @@ unsigned short DVConfiguration::getTargetPort(const char *targetID)
   if (c)
   {
     if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+T_ASC_ProtocolFamily DVConfiguration::getTargetProtocol(const char *targetID)
+{
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PROTOCOL);
+  T_ASC_ProtocolFamily result = ASC_AF_Default;
+  if (c)
+  {
+    if (strCompare(c, "AF_INET6", 8) == 0) result = ASC_AF_INET6;
+    else if (strCompare(c, "AF_INET", 7) == 0) result = ASC_AF_INET;
+    else if (strCompare(c, "AF_UNSPEC", 9) == 0) result = ASC_AF_UNSPEC;
   }
   return result;
 }
@@ -1275,7 +1304,7 @@ const char *DVConfiguration::getTargetPrinterAnnotationDisplayFormatID(const cha
   copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION), 1, value);
   if (value.length()) return value.c_str(); else return NULL;
 }
-    
+
 Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 {
   OFString value;
@@ -1301,6 +1330,11 @@ const char *DVConfiguration::getTLSCACertificateFolder()
 OFBool DVConfiguration::getTLSPEMFormat()
 {
   return getConfigBoolEntry(L2_GENERAL, L1_TLS, L0_USEPEMFORMAT, OFTrue);
+}
+
+const char *DVConfiguration::getTargetValidationMode(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_VALIDATIONMODE);
 }
 
 OFBool DVConfiguration::getTargetBitPreservingMode(const char *targetID)

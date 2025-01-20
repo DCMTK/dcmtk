@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2018, OFFIS e.V.
+ *  Copyright (C) 2011-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -267,7 +267,7 @@ public:
      *  @remark This list of code pages is only available if DCMTK is compiled
      *  on Windows Operating Systems (defining _WIN32)
      */
-    //@{
+    ///@{
 
     /// system default Windows ANSI code page.  See Windows function GetACP().
     /// @remark Only available on Windows Operating Systems (defining _WIN32).
@@ -285,7 +285,7 @@ public:
     /// @remark Only available on Windows Operating Systems (defining _WIN32).
     static const unsigned int CPC_UTF8;
 
-    //@}
+    ///@}
 
     // --- static Windows-specific functions ---
 

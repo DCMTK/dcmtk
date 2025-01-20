@@ -427,11 +427,13 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 */
 
 /// Implicit VR Little Endian: Default Transfer Syntax for DICOM
-#define UID_LittleEndianImplicitTransferSyntax          "1.2.840.10008.1.2"
+#define UID_LittleEndianImplicitTransferSyntax           "1.2.840.10008.1.2"
 /// Explicit VR Little Endian
 #define UID_LittleEndianExplicitTransferSyntax           "1.2.840.10008.1.2.1"
 /// Explicit VR Big Endian - RETIRED
 #define UID_BigEndianExplicitTransferSyntax              "1.2.840.10008.1.2.2"
+/// Encapsulated Uncompressed Explicit VR Little Endian
+#define UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.98"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
@@ -524,6 +526,12 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_HEVCMainProfileLevel5_1TransferSyntax                                 "1.2.840.10008.1.2.4.107"
 /// HEVC/H.265 Main 10 Profile / Level 5.1
 #define UID_HEVCMain10ProfileLevel5_1TransferSyntax                               "1.2.840.10008.1.2.4.108"
+/// JPEG XL Lossless
+#define UID_JPEGXLLosslessTransferSyntax                                          "1.2.840.10008.1.2.4.110"
+/// JPEG XL JPEG Recompression
+#define UID_JPEGXLJPEGRecompressionTransferSyntax                                 "1.2.840.10008.1.2.4.111"
+/// JPEG XL
+#define UID_JPEGXLTransferSyntax                                                  "1.2.840.10008.1.2.4.112"
 /// High-Throughput JPEG 2000 Image Compression (Lossless Only)
 #define UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax      "1.2.840.10008.1.2.4.201"
 /// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
@@ -649,6 +657,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_SegmentationStorage                                    "1.2.840.10008.5.1.4.1.1.66.4"
 #define UID_SurfaceSegmentationStorage                             "1.2.840.10008.5.1.4.1.1.66.5"
 #define UID_TractographyResultsStorage                             "1.2.840.10008.5.1.4.1.1.66.6"
+#define UID_LabelMapSegmentationStorage                            "1.2.840.10008.5.1.4.1.1.66.7"
+#define UID_HeightMapSegmentationStorage                           "1.2.840.10008.5.1.4.1.1.66.8"
 #define UID_RealWorldValueMappingStorage                           "1.2.840.10008.5.1.4.1.1.67"
 #define UID_SurfaceScanMeshStorage                                 "1.2.840.10008.5.1.4.1.1.68.1"
 #define UID_SurfaceScanPointCloudStorage                           "1.2.840.10008.5.1.4.1.1.68.2"
@@ -704,6 +714,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_PlannedImagingAgentAdministrationSRStorage             "1.2.840.10008.5.1.4.1.1.88.74"
 #define UID_PerformedImagingAgentAdministrationSRStorage           "1.2.840.10008.5.1.4.1.1.88.75"
 #define UID_EnhancedXRayRadiationDoseSRStorage                     "1.2.840.10008.5.1.4.1.1.88.76"
+#define UID_WaveformAnnotationSRStorage                            "1.2.840.10008.5.1.4.1.1.88.77"
 #define UID_ContentAssessmentResultsStorage                        "1.2.840.10008.5.1.4.1.1.90.1"
 #define UID_MicroscopyBulkSimpleAnnotationsStorage                 "1.2.840.10008.5.1.4.1.1.91.1"
 #define UID_EncapsulatedPDFStorage                                 "1.2.840.10008.5.1.4.1.1.104.1"
@@ -764,6 +775,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 // DICONDE Storage
 #define UID_DICONDE_EddyCurrentImageStorage                        "1.2.840.10008.5.1.4.1.1.601.1"
 #define UID_DICONDE_EddyCurrentMultiframeImageStorage              "1.2.840.10008.5.1.4.1.1.601.2"
+#define UID_DICONDE_ThermographyImageStorage                       "1.2.840.10008.5.1.4.1.1.601.3"
+#define UID_DICONDE_ThermographyMultiFrameImageStorage             "1.2.840.10008.5.1.4.1.1.601.4"
 
 // Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"

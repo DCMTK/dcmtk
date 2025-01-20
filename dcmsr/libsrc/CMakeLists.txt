@@ -65,10 +65,12 @@ DCMTK_ADD_LIBRARY(dcmsr
   dsrtcovl.cc
   dsrtextn.cc
   dsrtimtn.cc
+  dsrtnant.cc
   dsrtpltn.cc
   dsrtree.cc
   dsrtypes.cc
   dsruidtn.cc
+  dsrwancc.cc
   dsrwavch.cc
   dsrwavtn.cc
   dsrwavvl.cc

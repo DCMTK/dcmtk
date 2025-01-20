@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2018, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,32 +47,6 @@ DSRTCoordTreeNode::~DSRTCoordTreeNode()
 }
 
 
-OFBool DSRTCoordTreeNode::operator==(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator==(node);
-    if (result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRTemporalCoordinatesValue::operator==(OFstatic_cast(const DSRTCoordTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
-OFBool DSRTCoordTreeNode::operator!=(const DSRDocumentTreeNode &node) const
-{
-    /* call comparison operator of base class (includes check of value type) */
-    OFBool result = DSRDocumentTreeNode::operator!=(node);
-    if (!result)
-    {
-        /* it's safe to cast the type since the value type has already been checked */
-        result = DSRTemporalCoordinatesValue::operator!=(OFstatic_cast(const DSRTCoordTreeNode &, node).getValue());
-    }
-    return result;
-}
-
-
 DSRTCoordTreeNode *DSRTCoordTreeNode::clone() const
 {
     return new DSRTCoordTreeNode(*this);
@@ -83,6 +57,32 @@ void DSRTCoordTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
     DSRTemporalCoordinatesValue::clear();
+}
+
+
+OFBool DSRTCoordTreeNode::isEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isEqual(node);
+    if (result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRTemporalCoordinatesValue::isEqual(OFstatic_cast(const DSRTCoordTreeNode &, node).getValue());
+    }
+    return result;
+}
+
+
+OFBool DSRTCoordTreeNode::isNotEqual(const DSRDocumentTreeNode &node) const
+{
+    /* call comparison operator of base class (includes check of value type) */
+    OFBool result = DSRDocumentTreeNode::isNotEqual(node);
+    if (!result)
+    {
+        /* it's safe to cast the type since the value type has already been checked */
+        result = DSRTemporalCoordinatesValue::isNotEqual(OFstatic_cast(const DSRTCoordTreeNode &, node).getValue());
+    }
+    return result;
 }
 
 
@@ -184,4 +184,20 @@ OFCondition DSRTCoordTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
         docStream << OFendl;
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRTCoordTreeNode &lhs,
+                  const DSRTCoordTreeNode &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRTCoordTreeNode &lhs,
+                  const DSRTCoordTreeNode &rhs)
+{
+    return lhs.isNotEqual(rhs);
 }

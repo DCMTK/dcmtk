@@ -163,6 +163,20 @@ location of referenced image:
          image located on storage medium
 \endverbatim
 
+\subsection dcmpsmk_validation_options validation options
+\verbatim
+       --validate-std
+          images referenced by GSPS must belong to the
+          same SOP class (default)
+
+       --validate-related
+          images referenced by GSPS may belong to related
+          'for presentation' and 'for processing' SOP class
+
+       --validate-relaxed
+          images referenced by GSPS may be any SOP class
+\endverbatim
+
 \subsection dcmpsmk_output_options output options
 \verbatim
 output transfer syntax:
@@ -245,6 +259,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmpsmk_copyright COPYRIGHT
 
-Copyright (C) 1998-2023 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

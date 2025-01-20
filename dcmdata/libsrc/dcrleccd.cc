@@ -60,6 +60,20 @@ OFBool DcmRLECodecDecoder::canChangeCoding(
 }
 
 
+Uint16 DcmRLECodecDecoder::decodedBitsAllocated(
+    Uint16 bitsAllocated,
+    Uint16 /* bitsStored */) const
+{
+    // The RLE decoder only supports images where BitsAllocated is a multiple of 8.
+    if ((bitsAllocated < 8)||(bitsAllocated % 8 != 0)) return 0;
+
+    // RLE cannot support more than 120 bits/sample (15 bands) in DICOM
+    if (bitsAllocated > 120) return 0;
+
+    return bitsAllocated;
+}
+
+
 OFCondition DcmRLECodecDecoder::decode(
     const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * pixSeq,
@@ -635,7 +649,13 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
             bytesToDecode = OFstatic_cast(size_t, inputBytes);
         }
 
-        // last fragment for this RLE stripe
+        // make sure we don't overshoot the buffer size in case of an incorrect byte offset
+        if (fragmentLength < byteOffset + bytesToDecode)
+        {
+          DCMDATA_ERROR("Byte offset in RLE header is wrong.");
+          return EC_CannotChangeRepresentation;
+        }
+
         result = rledecoder.decompress(rleData + byteOffset, bytesToDecode);
 
         // special handling for zero pad byte at the end of the RLE stream

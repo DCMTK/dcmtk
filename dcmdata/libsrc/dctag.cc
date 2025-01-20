@@ -188,7 +188,7 @@ DcmVR DcmTag::setVR(const DcmVR& avr)    // resolve ambiguous VR
 {
     vr = avr;
 
-    if (vr.getEVR() == EVR_UNKNOWN)
+    if (vr.isUnknown() || vr.isInvalid())
     {
         errorFlag = EC_InvalidVR;
     } else {
@@ -233,7 +233,7 @@ OFBool DcmTag::isUnknownVR() const
     OFBool result = OFFalse;
     switch (vr.getValidEVR()) // this is the VR we're going to write in explicit VR
     {
-        case EVR_UNKNOWN:
+        case EVR_UNKNOWN:     // in fact, getValidEVR() should never return the first two
         case EVR_UNKNOWN2B:
         case EVR_UN:
             result = OFTrue;

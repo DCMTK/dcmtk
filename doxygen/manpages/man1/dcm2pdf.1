@@ -1,4 +1,4 @@
-.TH "dcm2pdf" 1 "Tue Dec 19 2023" "Version 3.6.8" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pdf" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pdf \- Extract PDF file from DICOM encapsulated PDF
@@ -17,7 +17,7 @@ The \fBdcm2pdf\fP utility reads a DICOM file of the Encapsulated PDF Storage SOP
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename ('-' for stdin)
+dcmfile-in   DICOM input filename ("-" for stdin)
 
 pdffile-out  PDF output filename
 .fi
@@ -125,11 +125,13 @@ bitstream format of deflated input:
          expect deflated zlib bitstream
 .fi
 .PP
-.SS "execution options"
+.SS "processing options"
+execution options:
 .PP
 .nf
   -x   --exec  [c]ommand: string
          execute command c after PDF extraction
+
 .fi
 .PP
 .SH "NOTES"
@@ -140,6 +142,37 @@ Option \fI--exec\fP allows for the execution of a certain command line after the
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
 In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
+.SH "EXIT CODES"
+.PP
+The \fBdcm2pdf\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+.SS "general"
+.PP
+.nf
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+.fi
+.PP
+.SS "input file errors"
+.PP
+.nf
+EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_INVALID_INPUT_FILE              22
+.fi
+.PP
+.SS "output file errors"
+.PP
+.nf
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+.fi
+.PP
+.SS "processing errors"
+.PP
+.nf
+EXITCODE_CANNOT_CONVERT_TO_UNICODE       80
+EXITCODE_CANNOT_WRITE_VALID_JSON         81
+.fi
+.PP
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
@@ -157,4 +190,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBpdf2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2023 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

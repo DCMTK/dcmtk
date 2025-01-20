@@ -14,3 +14,7 @@ DCMTK_ADD_LIBRARY(dcmqrdb
 )
 
 DCMTK_TARGET_LINK_MODULES(dcmqrdb ofstd dcmdata dcmnet dcmtls)
+
+if(TARGET dcmqrdb)
+  set_property(TARGET dcmqrdb PROPERTY OUTPUT_NAME "dcmqrdb${DCMTK_TLS_LIBRARY_POSTFIX}")
+endif()

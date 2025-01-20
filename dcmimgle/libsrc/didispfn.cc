@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2022, OFFIS e.V.
+ *  Copyright (C) 1999-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,6 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/dcmimgle/didispfn.h"
 #include "dcmtk/dcmimgle/displint.h"
@@ -341,7 +342,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                 {
                     while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
                 }
-                else if (!isspace(OFstatic_cast(unsigned char, c)))         // skip whitespaces
+                else if (!OFStandard::isspace(c))                           // skip whitespaces
                 {
                     file.putback(c);
                     if (MaxDDLValue == 0)                                   // read maxvalue

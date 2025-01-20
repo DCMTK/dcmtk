@@ -295,10 +295,11 @@ DCMTK_OFICONV_EXPORT void OFiconvlist(int (*do_one) (unsigned int count, const c
 
 /** resolve the character encoding name specified by the name argument
  *  to its canonical form.
+ *  The resolved name is returned in a newly allocated buffer that must be freed by the caller using free().
  *  @param name encoding name
  *  @return canonical encoding name, NULL if unknown
  */
-DCMTK_OFICONV_EXPORT const char *OFiconv_canonicalize(const char *name);
+DCMTK_OFICONV_EXPORT char *OFiconv_canonicalize(const char *name);
 
 /** This function can retrieve or set specific conversion setting from the
  *  cd conversion descriptor. The request parameter specifies the operation

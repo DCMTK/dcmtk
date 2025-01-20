@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -213,4 +213,34 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
         }
     }
     return result;
+}
+
+
+// comparison operators
+
+OFBool operator==(const DSRGraphicDataItem &lhs,
+                  const DSRGraphicDataItem &rhs)
+{
+    return lhs.isEqual(rhs);
+}
+
+
+OFBool operator!=(const DSRGraphicDataItem &lhs,
+                  const DSRGraphicDataItem &rhs)
+{
+    return lhs.isNotEqual(rhs);
+}
+
+
+OFBool operator<(const DSRGraphicDataItem &lhs,
+                 const DSRGraphicDataItem &rhs)
+{
+    return lhs.isLessThan(rhs);
+}
+
+
+OFBool operator>(const DSRGraphicDataItem &lhs,
+                 const DSRGraphicDataItem &rhs)
+{
+    return lhs.isGreaterThan(rhs);
 }

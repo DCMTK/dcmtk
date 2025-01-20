@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2017, OFFIS e.V.
+ *  Copyright (C) 2000-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,13 @@
 
 #include "dcmtk/dcmsr/dsrdoctn.h"
 #include "dcmtk/dcmsr/dsrimgvl.h"
+
+
+// include this file in doxygen documentation
+
+/** @file dsrimgtn.h
+ *  @brief definitions for class DSRImageTreeNode
+ */
 
 
 /*---------------------*
@@ -60,23 +67,6 @@ class DCMTK_DCMSR_EXPORT DSRImageTreeNode
      */
     virtual ~DSRImageTreeNode();
 
-    /** comparison operator "equal".
-     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
-     *  regards them as "equal" (same types and concept names) and the stored values are equal.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
-     */
-    virtual OFBool operator==(const DSRDocumentTreeNode &node) const;
-
-    /** comparison operator "not equal".
-     *  Two tree nodes are not equal if either the comparison operator of the base class
-     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
-     *  the stored values are not equal.
-     ** @param  node  tree node that should be compared to the current one
-     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
-     */
-    virtual OFBool operator!=(const DSRDocumentTreeNode &node) const;
-
     /** clone this tree node.
      *  Internally, the copy constructor is used, so the corresponding comments apply.
      ** @return copy of this tree node
@@ -87,6 +77,23 @@ class DCMTK_DCMSR_EXPORT DSRImageTreeNode
      *  Please note that the content item might become invalid afterwards.
      */
     virtual void clear();
+
+    /** check whether nodes are "equal".
+     *  Two tree nodes are equal if the comparison operator of the base class DSRDocumentTreeNode
+     *  regards them as "equal" (same types and concept names) and the stored values are equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are equal, OFFalse otherwise
+     */
+    virtual OFBool isEqual(const DSRDocumentTreeNode &node) const;
+
+    /** check whether nodes are "not equal".
+     *  Two tree nodes are not equal if either the comparison operator of the base class
+     *  DSRDocumentTreeNode regards them as "not equal" (different types or concept names) or
+     *  the stored values are not equal.
+     ** @param  node  tree node that should be compared to the current one
+     ** @return OFTrue if both tree nodes are not equal, OFFalse otherwise
+     */
+    virtual OFBool isNotEqual(const DSRDocumentTreeNode &node) const;
 
     /** check whether the content item is valid.
      *  The content item is valid if the two base classes are valid.  This check includes the value
@@ -162,13 +169,19 @@ class DCMTK_DCMSR_EXPORT DSRImageTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix     URL prefix used for hyperlink to referenced composite object
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
                                               STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
-                                              const size_t flags) const;
+                                              const size_t flags,
+                                              const char *urlPrefix) const;
+
+  // --- reintroduce methods from base class
+
+     using DSRDocumentTreeNode::renderHTMLContentItem;
 
 
   private:
@@ -178,6 +191,29 @@ class DCMTK_DCMSR_EXPORT DSRImageTreeNode
     DSRImageTreeNode();
     DSRImageTreeNode &operator=(const DSRImageTreeNode &);
 };
+
+
+/*------------------------*
+ *  comparison operators  *
+ *------------------------*/
+
+/** equality operator.
+ *  Internally, the DSRImageTreeNode::isEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator==(const DSRImageTreeNode &lhs,
+                                     const DSRImageTreeNode &rhs);
+
+/** inequality operator.
+ *  Internally, the DSRImageTreeNode::isNotEqual() method is used.
+ *  @param  lhs  left-hand side
+ *  @param  rhs  right-hand side
+ *  @return OFTrue if 'lhs' and 'rhs' are not equal, OFFalse otherwise
+ */
+DCMTK_DCMSR_EXPORT OFBool operator!=(const DSRImageTreeNode &lhs,
+                                     const DSRImageTreeNode &rhs);
 
 
 #endif

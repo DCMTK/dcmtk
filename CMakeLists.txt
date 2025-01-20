@@ -1,9 +1,9 @@
 # Minimum CMake version required
-cmake_minimum_required(VERSION 3.1.3...3.29.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.7.0...3.31.2 FATAL_ERROR)
 
 # Declare project
 project(DCMTK)
-if (NOT DEFINED CMAKE_CXX_STANDARD)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD "11" CACHE STRING "Set C++ standard to be used (98,11,14,17,20)")
 else()
   set(CMAKE_CXX_STANDARD ${CMAKE_CXX_STANDARD} CACHE STRING "Set C++ standard to be used (98,11,14,17,20)")
@@ -18,7 +18,7 @@ mark_as_advanced(CMAKE_CXX_STANDARD)
 set(DCMTK_MODULES ofstd oflog oficonv dcmdata dcmimgle
   dcmimage dcmjpeg dcmjpls dcmtls dcmnet dcmsr
   dcmsign dcmwlm dcmqrdb dcmpstat dcmrt dcmiod dcmfg
-  dcmseg dcmtract dcmpmap dcmect
+  dcmseg dcmtract dcmpmap dcmect dcmapps
   CACHE STRING "List of modules that should be built.")
 
 # Provide an interface target to elegantly include the config directory

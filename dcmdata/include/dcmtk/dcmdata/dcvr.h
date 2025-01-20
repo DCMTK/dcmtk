@@ -273,7 +273,10 @@ enum DcmEVR
     EVR_OverlayData,
 
     /// used internally for elements with unknown VR with 2-byte length field in explicit VR
-    EVR_UNKNOWN2B
+    EVR_UNKNOWN2B,
+
+    /// used internally for invalid VRs, e.g. when reading an invalid VR string from a data set
+    EVR_invalid
 };
 
 
@@ -302,7 +305,7 @@ public:
     /** constructor.
      *  Please note that only the first two characters of the passed string are
      *  actually checked.  Value Representations that are labeled for internal
-     *  use only are mapped to EVR_UNKNOWN.
+     *  use only are mapped to an unknown VR.  See setVR() for more details.
      *  @param vrName symbolic name of value representation
      */
     DcmVR(const char* vrName)
@@ -327,7 +330,13 @@ public:
     /** assign new VR value by name.
      *  Please note that only the first two characters of the passed string are
      *  actually checked.  Value Representations that are labeled for internal
-     *  use only are mapped to EVR_UNKNOWN.
+     *  use only are ignored, so they are mapped to an unknown VR.  For unknown
+     *  VRs consisting of two uppercase letters, extended length (4 bytes) is
+     *  assumed, since it could be a new DICOM VR that is not yet supported.
+     *  For other unknown VRs consisting of characters in the range of 32 to
+     *  127, a 2-byte length field is assumed.  This also applies to a VR
+     *  string of "??", which has been observed in the wild not to use extended
+     *  length.  All other VR strings are considered invalid.
      *  @param vrName symbolic name of value representation
      */
     void setVR(const char* vrName);
@@ -363,7 +372,7 @@ public:
      *  might not be correct.
      *
      *  Also note that DcmItem::checkAndUpdateVR() will in some cases influence
-     *  the VR which is written out.
+     *  the VR that is written out.
      *  @return enumerated VR
      */
     DcmEVR getValidEVR() const;
@@ -388,6 +397,16 @@ public:
      *  @return size of values of this VR
      */
     size_t getValueWidth() const;
+
+    /** returns true if VR is invalid, i.e.\ EVR_invalid
+     *  @return true if VR is invalid, false otherwise
+     */
+    OFBool isInvalid() const;
+
+    /** returns true if VR is unknown, i.e.\ EVR_UNKNOWN or EVR_UNKNOWN2B
+     *  @return true if VR is unknown, false otherwise
+     */
+    OFBool isUnknown() const;
 
     /** returns true if VR is a standard DICOM VR
      *  @return true if VR is a standard DICOM VR, false otherwise

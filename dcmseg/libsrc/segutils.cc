@@ -21,14 +21,16 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmiod/iodutil.h"
+#include "dcmtk/dcmiod/iodtypes.h"
+#include "dcmtk/dcmseg/segtypes.h"
 #include "dcmtk/dcmseg/segutils.h"
+
 
 DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(const Uint8* pixelData, const Uint16 rows, const Uint16 columns)
 {
     // Sanity checking
-    const size_t numPixels = OFstatic_cast(size_t, rows) * columns;
-    if (numPixels == 0)
+    const size_t totalBits = OFstatic_cast(size_t, rows) * columns;
+    if (totalBits == 0)
     {
         DCMSEG_ERROR("Unable to pack binary segmentation frame: Rows or Columns is 0");
         return NULL;
@@ -38,31 +40,90 @@ DcmIODTypes::Frame* DcmSegUtils::packBinaryFrame(const Uint8* pixelData, const U
         DCMSEG_ERROR("Unable to pack binary segmentation frame: No pixel data provided");
         return NULL;
     }
+
+    // Calculate total number of bytes required
+    size_t totalBytes = (totalBits + 7) / 8; // +7 to round up to the nearest byte
+
+    // Allocate memory for the packed bit array
+    Uint8* packedData = new Uint8[totalBytes];
+    if (packedData == NULL)
+    {
+        DCMSEG_ERROR("Cannot allocate memory for packed binary frame");
+        return NULL;
+    }
+    memset(packedData, 0, totalBytes); // Initialize to 0
+
+    // Pack the bits
+    for (Uint32 i = 0; i < totalBits; ++i) {
+        if (pixelData[i] != 0) {
+            Uint32 byteIndex = i / 8;
+            Uint32 bitIndex = i % 8;
+            DCMSEG_TRACE("bitIndex: " << bitIndex << ", byteIndex: " << byteIndex << ", packedData[byteIndex]: " << DcmSegUtils::debugByte2Bin(packedData[byteIndex]));
+            packedData[byteIndex] |= (1 << bitIndex); // Fill from right to left
+        }
+    }
+
+    // Create and return the frame
     DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
     if (frame == NULL)
     {
-        DCMSEG_ERROR("Could not pack binary segmentation frame: Memory exhausted");
+        DCMSEG_ERROR("Cannot allocate memory for packed binary frame");
+        delete[] packedData;
         return NULL;
     }
-    frame->length  = getBytesForBinaryFrame(numPixels);
-    frame->pixData = new Uint8[frame->length];
-    if (frame->pixData == 0)
-    {
-        delete frame;
-        return NULL;
-    }
-    memset(frame->pixData, 0, frame->length);
-
-    size_t bytePos = 0;
-    for (size_t count = 0; count < numPixels; count++)
-    {
-        // Compute byte position
-        bytePos = count / 8;
-        frame->pixData[bytePos]
-            |= (pixelData[count] != 0) /* value to set */ << (count % 8 /* bit position (0-7) within byte */);
-    }
+    frame->pixData = packedData;
+    frame->length = totalBytes;
     return frame;
 }
+
+OFCondition DcmSegUtils::concatBinaryFrames(const OFVector<DcmIODTypes::Frame*>& frames,
+                                            const Uint16 rows,
+                                            const Uint16 cols,
+                                            Uint8* pixData,
+                                            const size_t pixDataLength)
+{
+    // Calculate total number of bits required (one per pixel)
+    size_t totalBits =  0;
+    if (!OFStandard::safeMult(OFstatic_cast(size_t,rows)*cols, frames.size(), totalBits))
+    {
+        DCMSEG_ERROR("Too many frames to concatenate");
+        return EC_IllegalParameter;
+    }
+
+    // Calculate total number of bytes required (add one byte if totalBits is not a multiple of 8)
+    size_t totalBytes = (totalBits + 7) / 8; // +7 to round up to the nearest byte
+
+    // Ensure the provided pixDataLength is sufficient
+    if (pixDataLength < totalBytes) {
+        return EC_IllegalParameter; // or another appropriate error code
+    }
+
+    // Initialize the target pixData array to 0
+    std::memset(pixData, 0, pixDataLength);
+
+    // Concatenate the bits
+    Uint32 bitIndex = 0;
+    for (size_t frameIndex = 0; frameIndex < frames.size(); ++frameIndex)
+    {
+        const DcmIODTypes::Frame* frame = frames[frameIndex];
+        Uint32 frameBits = rows * cols;
+        for (Uint32 i = 0; i < frameBits; ++i)
+        {
+            Uint32 byteIndex = i / 8;
+            Uint32 bitPos = i % 8;
+            if (frame->pixData[byteIndex] & (1 << bitPos % 8)) {
+                Uint32 targetByteIndex = bitIndex / 8;
+                Uint32 targetBitPos = bitIndex % 8;
+                pixData[targetByteIndex] |= (1 << targetBitPos);
+                DCMSEG_TRACE("Setting bit at targetByteIndex: " << targetByteIndex << ", targetBitPos: " << targetBitPos << ", frame->pixData[" << byteIndex << "]: " << DcmSegUtils::debugByte2Bin(frame->pixData[byteIndex]) << ", value: " << DcmSegUtils::debugByte2Bin(pixData[targetByteIndex]));
+            }
+            bitIndex++;
+        }
+    }
+
+    return EC_Normal; // or another appropriate success code
+}
+
 
 DcmIODTypes::Frame* DcmSegUtils::unpackBinaryFrame(const DcmIODTypes::Frame* frame, Uint16 rows, Uint16 cols)
 {
@@ -73,95 +134,56 @@ DcmIODTypes::Frame* DcmSegUtils::unpackBinaryFrame(const DcmIODTypes::Frame* fra
         return NULL;
     }
 
-    // Create result frame in memory
-    size_t numBits             = OFstatic_cast(size_t, rows) * cols;
+    // Calculate total number of pixels
+    Uint32 totalPixels = rows * cols;
+
+    // Allocate memory for the unpacked pixel data
     DcmIODTypes::Frame* result = new DcmIODTypes::Frame();
-    if (result)
+    if (result == NULL)
     {
-        result->pixData = new Uint8[numBits];
-        if (!result->pixData)
-        {
-            delete result;
-            return NULL;
-        }
-        result->length = numBits;
-    }
-    if (!result || !(result->pixData))
-    {
-        DCMSEG_ERROR("Cannot unpack binary frame, memory exhausted");
+        DCMSEG_ERROR("Cannot allocate memory for unpacked binary frame");
         return NULL;
     }
-    memset(result->pixData, 0, result->length);
-
-    // Transform and copy from packed frame to unpacked result frame
-    size_t bytePos = 0;
-    for (size_t count = 0; count < numBits; count++)
+    result->pixData = new Uint8[totalPixels];
+    if (result->pixData == NULL)
     {
-        // Compute byte position
-        bytePos = count / 8;
-        // Bit position (0-7) within byte
-        Uint8 bitpos = (count % 8);
-        if ((frame->pixData[bytePos] & (1 << bitpos) /* check whether bit at bitpos is set*/))
+        DCMSEG_ERROR("Cannot allocate memory for unpacked binary frame");
+        delete result;
+        return NULL;
+    }
+    result->length = totalPixels;
+    memset(result->pixData, 0, totalPixels); // Initialize to 0
+
+    // Unpack the bits
+    for (Uint32 i = 0; i < totalPixels; ++i) {
+        Uint32 byteIndex = i / 8;
+        Uint32 bitIndex = i % 8;
+        if (frame->pixData[byteIndex] & (1 << (bitIndex))) {
+            result->pixData[i] = 1;
+        } else
         {
-            result->pixData[count] = 1;
-        }
-        else
-        {
-            result->pixData[count] = 0;
+            result->pixData[i] = 0;
         }
     }
+
     return result;
 }
 
-size_t DcmSegUtils::getBytesForBinaryFrame(const size_t& numPixels)
+void DcmSegUtils::debugDumpBin(Uint8* buffer, size_t length, const OFString& what, const OFBool raw)
 {
-    // check whether the 1-bit pixels exactly fit into bytes
-    size_t remainder = numPixels % 8;
-    // number of bytes that work on an exact fit
-    size_t bytesRequired = numPixels / 8;
-    // add one byte if we have a remainder
-    if (remainder > 0)
-        bytesRequired++;
-    return bytesRequired;
-}
-
-void DcmSegUtils::alignFrameOnBitPosition(Uint8* buf, const size_t bufLen, const Uint8 numBits)
-{
-    if (numBits > 7)
-    {
-        DCMSEG_ERROR("Invalid input data: alignFrameOnBitPosition() can only shift 0-7 bits");
-        return;
-    }
-    Uint8 carryOver = 0;
-    for (size_t x = 0; x < bufLen; x++)
-    {
-        // Store current byte since we need to restore its first bits later
-        Uint8 current = buf[x];
-        // Shift pixels given num bits to the left, creating (8 - num bits)
-        // empty bits at the right
-        buf[x] <<= numBits;
-        // If there is a carry over from the previous byte, add it in again (will always be at the end,
-        // see carry over calculation in next step)
-        buf[x] |= carryOver;
-        // Compute carry over bits for next byte to be handled, i.e. those bits at the left that will be
-        // overwritten in the next byte
-        carryOver = OFstatic_cast(unsigned char, current) >> (8 - numBits);
-    }
-}
-
-void DcmSegUtils::alignFrameOnByteBoundary(Uint8* buf, const size_t bufLen, const Uint8 numBits)
-{
-    return DcmIODUtil::alignFrameOnByteBoundary(buf, bufLen, numBits);
-}
-
-void DcmSegUtils::debugDumpBin(Uint8* buffer, size_t length, const char* what)
-{
+    OFStringStream ss;
     for (size_t n = 0; n < length; n++)
     {
-        DCMSEG_DEBUG(what << " #" << n << ": " << OFstatic_cast(size_t, (buffer[n])) << ", bytepos " << &(buffer[n])
-                          << " (" << debugByte2Bin((buffer[n])) << ")");
+        if (raw)
+        {
+            ss << debugByte2Bin(buffer[n]);
+        }
+        else
+        {
+            ss << what << " #" << n << ": " << debugByte2Bin((buffer[n]));
+        }
     }
-    DCMSEG_DEBUG("");
+    DCMSEG_DEBUG(ss.str());
 }
 
 OFString DcmSegUtils::debugByte2Bin(Uint8 b)
@@ -175,3 +197,4 @@ OFString DcmSegUtils::debugByte2Bin(Uint8 b)
     }
     return result;
 }
+

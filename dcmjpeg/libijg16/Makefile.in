@@ -29,7 +29,7 @@ objs = jcomapi.o  jcodec.o  jutils.o  jerror.o  jmemmgr.o  \
 	jdpred.o   jdscale.o  jddiffct.o jdmainct.o jdcoefct.o \
 	jdpostct.o jddctmgr.o jidctfst.o jidctflt.o jidctint.o \
 	jidctred.o jdsample.o jdcolor.o  jquant1.o  jquant2.o  \
-	jdmerge.o  jcarith.o  jdarith.o  jaricom.o
+	jdmerge.o  jcarith.o  jdarith.o
 
 library = libijg16.$(LIBEXT)
 

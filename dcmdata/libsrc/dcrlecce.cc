@@ -62,6 +62,14 @@ OFBool DcmRLECodecEncoder::canChangeCoding(
 }
 
 
+Uint16 DcmRLECodecEncoder::decodedBitsAllocated(
+    Uint16 /* bitsAllocated */,
+    Uint16 /* bitsStored */) const
+{
+  return 0;
+}
+
+
 OFCondition DcmRLECodecEncoder::decode(
     const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * /* pixSeq */,

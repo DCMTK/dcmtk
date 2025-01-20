@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -196,11 +196,16 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      ** @param  stream      output stream to which the HTML/XHTML document is written
      *  @param  flags       optional flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
+     *  @param  urlPrefix   optional URL prefix used for hyperlinks to referenced composite
+     *                      objects.  If NULL, the default URL prefix is used, which is
+     *                      defined by DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS
+     *                      (http://localhost/dicom.cgi).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &stream,
                                    const size_t flags = 0,
-                                   const char *styleSheet = NULL);
+                                   const char *styleSheet = NULL,
+                                   const char *urlPrefix = NULL);
 
 
   // --- get/set misc attributes ---
@@ -405,6 +410,9 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
 
     /** get list of referenced SOP instances significantly related to the current SOP instance.
+     *  However, the same instances shall not be referenced in the Current Requested Procedure
+     *  Evidence Sequence, Pertinent Other Evidence Sequence, Predecessor Documents Sequence or
+     *  Identical Documents Sequence.
      *  The DICOM standard states: "Such referenced Instances may include equivalent documents or
      *  renderings of this document. [...] Required if the identity of a CDA Document equivalent
      *  to the current SOP Instance is known at the time of creation of this SOP instance. May be
@@ -1056,14 +1064,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     /** create a new document.
      *  A new SOP instance is only created if the current document type was valid/supported.
-     *  Please note that the current document is deleted (cleared).
+     *  Please note that the current document is deleted (cleared) by this method.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition createNewDocument();
 
     /** create a new document of the specified type.
      *  A new SOP instance is only created if the current document type was valid/supported.
-     *  Please note that the current document is deleted by this method.
+     *  Please note that the current document is deleted (cleared) by this method.
      ** @param  documentType  type of the new SR document (see DSRTypes::E_DocumentType)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -1275,22 +1283,26 @@ class DCMTK_DCMSR_EXPORT DSRDocument
                                const size_t flags);
 
     /** render list of referenced SOP instances in HTML/XHTML format
-     ** @param  stream   output stream to which the HTML/XHTML document is written
-     *  @param  refList  list of referenced SOP instances to be rendered
-     *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  stream     output stream to which the HTML/XHTML document is written
+     *  @param  refList    list of referenced SOP instances to be rendered
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix  optional URL prefix used for hyperlinks to referenced composite objects
      */
     void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRSOPInstanceReferenceList &refList,
-                                 const size_t flags);
+                                 const size_t flags,
+                                 const char *urlPrefix = NULL);
 
     /** render list of referenced SOP instances in HTML/XHTML format
-     ** @param  stream   output stream to which the HTML/XHTML document is written
-     *  @param  refList  list of referenced SOP instances to be rendered
-     *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  stream     output stream to which the HTML/XHTML document is written
+     *  @param  refList    list of referenced SOP instances to be rendered
+     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  urlPrefix  optional URL prefix used for hyperlinks to referenced composite objects
      */
     void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRReferencedInstanceList &refList,
-                                 const size_t flags);
+                                 const size_t flags,
+                                 const char *urlPrefix = NULL);
 
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID

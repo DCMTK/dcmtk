@@ -1,6 +1,3 @@
-jaricom.o: jaricom.c jinclude12.h jconfig12.h \
- ../../config/include/dcmtk/config/osconfig.h jpeglib12.h jmorecfg12.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint12.h jerror12.h
 jcapimin.o: jcapimin.c jinclude12.h jconfig12.h \
  ../../config/include/dcmtk/config/osconfig.h jpeglib12.h jmorecfg12.h \
  ../../ofstd/include/dcmtk/ofstd/ofexport.h jpegint12.h jerror12.h

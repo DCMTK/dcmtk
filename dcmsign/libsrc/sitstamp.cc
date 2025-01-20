@@ -1267,12 +1267,24 @@ OFCondition SiTimeStamp::verifyTSToken(
       {
         // set the digital signature as the raw data against which
         // the imprint in the timestamp ticket should be checked
+#ifdef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE
+        TS_VERIFY_CTX_set0_data(ctx, bio);
+#else
         TS_VERIFY_CTX_set_data(ctx, bio);
+#endif
 
         // set certificate store and stack. Needed to verify that
         // the TSA field in the timestamp ticket matches the signer certificate
-        TS_VERIFY_CTX_set_store(ctx, cv.getTrustedCertStore());
-        TS_VERIFY_CTS_set_certs(ctx, cv.getUntrustedCerts());
+        X509_STORE *tc_store = cv.getTrustedCertStore();
+        stack_st_X509 *untrusted_certs = cv.getUntrustedCerts();
+#ifdef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE
+        TS_VERIFY_CTX_set0_store(ctx, tc_store);
+        X509_STORE_up_ref(tc_store);
+        TS_VERIFY_CTX_set0_certs(ctx, X509_chain_up_ref(untrusted_certs));
+#else
+        TS_VERIFY_CTX_set_store(ctx, tc_store);
+        TS_VERIFY_CTS_set_certs(ctx, untrusted_certs);
+#endif
 
         // run the verification function
         if (! TS_RESP_verify_token(ctx, ts_))
@@ -1281,7 +1293,9 @@ OFCondition SiTimeStamp::verifyTSToken(
           errorCode_ = ERR_get_error();
         }
 
-        BIO_free(bio);
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE
+         BIO_free(bio);
+#endif
       }
       else
       {
@@ -1292,10 +1306,12 @@ OFCondition SiTimeStamp::verifyTSToken(
       }
     }
 
+#ifndef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE
     // prevent TS_VERIFY_CTX_free from double-deleting our objects
     TS_VERIFY_CTX_set_data(ctx, NULL);
     TS_VERIFY_CTX_set_store(ctx, NULL);
     TS_VERIFY_CTS_set_certs(ctx, NULL);
+#endif
 
     TS_VERIFY_CTX_free(ctx);
   }

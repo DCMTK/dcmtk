@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2021, OFFIS e.V.
+ *  Copyright (C) 2002-2024, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,10 +22,12 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimgle/didispfn.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include <cstring>
 
 
 #define OFFIS_CONSOLE_APPLICATION "dcod2lum"
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
                     {
                         while (input.get(c) && (c != '\n') && (c != '\r'));     // skip comments
                     }
-                    else if (!isspace(OFstatic_cast(unsigned char, c)))         // skip whitespaces
+                    else if (!OFStandard::isspace(c))                           // skip whitespaces
                     {
                         input.putback(c);
                         if (maxddl == 0)                                        // read maxvalue

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -804,18 +804,18 @@ class DCMTK_OFSTD_EXPORT OFStandard
       *  This implementation guarantees that the given string size
       *  is always respected by using strlcpy to copy the formatted
       *  string into the target buffer.
-      *  @note The use of this implementation can be disabled by defining
-      *    the macro DISABLE_OFSTD_FTOA at compile time; in this case,
-      *    the locale dependent Posix implementation of sprintf is used and
-      *    the application is responsible for making sure that the Posix locale
-      *    is activated at all times.
       *  @param target pointer to target string buffer
       *  @param targetSize size of target string buffer
       *  @param value double value to be formatted
       *  @param flags processing flags. Any of the flags defined below
       *    can be combined by bit-wise or.
       *  @param width width from format (%8d), or 0
-      *  @param precision precision from format (%.3d), or -1
+      *  @param precision precision from format (%.3d),
+      *    -1 for default precision,
+      *    -2, when used with default "%g" format, causes the shortest
+      *        string to be created that can be converted back
+      *        to a double equalling "value". With "%e" or "%f" format,
+      *        prints default precision.
       */
      static void ftoa(char *target,
                       size_t targetSize,
@@ -827,21 +827,25 @@ class DCMTK_OFSTD_EXPORT OFStandard
      /** @name ftoa() processing flags.
       *  These flags can be combined by bit-wise or.
       */
-     //@{
+     ///@{
 
-     /// Use %e or %E conversion format instead of %g or %G
+     /// Use scientific format (equivalent to %e or %E in printf),
+     /// instead of the default, which is equivalent to %g or %G.
+     /// If both ftoa_format_e and ftoa_format_f are specified,
+     /// ftoa_format_e format is used.
      static const unsigned int ftoa_format_e;
 
-     /// Use %f or %F conversion format instead of %g or %G
+     /// Use fixed format (equivalent to %f or %F in printf),
+     /// instead of the default, which is equivalent to %g or %G
+     /// If both ftoa_format_e and ftoa_format_f are specified,
+     /// ftoa_format_e format is used.
      static const unsigned int ftoa_format_f;
 
-     /// Use %E, %F or %G conversion format instead of %e, %f or %g
+     /// Use an uppercase 'E' letter (like %E, %F or %G in printf)
      static const unsigned int ftoa_uppercase;
 
-     /** convert value to alternate form. The result will always contain
-      *  a decimal point, even if no digits follow the point. For g and G
-      *  conversions, trailing zeroes will not be removed from the result.
-      */
+     /// convert value to alternate form. The result will always contain
+     /// a decimal point, even if no digits follow the point.
      static const unsigned int ftoa_alternate;
 
      /// left-justify number be within the field
@@ -850,7 +854,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      /// pad with zeroes instead of blanks
      static const unsigned int ftoa_zeropad;
 
-     //@}
+     ///@}
 
     /** makes the current process sleep until seconds seconds have
      *  elapsed or a signal arrives which is not ignored
@@ -1068,9 +1072,10 @@ class DCMTK_OFSTD_EXPORT OFStandard
     /** This function performs a DNS lookup of an IP address based on a hostname.
      *  If a DNS lookup yields multiple IP addresses, only the first one is returned.
      *  @param name hostname
+     *  @param protocolFamily AF_INET for IPv4, AF_INET6 for IPv6 or AF_UNSPEC for both
      *  @param result a OFSockAddr instance in which the result is stored
      */
-    static void getAddressByHostname(const char *name, OFSockAddr& result);
+    static void getAddressByHostname(const char *name, int protocolFamily, OFSockAddr& result);
 
     /** Thread-safe version of getgrnam.
      *  @param name the group name.
@@ -1177,18 +1182,31 @@ class DCMTK_OFSTD_EXPORT OFStandard
     static void sanitizeFilename(char *fname);
 
     /** retrieve the name of the default directory for support data.
-     *  On Windows, this method resolves environment variables such as %PROGRAMDATA% in the path,
-     *  on Posix platforms it just returns DEFAULT_SUPPORT_DATA_DIR.
+     *  On Windows, this method resolves environment variables such as
+     *  \%PROGRAMDATA% in the path, on Posix platforms it just returns
+     *  DEFAULT_SUPPORT_DATA_DIR.
      *  @return name of the default directory for support data
      */
     static OFString getDefaultSupportDataDir();
 
     /** retrieve the name of the default directory for configuration files.
-     *  On Windows, this method resolves environment variables such as %PROGRAMDATA% in the path,
-     *  on Posix platforms it just returns DEFAULT_CONFIGURATION_DIR.
+     *  On Windows, this method resolves environment variables such as
+     *  \%PROGRAMDATA% in the path, on Posix platforms it just returns
+     *  DEFAULT_CONFIGURATION_DIR.
      *  @return name of the default directory for configuration files
      */
     static OFString getDefaultConfigurationDir();
+
+    /** check if the character is a whitespace character assuming the C locale.
+     *  The standard ::isspace function is locale-dependent, which is slow and
+     *  may lead to surprising behavior.  Further, it is undefined for char
+     *  values -127 to 0, requiring the caller to cast the argument to unsigned
+     *  char.
+     *  @param ch the character to check
+     *  @return true if the character is a whitespace character, false otherwise
+     */
+    static bool isspace(char ch);
+
 
  private:
 

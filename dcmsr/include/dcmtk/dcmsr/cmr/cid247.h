@@ -5,8 +5,8 @@
  *
  *  Header file for class CID247_LateralityLeftRightOnly
  *
- *  Generated automatically from DICOM PS 3.16-2024b
- *  File created on 2024-04-03 11:12:35 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024d
+ *  File created on 2024-10-08 10:25:12 by J. Riesmeier
  *
  */
 

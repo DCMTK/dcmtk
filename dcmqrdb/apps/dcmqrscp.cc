@@ -96,7 +96,7 @@ static void mangleAssociationProfileKey(OFString& key)
 {
   for (size_t ui = 0; ui < key.size();)
   {
-    if (!isspace(key[ui]))
+    if (!OFStandard::isspace(key[ui]))
     {
       key[ui] = OFstatic_cast(char, toupper(key[ui]));
       ++ui;
@@ -367,6 +367,14 @@ main(int argc, char *argv[])
           tlsOptions.printSupportedCiphersuites(app, COUT);
           return 0;
         }
+
+        // check if the command line contains the --list-profiles option
+        if (tlsOptions.listOfProfilesRequested(cmd))
+        {
+            tlsOptions.printSupportedTLSProfiles(app, COUT);
+            return 0;
+        }
+
       }
 
       /* command line parameters and options */

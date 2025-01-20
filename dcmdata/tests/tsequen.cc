@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2019-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -40,19 +40,29 @@ OFTEST(dcmdata_sequenceInsert)
     DcmSequenceOfItems sequence(DCM_OtherPatientIDsSequence);
     /* add a large number of items to the sequence */
     unsigned long counter = 0;
+    DcmItem *items[NUMBER_OF_ITEMS];
     for (unsigned long i = 0; i < NUMBER_OF_ITEMS; ++i)
     {
-        if (sequence.insert(new DcmItem()).good())
+        items[i] = new DcmItem();
+        if (sequence.insert(items[i]).good())
             ++counter;
     }
     /* check whether that worked (for-loop shouldn't take too long) */
     OFCHECK_EQUAL(counter, NUMBER_OF_ITEMS);
     /* access specific items (performance should be no issue) */
-    OFCHECK(sequence.getItem(0) != NULL);
-    OFCHECK(sequence.getItem(2) != NULL);
+    OFCHECK(sequence.getItem(0) == items[0]);
+    OFCHECK(sequence.getItem(2) == items[2]);
     OFCHECK(sequence.getItem(NUMBER_OF_ITEMS) == NULL);
-    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) != NULL);
-    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) != NULL);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) == items[NUMBER_OF_ITEMS - 1]);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) == items[NUMBER_OF_ITEMS - 2]);
+    /* insert a single item before the current item */
+    DcmItem *newItem = new DcmItem();
+    OFCHECK(sequence.insertAtCurrentPos(newItem, OFTrue /*before*/).good());
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 2) == newItem);
+    /* the items after the new item should have been shifted by one */
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS - 1) == items[NUMBER_OF_ITEMS - 2]);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS) == items[NUMBER_OF_ITEMS - 1]);
+    OFCHECK(sequence.getItem(NUMBER_OF_ITEMS + 1) == NULL);
 }
 
 

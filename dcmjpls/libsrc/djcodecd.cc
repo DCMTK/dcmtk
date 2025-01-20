@@ -76,6 +76,24 @@ OFBool DJLSDecoderBase::canChangeCoding(
 }
 
 
+Uint16 DJLSDecoderBase::decodedBitsAllocated(
+    Uint16 /* bitsAllocated */,
+    Uint16 bitsStored) const
+{
+  // this codec does not support images with less than 2 bits per sample
+  if (bitsStored < 2) return 0;
+
+  // for images with 2..8 bits per sample, BitsAllocated will be 8
+  if (bitsStored <= 8) return 8;
+
+  // for images with 9..16 bits per sample, BitsAllocated will be 16
+  if (bitsStored <= 16) return 16;
+
+  // this codec does not support images with more than 16 bits per sample
+  return 0;
+}
+
+
 OFCondition DJLSDecoderBase::decode(
     const DcmRepresentationParameter * /* fromRepParam */,
     DcmPixelSequence * pixSeq,

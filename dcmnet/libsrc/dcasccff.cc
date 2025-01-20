@@ -183,7 +183,7 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
         while (++i < len)
         {
           c = abstractSyntaxUID.at(i);
-          if (! isspace(c)) transferSyntaxKey += (char) (toupper(c));
+          if (! OFStandard::isspace(c)) transferSyntaxKey += (char) (toupper(c));
         }
 
         // finally cut abstract syntax name
@@ -443,7 +443,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
     scontext.clear();
     while (*c)
     {
-      if (! isspace(TO_UCHAR(*c))) scontext += (char) (toupper(TO_UCHAR(*c)));
+      if (! OFStandard::isspace(*c)) scontext += (char) (toupper(TO_UCHAR(*c)));
       ++c;
     }
     context = scontext.c_str();
@@ -455,7 +455,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
       srole.clear();
       while (*c)
       {
-        if (! isspace(TO_UCHAR(*c))) srole += (char) (toupper(TO_UCHAR(*c)));
+        if (! OFStandard::isspace(*c)) srole += (char) (toupper(TO_UCHAR(*c)));
         ++c;
       }
       role = srole.c_str();
@@ -468,7 +468,7 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
       sextneg.clear();
       while (*c)
       {
-        if (! isspace(TO_UCHAR(*c))) sextneg += (char) (toupper(TO_UCHAR(*c)));
+        if (! OFStandard::isspace(*c)) sextneg += (char) (toupper(TO_UCHAR(*c)));
         ++c;
       }
       extneg = sextneg.c_str();

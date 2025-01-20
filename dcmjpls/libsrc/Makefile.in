@@ -22,7 +22,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/incl
   -I$(dcmimgledir)/include -I$(libcharlsdir)
 LOCALDEFS =
 
-objs = djcodecd.o djcodece.o djcparam.o djdecode.o djencode.o djrparam.o djutils.o
+objs = djcodecd.o djcodece.o djcparam.o djdecode.o djencode.o djrparam.o djutils.o dipijpls.o
 
 library = libdcmjpls.$(LIBEXT)
 
