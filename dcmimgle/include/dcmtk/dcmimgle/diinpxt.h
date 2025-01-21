@@ -617,6 +617,13 @@ class DiInputPixelTemplate
                             skip -= times * bitsof_T1;
                         }
                     }
+                    /* fill the remaining entry (if any) with the smallest value that is possible */
+                    if (q < Data + Count)
+                    {
+                        DCMIMGLE_TRACE("not enough data, filling last entry of input buffer with value = " << getAbsMinimum());
+                        *q = OFstatic_cast(T2, getAbsMinimum());
+                    }
+
                 }
             } else
                 DCMIMGLE_DEBUG("cannot allocate memory buffer for 'Data' in DiInputPixelTemplate::convert()");
