@@ -184,6 +184,7 @@ class DiInputPixelTemplate
             T2 *p = Data;
             unsigned long i;
             const double absrange = getAbsMaxRange();
+            const double absmin = getAbsMinimum();
             const unsigned long ocnt = (absrange <= 10000000.0) ? OFstatic_cast(unsigned long, absrange) : 0 /* no LUT */;
             Uint8 *lut = NULL;
             if ((sizeof(T2) <= 2) && (ocnt > 0) && (Count > 3 * ocnt)) // optimization criteria
@@ -193,7 +194,7 @@ class DiInputPixelTemplate
                 {
                     DCMIMGLE_DEBUG("using optimized routine with additional LUT");
                     OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
-                    Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
+                    Uint8 *q = lut - OFstatic_cast(T2, absmin);
                     for (i = Count; i != 0; --i)                       // fill lookup table
                         *(q + *(p++)) = 1;
                     q = lut;
@@ -201,7 +202,7 @@ class DiInputPixelTemplate
                     {
                         if (*(q++) != 0)
                         {
-                            MinValue[0] = OFstatic_cast(T2, OFstatic_cast(double, i) + getAbsMinimum());
+                            MinValue[0] = OFstatic_cast(T2, OFstatic_cast(double, i) + absmin);
                             break;
                         }
                     }
@@ -210,7 +211,7 @@ class DiInputPixelTemplate
                     {
                         if (*(--q) != 0)
                         {
-                            MaxValue[0] = OFstatic_cast(T2, OFstatic_cast(double, i - 1) + getAbsMinimum());
+                            MaxValue[0] = OFstatic_cast(T2, OFstatic_cast(double, i - 1) + absmin);
                             break;
                         }
                     }
@@ -221,24 +222,24 @@ class DiInputPixelTemplate
                     } else {                                           // calculate min/max for selected range
                         OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
                         p = Data + PixelStart;
-                        q = lut - OFstatic_cast(T2, getAbsMinimum());
-                        for (i = PixelCount; i != 0; --i)                  // fill lookup table
+                        q = lut - OFstatic_cast(T2, absmin);
+                        for (i = PixelCount; i != 0; --i)              // fill lookup table
                             *(q + *(p++)) = 1;
                         q = lut;
-                        for (i = 0; i < ocnt; ++i)                         // search for minimum
+                        for (i = 0; i < ocnt; ++i)                     // search for minimum
                         {
                             if (*(q++) != 0)
                             {
-                                MinValue[1] = OFstatic_cast(T2, OFstatic_cast(double, i) + getAbsMinimum());
+                                MinValue[1] = OFstatic_cast(T2, OFstatic_cast(double, i) + absmin);
                                 break;
                             }
                         }
                         q = lut + ocnt;
-                        for (i = ocnt; i != 0; --i)                         // search for maximum
+                        for (i = ocnt; i != 0; --i)                    // search for maximum
                         {
                             if (*(--q) != 0)
                             {
-                                MaxValue[1] = OFstatic_cast(T2, OFstatic_cast(double, i - 1) + getAbsMinimum());
+                                MaxValue[1] = OFstatic_cast(T2, OFstatic_cast(double, i - 1) + absmin);
                                 break;
                             }
                         }
