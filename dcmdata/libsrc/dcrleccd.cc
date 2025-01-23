@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2024, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -362,6 +362,12 @@ OFCondition DcmRLECodecDecoder::decode(
                     } /* while */
 
                     // last fragment for this RLE stripe
+                    if (inputBytes + byteOffset > fragmentLength)
+                    {
+                        DCMDATA_ERROR("stream size in RLE header is wrong");
+                        inputBytes = fragmentLength-byteOffset;
+                    }
+
                     result = rledecoder.decompress(rleData + byteOffset, OFstatic_cast(size_t, inputBytes));
 
                     // special handling for zero pad byte at the end of the RLE stream
