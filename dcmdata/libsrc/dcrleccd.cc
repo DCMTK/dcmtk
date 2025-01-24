@@ -364,7 +364,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     // last fragment for this RLE stripe
                     if (inputBytes + byteOffset > fragmentLength)
                     {
-                        DCMDATA_ERROR("stream size in RLE header is wrong");
+                        DCMDATA_WARN("stream size in RLE header is wrong, adjusting from " << inputBytes << " to " << fragmentLength-byteOffset << " bytes.");
                         inputBytes = fragmentLength-byteOffset;
                     }
 
