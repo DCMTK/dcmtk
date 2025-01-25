@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -66,6 +66,8 @@ OFTEST(dcmsr_CID29e_AcquisitionModality)
     OFCHECK(ctxGroup.mapModality("XYZ").isEmpty());
     OFCHECK(ctxGroup.mapModality("ABC", codedEntry) == SR_EC_UnsupportedValue);
     OFCHECK(ctxGroup.selectValue("").bad());
+    /* also check the keyword of the context group */
+    OFCHECK_EQUAL(ctxGroup.getKeyword(), "AcquisitionModality");
 }
 
 
@@ -81,6 +83,8 @@ OFTEST(dcmsr_CID42_NumericValueQualifier)
     OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("", "99TEST", "Some invalid test code")).bad());
     OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("0815", "99TEST", "-")).good());
     OFCHECK(ctxGroup.findCodedEntry(DSRBasicCodedEntry("", "", "")).bad());
+    /* also check the keyword of the context group */
+    OFCHECK_EQUAL(ctxGroup.getKeyword(), "NumericValueQualifier");
 }
 
 
@@ -97,6 +101,8 @@ OFTEST(dcmsr_CID244e_Laterality)
     OFCHECK(!ctxGroup.mapImageLaterality("XYZ").isValid());
     OFCHECK(ctxGroup.mapImageLaterality("ABC", codedEntry) == SR_EC_InvalidValue);
     OFCHECK(ctxGroup.selectValue("").bad());
+    /* also check the keyword of the context group */
+    OFCHECK_EQUAL(ctxGroup.getKeyword(), "Laterality");
 }
 
 

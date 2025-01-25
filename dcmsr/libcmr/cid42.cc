@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID42_NumericValueQualifier
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:08 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024e
+ *  File created on 2025-01-25 20:32:09 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 42 (Numeric Value Qualifier)
 #define CONTEXT_GROUP_NUMBER  "42"
+#define CONTEXT_GROUP_KEYWORD "NumericValueQualifier"
 #define CONTEXT_GROUP_VERSION "20020114"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.22"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID42_NumericValueQualifier::CodeList *CID42_NumericValueQualifier::Codes = NULL
 
 
 CID42_NumericValueQualifier::CID42_NumericValueQualifier(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID42_NumericValueQualifier::CID42_NumericValueQualifier(const DSRCodedEntryValu
 
 CID42_NumericValueQualifier::CID42_NumericValueQualifier(const EnumType selectedValue,
                                                          const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

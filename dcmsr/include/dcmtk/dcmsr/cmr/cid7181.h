@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnit
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024e
+ *  File created on 2025-01-25 20:32:18 by J. Riesmeier
  *
  */
 

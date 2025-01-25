@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4020_PETRadionuclide
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:13 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2024e
+ *  File created on 2025-01-25 20:32:13 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 4020 (PET Radionuclide)
 #define CONTEXT_GROUP_NUMBER  "4020"
+#define CONTEXT_GROUP_KEYWORD "PETRadionuclide"
 #define CONTEXT_GROUP_VERSION "20160119"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.304"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID4020_PETRadionuclide::CodeList *CID4020_PETRadionuclide::Codes = NULL;
 
 
 CID4020_PETRadionuclide::CID4020_PETRadionuclide(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID4020_PETRadionuclide::CID4020_PETRadionuclide(const DSRCodedEntryValue &selec
 
 CID4020_PETRadionuclide::CID4020_PETRadionuclide(const EnumType selectedValue,
                                                  const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

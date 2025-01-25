@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID5001_Country
@@ -17,6 +17,7 @@
 
 // general information on CID 5001 (Country)
 #define CONTEXT_GROUP_NUMBER  "5001"
+#define CONTEXT_GROUP_KEYWORD "Country"
 #define CONTEXT_GROUP_VERSION ""      /* unknown */
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.329"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
@@ -26,7 +27,7 @@ CID5001_Country::CodeList *CID5001_Country::Codes = NULL;
 
 
 CID5001_Country::CID5001_Country(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -34,7 +35,7 @@ CID5001_Country::CID5001_Country(const DSRCodedEntryValue &selectedValue)
 
 CID5001_Country::CID5001_Country(const EnumType selectedValue,
                                  const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
