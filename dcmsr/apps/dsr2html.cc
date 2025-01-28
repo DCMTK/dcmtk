@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -207,7 +207,9 @@ int main(int argc, char *argv[])
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFBool opt_checkAllStrings = OFFalse;
+#ifdef DCMTK_ENABLE_CHARSET_CONVERSION
     OFBool opt_convertToUTF8 = OFFalse;
+#endif
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Render DICOM SR file and data set to HTML/XHTML", rcsid);
     OFCommandLine cmd;
