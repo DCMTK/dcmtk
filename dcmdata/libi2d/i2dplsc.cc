@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2021, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,6 +78,19 @@ OFString I2DOutputPlugSC::isValid(DcmDataset& dataset) const
 OFBool I2DOutputPlugSC::supportsMultiframe() const
 {
   return OFFalse;
+}
+
+
+OFBool I2DOutputPlugSC::colorModelPermitted(const OFString& /* photometricInterpretation */, E_TransferSyntax /* outputTS */) const
+{
+    // in secondary capture, no restrictions exist
+    return OFTrue;
+}
+
+
+OFCondition I2DOutputPlugSC::updateColorModel(OFString& /* photometricInterpretation */, E_TransferSyntax /* outputTS */) const
+{
+    return EC_Normal;
 }
 
 
