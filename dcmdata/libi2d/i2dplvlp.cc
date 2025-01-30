@@ -271,8 +271,6 @@ OFCondition I2DOutputPlugVLP::updateColorModel(OFString& photometricInterpretati
             if (photometricInterpretation == "RGB") return EC_Normal; else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
             /* break; */
     }
-
-    return EC_Normal;
 }
 
 

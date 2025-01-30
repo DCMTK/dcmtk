@@ -401,8 +401,6 @@ OFCondition I2DOutputPlugNewSC::updateColorModel(OFString& photometricInterpreta
             if (photometricInterpretation == "RGB") return EC_Normal; else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
             /* break; */
     }
-
-    return EC_Normal;
 }
 
 

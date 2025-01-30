@@ -375,7 +375,7 @@ OFCondition I2DJpegSource::getSOFImageParameters(const JPEGFileMapEntry& entry,
         {
             // This is a lossy color JPEG file.
             // Read component IDs and sampling factors
-            Uint8 i1, i2, i3, ss1, ss2, ss3, n;
+            Uint8 i1=0, i2=0, i3=0, ss1=0, ss2=0, ss3=0, n=0;
             result = read1Byte(i1);
             if (result != EOF) result = read1Byte(ss1);
             if (result != EOF) result = read1Byte(n);
