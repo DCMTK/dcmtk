@@ -603,7 +603,7 @@ OFCondition DcmByteString::makeMachineByteString(const Uint32 length)
                 if (realLength > 0)
                 {
                     size_t i = OFstatic_cast(size_t, realLength);
-                    while ((i > 0) && (value[i - 1] == paddingChar))
+                    while ((i > 0) && ((value[i - 1] == paddingChar) || (value[i - 1] == '\0')))
                         value[--i] = '\0';
                     realLength = OFstatic_cast(Uint32, i);
                 }
