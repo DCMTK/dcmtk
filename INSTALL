@@ -1,3 +1,13 @@
+-------------------------------------------------------------------------------
+ IMPORTANT NOTE FOR CURRENT DEVELOPMENT VERSION 3.6.9+DEV
+-------------------------------------------------------------------------------
+ Please note that most sections of this document refer to the official release
+ DCMTK 3.6.9, i.e. they have not yet been updated to reflect the changes in
+ the latest development version.  This will be done for the next release at
+ the latest, which will probably be called version 3.7.0.
+-------------------------------------------------------------------------------
+
+
 ==================================
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
@@ -402,7 +412,7 @@ The user can choose to build with a newer C++ standard by setting
 - 17 (CXX17)
 - 20 (CXX20)
 
-Compilation of DCMTK with C++98 is deprecated. In this release, it can be
+Compilation of DCMTK with C++98 is deprecated.  In this release, it can be
 enabled by setting "CMAKE_CXX_STANDARD=98" and "DCMTK_PERMIT_CXX98=ON", but
 support for C++ releases before C++11 will be removed in future versions
 of DCMTK.
@@ -1053,4 +1063,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-12-10 (Onken)
+Last revised: 2025-02-04 (Riesmeier)
