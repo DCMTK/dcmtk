@@ -1231,6 +1231,12 @@ if(MSVC)
   endforeach()
 endif()
 
+if (NOT HAVE_CXX11 AND NOT DCMTK_PERMIT_CXX98)
+  # Since the situation where the user has explicitly requested CMAKE_CXX_STANDARD=98
+  # has already been handled in dcmtkPrepare.cmake, we are apparently using a compiler
+  # that uses C++98 by default, and the user has not requested anything specific.
+  message(FATAL_ERROR "DCMTK will require C++11 or later in the future (which is apparently not supported by this compiler). Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now)")
+endif()
 
 if(CMAKE_CROSSCOMPILING)
   set(DCMTK_CROSS_COMPILING ${CMAKE_CROSSCOMPILING})

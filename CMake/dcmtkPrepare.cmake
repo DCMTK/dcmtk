@@ -551,6 +551,8 @@ endif()
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
+option(DCMTK_PERMIT_CXX98 "Permit (deprecated) compilation with C++98 language standard. This will cease to function in a future DCMTK release." OFF)
+
 # If desired C++ standard is at least C++11, set DCMTK_MODERN_CXX_STANDARD to true
 # and remember it in global property DCMTK_MODERN_CXX_STANDARD.
 # This is later evaluated in GenerateDCMTKConfigure.cmake in order to check
@@ -560,19 +562,23 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 11)
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
+elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$" AND NOT DCMTK_PERMIT_CXX98)
+  message(FATAL_ERROR "DCMTK will require C++11 or later in the future. Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now)")
 elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$")
   set(DCMTK_MODERN_CXX_STANDARD FALSE)
-  message(WARNING "DCMTK will require C++11 or later in the future.")
+  message(WARNING "DCMTK will require C++11 or later in the future, continuing for now.")
 elseif(CMAKE_CXX_STANDARD GREATER 20)
   MESSAGE(WARNING "DCMTK is only known to compile for C++ versions <= 20 (C++${CMAKE_CXX_STANDARD} requested).")
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
 else() # CMAKE_CXX_STANDARD is 11, 14, 17 or 20
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
 endif()
+
 define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD
   BRIEF_DOCS "TRUE when compiling C++11 (or newer) code."
   FULL_DOCS "TRUE when the compiler does support and is configured for C++11 or a later C++ standard."
 )
+
 # Remember globally that we use at least C++11
 set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD ${DCMTK_MODERN_CXX_STANDARD})
 # Build global list of all modern C++ standard versions supported so far
