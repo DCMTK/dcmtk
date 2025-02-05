@@ -67,7 +67,7 @@ set(DCMTK_PACKAGE_VERSION_SUFFIX "+")
 option(DCMTK_LINK_STATIC "Statically link all libraries and tools with the runtime and third party libraries." OFF)
 # Modify linker flags and libraries for static builds if enabled by the user
 if(DCMTK_LINK_STATIC)
-    if (NOT APPLE)
+    if(NOT APPLE)
         # MacOS does not support static libraries. DCMTK_LINK_STATIC is still useful on
         # macOS though, since it will create binaries that only depend on macOS's libc.
         set(CMAKE_EXE_LINKER_FLAGS "-static")
@@ -95,14 +95,14 @@ endif()
 
 option(DCMTK_PORTABLE_LINUX_BINARIES "Create ELF binaries while statically linking all third party libraries and libstdc++." OFF)
 if(DCMTK_PORTABLE_LINUX_BINARIES)
-    if (DCMTK_LINK_STATIC)
+    if(DCMTK_LINK_STATIC)
         message(FATAL_ERROR "Options DCMTK_LINK_STATIC and DCMTK_PORTABLE_LINUX_BINARIES are mutually exclusive.")
     endif()
     # only use static versions of third party libraries
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 
     # When using gcc and clang, use the static version of libgcc/libstdc++.
-    if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+    if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
@@ -224,7 +224,7 @@ else()
 endif()
 set(DCMTK_DEFAULT_DICT "${DCMTK_DEFAULT_DICT_DEFAULT}" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 set_property(CACHE DCMTK_DEFAULT_DICT PROPERTY STRINGS builtin external none)
-if (DCMTK_DEFAULT_DICT EQUAL "none")
+if(DCMTK_DEFAULT_DICT EQUAL "none")
   message(WARNING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 endif()
 
@@ -234,14 +234,14 @@ option(DCMTK_USE_DCMDICTPATH "Enable reading dictionary that is defined through 
 
 # Declare the option DCMTK_ENABLE_BUILTIN_OFICONV_DATA, which by default is ON when
 # we are compiling shared libraries.
-if (BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   option(DCMTK_ENABLE_BUILTIN_OFICONV_DATA "Embed oficonv data files into oficonv library" ON)
 else()
   option(DCMTK_ENABLE_BUILTIN_OFICONV_DATA "Embed oficonv data files into oficonv library" OFF)
 endif()
 
 # evaluate the option DCMTK_ENABLE_BUILTIN_OFICONV_DATA
-if (DCMTK_ENABLE_BUILTIN_OFICONV_DATA)
+if(DCMTK_ENABLE_BUILTIN_OFICONV_DATA)
   add_definitions(-DDCMTK_ENABLE_BUILTIN_OFICONV_DATA)
 endif()
 
@@ -370,7 +370,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 if(WIN32)
   option(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS  "Modify the default compiler flags selected by CMake." ON)
   option(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL "Compile DCMTK using the Multithreaded DLL runtime library." OFF)
-  if (BUILD_SHARED_LIBS)
+  if(BUILD_SHARED_LIBS)
     set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL ON)
   endif()
 else()
@@ -380,7 +380,7 @@ else()
 endif()
 
 if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*|NMake .*")
-  if (POLICY CMP0091)
+  if(POLICY CMP0091)
     # CMake 3.15 and newer use CMAKE_MSVC_RUNTIME_LIBRARY to select
     # the MSVC runtime library
     if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
@@ -527,7 +527,7 @@ else()   # ... for non-Windows systems
   endif()
 
   # When compiling with IBM xlC, add flags to suppress some noisy C++ warnings
-  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XL")
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XL")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -qsuppress=1500-029:1500-030")
   endif()
 
@@ -559,7 +559,7 @@ option(DCMTK_PERMIT_CXX98 "Permit (deprecated) compilation with C++98 language s
 # whether the compiler actually supports the required C++ standards up to the
 # version specified in CMAKE_CXX_STANDARD. Finally, the highest C++ version
 # (<= CMAKE_CXX_STANDARD) will be selected that the compiler actually supports.
-if (NOT DEFINED CMAKE_CXX_STANDARD)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 11)
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
 elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$" AND NOT DCMTK_PERMIT_CXX98)
@@ -603,12 +603,12 @@ if(MSVC)
     add_compile_options("/W4")
 else()
     # Add -Wall to the compiler flags if we are compiling with gcc or Clang.
-    if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "XLClang"))
-        add_compile_options("-Wall")
+    if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "XLClang"))
+       add_compile_options("-Wall")
     endif()
 endif()
 

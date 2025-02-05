@@ -126,7 +126,7 @@ DCMTK_UNSET(SYSTEM_PROCESSOR)
 
 # Define the complete package version name that will be used as a subdirectory
 # name for the installation of configuration files, data files and documents.
-if (DCMTK_PACKAGE_VERSION_SUFFIX STREQUAL "+")
+if(DCMTK_PACKAGE_VERSION_SUFFIX STREQUAL "+")
   # development version
   set(DCMTK_COMPLETE_PACKAGE_VERSION "${DCMTK_PACKAGE_VERSION}-${DCMTK_PACKAGE_DATE}")
 else()
@@ -226,7 +226,7 @@ else()
 endif()
 
 # Check the sizes of various types
-include (CheckTypeSize)
+include(CheckTypeSize)
 CHECK_TYPE_SIZE("int" SIZEOF_INT)
 CHECK_TYPE_SIZE("long" SIZEOF_LONG)
 CHECK_TYPE_SIZE("void*" SIZEOF_VOID_P)
@@ -646,7 +646,7 @@ else()
 
 #include <pthread.h>
 
-int main ()
+int main()
 {
   pthread_t p;
   unsigned long l = p;
@@ -1200,7 +1200,7 @@ endfunction()
 set(FORCE_MSVC_CPLUSPLUS_MACRO "")
 if(MSVC)
   if(NOT (MSVC_VERSION LESS 1910)) # VS 2017 and above
-    set (FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
+    set(FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
   endif()
 endif()
 
@@ -1231,11 +1231,11 @@ if(MSVC)
   endforeach()
 endif()
 
-if (NOT HAVE_CXX11 AND NOT DCMTK_PERMIT_CXX98)
+if(NOT HAVE_CXX11 AND NOT DCMTK_PERMIT_CXX98)
   # Since the situation where the user has explicitly requested CMAKE_CXX_STANDARD=98
   # has already been handled in dcmtkPrepare.cmake, we are apparently using a compiler
   # that uses C++98 by default, and the user has not requested anything specific.
-  message(FATAL_ERROR "DCMTK will require C++11 or later in the future (which is apparently not supported by this compiler). Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now)")
+  message(FATAL_ERROR "DCMTK will require C++11 or later in the future (which is apparently not supported by this compiler). Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now).")
 endif()
 
 if(CMAKE_CROSSCOMPILING)
