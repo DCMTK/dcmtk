@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2017-2022, OFFIS e.V.
+*  Copyright (C) 2017-2025, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -88,9 +88,9 @@ public:
    };
 
     /** A class to create small proxy objects that ease indention handling.
-     *  Each Indention object only contains a reference to the DcmJsonFormat object
-     *  that created it and its only purpose is to call the respective methods
-     *  of that object when one of its overloaded operators is used.
+     *  Each Indention object only contains a reference to the DcmJsonFormat
+     *  object that created it and its only purpose is to call the respective
+     *  methods of that object when one of its overloaded operators is used.
      */
     class Indention
     {
@@ -214,7 +214,8 @@ public:
                                    OFString &value);
 
     /** Constructor
-     *  @param printMetaInfo parameter that defines if meta information should be written
+     *  @param printMetaInfo parameter that defines if meta information should
+     *    be written
      */
     inline DcmJsonFormat(const OFBool printMetaInfo)
     : printMetaheaderInformation(printMetaInfo)
@@ -238,7 +239,8 @@ public:
      */
     virtual OFString space() = 0;
 
-    /** Method to return an indention proxy object for increasing, decreasing or printing indention
+    /** Method to return an indention proxy object for increasing, decreasing or
+     *  printing indention
      *  @return an indention proxy object.
      */
     inline Indention indent()
@@ -257,8 +259,8 @@ public:
      *  @code{.cpp}
      *  struct BulkDataURIJsonFormat : DcmJsonFormatPretty
      *  {
-     *    CustomJsonFormat(const OFBool printMetaInfo = OFTrue,
-     *                     ... bulkDataURIDatabase)
+     *    BulkDataURIJsonFormat(const OFBool printMetaInfo = OFTrue,
+     *                          ... bulkDataURIDatabase)
      *    : DcmJsonFormatPretty(printMetaInfo)
      *    , TheDatabase(bulkDataURIDatabase)
      *    {

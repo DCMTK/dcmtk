@@ -57,7 +57,7 @@ void DcmJsonFormat::escapeControlCharacters(STD_NAMESPACE ostream &out, const OF
             out << "\\f";
             break;
         default:
-            //escapes all other control characters
+            // escapes all other control characters
             if (c >= '\0' && c < ' ')
             {
                 out << "\\u" << STD_NAMESPACE hex
@@ -243,14 +243,14 @@ void DcmJsonFormat::printNextArrayElementPrefix(STD_NAMESPACE ostream &out)
     out << "," << newline() << indent();
 }
 
-// Method for holding and determine if BulkDataURI should be printed.
-// This also manipulate uri String, if BulkDataURI should be printed.
+// Method for holding and determining if BulkDataURI should be printed.
+// This also manipulates the URI string, if BulkDataURI should be printed.
 OFBool DcmJsonFormat::asBulkDataURI(const DcmTagKey& /*tag*/, OFString& /*uri*/)
 {
     return OFFalse;
 }
 
-//Class for formatted output
+// Class for formatted output
 DcmJsonFormatPretty::DcmJsonFormatPretty(const OFBool printMetaInfo)
 : DcmJsonFormat(printMetaInfo)
 , m_IndentionLevel(0)
@@ -286,7 +286,7 @@ OFString DcmJsonFormatPretty::space()
 }
 
 
-//Class for unformatted output
+// Class for unformatted output
 DcmJsonFormatCompact::DcmJsonFormatCompact(const OFBool printMetaInfo)
 : DcmJsonFormat(printMetaInfo)
 {
