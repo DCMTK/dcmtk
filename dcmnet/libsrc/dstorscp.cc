@@ -183,13 +183,9 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
         // check whether we've received a supported command
         if (incomingMsg->CommandField == DIMSE_C_ECHO_RQ)
         {
-            if (presInfo.abstractSyntax == UID_VerificationSOPClass)
-            {
-                // handle incoming C-ECHO request
-                status = handleECHORequest(incomingMsg->msg.CEchoRQ, presInfo.presentationContextID);
-            } else {
-                // TODO: need to handle invalid abstract syntax
-            }
+            // handle incoming C-ECHO request
+            status = handleECHORequest(incomingMsg->msg.CEchoRQ, presInfo.presentationContextID);
+            // TODO: need to handle invalid abstract syntax
         }
         else if (incomingMsg->CommandField == DIMSE_C_STORE_RQ)
         {
