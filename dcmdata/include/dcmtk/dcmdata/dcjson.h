@@ -257,7 +257,7 @@ public:
      *  @code{.cpp}
      *  struct BulkDataURIJsonFormat : DcmJsonFormatPretty
      *  {
-     *    CustomJsonFormat(const OFBool printMetaInfo = OFTrue,
+     *    BulkDataURIJsonFormat(const OFBool printMetaInfo = OFTrue,
      *                     ... bulkDataURIDatabase)
      *    : DcmJsonFormatPretty(printMetaInfo)
      *    , TheDatabase(bulkDataURIDatabase)
