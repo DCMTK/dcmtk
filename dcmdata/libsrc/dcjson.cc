@@ -79,7 +79,7 @@ void DcmJsonFormat::normalizeDecimalString(OFString &value)
     // These are permitted in DICOM but not in JSON.
     size_t pos;
     while (OFString_npos != (pos = value.find('+')))
-      value.erase(pos,1);
+        value.erase(pos,1);
 
     // check if the first character is a minus sign.
     // if so, remove it and set "minus" to true
@@ -114,18 +114,17 @@ void DcmJsonFormat::normalizeDecimalString(OFString &value)
     // with a period
     if (OFString_npos != (pos = value.find('.')))
     {
-      if (pos == value.length() -1)
-      {
-        // number ends with a period. Add a zero
-        value.append("0");
-      }
-      else if ((value[pos+1] < '0') || (value[pos+1] > '9'))
-      {
-        // no digit after period. Insert a zero
-        value.insert(pos+1, "0");
-      }
+        if (pos == value.length() -1)
+        {
+            // number ends with a period. Add a zero
+            value.append("0");
+        }
+        else if ((value[pos+1] < '0') || (value[pos+1] > '9'))
+        {
+            // no digit after period. Insert a zero
+            value.insert(pos+1, "0");
+        }
     }
-
 }
 
 // Formats the number to JSON standard as IntegerString
@@ -135,7 +134,7 @@ void DcmJsonFormat::normalizeIntegerString(OFString &value)
     // These are permitted in DICOM but not in JSON.
     size_t pos;
     while (OFString_npos != (pos = value.find('+')))
-      value.erase(pos,1);
+        value.erase(pos,1);
 
     OFBool minus = OFFalse;
 
@@ -255,7 +254,6 @@ DcmJsonFormatPretty::DcmJsonFormatPretty(const OFBool printMetaInfo)
 : DcmJsonFormat(printMetaInfo)
 , m_IndentionLevel(0)
 {
-
 }
 
 void DcmJsonFormatPretty::printIndention(STD_NAMESPACE ostream& out)
@@ -290,17 +288,19 @@ OFString DcmJsonFormatPretty::space()
 DcmJsonFormatCompact::DcmJsonFormatCompact(const OFBool printMetaInfo)
 : DcmJsonFormat(printMetaInfo)
 {
-
 }
 
 void DcmJsonFormatCompact::printIndention(STD_NAMESPACE ostream& /*out*/)
-{}
+{
+}
 
 void DcmJsonFormatCompact::increaseIndention()
-{}
+{
+}
 
 void DcmJsonFormatCompact::decreaseIndention()
-{}
+{
+}
 
 OFString DcmJsonFormatCompact::newline()
 {
