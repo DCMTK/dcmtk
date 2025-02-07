@@ -178,7 +178,7 @@ void
 Time::gmtime(tm* t) const
 {
     time_t clock = tv_sec;
-#if defined (DCMTK_LOG4CPLUS_HAVE_GMTIME_S) && defined (_MSC_VER) && _MSC_VER > 1200
+#if defined (DCMTK_LOG4CPLUS_HAVE_GMTIME_S) && defined (_MSC_VER)
     gmtime_s (t, &clock);
 #elif defined (DCMTK_LOG4CPLUS_HAVE_GMTIME_S) && defined (__BORLANDC__)
     gmtime_s (&clock, t);

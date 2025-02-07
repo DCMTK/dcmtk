@@ -50,8 +50,6 @@ is_control (tchar ch)
 {
 #if defined (DCMTK_OFLOG_UNICODE)
     return !! STD_NAMESPACE iswcntrl (STD_NAMESPACE char_traits<tchar>::to_int_type (ch));
-#elif defined (_MSC_VER) && _MSC_VER <= 1200 /* MSC6 and older */
-    return !! iscntrl (STD_NAMESPACE char_traits<tchar>::to_int_type (ch));
 #else
     return !! STD_NAMESPACE iscntrl (STD_NAMESPACE char_traits<tchar>::to_int_type (ch));
 #endif

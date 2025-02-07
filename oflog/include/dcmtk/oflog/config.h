@@ -93,10 +93,8 @@
 #endif
 
 #if defined (DCMTK_OFLOG_UNICODE)
-#  if defined (_MSC_VER) && _MSC_VER >= 1400
+#  if defined (_MSC_VER)
 #    define DCMTK_LOG4CPLUS_FSTREAM_ACCEPTS_WCHAR_T
-#  endif
-#  if defined (_MSC_VER) && _MSC_VER >= 1600
 #    define DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF8_FACET
 #    define DCMTK_LOG4CPLUS_HAVE_CODECVT_UTF16_FACET
 #  endif
@@ -110,8 +108,7 @@
 #  define __has_feature(X) 0
 #endif
 
-#if (defined (_MSC_VER) && _MSC_VER >= 1600) \
-    || defined (__GXX_EXPERIMENTAL_CXX0X__)
+#if defined (_MSC_VER) || defined (__GXX_EXPERIMENTAL_CXX0X__)
 #  define DCMTK_LOG4CPLUS_HAVE_modern_cxx_support
 #endif
 

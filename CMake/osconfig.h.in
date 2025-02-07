@@ -558,36 +558,19 @@
 #define _MSC_VER 1200       /* Treat Borland C++ 5.5 as MSVC6. */
 #endif /* __BORLANDC__ */
 
-/* Platform specific settings for Visual C++
- * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer
- *   _MSC_VER == 1100 on Microsoft Visual C++ 5.0
- *   _MSC_VER == 1200 on Microsoft Visual C++ 6.0
- *   _MSC_VER == 1300 on Microsoft Visual C++ 7.0
- *   _MSC_VER == 1310 on Microsoft Visual C++ 7.1
- *   _MSC_VER == 1400 on Microsoft Visual C++ 8.0
- */
+/* Platform specific settings for Visual C++ */
 
 #ifdef _MSC_VER
-#if _MSC_VER <= 1200 /* Additional settings for VC6 and older */
-/* disable warning that return type for 'identifier::operator ->' is not a UDT or reference to a UDT */
-    #pragma warning( disable : 4284 )
-#define HAVE_OLD_INTERLOCKEDCOMPAREEXCHANGE 1
-#else
-#endif /* _MSC_VER <= 1200 */
-
     #pragma warning( disable : 4251 )  /* disable warnings about needed dll-interface */
                                        /* http://www.unknownroad.com/rtfm/VisualStudio/warningC4251.html */
     #pragma warning( disable : 4099 )  /* disable warning about mismatched class and struct keywords */
                                        /* http://alfps.wordpress.com/2010/06/22/cppx-is-c4099-really-a-sillywarning-disabling-msvc-sillywarnings */
     #pragma warning( disable : 4521 )  /* disable warnings about multiple copy constructors and assignment operators,*/
     #pragma warning( disable : 4522 )  /* since these are sometimes necessary for correct overload resolution*/
-
-#if _MSC_VER >= 1400                   /* Additional settings for Visual Studio 2005 and newer */
     #pragma warning( disable : 4996 )  /* disable warnings about "deprecated" C runtime functions */
 #if _MSC_VER < 1900                    /* Warning only available before Visual Studio 2015 */
     #pragma warning( disable : 4351 )  /* disable warnings about "new behavior" when initializing the elements of an array */
 #endif /* _MSC_VER < 1900 */
-#endif /* _MSC_VER >= 1400 */
 #endif /* _MSC_VER */
 
 /* Define if the compiler supports static_assert */
