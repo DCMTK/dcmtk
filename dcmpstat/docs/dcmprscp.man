@@ -133,7 +133,8 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmprscp_files FILES
 
-<em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample configuration files
+<em>\<etcdir\>/dcmpstat.cfg</em>, <em>\<etcdir\>/printers.cfg</em> - sample
+configuration files
 
 \section dcmprscp_see_also SEE ALSO
 
@@ -141,6 +142,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmprscp_copyright COPYRIGHT
 
-Copyright (C) 1999-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
