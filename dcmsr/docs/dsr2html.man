@@ -366,7 +366,7 @@ replace any built-in tables.
 \section dsr2html_files FILES
 
 <em>\<datadir\>/report.css</em> - Sample Cascading Stylesheet file for HTML
-<em>\<datadir\>/reportx.css</em> - Sample Cascading Stylesheet file for XHTML
+\n<em>\<datadir\>/reportx.css</em> - Sample Cascading Stylesheet file for XHTML
 
 \section dsr2html_see_also SEE ALSO
 
@@ -374,6 +374,6 @@ replace any built-in tables.
 
 \section dsr2html_copyright COPYRIGHT
 
-Copyright (C) 2000-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
