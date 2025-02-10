@@ -309,6 +309,12 @@ DCMTK_OFICONV_EXPORT char *OFiconv_canonicalize(const char *name);
  */
 DCMTK_OFICONV_EXPORT int OFiconvctl(iconv_t cd, int request, void *argument);
 
+/** This function define a runtime path where to look for the oficonv db files.
+ * This path is used only after the env variable DCMICONVPATH.
+ * @param path to the location of esdb folder
+ */
+DCMTK_OFICONV_EXPORT void OFiconv_setpath(const char *iconv_path);
+
 /// space holder type for OFlocale_charset().
 typedef struct {
     char spaceholder[20];
