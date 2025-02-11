@@ -2455,7 +2455,7 @@ void OFStandard::ftoa(
     if (!success || d != val)
     {
       // really need precision 17 (DBL_DECIMAL_DIG)
-      ftoa_convert(dst, siz, val, flags, width, prec);
+      ftoa_convert(dst, siz, val, flags, width, 17);
     }
   }
   else
