@@ -437,7 +437,8 @@ single elements (i.e. a single dictionary name or tag key).
        OW data is expected to be little endian ordered and will be
        swapped if necessary.  No checks will be made to ensure that the
        amount of data is reasonable in terms of other attributes such as
-       Rows or Columns.
+       Rows or Columns. For VM 1-N element only the first element is read from
+       the file.
 
 -m   --modify:
        dcmodify -m "(0010,0010)=A Name" file.dcm
