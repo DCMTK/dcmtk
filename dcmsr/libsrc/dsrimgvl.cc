@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,9 +89,8 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &ref
 {
     /* do not check values since this would be unexpected to the user */
 
-    /* create copy of icon image (if any), first frame only */
-    if (referenceValue.IconImage != NULL)
-        IconImage = referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/);
+    /* create copy of icon image (if any) */
+    copyIconImage(referenceValue.IconImage);
 }
 
 
@@ -124,8 +123,8 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
         SegmentList = referenceValue.SegmentList;
         PresentationState = referenceValue.PresentationState;
         RealWorldValueMapping = referenceValue.RealWorldValueMapping;
-        /* create copy of icon image (if any), first frame only */
-        IconImage = (referenceValue.IconImage != NULL) ? referenceValue.IconImage->createDicomImage(0 /*fstart*/, 1 /*fcount*/) : NULL;
+        /* create copy of icon image (if any) */
+        copyIconImage(referenceValue.IconImage);
     }
     return *this;
 }
@@ -179,6 +178,12 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 OFBool DSRImageReferenceValue::isSegmentation() const
 {
     return isSegmentationObject(SOPClassUID);
+}
+
+
+OFBool DSRImageReferenceValue::hasIconImage() const
+{
+    return (IconImage != NULL);
 }
 
 
@@ -632,6 +637,8 @@ OFCondition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &refer
         /* ignore status (return value) since the references are optional */
         setPresentationState(referenceValue.PresentationState, check);
         setRealWorldValueMapping(referenceValue.RealWorldValueMapping, check);
+        /* create copy of icon image (if any) */
+        copyIconImage(referenceValue.IconImage);
     }
     return result;
 }
@@ -782,6 +789,18 @@ OFCondition DSRImageReferenceValue::checkCurrentValue(const OFBool reportWarning
     if (result.good())
         result = checkListData(SOPClassUID, FrameList, SegmentList, reportWarnings);
     return result;
+}
+
+
+void DSRImageReferenceValue::copyIconImage(DicomImage *image)
+{
+    /* first, delete the current icon image */
+    delete IconImage;
+    /* then create a copy of the given icon image (first frame only) */
+    if (image != NULL)
+        IconImage = image->createDicomImage(0 /*fstart*/, 1 /*fcount*/);
+    else
+        IconImage = NULL;
 }
 
 

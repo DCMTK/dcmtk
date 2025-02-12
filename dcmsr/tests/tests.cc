@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2022, OFFIS e.V.
+ *  Copyright (C) 2012-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,6 +83,8 @@ OFTEST_REGISTER(dcmsr_determineCodeValueType);
 OFTEST_REGISTER(dcmsr_writeCodeSequence);
 OFTEST_REGISTER(dcmsr_compareCodedEntry);
 OFTEST_REGISTER(dcmsr_useBasicCodedEntry);
+OFTEST_REGISTER(dcmsr_createMonochromeIconImage);
+OFTEST_REGISTER(dcmsr_createColorIconImage);
 OFTEST_REGISTER(dcmsr_setNumericMeasurementValue);
 OFTEST_REGISTER(dcmsr_emptyMeasurementValueSequence);
 OFTEST_REGISTER(dcmsr_setAndGetFloatingPointRepresentation);

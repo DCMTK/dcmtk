@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -161,12 +161,19 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      */
     virtual OFBool isSegmentation() const;
 
+    /** check whether an icon image is associated with this image reference.
+     *  This method does not check whether the icon image is valid.
+     ** @return OFTrue if image reference has an icon image, OFFalse otherwise
+     */
+    virtual OFBool hasIconImage() const;
+
     /** print image reference.
      *  The output of a typical image reference value looks like this: (CT image,"1.2.3") or
      *  (CT image,"1.2.3"),(GSPS,"1.2.3.4") if a presentation state is present.
      *  If the SOP class UID is unknown, the UID is printed instead of the related name.
      *  Also, the list of referenced frame/segment numbers is shown, but not the two UIDs of
-     *  the real world value mapping object (if referenced).
+     *  the real world value mapping object (if referenced).  The optional icon image is never
+     *  shown.
      ** @param  stream  output stream to which the image reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -503,6 +510,12 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      ** @return status, EC_Normal if current value is valid, an error code otherwise
      */
     OFCondition checkCurrentValue(const OFBool reportWarnings = OFFalse) const;
+
+    /** copy the given icon image to replace the currently stored one.
+     *  The currently stored icon image is always deleted first.
+     *  @param  image  pointer to the icon image to be copied (if not NULL)
+     */
+    void copyIconImage(DicomImage *image);
 
 
   private:
