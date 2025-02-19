@@ -168,25 +168,25 @@ configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
 The \b dcm2pdf utility uses the following exit codes when terminating.  This
 enables the user to check for the reason why the application terminated.
 
-\subsection dcm2cda_exit_codes_general general
+\subsection dcm2pdf_exit_codes_general general
 \verbatim
 EXITCODE_NO_ERROR                         0
 EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
 \endverbatim
 
-\subsection dcm2cda_exit_codes_input_file_errors input file errors
+\subsection dcm2pdf_exit_codes_input_file_errors input file errors
 \verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE          20
 EXITCODE_NO_INPUT_FILES                  21
 EXITCODE_INVALID_INPUT_FILE              22
 \endverbatim
 
-\subsection dcm2cda_exit_codes_output_file_errors output file errors
+\subsection dcm2pdf_exit_codes_output_file_errors output file errors
 \verbatim
 EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
 \endverbatim
 
-\subsection dcm2cda_exit_codes_processing_errors processing errors
+\subsection dcm2pdf_exit_codes_processing_errors processing errors
 \verbatim
 EXITCODE_CANNOT_CONVERT_TO_UNICODE       80
 EXITCODE_CANNOT_WRITE_VALID_JSON         81
@@ -236,6 +236,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2pdf_copyright COPYRIGHT
 
-Copyright (C) 2007-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
