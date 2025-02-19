@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1216,6 +1216,60 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     OFCondition putAndInsertSint32Array(const DcmTag &tag,
                                         const Sint32 *value,
+                                        const unsigned long count,
+                                        const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: OV, UV.
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint64(const DcmTag &tag,
+                                   const Uint64 value,
+                                   const unsigned long pos = 0,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: OV, UV.
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint64Array(const DcmTag &tag,
+                                       const Uint64 *value,
+                                       const unsigned long count,
+                                       const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: SV.
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertSint64(const DcmTag &tag,
+                                   const Sint64 value,
+                                   const unsigned long pos = 0,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: SV.
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertSint64Array(const DcmTag &tag,
+                                        const Sint64 *value,
                                         const unsigned long count,
                                         const OFBool replaceOld = OFTrue);
 

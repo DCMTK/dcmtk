@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -2413,7 +2413,7 @@ OFCondition DcmItem::findAndGetElements(const DcmTagKey &tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetString(const DcmTagKey &tagKey,
                                       const char *&value,
                                       const OFBool searchIntoSub)
 {
@@ -2432,7 +2432,7 @@ OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetString(const DcmTagKey &tagKey,
                                       const char *&value,
                                       Uint32 &length,
                                       const OFBool searchIntoSub)
@@ -2455,7 +2455,7 @@ OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetOFString(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetOFString(const DcmTagKey &tagKey,
                                         OFString &value,
                                         const unsigned long pos,
                                         const OFBool searchIntoSub)
@@ -2475,7 +2475,7 @@ OFCondition DcmItem::findAndGetOFString(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetOFStringArray(const DcmTagKey &tagKey,
                                              OFString &value,
                                              const OFBool searchIntoSub)
 {
@@ -2494,7 +2494,7 @@ OFCondition DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint8(const DcmTagKey &tagKey,
                                      Uint8 &value,
                                      const unsigned long pos,
                                      const OFBool searchIntoSub)
@@ -2514,7 +2514,7 @@ OFCondition DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey &tagKey,
                                           const Uint8 *&value,
                                           unsigned long *count,
                                           const OFBool searchIntoSub)
@@ -2544,7 +2544,7 @@ OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint16(const DcmTagKey &tagKey,
                                       Uint16 &value,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
@@ -2564,7 +2564,7 @@ OFCondition DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey &tagKey,
                                            const Uint16 *&value,
                                            unsigned long *count,
                                            const OFBool searchIntoSub)
@@ -2597,7 +2597,7 @@ OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetSint16(const DcmTagKey &tagKey,
                                       Sint16 &value,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
@@ -2617,7 +2617,7 @@ OFCondition DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey &tagKey,
                                            const Sint16 *&value,
                                            unsigned long *count,
                                            const OFBool searchIntoSub)
@@ -2647,7 +2647,7 @@ OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint32(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint32(const DcmTagKey &tagKey,
                                       Uint32 &value,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
@@ -2667,7 +2667,7 @@ OFCondition DcmItem::findAndGetUint32(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey &tagKey,
                                            const Uint32 *&value,
                                            unsigned long *count,
                                            const OFBool searchIntoSub)
@@ -2697,7 +2697,7 @@ OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetSint32(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetSint32(const DcmTagKey &tagKey,
                                       Sint32 &value,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
@@ -2717,7 +2717,7 @@ OFCondition DcmItem::findAndGetSint32(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey &tagKey,
                                            const Sint32 *&value,
                                            unsigned long *count,
                                            const OFBool searchIntoSub)
@@ -2747,7 +2747,7 @@ OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint64(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint64(const DcmTagKey &tagKey,
                                       Uint64 &value,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
@@ -2767,7 +2767,7 @@ OFCondition DcmItem::findAndGetUint64(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetUint64Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetUint64Array(const DcmTagKey &tagKey,
                                            const Uint64 *&value,
                                            unsigned long *count,
                                            const OFBool searchIntoSub)
@@ -2797,7 +2797,7 @@ OFCondition DcmItem::findAndGetUint64Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetSint64(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetSint64(const DcmTagKey &tagKey,
                                       Sint64 &value,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
@@ -2817,7 +2817,7 @@ OFCondition DcmItem::findAndGetSint64(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetSint64Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetSint64Array(const DcmTagKey &tagKey,
                                            const Sint64 *&value,
                                            unsigned long *count,
                                            const OFBool searchIntoSub)
@@ -2847,7 +2847,7 @@ OFCondition DcmItem::findAndGetSint64Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetLongInt(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetLongInt(const DcmTagKey &tagKey,
                                        long int &value,
                                        const unsigned long pos,
                                        const OFBool searchIntoSub)
@@ -2897,7 +2897,7 @@ OFCondition DcmItem::findAndGetLongInt(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetFloat32(const DcmTagKey &tagKey,
                                        Float32 &value,
                                        const unsigned long pos,
                                        const OFBool searchIntoSub)
@@ -2917,7 +2917,7 @@ OFCondition DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey &tagKey,
                                             const Float32 *&value,
                                             unsigned long *count,
                                             const OFBool searchIntoSub)
@@ -2947,7 +2947,7 @@ OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetFloat64(const DcmTagKey &tagKey,
                                        Float64 &value,
                                        const unsigned long pos,
                                        const OFBool searchIntoSub)
@@ -2967,7 +2967,7 @@ OFCondition DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
+OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey &tagKey,
                                             const Float64 *&value,
                                             unsigned long *count,
                                             const OFBool searchIntoSub)
@@ -3095,7 +3095,7 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
 
 /* --- findOrCreate functions: find an element or create a new one --- */
 
-OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
+OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag &seqTag,
                                               DcmItem *&item,
                                               const signed long itemNum)
 {
@@ -3270,7 +3270,7 @@ OFCondition DcmItem::findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
 
 /* --- putAndInsert functions: put value and insert new element --- */
 
-OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertString(const DcmTag &tag,
                                         const char *value,
                                         const OFBool replaceOld)
 {
@@ -3281,7 +3281,7 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertString(const DcmTag &tag,
                                         const char *value,
                                         const Uint32 length,
                                         const OFBool replaceOld)
@@ -3409,7 +3409,7 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag &tag,
                                                const OFString &value,
                                                const OFBool replaceOld)
 {
@@ -3493,7 +3493,7 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertUint8Array(const DcmTag &tag,
                                             const Uint8 *value,
                                             const unsigned long count,
                                             const OFBool replaceOld)
@@ -3545,7 +3545,7 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertUint16(const DcmTag &tag,
                                         const Uint16 value,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
@@ -3587,7 +3587,7 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertUint16Array(const DcmTag &tag,
                                              const Uint16 *value,
                                              const unsigned long count,
                                              const OFBool replaceOld)
@@ -3600,12 +3600,12 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
         case EVR_AT:
             elem = new DcmAttributeTag(tag);
             break;
+        case EVR_US:
+            elem = new DcmUnsignedShort(tag);
+            break;
         case EVR_lt:
         case EVR_OW:
             elem = new DcmOtherByteOtherWord(tag);
-            break;
-        case EVR_US:
-            elem = new DcmUnsignedShort(tag);
             break;
         case EVR_ox:
             /* special handling */
@@ -3650,7 +3650,7 @@ OFCondition DcmItem::putAndInsertUint16Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertSint16(const DcmTag &tag,
                                         const Sint16 value,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
@@ -3692,7 +3692,7 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertSint16Array(const DcmTag &tag,
                                              const Sint16 *value,
                                              const unsigned long count,
                                              const OFBool replaceOld)
@@ -3734,7 +3734,7 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertUint32(const DcmTag &tag,
                                         const Uint32 value,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
@@ -3774,7 +3774,7 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertUint32Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertUint32Array(const DcmTag &tag,
                                              const Uint32 *value,
                                              const unsigned long count,
                                              const OFBool replaceOld)
@@ -3784,11 +3784,11 @@ OFCondition DcmItem::putAndInsertUint32Array(const DcmTag& tag,
     DcmElement *elem = NULL;
     switch(tag.getEVR())
     {
-        case EVR_OL:
-            elem = new DcmOtherLong(tag);
-            break;
         case EVR_UL:
             elem = new DcmUnsignedLong(tag);
+            break;
+        case EVR_OL:
+            elem = new DcmOtherLong(tag);
             break;
         case EVR_UNKNOWN:
             /* Unknown VR, e.g. tag not found in data dictionary */
@@ -3814,7 +3814,7 @@ OFCondition DcmItem::putAndInsertUint32Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertSint32(const DcmTag &tag,
                                         const Sint32 value,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
@@ -3851,7 +3851,7 @@ OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertSint32Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertSint32Array(const DcmTag &tag,
                                              const Sint32 *value,
                                              const unsigned long count,
                                              const OFBool replaceOld)
@@ -3888,7 +3888,161 @@ OFCondition DcmItem::putAndInsertSint32Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertUint64(const DcmTag &tag,
+                                        const Uint64 value,
+                                        const unsigned long pos,
+                                        const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_UV:
+            elem = new DcmUnsigned64bitVeryLong(tag);
+            break;
+        case EVR_OV:
+            elem = new DcmOther64bitVeryLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint64(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition DcmItem::putAndInsertUint64Array(const DcmTag &tag,
+                                             const Uint64 *value,
+                                             const unsigned long count,
+                                             const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_UV:
+            elem = new DcmUnsigned64bitVeryLong(tag);
+            break;
+        case EVR_OV:
+            elem = new DcmOther64bitVeryLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint64Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition DcmItem::putAndInsertSint64(const DcmTag &tag,
+                                        const Sint64 value,
+                                        const unsigned long pos,
+                                        const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_SV:
+            elem = new DcmSigned64bitVeryLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putSint64(value, pos);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition DcmItem::putAndInsertSint64Array(const DcmTag &tag,
+                                             const Sint64 *value,
+                                             const unsigned long count,
+                                             const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_SV:
+            elem = new DcmSigned64bitVeryLong(tag);
+            break;
+        case EVR_UNKNOWN:
+            /* Unknown VR, e.g. tag not found in data dictionary */
+            status = EC_UnknownVR;
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putSint64Array(value, count);
+        /* insert into dataset/item */
+        if (status.good())
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition DcmItem::putAndInsertFloat32(const DcmTag &tag,
                                          const Float32 value,
                                          const unsigned long pos,
                                          const OFBool replaceOld)
@@ -3928,7 +4082,7 @@ OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertFloat32Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertFloat32Array(const DcmTag &tag,
                                               const Float32 *value,
                                               const unsigned long count,
                                               const OFBool replaceOld)
@@ -3968,7 +4122,7 @@ OFCondition DcmItem::putAndInsertFloat32Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertFloat64(const DcmTag &tag,
                                          const Float64 value,
                                          const unsigned long pos,
                                          const OFBool replaceOld)
@@ -4011,7 +4165,7 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag &tag,
                                               const Float64 *value,
                                               const unsigned long count,
                                               const OFBool replaceOld)
@@ -4051,7 +4205,7 @@ OFCondition DcmItem::putAndInsertFloat64Array(const DcmTag& tag,
 }
 
 
-OFCondition DcmItem::putAndInsertTagKey(const DcmTag& tag,
+OFCondition DcmItem::putAndInsertTagKey(const DcmTag &tag,
                                         const DcmTagKey &value,
                                         const unsigned long pos,
                                         const OFBool replaceOld)
@@ -4091,7 +4245,7 @@ OFCondition DcmItem::putAndInsertTagKey(const DcmTag& tag,
 // ********************************
 
 
-OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
+OFCondition DcmItem::insertEmptyElement(const DcmTag &tag,
                                         const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
