@@ -599,8 +599,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /* --- findAndGet functions: find an element and get it or the value, respectively --- */
 
     /** find element and get a pointer to it (or copy it).
-     *  Applicable to all DICOM value representations (VR).
      *  The result variable 'element' is automatically set to NULL if an error occurs.
+     *  @note Applicable to all DICOM value representations (VR).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param element variable in which the reference to (or copy of) the element is stored
      *  @param searchIntoSub flag indicating whether to search into sequences or not
@@ -614,6 +614,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /** find all elements matching a particular tag and return references to them on a stack.
      *  This functions always performs a deep search (i.e. searches into sequence of items).
+     *  @note Applicable to all DICOM value representations (VR).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param resultStack stack where references to the elements are stored (added to).
      *    If no element is found, the stack is not modified (e.g. cleared).
@@ -623,11 +624,11 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    DcmStack &resultStack);
 
     /** find element and get value as a reference to a C string. NB: The string is not copied!
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UC, UI,
-     *  UR, UT.
      *  Since the getString() routine is called internally the resulting string reference represents
      *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM,
+     *    UC, UI, UR, UT.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored (might be NULL)
      *  @param searchIntoSub flag indicating whether to search into sequences or not
@@ -638,14 +639,14 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a reference to a C string. NB: The string is not copied!
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UC, UI,
-     *  UR, UT.
      *  Since the getString() routine is called internally the resulting string reference represents
      *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
      *  The result variable 'value' is automatically set to NULL and 'length' is set to 0 if an error
      *  occurs.
      *  Please note that since the length is returned separately, the string value can contain more
      *  than one NULL byte.
+     *  @note Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM,
+     *    UC, UI, UR, UT.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored (might be NULL)
      *  @param length length of the string (number of characters without the trailing NULL byte)
@@ -658,8 +659,6 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (only one component).
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Since the getOFString() routine is called internally the resulting string is normalized, i.e.
      *  leading and/or trailing spaces are removed according to the associated value representation,
      *  or the element value is converted to a character string (for non-string VRs) - see documentation
@@ -667,6 +666,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  In contrast to the above and below function only the specified component (see parameter 'pos')
      *  is returned. The result variable 'value' is automatically set to an empty string if an error
      *  occurs.
+     *  @note Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD,
+     *    OF, OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -679,13 +680,13 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (all components).
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Since the getOFStringArray() routine is called internally the resulting string is normalized,
      *  i.e. leading and/or trailing spaces are removed according to the associated value representation
      *  or the element values are converted to character strings (for non-string VRs) - see documentation
      *  in the corresponding header file.
      *  The result variable 'value' is automatically set to an empty string if an error occurs.
+     *  @note Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD,
+     *    OF, OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param searchIntoSub flag indicating whether to search into sequences or not
@@ -696,8 +697,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                         const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 8-bit integer.
-     *  Applicable to the following VRs: OB.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: OB.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -710,8 +711,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                 const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 8-bit integers.
-     *  Applicable to the following VRs: OB.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: OB.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -724,8 +725,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                      const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 16-bit integer.
-     *  Applicable to the following VRs: OW, US.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: OW, US.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -738,8 +739,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 16-bit integers.
-     *  Applicable to the following VRs: AT, OW, US.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: AT, OW, US.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -752,8 +753,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a signed 16-bit integer.
-     *  Applicable to the following VRs: SS.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: SS.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -766,8 +767,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of signed 16-bit integers.
-     *  Applicable to the following VRs: SS.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: SS.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -780,8 +781,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 32-bit integer.
-     *  Applicable to the following VRs: OL, UL.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: OL, UL.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -794,8 +795,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 32-bit integers.
-     *  Applicable to the following VRs: OL, UL.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: OL, UL.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -808,8 +809,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a signed 32-bit integer.
-     *  Applicable to the following VRs: IS, SL.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: IS, SL.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -822,8 +823,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of signed 32-bit integers.
-     *  Applicable to the following VRs: SL.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: SL.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -836,8 +837,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 64-bit integer.
-     *  Applicable to the following VRs: OV, UV.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: OV, UV.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -850,8 +851,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of unsigned 64-bit integers.
-     *  Applicable to the following VRs: OV, UV.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: OV, UV.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -864,8 +865,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a signed 64-bit integer.
-     *  Applicable to the following VRs: SV.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: SV.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -878,8 +879,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of signed 64-bit integers.
-     *  Applicable to the following VRs: SV.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: SV.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -892,8 +893,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a (signed) long integer.
-     *  Applicable to the following VRs: IS, OL, SL, SS, UL, US.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: IS, OL, SL, SS, UL, US.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -906,8 +907,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                   const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a 32-bit floating point.
-     *  Applicable to the following VRs: FL, OF.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: FL, OF.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -920,8 +921,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                   const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of 32-bit floating point values.
-     *  Applicable to the following VRs: FL, OF.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: FL, OF.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -934,8 +935,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                        const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a 64-bit floating point.
-     *  Applicable to the following VRs: DS, FD, OD.
      *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @note Applicable to the following VRs: DS, FD, OD.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -948,8 +949,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                   const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an array of 64-bit floating point values.
-     *  Applicable to the following VRs: FD, OD.
      *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @note Applicable to the following VRs: FD, OD.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the reference to the element value is stored
      *  @param count stores number of items in the result array (if not NULL)
@@ -962,9 +963,9 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                        const OFBool searchIntoSub = OFFalse);
 
     /** looks up and returns a given sequence.
-     *  Applicable to the following VRs: SQ, (pixelSQ).
      *  The result variable 'sequence' is automatically set to NULL if an error occurs
      *  (e.g. if 'seqTagKey' does not refer to a sequence attribute).
+     *  @note Applicable to the following VRs: SQ, (pixelSQ).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
      *  @param sequence variable in which the reference to (or copy of) the sequence is stored
      *  @param searchIntoSub flag indicating whether to search into sub-sequences or not
@@ -980,8 +981,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or
      *  EC_IllegalParameter (specified item does not exist). Only the top-most level of
      *  the dataset/item is examined (i.e. no deep-search is performed).
-     *  Applicable to the following VRs: SQ, (pixelSQ).
      *  Please note that an instance of the DcmPixelItem class cannot be retrieved.
+     *  @note Applicable to the following VRs: SQ, (pixelSQ).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
      *  @param item variable in which the reference to (or copy of) the item is stored
      *  @param itemNum number of the item to be searched for (0..n-1, -1 for last)
@@ -1000,9 +1001,9 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  If either the sequence or the item do not exist, they are created. If necessary,
      *  multiple empty items are inserted. Only the top-most level of the dataset/item
      *  is examined (i.e. no deep-search is performed).
-     *  Applicable to the following VRs: SQ, (pixelSQ).
      *  Please note that an instance of the DcmPixelItem class cannot be retrieved or
      *  created.
+     *  @note Applicable to the following VRs: SQ, (pixelSQ).
      *  @param seqTag DICOM tag specifying the sequence attribute to be searched for
      *    (or to be created)
      *  @param item variable in which the reference to the sequence item is stored
@@ -1021,7 +1022,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  of items). Empty elements are also copied. However, if the given tag is not
      *  found in the current dataset, EC_TagNotFound is returned and the destination
      *  dataset remains unchanged.
-     *  Applicable to all DICOM value representations (VR).
+     *  @note Applicable to all DICOM value representations (VR).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param destItem destination dataset to which the copied element is inserted
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -1032,7 +1033,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                            const OFBool replaceOld = OFTrue);
 
     /** find element, remove it from the dataset and free the associated memory.
-     *  Applicable to all DICOM value representations (VR).
+     *  @note Applicable to all DICOM value representations (VR).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param allOccurrences flag indicating whether to delete all occurrences of the
      *    attribute tag or the first one only (implies 'searchIntoSub' to be true)
@@ -1044,7 +1045,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                      const OFBool searchIntoSub = OFFalse);
 
     /** looks up the given sequence in the current dataset and deletes the given item.
-     *  Applicable to the following VRs: SQ, (pixelSQ).
+     *  @note Applicable to the following VRs: SQ, (pixelSQ).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
      *  @param itemNum number of the item to be deleted (0..n-1, -1 for last)
      *  @return EC_Normal upon success, an error otherwise.
@@ -1056,8 +1057,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /* --- putAndInsert functions: put value and insert new element --- */
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
+     *  @note Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB,
+     *    OD, OF, OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty or NULL).  The format
      *    of the string value is specified by the putString() method of the corresponding VR class.
@@ -1069,10 +1070,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  Please note that since the length of the string has to be specified explicitly, the string
      *  can contain more than one NULL byte.
+     *  @note Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB,
+     *    OD, OF, OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty or NULL).  The format
      *    of the string value is specified by the putString() method of the corresponding VR class.
@@ -1086,8 +1087,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
+     *  @note Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB,
+     *    OD, OF, OL, OV, OW, PN, SH, SL, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value string value to be set for the new element (might be empty).  The format of the
      *    string value is specified by the putOFStringArray() method of the corresponding VR class.
@@ -1099,7 +1100,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                           const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OB, ox (polymorph OB/OW or pixel data).
+     *  @note Applicable to the following VRs: OB, ox (polymorph OB/OW), px (pixel data).
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (= bytes in this case) to be copied from 'value'
@@ -1112,7 +1113,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                        const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: US, xs (US or SS).
+     *  @note Applicable to the following VRs: US, xs (US or SS).
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1126,7 +1127,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW or pixel data), xs (US or SS).
+     *  @note Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW), px (pixel data),
+     *    xs (US or SS).
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1139,7 +1141,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SS, xs (US or SS).
+     *  @note Applicable to the following VRs: SS, xs (US or SS).
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1153,7 +1155,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SS, xs (US or SS).
+     *  @note Applicable to the following VRs: SS, xs (US or SS).
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1166,7 +1168,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OL, UL.
+     *  @note Applicable to the following VRs: OL, UL.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1180,7 +1182,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OL, UL.
+     *  @note Applicable to the following VRs: OL, UL.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1193,7 +1195,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                        const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SL.
+     *  @note Applicable to the following VRs: SL.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1207,7 +1209,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SL.
+     *  @note Applicable to the following VRs: SL.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1220,7 +1222,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OV, UV.
+     *  @note Applicable to the following VRs: OV, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1234,7 +1236,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OV, UV.
+     *  @note Applicable to the following VRs: OV, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1247,7 +1249,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                        const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SV.
+     *  @note Applicable to the following VRs: SV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1261,7 +1263,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: SV.
+     *  @note Applicable to the following VRs: SV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1274,7 +1276,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                         const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: FL, OF.
+     *  @note Applicable to the following VRs: FL, OF.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1288,7 +1290,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: FL, OF.
+     *  @note Applicable to the following VRs: FL, OF.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1301,7 +1303,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                          const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: DS, FD, OD
+     *  @note Applicable to the following VRs: DS, FD, OD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1315,7 +1317,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: FD, OD.
+     *  @note Applicable to the following VRs: FD, OD.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -1328,7 +1330,7 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                          const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AT.
+     *  @note Applicable to the following VRs: AT.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
      *  @param pos index of the value to be set (0..vm). A value can be appended to
@@ -1344,8 +1346,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /* --- insertXXX functions: insert new element --- */
 
     /** create a new element (with no value) and insert it into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OD, OF,
-     *  OL, OV, OW, PN, SH, SL, SQ, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
+     *  @note Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT,
+     *    OB, OD, OF, OL, OV, OW, PN, SH, SL, SQ, SS, ST, SV, TM, UC, UI, UL, UR, US, UT, UV.
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
@@ -1357,8 +1359,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  If the sequence does not exist, it is created. If necessary, multiple empty items
      *  are inserted before the specified item position. Only the top-most level of the
      *  dataset/item is examined (i.e. no deep-search is performed).
-     *  Applicable to the following VRs: SQ, (pixelSQ).
      *  Please note that an instance of the DcmPixelItem class cannot be inserted.
+     *  @note Applicable to the following VRs: SQ, (pixelSQ).
      *  @param seqTag DICOM tag specifying the sequence attribute to be searched for
      *    (or to be created)
      *  @param item item to be inserted into the sequence, must not be contained in this
