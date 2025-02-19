@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -578,6 +578,28 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putFloat32(const Float32 val, const unsigned long pos = 0);
 
+    /** insert into the element value a copy of the given Sint64 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition putSint64(const Sint64 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given Uint64 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. a value
+     *    can be appended to the end of the current element or inserted within the
+     *    existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition putUint64(const Uint64 val, const unsigned long pos = 0);
+
     /** insert into the element value a copy of the given Float64 value. If the
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
@@ -600,7 +622,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putTagVal(const DcmTagKey &attrTag, const unsigned long pos = 0);
 
-    /** replace the element value by a copy of the given Uint8 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Uint8 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals
@@ -608,7 +631,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putUint8Array(const Uint8 *vals, const unsigned long num);
 
-    /** replace the element value by a copy of the given Sint16 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Sint16 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals
@@ -616,7 +640,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putSint16Array(const Sint16 *vals, const unsigned long num);
 
-    /** replace the element value by a copy of the given Uint16 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Uint16 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals
@@ -624,7 +649,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putUint16Array(const Uint16 *vals, const unsigned long num);
 
-    /** replace the element value by a copy of the given Sint32 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Sint32 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals
@@ -632,7 +658,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putSint32Array(const Sint32 *vals, const unsigned long num);
 
-    /** replace the element value by a copy of the given Uint32 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Uint32 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals
@@ -640,7 +667,8 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putUint32Array(const Uint32 *vals, const unsigned long num);
 
-    /** replace the element value by a copy of the given Float32 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Float32 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals
@@ -648,7 +676,26 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      */
     virtual OFCondition putFloat32Array(const Float32 *vals, const unsigned long num);
 
-    /** replace the element value by a copy of the given Float64 array (which is possibly multi-valued).
+    /** replace the element value by a copy of the given Sint64 array (which is
+     *  possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition putSint64Array(const Sint64 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Uint64 array (which is
+     *  possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition putUint64Array(const Uint64 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Float64 array (which is
+     *  possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param vals new attribute value
      *  @param num number of values in array vals

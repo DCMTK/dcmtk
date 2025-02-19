@@ -866,6 +866,21 @@ OFCondition DcmElement::putFloat32(const Float32 /*val*/,
 }
 
 
+OFCondition DcmElement::putSint64(const Sint64 /*val*/,
+                                  const unsigned long /*pos*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::putUint64(const Uint64 /*val*/,
+                                  const unsigned long /*pos*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
 OFCondition DcmElement::putFloat64(const Float64 /*val*/,
                                    const unsigned long /*pos*/)
 {
@@ -929,6 +944,21 @@ OFCondition DcmElement::putFloat32Array(const Float32 * /*val*/,
     return errorFlag;
 }
 
+
+OFCondition DcmElement::putSint64Array(const Sint64 * /*val*/,
+                                       const unsigned long /*num*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::putUint64Array(const Uint64 * /*val*/,
+                                       const unsigned long /*num*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
 
 OFCondition DcmElement::putFloat64Array(const Float64 * /*val*/,
                                         const unsigned long /*num*/)
