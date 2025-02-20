@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018, OFFIS e.V.
+ *  Copyright (C) 2018-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,12 +40,10 @@ public:
   /// destructor
   virtual ~OFRandom() {}
 
-#ifndef OF_NO_UINT64
   /** return a random Uint64 value
    *  @return random unsigned 64-bit number
    */
   Uint64 getRND64();
-#endif
 
   /** return a random Uint32 value
    *  @return random unsigned 32-bit number

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2021, OFFIS e.V.
+ *  Copyright (C) 2021-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -186,7 +186,6 @@ Uint16 OFRandom::getRND16()
   return OFstatic_cast(Uint16, getRND32());
 }
 
-#ifndef OF_NO_UINT64
 Uint64 OFRandom::getRND64()
 {
   // get a 32-bit random number
@@ -197,4 +196,3 @@ Uint64 OFRandom::getRND64()
   result |= getRND32();
   return result;
 }
-#endif

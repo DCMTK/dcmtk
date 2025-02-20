@@ -72,24 +72,17 @@ typedef fpos_t offile_fpos_t;
 // Use POSIX 64 bit file offset type when available
 #ifdef HAVE_OFF64_T
 typedef off64_t offile_off_t;
-#elif !defined(OF_NO_SINT64) // Otherwise use a 64 bit integer
+#else
+// Otherwise use a 64 bit integer
 typedef Sint64 offile_off_t;
-#else // Cry when 64 LFS is required but no 64 bit integer exists
-#error \
-  Could not find a suitable offset-type for LFS64 support.
 #endif
 
 #else // Implicit LFS or no LFS
 
 #if defined(DCMTK_ENABLE_LFS) && DCMTK_ENABLE_LFS == DCMTK_LFS
 #if defined(SIZEOF_FPOS_T) && (!defined(SIZEOF_OFF_T) || SIZEOF_FPOS_T > SIZEOF_OFF_T)
-// strange Windows LFS where sizeof(fpos_t) == 8 but sizeof(off_t) == 4
-#ifndef OF_NO_SINT64 // Use a 64 bit integer
+// strange Windows LFS where sizeof(fpos_t) == 8 but sizeof(off_t) == 4. Use a 64 bit integer
 typedef Sint64 offile_off_t;
-#else // Cry when LFS is required but no 64 bit integer exists
-#error \
-  Could not find a suitable offset-type for LFS support.
-#endif
 #else
 typedef off_t offile_off_t;
 #endif
