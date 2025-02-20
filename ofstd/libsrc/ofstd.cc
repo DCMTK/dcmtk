@@ -222,7 +222,7 @@ END_EXTERN_C
 #ifdef _WIN32
 // on Windows, the iostream-based implementation of atof is extremely slow,
 // and we do have a locale independent version of sscanf. Use this version.
-#define ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+#define ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
 #else
 // on other platforms, we assume that the iobased-implementation, being the
 // cleanest one, is appropriate. This is known to be the case for gcc and clang with glibc.
