@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -239,7 +239,7 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
         if (hasFloating)
         {
             /* increase default precision */
-            const STD_NAMESPACE streamsize oldPrecision = stream.precision(8);
+            const STD_NAMESPACE streamsize oldPrecision = stream.precision(17);
             stream << floatValue;
             /* reset i/o manipulators */
             stream.precision(oldPrecision);

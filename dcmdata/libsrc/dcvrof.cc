@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -139,7 +139,7 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
                 if (count > 0)
                 {
                     /* increase default precision - see DcmFloatingPointSingle::print() */
-                    const STD_NAMESPACE streamsize oldPrecision = out.precision(8);
+                    const STD_NAMESPACE streamsize oldPrecision = out.precision(9);
                     /* print float values with separators */
                     out << (*(floatValues++));
                     for (unsigned long i = 1; i < count; i++)
