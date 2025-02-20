@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -592,6 +592,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
             if (VerificationFlagEnum == VF_invalid)
                 printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
+            else if ((VerificationFlagEnum == VF_Unverified) && !VerifyingObserver.isEmpty())
+                DCMSR_WARN("Verifying Observer(s) should not be present when Verification Flag is 'UNVERIFIED'");
             else if (VerificationFlagEnum == VF_Verified)
                 checkElementValue(VerifyingObserver, "1-n", "1", obsSearchCond, "SRDocumentGeneralModule");
         }
@@ -1185,7 +1187,11 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                     result = readXMLVerifyingObserverData(doc, cursor.getChild(), flags);
                     /* allow absence in case of UNVERIFIED */
                     if (VerificationFlagEnum == VF_Unverified)
+                    {
+                        if (!VerifyingObserver.isEmpty())
+                            DCMSR_WARN("Verifying Observer(s) should not be present when Verification Flag is 'UNVERIFIED'");
                         result = EC_Normal;
+                    }
                 } else
                     printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             }
