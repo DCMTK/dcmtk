@@ -1918,6 +1918,13 @@ double OFStandard::atof(const char *s, OFBool *success)
         return OFnumeric_limits<double>::quiet_NaN();
     }
 
+    // handle negative NaN as a special case, since iostream does not
+    if ((ss.length() >= 4) && (ss[0] == '-') && (ss[1] == 'n' || ss[1] == 'N') && (ss[2] == 'a' || ss[2] == 'A') && (ss[3] == 'n' || ss[3] == 'N'))
+    {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::quiet_NaN();
+    }
+
     // handle positive infinity as a special case, since iostream does not
     if ((ss.length() >= 3) && (ss[0] == 'i' || ss[0] == 'I') && (ss[1] == 'n' || ss[1] == 'N') && (ss[2] == 'f' || ss[2] == 'F'))
     {
