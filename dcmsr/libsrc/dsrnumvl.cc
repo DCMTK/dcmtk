@@ -238,14 +238,10 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
         stream << "<float>";
         if (hasFloating)
         {
-            /* increase default precision */
-            const STD_NAMESPACE streamsize oldPrecision = stream.precision(17);
-            /* use the standard "C" locale for proper decimal point */
-            const STD_NAMESPACE locale oldLocale = stream.imbue(STD_NAMESPACE locale("C"));
-            stream << floatValue;
-            /* reset i/o manipulators and locale */
-            stream.precision(oldPrecision);
-            stream.imbue(oldLocale);
+            char buffer[64];
+            /* need to convert float to avoid problems with decimal point and "-nan" */
+            OFStandard::ftoa(buffer, sizeof(buffer), floatValue, 0, 0, -2 /* print enough digits to permit lossless conversion back to FD */);
+            stream << buffer;
         }
         stream << "</float>" << OFendl;
     }

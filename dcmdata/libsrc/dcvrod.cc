@@ -24,6 +24,7 @@
 
 #include "dcmtk/ofstd/ofuuid.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofmath.h"
 
 #include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcswap.h"
@@ -95,6 +96,15 @@ unsigned long DcmOtherDouble::getVM()
 
 // ********************************
 
+/* need to check for "Not a Number" in order to avoid possible output of "-nan" */
+static inline void checkAndOutputFloatValue(STD_NAMESPACE ostream &out,
+                                            const Float64 value)
+{
+    if (OFMath::isnan(value))
+        out << "nan";
+    else
+        out << value;
+}
 
 OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
@@ -143,9 +153,12 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                     /* use the standard "C" locale for proper decimal point */
                     const STD_NAMESPACE locale oldLocale = out.imbue(STD_NAMESPACE locale("C"));
                     /* print float values with separators */
-                    out << (*(floatValues++));
+                    checkAndOutputFloatValue(out, *(floatValues++));
                     for (unsigned long i = 1; i < count; i++)
-                        out << "\\" << (*(floatValues++));
+                    {
+                        out << "\\";
+                        checkAndOutputFloatValue(out, *(floatValues++));
+                    }
                     /* reset i/o manipulators and locale */
                     out.precision(oldPrecision);
                     out.imbue(oldLocale);
