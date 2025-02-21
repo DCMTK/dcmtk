@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2021, OFFIS e.V.
+ *  Copyright (C) 1999-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -181,6 +181,8 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             {
                                 if (Count == ddl_cnt)                   // check whether GSDF LUT fits exactly to DISPLAY file
                                 {
+                                    /* use the standard "C" locale for proper decimal point */
+                                    const STD_NAMESPACE locale oldLocale = stream->imbue(STD_NAMESPACE locale("C"));
                                     for (i = 0; i < ddl_cnt; ++i)
                                     {
                                         (*stream) << ddl_tab[i];                               // DDL
@@ -197,6 +199,8 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                         }
                                         (*stream) << OFendl;
                                     }
+                                    /* reset locale */
+                                    stream->imbue(oldLocale);
                                 } else {
                                     DCMIMGLE_WARN("can't write curve data, wrong DISPLAY file or GSDF LUT");
                                 }

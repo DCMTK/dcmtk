@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2020, OFFIS e.V.
+ *  Copyright (C) 2013-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -140,12 +140,15 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                 {
                     /* increase default precision - see DcmFloatingPointDouble::print() */
                     const STD_NAMESPACE streamsize oldPrecision = out.precision(17);
+                    /* use the standard "C" locale for proper decimal point */
+                    const STD_NAMESPACE locale oldLocale = out.imbue(STD_NAMESPACE locale("C"));
                     /* print float values with separators */
                     out << (*(floatValues++));
                     for (unsigned long i = 1; i < count; i++)
                         out << "\\" << (*(floatValues++));
-                    /* reset i/o manipulators */
+                    /* reset i/o manipulators and locale */
                     out.precision(oldPrecision);
+                    out.imbue(oldLocale);
                 }
             }
         }

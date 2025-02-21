@@ -140,12 +140,15 @@ OFCondition DcmOtherFloat::writeXML(STD_NAMESPACE ostream &out,
                 {
                     /* increase default precision - see DcmFloatingPointSingle::print() */
                     const STD_NAMESPACE streamsize oldPrecision = out.precision(9);
+                    /* use the standard "C" locale for proper decimal point */
+                    const STD_NAMESPACE locale oldLocale = out.imbue(STD_NAMESPACE locale("C"));
                     /* print float values with separators */
                     out << (*(floatValues++));
                     for (unsigned long i = 1; i < count; i++)
                         out << "\\" << (*(floatValues++));
-                    /* reset i/o manipulators */
+                    /* reset i/o manipulators and locale */
                     out.precision(oldPrecision);
+                    out.imbue(oldLocale);
                 }
             }
         }
