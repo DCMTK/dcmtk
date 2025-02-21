@@ -221,7 +221,8 @@ END_EXTERN_C
 #if !defined(ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && !defined(ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION) && !defined(ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION)
 #ifdef _WIN32
 // on Windows, the iostream-based implementation of atof is extremely slow,
-// and we do have a locale independent version of sscanf. Use this version.
+// and we do have a locale independent version of sprintf, called _snprintf_s_l.
+// Use this version.
 #define ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
 #else
 // on other platforms, we assume that the iobased-implementation, being the
@@ -1945,6 +1946,9 @@ double OFStandard::atof(const char *s, OFBool *success)
 
 #else /* ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION */
 
+// This is the implementation in use when ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+// is defined.
+
 #ifdef _WIN32
 
     // Windows has a sscanf version where we can explicitly pass a locale
@@ -2362,6 +2366,9 @@ static void ftoa_convert(
 }
 
 #else /* ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION */
+
+// This is the implementation in use when ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
+// is defined.
 
 static void ftoa_convert(
   char *dst,
