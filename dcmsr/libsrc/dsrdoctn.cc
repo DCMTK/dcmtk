@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,7 +132,7 @@ OFBool DSRDocumentTreeNode::isShort(const size_t /*flags*/) const
 
 OFBool DSRDocumentTreeNode::hasTemplateIdentification() const
 {
-    /* mapping resource UID is optional, so do not check it */
+    /* Mapping Resource UID is optional, so do not check it */
     return !TemplateIdentifier.empty() && !MappingResource.empty();
 }
 
@@ -253,9 +253,9 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     DCMSR_WARN("Content item has invalid/incomplete template identification");
             }
         }
-        /* read concept name (not required in some cases) */
+        /* read Concept Name (not required in some cases) */
         ConceptName.readXML(doc, doc.getNamedChildNode(cursor, "concept", OFFalse /*required*/), flags);
-        /* read observation UID and date/time (optional) */
+        /* read Observation UID and date/time (optional) */
         const DSRXMLCursor childCursor = doc.getNamedChildNode(cursor, "observation", OFFalse /*required*/);
         if (childCursor.valid())
         {
@@ -356,10 +356,10 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
             }
         }
     }
-    /* relationship type */
+    /* Relationship Type */
     if ((RelationshipType != RT_isRoot) && !(flags & XF_relationshipTypeAsAttribute))
         writeStringValueToXML(stream, relationshipTypeToDefinedTerm(RelationshipType), "relationship", (flags & XF_writeEmptyTags) > 0);
-    /* concept name */
+    /* Concept Name */
     if (ConceptName.isValid())
     {
         if (flags & XF_codeComponentsAsAttribute)
@@ -371,7 +371,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
     }
     if (!(ObservationDateTime.empty() && ObservationUID.empty()))
     {
-        /* observation UID (optional) */
+        /* Observation UID (optional) */
         OFString tmpString;
         stream << "<observation";
         if (!ObservationUID.empty())
@@ -692,9 +692,9 @@ OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
                                                              const size_t flags)
 {
     OFCondition result = EC_Normal;
-    /* read DocumentRelationshipMacro */
+    /* read Document Relationship Macro */
     result = readDocumentRelationshipMacro(dataset, constraintChecker, "1" /*posString*/, flags);
-    /* read DocumentContentMacro */
+    /* read Document Content Macro */
     if (result.good())
         result = readDocumentContentMacro(dataset, "1" /*posString*/, flags);
     return result;
@@ -705,9 +705,9 @@ OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
                                                               DcmStack *markedItems)
 {
     OFCondition result = EC_Normal;
-    /* write DocumentRelationshipMacro */
+    /* write Document Relationship Macro */
     result = writeDocumentRelationshipMacro(dataset, markedItems);
-    /* write DocumentContentMacro */
+    /* write Document Content Macro */
     if (result.good())
         result = writeDocumentContentMacro(dataset);
     return result;
@@ -726,16 +726,16 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         getElementFromDataset(dataset, MACParameters);
         getElementFromDataset(dataset, DigitalSignatures);
     }
-    /* read ObservationDateTime (conditional) */
+    /* read Observation DateTime (conditional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C");
-    /* read ObservationUID (optional) */
+    /* read Observation UID (optional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationUID, ObservationUID, "1", "3");
     /* determine template identifier expected for this document */
     OFString expectedTemplateIdentifier;
     OFString expectedMappingResource;
     if (constraintChecker != NULL)
         constraintChecker->getRootTemplateIdentification(expectedTemplateIdentifier, expectedMappingResource);
-    /* read ContentTemplateSequence (conditional) */
+    /* read Content Template Sequence (conditional) */
     DcmItem *ditem = NULL;
     if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
     {
@@ -763,6 +763,15 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                 }
             }
         }
+        else if (!MappingResource.empty())
+        {
+            /* check whether an incorrect Mapping Resource UID is used */
+            if (MappingResourceUID == UID_DICOMContentMappingResource)
+            {
+                DCMSR_WARN("Incorrect value for Mapping Resource UID (" << MappingResourceUID << "), "
+                    << "should only be used for 'DCMR' and not for '" << MappingResource << "'");
+            }
+        }
         /* check whether the expected template (if known) has been used */
         if (!expectedTemplateIdentifier.empty())
         {
@@ -788,7 +797,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         DCMSR_WARN("Content Template Sequence missing or empty, Template Identifier "
             << expectedTemplateIdentifier << " (" << expectedMappingResource << ") expected");
     }
-    /* read ContentSequence */
+    /* read Content Sequence */
     if (result.good())
         result = readContentSequence(dataset, constraintChecker, posString, flags);
     return result;
@@ -810,12 +819,12 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     /* add to marked items stack */
     if (MarkFlag && (markedItems != NULL))
         markedItems->push(&dataset);
-    /* write ObservationDateTime (conditional) */
+    /* write Observation DateTime (conditional) */
     result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, OFFalse /*allowEmpty*/);
-    /* write ObservationUID (optional) */
+    /* write Observation UID (optional) */
     if (result.good())
         result = putStringValueToDataset(dataset, DCM_ObservationUID, ObservationUID, OFFalse /*allowEmpty*/);
-    /* write ContentTemplateSequence (conditional) */
+    /* write Content Template Sequence (conditional) */
     if (result.good())
     {
         if (hasTemplateIdentification())
@@ -846,9 +855,9 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
                                                           const size_t flags)
 {
     OFCondition result = EC_Normal;
-    /* skip reading ValueType, already done somewhere else */
+    /* skip reading Value Type, already done somewhere else */
 
-    /* read ConceptNameCodeSequence */
+    /* read Concept Name Code Sequence */
     if (RelationshipType == RT_isRoot)
     {
         /* the concept name is required for the root container */
@@ -861,7 +870,7 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
     {
         if (result.bad())
             DCMSR_DEBUG("Ignoring content item error because of read flag");
-        /* read ContentItem (depending on ValueType) */
+        /* read Content Item (depending on Value Type) */
         result = readContentItem(dataset, flags);
     }
     /* check for validity, after reading */
@@ -894,9 +903,9 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
 OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
-    /* write ValueType */
+    /* write Value Type */
     result = putStringValueToDataset(dataset, DCM_ValueType, valueTypeToDefinedTerm(ValueType));
-    /* write ConceptNameCodeSequence */
+    /* write Concept Name Code Sequence */
     if (result.good())
     {
         if (ConceptName.isValid())
@@ -907,7 +916,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset) con
         /* check for validity, before writing */
         if (!isValid())
             printInvalidContentItemMessage("Writing", this);
-        /* write ContentItem (depending on ValueType) */
+        /* write Content Item (depending on Value Type) */
         result = writeContentItem(dataset);
     }
     return result;
@@ -964,7 +973,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     DcmSequenceOfItems *dseq = NULL;
-    /* read ContentSequence (might be absent or empty) */
+    /* read Content Sequence (might be absent or empty) */
     if (dataset.findAndGetSequence(DCM_ContentSequence, dseq).good())
     {
         OFString tmpString;
@@ -987,7 +996,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
             location += numberToString(OFstatic_cast(size_t, i + 1), buffer, sizeof(buffer));
             if (flags & RF_showCurrentlyProcessedItem)
                 DCMSR_INFO("Processing content item " << location);
-            /* read RelationshipType */
+            /* read Relationship Type */
             result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1", "content item");
             if (result.good() || (flags & RF_acceptUnknownRelationshipType))
             {
@@ -1005,14 +1014,14 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                 {
                     /* create new node (by-reference, no constraint checker required) */
                     result = createAndAppendNewNode(node, relationshipType, VT_byReference);
-                    /* read ReferencedContentItemIdentifier (again) */
+                    /* read Referenced Content Item Identifier (again) */
                     if (result.good())
                     {
                         newNode = node;
                         result = node->readContentItem(*ditem, flags);
                     }
                 } else {
-                    /* read ValueType (from DocumentContentMacro) - required to create new node */
+                    /* read Value Type (from Document Content Macro) - required to create new node */
                     result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1", "content item");
                     if (result.good())
                     {
@@ -1023,12 +1032,12 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         {
                             /* create new node (by-value) */
                             result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
-                            /* read RelationshipMacro */
+                            /* read Relationship Macro */
                             if (result.good())
                             {
                                 newNode = node;
                                 result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags);
-                                /* read DocumentContentMacro */
+                                /* read Document Content Macro */
                                 if (result.good())
                                     result = node->readDocumentContentMacro(*ditem, location.c_str(), flags);
                             } else {
@@ -1079,7 +1088,7 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
     DSRDocumentTreeNodeCursor cursor(getDown());
     if (cursor.isValid())
     {
-        /* write ContentSequence */
+        /* write Content Sequence */
         DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ContentSequence);
         if (dseq != NULL)
         {
@@ -1091,19 +1100,19 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                 ditem = new DcmItem();
                 if (ditem != NULL)
                 {
-                    /* write RelationshipType */
+                    /* write Relationship Type */
                     result = putStringValueToDataset(*ditem, DCM_RelationshipType, relationshipTypeToDefinedTerm(node->getRelationshipType()));
                     /* check for by-reference relationship */
                     if (node->getValueType() == VT_byReference)
                     {
-                        /* write ReferencedContentItemIdentifier */
+                        /* write Referenced Content Item Identifier */
                         if (result.good())
                             result = node->writeContentItem(*ditem);
                     } else {    // by-value
-                        /* write RelationshipMacro */
+                        /* write Relationship Macro */
                         if (result.good())
                             result = node->writeDocumentRelationshipMacro(*ditem, markedItems);
-                        /* write DocumentContentMacro */
+                        /* write Document Content Macro */
                         if (result.good())
                             node->writeDocumentContentMacro(*ditem);
                     }
@@ -1141,7 +1150,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream &do
         if (!ConceptName.getCodeMeaning().empty())
         {
             docStream << "<b>";
-            /* render ConceptName & Code (if valid) */
+            /* render Concept Name & Code (if valid) */
             ConceptName.renderHTML(docStream, flags, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /*fullCode*/);
             docStream << ":</b>";
             writeLine = OFTrue;
@@ -1149,7 +1158,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream &do
         else if (flags & HF_currentlyInsideAnnex)
         {
             docStream << "<b>";
-            /* render ValueType only */
+            /* render Value Type only */
             docStream << valueTypeToReadableName(ValueType);
             docStream << ":</b>";
             writeLine = OFTrue;
