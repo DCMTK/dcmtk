@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dcswap.h"
 #include "dcmtk/dcmdata/dcjson.h"
 
+#include <cmath>
 
 // ********************************
 

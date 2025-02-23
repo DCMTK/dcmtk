@@ -30,6 +30,7 @@
 #include "dcmtk/dcmdata/dcvrof.h"
 #include "dcmtk/dcmdata/dcswap.h"
 
+#include <cmath>
 
 // ********************************
 
