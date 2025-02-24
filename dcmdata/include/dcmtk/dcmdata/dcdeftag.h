@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-11-16 10:42:04
+**   Date: 2025-02-24 12:36:56
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2024-11-16 10:42:04"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2025-02-24 12:36:56"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5206
+** Number of entries: 5230
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -317,6 +317,10 @@
 #define DCM_FailedStudySequence                  DcmTagKey(0x0008, 0x119b)
 #define DCM_StudiesContainingOtherReferencedInstancesSequence DcmTagKey(0x0008, 0x1200)
 #define DCM_RelatedSeriesSequence                DcmTagKey(0x0008, 0x1250)
+#define DCM_PrincipalDiagnosisCodeSequence       DcmTagKey(0x0008, 0x1301)
+#define DCM_PrimaryDiagnosisCodeSequence         DcmTagKey(0x0008, 0x1302)
+#define DCM_SecondaryDiagnosesCodeSequence       DcmTagKey(0x0008, 0x1303)
+#define DCM_HistologicalDiagnosesCodeSequence    DcmTagKey(0x0008, 0x1304)
 #define DCM_RETIRED_LossyImageCompressionRetired DcmTagKey(0x0008, 0x2110)
 #define DCM_DerivationDescription                DcmTagKey(0x0008, 0x2111)
 #define DCM_SourceImageSequence                  DcmTagKey(0x0008, 0x2112)
@@ -2880,6 +2884,25 @@
 #define DCM_CellValuesSequence                   DcmTagKey(0x0040, 0xa808)
 #define DCM_RETIRED_UniformResourceLocatorTrial  DcmTagKey(0x0040, 0xa992)
 #define DCM_WaveformAnnotationSequence           DcmTagKey(0x0040, 0xb020)
+#define DCM_StructuredWaveformAnnotationSequence DcmTagKey(0x0040, 0xb030)
+#define DCM_WaveformAnnotationDisplaySelectionSequence DcmTagKey(0x0040, 0xb031)
+#define DCM_ReferencedMontageIndex               DcmTagKey(0x0040, 0xb032)
+#define DCM_WaveformTextualAnnotationSequence    DcmTagKey(0x0040, 0xb033)
+#define DCM_AnnotationDateTime                   DcmTagKey(0x0040, 0xb034)
+#define DCM_DisplayedWaveformSegmentSequence     DcmTagKey(0x0040, 0xb035)
+#define DCM_SegmentDefinitionDateTime            DcmTagKey(0x0040, 0xb036)
+#define DCM_MontageActivationSequence            DcmTagKey(0x0040, 0xb037)
+#define DCM_MontageActivationTimeOffset          DcmTagKey(0x0040, 0xb038)
+#define DCM_WaveformMontageSequence              DcmTagKey(0x0040, 0xb039)
+#define DCM_ReferencedMontageChannelNumber       DcmTagKey(0x0040, 0xb03a)
+#define DCM_MontageName                          DcmTagKey(0x0040, 0xb03b)
+#define DCM_MontageChannelSequence               DcmTagKey(0x0040, 0xb03c)
+#define DCM_MontageIndex                         DcmTagKey(0x0040, 0xb03d)
+#define DCM_MontageChannelNumber                 DcmTagKey(0x0040, 0xb03e)
+#define DCM_MontageChannelLabel                  DcmTagKey(0x0040, 0xb03f)
+#define DCM_MontageChannelSourceCodeSequence     DcmTagKey(0x0040, 0xb040)
+#define DCM_ContributingChannelSourcesSequence   DcmTagKey(0x0040, 0xb041)
+#define DCM_ChannelWeight                        DcmTagKey(0x0040, 0xb042)
 #define DCM_TemplateIdentifier                   DcmTagKey(0x0040, 0xdb00)
 #define DCM_RETIRED_TemplateVersion              DcmTagKey(0x0040, 0xdb06)
 #define DCM_RETIRED_TemplateLocalVersion         DcmTagKey(0x0040, 0xdb07)
@@ -3058,6 +3081,7 @@
 #define DCM_PixelOriginInterpretation            DcmTagKey(0x0048, 0x0301)
 #define DCM_NumberOfOpticalPaths                 DcmTagKey(0x0048, 0x0302)
 #define DCM_TotalPixelMatrixFocalPlanes          DcmTagKey(0x0048, 0x0303)
+#define DCM_TilesOverlap                         DcmTagKey(0x0048, 0x0304)
 #define DCM_CalibrationImage                     DcmTagKey(0x0050, 0x0004)
 #define DCM_DeviceSequence                       DcmTagKey(0x0050, 0x0010)
 #define DCM_ContainerComponentTypeCodeSequence   DcmTagKey(0x0050, 0x0012)

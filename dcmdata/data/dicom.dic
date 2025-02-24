@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2024, OFFIS e.V.
+#  Copyright (C) 1994-2025, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2024e and PS 3.7-2024e.
-# File created on 2024-11-16 10:17:21 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2025a and PS 3.7-2025a.
+# File created on 2025-02-24 12:33:06 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -300,6 +300,10 @@
 (0008,119B)	SQ	FailedStudySequence	1	DICOM
 (0008,1200)	SQ	StudiesContainingOtherReferencedInstancesSequence	1	DICOM
 (0008,1250)	SQ	RelatedSeriesSequence	1	DICOM
+(0008,1301)	SQ	PrincipalDiagnosisCodeSequence	1	DICOM
+(0008,1302)	SQ	PrimaryDiagnosisCodeSequence	1	DICOM
+(0008,1303)	SQ	SecondaryDiagnosesCodeSequence	1	DICOM
+(0008,1304)	SQ	HistologicalDiagnosesCodeSequence	1	DICOM
 (0008,2111)	ST	DerivationDescription	1	DICOM
 (0008,2112)	SQ	SourceImageSequence	1	DICOM
 (0008,2120)	SH	StageName	1	DICOM
@@ -2591,6 +2595,25 @@
 (0040,A807)	SQ	TableColumnDefinitionSequence	1	DICOM
 (0040,A808)	SQ	CellValuesSequence	1	DICOM
 (0040,B020)	SQ	WaveformAnnotationSequence	1	DICOM
+(0040,B030)	SQ	StructuredWaveformAnnotationSequence	1	DICOM
+(0040,B031)	SQ	WaveformAnnotationDisplaySelectionSequence	1	DICOM
+(0040,B032)	US	ReferencedMontageIndex	1	DICOM
+(0040,B033)	SQ	WaveformTextualAnnotationSequence	1	DICOM
+(0040,B034)	DT	AnnotationDateTime	1	DICOM
+(0040,B035)	SQ	DisplayedWaveformSegmentSequence	1	DICOM
+(0040,B036)	DT	SegmentDefinitionDateTime	1	DICOM
+(0040,B037)	SQ	MontageActivationSequence	1	DICOM
+(0040,B038)	DS	MontageActivationTimeOffset	1	DICOM
+(0040,B039)	SQ	WaveformMontageSequence	1	DICOM
+(0040,B03A)	IS	ReferencedMontageChannelNumber	1	DICOM
+(0040,B03B)	LT	MontageName	1	DICOM
+(0040,B03C)	SQ	MontageChannelSequence	1	DICOM
+(0040,B03D)	US	MontageIndex	1	DICOM
+(0040,B03E)	IS	MontageChannelNumber	1	DICOM
+(0040,B03F)	LO	MontageChannelLabel	1	DICOM
+(0040,B040)	SQ	MontageChannelSourceCodeSequence	1	DICOM
+(0040,B041)	SQ	ContributingChannelSourcesSequence	1	DICOM
+(0040,B042)	FL	ChannelWeight	1	DICOM
 (0040,DB00)	CS	TemplateIdentifier	1	DICOM
 (0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	DICOM
 (0040,E001)	ST	HL7InstanceIdentifier	1	DICOM
@@ -2761,6 +2784,7 @@
 (0048,0301)	CS	PixelOriginInterpretation	1	DICOM
 (0048,0302)	UL	NumberOfOpticalPaths	1	DICOM
 (0048,0303)	UL	TotalPixelMatrixFocalPlanes	1	DICOM
+(0048,0304)	CS	TilesOverlap	1	DICOM
 (0050,0004)	CS	CalibrationImage	1	DICOM
 (0050,0010)	SQ	DeviceSequence	1	DICOM
 (0050,0012)	SQ	ContainerComponentTypeCodeSequence	1	DICOM
@@ -5325,7 +5349,6 @@
 (7F00-7FFF,0011)	US	RETIRED_VariableNextDataGroup	1	DICOM/retired
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
-(7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
 #
 #---------------------------------------------------------------------------
