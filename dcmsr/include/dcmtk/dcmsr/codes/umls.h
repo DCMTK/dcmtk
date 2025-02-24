@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2024e
- *  File created on 2024-11-16 10:17:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025a
+ *  File created on 2025-02-24 12:33:14 by J. Riesmeier
  *
  */
 
