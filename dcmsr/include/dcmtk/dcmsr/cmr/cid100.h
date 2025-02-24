@@ -5,8 +5,8 @@
  *
  *  Header file for class CID100_QuantitativeDiagnosticImagingProcedure
  *
- *  Generated automatically from DICOM PS 3.16-2024e
- *  File created on 2025-01-25 20:32:10 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025a
+ *  File created on 2025-02-24 12:55:32 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 100 - Quantitative Diagnostic Imaging Procedure.
- *  (type: extensible, version: 20230630)
+ *  (type: extensible, version: 20250122)
  */
 class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedure
   : public DSRContextGroup
@@ -75,9 +75,7 @@ class DCMTK_CMR_EXPORT CID100_QuantitativeDiagnosticImagingProcedure
         /// (39142-5,LN,"CT perfusion head with contrast IV")
         CTPerfusionHeadWithContrastIV,
         /// (39632-5,LN,"SPECT brain")
-        SPECTBrain,
-        /// (RPID5427,RADLEX,"NM head perfusion brain PET-CT AV-45")
-        NMHeadPerfusionBrainPET_CT_AV45
+        SPECTBrain
     };
 
     /** (default) constructor

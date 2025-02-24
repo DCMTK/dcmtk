@@ -5,8 +5,8 @@
  *
  *  Source file for class CID100_QuantitativeDiagnosticImagingProcedure
  *
- *  Generated automatically from DICOM PS 3.16-2024e
- *  File created on 2025-01-25 20:32:10 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025a
+ *  File created on 2025-02-24 12:55:32 by J. Riesmeier
  *
  */
 
@@ -19,7 +19,7 @@
 // general information on CID 100 (Quantitative Diagnostic Imaging Procedure)
 #define CONTEXT_GROUP_NUMBER  "100"
 #define CONTEXT_GROUP_KEYWORD "QuantitativeDiagnosticImagingProcedure"
-#define CONTEXT_GROUP_VERSION "20230630"
+#define CONTEXT_GROUP_VERSION "20250122"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.998"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -168,7 +168,6 @@ CID100_QuantitativeDiagnosticImagingProcedure::CodeList &CID100_QuantitativeDiag
         Codes->insert(OFMake_pair(PETCT_METImagingOfWholeBody, DSRBasicCodedEntry("764704008", "SCT", "PET/CT MET imaging of whole body")));
         Codes->insert(OFMake_pair(CTPerfusionHeadWithContrastIV, DSRBasicCodedEntry("39142-5", "LN", "CT perfusion head with contrast IV")));
         Codes->insert(OFMake_pair(SPECTBrain, DSRBasicCodedEntry("39632-5", "LN", "SPECT brain")));
-        Codes->insert(OFMake_pair(NMHeadPerfusionBrainPET_CT_AV45, DSRBasicCodedEntry("RPID5427", "RADLEX", "NM head perfusion brain PET-CT AV-45")));
     }
     /* should never be NULL */
     return *Codes;

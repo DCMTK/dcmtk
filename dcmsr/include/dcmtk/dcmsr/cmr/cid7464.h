@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7464_GeneralRegionOfInterestMeasurementModifier
  *
- *  Generated automatically from DICOM PS 3.16-2024e
- *  File created on 2025-01-25 20:32:21 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025a
+ *  File created on 2025-02-24 12:55:49 by J. Riesmeier
  *
  */
 
