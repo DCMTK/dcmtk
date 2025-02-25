@@ -674,6 +674,11 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
                 << DCM_ItemDelimitationItem << " by sequence delimiter "
                 << DCM_SequenceDelimitationItem << " because it is expected here");
             l_error = EC_SequEnd;
+        } else if (dcmReplaceWrongDelimitationItem.get() && (l_error == EC_CorruptedData)) {
+            DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() replacing null bytes "
+                << DCM_GenericGroupLength << " by sequence delimiter "
+                << DCM_SequenceDelimitationItem << " because it is expected here");
+            l_error = EC_SequEnd;
         } else {
             DCMDATA_DEBUG("DcmSequenceOfItems::readSubItem() cannot create Sub Item " << newTag);
             // treat this incorrect encoding as an error
