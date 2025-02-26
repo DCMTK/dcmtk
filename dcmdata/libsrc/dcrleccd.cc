@@ -744,6 +744,10 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     }
 
     // adjust byte order for uncompressed image to little endian
+    if ((gLocalByteOrder == EBO_BigEndian) && (frameSize & 1))
+    {
+      DCMDATA_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
+    }
     swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, frameSize, sizeof(Uint16));
 
     return result;

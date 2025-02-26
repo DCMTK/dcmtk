@@ -588,6 +588,11 @@ OFCondition DJCodecDecoder::decodeFrame(
                     // decompression is complete, finally adjust byte order if necessary
                     if (jpeg->bytesPerSample() == 1) // we're writing bytes into words
                     {
+                      if ((gLocalByteOrder == EBO_BigEndian) && (frameSize & 1))
+                      {
+                        DCMJPEG_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
+                      }
+
                       result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, OFreinterpret_cast(Uint16*, buffer), OFstatic_cast(Uint32, frameSize), sizeof(Uint16));
                     }
                   }
