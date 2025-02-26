@@ -252,6 +252,45 @@ private:
     Uint16 imageSamplesPerPixel,
     Uint16 bytesPerSample);
 
+  /** decompresses a single frame from the given pixel sequence and
+   *  stores the result in the given buffer, without adjusting byte order
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param frameNo number of frame, starting with 0 for the first frame
+   *  @param startFragment index of the compressed fragment that contains
+   *    all or the first part of the compressed bitstream for the given frameNo.
+   *    Upon successful return this parameter is updated to contain the index
+   *    of the first compressed fragment of the next frame.
+   *    When unknown, zero should be passed. In this case the decompression
+   *    algorithm will try to determine the index by itself, which will always
+   *    work if frames are decompressed in increasing order from first to last,
+   *    but may fail if frames are decompressed in random order, multiple fragments
+   *    per frame and multiple frames are present in the dataset, and the offset
+   *    table is empty.
+   *  @param buffer pointer to buffer where frame is to be stored
+   *  @param bufSize size of buffer in bytes
+   *  @param imageFrames number of frames in this image
+   *  @param imageColumns number of columns for each frame
+   *  @param imageRows number of rows for each frame
+   *  @param imageSamplesPerPixel number of samples per pixel
+   *  @param bytesPerSample number of bytes per sample
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  static OFCondition decodeFrameNoSwap(
+    DcmPixelSequence * fromPixSeq,
+    const DJLSCodecParameter *cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    Sint32 imageFrames,
+    Uint16 imageColumns,
+    Uint16 imageRows,
+    Uint16 imageSamplesPerPixel,
+    Uint16 bytesPerSample);
+
   /** determines if a given image requires color-by-plane planar configuration
    *  depending on SOP Class UID (DICOM IOD) and photometric interpretation.
    *  All SOP classes defined in the 2003 edition of the DICOM standard or earlier
