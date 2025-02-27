@@ -257,7 +257,11 @@ PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
 PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
 PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
 WaveformAnnotationSRStorage                  1.2.840.10008.5.1.4.1.1.88.77
+
+RenditionSelectionDocumentRealTimeCommunication 1.2.840.10008.10.4 (*)
 \endverbatim
+
+(*) This is not a Storage SOP Class, but used for Real-Time Communication.
 
 \subsection dsr2html_character_encoding Character Encoding
 
