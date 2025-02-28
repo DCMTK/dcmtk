@@ -79,6 +79,12 @@ public:
     I2DImgSource *inputPlug,
     size_t frameNumber);
 
+  /** Adjust byte order of the pixel data to local byte order for the OW VR.
+   *  @param numberOfFrames - [in] The number of frames to be written
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  virtual OFCondition adjustByteOrder(size_t numberOfFrames);
+
   /** Update the offset table in the case of an encapsulated image
    *  @return EC_Normal if offset table could be updated, error code otherwise
    */
