@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2024, OFFIS e.V.
+ *  Copyright (C) 2018-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1046,17 +1046,17 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
             return EXITCODE_INVALID_INPUT_FILE;
           }
           // Header is from bytes 0-79
-          // The number of Triangles starts at byte offset 80 and is a uint32 (4 Bytes)
-          char ntriangleschar[5];
-          for (int j = 0; j < 4; j++)
-            ntriangleschar[j] = buf[80 + j];
-          ntriangleschar[4] = 0;
-          Uint32 *nTriangles = OFreinterpret_cast(Uint32*, ntriangleschar);
+          // The number of Triangles starts at byte offset 80 and is a
+          // unsigned 32-bit integer in little endian byte order
+          Uint32 nTriangles = 0;
+          for (int j = 3; j >= 0; --j)
+            nTriangles = (nTriangles << 8) + buf[80 + j];
+
           // Verify that file size equals the sum of
           // header + nTriangles value + all triangles
           OFLOG_DEBUG(appLogger, "verifying if the file size is consistent");
-          if (fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) ||
-              fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64))
+          if (fileSize == (84 + nTriangles * facetSize32) ||
+              fileSize == (84 + nTriangles * facetSize64))
           {
             OFLOG_DEBUG(appLogger, "File " << opt_ifname
                     << " passed binary STL validation." << OFendl
@@ -1065,11 +1065,10 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
             );
             OFLOG_TRACE(appLogger, "The binary STL file is:" << OFendl
                     << fileSize << " kB " << " as expected." << OFendl
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize32) << " kB for x86" << OFendl
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize64) << " kB for x64" << OFendl
+                    << (84 + nTriangles * facetSize32) << " kB for x86" << OFendl
+                    << (84 + nTriangles * facetSize64) << " kB for x64" << OFendl
                     << "(84 + triangles number * facet size)" << OFendl
-                    << " number of Triangles " << *OFconst_cast(Uint32 * , nTriangles) << OFendl
-                    << " nTriangles (Uint32): " << nTriangles << OFendl
+                    << " number of Triangles " << nTriangles << OFendl
                     << " facetSize32: " << facetSize32 << OFendl
                     << " facetSize64: " << facetSize64 << OFendl
             );
@@ -1077,11 +1076,10 @@ int DcmEncapsulatedDocument::insertEncapsulatedDocument(
           else
           {
             OFLOG_ERROR(appLogger, "The binary STL file is not consistent." << OFendl
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize32) << " kB for x86 and "
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize64) << " kB for x64 " << OFendl
+                    << (84 + nTriangles * facetSize32) << " kB for x86 and "
+                    << (84 + nTriangles * facetSize64) << " kB for x64 " << OFendl
                     << "(84 + triangles number * facet size)" << OFendl
-                    << " number of Triangles " << *OFconst_cast(Uint32 * , nTriangles) << OFendl
-                    << " nTriangles (Uint32): " << nTriangles << OFendl
+                    << " number of Triangles " << nTriangles << OFendl
                     << " facetSize32: " << facetSize32 << OFendl
                     << " facetSize64: " << facetSize64 << OFendl
             );
