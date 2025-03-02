@@ -3546,7 +3546,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     if (!found)
     {
         char buf[256];
-        OFStandard::snprintf(buf, sizeof(buf), "Unrecognized PDU type: %2x", *type);
+        OFStandard::snprintf(buf, sizeof(buf), "Unrecognized PDU type: %2.2x", *type);
         return makeDcmnetCondition(DULC_UNRECOGNIZEDPDUTYPE, OF_error, buf);
     }
 
