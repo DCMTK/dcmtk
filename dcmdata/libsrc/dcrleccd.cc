@@ -312,7 +312,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     {
                       if (rledecoder.size() < bytesPerStripe)
                       {
-                        DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, will continue with next pixel item");
+                        DCMDATA_WARN("Detected fragmented RLE compressed pixel data, which is not allowed in DICOM.");
                         DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                         result = pixSeq->getItem(pixItem, currentItem++);
                         if (result.good())
@@ -348,6 +348,7 @@ OFCondition DcmRLECodecDecoder::decode(
 
                       if (result.good() || result == EC_StreamNotifyClient)
                       {
+                        DCMDATA_WARN("Detected fragmented RLE compressed pixel data, which is not allowed in DICOM.");
                         DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                         result = pixSeq->getItem(pixItem, currentItem++);
                       }
@@ -637,6 +638,11 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
             // if the RLE data is split in multiple fragments. We need to feed
             // data fragment by fragment until the RLE codec has produced
             // sufficient output.
+            if (fragmentLength < byteOffset)
+            {
+              DCMDATA_ERROR("Byte offset in RLE header is wrong.");
+              return EC_CannotChangeRepresentation;
+            }
             bytesToDecode = OFstatic_cast(size_t, fragmentLength - byteOffset);
         }
         else
