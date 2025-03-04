@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -95,7 +95,7 @@ class DiMonoFlipTemplate
     {
         if (pixel != NULL)
         {
-            this->Data = new T[this->getCount()];
+            this->Data = new (std::nothrow) T[this->getCount()];
             if (this->Data != NULL)
             {
                 if (horz && vert)

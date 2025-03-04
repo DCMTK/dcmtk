@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2011, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -112,7 +112,7 @@ class DiMonoScaleTemplate
     {
         if (pixel != NULL)
         {
-            this->Data = new T[this->getCount()];
+            this->Data = new (std::nothrow) T[this->getCount()];
             if (this->Data != NULL)
             {
                 const T value = OFstatic_cast(T, OFstatic_cast(double, DicomImageClass::maxval(bits)) *

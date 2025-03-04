@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,7 +82,7 @@ class DiMonoCopyTemplate
     {
         if (pixel != NULL)
         {
-            this->Data = new T[this->getCount()];
+            this->Data = new (std::nothrow) T[this->getCount()];
             if (this->Data != NULL)
                 OFBitmanipTemplate<T>::copyMem(pixel, this->Data, this->getCount());
         }
