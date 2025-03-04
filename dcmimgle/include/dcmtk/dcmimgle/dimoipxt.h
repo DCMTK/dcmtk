@@ -142,7 +142,7 @@ class DiMonoInputPixelTemplate
                     this->Data = OFstatic_cast(T3 *, input->getDataPtr());
                     input->removeDataReference();              // avoid double deletion
                 } else
-                    this->Data = new T3[this->Count];
+                    this->Data = new (std::nothrow) T3[this->Count];
                 if (this->Data != NULL)
                 {
                     DCMIMGLE_DEBUG("applying modality transformation with LUT (" << mlut->getCount() << " entries)");
@@ -214,7 +214,7 @@ class DiMonoInputPixelTemplate
                 this->Data = OFstatic_cast(T3 *, input->getDataPtr());
                 input->removeDataReference();              // avoid double deletion
             } else
-                this->Data = new T3[this->Count];
+                this->Data = new (std::nothrow) T3[this->Count];
             if (this->Data != NULL)
             {
                 T3 *q = this->Data;
