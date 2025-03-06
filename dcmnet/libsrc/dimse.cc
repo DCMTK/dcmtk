@@ -335,6 +335,7 @@ getTransferSyntax(
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif
+        case EXS_DeflatedImageFrameCompression:
         case EXS_JPEGLSLossless:
         case EXS_JPEGLSLossy:
         case EXS_JPEG2000LosslessOnly:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -402,6 +402,20 @@ const S_XferNames XferNames[] =
       EXV_Standard
     },
     // entry #25
+    { UID_DeflatedImageFrameCompressionTransferSyntax,
+      "Deflated Image Frame Compression",
+      EXS_DeflatedImageFrameCompression,
+      EBO_LittleEndian,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EPE_Encapsulated,
+      EPC_LosslessCompressed,
+      OFFalse,
+      0L, 0L,
+      ESC_none,
+      EXV_Standard
+    },
+    // entry #26
     { UID_JPEGLSLosslessTransferSyntax,
       "JPEG-LS Lossless",
       EXS_JPEGLSLossless,
@@ -415,7 +429,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #26
+    // entry #27
     { UID_JPEGLSLossyTransferSyntax,
       "JPEG-LS Lossy (Near-lossless)",
       EXS_JPEGLSLossy,
@@ -429,7 +443,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #27
+    // entry #28
     { UID_JPEG2000LosslessOnlyTransferSyntax,
       "JPEG 2000 (Lossless only)",
       EXS_JPEG2000LosslessOnly,
@@ -443,7 +457,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #28
+    // entry #29
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
       EXS_JPEG2000,
@@ -457,7 +471,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #29
+    // entry #30
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless only)",
       EXS_JPEG2000MulticomponentLosslessOnly,
@@ -471,7 +485,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #30
+    // entry #31
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
       "JPEG 2000 Part 2 Multicomponent Image Compression (Lossless or Lossy)",
       EXS_JPEG2000Multicomponent,
@@ -485,7 +499,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #31
+    // entry #32
    { UID_JPIPReferencedTransferSyntax,
       "JPIP Referenced",
       EXS_JPIPReferenced,
@@ -499,7 +513,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #32
+    // entry #33
    { UID_JPIPReferencedDeflateTransferSyntax,
       "JPIP Referenced Deflate",
       EXS_JPIPReferencedDeflate,
@@ -517,7 +531,7 @@ const S_XferNames XferNames[] =
 #endif
       EXV_Standard
     },
-    // entry #33
+    // entry #34
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
       "MPEG2 Main Profile @ Main Level",  // changed with DICOM 2016e to: MPEG2 Main Profile / Main Level
       EXS_MPEG2MainProfileAtMainLevel,
@@ -531,7 +545,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #34
+    // entry #35
     { UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax,
       "Fragmentable MPEG2 Main Profile / Main Level",
       EXS_FragmentableMPEG2MainProfileMainLevel,
@@ -545,7 +559,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #35
+    // entry #36
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
       "MPEG2 Main Profile @ High Level",  // changed with DICOM 2016e to: MPEG2 Main Profile / High Level
       EXS_MPEG2MainProfileAtHighLevel,
@@ -559,7 +573,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #36
+    // entry #37
     { UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax,
       "Fragmentable MPEG2 Main Profile / High Level",
       EXS_FragmentableMPEG2MainProfileHighLevel,
@@ -573,7 +587,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #37
+    // entry #38
     { UID_MPEG4HighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.1",
       EXS_MPEG4HighProfileLevel4_1,
@@ -587,7 +601,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #38
+    // entry #39
     { UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax,
       "Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1",
       EXS_FragmentableMPEG4HighProfileLevel4_1,
@@ -601,7 +615,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #39
+    // entry #40
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       "MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
       EXS_MPEG4BDcompatibleHighProfileLevel4_1,
@@ -615,7 +629,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #40
+    // entry #41
     { UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
       "Fragmentable MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1",
       EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1,
@@ -629,7 +643,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #41
+    // entry #42
     { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
       EXS_MPEG4HighProfileLevel4_2_For2DVideo,
@@ -643,7 +657,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #42
+    // entry #43
     { UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
       "Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video",
       EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo,
@@ -657,7 +671,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #43
+    // entry #44
     { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
       "MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
       EXS_MPEG4HighProfileLevel4_2_For3DVideo,
@@ -671,7 +685,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #44
+    // entry #45
     { UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
       "Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video",
       EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo,
@@ -685,7 +699,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #45
+    // entry #46
     { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
       "MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
       EXS_MPEG4StereoHighProfileLevel4_2,
@@ -699,7 +713,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #46
+    // entry #47
     { UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax,
       "Fragmentable MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2",
       EXS_FragmentableMPEG4StereoHighProfileLevel4_2,
@@ -713,7 +727,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #47
+    // entry #48
     { UID_HEVCMainProfileLevel5_1TransferSyntax,
       "HEVC/H.265 Main Profile / Level 5.1",
       EXS_HEVCMainProfileLevel5_1,
@@ -727,7 +741,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #48
+    // entry #49
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,
       "HEVC/H.265 Main 10 Profile / Level 5.1",
       EXS_HEVCMain10ProfileLevel5_1,
@@ -741,7 +755,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #49
+    // entry #50
     { UID_JPEGXLLosslessTransferSyntax,
       "JPEG XL Lossless",
       EXS_JPEGXLLossless,
@@ -755,7 +769,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #50
+    // entry #51
     { UID_JPEGXLJPEGRecompressionTransferSyntax,
       "JPEG XL JPEG Recompression",
       EXS_JPEGXLJPEGRecompression,
@@ -769,7 +783,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #51
+    // entry #52
     { UID_JPEGXLTransferSyntax,
       "JPEG XL",
       EXS_JPEGXL,
@@ -783,7 +797,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #52
+    // entry #53
     { UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,
       "High-Throughput JPEG 2000 Image Compression (Lossless Only)",
       EXS_HighThroughputJPEG2000LosslessOnly,
@@ -797,7 +811,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #53
+    // entry #54
     { UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,
       "High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)",
       EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly,
@@ -811,7 +825,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #54
+    // entry #55
     { UID_HighThroughputJPEG2000ImageCompressionTransferSyntax,
       "High-Throughput JPEG 2000 Image Compression",
       EXS_HighThroughputJPEG2000,
@@ -825,7 +839,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #55
+    // entry #56
     { UID_JPIPHTJ2KReferencedTransferSyntax,
       "JPIP HTJ2K Referenced",
       EXS_JPIPHTJ2KReferenced,
@@ -839,7 +853,7 @@ const S_XferNames XferNames[] =
       ESC_none,
       EXV_Standard
     },
-    // entry #56
+    // entry #57
     { UID_JPIPHTJ2KReferencedDeflateTransferSyntax,
       "JPIP HTJ2K Referenced Deflate",
       EXS_JPIPHTJ2KReferencedDeflate,
@@ -857,7 +871,7 @@ const S_XferNames XferNames[] =
 #endif
       EXV_Standard
     },
-    // entry #57
+    // entry #58
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
       "Private GE Little Endian Implicit with big endian pixel data",
       EXS_PrivateGE_LEI_WithBigEndianPixelData,

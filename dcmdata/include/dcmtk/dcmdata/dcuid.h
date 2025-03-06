@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -436,6 +436,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.98"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
+/// Deflated Image Frame Compression
+#define UID_DeflatedImageFrameCompressionTransferSyntax  "1.2.840.10008.1.2.8.1"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
  *  for Lossy JPEG 8 Bit Image Compression
  */

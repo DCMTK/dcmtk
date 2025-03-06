@@ -80,7 +80,7 @@ application entity titles:
 
 association negotiation debugging:
 
-  -pts  --propose-ts  [n]umber: integer (1..52)
+  -pts  --propose-ts  [n]umber: integer (1..53)
           propose n transfer syntaxes
 
   -ppc  --propose-pc  [n]umber: integer (1..128)
@@ -405,6 +405,6 @@ It is an error if no data dictionary can be loaded.
 
 \section echoscu_copyright COPYRIGHT
 
-Copyright (C) 1994-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
