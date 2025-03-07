@@ -2461,7 +2461,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
                 char buf[256];
                 OFString msg = "TCP Initialization Error: ";
-                msg += OFStandard::strerror(socketError, buf, sizeof(buf));
+                msg += OFStandard::getLastNetworkErrorCode().message();
                 return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
             }
         }
