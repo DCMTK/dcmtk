@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,7 +89,8 @@ static const char *DRTypeNames[] =
     "ASSESSMENT",
     "RADIOTHERAPY",
     "ANNOTATION",
-    "INVENTORY"
+    "INVENTORY",
+    "WF PRESENTATION"
 };
 
 static const short DIM_OF_DRTypeNames = OFstatic_cast(short, (sizeof(DRTypeNames) / sizeof(DRTypeNames[0])));
@@ -425,6 +426,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Assessment:
                 case ERT_Radiotherapy:
                 case ERT_Annotation:
+                case ERT_WfPresentation:
                 case ERT_Private:
                     l_error = EC_Normal;
                     break;
@@ -524,6 +526,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_Radiotherapy:
         case ERT_Annotation:
         case ERT_Inventory:
+        case ERT_WfPresentation:
         case ERT_Private:
             switch (lowerRecord)
             {
