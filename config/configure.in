@@ -1146,27 +1146,26 @@ SNDFILELIBS=""
 AC_MSG_CHECKING(whether to include libsndfile support)
 AH_TEMPLATE(WITH_SNDFILE, [Define if we are compiling with libsndfile support.])
 AC_ARG_WITH(libsndfile,
-  [AS_HELP_STRING([--with-libsndfile], [include libsndfile support (default: auto)])
+  [AS_HELP_STRING([--with-libsndfile], [include libsndfile support (default: no)])
 AS_HELP_STRING([--without-libsndfile], [don't include libsndfile support])],
   [ case "$withval" in
     yes)
-      AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_SNDFILE)
-      SNDFILELIBS="-lsndfile"
+      SAVELIBS="$LIBS"
+      LIBS="$LIBS -lsndfile"
+      AC_TRY_LINK([#include <sndfile.h>], [char buffer [128]; sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));],
+        [ AC_MSG_RESULT(yes)
+          AC_DEFINE(WITH_SNDFILE)
+          SNDFILELIBS="-lsndfile" ],
+        [ AC_MSG_RESULT(no) ])
+      LIBS="$SAVELIBS"
       ;;
     *)
       AC_MSG_RESULT(no)
       ;;
     esac ],
-  [ SAVELIBS="$LIBS"
-    LIBS="$LIBS -lsndfile"
-    AC_TRY_LINK([#include <sndfile.h>], [char buffer [128]; sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));],
-      [ AC_MSG_RESULT(yes)
-        AC_DEFINE(WITH_SNDFILE)
-        SNDFILELIBS="-lsndfile" ],
-      [AC_MSG_RESULT(no)])
-    LIBS="$SAVELIBS"]
+  [ AC_MSG_RESULT(no) ]
 )
+
 
 dnl -------------------------------------------------------
 dnl Check for libiconv support

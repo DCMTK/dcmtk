@@ -1465,7 +1465,7 @@ Optional Packages:
   --without-openjpeg      don't include OpenJPEG support
   --with-libsndfileinc=DIR
                           location of libsndfile includes and libraries
-  --with-libsndfile       include libsndfile support (default: auto)
+  --with-libsndfile       include libsndfile support (default: no)
   --without-libsndfile    don't include libsndfile support
   --with-libiconvinc=DIR  location of libiconv includes and libraries
   --with-libiconv         include libiconv support (default: auto)
@@ -10879,21 +10879,9 @@ $as_echo_n "checking whether to include libsndfile support... " >&6; }
 if test "${with_libsndfile+set}" = set; then :
   withval=$with_libsndfile;  case "$withval" in
     yes)
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      $as_echo "#define WITH_SNDFILE 1" >>confdefs.h
-
-      SNDFILELIBS="-lsndfile"
-      ;;
-    *)
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      ;;
-    esac
-else
-   SAVELIBS="$LIBS"
-    LIBS="$LIBS -lsndfile"
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+      SAVELIBS="$LIBS"
+      LIBS="$LIBS -lsndfile"
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <sndfile.h>
 int
@@ -10907,18 +10895,28 @@ _ACEOF
 if ac_fn_cxx_try_link "$LINENO"; then :
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-        $as_echo "#define WITH_SNDFILE 1" >>confdefs.h
+          $as_echo "#define WITH_SNDFILE 1" >>confdefs.h
 
-        SNDFILELIBS="-lsndfile"
+          SNDFILELIBS="-lsndfile"
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
-    LIBS="$SAVELIBS"
+      LIBS="$SAVELIBS"
+      ;;
+    *)
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+      ;;
+    esac
+else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 
 fi
+
 
 
 
