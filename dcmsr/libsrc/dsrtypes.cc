@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -400,7 +400,9 @@ static const S_PresentationStateTypeNameMap PresentationStateTypeNameMap[] =
     {DSRTypes::PT_VolumeRendering,          UID_VolumeRenderingVolumetricPresentationStateStorage,          "VR-VPS"},
     {DSRTypes::PT_SegmentedVolumeRendering, UID_SegmentedVolumeRenderingVolumetricPresentationStateStorage, "SVR-VPS"},
     {DSRTypes::PT_MultipleVolumeRendering,  UID_MultipleVolumeRenderingVolumetricPresentationStateStorage,  "MVR-VPS"},
-    {DSRTypes::PT_VariableModalityLUT,      UID_VariableModalityLUTSoftcopyPresentationStateStorage,        "VML-SPS"}
+    {DSRTypes::PT_VariableModalityLUT,      UID_VariableModalityLUTSoftcopyPresentationStateStorage,        "VML-SPS"},
+    {DSRTypes::PT_Waveform,                 UID_WaveformPresentationStateStorage,                           "WPS"},
+    {DSRTypes::PT_WaveformAcquisition,      UID_WaveformAcquisitionPresentationStateStorage,                "WAPS"}
 };
 
 
