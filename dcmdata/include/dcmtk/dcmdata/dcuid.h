@@ -624,6 +624,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ElectrooculogramWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.7.3"
 #define UID_SleepElectroencephalogramWaveformStorage               "1.2.840.10008.5.1.4.1.1.9.7.4"
 #define UID_BodyPositionWaveformStorage                            "1.2.840.10008.5.1.4.1.1.9.8.1"
+#define UID_WaveformPresentationStateStorage                       "1.2.840.10008.5.1.4.1.1.9.100.1"
+#define UID_WaveformAcquisitionPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.9.100.2"
 #define UID_RETIRED_StandaloneModalityLUTStorage                   "1.2.840.10008.5.1.4.1.1.10"
 #define UID_RETIRED_StandaloneVOILUTStorage                        "1.2.840.10008.5.1.4.1.1.11"
 #define UID_GrayscaleSoftcopyPresentationStateStorage              "1.2.840.10008.5.1.4.1.1.11.1"

@@ -894,6 +894,8 @@ ElectromyogramWaveformStorage                        1.2.840.10008.5.1.4.1.1.9.7
 ElectrooculogramWaveformStorage                      1.2.840.10008.5.1.4.1.1.9.7.3
 SleepElectroencephalogramWaveformStorage             1.2.840.10008.5.1.4.1.1.9.7.4
 BodyPositionWaveformStorage                          1.2.840.10008.5.1.4.1.1.9.8.1
+WaveformPresentationStateStorage                     1.2.840.10008.5.1.4.1.1.9.100.1
+WaveformAcquisitionPresentationStateStorage          1.2.840.10008.5.1.4.1.1.9.100.2
 RETIRED_StandaloneModalityLUTStorage                 1.2.840.10008.5.1.4.1.1.10
 RETIRED_StandaloneVOILUTStorage                      1.2.840.10008.5.1.4.1.1.11
 GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
@@ -1248,6 +1250,6 @@ profiles
 
 \section dcmqrscp_copyright COPYRIGHT
 
-Copyright (C) 1993-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
