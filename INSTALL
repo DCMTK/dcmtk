@@ -628,10 +628,15 @@ Through CMake, perform the following steps:
        "libchset_d.lib"    - debug version
        "libchset_o.lib"    - release version (optimized)
 
-   The debug versions of all libraries must be compiled for the multithread
-   debug version of the runtime (/MTd), the release version must be compiled
-   for the non-debug multithread runtime (/MT).  Precompiled versions of all
-   libraries (*) can be downloaded from https://dcmtk.org/develop/#lib-win .
+   The debug and release versions of all libraries must be compiled with the
+   same runtime library dependency as DCMTK (i.e., /MT[d] or /MD[d]).
+   By default DCMTK is compiled with /MTd for Debug and /MT for Release mode
+   unless the CMake variables DCMTK_COMPILE_WIN32_MULTITHREADED_DLL or
+   BUILD_SHARED_LIBS (see below) are set to true, in which case DCMTK
+   is compiled with /MDd for Debug and /MD for Release mode.
+
+   Precompiled versions of all libraries (*) can be downloaded from
+   https://dcmtk.org/develop/#lib-win .
 
    (*) Starting with DCMTK 3.6.8, libiconv is no longer part of the download
        package.  That also means that libxml2 was built without this library.
