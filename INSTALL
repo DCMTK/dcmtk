@@ -630,10 +630,10 @@ Through CMake, perform the following steps:
 
    The debug and release versions of all libraries must be compiled with the
    same runtime library dependency as DCMTK (i.e., /MT[d] or /MD[d]).
-   By default DCMTK is compiled with /MTd for Debug and /MT for Release mode
-   unless the CMake variables DCMTK_COMPILE_WIN32_MULTITHREADED_DLL or
-   BUILD_SHARED_LIBS (see below) are set to true, in which case DCMTK
-   is compiled with /MDd for Debug and /MD for Release mode.
+   By default, DCMTK is compiled with /MTd for Debug and /MT for Release mode
+   unless the CMake variables "DCMTK_COMPILE_WIN32_MULTITHREADED_DLL" or
+   "BUILD_SHARED_LIBS" (see below) are set to true, in which case DCMTK is
+   compiled with /MDd for Debug and /MD for Release mode.
 
    Precompiled versions of all libraries (*) can be downloaded from
    https://dcmtk.org/develop/#lib-win .
@@ -1068,4 +1068,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2025-02-04 (Riesmeier)
+Last revised: 2025-03-22 (Riesmeier)
