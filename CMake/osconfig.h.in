@@ -543,20 +543,23 @@
 #cmakedefine HAVE_UINT64_T @HAVE_UINT64_T@
 
  /* Additional settings for Borland C++ Builder */
-#ifdef __BORLANDC__
+
+#if defined(__BORLANDC__) && (!defined(_WIN64) || !defined(__MINGW64__))
+#define HAVE_CLASSIC_BORLAND_COMPILER
+#endif
+
+#ifdef HAVE_CLASSIC_BORLAND_COMPILER
+#define _MSC_VER 1200       /* Treat Borland C++ 5.5 as MSVC6. */
 #define _stricmp stricmp    /* _stricmp in MSVC is stricmp in Borland C++ */
 #define _strnicmp strnicmp  /* _strnicmp in MSVC is strnicmp in Borland C++ */
-    #pragma warn -8027      /* disable Warning W8027 "functions containing while are not expanded inline" */
-    #pragma warn -8004      /* disable Warning W8004 "variable is assigned a value that is never used" */
-    #pragma warn -8012      /* disable Warning W8012 "comparing signed and unsigned values" */
+#pragma warn -8027          /* disable Warning W8027 "functions containing while are not expanded inline" */
+#pragma warn -8004          /* disable Warning W8004 "variable is assigned a value that is never used" */
+#pragma warn -8012          /* disable Warning W8012 "comparing signed and unsigned values" */
 #ifdef WITH_THREADS
 #define __MT__              /* required for _beginthreadex() API in <process.h> */
 #define _MT                 /* required for _errno on BCB6 */
 #endif
-#define HAVE_PROTOTYPE_MKTEMP 1
-#undef HAVE_SYS_UTIME_H
-#define _MSC_VER 1200       /* Treat Borland C++ 5.5 as MSVC6. */
-#endif /* __BORLANDC__ */
+#endif /* HAVE_CLASSIC_BORLAND_COMPILER */
 
 /* Platform specific settings for Visual C++ */
 

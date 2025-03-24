@@ -35,7 +35,7 @@
 #include <cstdio>
 #include <stdexcept>
 
-#if defined (__BORLANDC__)
+#if defined (HAVE_CLASSIC_BORLAND_COMPILER)
 // For _wrename() and _wremove() on Windows.
 #  include <stdio.h>
 #endif
@@ -73,7 +73,7 @@ namespace
 long const DCMTK_LOG4CPLUS_FILE_NOT_FOUND = ENOENT;
 
 
-static 
+static
 long
 file_rename (tstring const & src, tstring const & target)
 {
@@ -122,8 +122,8 @@ loglog_renaming_result (helpers::LogLog & loglog, tstring const & src,
     if (ret == 0)
     {
         loglog.debug (
-            DCMTK_LOG4CPLUS_TEXT("Renamed file ") 
-            + src 
+            DCMTK_LOG4CPLUS_TEXT("Renamed file ")
+            + src
             + DCMTK_LOG4CPLUS_TEXT(" to ")
             + target);
     }
@@ -149,7 +149,7 @@ loglog_opening_result (helpers::LogLog & loglog,
     if (! os)
     {
         loglog.error (
-            DCMTK_LOG4CPLUS_TEXT("Failed to open file ") 
+            DCMTK_LOG4CPLUS_TEXT("Failed to open file ")
             + filename);
     }
 }
@@ -224,7 +224,7 @@ get_locale_by_name (tstring const & locale_name)
 // FileAppender ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-FileAppender::FileAppender(const tstring& filename_, 
+FileAppender::FileAppender(const tstring& filename_,
     STD_NAMESPACE ios_base::openmode mode_, bool immediateFlush_)
     : immediateFlush(immediateFlush_)
     , reopenDelay(1)
@@ -239,7 +239,7 @@ FileAppender::FileAppender(const tstring& filename_,
 }
 
 
-FileAppender::FileAppender(const Properties& props, 
+FileAppender::FileAppender(const Properties& props,
                            STD_NAMESPACE ios_base::openmode mode_)
     : Appender(props)
     , immediateFlush(true)
@@ -280,7 +280,7 @@ FileAppender::FileAppender(const Properties& props,
 
 
 void
-FileAppender::init(const tstring& filename_, 
+FileAppender::init(const tstring& filename_,
                    STD_NAMESPACE ios_base::openmode mode_,
                    const log4cplus::tstring& lockFileName_)
 {
@@ -313,7 +313,7 @@ FileAppender::init(const tstring& filename_,
     imbue (get_locale_by_name (localeName));
 
     if(!out.good()) {
-        getErrorHandler()->error(  DCMTK_LOG4CPLUS_TEXT("Unable to open file: ") 
+        getErrorHandler()->error(  DCMTK_LOG4CPLUS_TEXT("Unable to open file: ")
                                  + filename);
         return;
     }
@@ -333,7 +333,7 @@ FileAppender::~FileAppender()
 // FileAppender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 FileAppender::close()
 {
     thread::MutexGuard guard (access_mutex);
@@ -370,11 +370,11 @@ FileAppender::append(const spi::InternalLoggingEvent& event)
 {
     if(!out.good()) {
         if(!reopen()) {
-            getErrorHandler()->error(  DCMTK_LOG4CPLUS_TEXT("file is not open: ") 
+            getErrorHandler()->error(  DCMTK_LOG4CPLUS_TEXT("file is not open: ")
                                      + filename);
             return;
         }
-        // Resets the error handler to make it 
+        // Resets the error handler to make it
         // ready to handle a future append error.
         else
             getErrorHandler()->reset();
@@ -522,7 +522,7 @@ RollingFileAppender::rollover(bool alreadyLocked)
     out.close();
     // Reset flags since the C++ standard specified that all the flags
     // should remain unchanged on a close.
-    out.clear(); 
+    out.clear();
 
     if (useLockFile)
     {
@@ -573,8 +573,8 @@ RollingFileAppender::rollover(bool alreadyLocked)
 #endif
 
         loglog.debug (
-            DCMTK_LOG4CPLUS_TEXT("Renaming file ") 
-            + filename 
+            DCMTK_LOG4CPLUS_TEXT("Renaming file ")
+            + filename
             + DCMTK_LOG4CPLUS_TEXT(" to ")
             + target);
         ret = file_rename (filename, target);
@@ -640,7 +640,7 @@ DailyRollingFileAppender::DailyRollingFileAppender(
             + properties.getProperty(DCMTK_LOG4CPLUS_TEXT("Schedule")));
         theSchedule = DAILY;
     }
-    
+
     properties.getInt (maxBackupIndex, DCMTK_LOG4CPLUS_TEXT("MaxBackupIndex"));
 
     init(theSchedule);
@@ -794,12 +794,12 @@ DailyRollingFileAppender::rollover(bool alreadyLocked)
     // possible to rename over existing file, e.g. "log.2009-11-07".
     ret = file_remove (scheduledFilename);
 #endif
-   
+
     // Rename filename to scheduledFilename,
     // e.g. rename "log" to "log.2009-11-07".
     loglog.debug(
         DCMTK_LOG4CPLUS_TEXT("Renaming file ")
-        + filename 
+        + filename
         + DCMTK_LOG4CPLUS_TEXT(" to ")
         + scheduledFilename);
     ret = file_rename (filename, scheduledFilename);
@@ -825,7 +825,7 @@ DailyRollingFileAppender::calculateNextRolloverTime(const Time& t) const
 {
     switch(schedule)
     {
-    case MONTHLY: 
+    case MONTHLY:
     {
         struct tm nextMonthTime;
         t.localtime(&nextMonthTime);

@@ -152,7 +152,7 @@ void OFConsole::mergeStderrStdout()
         }
     }
 
-#ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
+#ifndef HAVE_CLASSIC_BORLAND_COMPILER  /* setvbuf on stdout/stderr does not work with Borland C++ */
     /* set stdout and stderr to unbuffered mode */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
@@ -164,7 +164,7 @@ void OFConsole::mergeStderrStdout()
         OFConsole::instance().lockCerr() << "Unable to switch stderr to unbuffered mode" << OFendl;
         OFConsole::instance().unlockCerr();
     }
-#endif /* __BORLANDC__ */
+#endif /* HAVE_CLASSIC_BORLAND_COMPILER */
 }
 
 
@@ -179,7 +179,7 @@ void OFConsole::unmergeStderrStdout()
             OFConsole::instance().unlockCerr();
         }
 
-#ifndef __BORLANDC__
+#ifndef HAVE_CLASSIC_BORLAND_COMPILER
         /* switch stdout to buffered mode */
         if (setvbuf(stdout, NULL, _IOFBF, BUFSIZ ) != 0 )
         {
@@ -187,7 +187,7 @@ void OFConsole::unmergeStderrStdout()
             OFConsole::instance().unlockCerr();
 
         }
-#endif /* __BORLANDC__ */
+#endif /* HAVE_CLASSIC_BORLAND_COMPILER */
     }
 }
 
