@@ -1116,6 +1116,8 @@ static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
     return compare(sopClassUID, UID_BreastProjectionXRayImageStorageForPresentation) ||
            compare(sopClassUID, UID_BreastProjectionXRayImageStorageForProcessing) ||
            compare(sopClassUID, UID_BreastTomosynthesisImageStorage) ||
+// in fact, the following IOD is a multi-frame image but the individual frames are rather "tiles"
+//         compare(sopClassUID, UID_ConfocalMicroscopyTiledPyramidalImageStorage) ||
            compare(sopClassUID, UID_EnhancedContinuousRTImageStorage) ||
            compare(sopClassUID, UID_EnhancedCTImageStorage) ||
            compare(sopClassUID, UID_EnhancedMRColorImageStorage) ||
@@ -1125,8 +1127,10 @@ static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
            compare(sopClassUID, UID_EnhancedUSVolumeStorage) ||
            compare(sopClassUID, UID_EnhancedXAImageStorage) ||
            compare(sopClassUID, UID_EnhancedXRFImageStorage) ||
+//         compare(sopClassUID, UID_HeightMapSegmentationStorage) ||
            compare(sopClassUID, UID_IntravascularOpticalCoherenceTomographyImageStorageForPresentation) ||
            compare(sopClassUID, UID_IntravascularOpticalCoherenceTomographyImageStorageForProcessing) ||
+//         compare(sopClassUID, UID_LabelMapSegmentationStorage) ||
            compare(sopClassUID, UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage) ||
            compare(sopClassUID, UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage) ||
            compare(sopClassUID, UID_MultiframeSingleBitSecondaryCaptureImageStorage) ||
@@ -1136,8 +1140,9 @@ static OFBool isMultiframeStorageSOPClass(const OFString &sopClassUID)
            compare(sopClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
            compare(sopClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
            compare(sopClassUID, UID_OphthalmicTomographyImageStorage) ||
-           compare(sopClassUID, UID_ParametricMapStorage) ||
-           compare(sopClassUID, UID_RTDoseStorage) ||
+//         compare(sopClassUID, UID_ParametricMapStorage) ||
+           compare(sopClassUID, UID_PhotoacousticImageStorage) ||
+//         compare(sopClassUID, UID_RTDoseStorage) ||
            compare(sopClassUID, UID_RTImageStorage) ||
            compare(sopClassUID, UID_UltrasoundMultiframeImageStorage) ||
            compare(sopClassUID, UID_VideoEndoscopicImageStorage) ||
