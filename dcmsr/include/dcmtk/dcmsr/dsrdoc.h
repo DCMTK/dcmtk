@@ -200,6 +200,10 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *                      objects.  If NULL, the default URL prefix is used, which is
      *                      defined by DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS
      *                      (http://localhost/dicom.cgi).
+     ** @note Please note that using the parameter 'styleSheet' or 'urlPrefix' can lead to
+     *        security issues, as an attacker could misuse them to potentially inject dangerous
+     *        content into the HTML/XHTML output.  The values passed to these parameters are not
+     *        checked, neither the URL and prefix nor the content of the specified CSS file.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &stream,

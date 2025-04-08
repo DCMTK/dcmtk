@@ -300,6 +300,14 @@ hebrew.
 Option \e --convert-to-utf8 can be used to convert the DICOM file or data set
 to UTF-8 encoding prior to the rendering to HTML/XHTML format.
 
+\subsection dsr2html_security Security
+
+Please note that using one of the options \e --css-reference, \e --css-file or
+\e --hyperlink-url-prefix can lead to security issues, as an attacker could
+misuse them to potentially inject dangerous content into the HTML/XHTML output.
+The values passed to these options are not checked, neither the URL and prefix
+nor the content of the specified CSS file.
+
 \section dsr2html_logging LOGGING
 
 The level of logging output of the various command line tools and underlying

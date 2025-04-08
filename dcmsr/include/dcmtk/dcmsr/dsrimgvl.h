@@ -208,6 +208,10 @@ class DCMTK_DCMSR_EXPORT DSRImageReferenceValue
      *                       has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  urlPrefix    optional URL prefix used for hyperlink to referenced composite object
+     ** @note Please note that using parameter 'urlPrefix' can lead to security issues, as an
+     *        attacker could misuse it to potentially inject dangerous content into the HTML/XHTML
+     *        output.  The value of this parameter is not checked.  This is also true for derived
+     *        classes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
