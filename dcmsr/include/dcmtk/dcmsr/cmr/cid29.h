@@ -5,8 +5,8 @@
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2025a
- *  File created on 2025-02-24 12:55:29 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025b
+ *  File created on 2025-04-15 12:51:47 by J. Riesmeier
  *
  */
 
@@ -72,8 +72,8 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         IntravascularUltrasound,
         /// (KER,DCM,"Keratometry")
         Keratometry,
-        /// (LS,DCM,"Laser Scan")
-        LaserScan,
+        /// (LS,DCM,"Laser surface scan")
+        LaserSurfaceScan,
         /// (LEN,DCM,"Lensometry")
         Lensometry,
         /// (MR,DCM,"Magnetic Resonance")

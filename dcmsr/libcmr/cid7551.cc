@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7551_GenericPurposeOfReferenceToImagesAndCoordinatesInMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2025a
- *  File created on 2025-02-24 12:55:52 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025b
+ *  File created on 2025-04-15 12:52:05 by J. Riesmeier
  *
  */
 

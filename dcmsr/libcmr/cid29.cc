@@ -5,8 +5,8 @@
  *
  *  Source file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2025a
- *  File created on 2025-02-24 12:55:29 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025b
+ *  File created on 2025-04-15 12:51:47 by J. Riesmeier
  *
  */
 
@@ -166,7 +166,7 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(IntravascularOpticalCoherenceTomography, DSRBasicCodedEntry("IVOCT", "DCM", "Intravascular Optical Coherence Tomography")));
         Codes->insert(OFMake_pair(IntravascularUltrasound, DSRBasicCodedEntry("IVUS", "DCM", "Intravascular Ultrasound")));
         Codes->insert(OFMake_pair(Keratometry, DSRBasicCodedEntry("KER", "DCM", "Keratometry")));
-        Codes->insert(OFMake_pair(LaserScan, DSRBasicCodedEntry("LS", "DCM", "Laser Scan")));
+        Codes->insert(OFMake_pair(LaserSurfaceScan, DSRBasicCodedEntry("LS", "DCM", "Laser surface scan")));
         Codes->insert(OFMake_pair(Lensometry, DSRBasicCodedEntry("LEN", "DCM", "Lensometry")));
         Codes->insert(OFMake_pair(MagneticResonance, DSRBasicCodedEntry("MR", "DCM", "Magnetic Resonance")));
         Codes->insert(OFMake_pair(Mammography, DSRBasicCodedEntry("MG", "DCM", "Mammography")));
