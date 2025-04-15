@@ -1,7 +1,7 @@
 /*
  *
  *  Copyright (C) 2008-2012, OFFIS e.V. and ICSMED AG, Oldenburg, Germany
- *  Copyright (C) 2013-2023, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2013-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class DRTStructureSetIOD
@@ -34,7 +34,7 @@ DRTStructureSetIOD::DRTStructureSetIOD()
     PatientBirthTime(DCM_PatientBirthTime),
     OtherPatientIDsSequence(),
     OtherPatientNames(DCM_OtherPatientNames),
-    EthnicGroup(DCM_EthnicGroup),
+    EthnicGroup(DCM_RETIRED_EthnicGroup),
     PatientComments(DCM_PatientComments),
     PatientSpeciesDescription(DCM_PatientSpeciesDescription),
     PatientSpeciesCodeSequence(),

@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2025a and PS 3.7-2025a.
-# File created on 2025-02-24 12:33:06 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2025b and PS 3.7-2025b.
+# File created on 2025-04-15 12:19:07 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -348,6 +348,12 @@
 (0008,9459)	FL	RecommendedDisplayFrameRateInFloat	1	DICOM
 (0008,9460)	CS	SkipFrameRangeFlag	1	DICOM
 (0010,0010)	PN	PatientName	1	DICOM
+(0010,0011)	SQ	PersonNamesToUseSequence	1	DICOM
+(0010,0012)	LT	NameToUse	1	DICOM
+(0010,0013)	UT	NameToUseComment	1	DICOM
+(0010,0014)	SQ	ThirdPersonPronounsSequence	1	DICOM
+(0010,0015)	SQ	PronounCodeSequence	1	DICOM
+(0010,0016)	UT	PronounComment	1	DICOM
 (0010,0020)	LO	PatientID	1	DICOM
 (0010,0021)	LO	IssuerOfPatientID	1	DICOM
 (0010,0022)	CS	TypeOfPatientID	1	DICOM
@@ -361,6 +367,13 @@
 (0010,0034)	LO	PatientDeathDateInAlternativeCalendar	1	DICOM
 (0010,0035)	CS	PatientAlternativeCalendar	1	DICOM
 (0010,0040)	CS	PatientSex	1	DICOM
+(0010,0041)	SQ	GenderIdentitySequence	1	DICOM
+(0010,0042)	UT	SexParametersForClinicalUseCategoryComment	1	DICOM
+(0010,0043)	SQ	SexParametersForClinicalUseCategorySequence	1	DICOM
+(0010,0044)	SQ	GenderIdentityCodeSequence	1	DICOM
+(0010,0045)	UT	GenderIdentityComment	1	DICOM
+(0010,0046)	SQ	SexParametersForClinicalUseCategoryCodeSequence	1	DICOM
+(0010,0047)	UR	SexParametersForClinicalUseCategoryReference	1-n	DICOM
 (0010,0050)	SQ	PatientInsurancePlanCodeSequence	1	DICOM
 (0010,0101)	SQ	PatientPrimaryLanguageCodeSequence	1	DICOM
 (0010,0102)	SQ	PatientPrimaryLanguageModifierCodeSequence	1	DICOM
@@ -399,8 +412,8 @@
 (0010,2152)	LO	RegionOfResidence	1	DICOM
 (0010,2154)	SH	PatientTelephoneNumbers	1-n	DICOM
 (0010,2155)	LT	PatientTelecomInformation	1	DICOM
-(0010,2160)	SH	EthnicGroup	1	DICOM
 (0010,2161)	SQ	EthnicGroupCodeSequence	1	DICOM
+(0010,2162)	UC	EthnicGroups	1-n	DICOM
 (0010,2180)	SH	Occupation	1	DICOM
 (0010,21A0)	CS	SmokingStatus	1	DICOM
 (0010,21B0)	LT	AdditionalPatientHistory	1	DICOM
@@ -618,6 +631,18 @@
 (0014,40A0)	LO	ImageQualityIndicatorType	1-n	DICOM/DICONDE
 (0014,40A1)	LO	ImageQualityIndicatorMaterial	1-n	DICOM/DICONDE
 (0014,40A2)	LO	ImageQualityIndicatorSize	1-n	DICOM/DICONDE
+(0014,4101)	SQ	WaveDimensionsDefinitionSequence	1	DICOM/DICONDE
+(0014,4102)	US	WaveDimensionNumber	1	DICOM/DICONDE
+(0014,4103)	LO	WaveDimensionDescription	1	DICOM/DICONDE
+(0014,4104)	US	WaveDimensionUnit	1	DICOM/DICONDE
+(0014,4105)	CS	WaveDimensionValueType	1	DICOM/DICONDE
+(0014,4106)	SQ	WaveDimensionValuesSequence	1-n	DICOM/DICONDE
+(0014,4107)	US	ReferencedWaveDimension	1	DICOM/DICONDE
+(0014,4108)	SL	IntegerNumericValue	1	DICOM/DICONDE
+(0014,4109)	OB	ByteNumericValue	1	DICOM/DICONDE
+(0014,410A)	OW	ShortNumericValue	1	DICOM/DICONDE
+(0014,410B)	OF	SinglePrecisionFloatingPointNumericValue	1	DICOM/DICONDE
+(0014,410C)	OD	DoublePrecisionFloatingPointNumericValue	1	DICOM/DICONDE
 (0014,5002)	IS	LINACEnergy	1	DICOM/DICONDE
 (0014,5004)	IS	LINACOutput	1	DICOM/DICONDE
 (0014,5100)	US	ActiveAperture	1	DICOM/DICONDE
@@ -2538,6 +2563,8 @@
 (0040,A030)	DT	VerificationDateTime	1	DICOM
 (0040,A032)	DT	ObservationDateTime	1	DICOM
 (0040,A033)	DT	ObservationStartDateTime	1	DICOM
+(0040,A034)	DT	EffectiveStartDateTime	1	DICOM
+(0040,A035)	DT	EffectiveStopDateTime	1	DICOM
 (0040,A040)	CS	ValueType	1	DICOM
 (0040,A043)	SQ	ConceptNameCodeSequence	1	DICOM
 (0040,A050)	CS	ContinuityOfContent	1	DICOM
@@ -4921,6 +4948,7 @@
 (0010,1000)	LO	RETIRED_OtherPatientIDs	1-n	DICOM/retired
 (0010,1050)	LO	RETIRED_InsurancePlanIdentification	1-n	DICOM/retired
 (0010,1090)	LO	RETIRED_MedicalRecordLocator	1	DICOM/retired
+(0010,2160)	SH	RETIRED_EthnicGroup	1	DICOM/retired
 (0014,0023)	ST	RETIRED_CADFileFormat	1	DICOM/retired
 (0014,0024)	ST	RETIRED_ComponentReferenceSystem	1	DICOM/retired
 (0014,0045)	ST	RETIRED_MaterialPropertiesFileFormatRetired	1	DICOM/retired

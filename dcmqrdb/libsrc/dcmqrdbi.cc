@@ -68,7 +68,7 @@ static const DB_FindAttr TbFindAttr [] = {
         DB_FindAttr( DCM_PatientBirthTime,                      PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_RETIRED_OtherPatientIDs,               PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_OtherPatientNames,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
-        DB_FindAttr( DCM_EthnicGroup,                           PATIENT_LEVEL,  OPTIONAL_KEY ),
+        DB_FindAttr( DCM_RETIRED_EthnicGroup,                   PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_PatientComments,                       PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_IssuerOfPatientID,                     PATIENT_LEVEL,  OPTIONAL_KEY ),
         DB_FindAttr( DCM_StudyDate,                             STUDY_LEVEL,    REQUIRED_KEY ),
@@ -206,7 +206,7 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
         idx -> param[RECORDIDX_OtherPatientNames]. XTag = DCM_OtherPatientNames ;
         idx -> param[RECORDIDX_OtherPatientNames]. ValueLength = PN_MAX_LENGTH ;
         idx -> OtherPatientNames[0] = '\0' ;
-        idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup ;
+        idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_RETIRED_EthnicGroup ;
         idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH ;
         idx -> EthnicGroup[0] = '\0' ;
         idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate ;

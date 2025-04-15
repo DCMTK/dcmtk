@@ -34,7 +34,7 @@ DRTDoseIOD::DRTDoseIOD()
     PatientBirthTime(DCM_PatientBirthTime),
     OtherPatientIDsSequence(),
     OtherPatientNames(DCM_OtherPatientNames),
-    EthnicGroup(DCM_EthnicGroup),
+    EthnicGroup(DCM_RETIRED_EthnicGroup),
     PatientComments(DCM_PatientComments),
     PatientSpeciesDescription(DCM_PatientSpeciesDescription),
     PatientSpeciesCodeSequence(),
