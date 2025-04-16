@@ -1117,7 +1117,7 @@ Query/Retrieve Level: PATIENT (or STUDY for the Study Root Q/R model)
 (0010,0040) PatientSex
 (0010,1000) OtherPatientIDs (retired)
 (0010,1001) OtherPatientNames
-(0010,2160) EthnicGroup
+(0010,2160) EthnicGroup (retired)
 (0010,4000) PatientComments
 \endverbatim
 
@@ -1138,7 +1138,7 @@ Query/Retrieve Level: STUDY
 (0010,21B0) AdditionalPatientHistory
 (0020,000D) StudyInstanceUID
 (0020,0010) StudyID
-(0020,1070) RETIRED_OtherStudyNumbers
+(0020,1070) OtherStudyNumbers (retired)
 \endverbatim
 
 Query/Retrieve Level: SERIES
