@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,7 +98,7 @@ int DcmOtherByteOtherWord::compare(const DcmElement& rhs) const
      * swapping is applied as necessary. */
     void* thisData = myThis->getValue();
     void* rhsData = myRhs->getValue();
-    return memcmp(thisData, rhsData, thisLength);
+    return compareValues(thisData, rhsData, thisLength);
 }
 
 
@@ -875,4 +875,28 @@ OFCondition DcmOtherByteOtherWord::writeJson(STD_NAMESPACE ostream &out,
     writeJsonCloser(out, format);
     /* always report success */
     return EC_Normal;
+}
+
+
+// ********************************
+
+int DcmOtherByteOtherWord::compareValues(const void* myValue,
+                                         const void* rhsValue,
+                                         const unsigned long valLength) const
+{
+    /* check for null pointers before comparing */
+    if (myValue == nullptr || rhsValue == nullptr)
+    {
+        /* handle null pointers appropriately, e.g., treat null as less than non-null */
+        if (myValue == nullptr && rhsValue == nullptr)
+            return 0; // both are null, considered equal
+        else if (myValue == nullptr)
+            return -1; // null is less than non-null
+        else
+            return 1; // non-null is greater than null
+    }
+    else {
+        /* Proceed with the comparison */
+        return memcmp(myValue, rhsValue, valLength);
+    }
 }

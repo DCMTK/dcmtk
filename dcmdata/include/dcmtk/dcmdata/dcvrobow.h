@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -368,6 +368,22 @@ class DCMTK_DCMDATA_EXPORT DcmOtherByteOtherWord
                     const int level,
                     const char *pixelFileName,
                     size_t *pixelCounter);
+
+    /**
+     * compares two binary values for equality.
+     * This function compares the binary data pointed to by `myValue` and `rhsValue`
+     * for equality up to the specified length `valLength`. See compare() method
+     * for more details.
+     *
+     * @param myValue pointer to the first value to compare.
+     * @param rhsValue pointer to the second value to compare.
+     * @param valLength the number of bytes to compare.
+     * @return an integer less than, equal to, or greater than zero if the first value
+     *         is found to be less than, equal to, or greater than the second value.
+     */
+    virtual int compareValues(const void* myValue,
+                              const void* rhsValue,
+                              const unsigned long valLength) const;
 
 private:
 
