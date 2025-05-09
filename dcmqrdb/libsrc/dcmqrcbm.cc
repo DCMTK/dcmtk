@@ -315,6 +315,14 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
             DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops: " << DimseCondition::dump(temp_str, cond));
         }
     }
+
+    if (cond.good()) {
+        cond = ASC_setTransportLayerType(params, options_.secureConnectionRequested_);
+        if (cond.bad()) {
+            DCMQRDB_ERROR("moveSCP: Cannot create TLS transport layer for sub-ops: " << DimseCondition::dump(temp_str, cond));
+        }
+    }
+
     if (cond.good()) {
         OFStandard::snprintf(dstHostNamePlusPort, sizeof(DIC_NODENAME), "%s:%d", dstHostName, dstPortNumber);
         ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(),
@@ -350,6 +358,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     if (cond.good()) {
         assocStarted = OFTrue;
     }
+
     return cond;
 }
 

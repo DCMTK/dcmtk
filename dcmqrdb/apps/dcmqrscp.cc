@@ -129,7 +129,6 @@ main(int argc, char *argv[])
 #endif
 
   OFCommandLine cmd;
-
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("port", "tcp/ip port number to listen on\n(default: in config file)", OFCmdParam::PM_Optional);
 
@@ -796,6 +795,7 @@ main(int argc, char *argv[])
 
       // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
       tlsOptions.parseArguments(app, cmd);
+      options.secureConnectionRequested_ = tlsOptions.secureConnectionRequested();
     }
 
     /* print resource identifier */
