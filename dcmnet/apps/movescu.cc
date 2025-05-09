@@ -36,6 +36,7 @@
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -63,7 +64,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define EXITCODE_CANNOT_CLOSE_ASSOCIATION       67
 #define EXITCODE_CMOVE_WARNING                  68
 #define EXITCODE_CMOVE_ERROR                    69
-
+#define EXITCODE_CANNOT_CREATE_TLS_LAYER        70
 
 typedef enum {
      QMPatientRoot = 0,
@@ -203,7 +204,7 @@ addOverrideKey(OFConsoleApplication& app, const char *s)
     }
 }
 
-static OFCondition cmove(T_ASC_Association *assoc, const char *fname);
+static OFCondition cmove(T_ASC_Association *assoc, const char *fname, OFBool secureConnection);
 
 static OFCondition
 addPresentationContext(T_ASC_Parameters *params,
@@ -224,6 +225,7 @@ main(int argc, char *argv[])
   const char *opt_peerTitle = PEERAPPLICATIONTITLE;
   const char *opt_ourTitle = APPLICATIONTITLE;
   OFList<OFString> fileNameList;
+  DcmTLSOptions tlsOptions(NET_ACCEPTORREQUESTOR);
 
   OFStandard::initializeNetwork();
 
@@ -335,6 +337,10 @@ main(int argc, char *argv[])
       cmd.addOption("--cancel",                      1, "[n]umber: integer",
                                                         "cancel after n responses (default: never)");
       cmd.addOption("--uid-padding",         "-up",     "silently correct space-padded UIDs");
+
+  // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+  tlsOptions.addTLSCommandlineOptions(cmd);
+
   cmd.addGroup("output options:");
     cmd.addSubGroup("general:");
       cmd.addOption("--output-directory",    "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
@@ -383,7 +389,7 @@ main(int argc, char *argv[])
         {
           app.printHeader(OFTrue /*print host identifier*/);
           COUT << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER) && !defined(WITH_OPENSSL)
           COUT << " none" << OFendl;
 #else
           COUT << OFendl;
@@ -394,8 +400,24 @@ main(int argc, char *argv[])
 #ifdef WITH_TCPWRAPPER
           COUT << "- LIBWRAP" << OFendl;
 #endif
+          // print OpenSSL version if (and only if) we are compiling with OpenSSL
+          tlsOptions.printLibraryVersion();
           return EXITCODE_NO_ERROR;
         }
+      }
+
+      // check if the command line contains the --list-ciphers option
+      if (tlsOptions.listOfCiphersRequested(cmd))
+      {
+          tlsOptions.printSupportedCiphersuites(app, COUT);
+          return EXITCODE_NO_ERROR;
+      }
+
+      // check if the command line contains the --list-profiles option
+      if (tlsOptions.listOfProfilesRequested(cmd))
+      {
+          tlsOptions.printSupportedTLSProfiles(app, COUT);
+          return EXITCODE_NO_ERROR;
       }
 
       /* command line parameters */
@@ -516,6 +538,9 @@ main(int argc, char *argv[])
       if (cmd.findOption("--ignore"))  opt_ignore = OFTrue;
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
       if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
+
+      // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
+      tlsOptions.parseArguments(app, cmd);
 
       if (cmd.findOption("--output-directory"))
       {
@@ -790,6 +815,15 @@ main(int argc, char *argv[])
     OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);
 
+    OFBool secureConnection = tlsOptions.secureConnectionRequested();
+
+    /* create a secure transport layer if requested and OpenSSL is available */
+    cond = tlsOptions.createTransportLayer(net, params, app, cmd);
+    if (cond.bad()) {
+      OFLOG_FATAL(movescuLogger, DimseCondition::dump(temp_str, cond));
+      return EXITCODE_CANNOT_CREATE_TLS_LAYER;
+    }
+
     /*
      * We also add a presentation context for the corresponding
      * find sop class.
@@ -838,13 +872,13 @@ main(int argc, char *argv[])
     if (fileNameList.empty())
     {
       /* no files provided on command line */
-      cond = cmove(assoc, NULL);
+      cond = cmove(assoc, NULL, secureConnection);
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
       OFListIterator(OFString) enditer = fileNameList.end();
       while ((iter != enditer) && cond.good())
       {
-          cond = cmove(assoc, (*iter).c_str());
+          cond = cmove(assoc, (*iter).c_str(), secureConnection);
           ++iter;
       }
     }
@@ -908,6 +942,12 @@ main(int argc, char *argv[])
     }
 
     OFStandard::shutdownNetwork();
+
+    cond = tlsOptions.writeRandomSeed();
+    if (cond.bad()) {
+        // failure to write back the random seed is a warning, not an error
+        OFLOG_WARN(movescuLogger, DimseCondition::dump(temp_str, cond));
+    }
 
     return cmove_status_code;
 }
@@ -989,7 +1029,7 @@ addPresentationContext(T_ASC_Parameters *params,
 }
 
 static OFCondition
-acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
+acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc, OFBool secureConnection)
 {
     const char *knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
@@ -1001,7 +1041,7 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc)
     int numTransferSyntaxes;
     OFString temp_str;
 
-    OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
+    OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU, NULL, NULL, secureConnection);
     if (cond.good())
     {
       OFLOG_INFO(movescuLogger, "Sub-Association Received");
@@ -1571,15 +1611,19 @@ subOpSCP(T_ASC_Association **subAssoc)
 }
 
 static void
-subOpCallback(void * /*subOpCallbackData*/ ,
+subOpCallback(void *subOpCallbackData,
         T_ASC_Network *aNet, T_ASC_Association **subAssoc)
 {
-
     if (aNet == NULL) return;   /* help no net ! */
+
+    OFBool secureConnection = OFFalse;
+    if (subOpCallbackData) {
+        secureConnection = * OFreinterpret_cast(OFBool *, subOpCallbackData);
+    }
 
     if (*subAssoc == NULL) {
         /* negotiate association */
-        acceptSubAssoc(aNet, subAssoc);
+        acceptSubAssoc(aNet, subAssoc, secureConnection);
     } else {
         /* be a service class provider */
         subOpSCP(subAssoc);
@@ -1638,7 +1682,7 @@ substituteOverrideKeys(DcmDataset *dset)
 
 
 static  OFCondition
-moveSCU(T_ASC_Association *assoc, const char *fname)
+moveSCU(T_ASC_Association *assoc, const char *fname, OFBool secureConnection)
 {
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_MoveRQ    req;
@@ -1693,7 +1737,7 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
 
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
         moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout, net, subOpCallback,
-        NULL, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
+        &secureConnection, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
     if (cond == EC_Normal) {
 
@@ -1740,11 +1784,11 @@ moveSCU(T_ASC_Association *assoc, const char *fname)
 
 
 static OFCondition
-cmove(T_ASC_Association *assoc, const char *fname)
+cmove(T_ASC_Association *assoc, const char *fname, OFBool secureConnection)
 {
     OFCondition cond = EC_Normal;
     int n = OFstatic_cast(int, opt_repeatCount);
     while (cond.good() && n--)
-        cond = moveSCU(assoc, fname);
+        cond = moveSCU(assoc, fname, secureConnection);
     return cond;
 }

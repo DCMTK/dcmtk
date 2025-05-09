@@ -145,38 +145,28 @@ DcmTransportConnection::~DcmTransportConnection()
 
 OFBool DcmTransportConnection::safeSelectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout)
 {
-  int numberOfRounds = timeout+1;
-  if (numberOfRounds < 0) numberOfRounds = 0xFFFF; /* a long time */
-
+  double dtimeout = timeout;
   OFBool found = OFFalse;
-  OFBool firstRound = OFTrue;
-  int timeToWait=0;
+  OFTimer tmr;
   int i=0;
-  while ((numberOfRounds > 0)&&(! found))
+  while ((!found) && (tmr.getDiff() < dtimeout))
   {
-    if (firstRound)
-    {
-      timeToWait = 0;
-      firstRound = OFFalse;
-    }
-    else timeToWait = 1;
     for (i=0; i<connCount; i++)
     {
       if (connections[i])
       {
-        if (connections[i]->networkDataAvailable(timeToWait))
+
+        if (connections[i]->networkDataAvailable(0))
         {
           i = connCount; /* break out of for loop */
           found = OFTrue; /* break out of while loop */
         }
-        timeToWait = 0;
       }
     } /* for */
-    if (timeToWait == 1) return OFFalse; /* all entries NULL */
-    numberOfRounds--;
+    if (!found) OFStandard::milliSleep(10);
   } /* while */
 
-  /* number of rounds == 0 (timeout over), do final check */
+  /* Readable connection found or timeout reached. Do final check. */
   found = OFFalse;
   for (i=0; i<connCount; i++)
   {
@@ -185,6 +175,7 @@ OFBool DcmTransportConnection::safeSelectReadableAssociation(DcmTransportConnect
       if (connections[i]->networkDataAvailable(0)) found = OFTrue; else connections[i]=NULL;
     }
   }
+
   return found;
 }
 
