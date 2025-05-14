@@ -885,12 +885,12 @@ int DcmOtherByteOtherWord::compareValues(const void* myValue,
                                          const unsigned long valLength) const
 {
     /* check for null pointers before comparing */
-    if (myValue == nullptr || rhsValue == nullptr)
+    if (myValue == OFnullptr || rhsValue == OFnullptr)
     {
         /* handle null pointers appropriately, e.g., treat null as less than non-null */
-        if (myValue == nullptr && rhsValue == nullptr)
+        if (myValue == OFnullptr && rhsValue == OFnullptr)
             return 0; // both are null, considered equal
-        else if (myValue == nullptr)
+        else if (myValue == OFnullptr)
             return -1; // null is less than non-null
         else
             return 1; // non-null is greater than null
