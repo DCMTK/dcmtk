@@ -557,6 +557,23 @@ public:
         return isPixelDataLosslessCompressed() || isDatasetCompressed();
     }
 
+    /** get DICOMweb MIME type for pixel data in this transfer syntax
+     *  @return DICOMweb MIME type for pixel data in this transfer syntax
+     */
+    inline const char *getMIMEType() const
+    {
+        return mimeType;
+    }
+
+    /** get suggested filename extension to use when storing pixel data
+     *  of this transfer syntax as bulk data for use with DICOMweb
+     *  @return suggested filename extension
+     */
+    inline const char *getFilenameExtension() const
+    {
+        return filenameExtension;
+    }
+
     /** get the number of bytes needed to describe the tag, length, VR and any
      *  reserved fields for this transfer syntax when encoding the specified VR.
      *  @param evr value representation to be encoded in this transfer syntax
@@ -603,6 +620,13 @@ private:
 
     /// validity of the transfer syntax definition (e.g. standard, retired, private)
     E_XferValidity         xferValidity;
+
+    /// MIME type used for this transfer syntax in DICOMweb
+    const char            *mimeType;
+
+    /// file name extension for storing bulk data in this transfer syntax
+    const char            *filenameExtension;
+
 };
 
 /** global constant describing the byte order on the machine the application

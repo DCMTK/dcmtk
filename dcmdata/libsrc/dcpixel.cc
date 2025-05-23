@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2024, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1298,27 +1298,76 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
     // check if we have an empty uncompressed value field.
     // We never encode that as BulkDataURI.
     OFBool emptyValue = OFFalse;
-    if ((current == repListEnd) && existUnencapsulated && (getLengthField() == 0))
+    if ((current == repListEnd) && existUnencapsulated && (getLength() == 0))
     {
       emptyValue = OFTrue;
     }
 
-    // now check if the pixel data will be written as
-    // BulkDataURI, which is possible for both uncompressed
-    // and encapsulated pixel data.
-    OFString value;
-    if ((! emptyValue) && format.asBulkDataURI(getTag(), value))
+    // determine the length either of the pixel sequence or of the uncompressed pixel data
+    Uint32 len = 0;
+    if (current == repListEnd) len = getLength();
+    else if ((*current)->pixSeq != NULL) len = (*current)->pixSeq->getLength();
+
+    // check if the pixel data should be written as BulkDataURI
+    if (((! emptyValue) || (current != repListEnd)) && format.asBulkDataURI(getTag(), len))
     {
-        /* write JSON Opener */
-        writeJsonOpener(out, format);
+        // We should write the pixel data as bulk data. Now check whether
+        // we are dealing with encapsulated or unencapsulated data
+        if ((current == repListEnd) && existUnencapsulated)
+        {
+            // Current pixel data representation is unencapsulated.
+            // Write JSON Opener
+            writeJsonOpener(out, format);
 
-        /* return defined BulkDataURI */
-        format.printBulkDataURIPrefix(out);
-        DcmJsonFormat::printString(out, value);
+            // adjust byte order to little endian
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
 
-        /* write JSON Closer */
-        writeJsonCloser(out, format);
-        return EC_Normal;
+            // write as bulk data
+            OFCondition status = format.writeBulkData(out, getLengthField(), byteValues);
+
+            // write JSON Closer
+            writeJsonCloser(out, format);
+            return status;
+        }
+        else if (current != repListEnd)
+        {
+            // Current pixel data representation is encapsulated.
+            // Access the parent item to check the number of frames
+            DcmItem *parentItem = getParentItem();
+            if (parentItem == NULL)
+            {
+                // something is fishy with this dataset
+                DCMDATA_WARN("DcmPixelData: Unable to access parent dataset for pixel data object");
+                return EC_CannotWriteBulkDataFile;
+            }
+
+            // check NumberOfFrames attribute, default to 1 if absent or unreadable
+            Sint32 imageFrames = 1;
+            if (parentItem->findAndGetSint32(DCM_NumberOfFrames, imageFrames).bad()) imageFrames = 1;
+            if (imageFrames != 1)
+            {
+                DCMDATA_WARN("Encapsulated multi-frame images cannot be represented in JSON");
+                return EC_CannotWriteJsonMultiframe;
+            }
+
+            // (*current)->pixSeq is not NULL at this point, we have checked this earlier in this method
+            DcmPixelSequence *currentPixelSequence = (*current)->pixSeq;
+
+            // write JSON Opener
+            writeJsonOpener(out, format);
+
+            // delegate the JSON conversion to the pixel sequence
+            return currentPixelSequence->writeJson(out, format);
+
+            // write JSON Closer
+            writeJsonCloser(out, format);
+        }
+        else
+        {
+            // something is fishy with this dataset
+            DCMDATA_WARN("DcmPixelData: apparently there is neither compressed nor uncompressed data");
+            return EC_CannotWriteJsonInlineBinary;
+        }
     }
 
     // No bulk data URI, we're supposed to write as InlineBinary.

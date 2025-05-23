@@ -24,6 +24,9 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include <cstring>
 
+#define DCXFER_DEFAULT_MIME_TYPE "application/dicom"
+#define DCXFER_DEFAULT_EXTENSION ".bin"
+
 typedef struct
 {
     const char            *xferID;
@@ -39,6 +42,8 @@ typedef struct
     Uint32                 JPEGProcess12;
     E_StreamCompression    streamCompression;
     E_XferValidity         xferValidity;
+    const char            *mimeType;
+    const char            *filenameExtension;
 } S_XferNames;
 
 
@@ -59,7 +64,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #1
     { "",  // internal type, no UID defined
@@ -73,7 +80,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Internal
+      EXV_Internal,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #2
     { UID_LittleEndianExplicitTransferSyntax,
@@ -87,7 +96,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #3
     { UID_BigEndianExplicitTransferSyntax,
@@ -101,7 +112,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 98
+      EXV_Retired,  // retired with Supplement 98
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #4
     { UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax,
@@ -115,7 +128,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #5
     { UID_JPEGProcess1TransferSyntax,
@@ -129,7 +144,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       1L, 1L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #6
     { UID_JPEGProcess2_4TransferSyntax,
@@ -143,7 +160,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       2L, 4L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #7
     { UID_JPEGProcess3_5TransferSyntax,
@@ -157,7 +176,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       3L, 5L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #8
     { UID_JPEGProcess6_8TransferSyntax,
@@ -171,7 +192,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       6L, 8L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #9
     { UID_JPEGProcess7_9TransferSyntax,
@@ -185,7 +208,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       7L, 9L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #10
     { UID_JPEGProcess10_12TransferSyntax,
@@ -199,7 +224,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       10L, 12L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #11
     { UID_JPEGProcess11_13TransferSyntax,
@@ -213,7 +240,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       11L, 13L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #12
     { UID_JPEGProcess14TransferSyntax,
@@ -227,7 +256,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       14, 14L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #13
     { UID_JPEGProcess15TransferSyntax,
@@ -241,7 +272,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       15L, 15L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #14
     { UID_JPEGProcess16_18TransferSyntax,
@@ -255,7 +288,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       16L, 18L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #15
     { UID_JPEGProcess17_19TransferSyntax,
@@ -269,7 +304,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       17L, 19L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #16
     { UID_JPEGProcess20_22TransferSyntax,
@@ -283,7 +320,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       20L, 22L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #17
     { UID_JPEGProcess21_23TransferSyntax,
@@ -297,7 +336,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       21L, 23L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #18
     { UID_JPEGProcess24_26TransferSyntax,
@@ -311,7 +352,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       24L, 26L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #19
     { UID_JPEGProcess25_27TransferSyntax,
@@ -325,7 +368,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       25L, 27L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #20
     { UID_JPEGProcess28TransferSyntax,
@@ -339,7 +384,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       28L, 28L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #21
     { UID_JPEGProcess29TransferSyntax,
@@ -353,7 +400,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       29L, 29L,
       ESC_none,
-      EXV_Retired  // retired with Supplement 61
+      EXV_Retired,  // retired with Supplement 61
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #22
     { UID_JPEGProcess14SV1TransferSyntax,
@@ -367,7 +416,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       14L, 14L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jpeg",
+      ".jpeg"
     },
     // entry #23
     { UID_RLELosslessTransferSyntax,
@@ -381,7 +432,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/dicom-rle",
+      ".dicom-rle"
     },
     // entry #24
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
@@ -399,7 +452,9 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported,
 #endif
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #25
     { UID_DeflatedImageFrameCompressionTransferSyntax,
@@ -413,7 +468,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "application/x-deflate",
+      ".x-deflate"
     },
     // entry #26
     { UID_JPEGLSLosslessTransferSyntax,
@@ -427,7 +484,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jls",
+      ".jls"
     },
     // entry #27
     { UID_JPEGLSLossyTransferSyntax,
@@ -441,7 +500,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jls",
+      ".jls"
     },
     // entry #28
     { UID_JPEG2000LosslessOnlyTransferSyntax,
@@ -455,7 +516,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jp2",
+      ".jp2"
     },
     // entry #29
     { UID_JPEG2000TransferSyntax,
@@ -469,7 +532,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jp2",
+      ".jp2"
     },
     // entry #30
    { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
@@ -483,7 +548,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jpx",
+      ".jpx"
     },
     // entry #31
    { UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax,
@@ -497,7 +564,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jpx",
+      ".jpx"
     },
     // entry #32
    { UID_JPIPReferencedTransferSyntax,
@@ -511,7 +580,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #33
    { UID_JPIPReferencedDeflateTransferSyntax,
@@ -529,7 +600,9 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported,
 #endif
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #34
     { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
@@ -543,7 +616,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mpeg",
+      ".mpeg"
     },
     // entry #35
     { UID_FragmentableMPEG2MainProfileMainLevelTransferSyntax,
@@ -557,7 +632,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mpeg",
+      ".mpeg"
     },
     // entry #36
     { UID_MPEG2MainProfileAtHighLevelTransferSyntax,
@@ -571,7 +648,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mpeg",
+      ".mpeg"
     },
     // entry #37
     { UID_FragmentableMPEG2MainProfileHighLevelTransferSyntax,
@@ -585,7 +664,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mpeg",
+      ".mpeg"
     },
     // entry #38
     { UID_MPEG4HighProfileLevel4_1TransferSyntax,
@@ -599,7 +680,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #39
     { UID_FragmentableMPEG4HighProfileLevel4_1TransferSyntax,
@@ -613,7 +696,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #40
     { UID_MPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
@@ -627,7 +712,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #41
     { UID_FragmentableMPEG4BDcompatibleHighProfileLevel4_1TransferSyntax,
@@ -641,7 +728,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #42
     { UID_MPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
@@ -655,7 +744,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #43
     { UID_FragmentableMPEG4HighProfileLevel4_2_For2DVideoTransferSyntax,
@@ -669,7 +760,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #44
     { UID_MPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
@@ -683,7 +776,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #45
     { UID_FragmentableMPEG4HighProfileLevel4_2_For3DVideoTransferSyntax,
@@ -697,7 +792,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #46
     { UID_MPEG4StereoHighProfileLevel4_2TransferSyntax,
@@ -711,7 +808,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #47
     { UID_FragmentableMPEG4StereoHighProfileLevel4_2TransferSyntax,
@@ -725,7 +824,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/mp4",
+      ".mp4"
     },
     // entry #48
     { UID_HEVCMainProfileLevel5_1TransferSyntax,
@@ -739,7 +840,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/H265",
+      ".H265"
     },
     // entry #49
     { UID_HEVCMain10ProfileLevel5_1TransferSyntax,
@@ -753,7 +856,9 @@ const S_XferNames XferNames[] =
       OFTrue,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "video/H265",
+      ".H265"
     },
     // entry #50
     { UID_JPEGXLLosslessTransferSyntax,
@@ -767,7 +872,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jxl",
+      ".jxl"
     },
     // entry #51
     { UID_JPEGXLJPEGRecompressionTransferSyntax,
@@ -781,7 +888,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jxl",
+      ".jxl"
     },
     // entry #52
     { UID_JPEGXLTransferSyntax,
@@ -795,7 +904,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jxl",
+      ".jxl"
     },
     // entry #53
     { UID_HighThroughputJPEG2000ImageCompressionLosslessOnlyTransferSyntax,
@@ -809,7 +920,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jphc",
+      ".jphc"
     },
     // entry #54
     { UID_HighThroughputJPEG2000RPCLImageCompressionLosslessOnlyTransferSyntax,
@@ -823,7 +936,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jphc",
+      ".jphc"
     },
     // entry #55
     { UID_HighThroughputJPEG2000ImageCompressionTransferSyntax,
@@ -837,7 +952,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      "image/jphc",
+      ".jphc"
     },
     // entry #56
     { UID_JPIPHTJ2KReferencedTransferSyntax,
@@ -851,7 +968,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #57
     { UID_JPIPHTJ2KReferencedDeflateTransferSyntax,
@@ -869,7 +988,9 @@ const S_XferNames XferNames[] =
 #else
       ESC_unsupported,
 #endif
-      EXV_Standard
+      EXV_Standard,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     },
     // entry #58
     { UID_PrivateGE_LEI_WithBigEndianPixelDataTransferSyntax,
@@ -883,7 +1004,9 @@ const S_XferNames XferNames[] =
       OFFalse,
       0L, 0L,
       ESC_none,
-      EXV_Private
+      EXV_Private,
+      DCXFER_DEFAULT_MIME_TYPE,
+      DCXFER_DEFAULT_EXTENSION
     }
 };
 
@@ -906,7 +1029,9 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
     JPEGProcess8(0L),
     JPEGProcess12(0L),
     streamCompression(ESC_none),
-    xferValidity(EXV_unknown)
+    xferValidity(EXV_unknown),
+    mimeType(DCXFER_DEFAULT_MIME_TYPE),
+    filenameExtension(DCXFER_DEFAULT_EXTENSION)
 {
     /* casting the enum to an integer should be safe */
     const int i = OFstatic_cast(int, xfer);
@@ -926,6 +1051,8 @@ DcmXfer::DcmXfer(E_TransferSyntax xfer)
         JPEGProcess12         = XferNames[i].JPEGProcess12;
         streamCompression     = XferNames[i].streamCompression;
         xferValidity          = XferNames[i].xferValidity;
+        mimeType              = XferNames[i].mimeType;
+        filenameExtension     = XferNames[i].filenameExtension;
     }
 }
 
@@ -946,7 +1073,9 @@ DcmXfer::DcmXfer(const char *xferName_xferID)
     JPEGProcess8(0L),
     JPEGProcess12(0L),
     streamCompression(ESC_none),
-    xferValidity(EXV_unknown)
+    xferValidity(EXV_unknown),
+    mimeType(DCXFER_DEFAULT_MIME_TYPE),
+    filenameExtension(DCXFER_DEFAULT_EXTENSION)
 {
     if (xferName_xferID != NULL)
     {
@@ -975,6 +1104,8 @@ DcmXfer::DcmXfer(const char *xferName_xferID)
             JPEGProcess12         = XferNames[i].JPEGProcess12;
             streamCompression     = XferNames[i].streamCompression;
             xferValidity          = XferNames[i].xferValidity;
+            mimeType              = XferNames[i].mimeType;
+            filenameExtension     = XferNames[i].filenameExtension;
         }
     }
 }
@@ -996,7 +1127,9 @@ DcmXfer::DcmXfer(const DcmXfer &newXfer)
     JPEGProcess8(newXfer.JPEGProcess8),
     JPEGProcess12(newXfer.JPEGProcess12),
     streamCompression(newXfer.streamCompression),
-    xferValidity(newXfer.xferValidity)
+    xferValidity(newXfer.xferValidity),
+    mimeType(newXfer.mimeType),
+    filenameExtension(newXfer.filenameExtension)
 {
 }
 
@@ -1032,6 +1165,8 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         JPEGProcess12         = XferNames[i].JPEGProcess12;
         streamCompression     = XferNames[i].streamCompression;
         xferValidity          = XferNames[i].xferValidity;
+        mimeType              = XferNames[i].mimeType;
+        filenameExtension     = XferNames[i].filenameExtension;
     } else {
         xferSyn               = EXS_Unknown;
         xferID                = "";
@@ -1046,6 +1181,8 @@ DcmXfer &DcmXfer::operator=(const E_TransferSyntax xfer)
         JPEGProcess12         = 0L;
         streamCompression     = ESC_none;
         xferValidity          = EXV_unknown;
+        mimeType              = DCXFER_DEFAULT_MIME_TYPE;
+        filenameExtension     = DCXFER_DEFAULT_EXTENSION;
     }
     return *this;
 }
@@ -1071,6 +1208,8 @@ DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
         JPEGProcess12         = newXfer.JPEGProcess12;
         streamCompression     = newXfer.streamCompression;
         xferValidity          = newXfer.xferValidity;
+        mimeType              = newXfer.mimeType;
+        filenameExtension     = newXfer.filenameExtension;
     }
     return *this;
 }

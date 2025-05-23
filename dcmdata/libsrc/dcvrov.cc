@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019, OFFIS e.V.
+ *  Copyright (C) 2019-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -165,33 +165,22 @@ OFCondition DcmOther64bitVeryLong::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmOther64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
                                              DcmJsonFormat &format)
 {
+    OFCondition result = EC_Normal;
+
     /* write JSON Opener */
     writeJsonOpener(out, format);
+
     /* for an empty value field, we do not need to do anything */
     if (getLengthField() > 0)
     {
-        OFString value;
-        if (format.asBulkDataURI(getTag(), value))
-        {
-            /* return defined BulkDataURI */
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, value);
-        }
-        else
-        {
-            /* encode binary data as Base64 */
-            format.printInlineBinaryPrefix(out);
-            out << "\"";
-            /* adjust byte order to little endian */
-            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
-            out << "\"";
-        }
+        /* adjust byte order to little endian */
+        Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+        result = format.writeBinaryAttribute(out, getTag(), getLengthField(), byteValues);
     }
+
     /* write JSON Closer */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return result;
 }
 
 

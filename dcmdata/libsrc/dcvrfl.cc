@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -400,12 +400,14 @@ OFBool DcmFloatingPointSingle::matches(const DcmElement& candidate,
 OFCondition DcmFloatingPointSingle::writeJson(STD_NAMESPACE ostream &out,
                                               DcmJsonFormat &format)
 {
+    OFCondition status = EC_Normal;
+
     /* always write JSON Opener */
     writeJsonOpener(out, format);
+
     /* write element value (if non-empty) */
     if (!isEmpty())
     {
-        OFCondition status;
         const unsigned long vm = getVM();
 
         if (! format.getJsonExtensionEnabled())
@@ -421,14 +423,15 @@ OFCondition DcmFloatingPointSingle::writeJson(STD_NAMESPACE ostream &out,
           }
         }
 
-        OFString value;
-        if (format.asBulkDataURI(getTag(), value))
+        if (format.asBulkDataURI(getTag(), getLength()))
         {
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, value);
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+            status = format.writeBulkData(out, getLengthField(), byteValues);
         }
         else
         {
+            OFString value;
             status = getOFString(value, 0L);
             if (status.bad()) return status;
             format.printValuePrefix(out);
@@ -443,8 +446,8 @@ OFCondition DcmFloatingPointSingle::writeJson(STD_NAMESPACE ostream &out,
             format.printValueSuffix(out);
         }
     }
+
     /* write JSON Closer  */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return status;
 }

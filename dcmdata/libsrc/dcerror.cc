@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -84,6 +84,8 @@ makeOFConditionConst(EC_XMLValidationFailure,            OFM_dcmdata, 58, OF_err
 makeOFConditionConst(EC_SOPClassMismatch,                OFM_dcmdata, 59, OF_error, "SOP class mismatch" );
 makeOFConditionConst(EC_UnknownUIDName,                  OFM_dcmdata, 60, OF_error, "Unknown UID name: No mapping to UID value defined" );
 makeOFConditionConst(EC_CannotWriteStringAsJsonNumber,   OFM_dcmdata, 61, OF_error, "Cannot write IS/DS string as JSON number" );
+makeOFConditionConst(EC_CannotWriteBulkDataFile,         OFM_dcmdata, 62, OF_error, "Cannot write bulk data file" );
+makeOFConditionConst(EC_CannotWriteJsonMultiframe,       OFM_dcmdata, 63, OF_error, "JSON encoding not supported for encapsulated multi-frame pixel data" );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;

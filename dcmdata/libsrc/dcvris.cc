@@ -147,6 +147,8 @@ OFCondition DcmIntegerString::checkStringValue(const OFString &value,
 OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                                         DcmJsonFormat &format)
 {
+    OFCondition status = EC_Normal;
+
     /* always write JSON Opener */
     writeJsonOpener(out, format);
     OFBool isValid;
@@ -154,11 +156,11 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
     if (!isEmpty())
     {
         /* write element value */
-        OFString bulkDataValue;
-        if (format.asBulkDataURI(getTag(), bulkDataValue))
+        if (format.asBulkDataURI(getTag(), getLength()))
         {
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, bulkDataValue);
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+            status = format.writeBulkData(out, getLengthField(), byteValues);
         }
         else
         {
@@ -167,7 +169,7 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
             {
                 OFString value;
                 OFString vmstring = "1";
-                OFCondition status = getOFString(value, 0L);
+                status = getOFString(value, 0L);
                 if (status.bad())
                     return status;
                 format.printValuePrefix(out);
@@ -246,5 +248,5 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
     /* write JSON Closer  */
     writeJsonCloser(out, format);
     /* always report success */
-    return EC_Normal;
+    return status;
 }

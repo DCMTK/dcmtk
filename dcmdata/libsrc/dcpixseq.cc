@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,14 +24,14 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofuuid.h"
+#include "dcmtk/ofstd/ofsha256.h"
 
 #include "dcmtk/dcmdata/dcpixseq.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvr.h"
-
 #include "dcmtk/dcmdata/dcdeftag.h"
-
+#include "dcmtk/dcmdata/dcjson.h"
 
 // ********************************
 
@@ -179,6 +179,100 @@ OFCondition DcmPixelSequence::writeXML(STD_NAMESPACE ostream &out,
         l_error = DcmSequenceOfItems::writeXML(out, flags);
     }
     return l_error;
+}
+
+// ********************************
+
+OFCondition DcmPixelSequence::writeJson(
+    STD_NAMESPACE ostream &out,
+    DcmJsonFormat &format)
+{
+    // At this point, we can safely assume that this is a single frame image
+    // since this has been checked in DcmPixelData::writeJson().
+
+    OFCondition status = EC_Normal;
+    unsigned long numItems = card();
+    if (numItems < 2)
+    {
+        DCMDATA_WARN("DcmPixelSequence: pixel sequence is empty");
+        return EC_CannotWriteBulkDataFile;
+    }
+
+    // compute SHA-2 checksum over all pixel data fragments,
+    // not including the basic offset table (i.e. the first item)
+    OFSHA256 sha256;
+    Uint8 hash[32];
+    DcmPixelItem *pixItem = NULL;
+    Uint8 *pixelData = NULL;
+    Uint32 fragmentLength = 0;
+    for (unsigned long i = 1; i < numItems; ++i)
+    {
+        status = getItem(pixItem, i);
+        if (status.bad()) return status;
+        fragmentLength = pixItem->getLength();
+        status = pixItem->getUint8Array(pixelData);
+        if (status.bad()) return status;
+        sha256.update(pixelData, fragmentLength);
+    }
+    sha256.final(hash);
+
+    // determine filename and path
+    DcmXfer xfer(Xfer);
+    OFString bulkname;
+    char hashstring[3];
+    for (int i=0; i < 32; ++i)
+    {
+        OFStandard::snprintf(hashstring, sizeof(hashstring), "%02x", hash[i]);
+        bulkname.append(hashstring);
+    }
+    bulkname.append(xfer.getFilenameExtension());
+
+    OFString bulkpath;
+    format.getBulkDataDirectory(bulkpath);
+    bulkpath.append(bulkname);
+
+    /* check if file already exists. In this case, the file content is the same
+     * we would create now since the SHA-256 checksum is the same. So we can just
+     * use the existing file.
+     */
+    if (! OFStandard::fileExists(bulkpath))
+    {
+        OFFile bulkfile;
+        if (! bulkfile.fopen(bulkpath.c_str(), "wb"))
+        {
+            DCMDATA_ERROR("Unable to create bulk data file '" << bulkpath << "'");
+            return EC_CannotWriteBulkDataFile;
+        }
+
+        // write all fragments into a single file, as specified in DICOM part 18, section 8.7.3.3.2.
+        for (unsigned long i = 1; i < numItems; ++i)
+        {
+            status = getItem(pixItem, i);
+            if (status.bad()) return status;
+            fragmentLength = pixItem->getLength();
+            status = pixItem->getUint8Array(pixelData);
+            if (status.bad()) return status;
+            if (fragmentLength != bulkfile.fwrite(pixelData, 1, fragmentLength))
+            {
+                DCMDATA_ERROR("Unable to write bulk data to file '" << bulkpath << "'");
+                return EC_CannotWriteBulkDataFile;
+            }
+        }
+
+        if (bulkfile.fclose())
+        {
+            DCMDATA_ERROR("Unable to close bulk data file '" << bulkpath << "'");
+            return EC_CannotWriteBulkDataFile;
+        }
+    }
+
+    // print BulkDataURI (the enclosing Json opener and closer are printed in class DcmPixelData)
+    format.printBulkDataURIPrefix(out);
+    OFString bulkDataURI;
+    format.getBulkDataURIPrefix(bulkDataURI);
+    bulkDataURI.append(bulkname);
+    DcmJsonFormat::printString(out, bulkDataURI);
+    return status;
 }
 
 

@@ -848,33 +848,22 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmOtherByteOtherWord::writeJson(STD_NAMESPACE ostream &out,
                                              DcmJsonFormat &format)
 {
+    OFCondition result = EC_Normal;
+
     /* write JSON Opener */
     writeJsonOpener(out, format);
+
     /* for an empty value field, we do not need to do anything */
     if (getLengthField() > 0)
     {
-        OFString value;
-        if (format.asBulkDataURI(getTag(), value))
-        {
-            /* return defined BulkDataURI */
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, value);
-        }
-        else
-        {
-            /* encode binary data as Base64 */
-            format.printInlineBinaryPrefix(out);
-            out << "\"";
-            /* adjust byte order to little endian */
-            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
-            out << "\"";
-        }
+        /* adjust byte order to little endian */
+        Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+        result = format.writeBinaryAttribute(out, getTag(), getLengthField(), byteValues);
     }
+
     /* write JSON Closer */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return result;
 }
 
 
