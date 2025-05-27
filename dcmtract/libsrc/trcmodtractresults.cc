@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, Open Connections GmbH
+ *  Copyright (C) 2016-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -110,7 +110,7 @@ void TrcTractographyResultsModule::resetRules()
   m_Rules->addRule(new IODRule(DCM_ContentTime, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_ContentDate, "1", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
   m_Rules->addRule(new IODRule(DCM_TrackSetSequence, "1-n", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
-  m_Rules->addRule(new IODRule(DCM_ReferencedInstanceSequence, "1-n", "1", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
+  m_Rules->addRule(new IODRule(DCM_ReferencedInstanceSequence, "1-n", "1C", getName(), DcmIODTypes::IE_INSTANCE), OFTrue);
 }
 
 
@@ -193,13 +193,19 @@ OFCondition TrcTractographyResultsModule::addImageReference(const IODReference& 
 
 OFCondition TrcTractographyResultsModule::check(const OFBool quiet)
 {
+  DCMTRACT_DEBUG("Checking Tractography Results Module");
+  DCMTRACT_DEBUG("Checking Content Identification");
   if (m_ContentIdentification.check().good())
   {
+    DCMTRACT_DEBUG("Content Identification is valid");
+    DCMTRACT_DEBUG("Checking Track Sets");
     if (m_TrackSets.size() > 0)
     {
+      DCMTRACT_DEBUG("Found " << m_TrackSets.size() << " Track Sets");
       OFVector<TrcTrackSet*>::iterator it = m_TrackSets.begin();
       while (it != m_TrackSets.end())
       {
+        DCMTRACT_DEBUG("Checking Track Set #" << (it - m_TrackSets.begin() + 1) << "/" << m_TrackSets.size());
         if ( (*it)->getNumberOfTracks() == 0)
         {
           DCMTRACT_ERROR("Track Set does not contain any tracks");
@@ -207,6 +213,7 @@ OFCondition TrcTractographyResultsModule::check(const OFBool quiet)
         }
         else
         {
+          DCMTRACT_DEBUG("Track Set contains " << (*it)->getNumberOfTracks() << " tracks, checking them");
           OFVector<TrcTrack*> tracks = (*it)->getTracks();
           OFVector<TrcTrack*>::iterator t = tracks.begin();
           while (t != tracks.end())
@@ -224,16 +231,23 @@ OFCondition TrcTractographyResultsModule::check(const OFBool quiet)
       return TRC_EC_NoSuchTrack;
     }
   }
+  else
+  {
+    DCMTRACT_ERROR("Content Identification is not valid");
+    return TRC_EC_InvalidContentIdentification;
+  }
   return checkColoring();
 }
 
 
 OFCondition TrcTractographyResultsModule::checkColoring()
 {
+  DCMTRACT_DEBUG("Checking Track Set coloring");
   size_t tsCount = 1;
   OFVector<TrcTrackSet*>::iterator ts = m_TrackSets.begin();
   while (ts != m_TrackSets.end())
   {
+    DCMTRACT_DEBUG("Checking Track Set coloring for Track Set #" << tsCount << "/" << m_TrackSets.size());
     // Collect statistics how much are colored
     OFVector<TrcTrack*>::const_iterator track = (*ts)->getTracks().begin();
     OFVector<TrcTrack*>::const_iterator last = (*ts)->getTracks().end();

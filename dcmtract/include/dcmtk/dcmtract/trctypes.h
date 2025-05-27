@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, Open Connections GmbH
+ *  Copyright (C) 2016-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -66,6 +66,8 @@ extern DCMTK_DCMTRACT_EXPORT   const OFConditionConst     TRC_EC_MeasurementData
 extern DCMTK_DCMTRACT_EXPORT   const OFConditionConst     TRC_EC_InvalidStatisticData;
 /// Invalid Track Data
 extern DCMTK_DCMTRACT_EXPORT   const OFConditionConst     TRC_EC_InvalidTrackData;
+/// Invalid Content Identification
+extern DCMTK_DCMTRACT_EXPORT   const OFConditionConst     TRC_EC_InvalidContentIdentification;
 
 /**
  * Types specific to this module

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, Open Connections GmbH
+ *  Copyright (C) 2016-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -141,16 +141,29 @@ OFCondition TrcTrackSet::read(DcmItem& source,
 
 OFCondition TrcTrackSet::write(DcmItem& destination)
 {
+  DCMTRACT_DEBUG("Writing Track Set");
   OFCondition result;
+  DCMTRACT_DEBUG("Writing Track Set Anatomical Type Code Sequence");
   DcmIODUtil::writeSingleItem(result, DCM_TrackSetAnatomicalTypeCodeSequence, m_Anatomy, getData(), getRules()->getByTag(DCM_TrackSetAnatomicalTypeCodeSequence));
+  DCMTRACT_DEBUG("Writing Diffusion Acquisition Code Sequence");
   DcmIODUtil::writeSingleItem(result, DCM_DiffusionAcquisitionCodeSequence, m_DiffusionAcquisitionCode, getData(), getRules()->getByTag(DCM_DiffusionAcquisitionCodeSequence));
+  DCMTRACT_DEBUG("Writing Diffusion Model Code Sequence");
   DcmIODUtil::writeSingleItem(result, DCM_DiffusionModelCodeSequence, m_DiffusionModelCode, getData(), getRules()->getByTag(DCM_DiffusionModelCodeSequence));
+  DCMTRACT_DEBUG("Writing Tracking Algorithm Identification Sequence");
   DcmIODUtil::writeSubSequence(result, DCM_TrackingAlgorithmIdentificationSequence, m_TrackingAlgorithmIdentification, getData(), getRules()->getByTag(DCM_TrackingAlgorithmIdentificationSequence));
+  DCMTRACT_DEBUG("Writing Track Statistics");
   writeTrackStatistics(result, getData());
+  DCMTRACT_DEBUG("Writing Track Set Statistics");
   writeTrackSetStatistics(result, getData());
+  DCMTRACT_DEBUG("Writing Track Set Measurements");
   writeMeasurements(result, getData());
+  DCMTRACT_DEBUG("Writing Track Set Tracks");
   writeTracks(result, getData());
-  if (result.good()) result = IODComponent::write(destination);
+  if (result.good())
+  {
+    DCMTRACT_DEBUG("Writing Track Set details");
+    result = IODComponent::write(destination);
+  }
   return result;
 }
 
