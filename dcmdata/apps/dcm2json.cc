@@ -37,6 +37,9 @@
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"       /* for OFCharacterEncoding */
 #endif
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcm2json"
 #define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM file and data set to JSON"
@@ -126,7 +129,7 @@ static OFCondition getCurrentWorkingDir(const char *input_dir, OFString& output_
     if (input_dir == NULL) input_dir = ".";
 
 #ifdef HAVE_WINDOWS_H
-    char *resolved_path = fullpath(NULL, input_dir, 0);
+    char *resolved_path = _fullpath(NULL, input_dir, 0);
 #else
     char *resolved_path = realpath(input_dir, NULL);
 #endif
@@ -140,6 +143,8 @@ static OFCondition getCurrentWorkingDir(const char *input_dir, OFString& output_
     output_dir.append("/");
     free(resolved_path);
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
     if (PATH_SEPARATOR != '/')
     {
         // replace path separator by '/'
@@ -147,6 +152,7 @@ static OFCondition getCurrentWorkingDir(const char *input_dir, OFString& output_
         for (size_t i=0; i<l; ++i)
              if (output_dir[i] == PATH_SEPARATOR) output_dir[i] = '/';
     }
+#include DCMTK_DIAGNOSTIC_POP
 
     return EC_Normal;
 }
