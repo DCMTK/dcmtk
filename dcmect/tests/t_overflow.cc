@@ -85,7 +85,7 @@ OFTEST(dcmect_overflow)
 
     OFTempFile tf(O_RDWR, "", "t_overflow", ".dcm");
     OFCondition result;
-    result = ct->saveFile("output.dcm", EXS_LittleEndianExplicit);
+    result = ct->saveFile(tf.getFilename(), EXS_LittleEndianExplicit);
     OFCHECK_MSG(result == ECT_InvalidPixelInfo, result.text());
     delete ct;
 }
