@@ -43,11 +43,11 @@ OFTEST(dcmtract_create)
     }
 
     // Creation
-    OFunique_ptr<TrcTractographyResults> tract(create());
+    TrcTractographyResults* tract(create());
     OFCHECK(tract != OFnullptr);
 
 
-    setGenericValues(tract.get());
+    setGenericValues(tract);
 
     // Write to dataset and compare its dump with expected result
     DcmFileFormat dcmff;
@@ -57,6 +57,7 @@ OFTEST(dcmtract_create)
     OFCondition result;
     result = tract->saveFile(tf.getFilename(), EXS_LittleEndianExplicit);
     OFCHECK_MSG(result == EC_Normal, result.text());
+    delete tract; // delete tractography results object
 }
 
 static TrcTractographyResults *create()
