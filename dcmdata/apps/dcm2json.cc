@@ -138,7 +138,8 @@ static OFCondition getCurrentWorkingDir(const char *input_dir, OFString& output_
         OFLOG_ERROR(dcm2jsonLogger, OFFIS_CONSOLE_APPLICATION << ": Cannot create or determine bulk data directory");
         return EC_DirectoryDoesNotExist;
     }
-    output_dir = "file://localhost/";
+    output_dir = "file://localhost";
+    if (resolved_path[0] != '/') output_dir.append("/");
     output_dir.append(resolved_path);
     output_dir.append("/");
     free(resolved_path);

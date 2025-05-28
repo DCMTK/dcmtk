@@ -253,7 +253,8 @@ OFBool DcmJsonFormat::asBulkDataURI(const DcmTagKey& /*tag*/, Uint32 len) const
     if (minBulkDataSize < 0) return OFFalse;
 
     // return OFFalse if the attribute value is too small
-    if ((minBulkDataSize << 10) > len) return OFFalse;
+    size_t minSize = (OFstatic_cast(size_t, minBulkDataSize));
+    if ((minSize << 10) > len) return OFFalse;
 
     return OFTrue;
 }
