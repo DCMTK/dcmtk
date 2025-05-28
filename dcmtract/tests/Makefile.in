@@ -5,25 +5,58 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+oficonvdir = $(top_srcdir)/../oficonv
+ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmioddir = $(top_srcdir)/../dcmiod
+dcmfgdir = $(top_srcdir)/../dcmfg
 
-all:
+LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
+	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(oficonvdir)/libsrc -L$(ofstddir)/libsrc \
+	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmioddir)/libsrc \
+	-L$(dcmfgdir)/libsrc
+LOCALLIBS = -ldcmtract -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd -loficonv \
+	$(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-check:
+test_objs = tcreate.o tests.o
 
-check-exhaustive:
+objs = $(test_objs)
+progs = tests
 
-install:
+
+all: $(progs)
+
+tests: $(test_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
+
+
+check: tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
+
+check-exhaustive: tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
+
+
+install: all
+
 
 clean:
-	rm -f $(TRASH)
+	rm -f $(objs) $(progs) $(TRASH)
 
 distclean:
-	rm -f $(DISTTRASH)
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
 
 dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+include $(DEP)
