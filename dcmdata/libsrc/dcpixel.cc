@@ -1357,10 +1357,11 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
             writeJsonOpener(out, format);
 
             // delegate the JSON conversion to the pixel sequence
-            return currentPixelSequence->writeJson(out, format);
+            OFCondition status = currentPixelSequence->writeJson(out, format);
 
             // write JSON Closer
             writeJsonCloser(out, format);
+            return status;
         }
         else
         {
