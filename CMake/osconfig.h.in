@@ -612,33 +612,70 @@
 /* Define if we can use C++11 */
 #cmakedefine HAVE_CXX11 @HAVE_CXX11@
 
-#if defined(HAVE_CXX11) && defined(__cplusplus) && __cplusplus < 201103L
+#if defined(HAVE_CXX11)
+# if defined(_MSVC_LANG)
+#  if _MSVC_LANG < 201103L
 #error \
 DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
+#  endif
+# elif defined(__cplusplus)
+#  if __cplusplus < 201103L
+#error \
+DCMTK was configured to use C++11 features, but your compiler does not or was not configured to provide them.
+#  endif
+# endif
 #endif
 
 /* Define if we can use C++14 */
 #cmakedefine HAVE_CXX14 @HAVE_CXX14@
 
-#if defined(HAVE_CXX14) && defined(__cplusplus) && __cplusplus < 201402L
+#if defined(HAVE_CXX14)
+# if defined(_MSVC_LANG)
+#  if _MSVC_LANG < 201402L
 #error \
 DCMTK was configured to use C++14 features, but your compiler does not or was not configured to provide them.
+#  endif
+# elif defined(__cplusplus)
+#  if __cplusplus < 201402L
+#error \
+DCMTK was configured to use C++14 features, but your compiler does not or was not configured to provide them.
+#  endif
+# endif
 #endif
 
 /* Define if we can use C++17 */
 #cmakedefine HAVE_CXX17 @HAVE_CXX17@
 
-#if defined(HAVE_CXX17) && defined(__cplusplus) && __cplusplus < 201703L
+#if defined(HAVE_CXX17)
+# if defined(_MSVC_LANG)
+#  if _MSVC_LANG < 201703L
 #error \
 DCMTK was configured to use C++17 features, but your compiler does not or was not configured to provide them.
+#  endif
+# elif defined(__cplusplus)
+#  if __cplusplus < 201703L
+#error \
+DCMTK was configured to use C++17 features, but your compiler does not or was not configured to provide them.
+#  endif
+# endif
 #endif
+
 
 /* Define if we can use C++20 */
 #cmakedefine HAVE_CXX20 @HAVE_CXX20@
 
-#if defined(HAVE_CXX20) && defined(__cplusplus) && __cplusplus < 202002L
+#if defined(HAVE_CXX20)
+# if defined(_MSVC_LANG)
+#  if _MSVC_LANG < 202002L
 #error \
 DCMTK was configured to use C++20 features, but your compiler does not or was not configured to provide them.
+#  endif
+# elif defined(__cplusplus)
+#  if __cplusplus < 202002L
+#error \
+DCMTK was configured to use C++20 features, but your compiler does not or was not configured to provide them.
+#  endif
+# endif
 #endif
 
 /* Define if the compiler supports __alignof__ */
