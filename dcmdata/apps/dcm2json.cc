@@ -413,7 +413,8 @@ int main(int argc, char *argv[])
                 // look for the SOP instance UID, first in the dataset, then in the metaheader
                 OFString subDir;
                 OFString bulkDir = opt_bulk_dir;
-                OFString bulkURIPrefixWithSubdir = opt_bulk_uri_prefix;
+                OFString bulkURIPrefixWithSubdir;
+                if (opt_bulk_uri_prefix) bulkURIPrefixWithSubdir = opt_bulk_uri_prefix;
                 if ((opt_min_bulk_size >= 0) && opt_bulk_subdir)
                 {
                     if (dfile.getDataset()->findAndGetOFString(DCM_SOPInstanceUID, subDir).bad()
