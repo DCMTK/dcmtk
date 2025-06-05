@@ -1050,10 +1050,11 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     swapIfNecessary(gLocalByteOrder, byteOrder, &elementTag, 2, 2);
     // tag has been read
     bytesRead = 4;
+    OFString readVR;
     DcmTag newTag(groupTag, elementTag);
     DcmEVR newEVR = newTag.getEVR();
     // check whether tag is private
-    OFBool isPrivate = groupTag & 1;
+    const OFBool isPrivate = groupTag & 1;
 
     /* if the transfer syntax which was passed is an explicit VR syntax and if the current */
     /* item is not a delimitation item (note that delimitation items do not have a VR), go */
@@ -1065,6 +1066,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
 
         /* read 2 bytes */
         inStream.read(vrstr, 2);
+        readVR = vrstr;
 
         /* create a corresponding DcmVR object */
         DcmVR vr(vrstr);
@@ -1193,9 +1195,24 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         if ((vrSize > 1) && (valueLength % vrSize != 0))
         {
             /* warning is only reported for standard, fixed-size VRs that require more than 1 byte per value */
-            DCMDATA_WARN("DcmItem: Length of element " << newTag << " is not a multiple of " << vrSize << " (VR=" << vr.getVRName() << ")");
+            if (valueLength == DCM_UndefinedLength)
+            {
+                DCMDATA_WARN("DcmItem: Dubious use of undefined length for element " << newTag
+                    << " with VR=" << vr.getVRName());
+            } else {
+                DCMDATA_WARN("DcmItem: Length of element " << newTag << " is not a multiple of " << vrSize
+                    << " (VR=" << vr.getVRName() << ")");
+            }
         }
     }
+    /* check whether the correct VR is used for PixelData element in encapsulated format */
+    if ((newTag == DCM_PixelData) && xferSyn.usesEncapsulatedFormat() &&
+        (valueLength == DCM_UndefinedLength) && (readVR != "OB") /* this is the VR that was read */)
+    {
+        DCMDATA_WARN("DcmItem: Wrong VR for encapsulated PixelData " << newTag
+            << ", should be 'OB' instead of '" << readVR << "'");
+    }
+
     /* if the value in the length field is odd, print an error message */
     if ((valueLength & 1) && (valueLength != DCM_UndefinedLength))
     {
