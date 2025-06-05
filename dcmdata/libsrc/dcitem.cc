@@ -4929,7 +4929,7 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 // special handling for private pixel data (compressed or uncompressed)
                 if (newTag.getEVR() == EVR_px)
                 {
-                    DCMDATA_WARN("Found private element " << tag << " with VR " << tag.getVRName()
+                    DCMDATA_WARN("DcmItem: Found private element " << tag << " with VR=" << tag.getVRName()
                         << " and undefined length, reading a pixel sequence according to data dictionary");
                     newElement = new DcmPixelData(tag, length);
                 }
@@ -4980,10 +4980,10 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                 newTag.setVR(DcmVR(EVR_SQ)); // on writing we will handle this element as SQ, not UN
                 if (dcmEnableCP246Support.get())
                 {
-                    DCMDATA_WARN("Found element " << newTag << " with VR UN and undefined length, "
+                    DCMDATA_WARN("DcmItem: Found element " << newTag << " with VR=UN and undefined length, "
                         << "reading a sequence with transfer syntax LittleEndianImplicit (CP-246)");
                 } else {
-                    DCMDATA_WARN("Found element " << newTag << " with VR UN and undefined length");
+                    DCMDATA_WARN("DcmItem: Found element " << newTag << " with VR=UN and undefined length");
                 }
                 newElement = new DcmSequenceOfItems(newTag, length, dcmEnableCP246Support.get());
             } else {
