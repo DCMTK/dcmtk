@@ -190,6 +190,14 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteStringAsJsonNum
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteBulkDataFile;
 /// JSON encoding not supported for encapsulated multi-frame pixel data
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonMultiframe;
+/// Not the expected Type while parsing the JSON file
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONType;
+/// Unexpected JSON content
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONContent;
+/// BulkDataURI not yet supported
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_BulkDataURINotSupported;
+/// Compressed image data not yet supported
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CompressedImageDataNotSupported;
 
 ///@}
 

@@ -86,6 +86,10 @@ makeOFConditionConst(EC_UnknownUIDName,                  OFM_dcmdata, 60, OF_err
 makeOFConditionConst(EC_CannotWriteStringAsJsonNumber,   OFM_dcmdata, 61, OF_error, "Cannot write IS/DS string as JSON number" );
 makeOFConditionConst(EC_CannotWriteBulkDataFile,         OFM_dcmdata, 62, OF_error, "Cannot write bulk data file" );
 makeOFConditionConst(EC_CannotWriteJsonMultiframe,       OFM_dcmdata, 63, OF_error, "JSON encoding not supported for encapsulated multi-frame pixel data" );
+makeOFConditionConst(EC_InvalidJSONType,                 OFM_dcmdata, 64, OF_error, "Invalid JSON Type");
+makeOFConditionConst(EC_InvalidJSONContent,              OFM_dcmdata, 65, OF_error, "Unexpected JSON content");
+makeOFConditionConst(EC_BulkDataURINotSupported,         OFM_dcmdata, 66, OF_error, "BulkDataURI not yet Supported");
+makeOFConditionConst(EC_CompressedImageDataNotSupported, OFM_dcmdata, 67, OF_error, "Compressed Imagedata not yet Supported");
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
