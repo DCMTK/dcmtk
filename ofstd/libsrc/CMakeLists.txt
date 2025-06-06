@@ -14,6 +14,7 @@ DCMTK_ADD_LIBRARY(ofstd
   offilsys.cc
   offname.cc
   ofipc.cc
+  ofjsmn.cc
   oflist.cc
   ofstd.cc
   ofstring.cc
