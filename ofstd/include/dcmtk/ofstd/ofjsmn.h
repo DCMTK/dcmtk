@@ -24,6 +24,8 @@
 #ifndef OFJSMN_H
 #define OFJSMN_H
 
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/oftypes.h"
 #include <stddef.h>
 
 #ifdef __cplusplus
@@ -89,14 +91,14 @@ typedef struct jsmn_parser {
 /**
  * Create JSON parser over an array of tokens
  */
-JSMN_API void jsmn_init(jsmn_parser *parser);
+JSMN_API DCMTK_OFSTD_EXPORT void jsmn_init(jsmn_parser *parser);
 
 /**
  * Run JSON parser. It parses a JSON data string into and array of tokens, each
  * describing
  * a single JSON object.
  */
-JSMN_API int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
+JSMN_API DCMTK_OFSTD_EXPORT int jsmn_parse(jsmn_parser *parser, const char *js, const size_t len,
                         jsmntok_t *tokens, const unsigned int num_tokens);
 
 #ifndef JSMN_HEADER
