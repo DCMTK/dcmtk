@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofexit.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #include <cstdlib>
 
@@ -117,6 +118,33 @@ static OFCondition writeFile(
     return result;
 }
 
+/** append the given file path to the output URL while URL-encoding
+ *  special characters. Note that the reserved characters '/' and
+ *  ':' are not encoding since they are routinely used in file: URLs.
+ *  @param path file path
+ *  @param output_url output URL
+ */
+static void appendURLEncodedPath(const char *path, OFString& output_url)
+{
+  if (path)
+  {
+    char c;
+    for (const char *p=path; *p != '\0'; ++p)
+    {
+      c = *p;
+      // URL encode all characters except a-z, A-Z, 0-9, and "-_./!~$:"
+      // The reserved characters "/" and ":" are not URL encoded because they routinely occur in file: URLs
+      if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '/' || c == '!' || c == '~' || c == '$' || c == ':') output_url.append(1, *p);
+      else
+      {
+          char buf[5];
+          OFStandard::snprintf(buf, 5, "%%%02X", c);
+          output_url.append(buf);
+      }
+    }
+  }
+}
+
 /** determine the real path to the given working directory
  *  and return it in the form of a file:// URI.
  *  @param input_dir current working directory, NULL for current directory
@@ -140,7 +168,7 @@ static OFCondition getCurrentWorkingDir(const char *input_dir, OFString& output_
     }
     output_dir = "file://localhost";
     if (resolved_path[0] != '/') output_dir.append("/");
-    output_dir.append(resolved_path);
+    appendURLEncodedPath(resolved_path, output_dir);
     output_dir.append("/");
     free(resolved_path);
 
