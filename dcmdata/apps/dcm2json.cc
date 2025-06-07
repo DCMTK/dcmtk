@@ -135,6 +135,11 @@ static void appendURLEncodedPath(const char *path, OFString& output_url)
       // URL encode all characters except a-z, A-Z, 0-9, and "-_./!~$:"
       // The reserved characters "/" and ":" are not URL encoded because they routinely occur in file: URLs
       if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '/' || c == '!' || c == '~' || c == '$' || c == ':') output_url.append(1, *p);
+      else if (c == '\\')
+      {
+          // convert backslashes to forward slashes
+          output_url.append("/");
+      }
       else
       {
           char buf[5];
@@ -171,18 +176,6 @@ static OFCondition getCurrentWorkingDir(const char *input_dir, OFString& output_
     appendURLEncodedPath(resolved_path, output_dir);
     output_dir.append("/");
     free(resolved_path);
-
-#include DCMTK_DIAGNOSTIC_PUSH
-#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
-    if (PATH_SEPARATOR != '/')
-    {
-        // replace path separator by '/'
-        size_t l = output_dir.length();
-        for (size_t i=0; i<l; ++i)
-             if (output_dir[i] == PATH_SEPARATOR) output_dir[i] = '/';
-    }
-#include DCMTK_DIAGNOSTIC_POP
-
     return EC_Normal;
 }
 
