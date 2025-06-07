@@ -747,9 +747,9 @@ OFCondition parseElementInlineValue(
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
 #ifdef DEBUG
         for (size_t i = 0; i < length / 2; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << ((Uint16*)data)[i] << " " << result.code());
+            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Uint16 *, data)[i] << " " << result.code());
 #endif
-        result = newElem->putUint16Array((Uint16*)data, OFstatic_cast(Uint32, length / singleSize));
+        result = newElem->putUint16Array(OFreinterpret_cast(Uint16 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OF)
     {
@@ -757,9 +757,9 @@ OFCondition parseElementInlineValue(
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
 #ifdef DEBUG
         for (size_t i = 0; i < length / 4; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << ((Float32*)data)[i] << " " << result.code());
+            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Float32 *, data)[i] << " " << result.code());
 #endif
-        result = newElem->putFloat32Array((Float32*)data, OFstatic_cast(Uint32, length / singleSize));
+        result = newElem->putFloat32Array(OFreinterpret_cast(Float32 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OD)
     {
@@ -767,9 +767,9 @@ OFCondition parseElementInlineValue(
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
 #ifdef DEBUG
         for (size_t i = 0; i < length / 8; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << ((Float64*)data)[i] << " " << result.code());
+            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Float64 *, data)[i] << " " << result.code());
 #endif
-        result = newElem->putFloat64Array((Float64*)data, OFstatic_cast(Uint32, length / singleSize));
+        result = newElem->putFloat64Array(OFreinterpret_cast(Float64 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OL)
     {
@@ -777,9 +777,9 @@ OFCondition parseElementInlineValue(
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
 #ifdef DEBUG
         for (size_t i = 0; i < length / 4; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << ((Uint32*)data)[i] << " " << result.code());
+            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Uint32 *, data)[i] << " " << result.code());
 #endif
-        result = newElem->putUint32Array((Uint32*)data, OFstatic_cast(Uint32, length / singleSize));
+        result = newElem->putUint32Array(OFreinterpret_cast(Uint32 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OV)
     {
@@ -787,10 +787,10 @@ OFCondition parseElementInlineValue(
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
 #ifdef DEBUG
         for (size_t i = 0; i < length / 8; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << ((Uint64*)data)[i] << " " << result.code());
+            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Uint64 *, data)[i] << " " << result.code());
 #endif
         result = OFreinterpret_cast(DcmOther64bitVeryLong*, newElem)
-                    ->putUint64Array((Uint64*)data, OFstatic_cast(Uint32, length / singleSize));
+                    ->putUint64Array(OFreinterpret_cast(Uint64 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     // OB, UN
     else if (evr == EVR_OB || evr == EVR_UN)
