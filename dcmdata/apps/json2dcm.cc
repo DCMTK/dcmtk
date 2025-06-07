@@ -36,6 +36,8 @@
 #define JSMN_HEADER
 #include "dcmtk/ofstd/ofjsmn.h"         /* for JSMN declarations  */
 
+#include <climits>
+
 #ifdef WITH_ZLIB
 #include <zlib.h>                       /* for zlibVersion() */
 #endif
@@ -378,14 +380,12 @@ int main(int argc, char* argv[])
         {
             if (result.bad() || elemValue == NULL)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, "
-                    << "it will be set to UTF8('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, it will be set to UTF8 ('" << allowedCharset << "').");
                 dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
             }
             else if (allowedCharset.compare(elemValue) != 0)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies a character set other than UTF8, "
-                    << "it will be set to UTF8('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies a character set other than UTF8, it will be set to UTF8 ('" << allowedCharset << "').");
                 dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
             }
         }
@@ -393,8 +393,7 @@ int main(int argc, char* argv[])
         {
             if (result.bad() || elemValue == NULL)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, "
-                    << ", the file is encoded in UTF8('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, the file is encoded in UTF8 ('" << allowedCharset << "').");
             }
             else if (allowedCharset.compare(elemValue) != 0)
             {
@@ -490,7 +489,15 @@ OFJsmnTokenPtr reserveTokens(
     if (tokenNum <= 0) {
         return NULL;
     }
-    OFJsmnTokenPtr tokenArray = new OFJsmnToken[tokenNum];
+
+    // allocate one additional token
+    OFJsmnTokenPtr tokenArray = new OFJsmnToken[tokenNum+1];
+
+    // fill dummy token at the end of the array with values
+    // that allow the loop in parseElement() to reliably terminate
+    tokenArray[tokenNum].start = INT_MAX;
+    tokenArray[tokenNum].end = INT_MAX;
+    tokenArray[tokenNum].size = 0;
     return tokenArray;
 }
 
@@ -603,15 +610,20 @@ OFCondition jsmnParse(
     OFJsmnTokenPtr tokenArray = reserveTokens(jsmnParser, jsonString, jsonStrLen, tokenNum);
     OFLOG_TRACE(json2dcmLogger, "reserve tokens " << ", " << jsonStrLen << OFendl);
     if (result.bad())
+    {
+        delete[] jsonString;
+        delete[] tokenArray;
         return EC_IllegalParameter;
+    }
 
     // use the json library to parse the string and save it to the token array.
     result = parseJson(jsmnParser, jsonString, jsonStrLen, tokenArray, tokenNum);
     OFLOG_TRACE(json2dcmLogger, "parse result " << " toknext " << jsmnParser.toknext << " toksup " << jsmnParser.toksuper << OFendl);
-
-    if (result.bad())
+    if (result.bad() && stopOnError)
     {
-        if (stopOnError) return result; else result = EC_Normal;
+        delete[] jsonString;
+        delete[] tokenArray;
+        return result;
     }
 
     OFJsmnTokenPtr current = tokenArray;
@@ -625,7 +637,10 @@ OFCondition jsmnParse(
     }
 #endif
     // parse dataset
-    return parseDataSet(dataset, metaheader, current, xfer, stopOnError, jsonString);
+    result = parseDataSet(dataset, metaheader, current, xfer, stopOnError, jsonString);
+    delete[] jsonString;
+    delete[] tokenArray;
+    return result;
 }
 
 
