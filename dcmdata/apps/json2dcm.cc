@@ -255,13 +255,13 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
  */
 OFCondition jsmnParse(
     DcmFileFormat& fileformat,
-    const char* opt_ifname,
+    const char *opt_ifname,
     OFBool& opt_metaInfo,
     E_TransferSyntax& xfer,
     const OFBool stopOnError
 );
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     OFBool opt_metaInfo = OFTrue;
     OFBool opt_generateUIDs = OFFalse;
@@ -272,8 +272,8 @@ int main(int argc, char* argv[])
     OFBool opt_replaceCharset = OFFalse;
     E_FileWriteMode opt_writeMode = EWM_fileformat;
 
-    const char* opt_ifname = NULL;
-    const char* opt_ofname = NULL;
+    const char *opt_ifname = NULL;
+    const char *opt_ofname = NULL;
 
     /* set-up command line parameters and options */
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
@@ -374,31 +374,41 @@ int main(int argc, char* argv[])
         }
 
         OFString allowedCharset = "ISO_IR 192";
-        const char* elemValue;
+        OFString asciiCharset = "ISO_IR 6";
+        const char *elemValue;
         result = dataset->findAndGetString(DCM_SpecificCharacterSet, elemValue, OFTrue /*searchIntoSub*/);
         if (opt_replaceCharset)
         {
             if (result.bad() || elemValue == NULL)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, it will be set to UTF8 ('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, it will be set to UTF-8 ('" << allowedCharset << "').");
                 dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
             }
             else if (allowedCharset.compare(elemValue) != 0)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies a character set other than UTF8, it will be set to UTF8 ('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies a character set other than UTF-8, it will be set to UTF-8 ('" << allowedCharset << "').");
                 dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
             }
         }
         else
         {
-            if (result.bad() || elemValue == NULL)
+            if ((result.bad() || elemValue == NULL))
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, the file is encoded in UTF8 ('" << allowedCharset << "').");
+                if (dataset->containsExtendedCharacters())
+                {
+                    // JSON dataset contains non-ASCII characters but no specific character set
+                    OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, the file is encoded in UTF-8 ('" << allowedCharset << "').");
+                }
             }
             else if (allowedCharset.compare(elemValue) != 0)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies the character set '"
-                    << elemValue << "' but the file is encoded in UTF8 ('" << allowedCharset << "').");
+                // JSON dataset specifies a specific character set other then ISO_IR 192
+                if (dataset->containsExtendedCharacters() || (asciiCharset.compare(elemValue) != 0))
+                {
+                    // JSON dataset is not ASCII (ISO_IR 6) either
+                    OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies the character set '"
+                        << elemValue << "' but the file is encoded in UTF-8 ('" << allowedCharset << "').");
+                }
             }
         }
 
@@ -441,12 +451,12 @@ int main(int argc, char* argv[])
     return result.status();
 }
 
-/** read the file and store the content in the private C string
+/** read the file and store the content in a char array
  *  @param iframe name of the JSON file to be read
- *  @param jsonStrLen length of the C string
+ *  @param jsonStrLen length of the string
  *  @return jsonString upon success, NULL otherwise
  */
-char* readFile(const char* opt_ifname, size_t& jsonStrLen)
+char *readFile(const char *opt_ifname, size_t& jsonStrLen)
 {
     OFFile jsonFile;
     if (!(jsonFile.fopen(opt_ifname, "rb")))
@@ -457,7 +467,13 @@ char* readFile(const char* opt_ifname, size_t& jsonStrLen)
 
     // obtain file size
     const size_t len = OFStandard::getFileSize(opt_ifname);
-    char* jsonString = new char[len + 1];
+    char *jsonString = new (std::nothrow) char[len + 1];
+    if (jsonString == NULL)
+    {
+        OFLOG_FATAL(json2dcmLogger, "Out of memory: failed to allocate buffer");
+        return NULL;
+    }
+
     // read the whole file to buffer
     jsonString[len] = '\0';
     jsonStrLen = len;
@@ -467,10 +483,66 @@ char* readFile(const char* opt_ifname, size_t& jsonStrLen)
     if (res != len)
     {
         OFLOG_FATAL(json2dcmLogger, "File read error: " << opt_ifname);
+        delete[] jsonString;
         return NULL;
     }
     return jsonString;
 }
+
+// read from stdin in 1 MByte blocks
+// #define JSON2DCM_STDIN_BLOCKSIZE 1048576
+
+#define JSON2DCM_STDIN_BLOCKSIZE 10
+
+/** read the JSON dataset from stdin and store the content in a char array
+ *  @param jsonStrLen length of the string
+ *  @return jsonString upon success, NULL otherwise
+ */
+char *readStdin(size_t& jsonStrLen)
+{
+    size_t bufSize = JSON2DCM_STDIN_BLOCKSIZE;
+    size_t bufFree;
+    size_t bytesInBuffer = 0;
+    size_t readResult;
+    char *jsonString = NULL;;
+    char *oldBuf = NULL;
+    char *writePtr;
+    do
+    {
+        if (jsonString == NULL) jsonString = new (std::nothrow) char[bufSize+1];
+        if (jsonString == NULL)
+        {
+            OFLOG_FATAL(json2dcmLogger, "Out of memory: failed to allocate buffer");
+            delete[] oldBuf;
+            return NULL;
+        }
+        if (oldBuf)
+        {
+            memmove(jsonString, oldBuf, bytesInBuffer);
+            delete[] oldBuf;
+            oldBuf = NULL;
+        }
+        writePtr = jsonString + bytesInBuffer;
+        bufFree = bufSize - bytesInBuffer;
+        readResult = fread(writePtr, 1, bufFree, stdin);
+        bytesInBuffer += readResult;
+        bufFree -= readResult;
+        if ((! feof(stdin)) && (bufFree == 0))
+        {
+            // we need more buffer. Double the size.
+            oldBuf = jsonString;
+            jsonString = NULL;
+            bufSize *= 2;
+        }
+        else if (feof(stdin))
+        {
+            jsonString[bytesInBuffer] = '\0';
+            jsonStrLen = bytesInBuffer;
+            return jsonString;
+        }
+    } while (OFTrue);
+}
+
 
 /** calculate the required tokens number for the read in jsonstring
  *  @param jsonString C string storing the file content
@@ -583,7 +655,7 @@ OFCondition parseSequence(
  */
 OFCondition jsmnParse(
     DcmFileFormat& fileformat,
-    const char* opt_ifname,
+    const char *opt_ifname,
     OFBool& opt_metaInfo,
     E_TransferSyntax& xfer,
     const OFBool stopOnError
@@ -602,7 +674,12 @@ OFCondition jsmnParse(
     OFCondition result;
 
     // readin the input file to a memory buffer
-    char* jsonString = readFile(opt_ifname, jsonStrLen);
+    OFString stdinName("-");
+    char *jsonString;
+    if (opt_ifname == stdinName)
+        jsonString = readStdin(jsonStrLen);
+        else jsonString = readFile(opt_ifname, jsonStrLen);
+
     if (jsonString == NULL)
         return EC_IllegalCall;
 
