@@ -137,7 +137,7 @@ length encoding in sequences and items:
   -e   --length-undefined
          write with undefined lengths
 
-length encoding in sequences and items:
+charset handling:
 
   +c   --charset-accept
          write with the given charset in JSON (default)
