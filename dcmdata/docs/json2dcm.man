@@ -14,16 +14,16 @@ json2dcm [options] jsonfile-in dcmfile-out
 
 \section json2dcm_description DESCRIPTION
 
-The \b json2dcm utility converts the contents of a DICOM dataset in
-JSON (JavaScript Object Notation) encoding (MIME type application/dicom+json)
-to a binary DICOM file or dataset. The JSON document is expected to
-conform to the "DICOM JSON Model" as defined in DICOM Part 18, Section F.
-Such JSON files can be created, for example, using the \b dcm2json tool.
+The \b json2dcm utility converts the contents of a DICOM data set in JSON
+(JavaScript Object Notation) encoding (MIME type "application/dicom+json") to a
+binary DICOM file or data set.  The JSON document is expected to conform to the
+"DICOM JSON Model" as defined in DICOM Part 18, Section F.  Such JSON files can
+be created, for example, using the \b dcm2json tool.
 
 \section json2dcm_parameters PARAMETERS
 
 \verbatim
-jsonfile-in  JSON input filename to be converted
+jsonfile-in  JSON input filename ("-" for stdin)
 
 dcmfile-out  DICOM output filename
 \endverbatim
@@ -314,21 +314,21 @@ The basic structure of the JSON input expected looks like the following
 
 \subsection json2dcm_character_encoding Character Encoding
 
-The JSON format only supports UTF-8 encoding. Thus the generated DICOM file will
-also contain UTF-8 encoding. If the JSON file does not contain a specific
-character set, or a specific character set other than "ISO_IR 192",
-a warning will be issued.
+The JSON format only supports UTF-8 encoding. Thus the generated DICOM file
+will also contain UTF-8 encoding.  If the JSON file does not contain a specific
+character set, or a specific character set other than "ISO_IR 192", a warning
+will be issued.
 
 \subsection json2dcm_bulk_data Binary Data, Bulk Data, and Pixel Data
 
 The DICOM JSON model uses "InlineBinary" to store attribute values of binary
 value representations such as "OB", "OW", "OD", "OF", "OL", "OV" etc.
-in Base64 encoded form. This is supported in \b json2dcm for all binary
+in Base64 encoded form.  This is supported in \b json2dcm for all binary
 attributes, including unencapsulated pixel data.
 
 The DICOM JSON model also permits attribute values to be stored separately
-from the JSON dataset and to be referenced through a BulkDataURI. This feature
-is not yet supported in \b json2dcm.
+from the JSON data set and to be referenced through a BulkDataURI.  This
+feature is not yet supported in \b json2dcm.
 
 Finally, encapsulated (in particular, compressed) pixel data is not supported
 by \b json2dcm because the syntax of the DICOM JSON model for this specific
@@ -428,6 +428,6 @@ It is an error if no data dictionary can be loaded.
 
 \section json2dcm_copyright COPYRIGHT
 
-Copyright (C) 2003-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2024-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

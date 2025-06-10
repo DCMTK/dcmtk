@@ -1,23 +1,23 @@
 /*
-*
-*  Copyright (C) 2024-2025, OFFIS e.V.
-*  All rights reserved.  See COPYRIGHT file for details.
-*
-*  This software and supporting documentation were developed by
-*
-*    OFFIS e.V.
-*    R&D Division Health
-*    Escherweg 2
-*    D-26121 Oldenburg, Germany
-*
-*
-*  Module:  dcmdata
-*
-*  Author:  Tingyan Xu
-*
-*  Purpose: Convert JSON DICOM document to binary DICOM file
-*
-*/
+ *
+ *  Copyright (C) 2024-2025, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Tingyan Xu
+ *
+ *  Purpose: Convert JSON DICOM document to binary DICOM file
+ *
+ */
 
 #include "dcmtk/config/osconfig.h"      /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofconapp.h"
@@ -121,7 +121,7 @@ void addJSON2DCMommandlineOptions(OFCommandLine& cmd)
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("jsonfile-in", "JSON input filename");
+    cmd.addParam("jsonfile-in", "JSON input filename (\"-\" for stdin)");
     cmd.addParam("dcmfile-out", "DICOM output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGeneralOptions(LONGCOL, SHORTCOL);
