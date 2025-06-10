@@ -33,6 +33,7 @@ This module contains the following command line tools:
 \li \ref dcmodify
 \li \ref dump2dcm
 \li \ref img2dcm
+\li \ref json2dcm
 \li \ref pdf2dcm
 \li \ref stl2dcm
 \li \ref xml2dcm
