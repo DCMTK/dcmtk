@@ -52,6 +52,7 @@ dcmdata/apps/dcmgpdir
 dcmdata/apps/dcmodify
 dcmdata/apps/dump2dcm
 dcmdata/apps/img2dcm
+dcmdata/apps/json2dcm
 dcmdata/apps/pdf2dcm
 dcmdata/apps/stl2dcm
 dcmdata/apps/xml2dcm
