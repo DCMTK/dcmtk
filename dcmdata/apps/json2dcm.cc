@@ -122,7 +122,7 @@ void addJSON2DCMommandlineOptions(OFCommandLine& cmd)
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
     cmd.addParam("jsonfile-in", "JSON input filename (\"-\" for stdin)");
-    cmd.addParam("dcmfile-out", "DICOM output filename (default: stdout)", OFCmdParam::PM_Optional);
+    cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
 
     cmd.addGeneralOptions(LONGCOL, SHORTCOL);
     OFLog::addOptions(cmd);
@@ -489,10 +489,9 @@ char *readFile(const char *opt_ifname, size_t& jsonStrLen)
     return jsonString;
 }
 
-// read from stdin in 1 MByte blocks
-// #define JSON2DCM_STDIN_BLOCKSIZE 1048576
-
-#define JSON2DCM_STDIN_BLOCKSIZE 10
+// Begin with a 1 MByte buffer when reading from stdin.
+// Buffer size will increase if necessary.
+#define JSON2DCM_STDIN_BLOCKSIZE 1048576
 
 /** read the JSON dataset from stdin and store the content in a char array
  *  @param jsonStrLen length of the string

@@ -25,7 +25,7 @@ be created, for example, using the \b dcm2json tool.
 \verbatim
 jsonfile-in  JSON input filename ("-" for stdin)
 
-dcmfile-out  DICOM output filename
+dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
 
 \section json2dcm_options OPTIONS
