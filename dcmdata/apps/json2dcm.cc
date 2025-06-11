@@ -331,14 +331,19 @@ int main(int argc, char *argv[])
         OFLOG_ERROR(json2dcmLogger, OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>");
         result = EC_IllegalParameter;
     }
+    if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
+    {
+        OFLOG_ERROR(json2dcmLogger, OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>");
+        result = EC_IllegalParameter;
+    }
 
-    OFLOG_DEBUG(json2dcmLogger, "read JSON file '" << opt_ifname << "'");
     if (result.good())
     {
        // create a DICOM file object
         DcmFileFormat fileformat;
         E_TransferSyntax xfer = EXS_LittleEndianExplicit;
 
+        OFLOG_INFO(json2dcmLogger, "reading JSON input file: " << opt_ifname);
         // read JSON file and convert to DICOM
         result = jsmnParse(fileformat, opt_ifname, opt_metaInfo, xfer, opt_stopOnErrors);
 
@@ -355,17 +360,17 @@ int main(int argc, char *argv[])
             char uid[100];
             if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
             {
-                OFLOG_TRACE(json2dcmLogger, "generating new Study Instance UID");
+                OFLOG_INFO(json2dcmLogger, "generating new Study Instance UID");
                 dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
             }
             if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
             {
-                OFLOG_TRACE(json2dcmLogger, "generating new Series Instance UID");
+                OFLOG_INFO(json2dcmLogger, "generating new Series Instance UID");
                 dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
             }
             if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
             {
-                OFLOG_TRACE(json2dcmLogger, "generating new SOP Instance UID");
+                OFLOG_INFO(json2dcmLogger, "generating new SOP Instance UID");
                 dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
                 /* make sure that the file meta information is updated correspondingly */
                 if (opt_writeMode == EWM_fileformat)
@@ -412,7 +417,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        OFLOG_TRACE(json2dcmLogger, "writing DICOM output file: " << opt_ofname);
+        OFLOG_INFO(json2dcmLogger, "writing DICOM output file: " << opt_ofname);
 
         /* determine transfer syntax to write the file */
         if (opt_xfer == EXS_Unknown)
@@ -445,8 +450,6 @@ int main(int argc, char *argv[])
         }
 
     }
-    if (result.good())
-        OFLOG_TRACE(json2dcmLogger, "JSON successfully converted");
 
     return result.status();
 }
