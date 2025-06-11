@@ -180,24 +180,22 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonInlineBinar
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLParseError;
 /// XML validation failure
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_XMLValidationFailure;
-/// SOP class mismatch
+/// SOP Class mismatch
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_SOPClassMismatch;
 /// Unknown UID name: No mapping to UID value defined
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnknownUIDName;
 /// Cannot write IS/DS string as JSON number
-extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteStringAsJsonNumber;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteStringAsJSONNumber;
 /// Cannot write bulk data file
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteBulkDataFile;
 /// JSON encoding not supported for encapsulated multi-frame pixel data
-extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJsonMultiframe;
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CannotWriteJSONMultiframe;
 /// Not the expected Type while parsing the JSON file
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONType;
-/// Unexpected JSON content
+/// Invalid JSON content
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONContent;
 /// BulkDataURI not yet supported
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_BulkDataURINotSupported;
-/// Compressed image data not yet supported
-extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CompressedImageDataNotSupported;
 
 ///@}
 

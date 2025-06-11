@@ -4928,13 +4928,13 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                     if (dcmIgnoreParsingErrors.get())
                     {
                         // ignore parse error, keep VR unchanged
-                        DCMDATA_WARN("DcmItem: VOI LUT Sequence with VR=OW and explicit length encountered.");
+                        DCMDATA_WARN("DcmItem: VOI LUT Sequence with VR=OW and explicit length encountered");
                         newElement = new DcmOtherByteOtherWord(tag, length);
                     }
                     else
                     {
                         // bail out with an error
-                        DCMDATA_ERROR("DcmItem: VOI LUT Sequence with VR=OW and explicit length encountered.");
+                        DCMDATA_ERROR("DcmItem: VOI LUT Sequence with VR=OW and explicit length encountered");
                         l_error = EC_VOI_LUT_OBOW;
                     }
                 }

@@ -153,8 +153,8 @@ deflate compression level (only with --write-xfer-deflated):
 
 \section json2dcm_notes NOTES
 
-The basic structure of the JSON input expected looks like the following
-(see DICOM Part 18 Section F for details):
+The basic structure of the JSON input expected looks like the following (see
+DICOM Part 18 Section F for details):
 
 \verbatim
 {
@@ -321,17 +321,17 @@ will be issued.
 
 \subsection json2dcm_bulk_data Binary Data, Bulk Data, and Pixel Data
 
-The DICOM JSON model uses "InlineBinary" to store attribute values of binary
+The DICOM JSON Model uses "InlineBinary" to store attribute values of binary
 value representations such as "OB", "OW", "OD", "OF", "OL", "OV" etc.
 in Base64 encoded form.  This is supported in \b json2dcm for all binary
 attributes, including unencapsulated pixel data.
 
-The DICOM JSON model also permits attribute values to be stored separately
+The DICOM JSON Model also permits attribute values to be stored separately
 from the JSON data set and to be referenced through a BulkDataURI.  This
 feature is not yet supported in \b json2dcm.
 
 Finally, encapsulated (in particular, compressed) pixel data is not supported
-by \b json2dcm because the syntax of the DICOM JSON model for this specific
+by \b json2dcm because the syntax of the DICOM JSON Model for this specific
 case is not defined in the DICOM standard yet.
 
 \section json2dcm_logging LOGGING
@@ -402,7 +402,6 @@ EXITCODE_CANNOT_WRITE_OUTPUT_FILE               40
 EXITCODE_INVALID_JSON_TYPE                      64
 EXITCODE_INVALID_JSON_CONTENT                   65
 EXITCODE_BULKDATA_URI_NOT_SUPPORTED             66
-EXITCODE_COMPRESSED_IMAGEDATA_NOT_SUPPORTED     67
 \endverbatim
 
 \section json2dcm_environment ENVIRONMENT

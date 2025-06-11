@@ -321,7 +321,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
             * (where PDVs always have even length).
             * Everything else generates a warning.
             */
-           DCMDATA_WARN("zlib: " << OFstatic_cast(unsigned long, count-1) << " pending input bytes in buffer.");
+           DCMDATA_WARN("DcmZLibInputFilter: " << OFstatic_cast(unsigned long, count-1) << " pending input bytes in buffer");
          }
        }
 #endif
@@ -366,7 +366,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
                 * (where PDVs always have even length).
                 * Everything else generates a warning.
                 */
-               DCMDATA_WARN("zlib: " << OFstatic_cast(unsigned long, count-1) << " pending input bytes in buffer.");
+               DCMDATA_WARN("DcmZLibInputFilter: " << OFstatic_cast(unsigned long, count-1) << " pending input bytes in buffer");
              }
           }
 #endif

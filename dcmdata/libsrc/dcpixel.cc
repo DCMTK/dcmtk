@@ -1347,7 +1347,7 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
             if (imageFrames != 1)
             {
                 DCMDATA_WARN("Encapsulated multi-frame images cannot be represented in JSON");
-                return EC_CannotWriteJsonMultiframe;
+                return EC_CannotWriteJSONMultiframe;
             }
 
             // (*current)->pixSeq is not NULL at this point, we have checked this earlier in this method

@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
         result = jsmnParse(fileformat, opt_ifname, opt_metaInfo, xfer, opt_stopOnErrors);
 
         if (result.bad()) {
-            OFLOG_ERROR(json2dcmLogger, "Error while parsing json String");
+            OFLOG_ERROR(json2dcmLogger, "Error while parsing JSON file");
             return result.code();
         }
 
@@ -381,12 +381,12 @@ int main(int argc, char *argv[])
         {
             if (result.bad() || elemValue == NULL)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, it will be set to UTF-8 ('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, it will be set to UTF-8 ('" << allowedCharset << "')");
                 dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
             }
             else if (allowedCharset.compare(elemValue) != 0)
             {
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies a character set other than UTF-8, it will be set to UTF-8 ('" << allowedCharset << "').");
+                OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies a character set other than UTF-8, it will be set to UTF-8 ('" << allowedCharset << "')");
                 dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
             }
         }
@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
                 if (dataset->containsExtendedCharacters())
                 {
                     // JSON dataset contains non-ASCII characters but no specific character set
-                    OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, the file is encoded in UTF-8 ('" << allowedCharset << "').");
+                    OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' does not specify a character set, the file is encoded in UTF-8 ('" << allowedCharset << "')");
                 }
             }
             else if (allowedCharset.compare(elemValue) != 0)
@@ -407,7 +407,7 @@ int main(int argc, char *argv[])
                 {
                     // JSON dataset is not ASCII (ISO_IR 6) either
                     OFLOG_WARN(json2dcmLogger, "JSON file '" << opt_ifname << "' specifies the character set '"
-                        << elemValue << "' but the file is encoded in UTF-8 ('" << allowedCharset << "').");
+                        << elemValue << "' but the file is encoded in UTF-8 ('" << allowedCharset << "')");
                 }
             }
         }
@@ -427,7 +427,7 @@ int main(int argc, char *argv[])
         /* check whether it is possible to write the file */
         if (fileformat.canWriteXfer(opt_xfer))
         {
-            /* check whether pixel data is compressed */
+            /* check whether pixel data is encapsulated */
             if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).usesEncapsulatedFormat())
             {
                 OFLOG_WARN(json2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
@@ -446,7 +446,7 @@ int main(int argc, char *argv[])
 
     }
     if (result.good())
-        OFLOG_TRACE(json2dcmLogger, "json successfully converted");
+        OFLOG_TRACE(json2dcmLogger, "JSON successfully converted");
 
     return result.status();
 }
@@ -572,7 +572,7 @@ OFJsmnTokenPtr reserveTokens(
     return tokenArray;
 }
 
-/** parse the json string using JSMN parser
+/** parse the JSON string using JSMN parser
  *  @param jsonString C string storing the file content
  *  @param jsonStrLen length of the C string
  *  @param tokenArray JSMN token array to store the JSON content
@@ -594,7 +594,7 @@ OFCondition parseJson(
     }
     parsRes = jsmn_parse(&jsmnParser, jsonString, jsonStrLen, tokenArray, tokenNum);
 
-    if (parsRes < 0) { // error occured
+    if (parsRes < 0) { // error occurred
         if (parsRes == JSMN_ERROR_NOMEM)
             return EC_CorruptedData;
 
@@ -692,7 +692,7 @@ OFCondition jsmnParse(
         return EC_IllegalParameter;
     }
 
-    // use the json library to parse the string and save it to the token array.
+    // use the JSON library to parse the string and save it to the token array.
     result = parseJson(jsmnParser, jsonString, jsonStrLen, tokenArray, tokenNum);
     OFLOG_TRACE(json2dcmLogger, "parse result " << " toknext " << jsmnParser.toknext << " toksup " << jsmnParser.toksuper << OFendl);
     if (result.bad() && stopOnError)
@@ -774,7 +774,7 @@ OFCondition createElement(
             // if the tag is ox or px, the EVR can either be OB or OW
             (((tagEVR != EVR_ox) && (tagEVR != EVR_px)) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
         {
-            // there are inconsistencies concerning the VR in the json file. There may be resulting errors in the DICOM dataset
+            // there are inconsistencies concerning the VR in the JSON file. There may be resulting errors in the DICOM dataset
             OFLOG_WARN(json2dcmLogger, "element " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
                 << "), correct is '" << dcmTag.getVR().getVRName() << "'");
         }
@@ -1321,7 +1321,7 @@ OFCondition parseElement(
     /* bulk data content is stored in a file. this is not yet supported */
     else if (valueType == "bulkdatauri")
     {
-        OFLOG_WARN(json2dcmLogger, "Loading Bulkdata from 'BulkDataURI' not yet possible.");
+        OFLOG_WARN(json2dcmLogger, "Loading Bulkdata from 'BulkDataURI' not yet possible");
         return EC_BulkDataURINotSupported;
     }
 
@@ -1336,7 +1336,7 @@ OFCondition parseElement(
         Uint8* data = NULL;
         const size_t length = OFStandard::decodeBase64(value, data);
 #ifdef DEBUG
-        OFLOG_TRACE(json2dcmLogger, "Parsing Inline Binary (" << length << "): " << value << " | " << data);
+        OFLOG_TRACE(json2dcmLogger, "Parsing inline binary (" << length << "): " << value << " | " << data);
 #endif
         if (length > 0)
             parseElementInlineValue(newElem, data, length);
@@ -1362,12 +1362,12 @@ OFCondition parseElement(
         }/* special handling for compressed pixel data */
         else if (newElem->getTag() == DCM_PixelData)
         {
-            OFLOG_ERROR(json2dcmLogger, "Pixeldata not allowed as value in DICOM-JSON format");
+            OFLOG_ERROR(json2dcmLogger, "Pixel data not allowed as value in DICOM JSON Model");
             return EC_InvalidJSONContent;
         }
         else // interpret value array
         {
-            OFLOG_TRACE(json2dcmLogger, "Parsing Values Array of size " << valueToken->size);
+            OFLOG_TRACE(json2dcmLogger, "Parsing values array of size " << valueToken->size);
             result = parseElemValueArray(newElem, valueToken, stopOnError, jsonString);
         }
         if (result.bad())
@@ -1377,7 +1377,7 @@ OFCondition parseElement(
     }
     else
     {
-        OFLOG_ERROR(json2dcmLogger, "Unknown JSON Attribute name: " << valueType);
+        OFLOG_ERROR(json2dcmLogger, "Unknown JSON attribute name: " << valueType);
         return EC_InvalidJSONContent;
     }
 
@@ -1406,7 +1406,7 @@ OFCondition parseElement(
     }
     else // result.bad()
     {
-        OFLOG_ERROR(json2dcmLogger, "ERROR while parsing value for " << dcmTag << "");
+        OFLOG_ERROR(json2dcmLogger, "Error while parsing value for " << dcmTag << "");
         /* delete element if insertion or putting the value failed */
         delete newElem;
     }
@@ -1485,7 +1485,7 @@ OFCondition parseDataSet(
             if (stopOnError) return result;
         }
     }
-    OFLOG_TRACE(json2dcmLogger, "DS  END " << dsStart << " next up : " << current->start);
+    OFLOG_TRACE(json2dcmLogger, "DS  End " << dsStart << " next up : " << current->start);
     return result;
 
 }

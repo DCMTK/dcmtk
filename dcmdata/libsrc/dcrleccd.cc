@@ -312,7 +312,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     {
                       if (rledecoder.size() < bytesPerStripe)
                       {
-                        DCMDATA_WARN("Detected fragmented RLE compressed pixel data, which is not allowed in DICOM.");
+                        DCMDATA_WARN("DcmRLECodecDecoder: Detected fragmented RLE compressed pixel data, which is not allowed in DICOM");
                         DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                         result = pixSeq->getItem(pixItem, currentItem++);
                         if (result.good())
@@ -348,7 +348,7 @@ OFCondition DcmRLECodecDecoder::decode(
 
                       if (result.good() || result == EC_StreamNotifyClient)
                       {
-                        DCMDATA_WARN("Detected fragmented RLE compressed pixel data, which is not allowed in DICOM.");
+                        DCMDATA_WARN("DcmRLECodecDecoder: Detected fragmented RLE compressed pixel data, which is not allowed in DICOM");
                         DCMDATA_DEBUG("RLE decoder processes pixel item " << currentItem);
                         result = pixSeq->getItem(pixItem, currentItem++);
                       }
@@ -365,7 +365,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     // last fragment for this RLE stripe
                     if (inputBytes + byteOffset > fragmentLength)
                     {
-                        DCMDATA_WARN("stream size in RLE header is wrong, adjusting from " << inputBytes << " to " << fragmentLength-byteOffset << " bytes.");
+                        DCMDATA_WARN("DcmRLECodecDecoder: Stream size in RLE header is wrong, adjusting from " << inputBytes << " to " << fragmentLength-byteOffset << " bytes");
                         inputBytes = fragmentLength-byteOffset;
                     }
 
@@ -387,7 +387,7 @@ OFCondition DcmRLECodecDecoder::decode(
                 if (lastStripeOfColor && (rledecoder.size() < bytesPerStripe))
                 {
                     // stripe ended prematurely? report a warning and continue
-                    DCMDATA_WARN("RLE decoder is finished but has produced insufficient data for this stripe, filling remaining pixels");
+                    DCMDATA_WARN("DcmRLECodecDecoder: RLE decoder is finished but has produced insufficient data for this stripe, filling remaining pixels");
                     result = EC_Normal;
                 }
                 else if (rledecoder.size() != bytesPerStripe)

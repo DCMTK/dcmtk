@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,7 @@
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
 #include "dcmtk/dcmdata/dcitem.h"     /* for class DcmItem */
 #include "dcmtk/dcmdata/dcdeftag.h"   /* for tag definitions */
-#include "dcmtk/dcmdata/dcjson.h"     /* json helper classes */
+#include "dcmtk/dcmdata/dcjson.h"     /* JSON helper classes */
 #include "dcmtk/dcmdata/dcmatch.h"
 
 //

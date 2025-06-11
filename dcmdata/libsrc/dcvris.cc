@@ -182,7 +182,7 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                         DcmJsonFormat::printNumberInteger(out, value);
                     else
                     {
-                        DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                        DCMDATA_WARN("encountered illegal IS value '" << value << "', converting to JSON string");
                         DcmJsonFormat::printValueString(out, value);
                     }
                     break;
@@ -190,14 +190,14 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                     if (isValid) DcmJsonFormat::printNumberInteger(out, value);
                     else
                     {
-                        DCMDATA_WARN("Encountered illegal IS value '" << value << "', aborting conversion to JSON.");
-                        return EC_CannotWriteStringAsJsonNumber;
+                        DCMDATA_WARN("encountered illegal IS value '" << value << "', aborting conversion to JSON");
+                        return EC_CannotWriteStringAsJSONNumber;
                     }
                     break;
                   case DcmJsonFormat::NSP_always_string:
                     if (!isValid)
                     {
-                        DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                        DCMDATA_WARN("encountered illegal IS value '" << value << "', converting to JSON string");
                     }
                     DcmJsonFormat::printValueString(out, value);
                     break;
@@ -218,7 +218,7 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                             DcmJsonFormat::printNumberInteger(out, value);
                         else
                         {
-                            DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                            DCMDATA_WARN("encountered illegal IS value '" << value << "', converting to JSON string");
                             DcmJsonFormat::printValueString(out, value);
                         }
                         break;
@@ -227,14 +227,14 @@ OFCondition DcmIntegerString::writeJson(STD_NAMESPACE ostream &out,
                             DcmJsonFormat::printNumberInteger(out, value);
                         else
                         {
-                            DCMDATA_WARN("Encountered illegal IS value '" << value << "', aborting conversion to JSON.");
-                            return EC_CannotWriteStringAsJsonNumber;
+                            DCMDATA_WARN("encountered illegal IS value '" << value << "', aborting conversion to JSON");
+                            return EC_CannotWriteStringAsJSONNumber;
                         }
                         break;
                       case DcmJsonFormat::NSP_always_string:
                         if (!isValid)
                         {
-                            DCMDATA_WARN("Encountered illegal IS value '" << value << "', converting to JSON string.");
+                            DCMDATA_WARN("encountered illegal IS value '" << value << "', converting to JSON string");
                         }
                         DcmJsonFormat::printValueString(out, value);
                         break;
