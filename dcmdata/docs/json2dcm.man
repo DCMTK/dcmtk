@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page json2dcm Convert JSON DICOM document to binary DICOM file
+\page json2dcm Convert JSON document to DICOM file or data set
 \else
-\page json2dcm json2dcm: Convert JSON document to binary DICOM file
+\page json2dcm json2dcm: Convert JSON document to DICOM file or data set
 \endif
 
 \section json2dcm_synopsis SYNOPSIS
@@ -14,16 +14,15 @@ json2dcm [options] jsonfile-in dcmfile-out
 
 \section json2dcm_description DESCRIPTION
 
-The \b json2dcm utility converts the contents of a DICOM data set in JSON
-(JavaScript Object Notation) encoding (MIME type "application/dicom+json") to a
-binary DICOM file or data set.  The JSON document is expected to conform to the
-"DICOM JSON Model" as defined in DICOM Part 18, Section F.  Such JSON files can
-be created, for example, using the \b dcm2json tool.
+The \b json2dcm utility converts the contents of a JSON (JavaScript Object
+Notation) document to a binary DICOM file or data set.  The JSON document is
+expected to conform to the "DICOM JSON Model" as defined in DICOM Part 18
+Section F.  Such JSON files can be created, e.g., using the \b dcm2json tool.
 
 \section json2dcm_parameters PARAMETERS
 
 \verbatim
-jsonfile-in  JSON input filename ("-" for stdin)
+jsonfile-in  JSON input filename to be converted ("-" for stdin)
 
 dcmfile-out  DICOM output filename ("-" for stdout)
 \endverbatim
@@ -143,7 +142,7 @@ charset handling:
          write with the given charset in JSON (default)
 
   -c   --charset-replace
-         replace the given charset in JSON with ISO_IR 192
+         replace the given charset in JSON with UTF-8
 
 deflate compression level (only with --write-xfer-deflated):
 
@@ -314,7 +313,7 @@ DICOM Part 18 Section F for details):
 
 \subsection json2dcm_character_encoding Character Encoding
 
-The JSON format only supports UTF-8 encoding. Thus the generated DICOM file
+The JSON format only supports UTF-8 encoding.  Thus the generated DICOM file
 will also contain UTF-8 encoding.  If the JSON file does not contain a specific
 character set, or a specific character set other than "ISO_IR 192", a warning
 will be issued.

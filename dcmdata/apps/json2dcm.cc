@@ -43,7 +43,7 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "json2dcm"
-#define OFFIS_CONSOLE_DESCRIPTION "Convert JSON DICOM document to binary DICOM file"
+#define OFFIS_CONSOLE_DESCRIPTION "Convert JSON document to DICOM file or data set"
 
 static OFLogger json2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
@@ -106,7 +106,7 @@ void addOutputOptions(OFCommandLine& cmd)
         cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
       cmd.addSubGroup("charset handling:");
         cmd.addOption("--charset-accept",      "+c",     "write with the given charset in JSON (default)");
-        cmd.addOption("--charset-replace",     "-c",     "replace the given charset in JSON with ISO_IR 192");
+        cmd.addOption("--charset-replace",     "-c",     "replace the given charset in JSON with UTF-8");
 #ifdef WITH_ZLIB
       cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
         cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
@@ -121,8 +121,8 @@ void addJSON2DCMommandlineOptions(OFCommandLine& cmd)
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("jsonfile-in", "JSON input filename (\"-\" for stdin)");
-    cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
+    cmd.addParam("jsonfile-in", "JSON input filename to be converted\n(\"-\" for stdin)");
+    cmd.addParam("dcmfile-out", "DICOM output filename\n(\"-\" for stdout)");
 
     cmd.addGeneralOptions(LONGCOL, SHORTCOL);
     OFLog::addOptions(cmd);
@@ -160,8 +160,7 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
         opt_metaInfo = OFFalse;
     cmd.endOptionBlock();
 
-    /* process options */
-    /* UID */
+    /* processing options */
     if (cmd.findOption("--generate-new-uids"))
         opt_generateUIDs = OFTrue;
 
@@ -179,7 +178,6 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
     cmd.endOptionBlock();
 
     /* output options */
-
     cmd.beginOptionBlock();
     if (cmd.findOption("--write-file"))
         opt_writeMode = EWM_fileformat;
@@ -1358,7 +1356,7 @@ OFCondition parseElement(
             // the value of the element has to be an array
             return EC_InvalidJSONType;
 
-        /*Sequence*/
+        /* Sequence */
         if (newElem->ident() == EVR_SQ)
         {
             result = parseSequence(*(OFstatic_cast(DcmSequenceOfItems*, newElem)), valueToken, xfer, stopOnError, jsonString);
