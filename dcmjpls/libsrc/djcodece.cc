@@ -668,7 +668,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   jls_params.width = width;
   jls_params.allowedlossyerror = 0; // must be zero for raw mode
   jls_params.outputBgr = false;
-  // No idea what this one does, but I don't think DICOM says anything about it
+  // color transformation is a non-standard HP/JPEG-LS extension:
   jls_params.colorTransform = 0;
   // Unset: jls_params.jfif (thumbnail, dpi)
 
@@ -1106,7 +1106,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   jls_params.allowedlossyerror = nearLosslessDeviation;
   jls_params.outputBgr = false;
   jls_params.bitspersample = depth;
-  // No idea what this one does, but I don't think DICOM says anything about it
+  // color transformation is a non-standard HP/JPEG-LS extension:
   jls_params.colorTransform = 0;
 
   // This was already checked for a sane value above
