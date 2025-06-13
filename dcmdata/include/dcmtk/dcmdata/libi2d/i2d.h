@@ -45,7 +45,7 @@ public:
 
   /** Destructor, frees plugin memory
    */
-  ~Image2Dcm();
+  virtual ~Image2Dcm();
 
   /** Start the conversion. Needs a fully configured input plugin
    *  and a fully configured output plugin to operate. Returns
