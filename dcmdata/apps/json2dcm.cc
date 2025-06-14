@@ -925,7 +925,7 @@ static OFCondition processJSONEscapeCharacters(OFString& value)
         char sigChar = value[backSlash + 1];
         OFString front = value.substr(0, backSlash);
         OFString escString, back, replacement;
-        unsigned int unicodeCodepoint;
+        unsigned int unicodeCodepoint = 0;
 
         OFLOG_DEBUG(json2dcmLogger, "Found signifcant character [" << sigChar << "] starting at " << backSlash);
         if (escapeSeq.find(sigChar) < escapeSeq.length())
