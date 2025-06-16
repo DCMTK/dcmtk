@@ -310,6 +310,11 @@ OFCondition DcmPixelSequence::makeSubObject(DcmObject *&subObject,
                 l_error = EC_InvalidTag;
             break;
 
+        case EVR_UL: //newTag (0x0000, 0x0000) has VR:UL
+            if (newTag == DCM_GenericGroupLength)
+                l_error = EC_ItemEnd;
+            break;
+
         default:
             newObject = new DcmPixelItem(newTag, newLength);
             l_error = EC_CorruptedData;
