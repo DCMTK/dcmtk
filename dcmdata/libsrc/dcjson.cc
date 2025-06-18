@@ -307,6 +307,7 @@ void DcmJsonFormat::setBulkDir(const char *bulk_dir)
 
 OFCondition DcmJsonFormat::writeBulkData(
     STD_NAMESPACE ostream &out,
+    const DcmTagKey& /*tagkey*/,
     Uint32 len,
     Uint8 *byteValues,
     const char *extension)
@@ -363,7 +364,7 @@ OFCondition DcmJsonFormat::writeBulkData(
             }
         }
 
-        /* return defined BulkDataURI */
+        /* return defined BulkDataURI associated with `tagKey` */
         printBulkDataURIPrefix(out);
         bulkDataURI.append(bulkname);
         DcmJsonFormat::printString(out, bulkDataURI);
@@ -387,7 +388,7 @@ OFCondition DcmJsonFormat::writeBinaryAttribute(
     {
         if (asBulkDataURI(tagkey, len))
         {
-            result = writeBulkData(out, len, byteValues, extension);
+            result = writeBulkData(out, tagkey, len, byteValues, extension);
         }
         else
         {

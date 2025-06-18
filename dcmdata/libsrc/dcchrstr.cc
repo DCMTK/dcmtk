@@ -236,7 +236,7 @@ OFCondition DcmCharString::writeJson(STD_NAMESPACE ostream &out,
         {
             /* adjust byte order to little endian */
             Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-            result = format.writeBulkData(out, getLengthField(), byteValues);
+            result = format.writeBulkData(out, getTag(), getLengthField(), byteValues);
         }
         else
         {
