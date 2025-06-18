@@ -358,7 +358,7 @@ class DiColorPixelTemplate
                         data = new Uint32[count];
                     if (data != NULL)
                     {
-                        Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint8 *q = OFstatic_cast(Uint8 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -366,10 +366,11 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* normal sample order: 0-R-G-B */
-                                    *(q++) = (OFstatic_cast(Uint32, *(r++)) << 16) |
-                                             (OFstatic_cast(Uint32, *(g++)) << 8) |
-                                             OFstatic_cast(Uint32, *(b++));
+                                    /* sample order: B-G-R-0 */
+                                    *(q++) = OFstatic_cast(Uint8, *(b++));
+                                    *(q++) = OFstatic_cast(Uint8, *(g++));
+                                    *(q++) = OFstatic_cast(Uint8, *(r++));
+                                    *(q++) = 0;
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -386,10 +387,11 @@ class DiColorPixelTemplate
                                 {
                                     for (x = width; x != 0; x--)
                                     {
-                                        /* normal sample order: 0-R-G-B */
-                                        *(q++) = (OFstatic_cast(Uint32, *(r++) * gradient2) << 16) |
-                                                 (OFstatic_cast(Uint32, *(g++) * gradient2) << 8) |
-                                                 OFstatic_cast(Uint32, *(b++) * gradient2);
+                                        /* sample order: B-G-R-0 */
+                                        *(q++) = OFstatic_cast(Uint8, *(b++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(g++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(r++) * gradient2);
+                                        *(q++) = 0;
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -398,10 +400,11 @@ class DiColorPixelTemplate
                                 {
                                     for (x = width; x != 0; x--)
                                     {
-                                        /* normal sample order: 0-R-G-B */
-                                        *(q++) = (OFstatic_cast(Uint32, OFstatic_cast(double, *(r++)) * gradient1) << 16) |
-                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(g++)) * gradient1) << 8) |
-                                                 OFstatic_cast(Uint32, OFstatic_cast(double, *(b++)) * gradient1);
+                                        /* sample order: B-G-R-0 */
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(b++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(g++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(r++)) * gradient1);
+                                        *(q++) = 0;
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -415,10 +418,11 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* normal sample order: 0-R-G-B */
-                                    *(q++) = (OFstatic_cast(Uint32, *(r++) >> shift) << 16) |
-                                             (OFstatic_cast(Uint32, *(g++) >> shift) << 8) |
-                                             OFstatic_cast(Uint32, *(b++) >> shift);
+                                    /* sample order: B-G-R-0 */
+                                    *(q++) = OFstatic_cast(Uint8, *(b++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(g++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(r++) >> shift);
+                                    *(q++) = 0;
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
