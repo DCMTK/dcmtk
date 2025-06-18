@@ -315,7 +315,8 @@ OFCondition DcmJsonFormat::writeBulkData(
     /* for an empty value field, we do not need to do anything */
     if (len > 0)
     {
-        OFString bulkDataURI = bulkDataURIPrefix;
+        OFString bulkDataURI;
+        getBulkDataURIPrefix(bulkDataURI);
 
         /* compute SHA-256 checksum */
         size_t vallen = OFstatic_cast(size_t, len);
