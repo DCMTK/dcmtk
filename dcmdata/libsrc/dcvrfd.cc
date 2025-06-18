@@ -425,7 +425,7 @@ OFCondition DcmFloatingPointDouble::writeJson(STD_NAMESPACE ostream &out,
         {
             /* adjust byte order to little endian */
             Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-            status = format.writeBulkData(out, getLengthField(), byteValues);
+            status = format.writeBulkData(out, getTag(), getLengthField(), byteValues);
         }
         else
         {

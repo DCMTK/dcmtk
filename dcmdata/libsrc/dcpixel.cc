@@ -1323,7 +1323,7 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
             Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
 
             // write as bulk data
-            OFCondition status = format.writeBulkData(out, getLengthField(), byteValues);
+            OFCondition status = format.writeBulkData(out, getTag(), getLengthField(), byteValues);
 
             // write JSON Closer
             writeJsonCloser(out, format);

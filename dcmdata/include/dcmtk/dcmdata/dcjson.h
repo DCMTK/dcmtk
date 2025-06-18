@@ -371,6 +371,7 @@ public:
 
     /** write an attribute as BulkDataURI.
      *  @param out output stream
+     *  @param tagkey tag key of the attribute
      *  @param len length of the attribute value
      *  @param byteValues pointer to the raw attribute value in little endian byte order
      *  @param extension file name extension
@@ -378,6 +379,7 @@ public:
      */
     virtual OFCondition writeBulkData(
         STD_NAMESPACE ostream &out,
+        const DcmTagKey& tagkey,
         Uint32 len,
         Uint8 *byteValues,
         const char *extension = ".bin");
@@ -426,7 +428,7 @@ private:
     NumStringPolicy numStringPolicy;
 
     /** minimum size of binary attributes to be written as bulk data,
-     *  in kBytes. A negative valuemeans that no bulk data is written.
+     *  in kBytes. A negative value means that no bulk data is written.
      */
     ssize_t minBulkDataSize;
 
