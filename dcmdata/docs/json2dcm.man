@@ -333,6 +333,14 @@ Finally, encapsulated (in particular, compressed) pixel data is not supported
 by \b json2dcm because the syntax of the DICOM JSON Model for this specific
 case is not defined in the DICOM standard yet.
 
+\subsection json2dcm_trailing_commas Trailing Commas
+
+Trailing commas are not permitted in JSON, but \b json2dcm will still
+accept such JSON datasets without warning or error message because they
+are handled gracefully by the underlying JSON parser. Users should, therefore,
+not assume that a JSON dataset is valid just because json2dcm accepts it.
+This tool is not designed as a validator for JSON or the DICOM JSON model.
+
 \section json2dcm_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
