@@ -1,23 +1,23 @@
 /*
-*
-*  Copyright (C) 2016-2025, OFFIS e.V.
-*  All rights reserved.  See COPYRIGHT file for details.
-*
-*  This software and supporting documentation were developed by
-*
-*    OFFIS e.V.
-*    R&D Division Health
-*    Escherweg 2
-*    D-26121 Oldenburg, Germany
-*
-*
-*  Module:  dcmdata
-*
-*  Author:  Sebastian Grallert, Marco Eichelberg
-*
-*  Purpose: Convert the contents of a DICOM file to JSON format
-*
-*/
+ *
+ *  Copyright (C) 2016-2025, OFFIS e.V.
+ *  All rights reserved.  See COPYRIGHT file for details.
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    OFFIS e.V.
+ *    R&D Division Health
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Sebastian Grallert, Marco Eichelberg
+ *
+ *  Purpose: Convert the contents of a DICOM file to JSON format
+ *
+ */
 
 #include "dcmtk/config/osconfig.h"      /* make sure OS specific configuration is included first */
 
