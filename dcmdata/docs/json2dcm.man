@@ -335,11 +335,11 @@ case is not defined in the DICOM standard yet.
 
 \subsection json2dcm_trailing_commas Trailing Commas
 
-Trailing commas are not permitted in JSON, but \b json2dcm will still
-accept such JSON datasets without warning or error message because they
-are handled gracefully by the underlying JSON parser. Users should, therefore,
-not assume that a JSON dataset is valid just because json2dcm accepts it.
-This tool is not designed as a validator for JSON or the DICOM JSON model.
+Trailing commas are not permitted in JSON, but \b json2dcm will still accept
+such JSON data sets without warning or error message because they are handled
+gracefully by the underlying JSON parser.  Users should, therefore, not assume
+that a JSON data set is valid just because \b json2dcm accepts it.  This tool
+is not designed as a validator for JSON or the DICOM JSON Model.
 
 \section json2dcm_logging LOGGING
 
