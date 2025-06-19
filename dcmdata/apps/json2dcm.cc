@@ -1127,18 +1127,24 @@ OFCondition parseElemValueArray(
         current++;
         if (newElem->ident() == EVR_PN)
         {
+            OFString tokenValue;
+            getTokenContent(tokenValue, current, jsonString);
+            OFLOG_TRACE(json2dcmLogger, "elemValArray " << "Parsing PN value: " << tokenValue);
             if (current->type != JSMN_OBJECT)
-                return EC_InvalidJSONType;
-            if (DCM_dcmdataLogger.isEnabledFor(OFLogger::TRACE_LOG_LEVEL))
             {
-                getTokenContent(value, current, jsonString);
-                OFLOG_TRACE(json2dcmLogger, "elemValArray " << "Parsing PN value: " << value);
-                value.clear();
+                if (tokenValue == "null")
+                {
+                    value = "";
+                } else
+                    return EC_InvalidJSONType;
             }
-            result = parsePNValue(value, current, newElem->getTag().getVR().getDelimiterChars()[2], stopOnError, jsonString);
-            if (result.bad())
+            else
             {
-                if (stopOnError) return result; else result = EC_Normal;
+                result = parsePNValue(value, current, newElem->getTag().getVR().getDelimiterChars()[2], stopOnError, jsonString);
+                if (result.bad())
+                {
+                    if (stopOnError) return result; else result = EC_Normal;
+                }
             }
             if (count > 0)
                 vmString += delimiter;
