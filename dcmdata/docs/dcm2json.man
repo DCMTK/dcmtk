@@ -337,7 +337,7 @@ created (and used in the bulk data URI) for each distinct SOP instance.
 
 Note that the JSON syntax for the representation of encapsulated pixel data
 in "InlineBinary" form is unspecified in DICOM, as is the JSON representation
-of encapsulated multi-frame pixel data. These DICOM files cannot be converted
+of encapsulated multi-frame pixel data.  These DICOM files cannot be converted
 to JSON using \b dcm2json.
 
 The file name extension for the bulk data files generated can be used to
@@ -360,8 +360,8 @@ Extension     MIME Type
 \endverbatim
 
 Finally, it should be noted that bulk data will be written "as is", i.e.
-\b dcm2json will not attempt to validate or modify the attribute value
-in any way. For example, \b dcm2json will not add a JFIF header in the case of JPEG
+\b dcm2json will not attempt to validate or modify the element value in any
+way.  For example, \b dcm2json will not add a JFIF header in the case of JPEG
 baseline compressed images, which some JPEG viewers may expect.
 
 \section dcm2json_notes NOTES
