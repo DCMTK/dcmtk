@@ -359,6 +359,11 @@ Extension     MIME Type
 .H265         video/H265
 \endverbatim
 
+Finally, it should be noted that bulk data will be written "as is", i.e.
+\b dcm2json will not attempt to validate or modify the attribute value
+in any way. For example, \b dcm2json will not add a JFIF header in the case of JPEG
+baseline compressed images, which some JPEG viewers may expect.
+
 \section dcm2json_notes NOTES
 
 \subsection dcm2json_numbers_as_strings Numbers as Strings
