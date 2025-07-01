@@ -378,8 +378,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  @param toCharset name of the destination character set used for the conversion.
      *    Only a single value is permitted (i.e. no code extensions).
      *  @param flags optional flag used to customize the conversion (see DCMTypes::CF_xxx)
-     *  @param ignoreCharset if OFTrue, the value of SpecificCharacterSet is ignored.
-     *    Also see checkForSpecificCharacterSet().
+     *  @param ignoreCharset if OFTrue, the value of SpecificCharacterSet is ignored,
+     *    otherwise the element value is updated. Also see checkForSpecificCharacterSet().
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &toCharset,
@@ -1505,8 +1505,8 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  @param status error status of previous operations (might also be updated)
      *  @param converter character set converter used to convert element values
      */
-    void updateSpecificCharacterSet(OFCondition &status,
-                                    const DcmSpecificCharacterSet &converter);
+    virtual void updateSpecificCharacterSet(OFCondition &status,
+                                            const DcmSpecificCharacterSet &converter);
 
     /** creates new DICOM element from given attribute tag.
      *  Helper function used by DICOM parser (friend of this class) and thus

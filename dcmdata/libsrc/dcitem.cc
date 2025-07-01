@@ -4550,11 +4550,11 @@ void DcmItem::updateSpecificCharacterSet(OFCondition &status,
                 // delete Specific Character Set (0008,0005) data element (type 1C)
                 if (findAndDeleteElement(DCM_SpecificCharacterSet, OFFalse /*allOccurrences*/, OFFalse /*searchIntoSub*/).good())
                 {
-                    DCMDATA_DEBUG("DcmItem::convertCharacterSet() deleted element SpecificCharacterSet "
+                    DCMDATA_DEBUG("DcmItem::updateSpecificCharacterSet() deleted element SpecificCharacterSet "
                         << DCM_SpecificCharacterSet << " during the conversion to " << encoding << " encoding");
                 }
             } else {
-                DCMDATA_DEBUG("DcmItem::convertCharacterSet() updating value of element SpecificCharacterSet "
+                DCMDATA_DEBUG("DcmItem::updateSpecificCharacterSet() updating value of element SpecificCharacterSet "
                     << DCM_SpecificCharacterSet << " to '" << toCharset << "'");
                 // update/set value of Specific Character Set (0008,0005) if needed
                 status = putAndInsertOFStringArray(DCM_SpecificCharacterSet, toCharset);
