@@ -1197,8 +1197,12 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             /* warning is only reported for standard, fixed-size VRs that require more than 1 byte per value */
             if (valueLength == DCM_UndefinedLength)
             {
-                DCMDATA_WARN("DcmItem: Dubious use of undefined length for element " << newTag
-                    << " with VR=" << vr.getVRName());
+                /* check whether the VR supports undefined length for the length field */
+                if (!vr.supportsUndefinedLength())
+                {
+                    DCMDATA_WARN("DcmItem: Dubious use of undefined length for element " << newTag
+                        << " with VR=" << vr.getVRName());
+                }
             } else {
                 DCMDATA_WARN("DcmItem: Length of element " << newTag << " is not a multiple of " << vrSize
                     << " (VR=" << vr.getVRName() << ")");
