@@ -282,16 +282,14 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
 
-    OFLOG_TRACE(json2dcmLogger, "Including necessary options");
+    // add supported command line options
     addJSON2DCMommandlineOptions(cmd);
 
-    // evaluating command line
-    OFLOG_TRACE(json2dcmLogger, "Evaluating command line");
+    // evaluate command line
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv))
     {
         // checking exclusive options first
-        OFLOG_TRACE(json2dcmLogger, "Checking exclusive options first");
         if (cmd.hasExclusiveOption())
         {
             if (cmd.findOption("--version"))
@@ -307,6 +305,7 @@ int main(int argc, char *argv[])
             }
         }
     }
+
     /* command line parameters and options */
     parseArguments(app, cmd,
         opt_metaInfo,
@@ -316,6 +315,7 @@ int main(int argc, char *argv[])
         opt_writeMode,
         opt_ifname, opt_ofname
     );
+
     /* print resource identifier */
     OFLOG_DEBUG(json2dcmLogger, rcsid << OFendl);
 
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
         result = jsmnParse(fileformat, opt_ifname, opt_metaInfo, xfer, opt_stopOnErrors);
 
         if (result.bad()) {
-            OFLOG_ERROR(json2dcmLogger, "Error while parsing JSON file: " << result.text());
+            OFLOG_ERROR(json2dcmLogger, "error while parsing JSON file: " << result.text());
             if (result == EC_BulkDataURINotSupported)
                 return EXITCODE_BULKDATA_URI_NOT_SUPPORTED;
             return EXITCODE_INVALID_JSON_CONTENT;
@@ -478,7 +478,7 @@ char *readFile(const char *opt_ifname, size_t& jsonStrLen)
     char *jsonString = new (std::nothrow) char[len + 1];
     if (jsonString == NULL)
     {
-        OFLOG_FATAL(json2dcmLogger, "Out of memory: failed to allocate buffer");
+        OFLOG_FATAL(json2dcmLogger, "out of memory: failed to allocate buffer");
         return NULL;
     }
 
@@ -490,7 +490,7 @@ char *readFile(const char *opt_ifname, size_t& jsonStrLen)
     jsonFile.fclose();
     if (res != len)
     {
-        OFLOG_FATAL(json2dcmLogger, "File read error: " << opt_ifname);
+        OFLOG_FATAL(json2dcmLogger, "file read error: " << opt_ifname);
         delete[] jsonString;
         return NULL;
     }
@@ -519,7 +519,7 @@ char *readStdin(size_t& jsonStrLen)
         if (jsonString == NULL) jsonString = new (std::nothrow) char[bufSize+1];
         if (jsonString == NULL)
         {
-            OFLOG_FATAL(json2dcmLogger, "Out of memory: failed to allocate buffer");
+            OFLOG_FATAL(json2dcmLogger, "out of memory: failed to allocate buffer");
             delete[] oldBuf;
             return NULL;
         }
@@ -727,7 +727,18 @@ OFCondition jsmnParse(
 void getTokenContent(OFString& value, OFJsmnTokenPtr t, char*& jsonString)
 {
     int size = t->end - t->start;
-    value = OFString(jsonString, t->start, size);
+
+    // remember the character immediately following the token
+    char c = jsonString[t->start+size];
+
+    // convert the token string to a null terminated C string
+    jsonString[t->start+size] = '\0';
+
+    // copy token string into output parameter
+    value = jsonString + t->start;
+
+    // restore jsonString array
+    jsonString[t->start+size] = c;
     return;
 }
 
@@ -743,7 +754,7 @@ OFCondition createElement(
 {
     OFCondition result = EC_Normal;
 
-    OFLOG_TRACE(json2dcmLogger, "Parsing VR: " << vr);
+    OFLOG_TRACE(json2dcmLogger, "parsing VR: " << vr);
     /* convert vr string */
     const DcmVR dcmVR(vr.c_str());
     if (dcmVR.isUnknown() || dcmVR.isInvalid())
@@ -805,10 +816,8 @@ OFCondition extractTag(
     if (sscanf(gStr.c_str(), "%lx", &group) != 1
         || sscanf(eStr.c_str(), "%lx", &element) != 1)
         return EC_InvalidTag;
-    OFLOG_TRACE(json2dcmLogger, "Tag: " << gStr << " - " << group << " -- " << eStr << " - " << element);
 
     tagkey.set(OFstatic_cast(Uint16, group), OFstatic_cast(Uint16, element));
-    OFLOG_TRACE(json2dcmLogger, "Tagkey " << tagkey.toString());
     return EC_Normal;
 }
 
@@ -834,50 +843,30 @@ OFCondition parseElementInlineValue(
         /* Base64 decoder produces big endian output data, convert to local byte order */
         singleSize = sizeof(Uint16);
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
-#ifdef DEBUG
-        for (size_t i = 0; i < length / singleSize; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Uint16 *, data)[i] << " " << result.code());
-#endif
         result = newElem->putUint16Array(OFreinterpret_cast(Uint16 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OF)
     {
         singleSize = sizeof(Float32);
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
-#ifdef DEBUG
-        for (size_t i = 0; i < length / singleSize; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Float32 *, data)[i] << " " << result.code());
-#endif
         result = newElem->putFloat32Array(OFreinterpret_cast(Float32 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OD)
     {
         singleSize = sizeof(Float64);
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
-#ifdef DEBUG
-        for (size_t i = 0; i < length / singleSize; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Float64 *, data)[i] << " " << result.code());
-#endif
         result = newElem->putFloat64Array(OFreinterpret_cast(Float64 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OL)
     {
         singleSize = sizeof(Uint32);
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
-#ifdef DEBUG
-        for (size_t i = 0; i < length / singleSize; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Uint32 *, data)[i] << " " << result.code());
-#endif
         result = newElem->putUint32Array(OFreinterpret_cast(Uint32 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
     else if (evr == EVR_OV)
     {
         singleSize = sizeof(Uint64);
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), singleSize);
-#ifdef DEBUG
-        for (size_t i = 0; i < length / singleSize; i++)
-            OFLOG_TRACE(json2dcmLogger, "Inline Binary: (" << i << ") " << OFreinterpret_cast(Uint64 *, data)[i] << " " << result.code());
-#endif
         result = OFreinterpret_cast(DcmOther64bitVeryLong*, newElem)
                     ->putUint64Array(OFreinterpret_cast(Uint64 *, data), OFstatic_cast(Uint32, length / singleSize));
     }
@@ -888,7 +877,7 @@ OFCondition parseElementInlineValue(
     }
     else
     {
-        OFLOG_WARN(json2dcmLogger, "invalid VR Type for inline Value");
+        OFLOG_WARN(json2dcmLogger, "invalid VR Type for inline value");
         return EC_InvalidVR;
     }
     return result;
@@ -927,7 +916,6 @@ static OFCondition processJSONEscapeCharacters(OFString& value)
         OFString escString, back, replacement;
         unsigned int unicodeCodepoint = 0;
 
-        OFLOG_DEBUG(json2dcmLogger, "Found signifcant character [" << sigChar << "] starting at " << backSlash);
         if (escapeSeq.find(sigChar) < escapeSeq.length())
         {
             back = value.substr(backSlash + 2);
@@ -1024,7 +1012,7 @@ static OFCondition processJSONEscapeCharacters(OFString& value)
                 back = value.substr(backSlash + 6);
             }
         }
-        OFLOG_TRACE(json2dcmLogger, "The escaped string [" << escString << "] is parsed to utf8:"
+        OFLOG_TRACE(json2dcmLogger, "the escaped string [" << escString << "] is parsed to UTF-8:"
             << replacement << " - unicode:" << std::hex << unicodeCodepoint);
         value = front + replacement + back;
     }
@@ -1072,14 +1060,14 @@ OFCondition parsePNValue(
         }
         if (index < 0)
             return EC_InvalidValue;
-        
-        // if pn[index] is not empty, it will be overwritten. May be 
+
+        // if pn[index] is not empty, it will be overwritten. May be
         current++;
         if (current->type != JSMN_STRING)
             return EC_InvalidValue;
         getTokenContent(pn[index], current, jsonString);
 
-        OFLOG_TRACE(json2dcmLogger, "Person name PN with " << key << " val " << pn[index]);
+        OFLOG_TRACE(json2dcmLogger, "person name (PN) with " << key << " val " << pn[index]);
         result = processJSONEscapeCharacters(pn[index]);
         if (result.bad())
         {
@@ -1093,7 +1081,7 @@ OFCondition parsePNValue(
         value += delimiter + pn[1];
     if (!pn[2].empty())
         value += delimiter + pn[2];
-    OFLOG_TRACE(json2dcmLogger, "PN Value " << value);
+    OFLOG_TRACE(json2dcmLogger, "PN value " << value);
     return result;
 }
 
@@ -1121,15 +1109,16 @@ OFCondition parseElemValueArray(
     if (delimiter == 0)
         delimiter = '\\';
 
+    OFString value;
     for (int count = 0; count < elemVM; count++)
     {
-        OFString value;
+        value.clear();
         current++;
         if (newElem->ident() == EVR_PN)
         {
             OFString tokenValue;
             getTokenContent(tokenValue, current, jsonString);
-            OFLOG_TRACE(json2dcmLogger, "elemValArray " << "Parsing PN value: " << tokenValue);
+            OFLOG_TRACE(json2dcmLogger, "element value array, parsing PN value: " << tokenValue);
             if (current->type != JSMN_OBJECT)
             {
                 if (tokenValue == "null")
@@ -1162,7 +1151,7 @@ OFCondition parseElemValueArray(
             {
                 if (stopOnError) return result; else result = EC_Normal;
             }
-            OFLOG_TRACE(json2dcmLogger, "elemValArray " << "Parsing AT value: " << tagkey.toString());
+            OFLOG_TRACE(json2dcmLogger, "element value array, parsing AT value: " << tagkey.toString());
 
             if (count > 0)
                 vmString += delimiter;
@@ -1175,7 +1164,7 @@ OFCondition parseElemValueArray(
             getTokenContent(value, current, jsonString);
             if (current->type & JSMN_STRING)
             {
-                OFLOG_TRACE(json2dcmLogger, "elemValArray " << "Parsing STRING value: " << value);
+                OFLOG_TRACE(json2dcmLogger, "element value array, parsing string value: " << value);
                 result = processJSONEscapeCharacters(value);
                 if (result.bad())
                 {
@@ -1191,7 +1180,7 @@ OFCondition parseElemValueArray(
             if (count > 0)
                 vmString += delimiter;
             vmString += value;
-            OFLOG_TRACE(json2dcmLogger, "all values: " << vmString);
+            OFLOG_TRACE(json2dcmLogger, "element value array: all values: " << vmString);
         }
     }
 
@@ -1253,7 +1242,7 @@ OFCondition parseElement(
         OFString attrName;
         getTokenContent(attrName, current, jsonString);
         attrName = OFStandard::toLower(attrName);
-        OFLOG_TRACE(json2dcmLogger, "attr '" << attrName << "' token at " << current->start << " - " << current->end);
+        OFLOG_TRACE(json2dcmLogger, "attribute '" << attrName << "' token at " << current->start << " - " << current->end);
         current++;
 
         if (attrName == "vr")
@@ -1261,7 +1250,7 @@ OFCondition parseElement(
             if (vrToken == NULL)
                 vrToken = current;
             else
-                OFLOG_WARN(json2dcmLogger, "attr '" << attrName << " already existent in this element-object. This token will be ignored");
+                OFLOG_WARN(json2dcmLogger, "attribute '" << attrName << " already present in this JSON object. This token will be ignored");
         }
         else
         {
@@ -1273,11 +1262,11 @@ OFCondition parseElement(
                     valueType = attrName;
                 }
                 else
-                    OFLOG_WARN(json2dcmLogger, "attr '" << attrName << " already existent in this element-object. This token will be ignored");
+                    OFLOG_WARN(json2dcmLogger, "attribute '" << attrName << " already present in this JSON object. This token will be ignored");
             }
             else
             {
-                OFLOG_ERROR(json2dcmLogger, "Unknown JSON Attribute name \"" << attrName << "\"");
+                OFLOG_ERROR(json2dcmLogger, "unknown JSON attribute name \"" << attrName << "\"");
                 return EC_InvalidJSONContent;
             }
         }
@@ -1302,30 +1291,29 @@ OFCondition parseElement(
 
     if (valueToken == NULL) // no content following, input empty value
     {
-        OFLOG_TRACE(json2dcmLogger, "Value content empty, empty value added to element");
+        OFLOG_TRACE(json2dcmLogger, "no value token for element " << dcmTag << ", using empty value");
         parseElementInlineValue(newElem, NULL, 0);
     }
 
     /* bulk data content is stored in a file. this is not yet supported */
     else if (valueType == "bulkdatauri")
     {
-        OFLOG_WARN(json2dcmLogger, "Loading Bulkdata from 'BulkDataURI' not yet possible");
+        OFLOG_WARN(json2dcmLogger, "loading Bulkdata from 'BulkDataURI' not yet possible");
         return EC_BulkDataURINotSupported;
     }
 
     /* inlinebinary - content is base64 encoded */
     else if (valueType == "inlinebinary")
     {
+        // the binary value has to be a string
         if (valueToken->type != JSMN_STRING)
-            // the binary value has to be a string
             return EC_InvalidJSONType;
+
         OFString value;
         getTokenContent(value, valueToken, jsonString);
         Uint8* data = NULL;
         const size_t length = OFStandard::decodeBase64(value, data);
-#ifdef DEBUG
-        OFLOG_TRACE(json2dcmLogger, "Parsing inline binary (" << length << "): " << value << " | " << data);
-#endif
+        OFLOG_TRACE(json2dcmLogger, "parsing inline binary (" << length << "): " << value << " | " << data);
         if (length > 0)
             parseElementInlineValue(newElem, data, length);
 
@@ -1350,12 +1338,12 @@ OFCondition parseElement(
         }/* special handling for compressed pixel data */
         else if (newElem->getTag() == DCM_PixelData)
         {
-            OFLOG_ERROR(json2dcmLogger, "Pixel data not allowed as value in DICOM JSON Model");
+            OFLOG_ERROR(json2dcmLogger, "pixel data not allowed as value in DICOM JSON model");
             return EC_InvalidJSONContent;
         }
         else // interpret value array
         {
-            OFLOG_TRACE(json2dcmLogger, "Parsing values array of size " << valueToken->size);
+            OFLOG_TRACE(json2dcmLogger, "parsing values array of size " << valueToken->size);
             result = parseElemValueArray(newElem, valueToken, stopOnError, jsonString);
         }
         if (result.bad())
@@ -1365,16 +1353,16 @@ OFCondition parseElement(
     }
     else
     {
-        OFLOG_ERROR(json2dcmLogger, "Unknown JSON attribute name: " << valueType);
+        OFLOG_ERROR(json2dcmLogger, "unknown JSON attribute name: " << valueType);
         return EC_InvalidJSONContent;
     }
 
     if (result.good()) {
         // insert the new attribute to the metaheader if the tag is (0002,xxxx), otherwise to the dataset
-        if (dcmTag.getGroup() == 0x02 && metaheader != NULL)
+        if (dcmTag.getGroup() == 0x0002 && metaheader != NULL)
         {
             // if we have found (0002,0010), extract the transfer syntax
-            if (dcmTag.getElement() == 0x10) {
+            if (dcmTag.getElement() == 0x0010) {
                 OFString value;
                 newElem->getOFString(value, 0);
                 xfer = DcmXfer(value.c_str()).getXfer();
@@ -1388,13 +1376,13 @@ OFCondition parseElement(
         }
         if (result.bad())
         {
-            OFLOG_WARN(json2dcmLogger, "Element " << dcmTag << " found twice in one data set or item, ignoring second entry");
+            OFLOG_WARN(json2dcmLogger, "element " << dcmTag << " found twice in one data set or item, ignoring second entry");
             delete newElem;
         }
     }
     else // result.bad()
     {
-        OFLOG_ERROR(json2dcmLogger, "Error while parsing value for " << dcmTag << "");
+        OFLOG_ERROR(json2dcmLogger, "error while parsing value for " << dcmTag << "");
         /* delete element if insertion or putting the value failed */
         delete newElem;
     }
@@ -1413,12 +1401,12 @@ OFCondition parseSequence(
     int sqSize = current->size;
     int sqStart = current->start;
 
-    OFLOG_TRACE(json2dcmLogger, "SQ Start: " << sqStart << " with size: " << sqSize);
+    OFLOG_TRACE(json2dcmLogger, "sequence start: " << sqStart << " with size: " << sqSize);
     current++;
     // iterate over sequence items
     for (int i = 0; i < sqSize; i++)
     {
-        OFLOG_TRACE(json2dcmLogger, "Item " << sqStart << ":" << i << " -- " << current->start);
+        OFLOG_TRACE(json2dcmLogger, "item " << sqStart << ":" << i << " -- " << current->start);
         if (current->type != JSMN_OBJECT)
             // the Items in a Sequence has to be an object
             return EC_InvalidJSONType;
@@ -1434,9 +1422,9 @@ OFCondition parseSequence(
                 if (stopOnError) return result;
             }
         }
-        OFLOG_TRACE(json2dcmLogger, "Item " << sqStart << ":" << i << " END" << " next up : " << current->start);
+        OFLOG_TRACE(json2dcmLogger, "item " << sqStart << ":" << i << " end, next up : " << current->start);
     }
-    OFLOG_TRACE(json2dcmLogger, "SQ End: " << sqStart << "; next element: " << current->start);
+    OFLOG_TRACE(json2dcmLogger, "sequence end: " << sqStart << "; next element: " << current->start);
     return result;
 }
 
@@ -1458,7 +1446,7 @@ OFCondition parseDataSet(
     int dsSize = current->size;
     int dsStart = current->start;
 
-    OFLOG_TRACE(json2dcmLogger, "DS Start " << dsStart << " - size: " << dsSize);
+    OFLOG_TRACE(json2dcmLogger, "dataset start " << dsStart << " - size: " << dsSize);
 
     current++;
     for (int i = 0; i < dsSize; i++)
@@ -1470,6 +1458,6 @@ OFCondition parseDataSet(
             if (stopOnError) return result;
         }
     }
-    OFLOG_TRACE(json2dcmLogger, "DS End " << dsStart << "; next element: " << current->start);
+    OFLOG_TRACE(json2dcmLogger, "dataset end " << dsStart << "; next element: " << current->start);
     return result;
 }
