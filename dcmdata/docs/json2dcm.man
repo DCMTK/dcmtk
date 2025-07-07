@@ -80,6 +80,14 @@ unique identifiers:
 
   +Uo  --overwrite-uids
          overwrite existing UIDs
+
+bulkdata URI handling:
+
+  +Bu  --parse-bulkdata-uri
+         parse Bulkdata URIs (default)
+
+  -Bu  --ignore-bulkdata-uri
+         ignore Bulkdata URIs
 \endverbatim
 
 \subsection json2dcm_output_options output options
@@ -327,7 +335,9 @@ attributes, including unencapsulated pixel data.
 
 The DICOM JSON Model also permits attribute values to be stored separately
 from the JSON data set and to be referenced through a BulkDataURI.  This
-feature is not yet supported in \b json2dcm.
+feature is not yet supported in \b json2dcm. If the command line option
+\e --ignore-bulkdata-uri is specified, such attributes will be written with
+empty value. Otherwise, the tool will terminate with an error.
 
 Finally, encapsulated (in particular, compressed) pixel data is not supported
 by \b json2dcm because the syntax of the DICOM JSON Model for this specific
@@ -396,7 +406,6 @@ EXITCODE_COMMANDLINE_SYNTAX_ERROR               1
 \subsection json2dcm_exit_codes_input_file_errors input file errors
 \verbatim
 EXITCODE_CANNOT_READ_INPUT_FILE                 20
-EXITCODE_NO_INPUT_FILES                         21
 \endverbatim
 
 \subsection json2dcm_exit_codes_output_file_errors output file errors
@@ -406,7 +415,6 @@ EXITCODE_CANNOT_WRITE_OUTPUT_FILE               40
 
 \subsection json2dcm_exit_codes_processing_errors processing errors
 \verbatim
-EXITCODE_INVALID_JSON_TYPE                      64
 EXITCODE_INVALID_JSON_CONTENT                   65
 EXITCODE_BULKDATA_URI_NOT_SUPPORTED             66
 \endverbatim
