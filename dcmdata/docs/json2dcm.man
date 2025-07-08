@@ -88,6 +88,18 @@ bulkdata URI handling:
 
   -Bu  --ignore-bulkdata-uri
          ignore Bulkdata URIs
+
+handling of arrays with multiple datasets:
+
+  -ar  --array-reject
+         reject multiple datasets (default)
+
+  +as  --array-select  [n]umber: integer
+         select dataset n from array
+
+  +ar  --array-sequence
+         store all datasets in private sequence
+
 \endverbatim
 
 \subsection json2dcm_output_options output options
@@ -342,6 +354,20 @@ empty value. Otherwise, the tool will terminate with an error.
 Finally, encapsulated (in particular, compressed) pixel data is not supported
 by \b json2dcm because the syntax of the DICOM JSON Model for this specific
 case is not defined in the DICOM standard yet.
+
+\subsection json2dcm_arrays Arrays of Datasets
+
+The DICOM JSON model uses a JSON array structure to return multiple datasets
+in DICOMweb services such as WADO-RS or QIDO-RS. JSON arrays containing a
+single DICOM dataset are automatically recognized by \b json2dcm and treated
+like a dataset without the surrounding array structure. JSON arrays containing
+multiple datasets are rejected by default. Alternatively, the \e --array-select
+option can be used to select one dataset from the array to be converted.
+The \e --array-sequence option causes all datasets to be written as
+sequence items into a single private sequence with attribute tag (0009,1000).
+Such files, which are mostly intended for debugging purposes, can be recognized
+by the private reservation element (0009,0010), which has the
+value \e "JSON2DCM_LIST_OF_DATASETS".
 
 \subsection json2dcm_trailing_commas Trailing Commas
 

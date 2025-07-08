@@ -50,6 +50,8 @@
 #define EXITCODE_INVALID_JSON_CONTENT                   65
 #define EXITCODE_BULKDATA_URI_NOT_SUPPORTED             66
 
+#define JSON2DCM_PRIVATE_RESERVATION "JSON2DCM_LIST_OF_DATASETS"
+
 static OFLogger json2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 typedef jsmn_parser OFJsmnParser;
@@ -86,6 +88,10 @@ void addProcessOptions(OFCommandLine& cmd)
       cmd.addSubGroup("bulkdata URI handling:");
         cmd.addOption("--parse-bulkdata-uri",  "+Bu",    "parse Bulkdata URIs (default)");
         cmd.addOption("--ignore-bulkdata-uri", "-Bu",    "ignore Bulkdata URIs");
+      cmd.addSubGroup("handling of arrays with multiple datasets:");
+        cmd.addOption("--array-reject",        "-ar",    "reject multiple datasets (default)");
+        cmd.addOption("--array-select",        "+as", 1, "[n]umber: integer", "select dataset n from array");
+        cmd.addOption("--array-sequence",      "+ar",    "store all datasets in private sequence");
 }
 
 void addOutputOptions(OFCommandLine& cmd)
@@ -148,6 +154,7 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
     OFBool& opt_overwriteUIDs,
     OFBool& opt_ignoreBulkdataURI,
     OFBool& opt_stopOnErrors,
+    OFCmdSignedInt &opt_arrayHandling,
     E_TransferSyntax& opt_xfer,
     E_EncodingType& opt_enctype,
     OFBool& opt_replaceCharset,
@@ -194,6 +201,21 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
     if (cmd.findOption("--parse-bulkdata-uri"))
     {
         opt_ignoreBulkdataURI = OFFalse;
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--array-reject"))
+    {
+        opt_arrayHandling = -1;
+    }
+    if (cmd.findOption("--array-sequence"))
+    {
+        opt_arrayHandling = 0;
+    }
+    if (cmd.findOption("--array-select"))
+    {
+        app.checkValue(cmd.getValueAndCheckMin(opt_arrayHandling, 1));
     }
     cmd.endOptionBlock();
 
@@ -278,7 +300,8 @@ OFCondition jsmnParse(
     OFBool& opt_metaInfo,
     E_TransferSyntax& xfer,
     OFBool ignoreBulkdataURI,
-    const OFBool stopOnError
+    const OFBool stopOnError,
+    OFCmdSignedInt &opt_arrayHandling
 );
 
 int main(int argc, char *argv[])
@@ -288,6 +311,7 @@ int main(int argc, char *argv[])
     OFBool opt_overwriteUIDs = OFFalse;
     OFBool opt_ignoreBulkdataURI = OFFalse;
     OFBool opt_stopOnErrors = OFTrue;
+    OFCmdSignedInt opt_arrayHandling = -1;
     E_TransferSyntax opt_xfer = EXS_Unknown;
     E_EncodingType opt_enctype = EET_ExplicitLength;
     OFBool opt_replaceCharset = OFFalse;
@@ -325,14 +349,20 @@ int main(int argc, char *argv[])
     }
 
     /* command line parameters and options */
-    parseArguments(app, cmd,
+    parseArguments(
+        app, cmd,
         opt_metaInfo,
-        opt_generateUIDs, opt_overwriteUIDs,
+        opt_generateUIDs,
+        opt_overwriteUIDs,
         opt_ignoreBulkdataURI,
-        opt_stopOnErrors, opt_xfer, opt_enctype,
+        opt_stopOnErrors,
+        opt_arrayHandling,
+        opt_xfer,
+        opt_enctype,
         opt_replaceCharset,
         opt_writeMode,
-        opt_ifname, opt_ofname
+        opt_ifname,
+        opt_ofname
     );
 
     /* print resource identifier */
@@ -367,7 +397,7 @@ int main(int argc, char *argv[])
 
         // read JSON file and convert to DICOM
         OFLOG_INFO(json2dcmLogger, "reading JSON input file: " << opt_ifname);
-        result = jsmnParse(fileformat, opt_ifname, opt_metaInfo, xfer, opt_ignoreBulkdataURI, opt_stopOnErrors);
+        result = jsmnParse(fileformat, opt_ifname, opt_metaInfo, xfer, opt_ignoreBulkdataURI, opt_stopOnErrors, opt_arrayHandling);
 
         if (result.bad())
         {
@@ -607,7 +637,56 @@ OFJsmnTokenPtr reserveTokens(
     return tokenArray;
 }
 
+/** dump the output of the JSMN parser to stderr
+ *  @param jsonString C string storing the file content
+ *  @param jsonStrLen length of the C string
+ *  @param tokenArray JSMN token array to store the JSON content
+ *  @param tokenNum token array length, determined in reserveTokens
+ */
+void dumpJSONTokenArray(
+    char*& jsonString,
+    const size_t& jsonStrLen,
+    OFJsmnTokenPtr& tokenArray,
+    int& tokenNum)
+{
+    const char *json_type;
+    char c;
+    int size;
+    fprintf(stderr, "============================== BEGIN JSON DUMP ==============================\n");
+    for (int i=0; i < tokenNum; ++i)
+    {
+        switch (tokenArray[i].type)
+        {
+            case JSMN_OBJECT:
+              json_type = "object,    size=";
+              break;
+            case JSMN_ARRAY:
+              json_type = "array,     size=";
+              break;
+            case JSMN_STRING:
+              json_type = "string,    size=";
+              break;
+            case JSMN_PRIMITIVE:
+              json_type = "primitive, size=";
+              break;
+            case JSMN_UNDEFINED:
+            default:
+              json_type = "undefined, size=";
+              break;
+        }
+
+        size = tokenArray[i].end - tokenArray[i].start;
+        c = jsonString[tokenArray[i].start+size];
+        jsonString[tokenArray[i].start+size] = '\0';
+        fprintf(stderr, "%06d: type=%s%04d,  value=%s\n", i+1, json_type, tokenArray[i].size, jsonString + tokenArray[i].start);
+        jsonString[tokenArray[i].start+size] = c;
+    }
+    fprintf(stderr, "=============================== END JSON DUMP ===============================\n");
+}
+
+
 /** parse the JSON string using JSMN parser
+ *  @param jsmnParser parser object
  *  @param jsonString C string storing the file content
  *  @param jsonStrLen length of the C string
  *  @param tokenArray JSMN token array to store the JSON content
@@ -618,7 +697,8 @@ OFCondition parseJson(
     OFJsmnParser& jsmnParser,
     char*& jsonString,
     const size_t& jsonStrLen,
-    OFJsmnTokenPtr& tokenArray, int& tokenNum
+    OFJsmnTokenPtr& tokenArray,
+    int& tokenNum
 )
 {
     if (tokenNum <= 0) return EC_IllegalParameter;
@@ -633,8 +713,10 @@ OFCondition parseJson(
             return EC_InvalidCharacter;
             else return EC_CorruptedData;
     }
+
     return EC_Normal;
 }
+
 
 /** parse the dataset part of an XML file containing a DICOM file or a DICOM dataset.
  *  @param dataset dataset stored in this parameter
@@ -691,7 +773,8 @@ OFCondition jsmnParse(
     OFBool& opt_metaInfo,
     E_TransferSyntax& xfer,
     OFBool ignoreBulkdataURI,
-    const OFBool stopOnError
+    const OFBool stopOnError,
+    OFCmdSignedInt &opt_arrayHandling
 )
 {
     OFJsmnParser jsmnParser;
@@ -736,8 +819,80 @@ OFCondition jsmnParse(
 
     OFJsmnTokenPtr current = tokenArray;
 
-    // parse dataset
-    result = parseDataSet(dataset, metaheader, current, xfer, ignoreBulkdataURI, stopOnError, jsonString);
+    if (current->type == JSMN_ARRAY)
+    {
+        if (current->size < 1)
+        {
+            OFLOG_ERROR(json2dcmLogger, "found empty JSON array instead of DICOM JSON dataset");
+            return EC_InvalidJSONContent;
+        }
+        if (current->size == 1)
+        {
+            // this is a JSON array containing a single DICOM dataset.
+            // Silently ignore the array structure and parse the dataset
+            OFLOG_DEBUG(json2dcmLogger, "parsing JSON array containing a single dataset");
+            current++;
+            result = parseDataSet(dataset, metaheader, current, xfer, ignoreBulkdataURI, stopOnError, jsonString);
+        }
+        else
+        {
+            // this is a JSON array containing a multiple DICOM datasets.
+            if (opt_arrayHandling < 0)
+            {
+                // reject multiple datasets
+                OFLOG_ERROR(json2dcmLogger, "found JSON array containing " << current->size << " DICOM datasets, rejecting conversion");
+                result = EC_InvalidJSONContent;
+            }
+            else if (opt_arrayHandling == 0)
+            {
+                // Store multiple datasets in a private sequence.
+                OFLOG_DEBUG(json2dcmLogger, "parsing JSON array containing " << current->size << " DICOM datasets");
+                DcmTag private_reservation(0x0009,0x0010, EVR_LO);
+                DcmTag private_sequence(0x0009,0x1000, EVR_SQ);
+                DcmSequenceOfItems *newSQ = new DcmSequenceOfItems(private_sequence);
+                result = dataset->putAndInsertString(private_reservation, JSON2DCM_PRIVATE_RESERVATION);
+                if (result.good()) result = dataset->insert(newSQ);
+                if (result.good()) result = parseSequence(*newSQ, current, xfer, ignoreBulkdataURI, stopOnError, jsonString);
+            }
+            else
+            {
+                // select a single dataset from the array
+                if (opt_arrayHandling > current->size)
+                {
+                    OFLOG_ERROR(json2dcmLogger, "found JSON array containing " << current->size << " DICOM datasets, cannot store dataset no. " << opt_arrayHandling);
+                    result = EC_InvalidJSONContent;
+                }
+                else
+                {
+                    OFLOG_DEBUG(json2dcmLogger, "selecting dataset " << opt_arrayHandling << " from JSON array containing " << current->size << " DICOM datasets");
+
+                    // move "current" to the token representing the first dataset
+                    current++;
+
+                    // number of datasets to skip
+                    OFCmdSignedInt tokensToSkip = opt_arrayHandling - 1;
+
+                    // recursively skip tokens including their sub-tokens until we are done
+                    while (tokensToSkip > 0)
+                    {
+                      tokensToSkip += current->size;
+                      current++;
+                      tokensToSkip--;
+                    }
+
+                    // extract the single dataset at the target location
+                    result = parseDataSet(dataset, metaheader, current, xfer, ignoreBulkdataURI, stopOnError, jsonString);
+                }
+            }
+        }
+    }
+    else
+    {
+        // we expect a single dataset here, parseDataSet() will check if it is the right JSON structure
+        OFLOG_DEBUG(json2dcmLogger, "parsing single JSON dataset");
+        result = parseDataSet(dataset, metaheader, current, xfer, ignoreBulkdataURI, stopOnError, jsonString);
+    }
+
     delete[] jsonString;
     delete[] tokenArray;
 
@@ -1235,7 +1390,7 @@ OFCondition parseElemValueArray(
         {
             if (current->type != JSMN_PRIMITIVE && current->type != JSMN_STRING)
             {
-                OFLOG_ERROR(json2dcmLogger, "not a valid DICOM JSON dataset: expected string value or null");
+                OFLOG_ERROR(json2dcmLogger, "not a valid DICOM JSON dataset: expected number, string or null");
                 return EC_InvalidJSONType;
             }
 
