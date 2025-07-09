@@ -639,13 +639,11 @@ OFJsmnTokenPtr reserveTokens(
 
 /** dump the output of the JSMN parser to stderr
  *  @param jsonString C string storing the file content
- *  @param jsonStrLen length of the C string
  *  @param tokenArray JSMN token array to store the JSON content
  *  @param tokenNum token array length, determined in reserveTokens
  */
 void dumpJSONTokenArray(
     char*& jsonString,
-    const size_t& jsonStrLen,
     OFJsmnTokenPtr& tokenArray,
     int& tokenNum)
 {
