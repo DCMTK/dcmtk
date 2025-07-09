@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,7 +46,18 @@ typedef xmlNode *xmlNodePtr;
 typedef struct _xmlDoc xmlDoc;
 typedef xmlDoc *xmlDocPtr;
 
+#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
+// MacOS 15.5 defines some Clang specific pragmas in libxml header files.
+// Suppress warnings caused by these pragmas when compiling with GCC.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 #include <libxml/xmlstring.h>
+
+#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 class DcmElement;
 class DcmItem;
