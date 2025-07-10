@@ -365,8 +365,8 @@ containing multiple data sets are rejected by default.  Alternatively, the
 be converted.  The \e --array-sequence option causes all data sets to be
 written as sequence items into a single private sequence with attribute tag
 (0009,1000).  Such files, which are mostly intended for debugging purposes, can
-be recognized by the private reservation element (0009,0010), which has the
-value "JSON2DCM_LIST_OF_DATASETS".
+be recognized by the private creator element (0009,0010), which has the value
+"JSON2DCM_LIST_OF_DATASETS".
 
 \subsection json2dcm_trailing_commas Trailing Commas
 
