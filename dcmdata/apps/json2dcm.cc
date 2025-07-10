@@ -88,10 +88,11 @@ void addProcessOptions(OFCommandLine& cmd)
       cmd.addSubGroup("bulkdata URI handling:");
         cmd.addOption("--parse-bulkdata-uri",  "+Bu",    "parse Bulkdata URIs (default)");
         cmd.addOption("--ignore-bulkdata-uri", "-Bu",    "ignore Bulkdata URIs");
-      cmd.addSubGroup("handling of arrays with multiple datasets:");
-        cmd.addOption("--array-reject",        "-ar",    "reject multiple datasets (default)");
-        cmd.addOption("--array-select",        "+as", 1, "[n]umber: integer", "select dataset n from array");
-        cmd.addOption("--array-sequence",      "+ar",    "store all datasets in private sequence");
+      cmd.addSubGroup("handling of arrays with multiple data sets:");
+        cmd.addOption("--array-reject",        "-ar",    "reject multiple data sets (default)");
+        cmd.addOption("--array-select",        "+as", 1, "[n]umber: integer",
+                                                         "select data set n from array");
+        cmd.addOption("--array-sequence",      "+ar",    "store all data sets in private sequence");
 }
 
 void addOutputOptions(OFCommandLine& cmd)
@@ -716,7 +717,7 @@ OFCondition parseJson(
 }
 
 
-/** parse the dataset part of an XML file containing a DICOM file or a DICOM dataset.
+/** parse the dataset part of a JSON file containing a DICOM file or a DICOM dataset.
  *  @param dataset dataset stored in this parameter
  *  @param metaheader metaheader stored in this parameter
  *  @param current pointer to current JSMN Token
@@ -806,7 +807,7 @@ OFCondition jsmnParse(
         return EC_IllegalParameter;
     }
 
-    // use the JSON library to parse the string and save it to the token array.
+    // use the JSON library to parse the string and save it to the token array
     result = parseJson(jsmnParser, jsonString, jsonStrLen, tokenArray, tokenNum);
     if (result.bad() && stopOnError)
     {
@@ -827,14 +828,14 @@ OFCondition jsmnParse(
         if (current->size == 1)
         {
             // this is a JSON array containing a single DICOM dataset.
-            // Silently ignore the array structure and parse the dataset
+            // Silently ignore the array structure and parse the dataset.
             OFLOG_DEBUG(json2dcmLogger, "parsing JSON array containing a single dataset");
             current++;
             result = parseDataSet(dataset, metaheader, current, xfer, ignoreBulkdataURI, stopOnError, jsonString);
         }
         else
         {
-            // this is a JSON array containing a multiple DICOM datasets.
+            // this is a JSON array containing a multiple DICOM datasets
             if (opt_arrayHandling < 0)
             {
                 // reject multiple datasets
@@ -843,7 +844,7 @@ OFCondition jsmnParse(
             }
             else if (opt_arrayHandling == 0)
             {
-                // Store multiple datasets in a private sequence.
+                // store multiple datasets in a private sequence
                 OFLOG_DEBUG(json2dcmLogger, "parsing JSON array containing " << current->size << " DICOM datasets");
                 DcmTag private_reservation(0x0009,0x0010, EVR_LO);
                 DcmTag private_sequence(0x0009,0x1000, EVR_SQ);
@@ -936,7 +937,7 @@ OFCondition createElement(
     OFCondition result = EC_Normal;
 
     OFLOG_TRACE(json2dcmLogger, "parsing VR: " << vr);
-    /* convert vr string */
+    /* convert VR string */
     const DcmVR dcmVR(vr.c_str());
     if (dcmVR.isUnknown() || dcmVR.isInvalid())
     {
@@ -954,10 +955,10 @@ OFCondition createElement(
     else {
         const DcmEVR dcmEVR = dcmVR.getEVR();
         const DcmEVR tagEVR = dcmTag.getEVR();
-        /* check for correct vr */
-        // normally, tagevr == dcmever or the tagevr is unknown
+        /* check for correct VR */
+        // normally, tagEVR == dcmEVR or the tagEVR is unknown
         if ((tagEVR != dcmEVR) && (tagEVR != EVR_UNKNOWN) &&
-            // if its LUTData, the evr can be US, SS or OW
+            // if its LUTData, the EVR can be US, SS or OW
             ((dcmTag.getTagKey() != DCM_LUTData) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS) && (dcmEVR != EVR_OW))) &&
             // if the tag allows xs, the EVR can either be US or SS
             ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
@@ -1219,8 +1220,8 @@ static OFCondition processJSONEscapeCharacters(OFString& value)
                 back = value.substr(backSlash + 6);
             }
         }
-        OFLOG_TRACE(json2dcmLogger, "the escaped string [" << escString << "] is parsed to UTF-8:"
-            << replacement << " - unicode:" << std::hex << unicodeCodepoint);
+        OFLOG_TRACE(json2dcmLogger, "the escaped string [" << escString << "] is parsed to UTF-8: "
+            << replacement << " - Unicode: " << std::hex << unicodeCodepoint);
         value = front + replacement + back;
     }
     return EC_Normal;
@@ -1637,7 +1638,7 @@ OFCondition parseElement(
         }
         if (result.bad())
         {
-            OFLOG_WARN(json2dcmLogger, "element " << dcmTag << " found twice in one data set or item, ignoring second entry");
+            OFLOG_WARN(json2dcmLogger, "element " << dcmTag << " found twice in one dataset or item, ignoring second entry");
             delete newElem;
         }
     }
@@ -1698,7 +1699,7 @@ OFCondition parseDataSet(
 {
     OFCondition result = EC_Normal;
 
-    // we expext a JSON object as the whole content object
+    // we expect a JSON object as the whole content object
     if (current->type != JSMN_OBJECT)
     {
         OFLOG_ERROR(json2dcmLogger, "not a valid DICOM JSON dataset: datasets must be encapsulated in a JSON object");
