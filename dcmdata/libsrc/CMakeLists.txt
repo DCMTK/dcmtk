@@ -28,6 +28,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcistrmz.cc
   dcitem.cc
   dcjson.cc
+  dcjsonrd.cc
   dclist.cc
   dcmatch.cc
   dcmetinf.cc

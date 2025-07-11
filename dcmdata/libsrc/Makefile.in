@@ -49,7 +49,7 @@ objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcencdoc.o\
 	dcvrut.o dcvrur.o dcvruc.o dctypes.o dcpcache.o dcddirif.o dcistrma.o \
 	dcistrmb.o dcistrmf.o dcistrms.o dcistrmz.o dcostrma.o dcostrmb.o \
 	dcostrmf.o dcostrms.o dcostrmz.o dcwcache.o dcpath.o vrscan.o vrscanl.o \
-	dcfilter.o dcmatch.o dcjson.o
+	dcfilter.o dcmatch.o dcjson.o dcjsonrd.o
 
 support_objs = mkdeftag.o mkdictbi.o
 support_progs = mkdeftag mkdictbi
