@@ -163,8 +163,8 @@ private:
    *  @param t token pointer
    */
   void getTokenContent(
-    OFString& value,
-	OFJsmnTokenPtr t);
+      OFString& value,
+      OFJsmnTokenPtr t);
 
   /** create DICOM element using the given tag and VR
    *  @param newElem pointer to newly created DICOM element returned in this parameter
@@ -174,8 +174,8 @@ private:
    */
   virtual OFCondition createElement(
       DcmElement *& newElem,
-	  DcmTag& dcmTag,
-	  const OFString& vr);
+      DcmTag& dcmTag,
+      const OFString& vr);
 
   /** extract DICOM tag from the given string
    *  @param keyToken token containing the string representation of the tag in form of "ggggeeee"
@@ -184,7 +184,7 @@ private:
    */
   virtual OFCondition extractTag(
       OFJsmnTokenPtr keyToken,
-	  DcmTagKey& tagkey);
+      DcmTagKey& tagkey);
 
   /** helper function processing escaped characters in JSON strings
    *  @param value containing the string. The string will be changed
@@ -230,7 +230,7 @@ private:
    */
   virtual OFCondition parseElementValueArray(
       DcmElement*& newElem,
-	  OFJsmnTokenPtr& current);
+      OFJsmnTokenPtr& current);
 
   /** parse a person name (PN value)
    *  @param value string containing the PN DICOM value
@@ -239,7 +239,7 @@ private:
    */
   virtual OFCondition parsePersonName(
       OFString& value,
-	  OFJsmnTokenPtr& current);
+      OFJsmnTokenPtr& current);
 
   /** store decoded inline binary value in a DICOM element
    *  @param element element into which the value will be inserted
@@ -248,9 +248,9 @@ private:
    *  @return EC_Normal upon success, an error code otherwise
    */
   virtual OFCondition storeInlineBinaryValue(
-    DcmElement& element,
-	Uint8 *data,
-	size_t length);
+      DcmElement& element,
+      Uint8 *data,
+      size_t length);
 
 };
 

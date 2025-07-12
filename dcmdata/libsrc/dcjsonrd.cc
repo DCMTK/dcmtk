@@ -198,7 +198,7 @@ OFCondition DcmJSONReader::reserveTokens()
     tokenArray_[tokenNum].size = 0;
 
     // finally, store number of tokens
-	tokenNumber_ = tokenNum;
+    tokenNumber_ = tokenNum;
 
     DCMDATA_TRACE("JSMN tokens reserved: " << tokenNum);
     return EC_Normal;
@@ -230,7 +230,7 @@ OFCondition DcmJSONReader::dumpJSONTokenArray()
         return EC_IllegalCall;
 
     const char *json_type;
-	OFString json_value;
+    OFString json_value;
     fprintf(stderr, "============================== BEGIN JSON DUMP ==============================\n");
     for (int i=0; i < tokenNumber_; ++i)
     {
@@ -258,7 +258,7 @@ OFCondition DcmJSONReader::dumpJSONTokenArray()
         fprintf(stderr, "%06d: type=%s%04d,  value=%s\n", i+1, json_type, tokenArray_[i].size, json_value.c_str());
     }
     fprintf(stderr, "=============================== END JSON DUMP ===============================\n");
-	return EC_Normal;
+    return EC_Normal;
 }
 
 
@@ -287,11 +287,11 @@ OFCondition DcmJSONReader::parseJSON()
 
 OFCondition DcmJSONReader::storeInlineBinaryValue(
     DcmElement& element,
-	Uint8 *data,
-	size_t length)
+    Uint8 *data,
+    size_t length)
 {
     OFCondition result = EC_Normal;
-	if (NULL == data) length = 0;
+    if (NULL == data) length = 0;
     DcmEVR evr = element.getVR();
     if (evr == EVR_OW)
     {
@@ -568,12 +568,12 @@ OFCondition DcmJSONReader::parseElement(
 
     if (valueToken == NULL)
     {
-		// no content following, element value remains empty
+        // no content following, element value remains empty
         DCMDATA_TRACE("no value token for element " << dcmTag << ", using empty value");
     }
 
     // bulk data URIs reference a file, download URL or a URN referencing another MIME part in multipart/related structure.
-	// This is not yet supported
+    // This is not yet supported
     else if (valueType == "bulkdatauri")
     {
         if (ignoreBulkdataURIPolicy_)
@@ -632,14 +632,14 @@ OFCondition DcmJSONReader::parseElement(
         }
         else if (newElem->getTag() == DCM_PixelData)
         {
-			// special handling for pixel data
+            // special handling for pixel data
             DCMDATA_ERROR("pixel data must not have a 'value' attribute in the DICOM JSON model");
             delete newElem;
             return EC_InvalidJSONContent;
         }
         else
         {
-			// parse the value array
+            // parse the value array
             DCMDATA_TRACE("parsing value array of size " << valueToken->size);
             result = parseElementValueArray(newElem, valueToken);
         }
@@ -661,21 +661,21 @@ OFCondition DcmJSONReader::parseElement(
         if (dcmTag.getGroup() == 0x0002)
         {
             if (ignoreMetaInfoPolicy_ || (metaheader == NULL))
-			{
+            {
                 // we ignore meta info elements
-			    delete newElem;
-    	    }
-			else
-			{
+                delete newElem;
+            }
+            else
+            {
                 if (dcmTag.getElement() == 0x0010)
-				{
+                {
                     // this is (0002,0010) TransferSyntaxUID, extract the transfer syntax
                     OFString value;
                     newElem->getOFString(value, 0);
                     xferSyntax_ = DcmXfer(value.c_str()).getXfer();
                 }
                 result = metaheader->insert(newElem, OFFalse /*replaceOld*/);
-			}
+            }
         }
         else
         {
@@ -698,7 +698,7 @@ OFCondition DcmJSONReader::parseElement(
 
 OFCondition DcmJSONReader::extractTag(
     OFJsmnTokenPtr keyToken,
-	DcmTagKey& tagkey)
+    DcmTagKey& tagkey)
 {
     OFString tagString;
     getTokenContent(tagString, keyToken);
@@ -792,7 +792,7 @@ OFCondition DcmJSONReader::parseDataSet(
 
 OFCondition DcmJSONReader::parsePersonName(
     OFString& value,
-	OFJsmnTokenPtr& current)
+    OFJsmnTokenPtr& current)
 {
     static const char *PersonGroupNames[] = { "Alphabetic", "Ideographic", "Phonetic" };
 
@@ -864,7 +864,7 @@ OFCondition DcmJSONReader::parsePersonName(
 
 OFCondition DcmJSONReader::parseElementValueArray(
     DcmElement*& newElem,
-	OFJsmnTokenPtr& current)
+    OFJsmnTokenPtr& current)
 {
     OFCondition result;
     OFString vmString;
@@ -939,7 +939,7 @@ OFCondition DcmJSONReader::parseElementValueArray(
             getTokenContent(value, current);
             if (current->type == JSMN_STRING)
             {
-				// JSMN_STRING
+                // JSMN_STRING
                 DCMDATA_TRACE("element value array, parsing string value: " << value);
                 result = processJSONEscapeCharacters(value);
                 if (result.bad())
@@ -949,7 +949,7 @@ OFCondition DcmJSONReader::parseElementValueArray(
             }
             else
             {
-				// JSMN_PRIMITIVE, i.e. null, number, or boolean (which should not occur)
+                // JSMN_PRIMITIVE, i.e. null, number, or boolean (which should not occur)
                 // Replace "null" by an empty string and keep numbers as they are
                 if (value == "null") value = "";
             }
@@ -973,8 +973,8 @@ OFCondition DcmJSONReader::parseElementValueArray(
 
 OFCondition DcmJSONReader::createElement(
     DcmElement*& newElem,
-	DcmTag& dcmTag,
-	const OFString& vr)
+    DcmTag& dcmTag,
+    const OFString& vr)
 {
     OFCondition result = EC_Normal;
 
