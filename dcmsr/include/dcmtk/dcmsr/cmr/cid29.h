@@ -5,8 +5,8 @@
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2025b
- *  File created on 2025-04-15 12:51:47 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:38:52 by J. Riesmeier
  *
  */
 

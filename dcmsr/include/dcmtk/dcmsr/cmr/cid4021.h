@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2025b
- *  File created on 2025-04-15 12:51:53 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:01 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20221201)
+ *  (type: extensible, version: 20250709)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -234,6 +234,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         PinatuzumabVedotin_89Zr,
         /// (126500,DCM,"Pittsburgh compound B C^11^")
         PittsburghCompoundB_C11,
+        /// (C5433257,UMLS,"PI-2620 F^18^")
+        PI2620_F18,
         /// (C1609883,UMLS,"PK11195 ^11^C")
         PK11195_11C,
         /// (126726,DCM,"Polatuzumab vedotin ^89^Zr")

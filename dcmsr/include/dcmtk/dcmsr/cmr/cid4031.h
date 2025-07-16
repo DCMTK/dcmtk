@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4031_CommonAnatomicRegion
  *
- *  Generated automatically from DICOM PS 3.16-2025b
- *  File created on 2025-04-15 12:51:54 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:02 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4031 - Common Anatomic Region.
- *  (type: extensible, version: 20221224)
+ *  (type: extensible, version: 20250709)
  */
 class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
   : public DSRContextGroup
@@ -68,16 +68,18 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         Bronchus,
         /// (80144004,SCT,"Calcaneus")
         Calcaneus,
+        /// (113257007,SCT,"Cardiovascular system")
+        CardiovascularSystem,
         /// (122494005,SCT,"Cervical spine")
         CervicalSpine,
         /// (1217257000,SCT,"Cervico-thoracic spine")
         CervicoThoracicSpine,
         /// (816094009,SCT,"Chest")
         Chest,
-        /// (416550000,SCT,"Chest and Abdomen")
-        ChestAndAbdomen,
         /// (416775004,SCT,"Chest, Abdomen and Pelvis")
         ChestAbdomenAndPelvis,
+        /// (416550000,SCT,"Chest and Abdomen")
+        ChestAndAbdomen,
         /// (51299004,SCT,"Clavicle")
         Clavicle,
         /// (64688005,SCT,"Coccyx")
@@ -152,6 +154,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         LowerLeg,
         /// (61685007,SCT,"Lower limb")
         LowerLimb,
+        /// (63337009,SCT,"Lower trunk")
+        LowerTrunk,
         /// (122496007,SCT,"Lumbar spine")
         LumbarSpine,
         /// (1217253001,SCT,"Lumbo-sacral spine")
@@ -172,12 +176,12 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         NasalBone,
         /// (45048000,SCT,"Neck")
         Neck,
-        /// (417437006,SCT,"Neck and Chest")
-        NeckAndChest,
-        /// (416152001,SCT,"Neck, Chest and Abdomen")
-        NeckChestAndAbdomen,
         /// (416319003,SCT,"Neck, Chest, Abdomen and Pelvis")
         NeckChestAbdomenAndPelvis,
+        /// (416152001,SCT,"Neck, Chest and Abdomen")
+        NeckChestAndAbdomen,
+        /// (417437006,SCT,"Neck and Chest")
+        NeckAndChest,
         /// (55024004,SCT,"Optic canal")
         OpticCanal,
         /// (363654007,SCT,"Orbital structure")
@@ -226,6 +230,8 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         SmallIntestine,
         /// (421060004,SCT,"Spine")
         Spine,
+        /// (737561001,SCT,"Spine and/or cord")
+        SpineAndPerOrCord,
         /// (7844006,SCT,"Sternoclavicular joint")
         SternoclavicularJoint,
         /// (56873002,SCT,"Sternum")
@@ -250,10 +256,14 @@ class DCMTK_CMR_EXPORT CID4031_CommonAnatomicRegion
         Toe,
         /// (44567001,SCT,"Trachea")
         Trachea,
+        /// (22943007,SCT,"Trunk")
+        Trunk,
         /// (40983000,SCT,"Upper arm")
         UpperArm,
         /// (53120007,SCT,"Upper limb")
         UpperLimb,
+        /// (67734004,SCT,"Upper trunk")
+        UpperTrunk,
         /// (431491007,SCT,"Upper urinary tract")
         UpperUrinaryTract,
         /// (87953007,SCT,"Ureter")

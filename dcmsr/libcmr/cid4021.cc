@@ -5,8 +5,8 @@
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2025b
- *  File created on 2025-04-15 12:51:53 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:01 by J. Riesmeier
  *
  */
 
@@ -19,7 +19,7 @@
 // general information on CID 4021 (PET Radiopharmaceutical)
 #define CONTEXT_GROUP_NUMBER  "4021"
 #define CONTEXT_GROUP_KEYWORD "PETRadiopharmaceutical"
-#define CONTEXT_GROUP_VERSION "20221201"
+#define CONTEXT_GROUP_VERSION "20250709"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.305"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
 
@@ -247,6 +247,7 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(Pegdinetanib_89Zr, DSRBasicCodedEntry("126728", "DCM", "Pegdinetanib ^89^Zr")));
         Codes->insert(OFMake_pair(PinatuzumabVedotin_89Zr, DSRBasicCodedEntry("126725", "DCM", "Pinatuzumab vedotin ^89^Zr")));
         Codes->insert(OFMake_pair(PittsburghCompoundB_C11, DSRBasicCodedEntry("126500", "DCM", "Pittsburgh compound B C^11^")));
+        Codes->insert(OFMake_pair(PI2620_F18, DSRBasicCodedEntry("C5433257", "UMLS", "PI-2620 F^18^")));
         Codes->insert(OFMake_pair(PK11195_11C, DSRBasicCodedEntry("C1609883", "UMLS", "PK11195 ^11^C")));
         Codes->insert(OFMake_pair(PolatuzumabVedotin_89Zr, DSRBasicCodedEntry("126726", "DCM", "Polatuzumab vedotin ^89^Zr")));
         Codes->insert(OFMake_pair(PSMA1007_F18, DSRBasicCodedEntry("126758", "DCM", "PSMA-1007 F^18^")));
