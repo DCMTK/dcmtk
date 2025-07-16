@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2025b
- *  File created on 2025-04-15 12:18:29 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 11:58:32 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 4975
+// total number of codes: 5048
 // - retired: 207
 // - no name: 27
 // - not unique: 17
@@ -5023,5 +5023,78 @@
 #define CODE_DCM_SubjectSexParametersForClinicalUseCategory                DSRBasicCodedEntry("131233", "DCM", "Subject Sex Parameters for Clinical Use Category")
 #define CODE_DCM_SexParametersForClinicalUseCategoryComment                DSRBasicCodedEntry("131234", "DCM", "Sex Parameters for Clinical Use Category Comment")
 #define CODE_DCM_SexParametersForClinicalUseCategoryReference              DSRBasicCodedEntry("131235", "DCM", "Sex Parameters for Clinical Use Category Reference")
+#define CODE_DCM_VisualFieldKeyMeasurements                                DSRBasicCodedEntry("131240", "DCM", "Visual Field Key Measurements")
+#define CODE_DCM_OpticDiscKeyMeasurements                                  DSRBasicCodedEntry("131241", "DCM", "Optic Disc Key Measurements")
+#define CODE_DCM_CircumpapillaryRetinalNerveFiberLayerKeyMeasurements      DSRBasicCodedEntry("131242", "DCM", "Circumpapillary Retinal Nerve Fiber Layer Key Measurements")
+#define CODE_DCM_MacularThicknessKeyMeasurements                           DSRBasicCodedEntry("131243", "DCM", "Macular Thickness Key Measurements")
+#define CODE_DCM_GanglionCellLayerKeyMeasurements                          DSRBasicCodedEntry("131244", "DCM", "Ganglion Cell Layer Key Measurements")
+#define CODE_DCM_EndothelialCellCountKeyMeasurements                       DSRBasicCodedEntry("131245", "DCM", "Endothelial Cell Count Key Measurements")
+#define CODE_DCM_OphthalmicImageROIMeasurements                            DSRBasicCodedEntry("131246", "DCM", "Ophthalmic Image ROI Measurements")
+#define CODE_DCM_RepositionedROIOrGrid                                     DSRBasicCodedEntry("131247", "DCM", "Repositioned ROI or grid")
+#define CODE_DCM_VisualFieldGlobalDeviationFromNormal                      DSRBasicCodedEntry("131248", "DCM", "Visual Field Global Deviation from Normal")
+#define CODE_DCM_VisualFieldLocalizedDeviationFromNormal                   DSRBasicCodedEntry("131249", "DCM", "Visual Field Localized Deviation From Normal")
+#define CODE_DCM_FixationFalsePositiveRatio                                DSRBasicCodedEntry("131250", "DCM", "Fixation false positive ratio")
+#define CODE_DCM_FixationFalsePositivePercent                              DSRBasicCodedEntry("131251", "DCM", "Fixation false positive percent")
+#define CODE_DCM_FixationFalseNegativeRatio                                DSRBasicCodedEntry("131252", "DCM", "Fixation false negative ratio")
+#define CODE_DCM_FixationFalseNegativePercent                              DSRBasicCodedEntry("131253", "DCM", "Fixation false negative percent")
+#define CODE_DCM_FixationLossesRatio                                       DSRBasicCodedEntry("131254", "DCM", "Fixation losses ratio")
+#define CODE_DCM_AverageMacularThickness                                   DSRBasicCodedEntry("131255", "DCM", "Average macular thickness")
+#define CODE_DCM_CupToDiscAreaRatio                                        DSRBasicCodedEntry("131256", "DCM", "Cup to disc area ratio")
+#define CODE_DCM_CupToDiscRatioVertical                                    DSRBasicCodedEntry("131257", "DCM", "Cup to disc ratio vertical")
+#define CODE_DCM_CupToDiscRatioHorizontal                                  DSRBasicCodedEntry("131258", "DCM", "Cup to disc ratio horizontal")
+#define CODE_DCM_NeuroretinalRimArea                                       DSRBasicCodedEntry("131259", "DCM", "Neuroretinal rim area")
+#define CODE_DCM_NeuroretinalRimWidth                                      DSRBasicCodedEntry("131260", "DCM", "Neuroretinal rim width")
+#define CODE_DCM_OpticCupArea                                              DSRBasicCodedEntry("131261", "DCM", "Optic cup area")
+#define CODE_DCM_OpticDiscArea                                             DSRBasicCodedEntry("131262", "DCM", "Optic disc area")
+#define CODE_DCM_OpticCupVolume                                            DSRBasicCodedEntry("131263", "DCM", "Optic cup volume")
+#define CODE_DCM_RNFLAverageThickness                                      DSRBasicCodedEntry("131264", "DCM", "RNFL average thickness")
+#define CODE_DCM_RNFLInferiorSectorThickness                               DSRBasicCodedEntry("131265", "DCM", "RNFL inferior sector thickness")
+#define CODE_DCM_RNFLSuperiorSectorThickness                               DSRBasicCodedEntry("131266", "DCM", "RNFL superior sector thickness")
+#define CODE_DCM_RNFLTemporalSectorThickness                               DSRBasicCodedEntry("131267", "DCM", "RNFL temporal sector thickness")
+#define CODE_DCM_RNFLNasalSectorThickness                                  DSRBasicCodedEntry("131268", "DCM", "RNFL nasal sector thickness")
+#define CODE_DCM_RNFLNasalSuperiorSectorThickness                          DSRBasicCodedEntry("131269", "DCM", "RNFL nasal-superior sector thickness")
+#define CODE_DCM_RNFLNasalInferiorSectorThickness                          DSRBasicCodedEntry("131270", "DCM", "RNFL nasal-inferior sector thickness")
+#define CODE_DCM_RNFLTemporalInferiorSectorThickness                       DSRBasicCodedEntry("131271", "DCM", "RNFL temporal-inferior sector thickness")
+#define CODE_DCM_RNFLTemporalSuperiorSectorThickness                       DSRBasicCodedEntry("131272", "DCM", "RNFL temporal-superior sector thickness")
+#define CODE_DCM_RetinalNerveFiberLayerSymmetry                            DSRBasicCodedEntry("131273", "DCM", "Retinal nerve fiber layer symmetry")
+#define CODE_DCM_RetinalROIWidth                                           DSRBasicCodedEntry("131274", "DCM", "Retinal ROI width")
+#define CODE_DCM_RetinalROIHeight                                          DSRBasicCodedEntry("131275", "DCM", "Retinal ROI height")
+#define CODE_DCM_RNFLClockfacePosition1Thickness                           DSRBasicCodedEntry("131276", "DCM", "RNFL clockface position 1 thickness")
+#define CODE_DCM_RNFLClockfacePosition2Thickness                           DSRBasicCodedEntry("131277", "DCM", "RNFL clockface position 2 thickness")
+#define CODE_DCM_RNFLClockfacePosition3Thickness                           DSRBasicCodedEntry("131278", "DCM", "RNFL clockface position 3 thickness")
+#define CODE_DCM_RNFLClockfacePosition4Thickness                           DSRBasicCodedEntry("131279", "DCM", "RNFL clockface position 4 thickness")
+#define CODE_DCM_RNFLClockfacePosition5Thickness                           DSRBasicCodedEntry("131280", "DCM", "RNFL clockface position 5 thickness")
+#define CODE_DCM_RNFLClockfacePosition6Thickness                           DSRBasicCodedEntry("131281", "DCM", "RNFL clockface position 6 thickness")
+#define CODE_DCM_RNFLClockfacePosition7Thickness                           DSRBasicCodedEntry("131282", "DCM", "RNFL clockface position 7 thickness")
+#define CODE_DCM_RNFLClockfacePosition8Thickness                           DSRBasicCodedEntry("131283", "DCM", "RNFL clockface position 8 thickness")
+#define CODE_DCM_RNFLClockfacePosition9Thickness                           DSRBasicCodedEntry("131284", "DCM", "RNFL clockface position 9 thickness")
+#define CODE_DCM_RNFLClockfacePosition10Thickness                          DSRBasicCodedEntry("131285", "DCM", "RNFL clockface position 10 thickness")
+#define CODE_DCM_RNFLClockfacePosition11Thickness                          DSRBasicCodedEntry("131286", "DCM", "RNFL clockface position 11 thickness")
+#define CODE_DCM_RNFLClockfacePosition12Thickness                          DSRBasicCodedEntry("131287", "DCM", "RNFL clockface position 12 thickness")
+#define CODE_DCM_AverageGanglionCellThickness                              DSRBasicCodedEntry("131288", "DCM", "Average ganglion cell thickness")
+#define CODE_DCM_MinimumGanglionCellThickness                              DSRBasicCodedEntry("131289", "DCM", "Minimum ganglion cell thickness")
+#define CODE_DCM_AverageGanglionCellThicknessSuperiorSector                DSRBasicCodedEntry("131290", "DCM", "Average ganglion cell thickness superior sector")
+#define CODE_DCM_AverageGanglionCellThicknessNasalSuperiorSector           DSRBasicCodedEntry("131291", "DCM", "Average ganglion cell thickness nasal-superior sector")
+#define CODE_DCM_AverageGanglionCellThicknessNasalSector                   DSRBasicCodedEntry("131292", "DCM", "Average ganglion cell thickness nasal sector")
+#define CODE_DCM_AverageGanglionCellThicknessNasalInferiorSector           DSRBasicCodedEntry("131293", "DCM", "Average ganglion cell thickness nasal-inferior sector")
+#define CODE_DCM_AverageGanglionCellThicknessInferiorSector                DSRBasicCodedEntry("131294", "DCM", "Average ganglion cell thickness inferior sector")
+#define CODE_DCM_AverageGanglionCellThicknessTemporalInferiorSector        DSRBasicCodedEntry("131295", "DCM", "Average ganglion cell thickness temporal-inferior sector")
+#define CODE_DCM_AverageGanglionCellThicknessTemporalSector                DSRBasicCodedEntry("131296", "DCM", "Average ganglion cell thickness temporal sector")
+#define CODE_DCM_AverageGanglionCellThicknessTemporalSuperiorSector        DSRBasicCodedEntry("131297", "DCM", "Average ganglion cell thickness temporal-superior sector")
+#define CODE_DCM_AverageGanglionCellThicknessInPosteriorPoleGrid           DSRBasicCodedEntry("131298", "DCM", "Average ganglion cell thickness in posterior pole grid")
+#define CODE_DCM_GanglionCellAndInnerPlexiformLayers                       DSRBasicCodedEntry("131299", "DCM", "Ganglion cell and inner plexiform layers")
+#define CODE_DCM_GanglionCellComplex                                       DSRBasicCodedEntry("131300", "DCM", "Ganglion cell complex")
+#define CODE_DCM_SemicircularSectors                                       DSRBasicCodedEntry("131301", "DCM", "Semicircular sectors")
+#define CODE_DCM_QuadrantSectors                                           DSRBasicCodedEntry("131302", "DCM", "Quadrant sectors")
+#define CODE_DCM_SNITRectangularSectors                                    DSRBasicCodedEntry("131303", "DCM", "SNIT rectangular sectors")
+#define CODE_DCM_EllipticalAnnulusSectors                                  DSRBasicCodedEntry("131304", "DCM", "Elliptical annulus sectors")
+#define CODE_DCM_GarwayHeathSectors                                        DSRBasicCodedEntry("131305", "DCM", "Garway-Heath sectors")
+#define CODE_DCM_QuadrantOctantSectors                                     DSRBasicCodedEntry("131306", "DCM", "Quadrant-octant sectors")
+#define CODE_DCM_PosteriorPole8x8Grid                                      DSRBasicCodedEntry("131307", "DCM", "Posterior pole 8x8 grid")
+#define CODE_DCM_RNFLClockfaceMethod                                       DSRBasicCodedEntry("131308", "DCM", "RNFL Clockface Method")
+#define CODE_DCM_EndothelialCellDensity                                    DSRBasicCodedEntry("131309", "DCM", "Endothelial cell density")
+#define CODE_DCM_GeographicAtrophyArea                                     DSRBasicCodedEntry("131310", "DCM", "Geographic atrophy area")
+#define CODE_DCM_PlanMeetsPrescription                                     DSRBasicCodedEntry("131315", "DCM", "Plan meets prescription")
+#define CODE_DCM_PlanQAPassed                                              DSRBasicCodedEntry("131316", "DCM", "Plan QA passed")
 
 #endif

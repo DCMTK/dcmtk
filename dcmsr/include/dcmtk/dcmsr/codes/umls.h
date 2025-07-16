@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2025b
- *  File created on 2025-04-15 12:18:32 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 11:58:37 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 58
+// total number of codes: 59
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -105,6 +105,7 @@
 #define CODE_UMLS_MK6240_F18                                               DSRBasicCodedEntry("C4506764", "UMLS", "MK-6240 F^18^")
 #define CODE_UMLS_UCBJ_C11                                                 DSRBasicCodedEntry("C4506788", "UMLS", "UCB-J C^11^")
 #define CODE_UMLS_THK5317_F18                                              DSRBasicCodedEntry("C4550127", "UMLS", "THK5317 F^18^")
+#define CODE_UMLS_PI2620_F18                                               DSRBasicCodedEntry("C5433257", "UMLS", "PI-2620 F^18^")
 #define CODE_UMLS_MiddleEasternOrNorthAfrican                              DSRBasicCodedEntry("C5690844", "UMLS", "Middle Eastern or North African")
 
 #endif
