@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2025-04-15 12:24:21
+**   Date: 2025-07-16 12:03:33
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2025-04-15 12:24:21"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2025-07-16 12:03:33"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5258
+** Number of entries: 5259
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -2983,6 +2983,7 @@
 #define DCM_ReferencedAssertionUID               DcmTagKey(0x0044, 0x0108)
 #define DCM_ApprovalSubjectSequence              DcmTagKey(0x0044, 0x0109)
 #define DCM_OrganizationalRoleCodeSequence       DcmTagKey(0x0044, 0x010a)
+#define DCM_RTAssertionsSequence                 DcmTagKey(0x0044, 0x0110)
 #define DCM_LensDescription                      DcmTagKey(0x0046, 0x0012)
 #define DCM_RightLensSequence                    DcmTagKey(0x0046, 0x0014)
 #define DCM_LeftLensSequence                     DcmTagKey(0x0046, 0x0015)

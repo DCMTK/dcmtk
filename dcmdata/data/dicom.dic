@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2025b and PS 3.7-2025b.
-# File created on 2025-04-15 12:19:07 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2025c and PS 3.7-2025c.
+# File created on 2025-07-16 11:58:26 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -2688,6 +2688,7 @@
 (0044,0108)	UI	ReferencedAssertionUID	1	DICOM
 (0044,0109)	SQ	ApprovalSubjectSequence	1	DICOM
 (0044,010A)	SQ	OrganizationalRoleCodeSequence	1	DICOM
+(0044,0110)	SQ	RTAssertionsSequence	1	DICOM
 (0046,0012)	LO	LensDescription	1	DICOM
 (0046,0014)	SQ	RightLensSequence	1	DICOM
 (0046,0015)	SQ	LeftLensSequence	1	DICOM
