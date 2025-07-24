@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("bulk data URI options:");
         cmd.addOption("--bulk-disabled",      "-b",     "write everything as inline binary (default)");
         cmd.addOption("--bulk-enabled",       "+b",     "write large attributes as bulk data");
-        cmd.addOption("--bulk-size",          "+bz", 1, "[s]ize: integer", "use bulk data for attributes >= s kBytes");
+        cmd.addOption("--bulk-size",          "+bz", 1, "[s]ize: integer (default: 1)", "use bulk data for attributes >= s kBytes");
         cmd.addOption("--bulk-uri-prefix",    "+bp", 1, "[u]ri prefix: string",  "use prefix u when generating bulk data URIs\n(default: file URI)");
         cmd.addOption("--bulk-dir",           "+bd", 1, "[d]irectory: string",  "write bulk data files to d (default: '.')");
         cmd.addOption("--bulk-subdir",        "+bs",    "create subdirectory for each SOP instance\n(default: no subdirectory)");

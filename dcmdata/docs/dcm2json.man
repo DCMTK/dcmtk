@@ -124,7 +124,7 @@ bulk data URI options:
   +b   --bulk-enabled
          write large attributes as bulk data
 
-  +bz  --bulk-size  [s]ize: integer
+  +bz  --bulk-size  [s]ize: integer (default: 1)
          use bulk data for attributes >= s kBytes
 
   +bp  --bulk-uri-prefix  [u]ri prefix: string
