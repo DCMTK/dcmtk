@@ -196,6 +196,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONType;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONContent;
 /// BulkDataURI not yet supported
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_BulkDataURINotSupported;
+/// Unsupported URI type
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnsupportedURIType;
 
 ///@}
 
