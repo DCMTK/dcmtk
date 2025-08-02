@@ -64,6 +64,8 @@ void addProcessOptions(OFCommandLine& cmd)
       cmd.addSubGroup("bulkdata URI handling:");
         cmd.addOption("--parse-bulkdata-uri",  "+Bu",    "parse Bulkdata URIs (default)");
         cmd.addOption("--ignore-bulkdata-uri", "-Bu",    "ignore Bulkdata URIs");
+        cmd.addOption("--add-bulkdata-dir",    "+Bd", 1, "[d]irectory: string",
+                                                         "add d to list of permitted bulk data sources");
       cmd.addSubGroup("handling of arrays with multiple data sets:");
         cmd.addOption("--array-reject",        "-ar",    "reject multiple data sets (default)");
         cmd.addOption("--array-select",        "+as", 1, "[n]umber: integer",
@@ -126,19 +128,18 @@ void addJSON2DCMCommandlineOptions(OFCommandLine& cmd)
 /**
  * function for parsing commandline arguments
  */
-void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
-    OFBool& opt_metaInfo,
+OFCondition parseArguments(
+    OFConsoleApplication& app,
+    OFCommandLine& cmd,
     OFBool& opt_generateUIDs,
     OFBool& opt_overwriteUIDs,
-    OFBool& opt_ignoreBulkdataURI,
-    OFBool& opt_stopOnErrors,
-    OFCmdSignedInt &opt_arrayHandling,
     E_TransferSyntax& opt_xfer,
     E_EncodingType& opt_enctype,
     OFBool& opt_replaceCharset,
     E_FileWriteMode& opt_writeMode,
     const char*& opt_ifname,
-    const char*& opt_ofname
+    const char*& opt_ofname,
+    DcmJSONReader& jsonReader
 )
 {
     cmd.getParam(1, opt_ifname);
@@ -149,9 +150,9 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
     /* input options */
     cmd.beginOptionBlock();
     if (cmd.findOption("--read-meta-info"))
-        opt_metaInfo = OFFalse;
+        jsonReader.setIgnoreMetaInfoPolicy(OFFalse);
     if (cmd.findOption("--ignore-meta-info"))
-        opt_metaInfo = OFTrue;
+        jsonReader.setIgnoreMetaInfoPolicy(OFTrue);
     cmd.endOptionBlock();
 
     /* processing options */
@@ -174,26 +175,40 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
     cmd.beginOptionBlock();
     if (cmd.findOption("--ignore-bulkdata-uri"))
     {
-        opt_ignoreBulkdataURI = OFTrue;
+        jsonReader.setIgnoreBulkdataURIPolicy(OFTrue);
     }
     if (cmd.findOption("--parse-bulkdata-uri"))
     {
-        opt_ignoreBulkdataURI = OFFalse;
+        jsonReader.setIgnoreBulkdataURIPolicy(OFFalse);
     }
     cmd.endOptionBlock();
+
+    if (cmd.findOption("--add-bulkdata-dir", 0, OFCommandLine::FOM_First))
+    {
+        OFCondition result;
+        const char *current = NULL;
+        do
+        {
+            app.checkValue(cmd.getValue(current));
+            result = jsonReader.addPermittedBulkdataPath(current);
+            if (result.bad()) return result;
+        } while (cmd.findOption("--add-bulkdata-dir", 0, OFCommandLine::FOM_Next));
+    }
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--array-reject"))
     {
-        opt_arrayHandling = -1;
+        jsonReader.setArrayHandlingPolicy(-1);
     }
     if (cmd.findOption("--array-sequence"))
     {
-        opt_arrayHandling = 0;
+        jsonReader.setArrayHandlingPolicy(0);
     }
     if (cmd.findOption("--array-select"))
     {
-        app.checkValue(cmd.getValueAndCheckMin(opt_arrayHandling, 1));
+        OFCmdSignedInt arrayHandling = -1;
+        cmd.getValueAndCheckMin(arrayHandling, 1);
+        jsonReader.setArrayHandlingPolicy(arrayHandling);
     }
     cmd.endOptionBlock();
 
@@ -227,8 +242,10 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--stop-on-error")) opt_stopOnErrors = OFTrue;
-    if (cmd.findOption("--ignore-errors")) opt_stopOnErrors = OFFalse;
+    if (cmd.findOption("--stop-on-error"))
+        jsonReader.setStopOnErrorPolicy(OFTrue);
+    if (cmd.findOption("--ignore-errors"))
+        jsonReader.setStopOnErrorPolicy(OFFalse);
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
@@ -261,6 +278,8 @@ void parseArguments(OFConsoleApplication& app, OFCommandLine& cmd,
         dcmZlibCompressionLevel.set(OFstatic_cast(int, comprLevel));
     }
 #endif
+
+    return EC_Normal;
 }
 
 void generateUIDs(DcmItem *dataset, OFBool overwriteUIDs, E_FileWriteMode& writeMode)
@@ -331,12 +350,8 @@ void updateCharacterSet(DcmItem *dataset, const char *ifname, OFBool replaceChar
 
 int main(int argc, char *argv[])
 {
-    OFBool opt_metaInfo = OFFalse;
     OFBool opt_generateUIDs = OFFalse;
     OFBool opt_overwriteUIDs = OFFalse;
-    OFBool opt_ignoreBulkdataURI = OFFalse;
-    OFBool opt_stopOnErrors = OFTrue;
-    OFCmdSignedInt opt_arrayHandling = -1;
     E_TransferSyntax opt_xfer = EXS_Unknown;
     E_EncodingType opt_enctype = EET_ExplicitLength;
     OFBool opt_replaceCharset = OFFalse;
@@ -373,23 +388,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    /* command line parameters and options */
-    parseArguments(
-        app, cmd,
-        opt_metaInfo,
-        opt_generateUIDs,
-        opt_overwriteUIDs,
-        opt_ignoreBulkdataURI,
-        opt_stopOnErrors,
-        opt_arrayHandling,
-        opt_xfer,
-        opt_enctype,
-        opt_replaceCharset,
-        opt_writeMode,
-        opt_ifname,
-        opt_ofname
-    );
-
     /* print resource identifier */
     OFLOG_DEBUG(json2dcmLogger, rcsid << OFendl);
 
@@ -400,7 +398,27 @@ int main(int argc, char *argv[])
             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    /* check filenames */
+    DcmFileFormat fileformat;
+    DcmJSONReader jsonReader;
+
+    /* command line parameters and options */
+    OFCondition result = parseArguments(
+        app, cmd,
+        opt_generateUIDs,
+        opt_overwriteUIDs,
+        opt_xfer,
+        opt_enctype,
+        opt_replaceCharset,
+        opt_writeMode,
+        opt_ifname,
+        opt_ofname,
+        jsonReader
+    );
+
+    if (result.bad())
+        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+
+    // check filenames
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
         OFLOG_ERROR(json2dcmLogger, OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>");
@@ -413,15 +431,8 @@ int main(int argc, char *argv[])
     }
 
     // read JSON file and convert to DICOM
-    DcmFileFormat fileformat;
-    DcmJSONReader jsonReader;
-    jsonReader.setIgnoreBulkdataURIPolicy(opt_ignoreBulkdataURI);
-    jsonReader.setStopOnErrorPolicy(opt_stopOnErrors);
-    jsonReader.setIgnoreMetaInfoPolicy(opt_metaInfo);
-    jsonReader.setArrayHandlingPolicy(opt_arrayHandling);
-
     OFLOG_INFO(json2dcmLogger, "reading JSON input file: " << opt_ifname);
-    OFCondition result = jsonReader.readAndConvertJSONFile(fileformat, opt_ifname);
+    result = jsonReader.readAndConvertJSONFile(fileformat, opt_ifname);
     if (result.bad())
     {
         if (result == EC_BulkDataURINotSupported)

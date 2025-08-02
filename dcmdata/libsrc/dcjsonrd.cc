@@ -47,10 +47,11 @@ DcmJSONReader::DcmJSONReader()
 , tokenArray_(NULL)
 , tokenNumber_(0)
 , ignoreBulkdataURIPolicy_(OFFalse)
-, stopOnErrorPolicy_(OFFalse)
+, stopOnErrorPolicy_(OFTrue)
 , ignoreMetaInfoPolicy_(OFFalse)
 , arrayHandlingPolicy_(-1)
 , xferSyntax_(EXS_LittleEndianExplicit)
+, permittedBulkdataDirs_()
 {
 }
 
@@ -79,6 +80,7 @@ OFCondition DcmJSONReader::readJSONFile(const char *ifname)
     {
         OFString s("(unknown error code)");
         jsonFile.getLastErrorString(s);
+        DCMDATA_ERROR("failed to open JSON file '" << ifname << "': " << s);
         return makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
     }
 
@@ -295,7 +297,7 @@ OFCondition DcmJSONReader::storeInlineBinaryValue(
     DcmEVR evr = element.getVR();
     if (evr == EVR_OW)
     {
-        /* Base64 decoder produces big endian output data, convert to local byte order */
+        /* Base64 decoder produces little endian output data, convert to local byte order */
         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Uint16));
         result = element.putUint16Array(OFreinterpret_cast(Uint16 *, data), OFstatic_cast(Uint32, length / sizeof(Uint16)));
     }
@@ -325,13 +327,87 @@ OFCondition DcmJSONReader::storeInlineBinaryValue(
     }
     else
     {
-        DCMDATA_WARN("invalid VR Type for inline value");
+        DCMDATA_ERROR("invalid VR Type for inline value");
         return EC_InvalidVR;
     }
 
     if (result.bad())
     {
         DCMDATA_ERROR("failed to store inline binary value for DICOM element "  << element.getTag() << ": " << result.text());
+    }
+    return result;
+}
+
+
+OFCondition DcmJSONReader::storeBulkValue(
+    DcmElement& element,
+    Uint8 *data,
+    size_t length)
+{
+    OFCondition result = EC_Normal;
+    if (NULL == data) length = 0;
+    DcmEVR evr = element.getVR();
+
+    if (evr == EVR_OB || evr == EVR_UN)
+    {
+        // sequence of bytes, no byte swapping necessary
+        result = element.putUint8Array(data, OFstatic_cast(Uint32, length));
+    }
+    else if (evr == EVR_DS || evr == EVR_IS || evr == EVR_LT || evr == EVR_ST || evr == EVR_UT || evr == EVR_UC)
+    {
+        // sequence of bytes, no byte swapping necessary
+        result = element.putString(OFreinterpret_cast(char *, data), OFstatic_cast(Uint32, length));
+    }
+    else if (evr == EVR_OW || evr == EVR_US)
+    {
+        // bulk data is always in little endian, convert to local byte order
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Uint16));
+        result = element.putUint16Array(OFreinterpret_cast(Uint16 *, data), OFstatic_cast(Uint32, length / sizeof(Uint16)));
+    }
+    else if (evr == EVR_SS)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Sint16));
+        result = element.putSint16Array(OFreinterpret_cast(Sint16 *, data), OFstatic_cast(Uint32, length / sizeof(Sint16)));
+    }
+    else if (evr == EVR_OL || evr == EVR_UL)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Uint32));
+        result = element.putUint32Array(OFreinterpret_cast(Uint32 *, data), OFstatic_cast(Uint32, length / sizeof(Uint32)));
+    }
+    else if (evr == EVR_SL)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Sint32));
+        result = element.putSint32Array(OFreinterpret_cast(Sint32 *, data), OFstatic_cast(Uint32, length / sizeof(Sint32)));
+    }
+    else if (evr == EVR_OV || evr == EVR_UV)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Uint64));
+        result = element.putUint64Array(OFreinterpret_cast(Uint64 *, data), OFstatic_cast(Uint32, length / sizeof(Uint64)));
+    }
+    else if (evr == EVR_SV)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Sint64));
+        result = element.putSint64Array(OFreinterpret_cast(Sint64 *, data), OFstatic_cast(Uint32, length / sizeof(Sint64)));
+    }
+    else if (evr == EVR_FL || evr == EVR_OF)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Float32));
+        result = element.putFloat32Array(OFreinterpret_cast(Float32 *, data), OFstatic_cast(Uint32, length / sizeof(Float32)));
+    }
+    else if (evr == EVR_FD || evr == EVR_OD)
+    {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, OFstatic_cast(Uint32, length), sizeof(Float64));
+        result = element.putFloat64Array(OFreinterpret_cast(Float64 *, data), OFstatic_cast(Uint32, length / sizeof(Float64)));
+    }
+    else
+    {
+        DCMDATA_ERROR("invalid VR Type for bulk data");
+        return EC_InvalidVR;
+    }
+
+    if (result.bad())
+    {
+        DCMDATA_ERROR("failed to store bulk data value for DICOM element "  << element.getTag() << ": " << result.text());
     }
     return result;
 }
@@ -583,9 +659,67 @@ OFCondition DcmJSONReader::parseElement(
         }
         else
         {
-            DCMDATA_ERROR("loading Bulkdata from 'BulkDataURI' not yet possible");
-            delete newElem;
-            return EC_BulkDataURINotSupported;
+            // the URI value has to be a JSON string
+            if (valueToken->type != JSMN_STRING)
+            {
+                DCMDATA_ERROR("not a valid DICOM JSON dataset: BulkdataURI value must be a JSON string");
+                delete newElem;
+                return EC_InvalidJSONType;
+            }
+
+            OFString value;
+            getTokenContent(value, valueToken);
+
+            if (isFileURI(value))
+            {
+                // convert URI to file path
+                OFString filePath;
+                OFString filePathNormalized;
+                size_t offset = 0;
+                size_t length = 0;
+                result = fileURItoPath(value, filePath, offset, length);
+                if (result.bad())
+                {
+                    delete newElem;
+                    return result;
+                }
+
+                // normalize file path
+                result = normalizePath(filePath, filePathNormalized);
+                if (result.bad())
+                {
+                    delete newElem;
+                    return result;
+                }
+
+                // check if file path is present in our list of permitted paths
+                if (! bulkdataPathPermitted(filePathNormalized))
+                {
+                    DCMDATA_ERROR("BulkdataURI refers to a directory that is not permitted for bulk data: '" << filePath << "'");
+                    delete newElem;
+                    return EC_InvalidFilename;
+                }
+
+                // read the file content and insert it into the current element
+                result = loadBulkdataFile(*newElem, filePathNormalized, offset, length);
+                if (result.bad())
+                {
+                    delete newElem;
+                    return result;
+                }
+            }
+            else if (isHttpURI(value))
+            {
+                DCMDATA_ERROR("loading Bulkdata from http/https BulkDataURI not yet possible");
+                delete newElem;
+                return EC_UnsupportedURIType;
+            }
+            else
+            {
+                DCMDATA_ERROR("Unsupported BulkDataURI URI type: '" << value << "'");
+                delete newElem;
+                return EC_UnsupportedURIType;
+            }
         }
     }
 
@@ -1141,3 +1275,334 @@ OFCondition DcmJSONReader::readAndConvertJSONFile(
     return result;
 }
 
+
+OFBool DcmJSONReader::isFileURI(const OFString& uri) const
+{
+    return (uri.substr(0, 6) == "file:/");
+}
+
+
+OFBool DcmJSONReader::isHttpURI(const OFString& uri) const
+{
+    OFString s = uri.substr(0, 8);
+    if (s == "https://") return OFTrue;
+    s.erase(7);
+    return (s == "http://");
+}
+
+
+OFCondition DcmJSONReader::urlDecode(OFString& uri) const
+{
+    size_t pos;
+    int val = 0;
+    char c;
+    while (OFString_npos != (pos = uri.find("%")))
+    {
+       if (uri.length() + 3 < pos)
+       {
+            DCMDATA_ERROR("incomplete URL code: " << uri.substr(pos, 3));
+            return EC_UnsupportedURIType;
+
+       }
+       c = uri[pos+1];
+       if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
+       {
+            DCMDATA_ERROR("invalid URL code: " << uri.substr(pos, 3));
+            return EC_UnsupportedURIType;
+       }
+
+       c = uri[pos+2];
+       if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')))
+       {
+            DCMDATA_ERROR("invalid URL code: " << uri.substr(pos, 3));
+            return EC_UnsupportedURIType;
+       }
+
+       if (1 != sscanf(uri.c_str() + pos, "%%%2x", &val))
+       {
+            DCMDATA_ERROR("invalid URL code: " << uri.substr(pos, 3));
+            return EC_UnsupportedURIType;
+       }
+       uri[pos] = (char) val;
+       uri.erase(pos+1, 2);
+    }
+    return EC_Normal;
+}
+
+
+OFCondition DcmJSONReader::fileURItoPath(const OFString& uri, OFString& filepath, size_t& offset, size_t& length) const
+{
+    // clear output parameters
+    filepath.clear();
+    offset = 0;
+    length = 0;
+
+    // check if this is a file URI at all
+    if ((uri.substr(0, 6) != "file:/") || (uri.length() < 7))
+    {
+        DCMDATA_ERROR("not a file URI: " << uri);
+        return EC_UnsupportedURIType;
+    }
+
+    OFString filePath;
+    OFString params;
+
+    // check if we have URI parameters. If they are present, store them in a separate string.
+    // In any case, remove the "file:" prefix from the path.
+    size_t paramStart = uri.find("?");
+    if (paramStart == OFString_npos)
+    {
+        filePath = uri.substr(5);
+    }
+    else
+    {
+        params = uri.substr(paramStart+1);
+        filePath = uri.substr(5, paramStart-5);
+   }
+
+    OFCondition result = urlDecode(params);
+    if (result.bad()) return result;
+
+    result = urlDecode(filePath);
+    if (result.bad()) return result;
+
+    // check if we have a URI of type "file:/path" or "file://host/path"
+    if (filePath[1] == '/') // we have checked earlier that the URI is long enough for this
+    {
+        // URI type: file://host/path
+        if (filePath.substr(1, 3) == "///")
+        {
+            DCMDATA_ERROR("Access to file URIs for network hosts not supported: " <<  uri);
+            return EC_UnsupportedURIType;
+        }
+
+        // determine length of hostname
+        size_t separator = filePath.find('/', 2);
+        if (separator == OFString_npos)
+        {
+            DCMDATA_ERROR("file URI without path not supported: " <<  uri);
+            return EC_UnsupportedURIType;
+        }
+
+        // separate hostname and path
+        OFString host = filePath.substr(2, separator-2);
+        filePath = filePath.substr(separator);
+        if ((host != "") && (host != "localhost") && (host != "127.0.0.1") && (host != "ip6-localhost") && (host != "::1"))
+        {
+            DCMDATA_ERROR("Access to file URIs for network hosts not supported: " <<  uri);
+            return EC_UnsupportedURIType;
+        }
+    }
+    if (filePath.length() < 2)
+    {
+        DCMDATA_ERROR("file URI without path not supported: " <<  uri);
+        return EC_UnsupportedURIType;
+    }
+
+#ifdef HAVE_WINDOWS_H
+    if ((filePath.length() > 2) && (filePath[2] == ':'))
+    {
+        // first component of the path is a drive name. Remove leading slash.
+        // We don't do this on Posix systems because the colon character is permitted there as a filename component.
+        filePath.erase(0,1);
+    }
+#endif
+
+    // replace '/' in the path by the system specific path separator
+    size_t l = filePath.size();
+    for (size_t i = 0; i < l; ++i)
+    {
+        if (filePath[i] == '/') filePath[i] = PATH_SEPARATOR;
+    }
+
+    // now for the URI parameters...
+    size_t paramSep;
+    OFString currentParam;
+    while (params.length() > 0)
+    {
+        // separate the next parameter
+        paramSep = params.find("&");
+        if (paramSep == OFString_npos)
+        {
+            currentParam = params;
+            params = "";
+        }
+        else
+        {
+            currentParam = params.substr(0, paramSep);
+            params = params.substr(paramSep + 1);
+        }
+        if (currentParam.substr(0,7) == "offset=")
+        {
+            // convert offset
+            unsigned long ll = 0;
+            currentParam.erase(0,7);
+            if ((OFString_npos != currentParam.find_first_not_of("0123456789")) || (1 != sscanf(currentParam.c_str(), "%lu", &ll)))
+            {
+                DCMDATA_ERROR("Invalid value for URI parameter 'offset': " <<  currentParam);
+                return EC_UnsupportedURIType;
+            }
+            offset = OFstatic_cast(size_t, ll);
+        }
+        else if (currentParam.substr(0,7) == "length=")
+        {
+            // convert length
+            unsigned long ll = 0;
+            currentParam.erase(0,7);
+            if ((OFString_npos != currentParam.find_first_not_of("0123456789")) || (1 != sscanf(currentParam.c_str(), "%lu", &ll)))
+            {
+                DCMDATA_ERROR("Invalid value for URI parameter 'length': " <<  currentParam);
+                return EC_UnsupportedURIType;
+            }
+            length = OFstatic_cast(size_t, ll);
+        }
+        else
+        {
+          DCMDATA_ERROR("'file' URI with unsupported parameter '" << currentParam << "': " <<   uri);
+          return EC_UnsupportedURIType;
+        }
+    }
+    filepath = filePath;
+    return EC_Normal;
+}
+
+
+OFCondition DcmJSONReader::normalizePath(const OFString& filepath_in, OFString& filepath_out) const
+{
+    filepath_out.clear();
+#ifdef HAVE_WINDOWS_H
+    char buf[32768];
+
+    // resolve a relative path to an absolute path
+    DWORD res = GetFullPathNameA(filepath_in.c_str(), 32768, buf, NULL);
+    if ((res == 0) || (res > 32768))
+    {
+        DCMDATA_ERROR("Failed to normalize file path: '" << filepath_in << "'");
+        return EC_InvalidFilename;
+    }
+
+    // resolve short file and directory name components such as "PROGRA~1"
+    // (which is the short 8.3 version for "Program Files") into the long names
+    res = GetLongPathNameA(buf, buf, 32768);
+    if ((res == 0) || (res > 32768))
+    {
+        DCMDATA_ERROR("Failed to normalize file path: '" << filepath_in << "'");
+        return EC_InvalidFilename;
+    }
+
+    // convert all characters to uppercase using a function that (hopefully)
+    // uses the same mapping table as the WIN32 file API
+    size_t len = strlen(buf);
+    if (len != CharUpperBuffA(buf, OFstatic_cast(DWORD, len)))
+    {
+        DCMDATA_ERROR("Failed to normalize file path: '" << filepath_in << "'");
+        return EC_InvalidFilename;
+    }
+    filepath_out = buf;
+#else
+    // resolve a relative path to an absolute path without symbolic links
+    char *resolved_path = realpath(filepath_in.c_str(), NULL);
+    if (resolved_path == NULL)
+    {
+        DCMDATA_ERROR("Failed to normalize file path: '" << filepath_in << "'");
+        return EC_InvalidFilename;
+    }
+    filepath_out = resolved_path;
+    free(resolved_path);
+#endif
+    return EC_Normal;
+}
+
+
+OFCondition DcmJSONReader::addPermittedBulkdataPath(const OFString& dirpath)
+{
+    OFString std_dirpath;
+    OFCondition result = normalizePath(dirpath, std_dirpath);
+    if ((std_dirpath.length() > 0) && (std_dirpath[std_dirpath.length()-1] != PATH_SEPARATOR))
+    {
+        std_dirpath.append(1, PATH_SEPARATOR);
+    }
+
+    if (result.good()) permittedBulkdataDirs_.push_back(std_dirpath);
+    return result;
+
+}
+
+
+OFBool DcmJSONReader::bulkdataPathPermitted(const OFString& filepath) const
+{
+    OFListConstIterator(OFString) iter = permittedBulkdataDirs_.begin();
+    OFListConstIterator(OFString) last = permittedBulkdataDirs_.end();
+    while (iter != last)
+    {
+        if (filepath.substr(0, (*iter).length()) == *iter) return OFTrue;
+        ++iter;
+    }
+    return OFFalse;
+}
+
+
+OFCondition DcmJSONReader::loadBulkdataFile(
+    DcmElement& element,
+    const OFString& filepath,
+    size_t offset,
+    size_t length)
+{
+    // open file for reading
+    OFFile file;
+    if (! file.fopen(filepath, "rb"))
+    {
+        OFString s("(unknown error code)");
+        file.getLastErrorString(s);
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
+    }
+
+    // obtain file size and check if file is large enough
+    const size_t filelen = OFStandard::getFileSize(filepath);
+    if (0 == length) length = filelen;
+    if (offset + length > filelen)
+    {
+        DCMDATA_ERROR("bulk data file too short: '" << filepath << "', expected " << offset + length << " bytes but only found " << filelen);
+        return EC_EndOfStream;
+    }
+
+    // allocate buffer
+    Uint8 *bulkDataBuffer = new (std::nothrow) Uint8[length];
+    if (bulkDataBuffer == NULL)
+    {
+        DCMDATA_ERROR("out of memory: failed to allocate buffer for bulk data file");
+        return EC_MemoryExhausted;
+    }
+
+    // seek to the given offset within the file
+    if (offset > 0)
+    {
+        if (0 != file.fseek(offset, SEEK_SET))
+        {
+            OFString s("(unknown error code)");
+            file.getLastErrorString(s);
+            delete[] bulkDataBuffer;
+            return makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
+        }
+    }
+
+    // read the bulk data into the buffer
+    size_t res = file.fread(bulkDataBuffer, 1, length);
+
+    // we ignore the fclose() return code, which is safe since the file is read-only
+    file.fclose();
+
+    // check the number of bytes read
+    if (res != length)
+    {
+        OFString s("(unknown error code)");
+        file.getLastErrorString(s);
+        delete[] bulkDataBuffer;
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
+    }
+
+    // file was successfully read into buffer. Store the result.
+    OFCondition result = storeBulkValue(element, bulkDataBuffer, length);
+    delete[] bulkDataBuffer;
+    return result;
+}
