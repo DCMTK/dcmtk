@@ -32,6 +32,10 @@
 
 #include <climits>                      /* for INT_MAX */
 
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+
 // Private creator identification string for files
 // containing a list of datasets as a private sequence
 #define JSON2DCM_PRIVATE_RESERVATION "JSON2DCM_LIST_OF_DATASETS"
