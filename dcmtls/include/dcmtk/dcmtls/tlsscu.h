@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2023, OFFIS e.V.
+ *  Copyright (C) 2010-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,6 +117,12 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition setTLSProfile(DcmTLSSecurityProfile profile);
+
+  /** activate the ciphersuites that have been added to the list of ciphersuites
+   *  for TLS negotiation. Caller must ensure that initNetwork() is executed before this call.
+   *  @return EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition activateCipherSuites();
 
   /** adds a ciphersuite to the list of ciphersuites for TLS negotiation.
    *  Caller must ensure that initNetwork() is executed before this call.

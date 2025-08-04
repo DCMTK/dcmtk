@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2023, OFFIS e.V.
+ *  Copyright (C) 2010-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -266,6 +266,15 @@ OFCondition DcmTLSSCU::setTLSProfile(DcmTLSSecurityProfile profile)
     m_tLayer->setTLSProfile(profile);
     return EC_Normal;
   } else return EC_IllegalCall;
+}
+
+OFCondition DcmTLSSCU::activateCipherSuites()
+{
+  if (m_tLayer)
+  {
+    return m_tLayer->activateCipherSuites();
+  }
+  return EC_IllegalCall;
 }
 
 void DcmTLSSCU::setReadSeedFile(const OFString& seedFile)
