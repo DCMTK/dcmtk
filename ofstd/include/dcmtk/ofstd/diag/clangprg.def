@@ -1,0 +1,7 @@
+/* MacOS 15.5 defines some Clang specific pragmas in header files
+ * without checking if the current compiler is actually Clang.
+ * This code allows us to suppress warnings when compiling with GCC
+ */
+#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif

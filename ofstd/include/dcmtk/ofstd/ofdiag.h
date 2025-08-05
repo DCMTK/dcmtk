@@ -274,6 +274,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_USE_AFTER_FREE "dcmtk/ofstd/diag/useafree.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_ARRAY_BOUNDS "dcmtk/ofstd/diag/arrybnds.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS "dcmtk/ofstd/diag/unarymin.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC "dcmtk/ofstd/diag/clangprg.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\

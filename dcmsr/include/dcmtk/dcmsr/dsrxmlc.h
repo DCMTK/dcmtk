@@ -27,6 +27,7 @@
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmsr/dsdefine.h"
 #include "dcmtk/ofstd/oftypes.h"    /* for definition of OFBool */
+#include "dcmtk/ofstd/ofdiag.h"
 
 #ifdef WITH_LIBXML
 
@@ -37,18 +38,12 @@
 #define LIBXML_ATTR_FORMAT(fmt,args)
 #endif
 
-#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
 // MacOS 15.5 defines some Clang specific pragmas in libxml header files.
 // Suppress warnings caused by these pragmas when compiling with GCC.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#endif
-
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC
 #include <libxml/parser.h>
-
-#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
+#include DCMTK_DIAGNOSTIC_POP
 
 #endif
 

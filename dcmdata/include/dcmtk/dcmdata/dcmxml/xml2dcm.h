@@ -29,6 +29,7 @@
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 
 #ifdef __ibmxl__
@@ -46,18 +47,12 @@ typedef xmlNode *xmlNodePtr;
 typedef struct _xmlDoc xmlDoc;
 typedef xmlDoc *xmlDocPtr;
 
-#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
 // MacOS 15.5 defines some Clang specific pragmas in libxml header files.
 // Suppress warnings caused by these pragmas when compiling with GCC.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#endif
-
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC
 #include <libxml/xmlstring.h>
-
-#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
+#include DCMTK_DIAGNOSTIC_POP
 
 class DcmElement;
 class DcmItem;

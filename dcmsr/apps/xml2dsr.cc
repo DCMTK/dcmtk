@@ -30,6 +30,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
@@ -56,19 +57,12 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define LIBXML_ATTR_FORMAT(fmt,args)
 #endif
 
-#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
 // MacOS 15.5 defines some Clang specific pragmas in libxml header files.
 // Suppress warnings caused by these pragmas when compiling with GCC.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#endif
-
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC
 #include <libxml/parser.h>
-
-#if defined(__APPLE__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
-
+#include DCMTK_DIAGNOSTIC_POP
 
 #define SHORTCOL 3
 #define LONGCOL 21
