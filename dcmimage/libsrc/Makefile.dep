@@ -223,13 +223,14 @@ diargimg.o: diargimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/restrict.def \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipxrept.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h \
  ../include/dcmtk/dcmimage/diqttype.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didocu.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h
 dicmyimg.o: dicmyimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -495,9 +496,21 @@ dicopx.o: dicopx.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diobjcou.h \
- ../../ofstd/include/dcmtk/ofstd/ofthread.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didocu.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
@@ -505,19 +518,8 @@ dicopx.o: dicopx.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
- ../../ofstd/include/dcmtk/ofstd/ofcond.h \
- ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../ofstd/include/dcmtk/ofstd/oflimits.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
- ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
- ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
- ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -719,6 +721,7 @@ dipalimg.o: dipalimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/restrict.def \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipxrept.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h \
  ../include/dcmtk/dcmimage/diqttype.h
@@ -1043,6 +1046,8 @@ diqthash.o: diqthash.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h
@@ -1143,6 +1148,8 @@ diquant.o: diquant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
@@ -1156,8 +1163,6 @@ diquant.o: diquant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 diregist.o: diregist.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -1249,12 +1254,13 @@ diregist.o: diregist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didocu.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h
 dirgbimg.o: dirgbimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
@@ -1406,10 +1412,11 @@ diybrimg.o: diybrimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/dicopx.h ../include/dcmtk/dcmimage/dilogger.h \
  ../include/dcmtk/dcmimage/dicdefin.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
- ../include/dcmtk/dcmimage/diybrpxt.h ../include/dcmtk/dcmimage/dicopxt.h \
+ ../include/dcmtk/dcmimage/diybrpxt.h \
  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
  ../../ofstd/include/dcmtk/ofstd/diag/stringop.def \
  ../../ofstd/include/dcmtk/ofstd/diag/restrict.def \
+ ../include/dcmtk/dcmimage/dicopxt.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipxrept.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diinpx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didocu.h \

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, OFFIS e.V.
+ *  Copyright (C) 2019-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,10 +51,12 @@ OFTEST(dcmseg_concat_binary)
     {
         ConcatenationCreator cc;
         result = cc.setCfgFramesPerInstance(NUM_FRAMES_PER_CONCAT);
+        OFCHECK_MSG(result.good(), "Could not configure Concatenation Frames per Instance");
         if (result.good())
         {
             seg->setCheckFGOnWrite(OFFalse);
             result = seg->writeConcatenation(cc);
+            OFCHECK_MSG(result.good(), "Could not write Concatenation");
             if (result.good())
             {
                 size_t n = 0;
@@ -95,7 +97,7 @@ OFTEST(dcmseg_concat_binary)
         {
             if (cl.getInfo().size() == 1)
             {
-                OFVector<DcmIODTypes::Frame*> frames;
+                OFVector<DcmIODTypes::Frame<Uint8>*> frames;
                 DcmFileFormat dcmff;
                 result = DcmSegmentation::loadConcatenation(cl, cl.getInfo().begin()->first, seg);
                 if (result.good())

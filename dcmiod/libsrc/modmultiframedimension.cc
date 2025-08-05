@@ -201,8 +201,8 @@ OFCondition IODMultiframeDimensionModule::checkDimensions(DcmItem* fgItem)
     DcmSequenceOfItems* perFrame = NULL;
     if (fgItem->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, perFrame).bad())
     {
-        DCMIOD_WARN(
-            "Will not check dimension consistency with functional groups (no per-frame functional groups found)");
+        DCMIOD_DEBUG(
+            "Omitting dimension consistency check with functional groups (Per-frame FGs not yet present)");
     }
 
     OFCondition result;

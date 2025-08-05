@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2052, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -39,6 +39,7 @@ makeOFConditionConst(SG_EC_UnknownSegmentationType, OFM_dcmseg, 3, OF_error, "Un
 makeOFConditionConst(SG_EC_InvalidValue, OFM_dcmseg, 4, OF_error, "Invalid value for Segmentation SOP Class");
 makeOFConditionConst(SG_EC_NotEnoughData, OFM_dcmseg, 5, OF_error, "Not enough data");
 makeOFConditionConst(SG_EC_MaxFramesReached, OFM_dcmseg, 6, OF_error, "Maximum Number of Frames reached");
+makeOFConditionConst(SG_EC_InvalidBitDepth, OFM_dcmseg, 7, OF_error, "Invalid bit depth for given Segmentation Type");
 
 DcmSegTypes::E_SegmentationType DcmSegTypes::OFString2Segtype(const OFString& value)
 {
@@ -46,6 +47,8 @@ DcmSegTypes::E_SegmentationType DcmSegTypes::OFString2Segtype(const OFString& va
         return DcmSegTypes::ST_BINARY;
     if (value == "FRACTIONAL")
         return DcmSegTypes::ST_FRACTIONAL;
+    if (value == "LABELMAP")
+        return DcmSegTypes::ST_LABELMAP;
     else
         return DcmSegTypes::ST_UNKNOWN;
 }
@@ -58,6 +61,8 @@ OFString DcmSegTypes::segtype2OFString(const DcmSegTypes::E_SegmentationType& va
             return "BINARY";
         case DcmSegTypes::ST_FRACTIONAL:
             return "FRACTIONAL";
+        case DcmSegTypes::ST_LABELMAP:
+            return "LABELMAP";
         case DcmSegTypes::ST_UNKNOWN:
             return "UNKNOWN";
         default:
@@ -103,6 +108,40 @@ DcmSegTypes::E_SegmentAlgoType DcmSegTypes::OFString2AlgoType(const OFString& al
         return DcmSegTypes::SAT_SEMIAUTOMATIC;
     else
         return DcmSegTypes::SAT_UNKNOWN;
+}
+
+
+OFString DcmSegTypes::labelmapColorModel2OFString(const DcmSegTypes::E_SegmentationLabelmapColorModel value, const OFString& fallbackValue)
+{
+    OFString result;
+    switch (value)
+    {
+        case DcmSegTypes::SLCM_MONOCHROME2:
+            return "MONOCHROME2";
+        case DcmSegTypes::SLCM_PALETTE:
+            return "PALETTE COLOR";
+        case DcmSegTypes::SLCM_UNKNOWN:
+            result = "UNKNOWN";
+        default:
+            result = "Invalid labelmap color model (internal error)";
+    }
+    if (!fallbackValue.empty())
+    {
+        DCMSEG_WARN("Invalid value for label map color model: " << result << ". Using fallback value: " << fallbackValue);
+        result = fallbackValue;
+    }
+    return result;
+}
+
+
+DcmSegTypes::E_SegmentationLabelmapColorModel DcmSegTypes::OFString2LabelmapColorModel(const OFString& value)
+{
+    if (value == "MONOCHROME2")
+        return DcmSegTypes::SLCM_MONOCHROME2;
+    if (value == "PALETTE COLOR")
+        return DcmSegTypes::SLCM_PALETTE;
+    else
+        return DcmSegTypes::SLCM_UNKNOWN;
 }
 
 SegmentDescriptionMacro::SegmentDescriptionMacro()
@@ -329,7 +368,7 @@ OFCondition SegmentedPropertyTypeCodeItem::write(DcmItem& item)
         result = checkModifiers();
         if (result.good())
         {
-            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >(result,
+            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*>>(result,
                                                                        DCM_SegmentedPropertyTypeModifierCodeSequence,
                                                                        m_SegmentedPropertyTypeModifierCode,
                                                                        item,

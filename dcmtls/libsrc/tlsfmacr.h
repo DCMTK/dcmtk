@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2024, OFFIS e.V.
+ *  Copyright (C) 2018-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,7 +32,7 @@ BEGIN_EXTERN_C
 #include <openssl/tls1.h>
 END_EXTERN_C
 
-/* check if we fulfil all requirements for implementing the 
+/* check if we fulfil all requirements for implementing the
  * Modified BCP 195 RFC 8996 TLS Profile. With DICOM CP 2311
  * making support for Camellia in GCM mode optional, this is now rather simple.
  */

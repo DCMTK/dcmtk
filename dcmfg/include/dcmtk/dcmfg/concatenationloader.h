@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, Open Connections GmbH
+ *  Copyright (C) 2019-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -48,6 +48,7 @@ class DcmItem;
  *  and a vector containing all frames of the merged instance.</li>
  * </ul>
  */
+
 class DCMTK_DCMFG_EXPORT ConcatenationLoader
 {
 
@@ -239,7 +240,7 @@ public:
      *  @return EC_Normal if loading Concatenation worked, error otherwise.
      */
     virtual OFCondition
-    load(const OFString& concatenationUID, DcmDataset* dataset, OFVector<DcmIODTypes::Frame*>& frames);
+    load(const OFString& concatenationUID, DcmDataset* dataset, OFVector<DcmIODTypes::FrameBase*>& frames);
 
 protected:
     /** Handles single file of a Concatenation and extracts structure for later
@@ -338,6 +339,13 @@ protected:
      */
     virtual OFCondition insertDestinationAttributes();
 
+    /** Compute bytes per frame based on Rows, Columns and Bits Allocated.
+     *  @param  rows The number of Rows
+     *  @param  cols The number of Columns
+     *  @param  bitsAlloc The Bits Allocated value (only 1, 8 or 16 supported)
+     *  @param  bytes_per_frame The resulting number of bytes per frame
+     *  @return EC_Normal if successful, error otherwise.
+     */
     virtual OFCondition
     computeBytesPerFrame(const Uint16 rows, const Uint16 cols, const Uint16 bitsAlloc, size_t& bytes_per_frame);
 
@@ -364,7 +372,7 @@ private:
     /// produced by the load() method. Once a merged instance is provided to
     /// the caller, as a result of load(), the caller is responsible for
     /// deleting the related memory.
-    OFVector<DcmIODTypes::Frame*> m_Frames;
+    OFVector<DcmIODTypes::FrameBase*> m_Frames;
 };
 
 #endif // CONCATENATIONLOADER_H

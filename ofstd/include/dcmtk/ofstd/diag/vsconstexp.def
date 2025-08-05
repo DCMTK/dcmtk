@@ -1,0 +1,7 @@
+// Visual Studio warns if a certain expression is constant
+// i.e. known at compile time and used in a conditional statement.
+// In C++17 constexpr should be used then but we don't want a warning
+// about it.
+#ifdef _MSC_VER
+#pragma warning(disable: 4127)
+#endif

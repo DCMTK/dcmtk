@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -21,10 +21,12 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmseg/segdoc.h"
 #include "dcmtk/dcmseg/segment.h"
 #include "dcmtk/dcmseg/segtypes.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 OFCondition DcmSegment::create(DcmSegment*& segment,
                                const OFString& segmentLabel,
@@ -86,6 +88,7 @@ OFCondition DcmSegment::read(DcmItem& item, const OFBool clearOldData)
         item, m_RecommendedDisplayCIELabValue, m_Rules.getByTag(DCM_RecommendedDisplayCIELabValue));
     DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingID, m_Rules.getByTag(DCM_TrackingID));
     DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingUID, m_Rules.getByTag(DCM_TrackingUID));
+    DcmIODUtil::getAndCheckElementFromDataset(item, m_SegmentNumber, m_Rules.getByTag(DCM_SegmentNumber));
 
     return EC_Normal;
 }
@@ -112,12 +115,15 @@ OFCondition DcmSegment::write(DcmItem& item)
         result, item, m_RecommendedDisplayCIELabValue, m_Rules.getByTag(DCM_RecommendedDisplayCIELabValue));
     DcmIODUtil::copyElementToDataset(result, item, m_TrackingID, m_Rules.getByTag(DCM_TrackingID));
     DcmIODUtil::copyElementToDataset(result, item, m_TrackingUID, m_Rules.getByTag(DCM_TrackingUID));
+    m_SegmentNumber.putUint16(getSegmentNumber());
+    DcmIODUtil::copyElementToDataset(result, item, m_SegmentNumber, m_Rules.getByTag(DCM_SegmentNumber));
 
     return result;
 }
 
 void DcmSegment::clearData()
 {
+    m_SegmentNumber.clear();
     m_SegmentDescription.clearData();
     m_SegmentAlgorithmName.clear();
     m_SegmentationAlgorithmIdentification.clearData();
@@ -133,8 +139,10 @@ DcmSegment::~DcmSegment()
 }
 
 // protected default constructor
+
 DcmSegment::DcmSegment()
     : m_SegmentationDoc(NULL)
+    , m_SegmentNumber(DCM_SegmentNumber)
     , m_SegmentDescription()
     , m_SegmentAlgorithmName(DCM_SegmentAlgorithmName)
     , m_SegmentationAlgorithmIdentification()
@@ -149,6 +157,8 @@ DcmSegment::DcmSegment()
 
 void DcmSegment::initIODRules()
 {
+    m_Rules.addRule(new IODRule(DCM_SegmentNumber, "1", "1", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
+                    OFTrue);
     m_Rules.addRule(new IODRule(DCM_SegmentAlgorithmName, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
                     OFTrue);
     m_Rules.addRule(
@@ -252,6 +262,20 @@ OFCondition DcmSegment::getTrackingID(OFString& value, const signed long pos)
 OFCondition DcmSegment::getTrackingUID(OFString& value, const signed long pos)
 {
     return DcmIODUtil::getStringValueFromElement(m_TrackingUID, value, pos);
+}
+
+Uint16 DcmSegment::getSegmentNumberRead()
+{
+    OFVector<Uint16> values;
+    DcmIODUtil::getUint16ValuesFromElement(m_SegmentNumber, values);
+    if (values.size() >0 )
+    {
+        return values[0];
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 // -------------- setters --------------------

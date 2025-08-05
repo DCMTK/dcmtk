@@ -84,6 +84,7 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \

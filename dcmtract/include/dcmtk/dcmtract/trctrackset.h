@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2022, Open Connections GmbH
+ *  Copyright (C) 2016-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -260,6 +260,7 @@ public:
    *          (must be either 0, 1 or numPoints)
    *  @param  result Returns the resulting Track if creation was successful,
    *          error otherwise
+   *  @return EC_Normal if successful, error code otherwise
    */
   virtual OFCondition addTrack(const Float32* pointData,
                                const size_t numPoints,

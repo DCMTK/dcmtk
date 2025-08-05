@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,8 +24,11 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 
+#include "dcmtk/dcmimgle/dibaslut.h"
+#include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -90,6 +93,41 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     OriginalBitsAllocated(16),
     OriginalData(NULL)
 {
+    unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
+    Init(Data, count, descriptor, explanation, descripMode, first, status);
+}
+
+
+DiLookupTable::DiLookupTable(const DcmOtherByteOtherWord &data,
+                             const DcmUnsignedShort &descriptor,
+                             const DcmLongString *explanation,
+                             const EL_BitsPerTableEntry descripMode,
+                             const signed long first,
+                             EI_Status *status)
+  : DiBaseLUT(),
+    OriginalBitsAllocated(16),
+    OriginalData(NULL)
+{
+    // Check whether we have OW (16 bit data) since OB (8 bit) is not permitted for LUT data
+    if (data.getVR() != EVR_OW)
+    {
+        DCMIMGLE_ERROR("invalid VR for 'LookupTableData' " << data.getTag());
+        *status = EIS_InvalidImage;
+    }
+    unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
+    Init(Data, count, descriptor, explanation, descripMode, first, status);
+}
+
+
+void DiLookupTable::Init(const Uint16* data,
+                         const unsigned long& count,
+                         const DcmUnsignedShort &descriptor,
+                         const DcmLongString *explanation,
+                         const EL_BitsPerTableEntry descripMode,
+                         const signed long first,
+                         EI_Status *status)
+{
+    Data = data;
     Uint16 us = 0;
     const DcmElement *descElem = OFreinterpret_cast(const DcmElement *, &descriptor);
     if (DiDocument::getElemValue(descElem, us, 0, OFTrue /*allowSigned*/) >= 3)         // number of LUT entries
@@ -103,7 +141,6 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
             FirstEntry = OFstatic_cast(Uint16, first);
         }
         DiDocument::getElemValue(descElem, us, 2, OFTrue /*allowSigned*/);              // bits per entry (only informational)
-        unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));             // store pointer to original data
         if (explanation != NULL)
             DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation);   // explanation (free form text)
@@ -236,8 +273,11 @@ void DiLookupTable::checkTable(unsigned long count,
             for (i = Count; i != 0; --i)
             {
                 value = *(p++);
-                if (((value >> 8) != 0) && (value & 0xff) != (value >> 8))    // lo-byte not equal to hi-byte and ...
-                    cmp = 1;
+                if ((value >> 8) != 0) // if hi-byte is not zero
+                {
+                    if ((value & 0xff) != (value >> 8))    // lo-byte not equal to hi-byte and ...
+                        cmp = 1;
+                }
                 if (value < MinValue)                                         // get global minimum
                     MinValue = value;
                 if (value > MaxValue)                                         // get global maximum

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -102,6 +102,8 @@ extern DCMTK_DCMFG_EXPORT const OFConditionConst FG_EC_InconsistentConcatenation
 extern DCMTK_DCMFG_EXPORT const OFConditionConst FG_EC_ConcatenationComplete;
 /// Unsupported pixel data layout
 extern DCMTK_DCMFG_EXPORT const OFConditionConst FG_EC_UnsupportedPixelDataLayout;
+/// Parallel processing failed
+extern DCMTK_DCMFG_EXPORT const OFConditionConst FG_EC_ParallelProcessingFailed;
 
 /*---------------------*
  *  class declaration  *
@@ -114,6 +116,13 @@ class DCMTK_DCMFG_EXPORT DcmFGTypes
 {
 
 public:
+
+    // --- Constants ---
+
+    /// Maximum number of frames, limited by
+    /// Number of Frames attribute which maxes out at 2^31-1.
+    static const Uint32 DCMFG_MAX_FRAMES = 2147483647;
+
     // --- Type definitions ---
 
     /** Functional group types

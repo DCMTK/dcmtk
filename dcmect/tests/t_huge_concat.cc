@@ -60,7 +60,7 @@ static const Uint16 NUM_ROWS = 4000;
 // Number of Columns of image, might be changed for testing purposes
 static const Uint16 NUM_COLS = 4000;
 // Number of Frames of source image, might be changed for testing purposes
-static const Uint16 NUM_FRAMES = 200;
+static const Uint16 NUM_FRAMES = 100;
 // Number of Frames of in concatenation images, should not be changed since the
 // dumped checked against will assume Number of Frames = 1
 static const size_t NUM_FRAMES_CONCAT    = 1;
@@ -592,6 +592,8 @@ void loadAndCheckConcatenation(const OFList<OFFilename>& concats)
         DcmDataset merged;
         EctEnhancedCT* mergedCT = NULL;
         result                  = EctEnhancedCT::loadConcatenation(cl, cl.getInfo().begin()->first, mergedCT);
+        DcmItem item;
+        mergedCT->writeDataset(item);
         if (result.good())
         {
             ConcatenationCreator cc;

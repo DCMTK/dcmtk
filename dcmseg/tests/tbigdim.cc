@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022-2024, OFFIS e.V.
+ *  Copyright (C) 2022-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/dcmseg/segtypes.h" /* for DCMSEG_DEBUG */
 
+// DCMTK's original OFMap implementation is too slow for this test...
 #ifdef HAVE_STL_MAP
 #include "dcmtk/dcmseg/segdoc.h"
 #include "dcmtk/dcmseg/segment.h"
@@ -31,7 +32,6 @@
 #include "dcmtk/dcmfg/fgpixmsr.h"
 #include "dcmtk/dcmfg/fgplanor.h"
 #include "dcmtk/dcmfg/fgplanpo.h"
-#include "dcmtk/dcmfg/fgseg.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcdict.h"
@@ -41,11 +41,13 @@
 
 static const Uint8 NUM_ROWS             = 5;
 static const Uint8 NUM_COLS             = 5;
+static const Uint8 NUM_THREADS          = 16; // Use 16 threads for writing and reading
 
 // Restrict to 1.000.000 Frames since the theoretical 2^31-1 number of frames
 // results in too much memory usage and waiting time
+
 static const Uint32 NUM_FRAMES           = 1000000;
-static const Uint16 NUM_SEGS             = DCM_SEG_MAX_SEGMENTS;
+static const size_t NUM_SEGS             = DCM_SEG_MAX_SEGMENTS;
 
 static const Uint8 NUM_PIXELS_PER_FRAME = NUM_COLS * NUM_ROWS;
 
@@ -79,6 +81,7 @@ OFTEST_FLAGS(dcmseg_bigdim, EF_Slow)
     DcmDataset* ds = dcmff.getDataset();
     seg->setCheckDimensionsOnWrite(OFFalse);
     seg->setCheckFGOnWrite(OFFalse);
+    seg->getFunctionalGroups().setUseThreads(NUM_THREADS);
     OFCondition result = seg->writeDataset(*ds);
     OFCHECK(result.good());
 
@@ -87,19 +90,23 @@ OFTEST_FLAGS(dcmseg_bigdim, EF_Slow)
     OFString temp_fn = tf.getFilename();
     OFCHECK(!temp_fn.empty());
     OFCHECK(dcmff.saveFile(temp_fn.c_str(), EXS_LittleEndianExplicit).good());
+    tf.stealFile();
 
     // Read object from dataset into DcmSegmentation object, write again to dataset and
     // check whether object after writing is identical to object after writing.
     // the same expected result
     delete seg;
     seg = NULL;
-    DcmSegmentation::loadFile(temp_fn, seg).good();
+    DcmSegmentation::LoadingFlags flags;
+    flags.m_numThreads = NUM_THREADS; // Use 16 threads for reading
+    DcmSegmentation::loadFile(temp_fn, seg, flags).good();
     OFCHECK(seg != OFnullptr);
     if (seg)
     {
         DcmDataset dset;
         seg->setCheckDimensionsOnWrite(OFFalse);
         seg->setCheckFGOnWrite(OFFalse);
+        seg->getFunctionalGroups().setUseThreads(NUM_THREADS);
         OFCHECK(seg->writeDataset(dset).good());
         checkCreatedObject(dset);
         delete seg;
@@ -192,9 +199,8 @@ static void addFrames(DcmSegmentation* seg)
     if (!seg)
         return;
 
-    FGSegmentation* fg_seg = new FGSegmentation();
     FGFrameContent* fg     = new FGFrameContent();
-    OFCHECK(fg && fg_seg);
+    OFCHECK(fg);
     fg->setStackID("1");
     if (fg)
     {
@@ -218,16 +224,14 @@ static void addFrames(DcmSegmentation* seg)
             {
                 data[i] = i;
             }
-            OFCHECK(fg_seg->setReferencedSegmentNumber(frameNo % (DCM_SEG_MAX_SEGMENTS + 1)).good()); // limit/loop to 16 bit
+            Uint16 segmentNumber = OFstatic_cast(Uint16, ((frameNo-1) % (NUM_SEGS)) +1); // segment numbers start at 1
             OFVector<FGBase*> perFrameFGs;
             perFrameFGs.push_back(fg);
-            perFrameFGs.push_back(fg_seg);
-            OFCHECK(seg->addFrame(data, frameNo % (DCM_SEG_MAX_SEGMENTS + 1), perFrameFGs).good());
+            OFCHECK(seg->addFrame(data, segmentNumber, perFrameFGs).good());
             delete[] data;
         }
     }
     delete fg;
-    delete fg_seg;
 }
 
 static void addDimensions(DcmSegmentation* seg)
@@ -278,10 +282,10 @@ static void checkCreatedObject(DcmDataset& dset)
     OFCHECK(dset.findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, seq).good());
     if (seq != NULL)
     {
-        size_t card = seq->card();
-        OFCHECK(card == NUM_FRAMES);
+        size_t numFrames = seq->card();
+        OFCHECK_MSG(numFrames == NUM_FRAMES, ((OFOStringStream("Expected ") << NUM_FRAMES << " frames, but got " << numFrames)).str().c_str());
         DcmItem* item = seq->getItem(0);
-        for (size_t n = 0; (n < card) && (item != NULL); n++)
+        for (size_t n = 0; (n < numFrames) && (item != NULL); n++)
         {
             DcmItem* fgItem = NULL;
             OFCHECK(item->findAndGetSequenceItem(DCM_SegmentIdentificationSequence, fgItem, 0).good());
@@ -289,7 +293,7 @@ static void checkCreatedObject(DcmDataset& dset)
             {
                 Uint16 segNum = 0;
                 OFCHECK(fgItem->findAndGetUint16(DCM_ReferencedSegmentNumber, segNum).good());
-                OFCHECK(segNum == ((n + 1) % (DCM_SEG_MAX_SEGMENTS + 1)));
+                OFCHECK(segNum == ((n % NUM_SEGS) + 1));
 
             }
             item = OFstatic_cast(DcmItem*, seq->nextInContainer(item));

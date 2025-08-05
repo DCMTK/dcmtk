@@ -17,15 +17,18 @@ ofstddir = $(top_srcdir)/../ofstd
 oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmioddir = $(top_srcdir)/../dcmiod
+dcmimgledir = $(top_srcdir)/../dcmimgle
 
 LOCALINCLUDES = -I$(dcmioddir)/include -I$(dcmdatadir)/include -I$(oflogdir)/include \
 	-I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmdatadir)/libsrc \
-	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc -L$(oficonvdir)/libsrc
-LOCALLIBS = -ldcmiod -ldcmdata -loflog -lofstd -loficonv \
+	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc -L$(oficonvdir)/libsrc \
+	-L$(dcmimgledir)/libsrc
+LOCALLIBS = -ldcmiod -ldcmimgle -ldcmdata -loflog -lofstd -loficonv \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-test_objs = tests.o tchecks.o tcielabutil.o tcodes.o timagepixel.o
+test_objs = tests.o tchecks.o tcielabutil.o tcodes.o timagepixel.o ticcprofile.o \
+	tpalette.o
 objs = tests.o $(test_objs)
 progs = tests
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2019, OFFIS e.V.
+ *  Copyright (C) 2018-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -20,9 +20,12 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first*/
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcencdoc.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/ofconapp.h"
+
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */

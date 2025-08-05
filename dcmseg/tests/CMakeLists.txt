@@ -1,10 +1,11 @@
 # declare executables
 DCMTK_ADD_TEST_EXECUTABLE(dcmseg_tests
   tbigdim.cc
-  tests.cc
-  tutils.cc
-  troundtrip.cc
   tconcat_binary.cc
+  tests.cc
+  tlabelmap.cc
+  troundtrip.cc
+  tutils.cc
 )
 
 # make sure executables are linked to the corresponding libraries

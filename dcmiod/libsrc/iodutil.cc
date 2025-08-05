@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,7 +23,7 @@
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmdata/dctypes.h" // logger
 #include "dcmtk/dcmiod/iodrules.h"
-
+#include "dcmtk/dcmiod/iodtypes.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dcdict.h"
@@ -33,7 +33,6 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
-#include "dcmtk/dcmiod/iodtypes.h"
 #include "dcmtk/ofstd/ofstring.h"
 
 // --- static helpers ---
@@ -197,7 +196,7 @@ DcmIODUtil::addElementToDataset(OFCondition& result, DcmItem& dataset, DcmElemen
                                                result,
                                                rule->getModule().c_str(),
                                                logLevel);
-                    resetConditionIfCheckDisabled(result, checkValue, *delem);
+                    resetValueCheckResult(result, checkValue, *delem);
                 }
                 if (result.good())
                 {
@@ -691,7 +690,7 @@ Uint32 DcmIODUtil::limitMaxFrames(const size_t numFramesPresent, const OFString&
 OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
                                             const size_t numFrames,
                                             const size_t bitsPerFrame,
-                                            OFVector<DcmIODTypes::Frame*>& results)
+                                            OFVector<DcmIODTypes::FrameBase*>& results)
 {
     if (pixData == NULL)
     {
@@ -736,15 +735,15 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
             return EC_MemoryExhausted;
         }
         memset(frameData, 0, bytesPerFrame); // Initialize to 0
-        DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
+        DcmIODTypes::Frame<Uint8>* frame = new DcmIODTypes::Frame<Uint8>();
         if (frame == NULL)
         {
             DCMIOD_ERROR("Memory exhausted while extracting frames");
             delete[] frameData;
             return EC_MemoryExhausted;
         }
-        frame->pixData = frameData;
-        frame->length = bytesPerFrame;
+        frame->m_pixData = frameData;
+        frame->m_numPixels = bytesPerFrame;
         results.push_back(frame);
     }
 
@@ -762,7 +761,7 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
         Uint8 bit = (pixData[inputByteIndex] >> (8 - bitsLeftInInputByte)) & 0x01;
 
         // Set bit in current frame to to position calculated from bitsLeftInTargetByte
-        results[targetFrameIndex]->pixData[targetByteIndex] |= (bit << (8 - bitsLeftInTargetByte));
+        OFstatic_cast(Uint8*, results[targetFrameIndex]->getPixelData())[targetByteIndex] |= (bit << (8 - bitsLeftInTargetByte));
 
         // Move to next bit
         bitsLeftInInputByte--;
@@ -796,6 +795,36 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
 
 
 void DcmIODUtil::resetConditionIfCheckDisabled(OFCondition& result, const OFBool checkValue, DcmElement& elem)
+{
+    if (!checkValue)
+    {
+        if ( (result == EC_ValueRepresentationViolated) ||
+             (result == EC_MaximumLengthViolated) ||
+             (result == EC_InvalidCharacter) ||
+             (result == EC_ValueMultiplicityViolated) )
+        {
+            // print element to string
+            OFOStringStream oss;
+            oss << elem.getTag() << " " << DcmVR(elem.getVR()).getVRName() << " ";
+            oss << DcmTag(elem.getTag()).getTagName() << " ";
+            if (elem.getLength() > 1024)
+            {
+                oss << "(value too long for printing)";
+            }
+            {
+                OFString val;
+                elem.getOFString(val, 0, OFTrue);
+                oss << "[" << val << "]";
+            }
+
+            DCMIOD_DEBUG("Ignoring error (" << result.text() <<") when checking element: " << oss.str().c_str());
+            result = EC_Normal;
+        }
+    }
+}
+
+
+void DcmIODUtil::resetValueCheckResult(OFCondition& result, const OFBool checkValue, DcmElement& elem)
 {
     if (!checkValue)
     {

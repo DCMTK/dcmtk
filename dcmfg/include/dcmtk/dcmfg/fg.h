@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -56,6 +56,11 @@ public:
     /** Cleans up set of functional groups and frees the related memory
      */
     virtual void clear();
+
+    /** Get the number of functional groups in the set
+     *  @return Number of functional groups in the set
+     */
+    virtual size_t size() const;
 
     /** Find a functional group by its type
      *  @param  fgType The type of the functional group

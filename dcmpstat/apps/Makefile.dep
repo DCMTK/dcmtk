@@ -916,7 +916,8 @@ dcmpschk.o: dcmpschk.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsall.h ../include/dcmtk/dcmpstat/dvpsgal.h \
  ../include/dcmtk/dcmpstat/dvpscul.h ../include/dcmtk/dcmpstat/dvpsvll.h \
  ../include/dcmtk/dcmpstat/dvpsvwl.h ../include/dcmtk/dcmpstat/dvpsdal.h \
- ../include/dcmtk/dcmpstat/dvpssvl.h ../include/dcmtk/dcmpstat/dvpspl.h
+ ../include/dcmtk/dcmpstat/dvpssvl.h ../include/dcmtk/dcmpstat/dvpspl.h \
+ ../include/dcmtk/dcmpstat/dvpsri.h
 dcmpsmk.o: dcmpsmk.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -1056,7 +1057,7 @@ dcmpsmk.o: dcmpsmk.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpscul.h ../include/dcmtk/dcmpstat/dvpsvll.h \
  ../include/dcmtk/dcmpstat/dvpsvwl.h ../include/dcmtk/dcmpstat/dvpsdal.h \
  ../include/dcmtk/dcmpstat/dvpssvl.h ../include/dcmtk/dcmpstat/dvpspl.h \
- ../include/dcmtk/dcmpstat/dvpshlp.h
+ ../include/dcmtk/dcmpstat/dvpshlp.h ../include/dcmtk/dcmpstat/dvpsri.h
 dcmpsprt.o: dcmpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1385,7 +1386,7 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsgal.h ../include/dcmtk/dcmpstat/dvpscul.h \
  ../include/dcmtk/dcmpstat/dvpsvll.h ../include/dcmtk/dcmpstat/dvpsvwl.h \
  ../include/dcmtk/dcmpstat/dvpsdal.h ../include/dcmtk/dcmpstat/dvpssvl.h \
- ../include/dcmtk/dcmpstat/dvpspl.h \
+ ../include/dcmtk/dcmpstat/dvpspl.h ../include/dcmtk/dcmpstat/dvpsri.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
  ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \

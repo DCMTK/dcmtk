@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, Open Connections GmbH
+ *  Copyright (C) 2016-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -149,12 +149,10 @@ struct DPMParametricMapIOD::ReadVisitor
       {
         for (Uint32 n = 0; n < numFrames; n++)
         {
-          DcmIODTypes::Frame* f = new DcmIODTypes::Frame;
+          DcmIODTypes::Frame<T>* f = new DcmIODTypes::Frame<T>(numBytesFrame);
           if (f)
           {
-            f->length = numBytesFrame;
-            f->pixData = new Uint8[f->length];
-            memcpy(f->pixData, pixData + n*numBytesFrame/2, numBytesFrame);
+            memcpy(f->m_pixData, pixData + n*numBytesFrame/2, numBytesFrame);
             map.m_Frames.push_back(f);
           }
           else
@@ -191,12 +189,10 @@ struct DPMParametricMapIOD::ReadVisitor
       {
         for (Uint32 n=0; n < numFrames; n++)
         {
-          DcmIODTypes::Frame* f = new DcmIODTypes::Frame;
-          if (f)
+          DcmIODTypes::Frame<Float32>* f = new DcmIODTypes::Frame<Float32>(numBytesFrame);
+          if (f && f->m_pixData)
           {
-            f->length = numBytesFrame;
-            f->pixData = new Uint8[f->length];
-            memcpy(f->pixData, pixData + n*numBytesFrame/4, numBytesFrame);
+            memcpy(f->m_pixData, pixData + n*numBytesFrame/4, numBytesFrame);
             map.m_Frames.push_back(f);
           }
           else
@@ -233,12 +229,10 @@ struct DPMParametricMapIOD::ReadVisitor
       {
         for (Uint16 n=0; n < numFrames; n++)
         {
-          DcmIODTypes::Frame* f = new DcmIODTypes::Frame;
-          if (f)
+          DcmIODTypes::Frame<Float64>* f = new DcmIODTypes::Frame<Float64>(numBytesFrame);
+          if (f && f->m_pixData)
           {
-            f->length = numBytesFrame;
-            f->pixData = new Uint8[f->length];
-            memcpy(f->pixData, pixData + n*numBytesFrame/8, numBytesFrame);
+            memcpy(f->m_pixData, pixData + n*numBytesFrame/8, numBytesFrame);
             map.m_Frames.push_back(f);
           }
           else
@@ -309,7 +303,7 @@ struct DPMParametricMapIOD::WriteVisitor
     map.getRows(rows);
     map.getColumns(cols);
     const size_t numFrames = map.m_Frames.size();
-    const size_t numBytesFrame = map.m_Frames[0]->length;
+    const size_t numBytesFrame = map.m_Frames[0]->getLengthInBytes();
     const size_t numPixelsFrame = rows * cols;
     // Creates the correct pixel data element, based on the image pixel module used.
     // I.e. For integer data, the "Pixel Data" element is used, i.e. the DcmElement type
@@ -322,7 +316,7 @@ struct DPMParametricMapIOD::WriteVisitor
     {
       for (size_t f = 0; f < numFrames; ++f)
       {
-        memcpy(ptr, map.m_Frames[f]->pixData, numBytesFrame);
+        memcpy(ptr, map.m_Frames[f]->getPixelData(), numBytesFrame);
         ptr += numPixelsFrame;
       }
       OFCondition result = element.put(item);
@@ -591,12 +585,10 @@ OFCondition DPMParametricMapIOD::Frames<PixelType>::addFrame(PixelType* data,
   {
     if (!perFrameInformation.empty())
     {
-      OFunique_ptr<DcmIODTypes::Frame> f(new DcmIODTypes::Frame);
+      OFunique_ptr<DcmIODTypes::Frame<PixelType> > f(new DcmIODTypes::Frame<PixelType>(numPixels * sizeof(PixelType)));
       if (f)
       {
-        f->length = numPixels * sizeof(PixelType);
-        f->pixData = new Uint8[f->length];
-        memcpy(f->pixData, data, f->length);
+        memcpy(f->m_pixData, data, f->getLengthInBytes());
         m_Map.m_Frames.push_back(f.release());
         OFVector<FGBase*>::const_iterator fg = perFrameInformation.begin();
         while ( result.good() && (fg != perFrameInformation.end()) )
@@ -624,7 +616,11 @@ PixelType* DPMParametricMapIOD::Frames<PixelType>::getFrame(const size_t frameNu
 {
   if (frameNumber < m_Map.m_Frames.size())
   {
-    return (PixelType*)(m_Map.m_Frames[frameNumber]->pixData);
+    DcmIODTypes::Frame<PixelType> * f = OFstatic_cast(DcmIODTypes::Frame<PixelType>*, m_Map.m_Frames[frameNumber]);
+    if (f)
+    {
+      return f->m_pixData;
+    }
   }
   return NULL;
 }
@@ -910,6 +906,34 @@ OFBool DPMParametricMapIOD::check()
     DCMPMAP_ERROR("Invalid value for Content Qualification" << val);
   }
   return OFFalse;
+}
+
+
+OFBool DPMParametricMapIOD::getCheckFGOnWrite()
+{
+  return m_FGInterface.getCheckOnWrite();
+}
+
+
+void DPMParametricMapIOD::setCheckFGOnWrite(const OFBool doCheck)
+{
+  m_FGInterface.setCheckOnWrite(doCheck);
+}
+
+
+void DPMParametricMapIOD::setValueCheckOnWrite(const OFBool doCheck)
+{
+  // Forward setting into all modules
+  m_DPMParametricMapSeriesModule.setValueCheckOnWrite(doCheck);
+  m_IODEnhGeneralEquipmentModule.setValueCheckOnWrite(doCheck);
+  m_IODMultiframeDimensionModule.setValueCheckOnWrite(doCheck);
+  m_IODAcquisitionContextModule.setValueCheckOnWrite(doCheck);
+  m_IODCommonInstanceReferenceModule.setValueCheckOnWrite(doCheck);
+
+  m_IODMultiFrameFGModule.setValueCheckOnWrite(doCheck);
+  m_DPMParametricMapImageModule.setValueCheckOnWrite(doCheck);
+  m_DPMParametricMapSeriesModule.setValueCheckOnWrite(doCheck);
+  DcmIODImage::setValueCheckOnWrite(doCheck);
 }
 
 

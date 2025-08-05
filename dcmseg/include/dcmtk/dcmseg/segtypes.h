@@ -81,6 +81,8 @@ extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_InvalidValue;
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_NotEnoughData;
 /// error: too many frames
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_MaxFramesReached;
+/// error: invalid bit depth
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_InvalidBitDepth;
 
 ///@}
 
@@ -102,7 +104,10 @@ public:
         ST_BINARY,
         /// Fractional segmentation where fraction specifies how much of voxel
         /// is occupied by the segment
-        ST_FRACTIONAL
+        ST_FRACTIONAL,
+        /// Labelmap segmentation where each segment is assigned a unique
+        // integer value in the pixel data (EXPERIMENTAL: based on Supplement 243 public comment 2014-01-08)
+        ST_LABELMAP
     };
 
     /** Segment Algorithm Type
@@ -129,6 +134,18 @@ public:
         SFT_PROBABILITY,
         /// For fractional segmentations, a value defines how much of the pixel is covered by the segment
         SFT_OCCUPANCY
+    };
+
+    /** Labelmap Segmentation desired color model
+     */
+    enum E_SegmentationLabelmapColorModel
+    {
+        /// Unknown (e.g.\ not initialized)
+        SLCM_UNKNOWN,
+        /// Monochrome 1 Bit
+        SLCM_MONOCHROME2,
+        /// Palette Color
+        SLCM_PALETTE
     };
 
     // -- helper functions --
@@ -165,6 +182,20 @@ public:
      *  @return The fractional type as enum value
      */
     static DcmSegTypes::E_SegmentationFractionalType OFString2FractionalType(const OFString& value);
+
+    /** Returns string representation from labelmap color enum type
+     *  @param  value The labelmap color model as enum value
+     *  @param  fallbackValue The value to use if the enum value is unknown or invalid (not used if empty)
+     *  @return The labelmap color model as a string
+     */
+    static OFString labelmapColorModel2OFString(const DcmSegTypes::E_SegmentationLabelmapColorModel value, const OFString& fallbackValue="");
+
+    /** Return enum representation of photometric interpretation type string as found in
+     *  segmentation objects.
+     *  @param  value The photometric interpretation type as a string
+     *  @return The photometric interpretation type as enum value
+     */
+    static DcmSegTypes::E_SegmentationLabelmapColorModel OFString2LabelmapColorModel(const OFString& value);
 };
 
 /** Class representing the Segmented Property Type Code and Segmented

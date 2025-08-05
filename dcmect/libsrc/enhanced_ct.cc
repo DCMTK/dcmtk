@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, Open Connections GmbH
+ *  Copyright (C) 2019-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -110,7 +110,7 @@ struct EctEnhancedCT::WriteVisitor
             return FG_EC_PixelDataTooLarge;
         }
         const size_t numPixelsFrame = OFstatic_cast(size_t, rows) * OFstatic_cast(size_t, cols);
-        const size_t numBytesFrame  = m_CT.m_Frames[0]->length;
+        const size_t numBytesFrame  = m_CT.m_Frames[0]->getLengthInBytes();
         if (numBytesFrame != numPixelsFrame * 2)
         {
             DCMECT_ERROR("Invalid number of bytes per frame: Expected " << numPixelsFrame * 2 << " but got "
@@ -124,16 +124,16 @@ struct EctEnhancedCT::WriteVisitor
         {
             pixData->setVR(EVR_OW);
             Uint16* ptr          = NULL;
-            size_t numBytesTotal = numBytesFrame * numFrames / 2;
+            size_t numBytesTotal = numBytesFrame * numFrames;
             if (numBytesTotal <= 4294967294UL)
             {
-                result = pixData->createUint16Array(OFstatic_cast(Uint32, numBytesTotal), ptr);
+                result = pixData->createUint16Array(OFstatic_cast(Uint32, numBytesTotal / 2), ptr);
                 // copy all frames into CT's frame structure
                 if (ptr)
                 {
                     for (size_t f = 0; f < numFrames; ++f)
                     {
-                        memcpy(ptr, m_CT.m_Frames[f]->pixData, numBytesFrame);
+                        memcpy(ptr, m_CT.m_Frames[f]->getPixelData(), numBytesFrame);
                         ptr += numPixelsFrame;
                     }
                     return m_Item.insert(pixData);
@@ -160,7 +160,7 @@ struct EctEnhancedCT::WriteVisitorConcatenation
     // Inner class that implements the writing to Concatentions via ConcatenationCreator class
 
     // Constructor, sets parameters the visitor works on in operator()
-    WriteVisitorConcatenation(EctEnhancedCT& m, Uint8*& pixData, size_t& pixDataLength)
+    WriteVisitorConcatenation(EctEnhancedCT& m, Uint16*& pixData, size_t& pixDataLength)
         : m_CT(m)
         , m_pixData(pixData)
         , m_pixDataLength(pixDataLength)
@@ -186,20 +186,20 @@ struct EctEnhancedCT::WriteVisitorConcatenation
         m_CT.getRows(rows);
         m_CT.getColumns(cols);
         const size_t numFrames     = m_CT.m_Frames.size();
-        const size_t numBytesFrame = m_CT.m_Frames[0]->length;
+        const size_t numBytesFrame = m_CT.m_Frames[0]->getLengthInBytes();
         // Creates the correct pixel data element, based on the image pixel module used.
         m_pixDataLength = numBytesFrame * numFrames;
-        m_pixData       = new Uint8[m_pixDataLength];
+        m_pixData       = new Uint16[m_pixDataLength / 2];
         if (m_pixData)
         {
-            Uint8* ptr = m_pixData;
+            Uint16* ptr = m_pixData;
             // copy all frames into CT's frame structure
             if (ptr)
             {
                 for (size_t f = 0; f < numFrames; ++f)
                 {
-                    memcpy(ptr, m_CT.m_Frames[f]->pixData, numBytesFrame);
-                    ptr += numBytesFrame;
+                    memcpy(ptr, m_CT.m_Frames[f]->getPixelData(), numBytesFrame);
+                    ptr += numBytesFrame / 2;
                 }
                 return EC_Normal;
             }
@@ -211,7 +211,7 @@ struct EctEnhancedCT::WriteVisitorConcatenation
 
     // Members, i.e. parameters to operator()
     EctEnhancedCT& m_CT;
-    Uint8*& m_pixData;
+    Uint16*& m_pixData;
     size_t& m_pixDataLength;
 };
 
@@ -276,12 +276,10 @@ struct EctEnhancedCT::ReadVisitor
             {
                 for (Uint32 n = 0; n < numFrames; n++)
                 {
-                    DcmIODTypes::Frame* f = new DcmIODTypes::Frame;
+                    DcmIODTypes::Frame<Uint16>* f = new DcmIODTypes::Frame<Uint16>(numBytesFrame / 2);
                     if (f)
                     {
-                        f->length  = numBytesFrame;
-                        f->pixData = new Uint8[f->length];
-                        memcpy(f->pixData, pixData + n * numBytesFrame / 2, numBytesFrame);
+                        memcpy(f->m_pixData, pixData + n * numBytesFrame / 2, numBytesFrame);
                         m_CT.m_Frames.push_back(f);
                     }
                     else
@@ -328,12 +326,10 @@ OFCondition EctEnhancedCT::Frames<PixelType>::addFrame(PixelType* data,
     {
         if (!perFrameInformation.empty())
         {
-            OFunique_ptr<DcmIODTypes::Frame> f(new DcmIODTypes::Frame);
+            OFunique_ptr<DcmIODTypes::Frame<Uint16>> f(new DcmIODTypes::Frame<Uint16>(numPixels));
             if (f)
             {
-                f->length  = numPixels * sizeof(PixelType);
-                f->pixData = new Uint8[f->length];
-                memcpy(f->pixData, data, f->length);
+                memcpy(f->m_pixData, data, f->getLengthInBytes());
                 m_CT.m_Frames.push_back(f.release());
                 OFVector<FGBase*>::const_iterator fg = perFrameInformation.begin();
                 while (result.good() && (fg != perFrameInformation.end()))
@@ -361,14 +357,15 @@ PixelType* EctEnhancedCT::Frames<PixelType>::getFrame(const size_t frameNumber)
 {
     if (frameNumber < m_CT.m_Frames.size())
     {
-        return (PixelType*)(m_CT.m_Frames[frameNumber]->pixData);
+        DcmIODTypes::Frame<PixelType>* f = OFstatic_cast(DcmIODTypes::Frame<PixelType>*, m_CT.m_Frames[frameNumber]);
+        return f->getPixelDataTyped();
     }
     return NULL;
 }
 
 // Helper "class" that returns Frames offering API to the pixel's frame bulk
 // data by offering the dedicated data type, e.g. Float32 instead of the
-// internally stored generic Uint8 array.
+// internally stored generic Uint16 array.
 //
 struct EctEnhancedCT::GetFramesVisitor
 {
@@ -514,7 +511,7 @@ EctEnhancedCT::loadConcatenation(ConcatenationLoader& cl, const OFString& concat
 
     DcmDataset dset;
     ct = NULL;
-    OFVector<DcmIODTypes::Frame*> frames;
+    OFVector<DcmIODTypes::FrameBase*> frames;
     OFCondition result = cl.load(concatenationUID, &dset, frames);
     if (result.good())
     {
@@ -575,6 +572,17 @@ void EctEnhancedCT::setCheckFGOnWrite(const OFBool doCheck)
 OFBool EctEnhancedCT::getCheckFGOnWrite()
 {
     return m_FGInterface.getCheckOnWrite();
+}
+
+void EctEnhancedCT::setValueCheckOnWrite(const OFBool doCheck)
+{
+    m_SynchronizationModule.setValueCheckOnWrite(doCheck);
+    m_EnhancedGeneralEquipmentModule.setValueCheckOnWrite(doCheck);
+    m_FG.setValueCheckOnWrite(doCheck);
+    m_DimensionModule.setValueCheckOnWrite(doCheck);
+    m_AcquisitionContextModule.setValueCheckOnWrite(doCheck);
+    m_CommonInstanceReferenceModule.setValueCheckOnWrite(doCheck);
+    DcmIODImage::setValueCheckOnWrite(doCheck);
 }
 
 // ------------------ Creation -----------------------
@@ -1051,6 +1059,7 @@ OFCondition EctEnhancedCT::setVolumeBasedCalculationTechnique(const OFString& va
     return result;
 }
 
+
 // -------------------- Protected Helpers --------------------------
 
 OFCondition EctEnhancedCT::read(DcmItem& dataset)
@@ -1083,7 +1092,7 @@ OFCondition EctEnhancedCT::writeConcatenation(ConcatenationCreator& cc)
     if (!item)
         return EC_MemoryExhausted;
 
-    Uint8* pixData       = NULL;
+    Uint16* pixData       = NULL;
     size_t pixDataLength = 0;
 
     OFCondition result
@@ -1190,7 +1199,15 @@ OFCondition EctEnhancedCT::readGeneric(DcmItem& dataset)
     }
 
     IODImage::read(dataset);
-    m_SynchronizationModule.read(dataset);
+    if (m_SynchronizationModuleEnabled)
+    {
+        // Synchronization Module is type C ("Required if time synchronization was​ applied"),
+        // so we make it optional for reading to avoid warnings on the attributes, and then reset rules
+        // to the default state.
+        m_SynchronizationModule.makeOptional();
+        m_SynchronizationModule.read(dataset);
+        m_SynchronizationModule.resetRules();
+    }
     m_EnhancedGeneralEquipmentModule.read(dataset);
     m_FG.read(dataset);
     m_DimensionModule.read(dataset);

@@ -93,7 +93,7 @@ OFTEST(dcmfg_concatenation_loader)
     // Scanning done, now load
 
     DcmFileFormat dcmff;
-    OFVector<DcmIODTypes::Frame*> frames;
+    OFVector<DcmIODTypes::FrameBase*> frames;
     result = cl.load("1.3.6.1.4.1.5962.1.7.70.2.1.1166562673.14401", dcmff.getDataset(), frames);
     OFCHECK(result.good());
     if (result.good())

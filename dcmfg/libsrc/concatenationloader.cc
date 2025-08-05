@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, Open Connections GmbH
+ *  Copyright (C) 2019-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -223,7 +223,7 @@ const ConcatenationLoader::TScanFailures& ConcatenationLoader::getFailedFiles()
 }
 
 OFCondition
-ConcatenationLoader::load(const OFString& concatenationUID, DcmDataset* dataset, OFVector<DcmIODTypes::Frame*>& frames)
+ConcatenationLoader::load(const OFString& concatenationUID, DcmDataset* dataset, OFVector<DcmIODTypes::FrameBase*>& frames)
 {
     if (dataset == NULL)
         return EC_IllegalParameter;
@@ -333,32 +333,54 @@ OFCondition ConcatenationLoader::deleteConcatAttributes(DcmItem& item)
 
 OFCondition ConcatenationLoader::extractFrames(DcmItem& item, Info& info, const Uint32 numFrames)
 {
-    const Uint8* pixData = NULL;
-    OFCondition result   = item.findAndGetUint8Array(DCM_PixelData, pixData);
-    if (result.good() && pixData)
+    const Uint8* pixData8 = NULL;
+    const Uint16* pixData16 = NULL;
+    OFCondition result;
+    if (info.m_BitsAlloc <= 8)
+    {
+        result = item.findAndGetUint8Array(DCM_PixelData, pixData8);
+    }
+    else if (info.m_BitsAlloc == 16)
+    {
+        result = item.findAndGetUint16Array(DCM_PixelData, pixData16);
+    }
+    else
+    {
+        DCMFG_ERROR("Bits Allocated=" << info.m_BitsAlloc << " not supported, must be 1, 8 or 16");
+        return FG_EC_UnsupportedPixelDataLayout;
+    }
+    if (result.good() && (pixData8 || pixData16))
     {
         size_t bytesPerFrame = 0;
         result                 = computeBytesPerFrame(info.m_Rows, info.m_Cols, info.m_BitsAlloc, bytesPerFrame);
         if (result.good())
         {
-            const Uint8* ptr = pixData;
             for (Uint32 f = 0; f < numFrames; f++)
             {
-                DcmIODTypes::Frame* frame = new DcmIODTypes::Frame();
+                DcmIODTypes::FrameBase* frame = NULL;
+                if (info.m_BitsAlloc <= 8) // 8 or 1
+                {
+                    frame = new DcmIODTypes::Frame<Uint8>(bytesPerFrame);
+                    if (frame && frame->getPixelData())
+                    {
+                        const Uint8* ptr = pixData8 + f * frame->getLengthInBytes();
+                        memcpy(frame->getPixelData(), ptr, frame->getLengthInBytes());
+                    }
+                }
+                else if (info.m_BitsAlloc == 16)
+                {
+                    frame = new DcmIODTypes::Frame<Uint16>(bytesPerFrame / 2);
+                    if (frame && frame->getPixelData())
+                    {
+                        // getLength() returns size in bytes, so divide by 2 since we advance by word
+                        const Uint16* ptr = pixData16 + f * frame->getLengthInBytes() / 2;
+                        // memcpy expects number of bytes to copy
+                        memcpy(frame->getPixelData(), ptr, frame->getLengthInBytes());
+                    }
+                }
                 if (frame)
                 {
-                    frame->length  = bytesPerFrame;
-                    frame->pixData = new Uint8[frame->length];
-                    if (frame->pixData)
-                    {
-                        memcpy(frame->pixData, ptr, frame->length);
-                        ptr += frame->length;
-                        m_Frames.push_back(frame);
-                    }
-                    else
-                    {
-                        result = EC_MemoryExhausted;
-                    }
+                    m_Frames.push_back(frame);
                 }
                 else
                 {
@@ -401,7 +423,7 @@ OFCondition ConcatenationLoader::computeBytesPerFrame(const Uint16 rows,
     // This is only different if bits allocated equals 1, which can happen
     // for binary segmentations or black and white secondary capture objects
     // (second SC generation).
-    // Other values than Bits Allocated 16 or 8 are not supported.
+    // Other values than Bits Allocated 16, 8 or 1 are not supported.
     bytes_per_frame = bitsAlloc * cols * rows;
     if ((bitsAlloc == 16) || (bitsAlloc == 8))
     {

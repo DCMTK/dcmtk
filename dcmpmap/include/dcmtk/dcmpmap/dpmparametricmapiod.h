@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2024, Open Connections GmbH
+ *  Copyright (C) 2018-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -177,6 +177,35 @@ public:
    */
   virtual OFCondition write(DcmItem &dataset);
 
+    /** If enabled, functional group structure is checked before actual writing
+     *  is performed in the write() method. Checking might be time consuming
+     *  on functional groups with many frames, though disabling might result in
+     *  invalid functional group structures. Disabling should only be done if the
+     *  user knows that the functional groups are valid, wants to to adapt the
+     *  functional groups manually after calling write() or knows what he's doing
+     *  otherwise.<br>
+     *  Per default, checking is enabled.
+     *  @param  doCheck If OFTrue, checking will be performed. If OFFalse,
+     *          no checks are performed.
+     */
+    virtual void setCheckFGOnWrite(const OFBool doCheck);
+
+    /** Returns whether functional group structure is checked before actual
+     *  writing is performed in the write() method.
+     *  @return OFTrue if checking is performed, OFFalse otherwise
+     */
+    virtual OFBool getCheckFGOnWrite();
+
+    /** Set whether attribute values should be checked on writing, i.e. if writing
+     *  should fail if attribute values violate their VR, VM, character set or value length.
+     *  A missing but required value is always considered an error, independent of this setting.
+     *  If set to OFFalse, writing will always succeed, even if attribute value constraints
+     *  are violated. A warning instead of an error will be printed to the logger.
+     *  @param  doCheck If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
+     *          any errors are ignored.
+     */
+    virtual void setValueCheckOnWrite(const OFBool doCheck) override;
+
   // -------------------- access ---------------------
 
   /** Get Recognizable Visual Features
@@ -298,7 +327,7 @@ private:
   ContentIdentificationMacro m_ContentIdentification;
 
   /// Binary frame data
-  OFVector<DcmIODTypes::Frame*> m_Frames;
+  OFVector<DcmIODTypes::FrameBase*> m_Frames;
 
 };
 
