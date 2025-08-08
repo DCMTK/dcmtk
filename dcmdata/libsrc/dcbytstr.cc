@@ -766,7 +766,7 @@ OFBool DcmByteString::containsExtendedCharacters(const OFBool checkAllStrings)
     OFBool result = OFFalse;
     /* only check if parameter is true since derived VRs are not affected
        by the attribute SpecificCharacterSet (0008,0005) */
-    if (checkAllStrings)
+    if (checkAllStrings || isAffectedBySpecificCharacterSet())
     {
         char *str = NULL;
         Uint32 len = 0;
@@ -872,10 +872,10 @@ OFBool DcmByteString::containsExtendedCharacters(const char *stringVal,
 {
     if (stringVal != NULL)
     {
-        for (size_t i = stringLen; i != 0; --i)
+        for (size_t i = stringLen; i != 0; --i, ++stringVal)
         {
-            /* check for 8 bit characters */
-            if (OFstatic_cast(unsigned char, *stringVal++) > 127)
+            /* check for 8 bit and Escape characters */
+            if ((*stringVal & 0x80) != 0 || (*stringVal == 0x1b))
                 return OFTrue;
         }
     }
