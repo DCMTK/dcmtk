@@ -317,11 +317,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      */
     virtual OFBool containsUnknownVR() const;
 
-    /** check if this object contains non-ASCII characters at any nesting level. Please note
-     *  that this check is pretty simple and only works for single-byte character sets that
-     *  do include the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All
-     *  character codes below 128 are considered to be ASCII codes and all others are
-     *  considered to be non-ASCII.
+    /** check if this object contains non-ASCII characters.
+     *  This works by checking for any byte values above 127, which works for any
+     *  single-byte code and for single-value multi-byte codes, and for ESC characters,
+     *  which will mean that a code extension is used.
      *  @param checkAllStrings if true, also check elements with string values not affected
      *    by SpecificCharacterSet (0008,0005). By default, only check PN, LO, LT, SH, ST,
      *    UC and UT.

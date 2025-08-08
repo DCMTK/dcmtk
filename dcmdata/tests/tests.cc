@@ -25,6 +25,9 @@
 
 OFTEST_REGISTER(dcmdata_partialElementAccess);
 OFTEST_REGISTER(dcmdata_i2d_bmp);
+OFTEST_REGISTER(dcmdata_charString_derived_getVM);
+OFTEST_REGISTER(dcmdata_charString_getVM_multibyte);
+OFTEST_REGISTER(dcmdata_charString_getOFString);
 OFTEST_REGISTER(dcmdata_checkStringValue);
 OFTEST_REGISTER(dcmdata_determineVM);
 OFTEST_REGISTER(dcmdata_getValueFromString);

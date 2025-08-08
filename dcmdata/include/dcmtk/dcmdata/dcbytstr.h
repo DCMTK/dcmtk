@@ -274,20 +274,19 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
-    /** check if this element contains non-ASCII characters. Please note that this check
-     *  is pretty simple and only works for single-byte character sets that do include
-     *  the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All character
-     *  codes below 128 are considered to be ASCII codes and all others are considered to
-     *  be non-ASCII.
+    /** check if this element contains non-ASCII characters.
+     *  This works by checking for any byte values above 127, which works for any
+     *  single-byte code and for single-value multi-byte codes, and for ESC characters,
+     *  which will mean that a code extension is used.
      *  @param checkAllStrings if true, also check elements with string values not affected
      *    by SpecificCharacterSet (0008,0005). By default, only check PN, LO, LT, SH, ST,
-     *    UC and UT, i.e. none of the derived VR classes.
+     *    UC and UT.
      *  @return true if element contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
     /** check if this element is affected by SpecificCharacterSet
-     *  @return always returns false since none of the derived VR classes is affected by
+     *  @return returns false, overwritten by derived VR classes that are affected by
      *    the SpecificCharacterSet (0008,0005) element
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
@@ -379,6 +378,21 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
      */
     virtual OFCondition makeMachineByteString(const Uint32 length = 0);
 
+    /** check if the VR supports more than one value.
+     * @return OFTrue
+     */
+    virtual OFBool supportsMultiValue() const { return OFTrue; }
+
+    /** find the start index of the next component.
+     * @param str pointer to the string value to be searched
+     * @param len the length of @a str
+     * @param charSet the value of Specific Character Set; not used
+     * @return a pointer to the next component, or NULL if none exists.
+     * @note The pointer will point after the last character, if the component
+     *   is the last component and is empty (e.g., @a ends with a backslash).
+     */
+    virtual const char* findNextComponentPosition(const char *str, Uint32 len, const OFString& charSet) const;
+
     /** convert currently stored string value to DICOM representation.
      *  It removes trailing spaces apart from a possibly required single padding
      *  character (in case of odd string length).
@@ -421,10 +435,9 @@ class DCMTK_DCMDATA_EXPORT DcmByteString: public DcmElement
     /* --- static helper functions --- */
 
     /** check if a given character string contains non-ASCII characters.
-     *  Please note that this check is pretty simple and only works for single-byte character
-     *  sets that do include the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other
-     *  words: All character codes below 128 are considered to be ASCII codes and all others
-     *  are considered to be non-ASCII.
+     *  This works by checking for any byte values above 127, which works for any
+     *  single-byte code and for single-value multi-byte codes, and for ESC characters,
+     *  which will mean that a code extension is used.
      *  @param stringVal character string to be checked
      *  @param stringLen length of the string (number of characters without the trailing
      *    NULL byte)
