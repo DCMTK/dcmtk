@@ -752,6 +752,11 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                     // remember the parent
                     dataset->setParent(this);
                 }
+
+                // initialize dataset transfer syntax members
+                // to make sure the values are correct even if the dataset is empty
+                dataset->initializeXfer(newxfer);
+
                 // check whether to read the dataset at all
                 if (FileReadMode != ERM_metaOnly)
                 {

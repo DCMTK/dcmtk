@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -379,6 +379,12 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
      */
     virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
+
+    /** this method initializes OriginalXfer and CurrentXfer.
+     *  It is only used internally by DcmFileFormat::read() and should not be
+     *  directly called by the user otherwise.
+     */
+    void initializeXfer(const E_TransferSyntax xfer);
 
   protected:
 

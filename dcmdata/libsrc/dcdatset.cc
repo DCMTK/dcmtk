@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -918,4 +918,12 @@ OFCondition DcmDataset::doPostReadChecks()
   }
 
   return result;
+}
+
+// ********************************
+
+void DcmDataset::initializeXfer(const E_TransferSyntax xfer)
+{
+  OriginalXfer = xfer;
+  CurrentXfer = xfer;
 }
