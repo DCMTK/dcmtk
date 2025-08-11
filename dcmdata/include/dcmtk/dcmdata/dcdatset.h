@@ -380,9 +380,12 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      */
     virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
 
-    /** this method initializes OriginalXfer and CurrentXfer.
-     *  It is only used internally by DcmFileFormat::read() and should not be
-     *  directly called by the user otherwise.
+    /** initialize the OriginalXfer and CurrentXfer member variables.
+     *  This method sets the values for OriginalXfer (i.e. the transfer syntax
+     *  in which a dataset is or was originally read) and CurrentXfer
+     *  (i.e. the currently active transfer syntax).
+     *  The method should only be called during import operations.
+     *  @param xfer new value for OriginalXfer and CurrentXfer
      */
     void initializeXfer(const E_TransferSyntax xfer);
 
