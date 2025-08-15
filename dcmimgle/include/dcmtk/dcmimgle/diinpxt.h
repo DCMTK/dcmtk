@@ -545,6 +545,22 @@ class DiInputPixelTemplate
                                 value >>= bitsAllocated;
                             }
                         }
+                        /* check whether there are any remaining pixel values to be processed */
+                        const signed int rest = Count - length_T1 * times;
+                        if (rest > 0)
+                        {
+                            /* usually, there is only a single final pixel value */
+                            if (rest == 1)
+                                DCMIMGLE_TRACE("  there is still " << rest << " pixel value to be processed, so let's do it");
+                            else
+                                DCMIMGLE_TRACE("  there are still " << rest << " pixel values to be processed, so let's do it");
+                            value = *(p++) >> shift;
+                            for (j = rest; j != 0; --j)
+                            {
+                                *(q++) = expandSign(OFstatic_cast(T2, value & mask), sign, smask);
+                                value >>= bitsAllocated;
+                            }
+                        }
                     }
                 }
                 else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicand of 8/16
