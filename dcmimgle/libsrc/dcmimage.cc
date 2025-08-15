@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -210,6 +210,7 @@ void DicomImage::Init()
                         *(q++) = c;
                 }
                 *q = '\0';                                          // end of C string
+                DCMIMGLE_DEBUG("filtered version of 'PhotometricInterpretation' = " << OFSTRING_GUARD(cstr));
                 while ((pin->Name != NULL) && (strcmp(pin->Name, cstr) != 0))
                     ++pin;
                 delete[] cstr;

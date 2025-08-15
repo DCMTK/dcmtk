@@ -559,7 +559,11 @@ class DiColorPixelTemplate
                 {
                     /* erase empty part of the buffer (=blacken the background) */
                     if (InputCount < Count)
-                        OFBitmanipTemplate<T>::zeroMem(Data[j] + InputCount, Count - InputCount);
+                    {
+                        const size_t count = (Count - InputCount);
+                        DCMIMAGE_TRACE("filing empty part of the intermediate pixel data (" << count << " pixels) of plane " << j << " with value = 0");
+                        OFBitmanipTemplate<T>::zeroMem(Data[j] + InputCount, count);
+                    }
                 } else {
                     DCMIMAGE_DEBUG("cannot allocate memory buffer for 'Data[" << j << "]' in DiColorPixelTemplate::Init()");
                     result = 0;     // at least one buffer could not be allocated!
