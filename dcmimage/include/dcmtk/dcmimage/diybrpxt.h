@@ -92,7 +92,7 @@ class DiYBRPixelTemplate
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             // make sure that there is sufficient input data (for planar pixel data)
-            if (!this->PlanarConfiguration || (count >= planeSize * 3 /* number of planes */))
+            if (!this->PlanarConfiguration || (count >= planeSize))
             {
                 if (rgb)    /* convert to RGB model */
                 {
@@ -231,7 +231,7 @@ class DiYBRPixelTemplate
                     const T1 *p = pixel;
                     if (this->PlanarConfiguration)
                     {
-    /*
+/*
                         T2 *q;
                         // number of pixels to be skipped (only applicable if 'PixelData' contains more
                         // pixels than expected)
@@ -244,7 +244,7 @@ class DiYBRPixelTemplate
                             // skip to beginning of next plane
                             p += skip;
                         }
-    */
+*/
                         unsigned long l;
                         unsigned long i = 0;
                         while (i < count)
