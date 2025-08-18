@@ -360,7 +360,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
+                if ((writeMode == EWM_updateMeta) || (writeMode == EWM_createNewMeta) || (elem->getLength() == 0))
                 {
                     if (dataset->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
@@ -402,7 +402,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
+                if ((writeMode == EWM_updateMeta) || (writeMode == EWM_createNewMeta) || (elem->getLength() == 0))
                 {
                     if (dataset->search(DCM_SOPInstanceUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
@@ -566,13 +566,27 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
         {
             DCMDATA_WARN("DcmFileFormat: Meta Information Header is not updated!");
         } else {
-            /* start with empty file meta information */
-            if (writeMode == EWM_createNewMeta)
-                metinf->clear();
-
             /* in the following, we want to make sure all elements of the meta header */
             /* are existent in metinf and contain correct values */
             DcmStack stack;
+
+            /* start with empty file meta information */
+            if (writeMode == EWM_createNewMeta)
+            {
+                /* search, and if present, store and remove the media storage SOP class and instance UID. */
+                metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
+                DcmElement *sopClassUID = metinf->remove(stack.top());
+                metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
+                DcmElement *sopInstanceUID = metinf->remove(stack.top());
+
+                /* clear the meta-header and the search stack */
+                metinf->clear();
+                stack.clear();
+
+                /* re-insert SOP class UID and SOP instance UID */
+                if (sopClassUID) metinf->insert(sopClassUID);
+                if (sopInstanceUID) metinf->insert(sopInstanceUID);
+            }
 
             /* DCM_FileMetaInformationGroupLength */
             metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
