@@ -555,7 +555,7 @@ class DiInputPixelTemplate
                             else
                                 DCMIMGLE_TRACE("  there are still " << rest << " pixel values to be processed, so let's do it");
                             value = *(p++) >> shift;
-                            for (j = rest; j != 0; --j)
+                            for (j = OFstatic_cast(Uint16, rest); j != 0; --j)
                             {
                                 *(q++) = expandSign(OFstatic_cast(T2, value & mask), sign, smask);
                                 value >>= bitsAllocated;
