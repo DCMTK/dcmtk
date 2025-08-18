@@ -353,6 +353,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  (separated by a backslash) code extension techniques are used and escape sequences
      *  may be encountered in the source string to switch between the specified character
      *  sets.
+     *  @note the conversion code does not perform a thorough validation
+     *    of the strings to be converted. For example, characters that are permitted in the
+     *    source character set but forbidden in DICOM (such as byte positions
+     *    0x80-0x9F in ISO_IR 100) may be converted without warning or error.
      *  @param fromCharset name of the source character set(s) used for the conversion
      *  @param toCharset name of the destination character set used for the conversion.
      *    Only a single value is permitted (i.e. no code extensions).
@@ -375,6 +379,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *  character set can be found in the DICOM standard, e.g. "ISO_IR 100" for ISO 8859-1
      *  (Latin 1) or "ISO_IR 192" for Unicode in UTF-8. An empty string denotes the
      *  default character repertoire, which is ASCII (7-bit).
+     *  @note the conversion code does not perform a thorough validation
+     *    of the strings to be converted. For example, characters that are permitted in the
+     *    source character set but forbidden in DICOM (such as byte positions
+     *    0x80-0x9F in ISO_IR 100) may be converted without warning or error.
      *  @param toCharset name of the destination character set used for the conversion.
      *    Only a single value is permitted (i.e. no code extensions).
      *  @param flags optional flag used to customize the conversion (see DCMTypes::CF_xxx)
@@ -389,6 +397,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /** convert all element values that are contained in this item and that are affected
      *  by SpecificCharacterSet from the currently selected source character set to the
      *  currently selected destination character set
+     *  @note the conversion code does not perform a thorough validation
+     *    of the strings to be converted. For example, characters that are permitted in the
+     *    source character set but forbidden in DICOM (such as byte positions
+     *    0x80-0x9F in ISO_IR 100) may be converted without warning or error.
      *  @param converter character set converter to be used to convert the element values
      *  @return status, EC_Normal if successful, an error code otherwise
      */
