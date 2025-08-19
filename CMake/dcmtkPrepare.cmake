@@ -726,8 +726,10 @@ function(DCMTK_TEST_SOCKET_LIBRARY NAME SYMBOL)
   endif()
 endfunction()
 
-DCMTK_TEST_SOCKET_LIBRARY(nsl "gethostbyname")
-DCMTK_TEST_SOCKET_LIBRARY(socket "socket")
+if(CMAKE_SYSTEM_NAME MATCHES "SunOS" AND CMAKE_SYSTEM_VERSION VERSION_LESS "11.4")
+  DCMTK_TEST_SOCKET_LIBRARY(nsl "gethostbyname")
+  DCMTK_TEST_SOCKET_LIBRARY(socket "socket")
+endif()
 
 #-----------------------------------------------------------------------------
 # Test if SunPro compiler and add features
