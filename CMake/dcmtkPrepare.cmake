@@ -128,10 +128,19 @@ endfunction()
 # This should possibly be enhanced by using find_package() at some point. The best solution
 # would probably be to compile all third-party libraries ourself.
 if(DCMTK_LINK_STATIC OR DCMTK_PORTABLE_LINUX_BINARIES)
+    get_static_library("STATIC_ZLIB" "libz.a")
+    set(LIBPNG_EXTRA_LIBS_STATIC "${STATIC_ZLIB}")
     get_static_library("STATIC_DL" "libdl.a")
     get_static_library("STATIC_LZMA" "liblzma.a")
-    get_static_library("STATIC_ZLIB" "libz.a")
-    set(LIBXML2_EXTRA_LIBS_STATIC "${STATIC_LZMA}" "${STATIC_ZLIB}" "${STATIC_DL}")
+
+    # On Debian Linux, libxml2 depends on libicu. We do not want that dependency in our
+    # own builds since it massively increases the size of the executable binaries.
+    # If you still want to try, then enable the following two statements:
+    #
+    # get_static_library("STATIC_ICUUC" "libicuuc.a")
+    # get_static_library("STATIC_ICUDATA" "libicudata.a")
+
+    set(LIBXML2_EXTRA_LIBS_STATIC "${STATIC_LZMA}" "${STATIC_ZLIB}" "${STATIC_DL}" "${STATIC_ICUUC}" "${STATIC_ICUDATA}")
     get_static_library("STATIC_PTHREAD" "libpthread.a")
     set(OPENJPEG_EXTRA_LIBS_STATIC "${STATIC_PTHREAD}")
     set(OPENSSL_EXTRA_LIBS_STATIC "${STATIC_DL}")
@@ -146,10 +155,17 @@ if(DCMTK_LINK_STATIC OR DCMTK_PORTABLE_LINUX_BINARIES)
     get_static_library("STATIC_JBIG" "libjbig.a")
     get_static_library("STATIC_JPEG" "libjpeg.a")
     get_static_library("STATIC_DEFLATE" "libdeflate.a")
-    set(TIFF_EXTRA_LIBS_STATIC "${STATIC_WEBP}" "${STATIC_ZSTD}" "${STATIC_LZMA}" "${STATIC_JBIG}" "${STATIC_JBIG}" "${STATIC_DEFLATE}" "${STATIC_ZLIB}")
+
+    # On Debian Linux, libtiff depends on libLerc. We do not need that dependency in our
+    # own builds. If want to use Debian's libtiff, then enable the following statement:
+    #
+    # get_static_library("STATIC_LIBLERC" "libLerc.a")
+
+    set(TIFF_EXTRA_LIBS_STATIC "${STATIC_WEBP}" "${STATIC_ZSTD}" "${STATIC_LZMA}" "${STATIC_JBIG}" "${STATIC_JBIG}" "${STATIC_DEFLATE}" "${STATIC_ZLIB}" "${STATIC_LIBLERC}")
     get_static_library("STATIC_NSL" "libnsl.a")
     set(WRAP_EXTRA_LIBS_STATIC "${STATIC_NSL}")
 else()
+    set(LIBPNG_EXTRA_LIBS_STATIC)
     set(LIBXML2_EXTRA_LIBS_STATIC)
     set(OPENJPEG_EXTRA_LIBS_STATIC)
     set(OPENSSL_EXTRA_LIBS_STATIC)
