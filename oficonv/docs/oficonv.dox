@@ -34,6 +34,10 @@ if (id != OFreinterpret_cast(iconv_t, -1))
 
     // perform the conversion
     size_t result = OFiconv(id, &src_ptr, &src_len, &dst_ptr, &dst_len);
+
+    // null terminate
+    if (dst_len > 0) *dst_ptr = '\0';
+
     if (result != OFstatic_cast(size_t, -1))
     {
         std::cout << "UTF-8 string: " << output << std::endl;
