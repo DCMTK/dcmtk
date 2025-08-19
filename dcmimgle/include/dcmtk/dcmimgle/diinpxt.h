@@ -376,7 +376,7 @@ class DiInputPixelTemplate
             /* Bits Allocated is always a multiple of 8 (see above), same for bits of T1 */
             const Uint32 byteFactor = bitsAllocated / 8;
             const Uint32 bytes_T1 = bitsof_T1 / 8;
-            const Uint32 count_T1 = (byteFactor == bytes_T1) ? PixelCount : (PixelCount * byteFactor + bytes_T1 - 1) / bytes_T1;
+            const Uint32 count_T1 = OFstatic_cast(Uint32, (byteFactor == bytes_T1) ? PixelCount : (PixelCount * byteFactor + bytes_T1 - 1) / bytes_T1);
 #ifdef DEBUG
             DCMIMGLE_TRACE("PixelCount: " << PixelCount << ", byteFactor: " << byteFactor << ", bytes_T1: " << bytes_T1 << ", count_T1: " << count_T1);
 #endif
@@ -390,8 +390,8 @@ class DiInputPixelTemplate
                 if (uncompressed)
                 {
                     DCMIMGLE_DEBUG("using partial read access to uncompressed pixel data");
-                    const Uint32 offset = PixelStart * byteFactor;
-                    const Uint32 bufSize = PixelCount * byteFactor;
+                    const Uint32 offset = OFstatic_cast(Uint32, PixelStart * byteFactor);
+                    const Uint32 bufSize = OFstatic_cast(Uint32, PixelCount * byteFactor);
                     const OFCondition status = pixelData->getPartialValue(pixel, offset, bufSize, fileCache);
                     if (status.good())
                     {
@@ -405,13 +405,13 @@ class DiInputPixelTemplate
                     DCMIMGLE_DEBUG("using partial read access to compressed pixel data");
                     OFCondition status = EC_IllegalCall;
                     OFString decompressedColorModel;
-                    const Uint32 fsize = FrameSize * byteFactor;
+                    const Uint32 fsize = OFstatic_cast(Uint32, FrameSize * byteFactor);
                     for (Uint32 frame = 0; frame < NumberOfFrames; ++frame)
                     {
                         /* make sure that the buffer always has an even number of bytes as required for getUncompressedFrame() */
                         const Uint32 bufSize = (fsize & 1) ? fsize + 1 : fsize;
-                        status = pixelData->getUncompressedFrame(document->getDataset(), FirstFrame + frame, fragment,
-                            OFreinterpret_cast(Uint8 *, pixel) + lengthBytes, bufSize, decompressedColorModel, fileCache);
+                        status = pixelData->getUncompressedFrame(document->getDataset(), OFstatic_cast(Uint32, FirstFrame + frame),
+                            fragment, OFreinterpret_cast(Uint8 *, pixel) + lengthBytes, bufSize, decompressedColorModel, fileCache);
                         if (status.good())
                         {
                             DCMIMGLE_TRACE("successfully decompressed frame " << FirstFrame + frame);
@@ -440,7 +440,7 @@ class DiInputPixelTemplate
         }
         if ((pixel != NULL) && (lengthBytes > 0))
         {
-            const Uint32 length_T1 = lengthBytes / sizeof(T1);
+            const Uint32 length_T1 = OFstatic_cast(Uint32, lengthBytes / sizeof(T1));
             /* need to split 'length' in order to avoid integer overflow for large pixel data */
             const Uint32 length_B1 = lengthBytes / bitsAllocated;
             const Uint32 length_B2 = lengthBytes % bitsAllocated;
@@ -474,7 +474,7 @@ class DiInputPixelTemplate
                         T2 smask = 0;
                         for (i = bitsStored; i < bitsof_T2; ++i)
                             smask |= OFstatic_cast(T2, 1 << i);
-                        const Uint16 shift = highBit + 1 - bitsStored;
+                        const Uint16 shift = OFstatic_cast(Uint16, highBit + 1 - bitsStored);
                         if (shift == 0)
                         {
                             DCMIMGLE_DEBUG("convert input pixel data: case 1b (mask & sign)");
@@ -535,7 +535,7 @@ class DiInputPixelTemplate
                         T2 smask = 0;
                         for (i = bitsStored; i < bitsof_T2; ++i)
                             smask |= OFstatic_cast(T2, 1 << i);
-                        const Uint16 shift = highBit + 1 - bitsStored;
+                        const Uint16 shift = OFstatic_cast(Uint16, highBit + 1 - bitsStored);
                         for (i = length_T1; i != 0; --i)
                         {
                             value = *(p++) >> shift;
@@ -546,7 +546,7 @@ class DiInputPixelTemplate
                             }
                         }
                         /* check whether there are any remaining pixel values to be processed */
-                        const signed int rest = Count - length_T1 * times;
+                        const signed int rest = OFstatic_cast(int, Count - length_T1 * times);
                         if (rest > 0)
                         {
                             /* usually, there is only a single final pixel value */
@@ -593,7 +593,7 @@ class DiInputPixelTemplate
                     T1 mask[bitsof_T1];
                     mask[0] = 1;
                     for (i = 1; i < bitsof_T1; ++i)
-                        mask[i] = (mask[i - 1] << 1) | 1;
+                        mask[i] = OFstatic_cast(T1, (mask[i - 1] << 1) | 1);
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; ++i)
                         smask |= OFstatic_cast(T2, 1 << i);
