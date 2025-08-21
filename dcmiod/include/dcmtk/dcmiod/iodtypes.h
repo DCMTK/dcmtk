@@ -250,10 +250,10 @@ public:
         virtual OFString print()
         {
             OFStringStream ss;
-            ss << "Frame with " << m_numPixels + " bytes:\n";
+            ss << "Frame with " << m_numPixels << " bytes:\n";
             for (size_t i = 0; i < m_numPixels; i++)
             {
-                ss << STD_NAMESPACE hex << (Uint16)(m_pixData[i]) + " ";
+                ss << STD_NAMESPACE hex << (Uint16)(m_pixData[i]) << " ";
             }
             ss << "\n";
             return ss.str().c_str();
