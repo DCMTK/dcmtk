@@ -158,7 +158,7 @@ public:
      *  @param  doCheck If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
      *          any errors are ignored.
      */
-    virtual void setValueCheckOnWrite(const OFBool doCheck) override;
+    virtual void setValueCheckOnWrite(const OFBool doCheck);
 
     /** If enabled, dimensions are checked before actual writing.
      *  This can be very time-consuming if many frames are present.

@@ -383,7 +383,7 @@ protected:
          *  to this thread to the output vector. It will stop in case of an error
          *  and set the error condition variable to indicate that an error occurred.
          */
-        void run() override;
+        void run();
     };
 
     /// Threaded functional group reader, used to read per-frame functional groups
@@ -458,7 +458,7 @@ protected:
          *  It will stop in case of an error and set the error condition variable
          *  to indicate that an error occurred.
          */
-        void run() override;
+        void run();
     };
 
 private:

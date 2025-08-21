@@ -118,7 +118,7 @@ public:
      *  @param  doCheck If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
      *          any errors are ignored.
      */
-    virtual void setValueCheckOnWrite(const OFBool doCheck) override
+    virtual void setValueCheckOnWrite(const OFBool doCheck)
     {
         m_ImagePixel.setValueCheckOnWrite(doCheck);
         m_GeneralImage.setValueCheckOnWrite(doCheck);
