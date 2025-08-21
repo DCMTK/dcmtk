@@ -99,7 +99,7 @@ public:
  */
 template<typename T>
 DcmIODTypes::Frame<T>*
-DcmSegUtils::packBinaryFrame(const T* pixelData, const Uint16 rows, const Uint16 columns)
+DcmSegUtils::packBinaryFrame(const T*, const Uint16, const Uint16)
 {
     // Return error since this function is not specialized for T
     DCMSEG_ERROR("packBinaryFrame() can only be used for Uint8 data but you provided something else");

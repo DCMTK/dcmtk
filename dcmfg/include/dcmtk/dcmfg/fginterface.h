@@ -209,12 +209,12 @@ public:
      *    10 frames, since otherwise the overhead of starting threads would be too high). The
      *    number is adjusted on the fly.
      */
-    virtual void setUseThreads(const size_t numThreads);
+    virtual void setUseThreads(const Uint32 numThreads);
 
     /** Returns the number of threads to be used for writing per-frame functional groups.
      *  @return The number of threads to use
      */
-    virtual size_t getUseThreads() const;
+    virtual Uint32 getUseThreads() const;
 
 protected:
     /** Get shared functional group based on its type
@@ -479,7 +479,7 @@ private:
     /// used than one fifth the number of frames (so that each thread must at least handle
     //  10 frames, since otherwise the overhead of starting threads would be too high). The
     /// number is adjusted on the fly.
-    size_t m_numThreads;
+    Uint32 m_numThreads;
 };
 
 #endif // MODMULTIFRAMEFGH_H

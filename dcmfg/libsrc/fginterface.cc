@@ -456,7 +456,7 @@ OFCondition FGInterface::readPerFrameFG(DcmItem& dataset)
     }
 
     // We want to either read sequentially or in parallel, depending on the number of threads.
-    size_t threadsUsed = findAdequateNumberOfThreads(numFrames, m_numThreads);
+    Uint32 threadsUsed = findAdequateNumberOfThreads(numFrames, m_numThreads);
     if (threadsUsed > 1)
     {
         result = readPerFrameFGParallel(*perFrame, m_numThreads);
@@ -543,8 +543,8 @@ OFCondition FGInterface::readPerFrameFGParallel(DcmSequenceOfItems& perFrameFGSe
     for (size_t i = 0; i < numThreads; ++i)
     {
         threads[i] = new ThreadedFGReader();
-        size_t startFrame = i * framesPerThread;
-        size_t endFrame = (startFrame + framesPerThread < numFrames) ? startFrame + framesPerThread : numFrames;
+        Uint32 startFrame = i * framesPerThread;
+        Uint32 endFrame = (startFrame + framesPerThread < numFrames) ? startFrame + framesPerThread : numFrames;
 
         threads[i]->init(&perFrameInputItems, &perFrameInputMutex,
                          &perFrameResultGroups, &perFrameResultGroupsMutex,
@@ -553,7 +553,7 @@ OFCondition FGInterface::readPerFrameFGParallel(DcmSequenceOfItems& perFrameFGSe
                          &errorMutex, &errorOccurred, this);
     }
     // Start all threads
-    for (size_t i = 0; i < numThreads; ++i)
+    for (Uint32 i = 0; i < numThreads; ++i)
     {
         threads[i]->start();
     }
@@ -747,7 +747,7 @@ OFBool FGInterface::getCheckOnWrite()
     return m_checkOnWrite;
 }
 
-void FGInterface::setUseThreads(const size_t numThreads)
+void FGInterface::setUseThreads(const Uint32 numThreads)
 {
     if (numThreads > 0)
     {
@@ -759,7 +759,7 @@ void FGInterface::setUseThreads(const size_t numThreads)
     }
 }
 
-size_t FGInterface::getUseThreads() const
+Uint32 FGInterface::getUseThreads() const
 {
     return m_numThreads;
 }
@@ -885,7 +885,8 @@ OFCondition FGInterface::writePerFrameFGParallel(DcmItem& dataset, const Uint32 
     {
         frameGroups.push_back(OFMake_pair((*it).first, (*it).second));
     }
-    Uint32 numFrames = frameGroups.size();
+    // We check earlier that number of frames is not larger than max allowed
+    Uint32 numFrames = OFstatic_cast(Uint32, frameGroups.size());
 
     // Prepare output vector for per-frame items
     OFVector<DcmItem*> perFrameItems(numFrames, NULL);
