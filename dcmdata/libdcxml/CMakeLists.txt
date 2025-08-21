@@ -7,5 +7,5 @@ DCMTK_ADD_LIBRARY(dcmxml
   xml2dcm.cc
 )
 
-DCMTK_TARGET_LINK_MODULES(dcmxml dcmdata ofstd oflog)
+DCMTK_TARGET_LINK_MODULES(dcmxml dcmdata ofstd oflog ${ZLIB_MODULES})
 DCMTK_TARGET_LINK_LIBRARIES(dcmxml ${ZLIB_LIBS} ${LIBXML_LIBS})
