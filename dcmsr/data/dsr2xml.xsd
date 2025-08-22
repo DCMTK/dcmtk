@@ -91,7 +91,8 @@
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="sex" type="dsr:Sex" minOccurs="0"/>
-      <!-- strictly speaking, Patient's Size and Weight belong to the Study IE -->
+      <!-- strictly speaking, Patient's Age, Size and Weight belong to the Study IE -->
+      <xsd:element name="age" type="dsr:AgeString" minOccurs="0"/>
       <xsd:element name="size" type="dsr:DecimalString" minOccurs="0"/>
       <xsd:element name="weight" type="dsr:DecimalString" minOccurs="0"/>
     </xsd:sequence>
