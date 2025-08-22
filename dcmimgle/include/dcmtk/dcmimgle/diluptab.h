@@ -111,7 +111,7 @@ class DCMTK_DCMIMGLE_EXPORT DiLookupTable
 
     /** constructor
      *
-     ** @param  data         element containing the LUT data (must be OW)
+     ** @param  data         element containing the LUT data (must be of VR=OW)
      *  @param  descriptor   element containing the LUT descriptor
      *  @param  explanation  element containing the LUT explanation (optional)
      *  @param  descripMode  mode specifying the use of the bits per table entry value
@@ -187,6 +187,19 @@ class DCMTK_DCMIMGLE_EXPORT DiLookupTable
     int compareLUT(const DcmUnsignedShort &data,
                    const DcmUnsignedShort &descriptor);
 
+    /** compares current LUT with specified LUT
+     *
+     ** @param  data        element containing the LUT data (must be of VR=OW)
+     *  @param  descriptor  element containing the LUT descriptor
+     *
+     ** @return true if LUTs are not equal (1 = invalid LUT / memory error,
+     *                                      2 = descriptor differs,
+     *                                      3 = data differs)
+     *          false (0) otherwise
+     */
+    int compareLUT(const DcmOtherByteOtherWord &data,
+                   const DcmUnsignedShort &descriptor);
+
 
     /** compares current LUT with specified LUT
      *
@@ -209,24 +222,6 @@ class DCMTK_DCMIMGLE_EXPORT DiLookupTable
 
     /** initialize lookup table
      *
-     ** @param  data         array containing the LUT data
-     *  @param  count        number entries in LUT data array
-     *  @param  descriptor   element containing the LUT descriptor
-     *  @param  explanation  element containing the LUT explanation (optional)
-     *  @param  descripMode  mode specifying the use of the bits per table entry value
-     *  @param  first        expected value for "first input value mapped" (optional)
-     *  @param  status       pointer to image status variable (optional)
-     */
-    void Init(const Uint16* data,
-                  const unsigned long& count,
-                  const DcmUnsignedShort &descriptor,
-                  const DcmLongString *explanation = NULL,
-                  const EL_BitsPerTableEntry descripMode = ELM_UseValue,
-                  const signed long first = -1,
-                  EI_Status *status = NULL);
-
-    /** initialize lookup table
-     *
      ** @param  docu         pointer to dataset (encapsulated)
      *  @param  item         pointer to item in dataset where to start (maybe NULL)
      *  @param  descriptor   tag key containing the LUT descriptor
@@ -241,6 +236,24 @@ class DCMTK_DCMIMGLE_EXPORT DiLookupTable
               const DcmTagKey &data,
               const DcmTagKey &explanation,
               const EL_BitsPerTableEntry descripMode = ELM_UseValue,
+              EI_Status *status = NULL);
+
+    /** initialize lookup table
+     *
+     ** @param  data         array containing the LUT data
+     *  @param  count        number of entries in LUT data array
+     *  @param  descriptor   element containing the LUT descriptor
+     *  @param  explanation  element containing the LUT explanation (optional)
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
+     *  @param  first        expected value for "first input value mapped" (optional)
+     *  @param  status       pointer to image status variable (optional)
+     */
+    void Init(const Uint16 *data,
+              const unsigned long count,
+              const DcmUnsignedShort &descriptor,
+              const DcmLongString *explanation = NULL,
+              const EL_BitsPerTableEntry descripMode = ELM_UseValue,
+              const signed long first = -1,
               EI_Status *status = NULL);
 
     /** check (and possibly correct) lookup table for consistency
