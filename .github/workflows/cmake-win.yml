@@ -2,7 +2,7 @@ name: C/C++ CI Windows
 
 on:
   push:
-    branches: [ "master", "Labelmap"]
+    branches: [ "master"]
   pull_request:
     branches: [ "master"]
   workflow_dispatch:
@@ -93,7 +93,7 @@ jobs:
     # Only run if the event is not a pull request and the repository owner is michaelonken.
     # The latter is to prevent forks from publishing packages even if the owner's token
     # would have sufficient privileges.
-    if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'michaelonken') && (github.ref == 'refs/heads/master') }}
+    if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'DCMTK')}}
 
     needs: build-windows
 
