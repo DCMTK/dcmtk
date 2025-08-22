@@ -27,7 +27,6 @@ config/autom4te.cache/
 # Ignore caches
 .cache
 
-# Patch files
 # Also ignore temporary directories
 _*/
 ofstd/tests/tehtestdire/
