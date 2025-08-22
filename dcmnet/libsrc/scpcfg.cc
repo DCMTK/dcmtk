@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2024, OFFIS e.V.
+ *  Copyright (C) 2012-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 DcmSCPConfig::DcmSCPConfig() :
   m_assocConfig(),
   m_assocCfgProfileName("DEFAULT"),
+  m_implIdentification(),
   m_port(104),
   m_aetitle("DCMTK_SCP"),
   m_refuseAssociation(OFFalse),
@@ -56,6 +57,7 @@ DcmSCPConfig::~DcmSCPConfig()
 DcmSCPConfig::DcmSCPConfig(const DcmSCPConfig &old) :
   m_assocConfig(old.m_assocConfig),
   m_assocCfgProfileName(old.m_assocCfgProfileName),
+  m_implIdentification(old.m_implIdentification),
   m_port(old.m_port),
   m_aetitle(old.m_aetitle),
   m_refuseAssociation(old.m_refuseAssociation),
@@ -82,6 +84,7 @@ DcmSCPConfig& DcmSCPConfig::operator=(const DcmSCPConfig &obj)
   {
     m_assocConfig = obj.m_assocConfig; // performs deep copy
     m_assocCfgProfileName = obj.m_assocCfgProfileName;
+    m_implIdentification = obj.m_implIdentification;
     m_port = obj.m_port;
     m_aetitle = obj.m_aetitle;
     m_refuseAssociation = obj.m_refuseAssociation;
@@ -398,6 +401,18 @@ OFCondition DcmSCPConfig::checkAssociationProfile(const OFString& profileName,
   }
 
   return result;
+}
+
+
+void DcmSCPConfig::setImplementationIdentification(const T_ASC_ImplementationIdentification& implIdentification)
+{
+    m_implIdentification = implIdentification;
+}
+
+
+const T_ASC_ImplementationIdentification& DcmSCPConfig::getImplementationIdentification() const
+{
+    return m_implIdentification;
 }
 
 

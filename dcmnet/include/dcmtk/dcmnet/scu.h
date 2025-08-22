@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2024, OFFIS e.V.
+ *  Copyright (C) 2008-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -701,6 +701,11 @@ public:
      */
     void setAssocConfigFileAndProfile(const OFString& filename, const OFString& profile);
 
+    /** Set association implementation identification parameters
+     *  @param implIdentification [in] Implementation Class UID and Implementation Version Name
+     */
+    void setImplementationIdentification(const T_ASC_ImplementationIdentification& implIdentification);
+
     /** Set the directory that should be used by the standard C-GET handler to store objects
      *  that come in with the corresponding C-STORE requests
      *  @param storeDir [in] The directory to store to. It is checked in handleSTORERequest()
@@ -1075,6 +1080,9 @@ private:
 
     /// Configuration file containing association parameters
     OFString m_assocConfigFile;
+
+    /// Implementation Class UID and Implementation Version Name
+    T_ASC_ImplementationIdentification m_implIdentification;
 
     /// The last DIMSE successfully sent, unresponded DIMSE request
     T_DIMSE_Message* m_openDIMSERequest;

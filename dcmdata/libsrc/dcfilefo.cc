@@ -52,7 +52,9 @@
 
 DcmFileFormat::DcmFileFormat()
   : DcmSequenceOfItems(DCM_InternalUseTag),
-    FileReadMode(ERM_autoDetect)
+    FileReadMode(ERM_autoDetect),
+    ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
+    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -67,7 +69,9 @@ DcmFileFormat::DcmFileFormat()
 DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
                              OFBool deepCopy)
   : DcmSequenceOfItems(DCM_InternalUseTag),
-    FileReadMode(ERM_autoDetect)
+    FileReadMode(ERM_autoDetect),
+    ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
+    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -93,7 +97,9 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
 
 DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
   : DcmSequenceOfItems(old),
-    FileReadMode(old.FileReadMode)
+    FileReadMode(old.FileReadMode),
+    ImplementationClassUID(old.ImplementationClassUID),
+    ImplementationVersionName(old.ImplementationVersionName)
 {
 }
 
@@ -120,6 +126,8 @@ DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
   {
     DcmSequenceOfItems::operator=(obj);
     FileReadMode = obj.FileReadMode;
+    ImplementationClassUID = obj.ImplementationClassUID;
+    ImplementationVersionName = obj.ImplementationVersionName;
   }
 
   return *this;
@@ -265,12 +273,13 @@ OFCondition DcmFileFormat::writeJson(STD_NAMESPACE ostream &out,
 // ********************************
 
 
-OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
-                                                DcmDataset *dataset,
-                                                const DcmTagKey &atagkey,
-                                                DcmObject *obj,
-                                                const E_TransferSyntax oxfer,
-                                                const E_FileWriteMode writeMode)
+OFCondition DcmFileFormat::checkMetaHeaderValue(
+    DcmMetaInfo *metainfo,
+    DcmDataset *dataset,
+    const DcmTagKey &atagkey,
+    DcmObject *obj,
+    const E_TransferSyntax oxfer,
+    const E_FileWriteMode writeMode) const
     /*
      * This function checks if a particular data element of the file meta information header is
      * existent.  If the element is not existent, it will be inserted.  Additionally, this function
@@ -468,8 +477,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
-                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
+                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(ImplementationClassUID.c_str());
             }
         }
         else if (tag == DCM_ImplementationVersionName)     // (0002,0013)
@@ -481,8 +489,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_SH)
             {
-                const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
-                OFstatic_cast(DcmShortString *, elem)->putString(uid);
+                OFstatic_cast(DcmShortString *, elem)->putString(ImplementationVersionName.c_str());
             }
         }
         else if ((tag == DCM_SourceApplicationEntityTitle) ||  // (0002,0016)
@@ -1189,4 +1196,19 @@ OFCondition DcmFileFormat::convertToUTF8()
 {
     // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
     return convertCharacterSet("ISO_IR 192", 0 /*flags*/);
+}
+
+void DcmFileFormat::setImplementationClassUID(const OFString& implementationClassUID)
+{
+    ImplementationClassUID = implementationClassUID;
+}
+
+void DcmFileFormat::setImplementationVersionName(const OFString& implementationVersionName)
+{
+    ImplementationVersionName = implementationVersionName;
+    if (ImplementationVersionName.length() > 16)
+    {
+        DCMDATA_WARN("DcmFileFormat: implementation version name too long");
+        ImplementationVersionName.erase(16);
+    }
 }

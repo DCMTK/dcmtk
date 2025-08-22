@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2022, OFFIS e.V.
+ *  Copyright (C) 2012-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -139,6 +139,16 @@ public:
    */
   OFCondition checkAssociationProfile(const OFString &profileName,
                                       OFString& mangledName) const;
+
+  /** Set association implementation identification parameters
+   *  @param implIdentification [in] Implementation Class UID and Implementation Version Name
+   */
+  void setImplementationIdentification(const T_ASC_ImplementationIdentification& implIdentification);
+
+  /** Returns association implementation identification parameters
+   *  @return Implementation Class UID and Implementation Version Name
+   */
+  const T_ASC_ImplementationIdentification& getImplementationIdentification() const;
 
   /** Force every association request to be refused by SCP, no matter what the SCU is
    *  offering
@@ -359,6 +369,9 @@ protected:
   /// Profile in association configuration that should be used. By default, a profile
   /// called "DEFAULT" is used.
   OFString m_assocCfgProfileName;
+
+  /// Implementation Class UID and Implementation Version Name
+  T_ASC_ImplementationIdentification m_implIdentification;
 
   /// Port on which the SCP is listening for association requests. The default port is 104.
   Uint16 m_port;
