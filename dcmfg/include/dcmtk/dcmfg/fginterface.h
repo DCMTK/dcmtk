@@ -333,7 +333,7 @@ protected:
     struct ThreadedFGWriter : public OFThread
     {
         /// Vector of pairs of frame number and functional groups to write for that frame
-        OFVector<OFPair<Uint32, FunctionalGroups*>>* m_frameGroups;
+        OFVector<OFPair<Uint32, FunctionalGroups*> >* m_frameGroups;
         /// Output vector, where the per-frame items are written to
         /// (one item per frame containing all functional groups for that frame).
         //  All threads write to the same vector, so it must be protected by a mutex.
@@ -364,7 +364,7 @@ protected:
          * @param errorOccurred Pointer to a condition variable that is set if an error occurs
          * @param errorMutex Mutex to protect error output
          */
-        void init(OFVector<OFPair<Uint32, FunctionalGroups*>>* frameGroups,
+        void init(OFVector<OFPair<Uint32, FunctionalGroups*> >* frameGroups,
                   OFVector<DcmItem*>* perFrameResultItems,
                   OFMutex* perFrameResultItemsMutex,
                   const Uint32 startFrame,

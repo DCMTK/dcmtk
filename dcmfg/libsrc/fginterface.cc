@@ -43,7 +43,7 @@ FGInterface::ThreadedFGWriter::ThreadedFGWriter()
 {
 }
 
-void FGInterface::ThreadedFGWriter::init(OFVector<OFPair<Uint32, FunctionalGroups*>>* frameGroups,
+void FGInterface::ThreadedFGWriter::init(OFVector<OFPair<Uint32, FunctionalGroups*> >* frameGroups,
                                         OFVector<DcmItem*>* perFrameResultItems,
                                         OFMutex* perFrameResultItemsMutex,
                                         const Uint32 startFrame,
