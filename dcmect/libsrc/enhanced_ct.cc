@@ -326,7 +326,7 @@ OFCondition EctEnhancedCT::Frames<PixelType>::addFrame(PixelType* data,
     {
         if (!perFrameInformation.empty())
         {
-            OFunique_ptr<DcmIODTypes::Frame<Uint16>> f(new DcmIODTypes::Frame<Uint16>(numPixels));
+            OFunique_ptr<DcmIODTypes::Frame<Uint16> > f(new DcmIODTypes::Frame<Uint16>(numPixels));
             if (f)
             {
                 memcpy(f->m_pixData, data, f->getLengthInBytes());

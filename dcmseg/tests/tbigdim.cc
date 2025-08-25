@@ -283,7 +283,9 @@ static void checkCreatedObject(DcmDataset& dset)
     if (seq != NULL)
     {
         size_t numFrames = seq->card();
-        OFCHECK_MSG(numFrames == NUM_FRAMES, ((OFOStringStream("Expected ") << NUM_FRAMES << " frames, but got " << numFrames)).str().c_str());
+        OFOStringStream oss;
+        oss << "Expected " << NUM_FRAMES << " frames, but got " << numFrames;
+        OFCHECK_MSG(numFrames == NUM_FRAMES, oss.str().c_str());
         DcmItem* item = seq->getItem(0);
         for (size_t n = 0; (n < numFrames) && (item != NULL); n++)
         {

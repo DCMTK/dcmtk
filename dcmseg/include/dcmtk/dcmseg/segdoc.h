@@ -523,7 +523,7 @@ public:
     {
         // Number of threads to use for reading per-frame functional groups
         // (will also be applied to writing, if applicable later on)
-        size_t m_numThreads;
+        Uint32 m_numThreads;
 
         // Constructor to initialize the flags
         LoadingFlags() : m_numThreads(1) {}

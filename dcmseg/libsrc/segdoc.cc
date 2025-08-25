@@ -1057,7 +1057,7 @@ OFCondition DcmSegmentation::writeSegments(DcmItem& item)
         segments.push_back(it->second);
         it++;
     }
-    DcmIODUtil::writeSubSequence<OFVector<DcmSegment*>>(
+    DcmIODUtil::writeSubSequence<OFVector<DcmSegment*> >(
         result, DCM_SegmentSequence, segments, item, "1-n", "1", "SegmentationImageModule");
     return result;
 }
@@ -1067,7 +1067,7 @@ OFCondition DcmSegmentation::readSegments(DcmItem& item)
     // readSubSequence cannot handle a map, read into vector instead and fill into map afterwards
     OFVector<DcmSegment*> segments;
 
-    OFCondition result = DcmIODUtil::readSubSequence<OFVector<DcmSegment*>>(
+    OFCondition result = DcmIODUtil::readSubSequence<OFVector<DcmSegment*> >(
         item, DCM_SegmentSequence, segments, "1-n", "1", "SegmentationImageModule");
     if (result.good())
     {
@@ -1535,7 +1535,7 @@ OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
     OFVector<DcmItem*> segmentItems;
     if (result.good())
     {
-        typename OFMap<Uint16, DcmSegment*>::iterator it = m_Segments.begin();
+        OFMap<Uint16, DcmSegment*>::iterator it = m_Segments.begin();
         dataset.findAndDeleteElement(DCM_SegmentSequence);
         for (Uint16 itemCount = 0; (it != m_Segments.end()) && result.good(); itemCount++)
         {

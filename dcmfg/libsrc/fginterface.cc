@@ -456,7 +456,8 @@ OFCondition FGInterface::readPerFrameFG(DcmItem& dataset)
     }
 
     // We want to either read sequentially or in parallel, depending on the number of threads.
-    Uint32 threadsUsed = findAdequateNumberOfThreads(numFrames, m_numThreads);
+    // Cast is safe since e checked range above.
+    Uint32 threadsUsed = findAdequateNumberOfThreads(OFstatic_cast(Uint32, numFrames), m_numThreads);
     if (threadsUsed > 1)
     {
         result = readPerFrameFGParallel(*perFrame, m_numThreads);
@@ -539,8 +540,8 @@ OFCondition FGInterface::readPerFrameFGParallel(DcmSequenceOfItems& perFrameFGSe
 
     // Create and start threads
     OFVector<ThreadedFGReader*> threads(numThreads);
-    size_t framesPerThread = (numFrames + numThreads - 1) / numThreads;
-    for (size_t i = 0; i < numThreads; ++i)
+    Uint32 framesPerThread = (numFrames + numThreads - 1) / numThreads;
+    for (Uint32 i = 0; i < numThreads; ++i)
     {
         threads[i] = new ThreadedFGReader();
         Uint32 startFrame = i * framesPerThread;
@@ -559,7 +560,7 @@ OFCondition FGInterface::readPerFrameFGParallel(DcmSequenceOfItems& perFrameFGSe
     }
 
     // Wait for all threads to finish
-    for (size_t i = 0; i < numThreads; ++i)
+    for (Uint32 i = 0; i < numThreads; ++i)
     {
         threads[i]->join();
         delete threads[i];
@@ -812,8 +813,9 @@ OFCondition FGInterface::writePerFrameFG(DcmItem& dataset)
         return FG_EC_TooManyItems;
     }
 
-    // Use parallel processing for writing functional groups, if desired and adequate
-    Uint32 threadsUsed = findAdequateNumberOfThreads(numFrames, m_numThreads);
+    // Use parallel processing for writing functional groups, if desired and adequate.
+    // Cast is safe since we checked range above.
+    Uint32 threadsUsed = findAdequateNumberOfThreads(OFstatic_cast(Uint32, numFrames), m_numThreads);
     if (threadsUsed > 1)
     {
         result = writePerFrameFGParallel(dataset, m_numThreads);
@@ -879,7 +881,7 @@ OFCondition FGInterface::writePerFrameFGParallel(DcmItem& dataset, const Uint32 
     // We need this to distribute the work across threads. Using the OFMap directly in threads
     // could lead to data races and inconsistencies since each thread would invalidate the iterators
     // being used in the other threads.
-    OFVector<OFPair<Uint32, FunctionalGroups*>> frameGroups;
+    OFVector<OFPair<Uint32, FunctionalGroups*> > frameGroups;
     frameGroups.reserve(m_perFrame.size());
     for (OFMap<Uint32, FunctionalGroups*>::iterator it = m_perFrame.begin(); it != m_perFrame.end(); ++it)
     {
@@ -909,11 +911,14 @@ OFCondition FGInterface::writePerFrameFGParallel(DcmItem& dataset, const Uint32 
     }
 
     // Wait for all threads to complete
-    for (auto& thread : threads)
+    OFVector<ThreadedFGWriter*>::iterator thread = threads.begin();
+    while (thread != threads.end())
     {
-        thread->join();
-        delete thread; // Clean up the thread object
+        (*thread)->join();
+        delete (*thread); // Clean up the thread object
+        thread++;
     }
+    threads.clear();
 
     if (errorOccurred == EC_Normal)
     {

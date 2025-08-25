@@ -368,7 +368,7 @@ OFCondition SegmentedPropertyTypeCodeItem::write(DcmItem& item)
         result = checkModifiers();
         if (result.good())
         {
-            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*>>(result,
+            DcmIODUtil::writeSubSequence<OFVector<CodeSequenceMacro*> >(result,
                                                                        DCM_SegmentedPropertyTypeModifierCodeSequence,
                                                                        m_SegmentedPropertyTypeModifierCode,
                                                                        item,
