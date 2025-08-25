@@ -540,12 +540,14 @@ OFCondition FGInterface::readPerFrameFGParallel(DcmSequenceOfItems& perFrameFGSe
 
     // Create and start threads
     OFVector<ThreadedFGReader*> threads(numThreads);
-    Uint32 framesPerThread = (numFrames + numThreads - 1) / numThreads;
+    // Range check on numFrames has been performed earlier so computation should be safe
+    Uint32 framesPerThread = OFstatic_cast(Uint32, (numFrames + numThreads - 1) / numThreads);
     for (Uint32 i = 0; i < numThreads; ++i)
     {
         threads[i] = new ThreadedFGReader();
         Uint32 startFrame = i * framesPerThread;
-        Uint32 endFrame = (startFrame + framesPerThread < numFrames) ? startFrame + framesPerThread : numFrames;
+        // numFrame is range-checked earlier
+        Uint32 endFrame = (startFrame + framesPerThread < numFrames) ? startFrame + framesPerThread : OFstatic_cast(Uint32, numFrames);
 
         threads[i]->init(&perFrameInputItems, &perFrameInputMutex,
                          &perFrameResultGroups, &perFrameResultGroupsMutex,
