@@ -226,9 +226,20 @@ public:
             if (index >= m_numPixels) {
                 return EC_IllegalCall;
             }
+            // Since sizeof(PixelType) is known during compile time an
+            // we would require C++11 to mark the condition as constexpr
+            // we disable the related warning in general.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_CONSTANT_EXPRESSION_WARNING
+// Add range check for 16-bit to 8-bit conversion
+            if (sizeof(PixelType) == 2 && m_pixData[index] > 255) {
+                DCMIOD_ERROR("Value in the frame is too large to be cast to 8 bits");
+                return EC_IllegalCall;
+            }
             byteVal = static_cast<Uint8>(m_pixData[index]);
             return EC_Normal;
         }
+#include DCMTK_DIAGNOSTIC_POP
 
         /** Get value at given index as 16 bit value
          *  @param shortVal The value at the given index
