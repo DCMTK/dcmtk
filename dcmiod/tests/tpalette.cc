@@ -207,7 +207,7 @@ static T* makePixelData(unsigned long& num_entries)
     T* data = new T[num_entries];
     for (unsigned long i = 0; i < num_entries; i++)
     {
-        // Casts are safe since we check the limits above, 
+        // Casts are safe since we check the limits above,
         // and this way the compiler does not complain about narrowing conversions
         if (OFnumeric_limits<T>::is_signed)
             data[i] = OFstatic_cast(T, i - num_entries / 2);
@@ -229,7 +229,7 @@ static OFBool verifyPixelData(T* dataFound, T* data, const unsigned long& num_en
     {
         if (dataFound[i] != data[i])
         {
-            OFLOG_DEBUG(tLog, "Pixel data at index " << (Uint16)i << " is " << (Uint16)dataFound[i] << " but should be " << (Uint16)(data[i]));
+            OFLOG_DEBUG(tLog, "Pixel data at index " << OFstatic_cast(Uint16, i) << " is " << OFstatic_cast(Uint16, dataFound[i]) << " but should be " << OFstatic_cast(Uint16, data[i]));
             return OFFalse;
         }
     }
