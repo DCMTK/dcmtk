@@ -337,6 +337,12 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         if (cond.bad()) {
             DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
         }
+        else {
+            cond = ASC_setTransportLayerType(params, secureConnection);
+            if (cond.bad()) {
+                DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
+            }
+        }
         DCMQRDB_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
     }
     if (cond.good()) {
