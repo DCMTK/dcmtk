@@ -198,6 +198,9 @@ private:
     /// specific character set (from series file)
     OFString             specificCharSet_;
 
+    /// modality (from series file)
+    OFString             modality_;
+
     /// DICOM sequence encoding: explicit or undefined length
     E_EncodingType          oenctype_;
 

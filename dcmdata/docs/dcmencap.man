@@ -172,24 +172,23 @@ other processing options:
 
 \subsection dcmencap_output_options output options
 \verbatim
-output file format:
+output transfer syntax:
+  +te  --write-xfer-little
+         write with explicit VR little endian (default)
 
-  +F   --write-file
-         write file format (default)
+  +tb  --write-xfer-big
+         write with explicit VR big endian TS
 
-  -F   --write-dataset
-         write data set without file meta information
+  +ti  --write-xfer-implicit
+         write with implicit VR little endian TS
 
 group length encoding:
 
-  +g=  --group-length-recalc
-         recalculate group lengths if present (default)
+  -g   --group-length-remove
+         write without group length elements (default)
 
   +g   --group-length-create
-         always write with group length elements
-
-  -g   --group-length-remove
-         always write without group length elements
+         write with group length elements
 
 length encoding in sequences and items:
 

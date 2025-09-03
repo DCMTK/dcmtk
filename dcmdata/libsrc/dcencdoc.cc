@@ -53,6 +53,7 @@ DcmEncapsulatedDocument::DcmEncapsulatedDocument()
 , seriesUID_()
 , studyUID_()
 , specificCharSet_()
+, modality_()
 , oenctype_(EET_ExplicitLength)
 , writeMode_(EWM_fileformat)
 , oglenc_(EGL_withoutGL)
@@ -557,9 +558,8 @@ static void addOutputOptions(OFCommandLine &cmd)
     cmd.addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
 
     cmd.addSubGroup("group length encoding:");
-    cmd.addOption("--group-length-recalc", "+g=", "recalculate group lengths if present (default)");
-    cmd.addOption("--group-length-create", "+g", "always write with group length elements");
-    cmd.addOption("--group-length-remove", "-g", "always write without group length elements");
+    cmd.addOption("--group-length-remove", "-g", "write without group length elements (default)");
+    cmd.addOption("--group-length-create", "+g", "write with group length elements");
 
     cmd.addSubGroup("length encoding in sequences and items:");
     cmd.addOption("--length-explicit",     "+e", "write with explicit lengths (default)");
@@ -778,9 +778,8 @@ void DcmEncapsulatedDocument::parseArguments(
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--group-length-recalc")) oglenc_ = EGL_recalcGL;
-    if (cmd.findOption("--group-length-create")) oglenc_ = EGL_withGL;
     if (cmd.findOption("--group-length-remove")) oglenc_ = EGL_withoutGL;
+    if (cmd.findOption("--group-length-create")) oglenc_ = EGL_withGL;
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
@@ -877,6 +876,11 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers()
           if (dset->findAndGetString(DCM_SeriesInstanceUID, c).good() && c)
           {
             seriesUID_ = c;
+          }
+          c = NULL;
+          if (dset->findAndGetString(DCM_Modality, c).good() && c)
+          {
+            modality_ = c;
           }
           if (dset->findAndGetSint32(DCM_InstanceNumber,
                                      incrementedInstance).good())
@@ -1518,7 +1522,15 @@ OFCondition DcmEncapsulatedDocument::createHeader()
                 DCMDATA_TRACE("Inserting SOPClassUID to dataset");
                 result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedPDFStorage);
                 if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
-                if (result.good()) result = dataset->putAndInsertString(DCM_Modality, "DOC");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "DOC"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'DOC', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "DOC");
+                }
                 if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
                 if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
                 break;
@@ -1527,7 +1539,15 @@ OFCondition DcmEncapsulatedDocument::createHeader()
                 DCMDATA_TRACE("Inserting SOPClassUID to dataset");
                 result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedCDAStorage);
                 if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
-                if (result.good()) result = dataset->putAndInsertString(DCM_Modality, "DOC");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "DOC"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'DOC', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "DOC");
+                }
                 if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
                 // Patient Name and Patient ID are guaranteed to be in UTF-8 (ISO_IR 192) in the CDA document
                 // and no other attributes from the series file are affected by character set issues
@@ -1547,7 +1567,15 @@ OFCondition DcmEncapsulatedDocument::createHeader()
                 DCMDATA_TRACE("Inserting SOPClassUID to dataset");
                 result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
                 if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/stl");
-                if (result.good()) result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "M3D"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'M3D', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                }
                 if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
                 if (result.good()) result = addFrameOfReferenceModule(dataset);
                 if (result.good()) result = addEnhancedGeneralEquipmentModule(dataset);
@@ -1558,7 +1586,15 @@ OFCondition DcmEncapsulatedDocument::createHeader()
                 DCMDATA_TRACE("Inserting SOPClassUID to dataset");
                 result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedMTLStorage);
                 if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/mtl");
-                if (result.good()) result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "M3D"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'M3D', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                }
                 if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
                 if (result.good()) result = addFrameOfReferenceModule(dataset);
                 if (result.good()) result = addEnhancedGeneralEquipmentModule(dataset);
@@ -1569,7 +1605,15 @@ OFCondition DcmEncapsulatedDocument::createHeader()
                 DCMDATA_TRACE("Inserting SOPClassUID to dataset");
                 result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedOBJStorage);
                 if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/obj");
-                if (result.good()) result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "M3D"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'M3D', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                }
                 if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
                 if (result.good()) result = addFrameOfReferenceModule(dataset);
                 if (result.good()) result = addEnhancedGeneralEquipmentModule(dataset);
