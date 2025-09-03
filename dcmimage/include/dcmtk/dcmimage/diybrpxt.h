@@ -146,9 +146,13 @@ class DiYBRPixelTemplate
                                 /* convert a single frame */
                                 for (l = planeSize; (l != 0) && (i != 0); --l, --i, ++y, ++cb, ++cr)
                                 {
-                                    sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
-                                    sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
-                                    sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
+                                    const Sint32 yValue = *y;
+                                    /* conversion to unsigned integer needed for gcc 14 on Solaris */
+                                    const unsigned int cbValue = *cb;
+                                    const unsigned int crValue = *cr;
+                                    sr = yValue + rcr_tab[crValue];
+                                    sg = yValue - gcb_tab[cbValue] - gcr_tab[crValue];
+                                    sb = yValue + bcb_tab[cbValue];
                                     *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                                     *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                                     *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
@@ -162,18 +166,16 @@ class DiYBRPixelTemplate
                         else
                         {
                             const T1 *p = pixel;
-                            T1 y;
-                            T1 cb;
-                            T1 cr;
                             unsigned long i;
                             for (i = count; i != 0; --i)
                             {
-                                y  = *(p++);
-                                cb = *(p++);
-                                cr = *(p++);
-                                sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[cr]);
-                                sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[cb]) - OFstatic_cast(Sint32, gcr_tab[cr]);
-                                sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[cb]);
+                                const Sint32 yValue = *(p++);
+                                /* conversion to unsigned integer needed for gcc 14 on Solaris */
+                                const unsigned int cbValue = *(p++);
+                                const unsigned int crValue = *(p++);
+                                sr = yValue + rcr_tab[crValue];
+                                sg = yValue - gcb_tab[cbValue] - gcr_tab[crValue];
+                                sb = yValue + bcb_tab[cbValue];
                                 *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                                 *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                                 *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
@@ -202,8 +204,10 @@ class DiYBRPixelTemplate
                                 /* convert a single frame */
                                 for (l = planeSize; (l != 0) && (i != 0); --l, --i)
                                 {
-                                    convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
-                                        removeSign(*(cr++), offset), maxvalue);
+                                    const T2 yValue = removeSign(*(y++), offset);
+                                    const T2 cbValue = removeSign(*(cb++), offset);
+                                    const T2 crValue = removeSign(*(cr++), offset);
+                                    convertValue(*(r++), *(g++), *(b++), yValue, cbValue, crValue, maxvalue);
                                 }
                                 /* jump to next frame start (skip 2 planes) */
                                 y += 2 * planeSize;
@@ -214,16 +218,13 @@ class DiYBRPixelTemplate
                         else
                         {
                             const T1 *p = pixel;
-                            T2 y;
-                            T2 cb;
-                            T2 cr;
                             unsigned long i;
                             for (i = count; i != 0; --i)
                             {
-                                y = removeSign(*(p++), offset);
-                                cb = removeSign(*(p++), offset);
-                                cr = removeSign(*(p++), offset);
-                                convertValue(*(r++), *(g++), *(b++), y, cb, cr, maxvalue);
+                                const T2 yValue = removeSign(*(p++), offset);
+                                const T2 cbValue = removeSign(*(p++), offset);
+                                const T2 crValue = removeSign(*(p++), offset);
+                                convertValue(*(r++), *(g++), *(b++), yValue, cbValue, crValue, maxvalue);
                             }
                         }
                     }
