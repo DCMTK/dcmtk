@@ -323,7 +323,8 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
         T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
-    DcmQueryRetrieveMoveContext context(dbHandle, options_, associationConfiguration_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
+    DcmQueryRetrieveMoveContext context(dbHandle, options_, associationConfiguration_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority,
+        tlsOptions_.secureConnectionRequested());
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';

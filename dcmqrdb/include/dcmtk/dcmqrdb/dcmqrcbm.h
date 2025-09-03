@@ -46,6 +46,7 @@ public:
      *  @param assoc pointer to DIMSE association
      *  @param msgid DIMSE message ID
      *  @param pr DIMSE priority
+     *  @param secureConnection a flag indicating whether or not a secure connection was requested
      */
     DcmQueryRetrieveMoveContext(
       DcmQueryRetrieveDatabaseHandle& handle,
@@ -55,7 +56,8 @@ public:
       DIC_US priorstatus,
       T_ASC_Association *assoc,
       DIC_US msgid,
-      T_DIMSE_Priority pr)
+      T_DIMSE_Priority pr,
+      OFBool secureConnection)
     : dbHandle(handle)
     , options_(options)
     , associationConfiguration_(associationConfiguration)
@@ -75,6 +77,7 @@ public:
     , nCompleted(0)
     , nFailed(0)
     , nWarning(0)
+    , secureConnection(secureConnection)
     {
       origAETitle[0] = '\0';
       origHostName[0] = '\0';
@@ -183,6 +186,8 @@ private:
     /// number of completed sub-operations that causes warnings
     DIC_US nWarning;
 
+    /// a flag indicating whether or not a secure connection was requested
+    OFBool secureConnection;
 };
 
 #endif
