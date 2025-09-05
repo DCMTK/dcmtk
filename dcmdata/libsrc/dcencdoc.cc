@@ -314,20 +314,11 @@ OFCondition DcmEncapsulatedDocument::getCDAData()
     {
       if (patientID_.length() > 0)
       {
-        //if no-override option is inactive, return an error
-        if (!override_)
-        {
-          DCMDATA_ERROR("Patient ID mismatch:" << OFendl
-                  << "Found in the CDA file : " << pID << OFendl
-                  << "Entered (or found in DCM file): " << patientID_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("Patient ID mismatch: '" << pID << "' in CDA, '" << patientID_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("Patient ID mismatch:" << OFendl
-                  << "Found in the CDA file : " << pID << OFendl
-                  << "Provided (in DCM file): " << patientID_);
+          DCMDATA_ERROR("Patient ID mismatch: '" << pID << "' in CDA, '" << patientID_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else
@@ -340,19 +331,11 @@ OFCondition DcmEncapsulatedDocument::getCDAData()
     {
       if (patientBirthdate_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("Patient Birth Date mismatch:" << OFendl
-                  << "Found in the CDA file : " << pBirthDate << OFendl
-                  << "Provided (in DCM file): " << patientBirthdate_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("Patient Birth Date mismatch: '" << pBirthDate << "' in CDA, '" << patientBirthdate_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("Patient Birth Date mismatch:" << OFendl
-                  << "Found in the CDA file : " << pBirthDate << OFendl
-                  << "Provided (in DCM file): " << patientBirthdate_);
+          DCMDATA_ERROR("Patient Birth Date mismatch: '" << pBirthDate << "' in CDA, '" << patientBirthdate_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else patientBirthdate_ = pBirthDate;
@@ -362,19 +345,11 @@ OFCondition DcmEncapsulatedDocument::getCDAData()
     {
       if (patientSex_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("Patient Sex mismatch:" << OFendl
-                  << "Found in the CDA file : " << pSex << OFendl
-                  << "Provided (in DCM file): " << patientSex_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("Patient Sex mismatch: '" << pSex << "' in CDA, '" << patientSex_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("Patient Sex mismatch:" << OFendl
-                  << "Found in the CDA file : " << pSex << OFendl
-                  << "Provided (in DCM file): " << patientSex_);
+          DCMDATA_ERROR("Patient Sex mismatch: '" << pSex << "' in CDA, '" << patientSex_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else patientSex_ = pSex;
@@ -384,72 +359,42 @@ OFCondition DcmEncapsulatedDocument::getCDAData()
     {
       if (patientName_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("Patient Name mismatch:" << OFendl
-                  << "Found in the CDA file : " << pName << OFendl
-                  << "Provided (in DCM file): " << patientName_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("Patient Name mismatch: '" << pName << "' in CDA, '" << patientName_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("Patient Name mismatch:" << OFendl
-                  << "Found in the CDA file : " << pName << OFendl
-                  << "Provided (in DCM file): " << patientName_);
+          DCMDATA_ERROR("Patient Name mismatch: '" << pName << "' in CDA, '" << patientName_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else patientName_ = pName;
     }
     //get document title from CDA
     OFString dTitle = XMLgetAttribute(fileNode, DCM_DocumentTitle);
-    if (documentTitle_.length() == 0)
-    {
-      if (conceptCSD_.length() > 0) documentTitle_ = conceptCSD_;
-      if (conceptCV_.length() > 0) documentTitle_ = conceptCV_;
-      if (conceptCM_.length() > 0) documentTitle_ = conceptCM_;
-    }
-
     if ((dTitle.length() > 0) && (documentTitle_ != dTitle))
     {
       if (documentTitle_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("Document Title mismatch:" << OFendl
-                  << "Found in the CDA file : " << dTitle << OFendl
-                  << "Provided (in DCM file): " << documentTitle_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("Document Title mismatch: '" << dTitle << "' in CDA, '" << documentTitle_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("Document Title mismatch:" << OFendl
-                  << "Found in the CDA file : " << dTitle << OFendl
-                  << "Provided (in DCM file): " << documentTitle_);
+          DCMDATA_ERROR("Document Title mismatch: '" << dTitle << "' in CDA, '" << documentTitle_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else documentTitle_ = dTitle;
     }
+
     //get Concept information from CDA
     OFString cCSD = XMLgetAttribute(fileNode, DCM_CodingSchemeDesignator);
     if ((cCSD.length() > 0) && (conceptCSD_ != cCSD))
     {
       if (conceptCSD_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("concept CSD mismatch:" << OFendl
-                  << "Found in the CDA file : " << cCSD << OFendl
-                  << "Provided (in DCM file): " << conceptCSD_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("concept CSD mismatch: '" << cCSD << "' in CDA, '" << conceptCSD_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("concept CSD mismatch:" << OFendl
-                  << "Found in the CDA file : " << cCSD << OFendl
-                  << "Provided (in DCM file): " << conceptCSD_);
+          DCMDATA_ERROR("concept CSD mismatch: '" << cCSD << "' in CDA, '" << conceptCSD_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else conceptCSD_ = cCSD;
@@ -459,19 +404,11 @@ OFCondition DcmEncapsulatedDocument::getCDAData()
     {
       if (conceptCV_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("concept CV mismatch:" << OFendl
-                  << "Found in the CDA file : " << cCV << OFendl
-                  << "Provided (in DCM file): " << conceptCV_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("concept CV mismatch: '" << cCV << "' in CDA, '" << conceptCV_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("concept CV mismatch:" << OFendl
-                  << "Found in the CDA file : " << cCV << OFendl
-                  << "Provided (in DCM file): " << conceptCV_);
+          DCMDATA_ERROR("concept CV mismatch: '" << cCV << "' in CDA, '" << conceptCV_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else conceptCV_ = cCV;
@@ -481,19 +418,11 @@ OFCondition DcmEncapsulatedDocument::getCDAData()
     {
       if (conceptCM_.length() > 0)
       {
-        if (!override_)
-        {
-          DCMDATA_ERROR("concept CM mismatch:" << OFendl
-                  << "Found in the CDA file : " << cCM << OFendl
-                  << "Provided (in DCM file): " << conceptCM_ << OFendl
-                  << "If you wish to override, run again with +ov");
-          return EC_InvalidValue;
-        }
+        if (override_) DCMDATA_WARN("concept CM mismatch: '" << cCM << "' in CDA, '" << conceptCM_ << "' in DICOM file or specified via command line.");
         else
         {
-          DCMDATA_WARN("concept CM mismatch:" << OFendl
-                  << "Found in the CDA file : " << cCM << OFendl
-                  << "Provided (in DCM file): " << conceptCM_);
+          DCMDATA_ERROR("concept CM mismatch: '" << cCM << "' in CDA, '" << conceptCM_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
         }
       }
       else conceptCM_ = cCM;
@@ -527,6 +456,16 @@ static void addDocumentOptions(OFCommandLine &cmd)
     cmd.addOption("--patient-birthdate",   "+pb", 1, "[d]ate: string (YYYYMMDD)", "patient's birth date");
     cmd.addOption("--patient-sex",         "+ps", 1, "[s]ex: string (M, F or O)", "patient's sex");
 
+    cmd.addSubGroup("device data:");
+    cmd.addOption("--manufacturer",          "+mn", 1, "[n]ame: string", "manufacturer's name");
+    cmd.addOption("--manufacturer-model",    "+mm", 1, "[n]ame: string", "manufacturer's model name");
+    cmd.addOption("--device-serial",         "+ds", 1, "[n]umber: string", "device serial number");
+    cmd.addOption("--software-versions",     "+sv", 1, "[v]ersions: string", "software versions");
+
+    cmd.addSubGroup("manufacturing 3d model data (STL/MTL/OBJ only):");
+    cmd.addOption("--measurement-units",     "+mu", 3, "[CSD] [CV] [CM]: string (default: UCUM, um, um)",
+                  "measurement units defined by coding scheme\ndesignator CSD, code value CV, code meaning CM");
+
     cmd.addSubGroup("study and series:");
     cmd.addOption("--generate",            "+sg", "generate new study and\nseries UIDs (default)");
     cmd.addOption("--study-from",          "+st", 1, "[f]ilename: string", "read patient/study data from DICOM file");
@@ -546,6 +485,9 @@ static void addDocumentOptions(OFCommandLine &cmd)
 static void addOutputOptions(OFCommandLine &cmd)
 {
     cmd.addGroup("processing options:");
+    cmd.addSubGroup("CDA processing options:");
+    cmd.addOption("--no-override",           "-ov", "CDA patient and document data must match study,\nseries or manually entered information (default)");
+    cmd.addOption("--override",              "+ov", "CDA's data will be overwritten by study, series\nor manually entered information");
 
     cmd.addSubGroup("other processing options:");
     cmd.addOption("--key",                 "-k", 1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"", "add further attribute");
@@ -591,18 +533,6 @@ void DcmEncapsulatedDocument::addCommandlineOptions(OFCommandLine &cmd) const
     cmd.addOption("--filetype-obj",          "+fs", "Expect OBJ file");
 
     addDocumentOptions(cmd);
-
-    cmd.addSubGroup("CDA processing options:");
-    cmd.addOption("--no-override",           "-ov", "CDA patient and document data must match study,\nseries or manually entered information (default)");
-    cmd.addOption("--override",              "+ov", "CDA's data will be overwritten by study, series\nor manually entered information");
-
-    cmd.addSubGroup("STL/MTL/OBJ processing options:");
-    cmd.addOption("--manufacturer",          "+mn", 1, "[n]ame: string", "manufacturer's name");
-    cmd.addOption("--manufacturer-model",    "+mm", 1, "[n]ame: string", "manufacturer's model name");
-    cmd.addOption("--device-serial",         "+ds", 1, "[n]umber: string", "device serial number");
-    cmd.addOption("--software-versions",     "+sv", 1, "[v]ersions: string", "software versions");
-    cmd.addOption("--measurement-units",     "+mu", 3, "[CSD] [CV] [CM]: string (default: UCUM, um, um)",
-                  "measurement units defined by coding scheme\ndesignator CSD, code value CV, code meaning CM");
 
     addOutputOptions(cmd);
 }
@@ -716,22 +646,42 @@ void DcmEncapsulatedDocument::parseArguments(
     cmd.endOptionBlock();
 
     // ---------- parse CDA processing options ----------
-    if (ftype_ == DT_cdaDocument)
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--override"))
     {
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--override"))
-      {
-        app.checkConflict("--override", "--filetype-pdf", ftype_ == DT_pdfDocument);
-        app.checkConflict("--override", "--filetype-stl", ftype_ == DT_stlDocument);
-        override_ = OFTrue;
-      }
-      if (cmd.findOption("--no-override"))
-      {
-        override_ = OFFalse;
-        app.checkConflict("--no-override", "--filetype-pdf", ftype_ == DT_pdfDocument);
-        app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_stlDocument);
-      }
-      cmd.endOptionBlock();
+      app.checkConflict("--override", "--filetype-pdf", ftype_ == DT_pdfDocument);
+      app.checkConflict("--override", "--filetype-stl", ftype_ == DT_stlDocument);
+      app.checkConflict("--override", "--filetype-stl", ftype_ == DT_mtlDocument);
+      app.checkConflict("--override", "--filetype-stl", ftype_ == DT_objDocument);
+      override_ = OFTrue;
+    }
+    if (cmd.findOption("--no-override"))
+    {
+      app.checkConflict("--no-override", "--filetype-pdf", ftype_ == DT_pdfDocument);
+      app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_stlDocument);
+      app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_mtlDocument);
+      app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_objDocument);
+      override_ = OFFalse;
+    }
+    cmd.endOptionBlock();
+
+    // ---------- parse device data options ----------
+
+    if (cmd.findOption("--manufacturer"))
+    {
+        app.checkValue(cmd.getValue(manufacturer_));
+    }
+    if (cmd.findOption("--manufacturer-model"))
+    {
+        app.checkValue(cmd.getValue(manufacturerModelName_));
+    }
+    if (cmd.findOption("--device-serial"))
+    {
+        app.checkValue(cmd.getValue(deviceSerialNumber_));
+    }
+    if (cmd.findOption("--software-versions"))
+    {
+        app.checkValue(cmd.getValue(softwareVersions_));
     }
 
     // ---------- parse STL processing options ----------
@@ -743,30 +693,6 @@ void DcmEncapsulatedDocument::parseArguments(
         app.checkValue(cmd.getValue(measurementUnitsCSD_));
         app.checkValue(cmd.getValue(measurementUnitsCV_));
         app.checkValue(cmd.getValue(measurementUnitsCM_));
-    }
-    if (cmd.findOption("--manufacturer"))
-    {
-        app.checkConflict("--manufacturer", "--filetype-cda", ftype_ == DT_cdaDocument);
-        app.checkConflict("--manufacturer", "--filetype-pdf", ftype_ == DT_pdfDocument);
-        app.checkValue(cmd.getValue(manufacturer_));
-    }
-    if (cmd.findOption("--manufacturer-model"))
-    {
-        app.checkConflict("--manufacturer-model", "--filetype-cda", ftype_ == DT_cdaDocument);
-        app.checkConflict("--manufacturer-model", "--filetype-pdf", ftype_ == DT_pdfDocument);
-        app.checkValue(cmd.getValue(manufacturerModelName_));
-    }
-    if (cmd.findOption("--device-serial"))
-    {
-        app.checkConflict("--device-serial", "--filetype-cda", ftype_ == DT_cdaDocument);
-        app.checkConflict("--device-serial", "--filetype-pdf", ftype_ == DT_pdfDocument);
-        app.checkValue(cmd.getValue(deviceSerialNumber_));
-    }
-    if (cmd.findOption("--software-versions"))
-    {
-        app.checkConflict("--software-versions", "--filetype-cda", ftype_ == DT_cdaDocument);
-        app.checkConflict("--software-versions", "--filetype-pdf", ftype_ == DT_pdfDocument);
-        app.checkValue(cmd.getValue(softwareVersions_));
     }
 
     // ---------- parse input file format options ----------
@@ -894,12 +820,32 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers()
           if (increment_) instance_ = incrementedInstance;
         }
 
+        DCMDATA_TRACE("reading reading device attributes");
+        c = NULL;
+        if (dset->findAndGetString(DCM_Manufacturer, c).good() && c)
+        {
+          manufacturer_ = c;
+        }
+        c = NULL;
+        if (dset->findAndGetString(DCM_ManufacturerModelName, c).good() && c)
+        {
+          manufacturerModelName_ = c;
+        }
+        c = NULL;
+        if (dset->findAndGetString(DCM_DeviceSerialNumber, c).good() && c)
+        {
+          deviceSerialNumber_ = c;
+        }
+        c = NULL;
+        if (dset->findAndGetString(DCM_SoftwareVersions, c).good() && c)
+        {
+          softwareVersions_ = c;
+        }
+
         if (ftype_ == DT_stlDocument || ftype_ == DT_mtlDocument || ftype_ == DT_objDocument)
         {
           DCMDATA_TRACE("reading STL/MTL/OBJ specific information");
           c = NULL;
-
-          DCMDATA_TRACE("reading Frame of Reference info");
           if (dset->findAndGetString(DCM_FrameOfReferenceUID, c).good() && c)
           {
             frameOfReferenceUID_ = c;
@@ -910,27 +856,6 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers()
             positionReferenceIndicator_ = c;
           }
 
-          DCMDATA_TRACE("reading Enhanced Equipment info");
-          c = NULL;
-          if (dset->findAndGetString(DCM_Manufacturer, c).good() && c)
-          {
-            manufacturer_ = c;
-          }
-          c = NULL;
-          if (dset->findAndGetString(DCM_ManufacturerModelName, c).good() && c)
-          {
-            manufacturerModelName_ = c;
-          }
-          c = NULL;
-          if (dset->findAndGetString(DCM_DeviceSerialNumber, c).good() && c)
-          {
-            deviceSerialNumber_ = c;
-          }
-          c = NULL;
-          if (dset->findAndGetString(DCM_SoftwareVersions, c).good() && c)
-          {
-            softwareVersions_ = c;
-          }
         }
       }
     }
@@ -1458,7 +1383,6 @@ OFCondition DcmEncapsulatedDocument::addManufacturing3DModelModule(DcmItem *data
 }
 
 
-
 OFCondition DcmEncapsulatedDocument::createHeader()
 {
     OFCondition result = EC_Normal;
@@ -1469,7 +1393,6 @@ OFCondition DcmEncapsulatedDocument::createHeader()
     if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
     if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
     if (result.good()) result = dataset->insertEmptyElement(DCM_AccessionNumber);
-    if (result.good()) result = dataset->insertEmptyElement(DCM_Manufacturer);
     if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysicianName);
     if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
     if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
@@ -1512,6 +1435,15 @@ OFCondition DcmEncapsulatedDocument::createHeader()
     if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationDate, s);
     if (result.good()) result = DcmTime::getCurrentTime(s);
     if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationTime, s);
+
+    // Device data. Special handling of these attributes for STL/MTL/OBJ,
+    // where they are type 1, will be provided later in addEnhancedGeneralEquipmentModule()
+    if (result.good() && (manufacturer_.length() > 0))
+        result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, manufacturer_.c_str());
+        else result = dataset->insertEmptyElement(DCM_Manufacturer);
+    if (result.good() && (manufacturerModelName_.length() > 0)) result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, manufacturerModelName_.c_str());
+    if (result.good() && (deviceSerialNumber_.length() > 0)) result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, deviceSerialNumber_.c_str());
+    if (result.good() && (softwareVersions_.length() > 0)) result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, softwareVersions_.c_str());
 
     //insert encapsulated file storage UID and additional attributes required per SOP class
     if (result.good())

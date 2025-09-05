@@ -102,6 +102,26 @@ patient data:
   +ps  --patient-sex  [s]ex: string (M, F or O)
          patient's sex
 
+device data:
+
+  +mn  --manufacturer  [n]ame: string
+         manufacturer's name
+
+  +mm  --manufacturer-model  [n]ame: string
+         manufacturer's model name
+
+  +ds  --device-serial  [n]umber: string
+         device serial number
+
+  +sv  --software-versions  [v]ersions: string
+         software versions
+
+manufacturing 3d model data (STL/MTL/OBJ only):
+
+  +mu  --measurement-units  [CSD] [CV] [CM]: string
+         measurement units with coding scheme designator CSD,
+         code value CV and code meaning CM (default: UCUM, um, um)
+
 study and series:
 
   +sg  --generate
@@ -131,8 +151,10 @@ burned-in annotation:
 
   -an  --annotation-no
          document does not contain patient identifying data
+\endverbatim
 
-
+\subsection dcmencap_processing_options processing options
+\verbatim
 CDA processing options:
 
   -ov  --no-override
@@ -143,27 +165,6 @@ CDA processing options:
          CDA's data will be overwritten by study, series
          or manually entered information
 
-STL/MTL/OBJ processing options:
-
-  +mn  --manufacturer  [n]ame: string
-         manufacturer's name
-
-  +mm  --manufacturer-model  [n]ame: string
-         manufacturer's model name
-
-  +ds  --device-serial  [n]umber: string
-         device serial number
-
-  +sv  --software-versions  [v]ersions: string
-         software versions
-
-  +mu  --measurement-units  [CSD] [CV] [CM]: string
-         measurement units with coding scheme designator CSD,
-         code value CV and code meaning CM (default: UCUM, um, um)
-\endverbatim
-
-\subsection dcmencap_processing_options processing options
-\verbatim
 other processing options:
 
   -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
