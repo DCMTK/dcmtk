@@ -139,16 +139,194 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
     return errorFlag;
 }
 
-
-OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
+unsigned long DcmCharString::getVM()
 {
-    OFBool result = OFFalse;
+    unsigned long vm;
+    const char* start = NULL;
+    const char* end = NULL;
+    if (getIndexOfPosition(-1, start, end, vm).good())
+    {
+        return vm;
+    }
+    return 0;
+}
+
+
+OFCondition DcmCharString::getOFString(OFString& stringVal, const unsigned long pos, OFBool /*normalize*/)
+{
+    unsigned long vm;
+    const char* start;
+    const char* end;
+    OFCondition result = getIndexOfPosition(pos, start, end, vm);
+    if (result.bad())
+        return result;
+
+    if (vm == 0 || start == end) {
+        stringVal.clear();
+        return EC_Normal;
+    }
+
+    stringVal.assign(start, end);
+    return EC_Normal;
+}
+
+
+OFCondition DcmCharString::getIndexOfPosition(const long pos, const char*& start, const char*& end, unsigned long& vm)
+{
+    // the vast majority of values have VM 0 or 1, so optimize for these
     char *str = NULL;
     Uint32 len = 0;
-    /* determine length in order to support possibly embedded NULL bytes */
-    if (getString(str, len).good())
-        result = DcmByteString::containsExtendedCharacters(str, len);
-    return result;
+    vm = 0;
+    errorFlag = getString(str, len);
+    if (!errorFlag.good())
+        return errorFlag;
+
+    start = str;
+    if ((str == NULL) || (len == 0))
+    {
+        if (pos > 0)
+            return EC_IllegalParameter;
+        return EC_Normal;
+    }
+
+    vm = 1;
+    if (!supportsMultiValue())
+    {
+        if (pos > 0)
+            return EC_IllegalParameter;
+        end = str + len;
+        return EC_Normal;
+    }
+
+    const char *p = str;
+    // only check character sets if the value contains any non-ASCII characters
+    if (containsExtendedCharacters()) {
+        // check if there are any bytes that look like backslashes
+        bool hasBackslashes = false;
+        for (size_t i = 0; i < len; i++)
+        {
+            if (*p++ == '\\')
+            {
+                hasBackslashes = true;
+                break;
+            }
+        }
+        if (!hasBackslashes)
+        {
+            if (pos > 0)
+                return EC_IllegalParameter;
+            end = str + len;
+            return EC_Normal;
+        }
+
+        // We have a string containing extended characters and possibly backslashes -
+        // now we have to get the Specific Character Set to check for single-value multi-byte encodings;
+        // these may contain the byte interpreted as backslash as part of multi-byte characters.
+        // This is only relevant for Chinese encodings - UTF-8 (ISO_IR 192) can be ignored here,
+        // as any characters < 0x80 are always 1-byte sized
+        OFString charset;
+        p = str;
+        const OFCondition result = getSpecificCharacterSet(charset);
+        if (result.good() && !charset.empty())
+        {
+            if (charset == "GBK" || charset == "GB18030") {
+                // special handling to find real backslashes in chinese multi-bytes encodings;
+                // the first byte for 2-byte characters, and the first and third bytes of 4-byte
+                // characters are always > 0x80, so we can exclude these characters
+                for (size_t i = 0; i < len; i++)
+                {
+                    if (*p == '\\')
+                    {
+                        if (static_cast<unsigned long>(pos) == vm)
+                            start = p + 1;
+                        else if (static_cast<unsigned long>(pos) + 1 == vm)
+                        {
+                            end = p;
+                            return EC_Normal;
+                        }
+                        ++vm;
+                    }
+                    else if ((*p & 0x80) != 0) {
+                        // this is a 2-byte character or the first or second part
+                        // of a 4-byte character - skip the next byte
+                        ++p;
+                    }
+                    ++p;
+                }
+                if (static_cast<unsigned long>(pos) + 1 == vm)
+                {
+                    end = str + len;
+                    return EC_Normal;
+                }
+                return pos == -1 ? EC_Normal : EC_IllegalParameter;
+            }
+        }
+
+        // check for code extensions with multi-byte encodings
+        // only with a multi-valued specific character set
+        if (charset.find('\\') != OFString_npos) {
+            for (size_t i = 0; i < len; i++)
+            {
+                if (*p == '\\')
+                {
+                    if (static_cast<unsigned long>(pos) == vm)
+                        start = p + 1;
+                    else if (static_cast<unsigned long>(pos) + 1 == vm)
+                    {
+                        end = p;
+                        return EC_Normal;
+                    }
+                    ++vm;
+                }
+                else if ((*p == 0x1b) && (i < len - 2)) {
+                    // found an escape sequence, check if it is for a multi-byte encoding
+                    ++i;
+                    // The escape sequence for the following encodings starts with "$":
+                    // ISO 2022 IR 87, ISO 2022 IR 159, ISO 2022 IR 149, ISO 2022 IR 58
+                    bool isMultiByte = *++p == '$';
+                    if (!isMultiByte && *p == '-') {
+                        ++i;
+                        isMultiByte = *++p == 'T'; // ISO 2022 IR 166
+                    }
+                    if (!isMultiByte)
+                        continue;
+
+                    // we are inside a part encoded using a multi-byte extension,
+                    // skip until the next escape sequence or the end of the value
+                    while (++i < len - 2 && *p++ != 0x1b) {}
+                }
+                p++;
+            }
+            if (static_cast<unsigned long>(pos) + 1 == vm)
+            {
+                end = str + len;
+                return EC_Normal;
+            }
+            return pos == -1 ? EC_Normal : EC_IllegalParameter;
+        }
+    }
+
+    // single-byte, single-value encoding, or value without extended characters
+    for (size_t i = 0; i < len; i++)
+    {
+        if (*p++ == '\\')
+        {
+            if (static_cast<unsigned long>(pos) == vm)
+                start = p;
+            else if (static_cast<unsigned long>(pos) + 1 == vm)
+            {
+                end = p - 1;
+                return EC_Normal;
+            }
+            ++vm;
+        }
+    }
+    if (static_cast<unsigned long>(pos) + 1 == vm)
+    {
+        end = str + len;
+        return EC_Normal;
+    }
+    return pos == -1 ? EC_Normal : EC_IllegalParameter;
 }
 
 
