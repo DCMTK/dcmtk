@@ -471,11 +471,10 @@ OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
 // ********************************
 
 
-OFCondition DcmDataset::write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype /* = EET_UndefinedLength */,
-      DcmWriteCache *wcache)
+OFCondition DcmDataset::write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype /* = EET_UndefinedLength */,
+                              DcmWriteCache *wcache)
 {
     return write(outStream, oxfer, enctype, wcache, EGL_recalcGL);
 }

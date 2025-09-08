@@ -843,6 +843,12 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
      *                         in the file meta information header.
      */
 {
+    /* write as dataset (without meta header) */
+    if (writeMode == EWM_dataset)
+    {
+        return getDataset()->write(outStream, oxfer, enctype, wcache, glenc,
+            padenc, padlen, subPadlen, instanceLength);
+    }
     /* if the transfer state of this is not initialized, this is an illegal call */
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -1001,6 +1007,7 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
                                     const Uint32 subPadLength,
                                     const E_FileWriteMode writeMode)
 {
+    /* save as dataset (without meta header) */
     if (writeMode == EWM_dataset)
     {
         return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
