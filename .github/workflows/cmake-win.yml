@@ -33,7 +33,7 @@ jobs:
 
       # Uncompress support libraries into directory c:\dcmtk_support\libs.
       # We rename the original directory to libs so that the rest of the script
-      # can use the ame path even if the support library package is updated
+      # can use the same path even if the support library package is updated
       # in the future in the download task above.
       - name: Uncompress Support libraries
         shell: pwsh
