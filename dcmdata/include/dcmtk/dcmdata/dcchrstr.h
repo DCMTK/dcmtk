@@ -107,15 +107,21 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
-    /** check if this element contains non-ASCII characters. Please note that this check
-     *  is pretty simple and only works for single-byte character sets that do include
-     *  the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All character
-     *  codes below 128 are considered to be ASCII codes and all others are considered to
-     *  be non-ASCII.
-     *  @param checkAllStrings not used in this class
-     *  @return true if element contains non-ASCII characters, false otherwise
+    /** get value multiplicity
+     *  @return number of string components (separated by a backslash)
      */
-    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+    virtual unsigned long getVM();
+
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize not used since string normalization depends on value representation
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
 
     /** check if this element is affected by SpecificCharacterSet
      *  @return always returns true since all derived VR classes are affected by the
@@ -169,6 +175,15 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      */
     virtual const OFString& getDelimiterChars() const;
 
+    /** find the start index of the next component.
+     * @param str pointer to the string value to be searched
+     * @param len the length of @a str
+     * @param charSet the value of Specific Character Set; if not set, single-byte encoding is assumed
+     * @return a pointer to the next component, or NULL if none exists.
+     * @note The pointer will point after the last character, if the component
+     *   is the last component and is empty (e.g., @a ends with a backslash).
+     */
+    virtual const char* findNextComponentPosition(const char *str, Uint32 len, const OFString& charSet) const;
 };
 
 
