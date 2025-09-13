@@ -48,6 +48,35 @@ DcmBaseSCPPool::DcmBaseSCPPool()
 
 DcmBaseSCPPool::~DcmBaseSCPPool()
 {
+  // Free memory
+  m_criticalSection.lock();
+
+  // join and delete busy workers if any remain
+  for (
+    OFListIterator( DcmBaseSCPPool::DcmBaseSCPWorker* ) it = m_workersBusy.begin();
+    it != m_workersBusy.end();
+    ++it
+  )
+  {
+    (*it)->join();
+    delete *it;
+    m_criticalSection.lock();
+  }
+  m_workersBusy.clear();
+
+  // join and delete idle workers as well
+  for (
+    OFListIterator( DcmBaseSCPPool::DcmBaseSCPWorker* ) it = m_workersIdle.begin();
+    it != m_workersIdle.end();
+    ++it
+  )
+  {
+    (*it)->join();
+    delete *it;
+  }
+  m_workersIdle.clear();
+
+  m_criticalSection.unlock();
 }
 
 // ----------------------------------------------------------------------------
@@ -126,22 +155,6 @@ OFCondition DcmBaseSCPPool::listen()
 
   m_criticalSection.lock();
   m_runMode = SHUTDOWN;
-
-  // iterate over all busy workers, join their threads and delete them.
-  for
-  (
-    OFListIterator( DcmBaseSCPPool::DcmBaseSCPWorker* ) it = m_workersBusy.begin();
-    it != m_workersBusy.end();
-    ++it
-  )
-  {
-    m_criticalSection.unlock();
-    (*it)->join();
-    delete *it;
-    m_criticalSection.lock();
-  }
-
-  m_workersBusy.clear();
   m_criticalSection.unlock();
 
   /* In the end, clean up the rest of the memory and drop network */
@@ -290,8 +303,7 @@ void DcmBaseSCPPool::notifyThreadExit(DcmBaseSCPPool::DcmBaseSCPWorker* thread,
   {
     DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << thread->threadID() << " exited with error: " << result.text());
     m_workersBusy.remove(thread);
-    delete thread;
-    thread = NULL;
+    m_workersIdle.push_back(thread);
   }
   m_criticalSection.unlock();
 }
@@ -330,7 +342,9 @@ DcmBaseSCPPool::DcmBaseSCPWorker::DcmBaseSCPWorker(DcmBaseSCPPool& pool)
 
 DcmBaseSCPPool::DcmBaseSCPWorker::~DcmBaseSCPWorker()
 {
-  // do nothing
+  if (m_assoc)
+    m_pool.dropAndDestroyAssociation(m_assoc);
+
 }
 
 // ----------------------------------------------------------------------------
