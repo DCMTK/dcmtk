@@ -83,6 +83,9 @@ public:
        */
       virtual void exit();
 
+      /** Restart the worker thread */
+      virtual void rerun();
+
     protected:
 
       /** Protected constructor which is called within the friend class
@@ -210,7 +213,7 @@ protected:
    *                exit.
    *  @param result The final result of the thread.
    */
-  void notifyThreadExit(DcmBaseSCPWorker* thread,
+  void notifyWorkerDone(DcmBaseSCPWorker* thread,
                         OFCondition result);
 
   /** Initialize network, i.e. create an instance of T_ASC_Network and set
@@ -218,7 +221,7 @@ protected:
    *  @param network The T_ASC_Network pointer to create the instance
    *  @return EC_Normal if there were no errors during initialization.
    */
-  virtual OFCondition initializeNework(T_ASC_Network** network);
+  virtual OFCondition initializeNetwork(T_ASC_Network** network);
 
 private:
 
@@ -257,7 +260,7 @@ private:
   // OFList<T_ASC_Association*> m_waiting;
 
   /// Current run mode of pool
-  runmode m_runMode;
+  volatile runmode m_runMode;
 };
 
 /** Implementation of DICOM SCP server pool. The pool waits for incoming
@@ -324,6 +327,8 @@ private:
         }
 
         /** Perform SCP's duties on an already accepted (TCP/IP) connection.
+         *  Once done, destroy the association so the worker does not appear blocked
+         *  for the next request in case of reuse.
          *  @param assoc The association to be run
          *  @return Returns EC_Normal if negotiation could take place and no
          *          serious network error has occurred or the given association
@@ -331,7 +336,9 @@ private:
          */
         virtual OFCondition workerListen(T_ASC_Association* const assoc)
         {
-            return SCP::run(assoc);
+            OFCondition result = SCP::run(assoc);
+            SCP::dropAndDestroyAssociation();
+            return result;
         }
     };
 

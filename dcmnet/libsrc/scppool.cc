@@ -48,35 +48,26 @@ DcmBaseSCPPool::DcmBaseSCPPool()
 
 DcmBaseSCPPool::~DcmBaseSCPPool()
 {
-  // Free memory
+  // Wait that we are in SHUTDOWN mode
+  while (m_runMode != SHUTDOWN)
+  {
+    DCMNET_DEBUG("DcmBaseSCPPool: Destructor called, waiting for runMode to become SHUTDOWN (currently " << m_runMode << ")");
+    OFStandard::forceSleep(1);
+  }
+  DCMNET_DEBUG("DcmBaseSCPPool: Destructor called, cleaning up " << m_workersIdle.size() << " idle worker threads");
+  // Now all workers must be in idle list which will be joined and deleted now.
+  // Since we are in SHUTDOWN mode, no other thread can modify the lists anymore.
   m_criticalSection.lock();
-
-  // join and delete busy workers if any remain
-  for (
-    OFListIterator( DcmBaseSCPPool::DcmBaseSCPWorker* ) it = m_workersBusy.begin();
-    it != m_workersBusy.end();
-    ++it
-  )
+  size_t count = 1;
+  for (OFListIterator(DcmBaseSCPWorker*) it = m_workersIdle.begin(); it != m_workersIdle.end(); ++it)
   {
+    DCMNET_DEBUG("DcmBaseSCPPool: Joining and deleting idle worker thread " << count << ", #" << (*it)->threadID());
     (*it)->join();
-    delete *it;
-    m_criticalSection.lock();
+    delete (*it);
+    count++;
   }
-  m_workersBusy.clear();
-
-  // join and delete idle workers as well
-  for (
-    OFListIterator( DcmBaseSCPPool::DcmBaseSCPWorker* ) it = m_workersIdle.begin();
-    it != m_workersIdle.end();
-    ++it
-  )
-  {
-    (*it)->join();
-    delete *it;
-  }
-  m_workersIdle.clear();
-
   m_criticalSection.unlock();
+  DCMNET_DEBUG("DcmBaseSCPPool: Destructor finished");
 }
 
 // ----------------------------------------------------------------------------
@@ -90,7 +81,7 @@ OFCondition DcmBaseSCPPool::listen()
 
   /* Initialize network, i.e. create an instance of T_ASC_Network*. */
   T_ASC_Network *network = NULL;
-  OFCondition cond = initializeNework(&network);
+  OFCondition cond = initializeNetwork(&network);
   if(cond.bad())
     return cond;
 
@@ -152,8 +143,19 @@ OFCondition DcmBaseSCPPool::listen()
       cond = EC_Normal;
     }
   }
+  // Log why we left the listen loop
+  if (cond.bad())
+    DCMNET_DEBUG("DcmBaseSCPPool: Leaving listen loop due to error: " << cond.text());
+  else if (cond == NET_EC_SCPBusy)
+    DCMNET_DEBUG("DcmBaseSCPPool: Leaving listen loop due to too many concurrent connections (busy).");
+  else if (m_runMode == STOP)
+    DCMNET_DEBUG("DcmBaseSCPPool: Leaving listen loop due to stop request.");
+  else
+    DCMNET_DEBUG("DcmBaseSCPPool: Leaving listen loop, result: " << cond.text() << " (runMode: " << m_runMode << ")");
 
+  // Now all workers must be in idle list which will be deleted in destructor.
   m_criticalSection.lock();
+  // Set run mode to SHUTDOWN which signals destructor that its time to clean up
   m_runMode = SHUTDOWN;
   m_criticalSection.unlock();
 
@@ -209,6 +211,7 @@ OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,
   /* Try to find idle worker thread */
   OFCondition result = EC_Normal;
   DcmBaseSCPWorker *chosen = NULL;
+  OFBool isNewWorker = OFFalse;
 
   /* Do we have idle worker threads that can handle the association? */
   m_criticalSection.lock();
@@ -216,6 +219,7 @@ OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,
   {
     if (m_workersBusy.size() >= m_maxWorkers)
     {
+      DCMNET_DEBUG("DcmBaseSCPPool: Maximum number of busy worker threads reached (" << m_maxWorkers << "), cannot handle incoming association");
       /* No idle workers and maximum of busy workers reached? Return busy */
       result = NET_EC_SCPBusy;
     }
@@ -232,12 +236,15 @@ OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,
         m_workersBusy.push_back(worker);
         worker->setSharedConfig(sharedConfig);
         chosen = worker;
+        isNewWorker = OFTrue;
+        DCMNET_DEBUG("DcmBaseSCPPool: Created new worker thread, now " << m_workersBusy.size() << " busy threads total");
       }
     }
   }
   /* Else we have idle workers, use one of them */
   else
   {
+    DCMNET_DEBUG("DcmBaseSCPPool: Reusing existing idle DcmSCP worker thread #" << m_workersIdle.front()->threadID());
     chosen = m_workersIdle.front();
     m_workersIdle.pop_front();
     m_workersBusy.push_back(chosen);
@@ -251,12 +258,18 @@ OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,
     result = chosen->setAssociation(assoc);
   }
   /* Start the thread */
-  if (result.good())
+  if (isNewWorker && result.good())
   {
      if (chosen->start() != 0)
      {
        result = NET_EC_CannotStartSCPThread;
      }
+  }
+  else if (result.good())
+  {
+    // If we reuse an existing worker thread, it might be waiting for an association.
+    // Wake it up now.
+    chosen->rerun();
   }
   /* Return to listen loop */
   return result;
@@ -295,22 +308,29 @@ DcmSCPConfig& DcmBaseSCPPool::getConfig()
 
 // ----------------------------------------------------------------------------
 
-void DcmBaseSCPPool::notifyThreadExit(DcmBaseSCPPool::DcmBaseSCPWorker* thread,
+void DcmBaseSCPPool::notifyWorkerDone(DcmBaseSCPPool::DcmBaseSCPWorker* thread,
                                       OFCondition result)
 {
   m_criticalSection.lock();
-  if( m_runMode != SHUTDOWN )
+  if (result.bad())
   {
     DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << thread->threadID() << " exited with error: " << result.text());
-    m_workersBusy.remove(thread);
-    m_workersIdle.push_back(thread);
   }
+  else
+  {
+    DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << thread->threadID() << " finished successfully.");
+  }
+  // Move thread from busy to idle lists
+  m_workersBusy.remove(thread);
+  m_workersIdle.push_back(thread);
+  DCMNET_DEBUG("DcmBaseSCPPool: Put worker thread #" << thread->threadID() << " back to idle list; now "
+              << m_workersBusy.size() << " busy and " << m_workersIdle.size() << " idle worker threads.");
   m_criticalSection.unlock();
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmBaseSCPPool::initializeNework(T_ASC_Network** network)
+OFCondition DcmBaseSCPPool::initializeNetwork(T_ASC_Network** network)
 {
     OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, m_cfg.getPort()), m_cfg.getACSETimeout(), network);
     if (cond.good())
@@ -328,6 +348,7 @@ OFCondition DcmBaseSCPPool::initializeNework(T_ASC_Network** network)
     return cond;
 }
 
+
 /* *********************************************************************** */
 /*                        DcmBaseSCPPool::BaseSCPWorker class              */
 /* *********************************************************************** */
@@ -342,9 +363,6 @@ DcmBaseSCPPool::DcmBaseSCPWorker::DcmBaseSCPWorker(DcmBaseSCPPool& pool)
 
 DcmBaseSCPPool::DcmBaseSCPWorker::~DcmBaseSCPWorker()
 {
-  if (m_assoc)
-    m_pool.dropAndDestroyAssociation(m_assoc);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -352,7 +370,10 @@ DcmBaseSCPPool::DcmBaseSCPWorker::~DcmBaseSCPWorker()
 OFCondition DcmBaseSCPPool::DcmBaseSCPWorker::setAssociation(T_ASC_Association* assoc)
 {
   if (busy())
+  {
+    DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << threadID() << " is already busy, cannot set new association");
     return NET_EC_AlreadyConnected;
+  }
 
   if ( (m_assoc != NULL) || (assoc == NULL) )
     return DIMSE_ILLEGALASSOCIATION;
@@ -369,18 +390,17 @@ void DcmBaseSCPPool::DcmBaseSCPWorker::run()
   if(!m_assoc)
   {
     DCMNET_ERROR("DcmBaseSCPPool: Worker thread #" << threadID() << " received run command but has no association, exiting");
-    m_pool.notifyThreadExit(this, ASC_NULLKEY);
-    thread_exit();
+    m_pool.notifyWorkerDone(this, ASC_NULLKEY);
   }
   else
   {
     T_ASC_Association *param = m_assoc;
     m_assoc = NULL;
     result = workerListen(param);
-    DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << threadID() << " returns with code: " << result.text() );
+    m_pool.notifyWorkerDone(this, result);
+    DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << threadID() << " finished handling association, dropping and destroying its association");
+    DCMNET_DEBUG("DcmBaseSCPPool: Worker thread #" << threadID() << " returns with result: " << result.text() );
   }
-  m_pool.notifyThreadExit(this, result);
-  thread_exit();
   return;
 }
 
@@ -389,6 +409,13 @@ void DcmBaseSCPPool::DcmBaseSCPWorker::run()
 void DcmBaseSCPPool::DcmBaseSCPWorker::exit()
 {
   thread_exit();
+}
+
+// ----------------------------------------------------------------------------
+
+void DcmBaseSCPPool::DcmBaseSCPWorker::rerun()
+{
+  DcmBaseSCPPool::DcmBaseSCPWorker::run();
 }
 
 #endif // WITH_THREADS

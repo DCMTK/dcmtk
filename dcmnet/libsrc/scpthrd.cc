@@ -57,6 +57,11 @@ OFCondition DcmThreadSCP::setSharedConfig(const DcmSharedSCPConfig& config)
   return EC_Normal;
 }
 
+void DcmThreadSCP::dropAndDestroyAssociation()
+{
+  DcmSCP::dropAndDestroyAssociation();
+}
+
 // ----------------------------------------------------------------------------
 
 OFCondition DcmThreadSCP::run(T_ASC_Association* incomingAssoc)

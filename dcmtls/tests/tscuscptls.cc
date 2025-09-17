@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2023, OFFIS e.V.
+ *  Copyright (C) 2019-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -43,26 +43,7 @@
     return; \
 } while (0)
 
-/** Method that ensures that the current thread is actually sleeping for the
- *  defined number of seconds (at least).
- *  The problem with the regular sleep() function called from OFStandard::sleep
- *  is that it might be interrupted by signals or a network timeout (depending
- *  on the operating system). This methods re-executes OFStandard's sleep method
- *  until the desired number of seconds have elapsed.
- *  @param sleep The number of seconds to sleep (at least)
- */
-static void force_sleep(Uint32 sleep)
-{
-    OFTimer timer;
-    double elapsed = timer.getDiff();
-    while (elapsed < (double)sleep)
-    {
-        // Use ceiling since otherwise we could wait too short
-        OFStandard::sleep(OFstatic_cast(unsigned int, ceil(sleep-elapsed)));
-        elapsed = timer.getDiff();
-    }
-}
-
+const size_t NUM_THREADS = 20;
 
 /** TestSCP derived from DcmSCP in order to test TLS functionality
  *  through function setTransportLayer of DcmSCPConfig.
@@ -151,6 +132,7 @@ protected:
         m_is_running = OFTrue;
         m_listen_result = listen();
         m_is_running = OFFalse;
+        DCMNET_DEBUG("TestPool: SCP Pool thread stopped, listen() returned: " << m_listen_result.text());
     }
 };
 
@@ -347,7 +329,7 @@ OFTEST_FLAGS(dcmtls_scp_tls, EF_None)
       port_number = 0xF000 + (rnd.getRND16() & 0xFFF);
       config.setPort(port_number);
       scp.start();
-      force_sleep(2); // wait 2 seconds for the SCP process to start
+      OFStandard::forceSleep(2); // wait 2 seconds for the SCP process to start
       memory_barrier.lock();
       memory_barrier.unlock();
     }
@@ -417,26 +399,23 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
     xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
     OFCHECK(config.addPresentationContext(UID_VerificationSOPClass, xfers, ASC_SC_ROLE_DEFAULT).good());
     config.setTransportLayer(&scpTlsLayer);
-    pool.setMaxThreads(20);
+    pool.setMaxThreads(NUM_THREADS);
 
     // Ensure server is up and listening
     int i = 0;
     Uint16 port_number = 0;
-    OFMutex memory_barrier;
     do
     {
       // generate a random port number between 61440 (0xF000) and 65535
       port_number = 0xF000 + (rnd.getRND16() & 0xFFF);
       config.setPort(port_number);
       pool.start();
-      force_sleep(2); // wait 2 seconds for the SCP process to start
-      memory_barrier.lock();
-      memory_barrier.unlock();
+      OFStandard::forceSleep(2); // wait 2 seconds for the SCP process to start
     }
     while ((i++ < 5) && (! pool.m_is_running)); // try up to 5 port numbers before giving up
-    if (! pool.m_is_running) BAILOUT("Start of the SCP thread ppol failed: " << pool.m_listen_result.text());
+    if (! pool.m_is_running) BAILOUT("Start of the SCP thread pool failed: " << pool.m_listen_result.text());
 
-    OFVector<TestTLSSCU*> scus(20);
+    OFVector<TestTLSSCU*> scus(NUM_THREADS);
     OFVector<DcmTLSTransportLayer*> scuTlsLayers;
     for (OFVector<TestTLSSCU*>::iterator it1 = scus.begin(); it1 != scus.end(); ++it1)
     {
@@ -460,7 +439,7 @@ OFTEST_FLAGS(dcmtls_scp_pool_tls, EF_None)
 
     // "ensure" the pool is initialized before any SCU starts connecting to it. The initialization
     // can take a couple of seconds on older systems, e.g. debian i368.
-    force_sleep(5);
+    OFStandard::forceSleep(5);
 
     for (OFVector<TestTLSSCU*>::const_iterator it2 = scus.begin(); it2 != scus.end(); ++it2)
     {
