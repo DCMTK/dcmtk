@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024, OFFIS e.V.
+ *  Copyright (C) 2024-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -161,16 +161,42 @@ int OFstub_main(int argc, char** argv, const char *stubName, const char *appName
       return EXITCODE_ILLEGAL_PARAMS;
     }
 
+    int len = 43 - strlen(stubName) - strlen(appName);
+    if (len < 0) len = 0;
+
 #ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
     OFString logger_name = "dcmtk.apps.";
     logger_name += stubName;
     OFLogger logger = OFLog::getLogger(logger_name.c_str());
-#endif
 
-#ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
-      OFLOG_WARN(logger, stubName << " is deprecated, use " << appName << " instead");
+    OFString output =
+        "##########################################################################\n"
+        "#                                                                        #\n#";
+    output.append(len/2, ' ');
+    output.append(stubName);
+    output.append(" is deprecated, use ");
+    output.append(appName);
+    output.append(" instead!");
+    output.append(len - (len/2), ' ');
+    output.append("#\n"
+        "#                                                                        #\n"
+        "##########################################################################\n");
+      OFLOG_WARN(logger, output);
 #else
-      fprintf(stderr, "W: %s is deprecated, use %s instead\n", stubName, appName);
+    OFString output =
+        "W: ##########################################################################\n"
+        "W: #                                                                        #\nW: #";
+    output.append(len/2, ' ');
+    output.append(stubName);
+    output.append(" is deprecated, use ");
+    output.append(appName);
+    output.append(" instead!");
+    output.append(len - (len/2), ' ');
+    output.append("#\n"
+        "W: #                                                                        #\n"
+        "W: ##########################################################################\n\n");
+
+    fprintf(stderr, "%s", output.c_str());
 #endif
 
     // get real path in which the stub executable is located
