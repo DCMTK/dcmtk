@@ -56,25 +56,27 @@ dcmfile-out  DICOM output filename ("-" for stdout)
          use config file f for the logger
 \endverbatim
 
-\subsection dcmencap_file_format_options input file format options
+\subsection dcmencap_input_options input options
 \verbatim
+input file format:
+
   +fa  --filetype-auto
-         Automatically determine file type (default)
+         automatically determine file type (default)
 
   +fp  --filetype-pdf
-         Expect PDF file
+         expect PDF file
 
   +fc  --filetype-cda
-         Expect CDA file
+         expect CDA file
 
   +fs  --filetype-stl
-         Expect STL file
+         expect STL file
 
-  +fs  --filetype-mtl
-         Expect MTL file
+  +fm  --filetype-mtl
+         expect MTL file
 
-  +fs  --filetype-obj
-         Expect OBJ file
+  +fo  --filetype-obj
+         expect OBJ file
 \endverbatim
 
 \subsection dcmencap_dicom_document_options DICOM document options

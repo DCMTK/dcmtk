@@ -524,13 +524,14 @@ void DcmEncapsulatedDocument::addCommandlineOptions(OFCommandLine &cmd) const
 
     addGeneralOptions(cmd);
 
+    cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("input file format options:");
-    cmd.addOption("--filetype-auto",         "+fa", "Automatically determine file type (default)");
-    cmd.addOption("--filetype-pdf",          "+fp", "Expect PDF file");
-    cmd.addOption("--filetype-cda",          "+fc", "Expect CDA file");
-    cmd.addOption("--filetype-stl",          "+fs", "Expect STL file");
-    cmd.addOption("--filetype-mtl",          "+fs", "Expect MTL file");
-    cmd.addOption("--filetype-obj",          "+fs", "Expect OBJ file");
+    cmd.addOption("--filetype-auto",         "+fa", "automatically determine file type (default)");
+    cmd.addOption("--filetype-pdf",          "+fp", "expect PDF file");
+    cmd.addOption("--filetype-cda",          "+fc", "expect CDA file");
+    cmd.addOption("--filetype-stl",          "+fs", "expect STL file");
+    cmd.addOption("--filetype-mtl",          "+fm", "expect MTL file");
+    cmd.addOption("--filetype-obj",          "+fo", "expect OBJ file");
 
     addDocumentOptions(cmd);
 
