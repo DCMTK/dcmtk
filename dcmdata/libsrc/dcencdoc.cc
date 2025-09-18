@@ -1189,7 +1189,7 @@ OFCondition DcmEncapsulatedDocument::insertEncapsulatedDocument()
             {
                 OFString keyword = getNextKeyword(buf+i);
                 size_t numKeywords = sizeof(objKeywords)/sizeof(const char *);
-                OFBool found = OFFalse;
+                found = OFFalse;
                 for (size_t j=0; j < numKeywords; ++j)
                 {
                     if (keyword == objKeywords[j])

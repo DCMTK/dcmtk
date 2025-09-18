@@ -161,7 +161,7 @@ int OFstub_main(int argc, char** argv, const char *stubName, const char *appName
       return EXITCODE_ILLEGAL_PARAMS;
     }
 
-    int len = 43 - strlen(stubName) - strlen(appName);
+    long len = 43 - OFstatic_cast(long, strlen(stubName)) - OFstatic_cast(long, strlen(appName));
     if (len < 0) len = 0;
 
 #ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
