@@ -937,9 +937,10 @@ static const char *objKeywords[] = {
 
 OFCondition DcmEncapsulatedDocument::insertEncapsulatedDocument()
 {
-    char buf[4096];
+#define INSERTBUFFERLENGTH 4096
+    char buf[INSERTBUFFERLENGTH+1];
     size_t fileSize = 0;
-    size_t buflen = 4096;
+    size_t buflen = INSERTBUFFERLENGTH;
     struct stat fileStat;
     DcmDataset *dataset = dfile_.getDataset();
 
