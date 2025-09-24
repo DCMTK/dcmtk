@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
   OFBool opt_predictor6WorkaroundEnable = OFFalse;
   OFBool opt_cornellWorkaroundEnable = OFFalse;
   OFBool opt_forceSingleFragmentPerFrame = OFFalse;
+  OFBool opt_preserveBitsStored = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Decode JPEG-compressed DICOM file", rcsid);
   OFCommandLine cmd;
@@ -101,6 +102,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--planar-auto",         "+pa",    "automatically determine planar configuration\nfrom SOP class and color space (default)");
       cmd.addOption("--color-by-pixel",      "+px",    "always store color-by-pixel");
       cmd.addOption("--color-by-plane",      "+pl",    "always store color-by-plane");
+
+    cmd.addSubGroup("bits stored:");
+      cmd.addOption("--bits-stored-fix",     "+bs",    "correct inconsistent bits stored value (default)");
+      cmd.addOption("--bits-stored-keep",    "-bs",    "preserve inconsistent bits stored value");
 
     cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-default",         "+ud",    "keep same SOP Instance UID (default)");
@@ -168,6 +173,11 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--color-by-pixel")) opt_planarconfig = EPC_colorByPixel;
       if (cmd.findOption("--color-by-plane")) opt_planarconfig = EPC_colorByPlane;
       cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--bits-stored-fix")) opt_preserveBitsStored = OFFalse;
+      if (cmd.findOption("--bits-stored-keep")) opt_preserveBitsStored = OFTrue;
+      cmd.beginOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--conv-photometric")) opt_decompCSconversion = EDC_photometricInterpretation;
@@ -266,7 +276,8 @@ int main(int argc, char *argv[])
       opt_planarconfig,
       opt_predictor6WorkaroundEnable,
       opt_cornellWorkaroundEnable,
-      opt_forceSingleFragmentPerFrame);
+      opt_forceSingleFragmentPerFrame,
+      opt_preserveBitsStored);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,6 +52,7 @@ public:
    *    Huffman table overflow
    *  @param pForceSingleFragmentPerFrame while decompressing a multiframe image,
    *    assume one fragment per frame even if the JPEG data for some frame is incomplete
+   *  @param setPreserveBitsStored preserve BitsStored when decompressing even if inconsistent with J2K bitstream
    */
   static void registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion = EDC_photometricInterpretation,
@@ -59,7 +60,8 @@ public:
     E_PlanarConfiguration pPlanarConfiguration = EPC_default,
     OFBool predictor6WorkaroundEnable = OFFalse,
     OFBool cornellWorkaroundEnable = OFFalse,
-    OFBool pForceSingleFragmentPerFrame = OFFalse);
+    OFBool pForceSingleFragmentPerFrame = OFFalse,
+    OFBool setPreserveBitsStored = OFFalse);
 
   /** deregisters decoders.
    *  Attention: Must not be called while other threads might still use

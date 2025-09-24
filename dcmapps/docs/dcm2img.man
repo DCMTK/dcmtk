@@ -174,6 +174,22 @@ color space conversion (JPEG compressed images only):
   +cn   --conv-never
           never convert color space
 
+bits stored:
+
+  +bs  --bits-stored-fix
+         correct inconsistent bits stored value (default)
+
+  # If the value of BitsStored in the compressed bitstream is smaller
+  # than the value in the DICOM dataset, update the value in the dataset
+  # (JPEG compressed images only)
+
+  -bs  --bits-stored-keep
+         preserve inconsistent bits stored value
+
+  # Keep the value of BitsStored even if inconsistent with the
+  # compressed bitstream. This may help in correctly decoding some
+  # defective images JPEG compressed images only)
+
 workaround options for incorrect encodings (JPEG compressed images only):
 
   +w6   --workaround-pred6
@@ -598,6 +614,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcm2img_copyright COPYRIGHT
 
-Copyright (C) 2001-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

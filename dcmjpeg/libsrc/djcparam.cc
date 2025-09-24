@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -50,7 +50,8 @@ DJCodecParameter::DJCodecParameter(
     OFBool pUseModalityRescale,
     OFBool pAcceptWrongPaletteTags,
     OFBool pAcrNemaCompatibility,
-    OFBool pTrueLosslessMode)
+    OFBool pTrueLosslessMode,
+    OFBool setPreserveBitsStored)
 : DcmCodecParameter()
 , compressionCSConversion(pCompressionCSConversion)
 , decompressionCSConversion(pDecompressionCSConversion)
@@ -80,6 +81,7 @@ DJCodecParameter::DJCodecParameter(
 , predictor6WorkaroundEnabled_(predictor6WorkaroundEnable)
 , cornellWorkaroundEnabled_(cornellWorkaroundEnable)
 , forceSingleFragmentPerFrame(pForceSingleFragmentPerFrame)
+, setPreserveBitsStored_(setPreserveBitsStored)
 {
 }
 
@@ -114,6 +116,7 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , predictor6WorkaroundEnabled_(arg.predictor6WorkaroundEnabled_)
 , cornellWorkaroundEnabled_(arg.cornellWorkaroundEnabled_)
 , forceSingleFragmentPerFrame(arg.forceSingleFragmentPerFrame)
+, setPreserveBitsStored_(arg.setPreserveBitsStored_)
 {
 }
 

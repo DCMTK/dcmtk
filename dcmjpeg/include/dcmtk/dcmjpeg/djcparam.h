@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -68,6 +68,7 @@ public:
    *  @param pAcrNemaCompatibility accept old ACR-NEMA images without photometric interpretation
    *    (only "pseudo" lossless encoder)
    *  @param pTrueLosslessMode Enables true lossless compression (replaces old "pseudo lossless" encoder)
+   *  @param setPreserveBitsStored  preserve BitsStored when decompressing even if inconsistent with J2K bitstream
    */
   DJCodecParameter(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
@@ -97,7 +98,8 @@ public:
     OFBool pUseModalityRescale = OFFalse,
     OFBool pAcceptWrongPaletteTags = OFFalse,
     OFBool pAcrNemaCompatibility = OFFalse,
-    OFBool pTrueLosslessMode = OFTrue);
+    OFBool pTrueLosslessMode = OFTrue,
+    OFBool setPreserveBitsStored = OFFalse);
 
   /// copy constructor
   DJCodecParameter(const DJCodecParameter& arg);
@@ -323,6 +325,15 @@ public:
     return forceSingleFragmentPerFrame;
   }
 
+  /** returns flag indicating whether to preserve the
+   *  value of BitsStored even if inconsistent with the
+   *  compressed bitstream.
+   */
+  OFBool getPreserveBitsStored() const
+  {
+    return setPreserveBitsStored_;
+  }
+
 private:
 
   /// private undefined copy assignment operator
@@ -426,6 +437,9 @@ private:
    *  should be assumed even if the JPEG data for some frame is incomplete
    */
   OFBool forceSingleFragmentPerFrame;
+
+  /// flag indicating whether BitsStored should be preserved when decompressing even if inconsistent with the J2K bitstream
+  OFBool setPreserveBitsStored_;
 
 };
 
