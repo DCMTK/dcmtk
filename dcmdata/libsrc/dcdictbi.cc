@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2025-07-16 12:03:34
+**   Date: 2025-10-07 12:19:48
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -27644,6 +27644,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "DVHMeanDose", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x3004, 0x0080, 0x3004, 0x0080,
+      EVR_SQ, "DoseCalculationModelSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0081, 0x3004, 0x0081,
+      EVR_SQ, "DoseCalculationAlgorithmSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0082, 0x3004, 0x0082,
+      EVR_CS, "CommissioningStatus", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0083, 0x3004, 0x0083,
+      EVR_SQ, "DoseCalculationModelParameterSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0084, 0x3004, 0x0084,
+      EVR_CS, "DoseDepositionCalculationMedium", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x3006, 0x0002, 0x3006, 0x0002,
       EVR_SH, "StructureSetLabel", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -29738,6 +29758,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x300a, 0x039a, 0x300a, 0x039a,
       EVR_IS, "NumberOfPaintings", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x039b, 0x300a, 0x039b,
+      EVR_FL, "ScanSpotGantryAngles", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x300a, 0x039c, 0x300a, 0x039c,
+      EVR_FL, "ScanSpotPatientSupportAngles", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x03a0, 0x300a, 0x03a0,

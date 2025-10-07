@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2025c and PS 3.7-2025c.
-# File created on 2025-07-16 11:58:26 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2025d and PS 3.7-2025d.
+# File created on 2025-10-07 12:17:31 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -3800,6 +3800,11 @@
 (3004,0070)	DS	DVHMinimumDose	1	DICOM
 (3004,0072)	DS	DVHMaximumDose	1	DICOM
 (3004,0074)	DS	DVHMeanDose	1	DICOM
+(3004,0080)	SQ	DoseCalculationModelSequence	1	DICOM
+(3004,0081)	SQ	DoseCalculationAlgorithmSequence	1	DICOM
+(3004,0082)	CS	CommissioningStatus	1	DICOM
+(3004,0083)	SQ	DoseCalculationModelParameterSequence	1	DICOM
+(3004,0084)	CS	DoseDepositionCalculationMedium	1	DICOM
 (3006,0002)	SH	StructureSetLabel	1	DICOM
 (3006,0004)	LO	StructureSetName	1	DICOM
 (3006,0006)	ST	StructureSetDescription	1	DICOM
@@ -4309,6 +4314,8 @@
 (300A,0398)	FL	ScanningSpotSize	2	DICOM
 (300A,0399)	FL	ScanSpotSizesDelivered	2-2n	DICOM
 (300A,039A)	IS	NumberOfPaintings	1	DICOM
+(300A,039B)	FL	ScanSpotGantryAngles	1-n	DICOM
+(300A,039C)	FL	ScanSpotPatientSupportAngles	1-n	DICOM
 (300A,03A0)	SQ	IonToleranceTableSequence	1	DICOM
 (300A,03A2)	SQ	IonBeamSequence	1	DICOM
 (300A,03A4)	SQ	IonBeamLimitingDeviceSequence	1	DICOM

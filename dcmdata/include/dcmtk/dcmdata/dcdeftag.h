@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2025-07-16 12:03:33
+**   Date: 2025-10-07 12:19:47
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2025-07-16 12:03:33"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2025-10-07 12:19:47"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5259
+** Number of entries: 5266
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -4162,6 +4162,11 @@
 #define DCM_DVHMinimumDose                       DcmTagKey(0x3004, 0x0070)
 #define DCM_DVHMaximumDose                       DcmTagKey(0x3004, 0x0072)
 #define DCM_DVHMeanDose                          DcmTagKey(0x3004, 0x0074)
+#define DCM_DoseCalculationModelSequence         DcmTagKey(0x3004, 0x0080)
+#define DCM_DoseCalculationAlgorithmSequence     DcmTagKey(0x3004, 0x0081)
+#define DCM_CommissioningStatus                  DcmTagKey(0x3004, 0x0082)
+#define DCM_DoseCalculationModelParameterSequence DcmTagKey(0x3004, 0x0083)
+#define DCM_DoseDepositionCalculationMedium      DcmTagKey(0x3004, 0x0084)
 #define DCM_StructureSetLabel                    DcmTagKey(0x3006, 0x0002)
 #define DCM_StructureSetName                     DcmTagKey(0x3006, 0x0004)
 #define DCM_StructureSetDescription              DcmTagKey(0x3006, 0x0006)
@@ -4686,6 +4691,8 @@
 #define DCM_ScanningSpotSize                     DcmTagKey(0x300a, 0x0398)
 #define DCM_ScanSpotSizesDelivered               DcmTagKey(0x300a, 0x0399)
 #define DCM_NumberOfPaintings                    DcmTagKey(0x300a, 0x039a)
+#define DCM_ScanSpotGantryAngles                 DcmTagKey(0x300a, 0x039b)
+#define DCM_ScanSpotPatientSupportAngles         DcmTagKey(0x300a, 0x039c)
 #define DCM_IonToleranceTableSequence            DcmTagKey(0x300a, 0x03a0)
 #define DCM_IonBeamSequence                      DcmTagKey(0x300a, 0x03a2)
 #define DCM_IonBeamLimitingDeviceSequence        DcmTagKey(0x300a, 0x03a4)
