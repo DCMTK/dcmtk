@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2025c
- *  File created on 2025-07-16 11:58:32 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025d
+ *  File created on 2025-10-07 12:23:04 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 5048
-// - retired: 207
+// total number of codes: 5072
+// - retired: 208
 // - no name: 27
 // - not unique: 17
 
@@ -669,7 +669,7 @@
 #define CODE_DCM_IndividualImpressionRecommendation                        DSRBasicCodedEntry("111034", "DCM", "Individual Impression/Recommendation")
 #define CODE_DCM_LesionDensity                                             DSRBasicCodedEntry("111035", "DCM", "Lesion Density")
 #define CODE_DCM_MammographyCADReport                                      DSRBasicCodedEntry("111036", "DCM", "Mammography CAD Report")
-#define CODE_DCM_Margins                                                   DSRBasicCodedEntry("111037", "DCM", "Margins")
+#define CODE_DCM_RETIRED_Margins                                           DSRBasicCodedEntry("111037", "DCM", "Margins")
 #define CODE_DCM_NumberOfCalcifications                                    DSRBasicCodedEntry("111038", "DCM", "Number of calcifications")
 #define CODE_DCM_ObjectType                                                DSRBasicCodedEntry("111039", "DCM", "Object type")
 #define CODE_DCM_OriginalSource                                            DSRBasicCodedEntry("111040", "DCM", "Original Source")
@@ -1895,6 +1895,8 @@
 #define CODE_DCM_ICRPPublication53                                         DSRBasicCodedEntry("113521", "DCM", "ICRP Publication 53")
 #define CODE_DCM_ICRPPublication80                                         DSRBasicCodedEntry("113522", "DCM", "ICRP Publication 80")
 #define CODE_DCM_ICRPPublication106                                        DSRBasicCodedEntry("113523", "DCM", "ICRP Publication 106")
+#define CODE_DCM_ICRPPublication128                                        DSRBasicCodedEntry("113524", "DCM", "ICRP Publication 128")
+#define CODE_DCM_RADAR2017                                                 DSRBasicCodedEntry("113525", "DCM", "RADAR 2017")
 #define CODE_DCM_MIRDOSE                                                   DSRBasicCodedEntry("113526", "DCM", "MIRDOSE")
 #define CODE_DCM_OLINDAEXM                                                 DSRBasicCodedEntry("113527", "DCM", "OLINDA-EXM")
 #define CODE_DCM_PackageInsert                                             DSRBasicCodedEntry("113528", "DCM", "Package Insert")
@@ -2482,6 +2484,7 @@
 #define CODE_DCM_NumberOfFractionsCompleted                                DSRBasicCodedEntry("121387", "DCM", "Number of Fractions Completed")
 #define CODE_DCM_CheckedInStatus                                           DSRBasicCodedEntry("121388", "DCM", "Checked-In Status")
 #define CODE_DCM_ReferencedBeamNumber                                      DSRBasicCodedEntry("121389", "DCM", "Referenced Beam Number")
+#define CODE_DCM_ClinicalFractionNumber                                    DSRBasicCodedEntry("121390", "DCM", "Clinical Fraction Number")
 #define CODE_DCM_Derivation                                                DSRBasicCodedEntry("121401", "DCM", "Derivation")
 #define CODE_DCM_Normality                                                 DSRBasicCodedEntry("121402", "DCM", "Normality")
 #define CODE_DCM_LevelOfSignificance                                       DSRBasicCodedEntry("121403", "DCM", "Level of Significance")
@@ -5096,5 +5099,26 @@
 #define CODE_DCM_GeographicAtrophyArea                                     DSRBasicCodedEntry("131310", "DCM", "Geographic atrophy area")
 #define CODE_DCM_PlanMeetsPrescription                                     DSRBasicCodedEntry("131315", "DCM", "Plan meets prescription")
 #define CODE_DCM_PlanQAPassed                                              DSRBasicCodedEntry("131316", "DCM", "Plan QA passed")
+#define CODE_DCM_LinearBoltzmannTransportEquation                          DSRBasicCodedEntry("131320", "DCM", "Linear Boltzmann Transport Equation")
+#define CODE_DCM_PencilBeamConvolution                                     DSRBasicCodedEntry("131321", "DCM", "Pencil Beam Convolution")
+#define CODE_DCM_TMRAndOARRatios                                           DSRBasicCodedEntry("131322", "DCM", "TMR and OAR Ratios")
+#define CODE_DCM_AAPMTG43                                                  DSRBasicCodedEntry("131323", "DCM", "AAPM TG-43")
+#define CODE_DCM_ConvolutionSuperposition                                  DSRBasicCodedEntry("131324", "DCM", "Convolution Superposition")
+#define CODE_DCM_NumberOfHistories                                         DSRBasicCodedEntry("131325", "DCM", "Number of Histories")
+#define CODE_DCM_AcceptableUncertaintyInDoseResult                         DSRBasicCodedEntry("131326", "DCM", "Acceptable Uncertainty in Dose Result")
+#define CODE_DCM_CalibrationIntendedDoseIndex                              DSRBasicCodedEntry("131330", "DCM", "Calibration Intended Dose Index")
+#define CODE_DCM_CalibrationIntendedAcquisitionProtocol                    DSRBasicCodedEntry("131331", "DCM", "Calibration Intended Acquisition Protocol")
+#define CODE_DCM_UltrasoundAttenuationImaging                              DSRBasicCodedEntry("131340", "DCM", "Ultrasound Attenuation Imaging")
+#define CODE_DCM_UltrasoundAttenuationCoefficient                          DSRBasicCodedEntry("131341", "DCM", "Ultrasound Attenuation Coefficient")
+#define CODE_DCM_MeanUltrasoundAttenuationCoefficient                      DSRBasicCodedEntry("131342", "DCM", "Mean Ultrasound Attenuation Coefficient")
+#define CODE_DCM_MedianUltrasoundAttenuationCoefficient                    DSRBasicCodedEntry("131343", "DCM", "Median Ultrasound Attenuation Coefficient")
+#define CODE_DCM_StandardDeviationOfUltrasoundAttenuationCoefficient       DSRBasicCodedEntry("131344", "DCM", "Standard Deviation of Ultrasound Attenuation Coefficient")
+#define CODE_DCM_InterquartileRangeOfUltrasoundAttenuationCoefficient      DSRBasicCodedEntry("131345", "DCM", "Interquartile Range of Ultrasound Attenuation Coefficient")
+#define CODE_DCM_InterquartileRangeToMedianRatioOfUltrasoundAttenCoeff     DSRBasicCodedEntry("131346", "DCM", "Interquartile Range to Median Ratio of Ultrasound Atten Coeff")
+#define CODE_DCM_CardiacAxisAngle                                          DSRBasicCodedEntry("131350", "DCM", "Cardiac Axis Angle")
+#define CODE_DCM_DVSWavePeakVelocity                                       DSRBasicCodedEntry("131351", "DCM", "DV S-wave peak velocity")
+#define CODE_DCM_DVAWavePeakVelocity                                       DSRBasicCodedEntry("131352", "DCM", "DV a-wave peak velocity")
+#define CODE_DCM_DVPreloadIndex                                            DSRBasicCodedEntry("131353", "DCM", "DV preload index")
+#define CODE_DCM_DVSA                                                      DSRBasicCodedEntry("131354", "DCM", "DV S/a")
 
 #endif
