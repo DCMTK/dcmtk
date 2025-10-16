@@ -644,10 +644,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DRAFT_UnifiedProcedureStepPushSOPClass,                                "UnifiedProcedureStepPushTrial",                                      "DRAFT_UnifiedProcedureStepPushSOPClass",                             { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
     { UID_DRAFT_UnifiedProcedureStepWatchSOPClass,                               "UnifiedProcedureStepWatchTrial",                                     "DRAFT_UnifiedProcedureStepWatchSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
     { UID_DRAFT_UnifiedProcedureStepPullSOPClass,                                "UnifiedProcedureStepPullTrial",                                      "DRAFT_UnifiedProcedureStepPullSOPClass",                             { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
-    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,                               "UnifiedProcedureStepEventTrial",                                     "DRAFT_UnifiedProcedureStepEventSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
-
-    // end of the list
-    { NULL, NULL, NULL, { EUS_other, EUV_other, EUT_other, EUST_other, EUIT_other, UID_PROP_NONE } }
+    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,                               "UnifiedProcedureStepEventTrial",                                     "DRAFT_UnifiedProcedureStepEventSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } }
 };
 
 static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeof(UIDNameMap));
@@ -1557,7 +1554,6 @@ static const int numberOfDcmModalityTableEntries = OFstatic_cast(int, sizeof(mod
  * Public Function Prototypes
  */
 
-
 const char *dcmSOPClassUIDToModality(const char *sopClassUID,
                                      const char *defaultValue)
 {
@@ -1606,6 +1602,7 @@ dcmFindNameOfUID(const char* uid, const char* defaultValue)
     return defaultValue;
 }
 
+
 /*
 ** dcmFindUIDFromName(const char* name)
 ** Return the UID of a name.
@@ -1642,6 +1639,7 @@ dcmFindKeywordOfUID(const char* uid, const char* defaultValue)
     }
     return defaultValue;
 }
+
 
 /*
 ** dcmFindUIDFromKeyword(const char* keyword)
