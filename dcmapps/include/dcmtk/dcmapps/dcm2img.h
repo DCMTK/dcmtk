@@ -1098,9 +1098,15 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--check-lut-depth"))
             opt_compatibilityMode |= CIF_CheckLutBitDepth;
         if (cmd.findOption("--ignore-mlut-depth"))
+        {
+            app.checkConflict("--ignore-mlut-depth", "--check-lut-depth", (opt_compatibilityMode & CIF_CheckLutBitDepth) > 0);
             opt_compatibilityMode |= CIF_IgnoreModalityLutBitDepth;
+        }
         if (cmd.findOption("--ignore-vlut-depth"))
+        {
+            app.checkConflict("--ignore-vlut-depth", "--check-lut-depth", (opt_compatibilityMode & CIF_CheckLutBitDepth) > 0);
             opt_ignoreVoiLutDepth = OFTrue;
+        }
 
         /* image processing options: frame selection */
 
