@@ -167,10 +167,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
     /** convert the given string from the selected source character set(s) to
      *  the selected destination character set.  That means selectCharacterSet()
      *  has to be called prior to this method.
-     *  @note the conversion code does not perform a thorough validation
-     *    of the string. For example, characters that are permitted in the
-     *    source character set but forbidden in DICOM (such as byte positions
-     *    0x80-0x9F in ISO_IR 100) may be converted without warning or error.
+     *  @note The conversion code does not perform a thorough validation of the
+     *    string.  For example, characters that are permitted in the source
+     *    character set but forbidden in DICOM (such as byte positions 0x80-0x9F
+     *    in ISO_IR 100) may be converted without warning or error.
      *  @param  fromString  input string to be converted (using the currently
      *                      selected source character set)
      *  @param  toString    reference to variable where the converted string
@@ -191,10 +191,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  has to be called prior to this method.  Since the length of the input
      *  string has to be specified explicitly, the string can contain more than
      *  one NULL byte.
-     *  @note the conversion code does not perform a thorough validation
-     *    of the string. For example, characters that are permitted in the
-     *    source character set but forbidden in DICOM (such as byte positions
-     *    0x80-0x9F in ISO_IR 100) may be converted without warning or error.
+     *  @note The conversion code does not perform a thorough validation of the
+     *    string.  For example, characters that are permitted in the source
+     *    character set but forbidden in DICOM (such as byte positions 0x80-0x9F
+     *    in ISO_IR 100) may be converted without warning or error.
      *  @param  fromString  input string to be converted (using the currently
      *                      selected character set)
      *  @param  fromLength  length of the input string (number of bytes without
