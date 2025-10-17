@@ -2485,6 +2485,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     {
         // an error other than timeout in non-blocking mode has occurred,
         // either in connect() or in select().
+        OFerror_code ec = OFStandard::getLastNetworkErrorCode();
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */);
         (void) closesocket(s);
@@ -2496,7 +2497,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         (*association)->connection = NULL;
 
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
+        msg += ec.message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     } else {
         // success - we've opened a TCP transport connection
