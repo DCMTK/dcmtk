@@ -1132,8 +1132,16 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
 
                     if (fLoadValue)
                     {
-                        offile_off_t skipped = inStream.skip(getLengthField());
-                        if (skipped < OFstatic_cast(offile_off_t, getLengthField()))
+                        /* enforce old (pre DCMTK 3.5.2) behaviour ? */
+                        Uint32 lengthField = getLengthField();
+                        if ((lengthField & 1) && !dcmAcceptOddAttributeLength.get())
+                        {
+                            lengthField++;
+                            setLengthField(lengthField);           // make Length even
+                        }
+
+                        offile_off_t skipped = inStream.skip(lengthField);
+                        if (skipped < OFstatic_cast(offile_off_t, lengthField))
                         {
                             /* If desired, specific parser errors will be ignored */
                             if (dcmIgnoreParsingErrors.get())
