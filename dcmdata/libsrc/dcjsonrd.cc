@@ -69,7 +69,9 @@ DcmJSONReader::~DcmJSONReader()
 void DcmJSONReader::clear()
 {
     delete[] jsonDataset_;
+    jsonDataset_ = NULL;
     delete[] tokenArray_;
+    tokenArray_ = NULL;
     jsonDatasetLen_ = 0;
     tokenNumber_ = 0;
 }
