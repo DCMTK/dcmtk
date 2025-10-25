@@ -26,11 +26,11 @@ LIBDCMXML = -ldcmxml
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
 	cda2dcm.o stl2dcm.o pdf2dcm.o dcm2pdf.o dcm2cda.o img2dcm.o dcm2json.o \
-    json2dcm.o dcmencap.o dcmdecap
+	json2dcm.o dcmencap.o dcmdecap.o
 
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
 	dcmdrle dcmodify pdf2dcm stl2dcm cda2dcm dcm2pdf dcm2cda img2dcm dcm2json \
-    json2dcm dcmencap dcmdecap
+	json2dcm dcmencap dcmdecap
 
 
 all: $(progs)
@@ -91,6 +91,9 @@ json2dcm: json2dcm.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmencap: dcmencap.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+
+dcmdecap: dcmdecap.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 
