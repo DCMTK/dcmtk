@@ -198,6 +198,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_InvalidJSONContent;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_BulkDataURINotSupported;
 /// Unsupported URI type
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnsupportedURIType;
+/// Execution of command line failed
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CommandLineFailed;
 
 ///@}
 

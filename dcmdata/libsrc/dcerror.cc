@@ -90,7 +90,7 @@ makeOFConditionConst(EC_InvalidJSONType,                 OFM_dcmdata, 64, OF_err
 makeOFConditionConst(EC_InvalidJSONContent,              OFM_dcmdata, 65, OF_error, "Invalid JSON content"                       );
 makeOFConditionConst(EC_BulkDataURINotSupported,         OFM_dcmdata, 66, OF_error, "BulkDataURI not yet supported"              );
 makeOFConditionConst(EC_UnsupportedURIType,              OFM_dcmdata, 67, OF_error, "Unsupported URI type"                       );
-
+makeOFConditionConst(EC_CommandLineFailed,               OFM_dcmdata, 68, OF_error, "Execution of command line failed"           );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;
