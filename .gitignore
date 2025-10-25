@@ -48,8 +48,10 @@ dcmdata/apps/dcm2pdf
 dcmdata/apps/dcm2xml
 dcmdata/apps/dcmconv
 dcmdata/apps/dcmcrle
+dcmdata/apps/dcmdecap
 dcmdata/apps/dcmdrle
 dcmdata/apps/dcmdump
+dcmdata/apps/dcmencap
 dcmdata/apps/dcmftest
 dcmdata/apps/dcmgpdir
 dcmdata/apps/dcmodify
