@@ -69,7 +69,9 @@ DcmJSONReader::~DcmJSONReader()
 void DcmJSONReader::clear()
 {
     delete[] jsonDataset_;
+    jsonDataset_ = NULL;
     delete[] tokenArray_;
+    tokenArray_ = NULL;
     jsonDatasetLen_ = 0;
     tokenNumber_ = 0;
 }
@@ -1180,6 +1182,8 @@ OFCondition DcmJSONReader::readAndConvertJSONFile(
     DcmFileFormat& fileformat,
     const char *ifname)
 {
+    // clear old buffers, in case this object is re-used
+    clear();
     DcmMetaInfo* metaheader = fileformat.getMetaInfo();
     DcmDataset* dataset = fileformat.getDataset();
     OFCondition result;
