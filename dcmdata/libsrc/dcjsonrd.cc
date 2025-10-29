@@ -1302,7 +1302,7 @@ OFBool DcmJSONReader::isHttpURI(const OFString& uri) const
 OFCondition DcmJSONReader::urlDecode(OFString& uri) const
 {
     size_t pos;
-    int val = 0;
+    unsigned int val = 0;
     char c;
     while (OFString_npos != (pos = uri.find("%")))
     {
@@ -1331,7 +1331,7 @@ OFCondition DcmJSONReader::urlDecode(OFString& uri) const
             DCMDATA_ERROR("invalid URL code: " << uri.substr(pos, 3));
             return EC_UnsupportedURIType;
        }
-       uri[pos] = (char) val;
+       uri[pos] = OFstatic_cast(char, val);
        uri.erase(pos+1, 2);
     }
     return EC_Normal;
