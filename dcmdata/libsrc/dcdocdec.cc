@@ -151,6 +151,15 @@ OFCondition DcmDocumentDecapsulator::writeEncapsulatedContentToFile()
 
     if (strcmp(outputFname_, "-") == 0)
     {
+#ifdef _WIN32
+        // Set "stdout" to binary mode
+        if (setmode(fileno(stdout), O_BINARY) == -1)
+        {
+            DCMDATA_ERROR("Failed to switch stdout to binary mode");
+            return makeOFCondition(OFM_dcmdata, 19, OF_error, "file write error");
+        }
+#endif
+
         // write encapsulated document to stdout
         if (lenElem != fwrite(encapDocment, 1, lenElem, stdout))
         {
