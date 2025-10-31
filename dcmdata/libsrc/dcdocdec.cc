@@ -25,6 +25,13 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
 
+BEGIN_EXTERN_C
+#include <fcntl.h>                       /*  for O_BINARY */
+#ifdef HAVE_IO_H
+#include <io.h>                          /* for setmode() on Windows */
+#endif
+END_EXTERN_C
+
 
 DcmDocumentDecapsulator::DcmDocumentDecapsulator()
 : readMode_(ERM_autoDetect)
