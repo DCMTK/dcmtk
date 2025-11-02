@@ -317,6 +317,9 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     }
 
     if (cond.good()) {
+        // use the same network protocol family for incoming and outgoing connections
+        ASC_setProtocolFamily(params, dcmIncomingProtocolFamily.get());
+
         cond = ASC_setTransportLayerType(params, options_.secureConnectionRequested_);
         if (cond.bad()) {
             DCMQRDB_ERROR("moveSCP: Cannot create TLS transport layer for sub-ops: " << DimseCondition::dump(temp_str, cond));

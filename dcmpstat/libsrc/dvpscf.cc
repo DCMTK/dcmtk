@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -559,6 +559,19 @@ unsigned long DVConfiguration::getQueryRetrieveMaxAssociations()
   if (c)
   {
     if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
+T_ASC_ProtocolFamily DVConfiguration::getQueryRetrieveProtocolFamily()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_PROTOCOL);
+  T_ASC_ProtocolFamily result = ASC_AF_Default;
+  if (c)
+  {
+    if (strCompare(c, "AF_INET6", 8) == 0) result = ASC_AF_INET6;
+    else if (strCompare(c, "AF_INET", 7) == 0) result = ASC_AF_INET;
+    else if (strCompare(c, "AF_UNSPEC", 9) == 0) result = ASC_AF_UNSPEC;
   }
   return result;
 }

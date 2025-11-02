@@ -2371,6 +2371,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
   if (configPath.empty()) return EC_IllegalCall;
 
   OFString config_filename = getQueryRetrieveServerName();
+  T_ASC_ProtocolFamily family = getQueryRetrieveProtocolFamily();
   config_filename += ".cfg";
   if (getQueryRetrieveAutoCreateConfigFile())
     createQueryRetrieveServerConfigFile(config_filename.c_str());
@@ -2380,6 +2381,20 @@ OFCondition DVInterface::startQueryRetrieveServer()
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
 
   Sint32 timeout = getQueryRetrieveTimeout();
+  const char *family_param = "";
+  switch (family)
+  {
+    case ASC_AF_INET:
+    case ASC_AF_Default:
+      family_param = "--ipv4";
+      break;
+    case ASC_AF_INET6:
+      family_param = "--ipv6";
+      break;
+    case ASC_AF_UNSPEC:
+      family_param = "--ip-auto";
+      break;
+  }
 
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
@@ -2398,12 +2413,11 @@ OFCondition DVInterface::startQueryRetrieveServer()
     {
       char str_timeout[20];
       OFStandard::snprintf(str_timeout, sizeof(str_timeout), "%lu", OFstatic_cast(unsigned long, timeout));
-      execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown",
-        "--timeout", str_timeout, OFreinterpret_cast(char *, 0));
+      execl(server_application, server_application, "-c", config_filename.c_str(), family_param, "--allow-shutdown", "--timeout", str_timeout, OFreinterpret_cast(char *, 0));
     }
     else
     {
-      execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", OFreinterpret_cast(char *, 0));
+      execl(server_application, server_application, "-c", config_filename.c_str(), family_param, "--allow-shutdown", OFreinterpret_cast(char *, 0));
     }
 
     DCMPSTAT_ERROR("Unable to execute '" << server_application << "'");
@@ -2423,12 +2437,12 @@ OFCondition DVInterface::startQueryRetrieveServer()
 
   if (timeout > 0)
   {
-    OFStandard::snprintf(commandline, sizeof(commandline), "%s -c %s --allow-shutdown --timeout %lu",
-      server_application, config_filename.c_str(), (unsigned long) timeout);
+    OFStandard::snprintf(commandline, sizeof(commandline), "%s -c %s %s --allow-shutdown --timeout %lu",
+      server_application, config_filename.c_str(), family_param, (unsigned long) timeout);
   }
   else
   {
-    OFStandard::snprintf(commandline, sizeof(commandline), "%s -c %s --allow-shutdown", server_application, config_filename.c_str());
+    OFStandard::snprintf(commandline, sizeof(commandline), "%s -c %s %s --allow-shutdown", server_application, config_filename.c_str(), family_param);
   }
 
 #ifdef DEBUG

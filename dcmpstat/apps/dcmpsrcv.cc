@@ -855,6 +855,8 @@ int main(int argc, char *argv[])
     OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen();
     OFBool useTLS = dvi.getTargetUseTLS(opt_cfgID);
     OFBool notifyTermination      = OFTrue;  // notify IPC server of application termination
+    T_ASC_ProtocolFamily targetProtocol = dvi.getTargetProtocol(opt_cfgID);
+    dcmIncomingProtocolFamily.set(targetProtocol);
 
     if (validationMode)
     {

@@ -251,6 +251,8 @@ int main(int argc, char *argv[])
     unsigned short targetPort   = dvi.getTargetPort(opt_printer);
     OFBool targetDisableNewVRs  = dvi.getTargetDisableNewVRs(opt_printer);
     OFBool targetUseTLS         = dvi.getTargetUseTLS(opt_printer);
+    T_ASC_ProtocolFamily targetProtocol = dvi.getTargetProtocol(opt_printer);
+    dcmIncomingProtocolFamily.set(targetProtocol);
 
     if (targetPort == 0)
     {

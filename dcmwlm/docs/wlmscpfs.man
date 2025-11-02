@@ -108,6 +108,17 @@ other processing options:
 
 \subsection wlmscpfs_network_options network options
 \verbatim
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use IPv6/IPv4 dual stack
+
 preferred network transfer syntaxes:
 
   +x=   --prefer-uncompr

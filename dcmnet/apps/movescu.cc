@@ -246,6 +246,10 @@ main(int argc, char *argv[])
    OFLog::addOptions(cmd);
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                 "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                 "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",              "-i0",     "use IPv6/IPv4 dual stack");
     cmd.addSubGroup("override matching keys:");
       cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\" or dict. name=\"str\"",
                                                         "override matching key");
@@ -490,6 +494,13 @@ main(int argc, char *argv[])
 #ifdef WITH_ZLIB
       if (cmd.findOption("--propose-deflated")) opt_out_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
+      cmd.endOptionBlock();
+
+      // set the IP protocol version
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--ipv4")) dcmIncomingProtocolFamily.set(ASC_AF_INET);
+      if (cmd.findOption("--ipv6")) dcmIncomingProtocolFamily.set(ASC_AF_INET6);
+      if (cmd.findOption("--ip-auto")) dcmIncomingProtocolFamily.set(ASC_AF_UNSPEC);
       cmd.endOptionBlock();
 
 #ifdef WITH_TCPWRAPPER
@@ -811,6 +822,9 @@ main(int argc, char *argv[])
         exit(EXITCODE_CANNOT_CREATE_ASSOC_PARAMETERS);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+
+    // use the same network protocol family for incoming and outgoing connections
+    ASC_setProtocolFamily(params, dcmIncomingProtocolFamily.get());
 
     OFStandard::snprintf(peerHost, sizeof(peerHost), "%s:%d", opt_peer, OFstatic_cast(int, opt_port));
     ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(), peerHost);

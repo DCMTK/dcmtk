@@ -130,6 +130,25 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<unsigned long> dcmEnableBackwardCompatibilit
  */
 extern DCMTK_DCMNET_EXPORT OFGlobal<size_t> dcmAssociatePDUSizeLimit;   /* default: 1 MB */
 
+/** TCP/IP protocol family to be used for network connections
+ */
+enum T_ASC_ProtocolFamily
+{
+  /// default behaviour. Currently identical to ASC_AF_INET
+  ASC_AF_Default,
+  /// only use IPv4
+  ASC_AF_INET,
+  /// only use IPv6
+  ASC_AF_INET6,
+  /// dual-stack operation, automatically select IPv4 or IPv6
+  ASC_AF_UNSPEC
+};
+
+/** TCP/IP protocol family to be supported for incoming network
+ *  connections in association acceptors.
+ */
+extern DCMTK_DCMNET_EXPORT OFGlobal<T_ASC_ProtocolFamily> dcmIncomingProtocolFamily;
+
 typedef void DUL_NETWORKKEY;
 typedef void DUL_ASSOCIATIONKEY;
 typedef unsigned char DUL_PRESENTATIONCONTEXTID;
@@ -175,15 +194,6 @@ public:
    */
   virtual void callback(unsigned long mode) = 0;
 };
-
-enum T_ASC_ProtocolFamily
-{
-  ASC_AF_Default,
-  ASC_AF_INET,
-  ASC_AF_INET6,
-  ASC_AF_UNSPEC
-};
-
 
 typedef struct {
     char applicationContextName[DUL_LEN_NAME + 1];

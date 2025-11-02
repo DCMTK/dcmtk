@@ -71,6 +71,17 @@ port  tcp/ip port number to listen on
 
 \subsection storescp_network_options network options
 \verbatim
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use IPv6/IPv4 dual stack
+
 association negotiation profile from configuration file:
 
   -xf   --config-file  [f]ilename [p]rofile: string

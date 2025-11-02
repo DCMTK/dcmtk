@@ -182,6 +182,11 @@ main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                 "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                 "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",              "-i0",     "use IPv6/IPv4 dual stack");
+
     cmd.addSubGroup("association negotiation profiles from configuration file:");
       cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-prof, [o]ut-prof: string",
                                                            "use profile i from f for incoming,\nand profile o from f for outgoing associations");
@@ -514,6 +519,13 @@ main(int argc, char *argv[])
       if (cmd.findOption("--reject")) options.rejectWhenNoImplementationClassUID_ = OFTrue;
       if (cmd.findOption("--ignore")) options.ignoreStoreData_ = OFTrue;
       if (cmd.findOption("--uid-padding")) options.correctUIDPadding_ = OFTrue;
+
+      // set the IP protocol version
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--ipv4")) dcmIncomingProtocolFamily.set(ASC_AF_INET);
+      if (cmd.findOption("--ipv6")) dcmIncomingProtocolFamily.set(ASC_AF_INET6);
+      if (cmd.findOption("--ip-auto")) dcmIncomingProtocolFamily.set(ASC_AF_UNSPEC);
+      cmd.endOptionBlock();
 
       if (cmd.findOption("--assoc-config-file"))
       {
