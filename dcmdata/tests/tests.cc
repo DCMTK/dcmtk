@@ -30,7 +30,6 @@ OFTEST_REGISTER(dcmdata_determineVM);
 OFTEST_REGISTER(dcmdata_getValueFromString);
 OFTEST_REGISTER(dcmdata_pathAccess);
 OFTEST_REGISTER(dcmdata_dateTime);
-OFTEST_REGISTER(dcmdata_checkDateTime);
 OFTEST_REGISTER(dcmdata_decimalString_1);
 OFTEST_REGISTER(dcmdata_decimalString_2);
 OFTEST_REGISTER(dcmdata_decimalString_3);

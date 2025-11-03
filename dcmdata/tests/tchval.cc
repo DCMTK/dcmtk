@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2016, OFFIS e.V.
+ *  Copyright (C) 2009-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -111,6 +111,17 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "DT-15", DcmDateTime::checkStringValue("200907", "1") )
   CHECK_GOOD( "DT-16", DcmDateTime::checkStringValue("2009", "1") )
   CHECK_BAD ( "DT-17", DcmDateTime::checkStringValue("20091", "1") )
+  /* check various timezone values, both valid and invalid ones */
+  CHECK_GOOD( "DT-18", DcmDateTime::checkStringValue("202501011200+0000"));
+  CHECK_BAD ( "DT-19", DcmDateTime::checkStringValue("202501011200-0000"));
+  CHECK_GOOD( "DT-20", DcmDateTime::checkStringValue("202501011200+0100"));
+  CHECK_GOOD( "DT-21", DcmDateTime::checkStringValue("202412311200-1130"));
+  CHECK_GOOD( "DT-22", DcmDateTime::checkStringValue("202412311200-1200"));
+  CHECK_BAD ( "DT-23", DcmDateTime::checkStringValue("202412311200-1230"));
+  CHECK_GOOD( "DT-24", DcmDateTime::checkStringValue("202412311200+1200"));
+  CHECK_GOOD( "DT-25", DcmDateTime::checkStringValue("202412311200+1330"));
+  CHECK_GOOD( "DT-26", DcmDateTime::checkStringValue("202412311200+1400"));
+  CHECK_BAD ( "DT-27", DcmDateTime::checkStringValue("202412311200+1430"));
 
   /* test "Decimal String" */
   CHECK_GOOD( "DS-01", DcmDecimalString::checkStringValue(" 0", "1") )
