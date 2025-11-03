@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2024 OFFIS e.V.
+ *  Copyright (C) 2011-2025 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@ OFTEST_REGISTER(dcmdata_determineVM);
 OFTEST_REGISTER(dcmdata_getValueFromString);
 OFTEST_REGISTER(dcmdata_pathAccess);
 OFTEST_REGISTER(dcmdata_dateTime);
+OFTEST_REGISTER(dcmdata_checkDateTime);
 OFTEST_REGISTER(dcmdata_decimalString_1);
 OFTEST_REGISTER(dcmdata_decimalString_2);
 OFTEST_REGISTER(dcmdata_decimalString_3);

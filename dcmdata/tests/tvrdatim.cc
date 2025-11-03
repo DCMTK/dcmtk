@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,4 +149,22 @@ OFTEST(dcmdata_dateTime)
     OFCHECK(dcmDateTime.getOFDateTime(dateTime).good());
     dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/);
     OFCHECK_EQUAL(string, "2002-04-10 00:00:00");
+}
+
+
+OFTEST(dcmdata_checkDateTime)
+{
+    /* no timezone specified */
+    OFCHECK(DcmDateTime::checkStringValue("202501011200").good());
+    /* check various timezone values, both valid and invalid ones */
+    OFCHECK(DcmDateTime::checkStringValue("202501011200+0000").good());
+    OFCHECK(DcmDateTime::checkStringValue("202501011200-0000").bad());
+    OFCHECK(DcmDateTime::checkStringValue("202501011200+0100").good());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200-1130").good());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200-1200").good());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200-1230").bad());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200+1200").good());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200+1330").good());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200+1400").good());
+    OFCHECK(DcmDateTime::checkStringValue("202412311200+1430").bad());
 }
