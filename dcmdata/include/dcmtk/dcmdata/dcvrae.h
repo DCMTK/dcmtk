@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -102,8 +102,8 @@ class DCMTK_DCMDATA_EXPORT DcmApplicationEntity
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &stringVal,
-	                                const unsigned long pos,
-	                                OFBool normalize = OFTrue);
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
 
     // ensure inherited overloads of matches take part in overload resolution
     using DcmByteString::matches;

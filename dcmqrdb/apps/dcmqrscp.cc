@@ -183,9 +183,9 @@ main(int argc, char *argv[])
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("IP protocol version:");
-      cmd.addOption("--ipv4",                 "-i4",     "use IPv4 only (default)");
-      cmd.addOption("--ipv6",                 "-i6",     "use IPv6 only");
-      cmd.addOption("--ip-auto",              "-i0",     "use IPv6/IPv4 dual stack");
+      cmd.addOption("--ipv4",                   "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                   "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",                "-i0",     "use IPv6/IPv4 dual stack");
 
     cmd.addSubGroup("association negotiation profiles from configuration file:");
       cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-prof, [o]ut-prof: string",
