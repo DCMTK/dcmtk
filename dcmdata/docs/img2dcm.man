@@ -429,7 +429,7 @@ However, if you want to keep APPn markers (e.g. APP8/HP color transform
 information, aka 'mrfx') inside the DICOM stream, the option \e --keep-appn
 does the trick.  Pay attention that the plugin will check the actual color
 transform specified in the APP8/HP marker.  Since DICOM does not allow any
-color transform to be specified in the APP8 marker, only a value of `0` (no
+color transform to be specified in the APP8 marker, only a value of 0 (no
 color transform) is accepted.
 
 \subsubsection img2dcm_bmp_input_plugin BMP Input Plugin
