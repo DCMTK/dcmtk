@@ -344,19 +344,19 @@ The file name extension for the bulk data files generated can be used to
 determine the MIME type that should be returned by the WADO-RS server:
 
 \verbatim
-Extension     MIME Type
+  Extension     MIME Type
 
-.bin          application/octet-stream
-.jpeg         image/jpeg
-.dicom-rle    image/dicom-rle
-.jls          image/jls
-.jp2          image/jp2
-.jpx          image/jpx
-.jphc         image/jphc
-.jxl          image/jxl
-.mpeg         video/mpeg
-.mp4          video/mp4
-.H265         video/H265
+  .bin          application/octet-stream
+  .jpeg         image/jpeg
+  .dicom-rle    image/dicom-rle
+  .jls          image/jls
+  .jp2          image/jp2
+  .jpx          image/jpx
+  .jphc         image/jphc
+  .jxl          image/jxl
+  .mpeg         video/mpeg
+  .mp4          video/mp4
+  .H265         video/H265
 \endverbatim
 
 Finally, it should be noted that bulk data will be written "as is", i.e.
