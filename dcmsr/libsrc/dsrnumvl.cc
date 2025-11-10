@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -238,11 +238,10 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
         stream << "<float>";
         if (hasFloating)
         {
-            /* increase default precision */
-            const STD_NAMESPACE streamsize oldPrecision = stream.precision(8);
-            stream << floatValue;
-            /* reset i/o manipulators */
-            stream.precision(oldPrecision);
+            char buffer[64];
+            /* need to convert float to avoid problems with decimal point and "-nan" */
+            OFStandard::ftoa(buffer, sizeof(buffer), floatValue, 0, 0, -2 /* print enough digits to permit lossless conversion back to FD */);
+            stream << buffer;
         }
         stream << "</float>" << OFendl;
     }

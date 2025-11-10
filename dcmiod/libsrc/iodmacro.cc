@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -68,7 +68,9 @@ CodeSequenceMacro::CodeSequenceMacro(const OFString& codeValue,
 {
     // reset element rules
     resetRules();
-    set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion);
+    // We don't check the value here, since this is a convenience constructor and we
+    // cannot return an error code anyway
+    set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion, OFFalse /* checkValue */);
 }
 
 OFCondition CodeSequenceMacro::check(const bool /* quiet */)
@@ -96,7 +98,9 @@ CodeSequenceMacro::CodeSequenceMacro(OFshared_ptr<DcmItem> item,
 {
     // reset element rules
     resetRules();
-    set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion);
+    // We don't check the value here, since this is a convenience constructor and we
+    // cannot return an error code anyway
+    set(codeValue, codingSchemeDesignator, codeMeaning, codingSchemeVersion, OFFalse /* checkValue */);
 }
 
 OFString CodeSequenceMacro::getName() const
@@ -1271,10 +1275,10 @@ ContentIdentificationMacro::ContentIdentificationMacro(const OFString& instanceN
     , m_IODRules()
 {
     resetRules();
-    setInstanceNumber(instanceNumber);
-    setContentLabel(contentLabel);
-    setContentDescription(contentDescription);
-    setContentCreatorName(contentCreatorName);
+    setInstanceNumber(instanceNumber, OFFalse /* do not check value */);
+    setContentLabel(contentLabel, OFFalse /* do not check value */);
+    setContentDescription(contentDescription, OFFalse /* do not check value */);
+    setContentCreatorName(contentCreatorName, OFFalse /* do not check value */);
 }
 
 void ContentIdentificationMacro::resetRules()

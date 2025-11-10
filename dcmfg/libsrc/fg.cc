@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -43,6 +43,11 @@ void FunctionalGroups::clear()
         m_groups.erase(it);
         delete fg;
     }
+}
+
+size_t FunctionalGroups::size() const
+{
+    return m_groups.size();
 }
 
 FGBase* FunctionalGroups::find(const DcmFGTypes::E_FGType fgType)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024, OFFIS e.V.
+ *  Copyright (C) 2024-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -11,7 +11,7 @@
  *    D-26121 Oldenburg, Germany
  *
  *
- *  Module:  dcmect
+ *  Module:  dcmiod
  *
  *  Author:  Michael Onken
  *

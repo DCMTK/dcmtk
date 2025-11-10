@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -175,7 +175,12 @@ void DiDocument::convertPixelData()
                 status = PixelData->getDecompressedColorModel(OFstatic_cast(DcmItem *, Object), PhotometricInterpretation);
                 if (status.bad())
                 {
-                    DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
+                    if (Flags & CIF_AcrNemaCompatibility)
+                    {
+                        DCMIMGLE_WARN("can't determine 'PhotometricInterpretation' of decompressed image "
+                            << "... assuming MONOCHROME2 (ACR-NEMA compatibility)");
+                    } else
+                        DCMIMGLE_ERROR("can't determine 'PhotometricInterpretation' of decompressed image");
                     DCMIMGLE_DEBUG("DcmPixelData::getDecompressedColorModel() returned: " << status.text());
                 }
             } else {

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -218,6 +218,13 @@ struct DCMTK_DCMNET_EXPORT T_ASC_RejectParameters
     T_ASC_RejectParametersReason reason;
 };
 
+struct DCMTK_DCMNET_EXPORT T_ASC_ImplementationIdentification
+{
+    T_ASC_ImplementationIdentification();
+
+    DIC_UI ourImplementationClassUID;
+    DIC_SH ourImplementationVersionName;
+};
 
 struct DCMTK_DCMNET_EXPORT T_ASC_Parameters
 {
@@ -295,7 +302,8 @@ DCMTK_DCMNET_EXPORT OFCondition
 ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
     long maxReceivePDUSize,
-    Sint32 tcpConnectTimeout);
+    Sint32 tcpConnectTimeout,
+    const T_ASC_ImplementationIdentification& implIdentification = T_ASC_ImplementationIdentification());
 
 /*
  * same as before, but uses value of the global dcmConnectionTimeout variable.
@@ -697,7 +705,8 @@ ASC_receiveAssociation(
     unsigned long *associatePDUlength=NULL,
     OFBool useSecureLayer=OFFalse,
     DUL_BLOCKOPTIONS block=DUL_BLOCK,
-    int timeout=0);
+    int timeout=0,
+    const T_ASC_ImplementationIdentification& implIdentification = T_ASC_ImplementationIdentification());
 
 DCMTK_DCMNET_EXPORT OFCondition
 ASC_acknowledgeAssociation(

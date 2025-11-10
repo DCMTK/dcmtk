@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2024, OFFIS e.V.
+ *  Copyright (C) 2007-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -199,7 +199,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
 
     // Extract width, height, samples per pixel, bits per sample
     Uint16 width, height, spp, bps;
-    cond = getSOFImageParameters(**entry, width, height, spp, bps);
+    cond = getSOFImageParameters(**entry, width, height, spp, bps, photoMetrInt);
     if (cond.bad())
     {
         closeFile();
@@ -258,36 +258,27 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     cols            = width;
     samplesPerPixel = spp;
     bitsStored      = bps;
-    bitsAlloc       = bps;
 
-    // When BitsStored = 12, we use BitsAllocated = 16
-    if (bitsAlloc == 12)
-    {
-        bitsAlloc = 16;
-    }
+    // bitsAlloc is always the next largest multiple of 8
+    if (bitsStored <= 8)
+        bitsAlloc = 8;
+        else bitsAlloc = 16;
 
     // HighBit is always BitsStored - 1.
-    highBit = bitsStored;
-    highBit--;
+    highBit = bitsStored -1;
 
-    if (samplesPerPixel == 1)
-        photoMetrInt = "MONOCHROME2";
-    else if (samplesPerPixel == 3)
+    if ((samplesPerPixel != 1) && (samplesPerPixel != 3))
     {
-        if (m_isJPEGLS)
-          photoMetrInt = "RGB";
-        else
-          photoMetrInt = "YBR_FULL_422";
-    }
-    else
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "For JPEG data, Samples per Pixel must be 1 or 3");
+    }
+
     // Planar Configuration and Pixel Representation is always 0 for JPEG data
     planConf  = 0;
     pixelRepr = 0;
 
     Uint32 tLength   = 0;
     char* tPixelData = NULL;
-    cond             = extractRawJPEGStream(tPixelData, tLength);
+    cond = extractRawJPEGStream(tPixelData, tLength);
     if (cond.bad())
     {
         closeFile();
@@ -320,7 +311,8 @@ OFCondition I2DJpegSource::getSOFImageParameters(const JPEGFileMapEntry& entry,
                                                  Uint16& imageWidth,
                                                  Uint16& imageHeight,
                                                  Uint16& samplesPerPixel,
-                                                 Uint16& bitsPerSample)
+                                                 Uint16& bitsPerSample,
+                                                 OFString& colorModel)
 {
     DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examining JPEG SOF image parameters");
     if (!isSOFMarker(entry.marker, m_isJPEGLS))
@@ -369,8 +361,78 @@ OFCondition I2DJpegSource::getSOFImageParameters(const JPEGFileMapEntry& entry,
     if (length != OFstatic_cast(unsigned int, 8 + num_components * 3))
         return makeOFCondition(OFM_dcmdata, 18, OF_error, "Bogus SOF marker length");
 
+    if (samplesPerPixel == 1)
+    {
+      colorModel = "MONOCHROME2";
+    }
+    else if (samplesPerPixel == 3)
+    {
+        if (m_isJPEGLS)
+        {
+            colorModel = "RGB";
+        }
+        else
+        {
+            // This is a lossy color JPEG file.
+            // Read component IDs and sampling factors
+            Uint8 i1=0, i2=0, i3=0, ss1=0, ss2=0, ss3=0, n=0;
+            result = read1Byte(i1);
+            if (result != EOF) result = read1Byte(ss1);
+            if (result != EOF) result = read1Byte(n);
+            if (result != EOF) result = read1Byte(i2);
+            if (result != EOF) result = read1Byte(ss2);
+            if (result != EOF) result = read1Byte(n);
+            if (result != EOF) result = read1Byte(i3);
+            if (result != EOF) result = read1Byte(ss3);
+            if (result == EOF)
+                return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+            if (ss1 == 0x11 && ss2 == 0x11 && ss3 == 0x11)
+            {
+                DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   No subsampling");
+                if (i1 == 'R' && i2 == 'G' && i3 == 'B')
+                {
+                    // an Adobe RGB JPEG
+                    colorModel = "RGB";
+                }
+                else
+                {
+                    // DICOM CP 1654 requires "YBR_FULL_422" to be used for lossy JPEG
+                    // independent from the actual subsampling in use. Therefore, we use
+                    // "YBR_FULL_422" and not "YBR_FULL". See DICOM Part 5, Table 8.2.1-1.
+                    colorModel = "YBR_FULL_422";
+                }
+            }
+            else if (ss1 == 0x21 && ss2 == 0x11 && ss3 == 0x11)
+            {
+                DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   4:2:2 subsampling");
+                colorModel = "YBR_FULL_422";
+            }
+            else if (ss1 == 0x22 && ss2 == 0x11 && ss3 == 0x11)
+            {
+                DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   non-standard 4:2:0 subsampling");
+                DCMDATA_LIBI2D_WARN("JPEG file contains non-standard 4:2:0 subsampling");
+                colorModel = "YBR_FULL_422";
+            }
+            else if (ss1 == 0x41 && ss2 == 0x11 && ss3 == 0x11)
+            {
+                DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   non-standard 4:1:1 subsampling");
+                DCMDATA_LIBI2D_WARN("JPEG file contains non-standard 4:1:1 subsampling");
+                colorModel = "YBR_FULL_422";
+            }
+            else
+            {
+                DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   non-standard subsampling: "
+                    << OFstatic_cast(unsigned int, ss1 >> 4) << "/" << OFstatic_cast(unsigned int, ss1 & 15) << ", "
+                    << OFstatic_cast(unsigned int, ss2 >> 4) << "/" << OFstatic_cast(unsigned int, ss2 & 15) << ", "
+                    << OFstatic_cast(unsigned int, ss3 >> 4) << "/" << OFstatic_cast(unsigned int, ss3 & 15));
+                DCMDATA_LIBI2D_WARN("JPEG file contains non-standard subsampling");
+                colorModel = "YBR_FULL_422";
+            }
+        }
+    }
     return EC_Normal;
 }
+
 
 OFCondition I2DJpegSource::getSOSImageParameters(const JPEGFileMapEntry& entry,
                                                  Uint8& nearLossless)

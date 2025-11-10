@@ -280,6 +280,8 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                                         DcmJsonFormat &format)
 {
+    OFCondition status = EC_Normal;
+
     /* always write JSON Opener */
     writeJsonOpener(out, format);
     OFBool isValid;
@@ -287,11 +289,11 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
     if (!isEmpty())
     {
         /* write element value */
-        OFString bulkDataValue;
-        if (format.asBulkDataURI(getTag(), bulkDataValue))
+        if (format.asBulkDataURI(getTag(), getLength()))
         {
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, bulkDataValue);
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+            status = format.writeBulkData(out, getTag(), getLengthField(), byteValues);
         }
         else
         {
@@ -300,7 +302,7 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
             {
                 OFString value;
                 OFString vmstring = "1";
-                OFCondition status = getOFString(value, 0L);
+                status = getOFString(value, 0L);
                 if (status.bad())
                     return status;
                 format.printValuePrefix(out);
@@ -313,7 +315,7 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                         DcmJsonFormat::printNumberDecimal(out, value);
                     else
                     {
-                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
+                        DCMDATA_WARN("encountered illegal DS value '" << value << "', converting to JSON string");
                         DcmJsonFormat::printValueString(out, value);
                     }
                     break;
@@ -322,14 +324,14 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                         DcmJsonFormat::printNumberDecimal(out, value);
                     else
                     {
-                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', aborting conversion to JSON.");
-                        return EC_CannotWriteStringAsJsonNumber;
+                        DCMDATA_WARN("encountered illegal DS value '" << value << "', aborting conversion to JSON");
+                        return EC_CannotWriteStringAsJSONNumber;
                     }
                     break;
                   case DcmJsonFormat::NSP_always_string:
                     if (!isValid)
                     {
-                        DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
+                        DCMDATA_WARN("encountered illegal DS value '" << value << "', converting to JSON string");
                     }
                     DcmJsonFormat::printValueString(out, value);
                     break;
@@ -350,7 +352,7 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                             DcmJsonFormat::printNumberDecimal(out, value);
                         else
                         {
-                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
+                            DCMDATA_WARN("encountered illegal DS value '" << value << "', converting to JSON string");
                             DcmJsonFormat::printValueString(out, value);
                         }
                         break;
@@ -359,14 +361,14 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
                             DcmJsonFormat::printNumberDecimal(out, value);
                         else
                         {
-                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', aborting conversion to JSON.");
-                            return EC_CannotWriteStringAsJsonNumber;
+                            DCMDATA_WARN("encountered illegal DS value '" << value << "', aborting conversion to JSON");
+                            return EC_CannotWriteStringAsJSONNumber;
                         }
                         break;
                       case DcmJsonFormat::NSP_always_string:
                         if (!isValid)
                         {
-                            DCMDATA_WARN("Encountered illegal DS value '" << value << "', converting to JSON string.");
+                            DCMDATA_WARN("encountered illegal DS value '" << value << "', converting to JSON string");
                         }
                         DcmJsonFormat::printValueString(out, value);
                         break;
@@ -379,8 +381,7 @@ OFCondition DcmDecimalString::writeJson(STD_NAMESPACE ostream &out,
 
     /* write JSON Closer  */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return status;
 }
 
 

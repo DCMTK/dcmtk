@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:07 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:38:52 by J. Riesmeier
  *
  */
 
@@ -72,8 +72,8 @@ class DCMTK_CMR_EXPORT CID29_AcquisitionModality
         IntravascularUltrasound,
         /// (KER,DCM,"Keratometry")
         Keratometry,
-        /// (LS,DCM,"Laser Scan")
-        LaserScan,
+        /// (LS,DCM,"Laser surface scan")
+        LaserSurfaceScan,
         /// (LEN,DCM,"Lensometry")
         Lensometry,
         /// (MR,DCM,"Magnetic Resonance")

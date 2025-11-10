@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7452_OrganizationalRole
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:20 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:08 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 7452 (Organizational Role)
 #define CONTEXT_GROUP_NUMBER  "7452"
+#define CONTEXT_GROUP_KEYWORD "OrganizationalRole"
 #define CONTEXT_GROUP_VERSION "20170626"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.516"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID7452_OrganizationalRole::CodeList *CID7452_OrganizationalRole::Codes = NULL;
 
 
 CID7452_OrganizationalRole::CID7452_OrganizationalRole(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID7452_OrganizationalRole::CID7452_OrganizationalRole(const DSRCodedEntryValue 
 
 CID7452_OrganizationalRole::CID7452_OrganizationalRole(const EnumType selectedValue,
                                                        const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

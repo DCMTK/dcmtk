@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2024, OFFIS e.V.
+ *  Copyright (C) 2018-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Pedro ArizpeGomez
+ *  Author:  Pedro ArizpeGomez, Marco Eichelberg
  *
  *  Purpose: Implementation of Document encapsulation
  *
@@ -40,111 +40,115 @@
 #define SHORTCOL 3
 #define LONGCOL 21
 
-// exit codes for this command line tool
-// (common codes are defined in "ofexit.h" included from "ofconapp.h")
-
-// general errors
-#define EXITCODE_MEMORY_EXHAUSTED                4
-
-DcmEncapsulatedDocument::DcmEncapsulatedDocument() :
-        opt_patientBirthdate(),
-        opt_patientID(),
-        opt_patientName(),
-        opt_patientSex(),
-
-        opt_conceptCM(),
-        opt_conceptCSD(),
-        opt_conceptCV(),
-
-        opt_documentTitle(),
-        opt_seriesFile(),
-        opt_seriesUID(),
-        opt_studyUID(),
-
-        opt_oenctype(EET_ExplicitLength),
-        opt_writeMode(EWM_fileformat),
-        opt_oglenc(EGL_withoutGL),
-        opt_opadenc(EPD_withoutPadding),
-        opt_oxfer(EXS_LittleEndianExplicit),
-        opt_filepad(0),
-        opt_itempad(0),
-
-        opt_readSeriesInfo(OFFalse),
-        opt_annotation(OFTrue),
-        opt_increment(OFFalse),
-
-        opt_instance(1),
-        opt_overrideKeys(),
-
-        cda_mediaTypes(),
-        hl7_InstanceIdentifier(),
-        opt_override(OFFalse),
-        // Frame of Reference Module (STL)
-        opt_frameOfReferenceUID(),
-        opt_positionReferenceIndicator(),
-        // Frame of Reference Module (STL)
-        opt_manufacturer(),
-        opt_manufacturerModelName(),
-        opt_deviceSerialNumber(),
-        opt_softwareVersions(),
-        // Enhanced General Equipment Module (STL)
-        opt_measurementUnitsCM(),
-        opt_measurementUnitsCSD(),
-        opt_measurementUnitsCV(),
-        //encapsulation file type
-        ftype()
+DcmEncapsulatedDocument::DcmEncapsulatedDocument()
+: patientBirthdate_()
+, patientID_()
+, patientName_()
+, patientSex_()
+, conceptCM_()
+, conceptCSD_()
+, conceptCV_()
+, documentTitle_()
+, seriesFile_()
+, seriesUID_()
+, studyUID_()
+, specificCharSet_()
+, modality_()
+, oenctype_(EET_ExplicitLength)
+, writeMode_(EWM_fileformat)
+, oglenc_(EGL_withoutGL)
+, opadenc_(EPD_withoutPadding)
+, oxfer_(EXS_LittleEndianExplicit)
+, filepad_(0)
+, itempad_(0)
+, readSeriesInfo_(OFFalse)
+, annotation_(OFTrue)
+, increment_(OFFalse)
+, instance_(1)
+, overrideKeys_()
+, cda_mediaTypes()
+, hl7_InstanceIdentifier()
+, override_(OFFalse)
+, frameOfReferenceUID_()
+, positionReferenceIndicator_()
+, manufacturer_()
+, manufacturerModelName_()
+, deviceSerialNumber_()
+, softwareVersions_()
+, measurementUnitsCM_()
+, measurementUnitsCSD_()
+, measurementUnitsCV_()
+, ftype_(DT_unknownDocument)
+, dfile_()
 {
 }
 
-OFBool DcmEncapsulatedDocument::XMLsearchAttribute(
+
+DcmEncapsulatedDocument::~DcmEncapsulatedDocument()
+{
+}
+
+// ========== static helper functions for processing CDA documents ==========
+
+/** Recursive function used by getAttributeValues to get all occurrences of an attribute as a list.
+ *  @param currnode the current XML node to be processed.
+ *  @param list of strings to which the results are added.
+ *  @param attr the attribute to search for.
+ *  @return OFTrue if the attribute value was found, OFFalse otherwise.
+ */
+static OFBool XMLsearchAttribute(
         XMLNode currnode,
-        OFList<OFString> *results,
-        OFString attr)
+        OFList<OFString> &results,
+        const OFString& attr)
 {
   OFBool found = OFFalse;
 #ifndef _XMLWIDECHAR
   if (currnode.nChildNode() == 0)
   {
-    //"currnode has no children (leaf)";
+    // currnode has no children (leaf)
     if (currnode.isAttributeSet(attr.c_str()))
     {
       //attribute found on leaf
-      results->push_back(OFSTRING_GUARD(currnode.getAttribute(attr.c_str())));
+      results.push_back(OFSTRING_GUARD(currnode.getAttribute(attr.c_str())));
       found = OFTrue;
     }
   }
   else
   {
-    //"currnode has children (branch)";
+    // currnode has children (branch)
     if (currnode.isAttributeSet(attr.c_str()))
     {
       //attribute found on branch
-      results->push_back(OFSTRING_GUARD(currnode.getAttribute(attr.c_str())));
+      results.push_back(OFSTRING_GUARD(currnode.getAttribute(attr.c_str())));
       found = OFTrue;
     }
     for (int i = 0; i < currnode.nChildNode(); i++)
     {
       //search all children recursively
-      OFBool childfound = XMLsearchAttribute(currnode.getChildNode(i), results, attr);
-      found |= childfound;
+      found |= XMLsearchAttribute(currnode.getChildNode(i), results, attr);
     }
   }
 #endif
   return found;
 }
 
-OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
-        XMLNode fileNode,
-        OFString attr)
+
+/** Retrieve all entries of an attribute and returns them as a string, separated by backslashes.
+ *  @param fileNode the root XML node.
+ *  @param attr the attribute to search for.
+ *  @return OFstring containing all entries found, separated by backslashes
+ */
+static OFString XMLgetAllAttributeValues(XMLNode& fileNode, const OFString& attr)
 {
   OFString attributeValues;
 #ifndef _XMLWIDECHAR
   OFList<OFString> attributeValueslist;
-  if (XMLsearchAttribute(fileNode, &attributeValueslist, attr))
+  if (XMLsearchAttribute(fileNode, attributeValueslist, attr))
   {
-    //If the Attribute is mediaType, initialize with text/xml to exclude
-    //the primary MIME Type of the encapsulated document
+    // If the Attribute is mediaType, initialize with text/xml to exclude
+    // the primary MIME Type of the encapsulated document
     if (attr == "mediaType") attributeValues.append("text/xml");
+
     while (!attributeValueslist.empty())
     {
       if (attributeValues.find(attributeValueslist.front()) == OFString_npos)
@@ -154,8 +158,8 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
       }
       attributeValueslist.pop_front();
     }
-    //remove the primary MIME Type of the
-    //encapsulated document
+
+    // remove the primary MIME Type of the encapsulated document
     if (attr == "mediaType")
     {
       if (attributeValues.size() > 9)
@@ -168,682 +172,642 @@ OFString DcmEncapsulatedDocument::XMLgetAllAttributeValues(
   return attributeValues;
 }
 
-OFString DcmEncapsulatedDocument::XMLgetAttribute(
-        XMLNode fileNode,
-        DcmTagKey attr)
+
+/** Retrieve the value from the CDA document corresponding to the given DICOM Tag,
+ *  according to DICOM Part 20, section A.8.
+ *  @param fileNode the root XML node.
+ *  @param attr the tag to search for in the CDA file.
+ *  @return OFstring containing the value of the corresponding tag.
+ */
+static OFString XMLgetAttribute(XMLNode& fileNode, const DcmTagKey& attr)
 {
-  OFString result = "";
 #ifndef _XMLWIDECHAR
-  if (attr == DCM_DocumentTitle)
-  {
-    if (fileNode.getChildNode("title").getText() != NULL)
+    if (attr == DCM_DocumentTitle)
     {
-      result = OFString(OFSTRING_GUARD(fileNode.getChildNode("title").getText()));
-    }
-  }
-  if (attr == DCM_HL7InstanceIdentifier)
-  {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNode("id").getAttribute("root"))) + "^"
-             + OFString(OFSTRING_GUARD(fileNode.getChildNode("id").getAttribute("extension")));
-  }
-  /*PatientNameExtension could reflect the type of name (PHON, IDE, ABC)
-  if (attr == DCM_PatientNameExtension)
-  {
-  result = OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getAttribute("use")));
-  }*/
-  if (attr == DCM_PatientName)
-  {
-    result = OFString(
-            OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText())) + "^"
-             + OFString(OFSTRING_GUARD(
-                                fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getChildNode(
-                                        "given", 0).getText())) + "^"
-             + OFString(OFSTRING_GUARD(
-                                fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getChildNode(
-                                        "given", 1).getText())) + "^"
-             + OFString(
-            OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/prefix").getText())) + "^"
-             + OFString(
-            OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/suffix").getText()));
-  }
-  if (attr == DCM_PatientSex)
-  {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath(
-            "recordTarget/patientRole/patient/administrativeGenderCode").getAttribute("code")));
-  }
-  if (attr == DCM_PatientBirthDate)
-  {
-    result = OFString(OFSTRING_GUARD(
-                              fileNode.getChildNodeByPath("recordTarget/patientRole/patient/birthTime").getAttribute(
-                                      "value")));
-  }
-  //Table A.8-1. Basic Code Attributes Mapping to HL7 V3 Code Data Types (CV, CS, CE and CD)
-  if (attr == DCM_PatientID)
-  {
-    result = OFString(
-            OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/id").getAttribute("extension")));
-  }
-  if (attr == DCM_CodeValue)//Code Value
-  {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("code")));
-  }
-  if (attr == DCM_CodingSchemeUID)//Coding Scheme UID (PS3.16)
-  {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystem")));
-  }
-  if (attr == DCM_CodingSchemeDesignator)//Coding Scheme Designator (0008,0102)
-  {
-    OFString CSDtemp = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystemName")));
-    // Abbreviate most common CSNs
-    if (CSDtemp == OFString("LOINC"))
-    {
-      result = OFString("LN");
-    }
-    else
-    {
-      if (CSDtemp == OFString("DICOM"))
+      if (fileNode.getChildNode("title").getText() != NULL)
       {
-        result = OFString("DC");
+        return OFString(OFSTRING_GUARD(fileNode.getChildNode("title").getText()));
+      }
+    }
+
+    if (attr == DCM_HL7InstanceIdentifier)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNode("id").getAttribute("root"))) + "^"
+               + OFString(OFSTRING_GUARD(fileNode.getChildNode("id").getAttribute("extension")));
+    }
+
+    if (attr == DCM_PatientName)
+    {
+      return OFString(
+              OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/family").getText())) + "^"
+               + OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getChildNode("given", 0).getText())) + "^"
+               + OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name").getChildNode("given", 1).getText())) + "^"
+               + OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/prefix").getText())) + "^"
+               + OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/name/suffix").getText()));
+    }
+
+    if (attr == DCM_PatientSex)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/administrativeGenderCode").getAttribute("code")));
+    }
+
+    if (attr == DCM_PatientBirthDate)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/patient/birthTime").getAttribute("value")));
+    }
+
+    //Table A.8-1. Basic Code Attributes Mapping to HL7 V3 Code Data Types (CV, CS, CE and CD)
+    if (attr == DCM_PatientID)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNodeByPath("recordTarget/patientRole/id").getAttribute("extension")));
+    }
+
+    if (attr == DCM_CodeValue)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("code")));
+    }
+    if (attr == DCM_CodingSchemeUID)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystem")));
+    }
+    if (attr == DCM_CodingSchemeDesignator)
+    {
+      OFString CSDtemp = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystemName")));
+
+      // Abbreviate most common CSNs
+      if (CSDtemp == OFString("LOINC"))
+      {
+        return OFString("LN");
       }
       else
       {
-        if (CSDtemp == OFString("SNOMED"))
+        if (CSDtemp == OFString("DICOM"))
         {
-          result = OFString("SRT");
+          return OFString("DCM");
         }
         else
         {
-          result = CSDtemp;
+          if (CSDtemp == OFString("SNOMED"))
+          {
+            return OFString("SCT");
+          }
+          else
+          {
+            return CSDtemp;
+          }
         }
       }
     }
-  }
-  if (attr == DCM_CodingSchemeVersion)//Coding Scheme Version (0008,0103)
-  {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystemVersion")));
-  }
-  if (attr == DCM_CodeMeaning)//Code Meaning (0008,0104)
-  {
-    result = OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("displayName")));
-  }
+
+    if (attr == DCM_CodingSchemeVersion)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("codeSystemVersion")));
+    }
+
+    if (attr == DCM_CodeMeaning)
+    {
+      return OFString(OFSTRING_GUARD(fileNode.getChildNode("code").getAttribute("displayName")));
+    }
+
+    // this shouldn't happen
+    DCMDATA_ERROR("XMLgetAttribute called with unsupported attribute tag " << attr);
 #endif
-  return result;
+
+    return "";
 }
 
-int DcmEncapsulatedDocument::getCDAData(
-        const char *filename,
-        OFLogger &appLogger)
+// ========== class methods ==========
+
+OFCondition DcmEncapsulatedDocument::getCDAData()
 {
 #ifdef _XMLWIDECHAR
 #ifdef _MSC_VER
-#pragma message("DCMTK compiled with 'wide char XML parser'. cda2dcm will be unable to read and encapsulate CDA documents.")
+#pragma message("DCMTK compiled with 'wide char XML parser'. dcmencap will be unable to read and encapsulate CDA documents.")
 #else
-#warning "DCMTK compiled with 'wide char XML parser'. cda2dcm will be unable to read and encapsulate CDA documents."
+#warning "DCMTK compiled with 'wide char XML parser'. dcmencap will be unable to read and encapsulate CDA documents."
 #endif
-  OFLOG_ERROR(appLogger, "DCMTK compiled with \"wide char XML parser\". Cannot parse CDA data because of incompatible API.");
-  return 99;
+    DCMDATA_ERROR("DCMTK compiled with \"wide char XML parser\". Cannot parse CDA data because of incompatible API.");
+    return EC_XMLParseError;
 #else
-  if (ftype != "cda")
-  {
-    OFLOG_WARN(appLogger, "Filetype mismatch or filetype not set. Current ftype is " << ftype);
-  }
-  XMLResults err;
-  XMLNode fileNode = XMLNode::parseFile(filename, "ClinicalDocument", &err);
-  OFLOG_TRACE(appLogger, "checking if the XML file is correctly formatted");
-  if (0 != err.error)
-  {
-    OFLOG_ERROR(appLogger, fileNode.getError(err.error));
-    return EXITCODE_INVALID_INPUT_FILE;
-  }
-  else
-  {
-    OFLOG_TRACE(appLogger, "XML file is correctly formatted");
-  }
-  OFLOG_TRACE(appLogger, "Getting all media types from CDA file");
-  cda_mediaTypes = XMLgetAllAttributeValues(fileNode, "mediaType");
-  OFLOG_TRACE(appLogger, "Following mediaTypes were found: " << cda_mediaTypes);
-  OFLOG_TRACE(appLogger, "Getting HL7 Instance Identifier from CDA file");
-  hl7_InstanceIdentifier = XMLgetAttribute(fileNode, DCM_HL7InstanceIdentifier);
-  OFLOG_TRACE(appLogger, "Reading and comparing patient information between CDA File and options");
-  OFString pID = XMLgetAttribute(fileNode, DCM_PatientID);
-  if ((pID != "") && (opt_patientID != pID))
-  {
-    if (opt_patientID != "")
+    DCMDATA_INFO("Extracting information from CDA document content");
+
+    XMLResults err;
+    XMLNode fileNode = XMLNode::parseFile(ifname_.c_str(), "ClinicalDocument", &err);
+    DCMDATA_TRACE("checking if the XML file is correctly formatted");
+    if (0 != err.error)
     {
-      //if no-override option is inactive, return an error
-      if (!opt_override)
-      {
-        OFLOG_ERROR(appLogger, "Patient ID mismatch:" << OFendl
-                << "Found in the CDA file : " << pID << OFendl
-                << "Entered (or found in DCM file): " << opt_patientID << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
-      }
-      else
-      {
-        OFLOG_WARN(appLogger, "Patient ID mismatch:" << OFendl
-                << "Found in the CDA file : " << pID << OFendl
-                << "Provided (in DCM file): " << opt_patientID);
-      }
+      DCMDATA_ERROR(fileNode.getError(err.error));
+      return EC_XMLParseError;
     }
     else
     {
-      opt_patientID = pID;
+      DCMDATA_TRACE("XML file is correctly formatted");
     }
-  }
-  OFString pBirthDate = XMLgetAttribute(fileNode, DCM_PatientBirthDate);
-  if ((pBirthDate != "") && (opt_patientBirthdate != pBirthDate))
-  {
-    if (opt_patientBirthdate != "")
+    DCMDATA_TRACE("Getting all media types from CDA file");
+    cda_mediaTypes = XMLgetAllAttributeValues(fileNode, "mediaType");
+    DCMDATA_TRACE("Following mediaTypes were found: " << cda_mediaTypes);
+    DCMDATA_TRACE("Getting HL7 Instance Identifier from CDA file");
+    hl7_InstanceIdentifier = XMLgetAttribute(fileNode, DCM_HL7InstanceIdentifier);
+    DCMDATA_TRACE("Reading and comparing patient information between CDA File and options");
+    OFString pID = XMLgetAttribute(fileNode, DCM_PatientID);
+    if ((pID.length() > 0) && (patientID_ != pID))
     {
-      if (!opt_override)
+      if (patientID_.length() > 0)
       {
-        OFLOG_ERROR(appLogger, "Patient Birth Date mismatch:" << OFendl
-                << "Found in the CDA file : " << pBirthDate << OFendl
-                << "Provided (in DCM file): " << opt_patientBirthdate << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+        if (override_) DCMDATA_WARN("Patient ID mismatch: '" << pID << "' in CDA, '" << patientID_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("Patient ID mismatch: '" << pID << "' in CDA, '" << patientID_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
       }
       else
       {
-        OFLOG_WARN(appLogger, "Patient Birth Date mismatch:" << OFendl
-                << "Found in the CDA file : " << pBirthDate << OFendl
-                << "Provided (in DCM file): " << opt_patientBirthdate);
+        patientID_ = pID;
       }
     }
-    else opt_patientBirthdate = pBirthDate;
-  }
-  OFString pSex = XMLgetAttribute(fileNode, DCM_PatientSex);
-  if ((pSex != "") && (opt_patientSex != pSex))
-  {
-    if (opt_patientSex != "")
+    OFString pBirthDate = XMLgetAttribute(fileNode, DCM_PatientBirthDate);
+    if ((pBirthDate.length() > 0) && (patientBirthdate_ != pBirthDate))
     {
-      if (!opt_override)
+      if (patientBirthdate_.length() > 0)
       {
-        OFLOG_ERROR(appLogger, "Patient Sex mismatch:" << OFendl
-                << "Found in the CDA file : " << pSex << OFendl
-                << "Provided (in DCM file): " << opt_patientSex << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+        if (override_) DCMDATA_WARN("Patient Birth Date mismatch: '" << pBirthDate << "' in CDA, '" << patientBirthdate_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("Patient Birth Date mismatch: '" << pBirthDate << "' in CDA, '" << patientBirthdate_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
       }
-      else
-      {
-        OFLOG_WARN(appLogger, "Patient Sex mismatch:" << OFendl
-                << "Found in the CDA file : " << pSex << OFendl
-                << "Provided (in DCM file): " << opt_patientSex);
-      }
+      else patientBirthdate_ = pBirthDate;
     }
-    else opt_patientSex = pSex;
-  }
-  OFString pName = XMLgetAttribute(fileNode, DCM_PatientName);
-  if ((pName != "^^^^") && (opt_patientName != pName))
-  {
-    if (opt_patientName != "")
+    OFString pSex = XMLgetAttribute(fileNode, DCM_PatientSex);
+    if ((pSex.length() > 0) && (patientSex_ != pSex))
     {
-      if (!opt_override)
+      if (patientSex_.length() > 0)
       {
-        OFLOG_ERROR(appLogger, "Patient Name mismatch:" << OFendl
-                << "Found in the CDA file : " << pName << OFendl
-                << "Provided (in DCM file): " << opt_patientName << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+        if (override_) DCMDATA_WARN("Patient Sex mismatch: '" << pSex << "' in CDA, '" << patientSex_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("Patient Sex mismatch: '" << pSex << "' in CDA, '" << patientSex_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
       }
-      else
-      {
-        OFLOG_WARN(appLogger, "Patient Name mismatch:" << OFendl
-                << "Found in the CDA file : " << pName << OFendl
-                << "Provided (in DCM file): " << opt_patientName);
-      }
+      else patientSex_ = pSex;
     }
-    else opt_patientName = pName;
-  }
-  //get document title from CDA
-  OFString dTitle = XMLgetAttribute(fileNode, DCM_DocumentTitle);
-  if (opt_documentTitle == "")
-  {
-    if (opt_conceptCSD != "") opt_documentTitle = opt_conceptCSD;
-    if (opt_conceptCV != "") opt_documentTitle = opt_conceptCV;
-    if (opt_conceptCM != "") opt_documentTitle = opt_conceptCM;
-  }
+    OFString pName = XMLgetAttribute(fileNode, DCM_PatientName);
+    if ((pName != "^^^^") && (patientName_ != pName))
+    {
+      if (patientName_.length() > 0)
+      {
+        if (override_) DCMDATA_WARN("Patient Name mismatch: '" << pName << "' in CDA, '" << patientName_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("Patient Name mismatch: '" << pName << "' in CDA, '" << patientName_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
+      }
+      else patientName_ = pName;
+    }
+    //get document title from CDA
+    OFString dTitle = XMLgetAttribute(fileNode, DCM_DocumentTitle);
+    if ((dTitle.length() > 0) && (documentTitle_ != dTitle))
+    {
+      if (documentTitle_.length() > 0)
+      {
+        if (override_) DCMDATA_WARN("Document Title mismatch: '" << dTitle << "' in CDA, '" << documentTitle_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("Document Title mismatch: '" << dTitle << "' in CDA, '" << documentTitle_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
+      }
+      else documentTitle_ = dTitle;
+    }
 
-  if ((dTitle != "") && (opt_documentTitle != dTitle))
-  {
-    if (opt_documentTitle != "")
+    //get Concept information from CDA
+    OFString cCSD = XMLgetAttribute(fileNode, DCM_CodingSchemeDesignator);
+    if ((cCSD.length() > 0) && (conceptCSD_ != cCSD))
     {
-      if (!opt_override)
+      if (conceptCSD_.length() > 0)
       {
-        OFLOG_ERROR(appLogger, "Document Title mismatch:" << OFendl
-                << "Found in the CDA file : " << dTitle << OFendl
-                << "Provided (in DCM file): " << opt_documentTitle << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+        if (override_) DCMDATA_WARN("concept CSD mismatch: '" << cCSD << "' in CDA, '" << conceptCSD_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("concept CSD mismatch: '" << cCSD << "' in CDA, '" << conceptCSD_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
       }
-      else
-      {
-        OFLOG_WARN(appLogger, "Document Title mismatch:" << OFendl
-                << "Found in the CDA file : " << dTitle << OFendl
-                << "Provided (in DCM file): " << opt_documentTitle);
-      }
+      else conceptCSD_ = cCSD;
     }
-    else opt_documentTitle = dTitle;
-  }
-  //get Concept information from CDA
-  OFString cCSD = XMLgetAttribute(fileNode, DCM_CodingSchemeDesignator);
-  if ((cCSD != "") && (opt_conceptCSD != cCSD))
-  {
-    if (opt_conceptCSD != "")
+    OFString cCV = XMLgetAttribute(fileNode, DCM_CodeValue);
+    if ((cCV.length() > 0) && (conceptCV_ != cCV))
     {
-      if (!opt_override)
+      if (conceptCV_.length() > 0)
       {
-        OFLOG_ERROR(appLogger, "concept CSD mismatch:" << OFendl
-                << "Found in the CDA file : " << cCSD << OFendl
-                << "Provided (in DCM file): " << opt_conceptCSD << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+        if (override_) DCMDATA_WARN("concept CV mismatch: '" << cCV << "' in CDA, '" << conceptCV_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("concept CV mismatch: '" << cCV << "' in CDA, '" << conceptCV_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
       }
-      else
-      {
-        OFLOG_WARN(appLogger, "concept CSD mismatch:" << OFendl
-                << "Found in the CDA file : " << cCSD << OFendl
-                << "Provided (in DCM file): " << opt_conceptCSD);
-      }
+      else conceptCV_ = cCV;
     }
-    else opt_conceptCSD = cCSD;
-  }
-  OFString cCV = XMLgetAttribute(fileNode, DCM_CodeValue);
-  if ((cCV != "") && (opt_conceptCV != cCV))
-  {
-    if (opt_conceptCV != "")
+    OFString cCM = XMLgetAttribute(fileNode, DCM_CodeMeaning);
+    if ((cCM.length() > 0) && (conceptCM_ != cCM))
     {
-      if (!opt_override)
+      if (conceptCM_.length() > 0)
       {
-        OFLOG_ERROR(appLogger, "concept CV mismatch:" << OFendl
-                << "Found in the CDA file : " << cCV << OFendl
-                << "Provided (in DCM file): " << opt_conceptCV << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
+        if (override_) DCMDATA_WARN("concept CM mismatch: '" << cCM << "' in CDA, '" << conceptCM_ << "' in DICOM file or specified via command line.");
+        else
+        {
+          DCMDATA_ERROR("concept CM mismatch: '" << cCM << "' in CDA, '" << conceptCM_ << "' in DICOM file or specified via command line.");
+          return EC_InvalidValue;
+        }
       }
-      else
-      {
-        OFLOG_WARN(appLogger, "concept CV mismatch:" << OFendl
-                << "Found in the CDA file : " << cCV << OFendl
-                << "Provided (in DCM file): " << opt_conceptCV);
-      }
+      else conceptCM_ = cCM;
     }
-    else opt_conceptCV = cCV;
-  }
-  OFString cCM = XMLgetAttribute(fileNode, DCM_CodeMeaning);
-  if ((cCM != "") && (opt_conceptCM != cCM))
-  {
-    if (opt_conceptCM != "")
-    {
-      if (!opt_override)
-      {
-        OFLOG_ERROR(appLogger, "concept CM mismatch:" << OFendl
-                << "Found in the CDA file : " << cCM << OFendl
-                << "Provided (in DCM file): " << opt_conceptCM << OFendl
-                << "If you wish to override, run again with +ov");
-        return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
-      }
-      else
-      {
-        OFLOG_WARN(appLogger, "concept CM mismatch:" << OFendl
-                << "Found in the CDA file : " << cCM << OFendl
-                << "Provided (in DCM file): " << opt_conceptCM);
-      }
-    }
-    else opt_conceptCM = cCM;
-  }
-  return EXITCODE_NO_ERROR;
+    return EC_Normal;
 #endif
 }
 
-void DcmEncapsulatedDocument::addCDACommandlineOptions(OFCommandLine &cmd)
+
+static void addGeneralOptions(OFCommandLine &cmd)
 {
-  ftype = "cda";
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam("cdafile-in", "CDA input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
-  addGeneralOptions(cmd);
-  addDocumentOptions(cmd);
-  cmd.addSubGroup("override CDA data:");
-  cmd.addOption("--no-override", "-ov",
-                "CDA patient and document data must match study,\nseries or manually entered information (default)");
-  cmd.addOption("--override", "+ov",
-                "CDA's data will be overwritten by study, series\nor manually entered information");
-  addOutputOptions(cmd);
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+    cmd.addOption("--help", "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version", "print version information and exit", OFCommandLine::AF_Exclusive);
+    OFLog::addOptions(cmd);
 }
 
-void DcmEncapsulatedDocument::addPDFCommandlineOptions(OFCommandLine &cmd)
+
+static void addDocumentOptions(OFCommandLine &cmd)
 {
-  ftype = "pdf";
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam("pdffile-in", "PDF input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
-  addGeneralOptions(cmd);
-  addDocumentOptions(cmd);
-  addOutputOptions(cmd);
+    cmd.addGroup("DICOM document options:");
+
+    cmd.addSubGroup("document title:");
+    cmd.addOption("--title",               "+t", 1, "[t]itle: string (default: empty)", "document title");
+    cmd.addOption("--concept-name",        "+cn", 3, "[CSD] [CV] [CM]: string (default: empty)",
+                    "coded representation of document title defined\nby coding scheme designator CSD,\n"
+                    "code value CV and code meaning CM");
+    cmd.addSubGroup("patient data:");
+    cmd.addOption("--patient-name",        "+pn", 1, "[n]ame: string", "patient's name in DICOM PN syntax");
+    cmd.addOption("--patient-id",          "+pi", 1, "[i]d: string", "patient identifier");
+    cmd.addOption("--patient-birthdate",   "+pb", 1, "[d]ate: string (YYYYMMDD)", "patient's birth date");
+    cmd.addOption("--patient-sex",         "+ps", 1, "[s]ex: string (M, F or O)", "patient's sex");
+
+    cmd.addSubGroup("device data:");
+    cmd.addOption("--manufacturer",          "+mn", 1, "[n]ame: string", "manufacturer's name");
+    cmd.addOption("--manufacturer-model",    "+mm", 1, "[n]ame: string", "manufacturer's model name");
+    cmd.addOption("--device-serial",         "+ds", 1, "[n]umber: string", "device serial number");
+    cmd.addOption("--software-versions",     "+sv", 1, "[v]ersions: string", "software versions");
+
+    cmd.addSubGroup("manufacturing 3d model data (STL/MTL/OBJ only):");
+    cmd.addOption("--measurement-units",     "+mu", 3, "[CSD] [CV] [CM]: string (default: UCUM, um, um)",
+                  "measurement units defined by coding scheme\ndesignator CSD, code value CV, code meaning CM");
+
+    cmd.addSubGroup("study and series:");
+    cmd.addOption("--generate",            "+sg", "generate new study and\nseries UIDs (default)");
+    cmd.addOption("--study-from",          "+st", 1, "[f]ilename: string", "read patient/study data from DICOM file");
+    cmd.addOption("--series-from",         "+se", 1, "[f]ilename: string", "read patient/study/series data from DICOM file");
+
+    cmd.addSubGroup("instance number:");
+    cmd.addOption("--instance-one",        "+i1", "use instance number 1\n(default, not with +se)");
+    cmd.addOption("--instance-inc",        "+ii", "increment instance number (only with +se)");
+    cmd.addOption("--instance-set",        "+is", 1, "[i]nstance number: integer", "use instance number i");
+
+    cmd.addSubGroup("burned-in annotation:");
+    cmd.addOption("--annotation-yes",      "+an", "document contains patient identifying data\n(default)");
+    cmd.addOption("--annotation-no",       "-an", "document does not contain patient identif. data");
 }
 
-void DcmEncapsulatedDocument::addSTLCommandlineOptions(OFCommandLine &cmd)
+
+static void addOutputOptions(OFCommandLine &cmd)
 {
-  ftype = "stl";
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  cmd.addParam("stlfile-in", "STL input filename to be converted");
-  cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
-  addGeneralOptions(cmd);
-  addDocumentOptions(cmd);
-  cmd.addSubGroup("enhanced general equipment:");
-  cmd.addOption("--manufacturer", "+mn", 1, "[n]ame: string",
-                "manufacturer's name");
-  cmd.addOption("--manufacturer-model", "+mm", 1, "[n]ame: string",
-                "manufacturer's model name");
-  cmd.addOption("--device-serial", "+ds", 1, "[n]umber: string",
-                "device serial number");
-  cmd.addOption("--software-versions", "+sv", 1, "[v]ersions: string",
-                "software versions");
-  cmd.addSubGroup("3d model measurement units:");
-  cmd.addOption("--measurement-units", "+mu", 3, "[CSD] [CV] [CM]: string (default: UCUM, um, um)",
-                "measurement units defined by coding scheme\ndesignator CSD, code value CV, code meaning CM");
-  addOutputOptions(cmd);
+    cmd.addGroup("processing options:");
+    cmd.addSubGroup("CDA processing options:");
+    cmd.addOption("--no-override",           "-ov", "CDA patient and document data must match study,\nseries or manually entered information (default)");
+    cmd.addOption("--override",              "+ov", "CDA's data will be overwritten by study, series\nor manually entered information");
+
+    cmd.addSubGroup("other processing options:");
+    cmd.addOption("--key",                 "-k", 1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"", "add further attribute");
+
+    cmd.addGroup("output options:");
+
+    cmd.addSubGroup("output transfer syntax:");
+    cmd.addOption("--write-xfer-little",   "+te", "write with explicit VR little endian (default)");
+    cmd.addOption("--write-xfer-big",      "+tb", "write with explicit VR big endian TS");
+    cmd.addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
+
+    cmd.addSubGroup("group length encoding:");
+    cmd.addOption("--group-length-remove", "-g", "write without group length elements (default)");
+    cmd.addOption("--group-length-create", "+g", "write with group length elements");
+
+    cmd.addSubGroup("length encoding in sequences and items:");
+    cmd.addOption("--length-explicit",     "+e", "write with explicit lengths (default)");
+    cmd.addOption("--length-undefined",    "-e", "write with undefined lengths");
+
+    cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
+    cmd.addOption("--padding-retain",      "-p=", "do not change padding (default)");
+    cmd.addOption("--padding-off",         "-p", "no padding (implicit if --write-dataset)");
+    cmd.addOption("--padding-create",      "+p", 2, "[f]ile-pad [i]tem-pad: integer",
+                  "align file on multiple of f bytes\nand items on multiple of i bytes");
 }
 
-void DcmEncapsulatedDocument::addGeneralOptions(OFCommandLine &cmd)
+
+void DcmEncapsulatedDocument::addCommandlineOptions(OFCommandLine &cmd) const
 {
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-  cmd.addOption("--help", "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-  cmd.addOption("--version", "print version information and exit", OFCommandLine::AF_Exclusive);
-  OFLog::addOptions(cmd);
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    cmd.addParam("docfile-in",  "input filename to be converted");
+    cmd.addParam("dcmfile-out", "DICOM output filename (\"-\" for stdout)");
+
+    addGeneralOptions(cmd);
+
+    cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
+    cmd.addSubGroup("input file format options:");
+    cmd.addOption("--filetype-auto",         "+fa", "automatically determine file type (default)");
+    cmd.addOption("--filetype-pdf",          "+fp", "expect PDF file");
+    cmd.addOption("--filetype-cda",          "+fc", "expect CDA file");
+    cmd.addOption("--filetype-stl",          "+fs", "expect STL file");
+    cmd.addOption("--filetype-mtl",          "+fm", "expect MTL file");
+    cmd.addOption("--filetype-obj",          "+fo", "expect OBJ file");
+
+    addDocumentOptions(cmd);
+
+    addOutputOptions(cmd);
 }
 
-void DcmEncapsulatedDocument::addDocumentOptions(OFCommandLine &cmd)
-{
-  cmd.addGroup("DICOM document options:");
-  cmd.addSubGroup("document title:");
-  cmd.addOption("--title", "+t", 1, "[t]itle: string (default: empty)",
-                "document title");
-  cmd.addOption("--concept-name", "+cn", 3, "[CSD] [CV] [CM]: string (default: empty)",
-                "coded representation of document title defined\nby coding scheme designator CSD,\n"
-                "code value CV and code meaning CM");
-  cmd.addSubGroup("patient data:");
-  cmd.addOption("--patient-name", "+pn", 1, "[n]ame: string",
-                "patient's name in DICOM PN syntax");
-  cmd.addOption("--patient-id", "+pi", 1, "[i]d: string",
-                "patient identifier");
-  cmd.addOption("--patient-birthdate", "+pb", 1, "[d]ate: string (YYYYMMDD)",
-                "patient's birth date");
-  cmd.addOption("--patient-sex", "+ps", 1, "[s]ex: string (M, F or O)",
-                "patient's sex");
-  cmd.addSubGroup("study and series:");
-  cmd.addOption("--generate", "+sg", "generate new study and\nseries UIDs (default)");
-  cmd.addOption("--study-from", "+st", 1, "[f]ilename: string",
-                "read patient/study data from DICOM file");
-  cmd.addOption("--series-from", "+se", 1, "[f]ilename: string",
-                "read patient/study/series data from DICOM file");
-  cmd.addSubGroup("instance number:");
-  cmd.addOption("--instance-one", "+i1", "use instance number 1\n(default, not with +se)");
-  cmd.addOption("--instance-inc", "+ii", "increment instance number (only with +se)");
-  cmd.addOption("--instance-set", "+is", 1, "[i]nstance number: integer", "use instance number i");
-  cmd.addSubGroup("burned-in annotation:");
-  cmd.addOption("--annotation-yes", "+an", "document contains patient identifying data\n(default)");
-  cmd.addOption("--annotation-no", "-an", "document does not contain patient identif. data");
-}
-
-void DcmEncapsulatedDocument::addOutputOptions(OFCommandLine &cmd)
-{
-  cmd.addGroup("processing options:");
-  cmd.addSubGroup("other processing options:");
-  cmd.addOption("--key", "-k", 1, "[k]ey: gggg,eeee=\"str\", path or dict. name=\"str\"",
-                "add further attribute");
-  cmd.addGroup("output options:");
-  cmd.addSubGroup("output transfer syntax:");
-  cmd.addOption("--write-xfer-little", "+te", "write with explicit VR little endian (default)");
-  cmd.addOption("--write-xfer-big", "+tb", "write with explicit VR big endian TS");
-  cmd.addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
-  cmd.addSubGroup("group length encoding:");
-  cmd.addOption("--group-length-recalc", "+g=", "recalculate group lengths if present (default)");
-  cmd.addOption("--group-length-create", "+g", "always write with group length elements");
-  cmd.addOption("--group-length-remove", "-g", "always write without group length elements");
-  cmd.addSubGroup("length encoding in sequences and items:");
-  cmd.addOption("--length-explicit", "+e", "write with explicit lengths (default)");
-  cmd.addOption("--length-undefined", "-e", "write with undefined lengths");
-  cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-  cmd.addOption("--padding-retain", "-p=", "do not change padding (default)");
-  cmd.addOption("--padding-off", "-p", "no padding (implicit if --write-dataset)");
-  cmd.addOption("--padding-create", "+p", 2, "[f]ile-pad [i]tem-pad: integer",
-                "align file on multiple of f bytes\nand items on multiple of i bytes");
-}
 
 void DcmEncapsulatedDocument::parseArguments(
         OFConsoleApplication &app,
         OFCommandLine &cmd)
 {
-  //command line parameters and options
-  cmd.getParam(1, opt_ifname);
-  cmd.getParam(2, opt_ofname);
+    //command line parameters and options
+    cmd.getParam(1, ifname_);
+    cmd.getParam(2, ofname_);
 
-  OFLog::configureFromCommandLine(cmd, app);
+    // ---------- parse general options ----------
+    OFLog::configureFromCommandLine(cmd, app);
 
-  dcmEnableGenerationOfNewVRs();
+    // ---------- parse input file format options ----------
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--filetype-auto")) ftype_ = DT_unknownDocument;
+    if (cmd.findOption("--filetype-pdf"))  ftype_ = DT_pdfDocument;
+    if (cmd.findOption("--filetype-cda"))  ftype_ = DT_cdaDocument;
+    if (cmd.findOption("--filetype-stl"))  ftype_ = DT_stlDocument;
+    if (cmd.findOption("--filetype-mtl"))  ftype_ = DT_mtlDocument;
+    if (cmd.findOption("--filetype-obj"))  ftype_ = DT_objDocument;
+    cmd.endOptionBlock();
 
-  // Override keys are applied at the very end of the conversion "pipeline"
-  OFList<OFString> overrideKeys;
+    // ---------- parse document options ----------
 
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--generate"))
-  {
-    opt_seriesFile = "";
-    opt_readSeriesInfo = OFFalse;
-  }
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--generate"))
+    {
+      seriesFile_ = "";
+      readSeriesInfo_ = OFFalse;
+    }
 
-  if (cmd.findOption("--series-from"))
-  {
-    app.checkValue(cmd.getValue(opt_seriesFile));
-    opt_readSeriesInfo = OFTrue;
-  }
+    if (cmd.findOption("--series-from"))
+    {
+      app.checkValue(cmd.getValue(seriesFile_));
+      readSeriesInfo_ = OFTrue;
+    }
 
-  if (cmd.findOption("--study-from"))
-  {
-    app.checkValue(cmd.getValue(opt_seriesFile));
-    opt_readSeriesInfo = OFFalse;
-  }
-  cmd.endOptionBlock();
-  if (cmd.findOption("--title"))
-  {
-    app.checkValue(cmd.getValue(opt_documentTitle));
-  }
-  if (cmd.findOption("--concept-name"))
-  {
-    app.checkValue(cmd.getValue(opt_conceptCSD));
-    app.checkValue(cmd.getValue(opt_conceptCV));
-    app.checkValue(cmd.getValue(opt_conceptCM));
-  }
-  if (cmd.findOption("--patient-name"))
-  {
-    app.checkValue(cmd.getValue(opt_patientName));
-    app.checkConflict("--patient-name", "--study-from or --series-from",
-                      opt_seriesFile != "");
-  }
-  if (cmd.findOption("--patient-id"))
-  {
-    app.checkValue(cmd.getValue(opt_patientID));
-    app.checkConflict("--patient-id", "--study-from or --series-from",
-                      opt_seriesFile != "");
-  }
-  if (cmd.findOption("--patient-birthdate"))
-  {
-    app.checkValue(cmd.getValue(opt_patientBirthdate));
-    app.checkConflict("--patient-birthdate", "--study-from or --series-from", opt_seriesFile != "");
-  }
-  if (cmd.findOption("--patient-sex"))
-  {
-    app.checkValue(cmd.getValue(opt_patientSex));
-    app.checkConflict("--patient-sex", "--study-from or --series-from", opt_seriesFile != "");
-  }
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--annotation-yes"))
-  {
-    opt_annotation = OFTrue;
-  }
-  if (cmd.findOption("--annotation-no"))
-  {
-    opt_annotation = OFFalse;
-  }
-  cmd.endOptionBlock();
-  if (ftype == "cda")
-  {
+    if (cmd.findOption("--study-from"))
+    {
+      app.checkValue(cmd.getValue(seriesFile_));
+      readSeriesInfo_ = OFFalse;
+    }
+    cmd.endOptionBlock();
+
+    if (cmd.findOption("--title"))
+    {
+      app.checkValue(cmd.getValue(documentTitle_));
+    }
+    if (cmd.findOption("--concept-name"))
+    {
+      app.checkValue(cmd.getValue(conceptCSD_));
+      app.checkValue(cmd.getValue(conceptCV_));
+      app.checkValue(cmd.getValue(conceptCM_));
+    }
+    if (cmd.findOption("--patient-name"))
+    {
+      app.checkValue(cmd.getValue(patientName_));
+      app.checkConflict("--patient-name", "--study-from or --series-from", seriesFile_.length() > 0);
+    }
+    if (cmd.findOption("--patient-id"))
+    {
+      app.checkValue(cmd.getValue(patientID_));
+      app.checkConflict("--patient-id", "--study-from or --series-from", seriesFile_.length() > 0);
+    }
+    if (cmd.findOption("--patient-birthdate"))
+    {
+      app.checkValue(cmd.getValue(patientBirthdate_));
+      app.checkConflict("--patient-birthdate", "--study-from or --series-from", seriesFile_.length() > 0);
+    }
+    if (cmd.findOption("--patient-sex"))
+    {
+      app.checkValue(cmd.getValue(patientSex_));
+      app.checkConflict("--patient-sex", "--study-from or --series-from", seriesFile_.length() > 0);
+    }
+
+    // initialize default for --series-from
+    if (seriesFile_.length() > 0 && readSeriesInfo_) increment_ = OFTrue;
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--instance-one"))
+    {
+      app.checkConflict("--instance-one", "--series-from", (seriesFile_.length() > 0) && readSeriesInfo_);
+      increment_ = OFFalse;
+      instance_ = 1;
+    }
+    if (cmd.findOption("--instance-inc"))
+    {
+      app.checkDependence("--instance-inc", "--series-from", (seriesFile_.length() > 0) && readSeriesInfo_);
+      increment_ = OFTrue;
+    }
+    if (cmd.findOption("--instance-set"))
+    {
+      increment_ = OFFalse;
+      app.checkValue(cmd.getValueAndCheckMin(instance_, 1));
+    }
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--annotation-yes"))
+    {
+      annotation_ = OFTrue;
+    }
+    if (cmd.findOption("--annotation-no"))
+    {
+      annotation_ = OFFalse;
+    }
+    cmd.endOptionBlock();
+
+    // ---------- parse CDA processing options ----------
     cmd.beginOptionBlock();
     if (cmd.findOption("--override"))
     {
-      opt_override = OFTrue;
+      app.checkConflict("--override", "--filetype-pdf", ftype_ == DT_pdfDocument);
+      app.checkConflict("--override", "--filetype-stl", ftype_ == DT_stlDocument);
+      app.checkConflict("--override", "--filetype-stl", ftype_ == DT_mtlDocument);
+      app.checkConflict("--override", "--filetype-stl", ftype_ == DT_objDocument);
+      override_ = OFTrue;
     }
     if (cmd.findOption("--no-override"))
     {
-      opt_override = OFFalse;
+      app.checkConflict("--no-override", "--filetype-pdf", ftype_ == DT_pdfDocument);
+      app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_stlDocument);
+      app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_mtlDocument);
+      app.checkConflict("--no-override", "--filetype-stl", ftype_ == DT_objDocument);
+      override_ = OFFalse;
     }
     cmd.endOptionBlock();
-  }
-  if (ftype == "stl")
-  {
+
+    // ---------- parse device data options ----------
+
+    if (cmd.findOption("--manufacturer"))
+    {
+        app.checkValue(cmd.getValue(manufacturer_));
+    }
+    if (cmd.findOption("--manufacturer-model"))
+    {
+        app.checkValue(cmd.getValue(manufacturerModelName_));
+    }
+    if (cmd.findOption("--device-serial"))
+    {
+        app.checkValue(cmd.getValue(deviceSerialNumber_));
+    }
+    if (cmd.findOption("--software-versions"))
+    {
+        app.checkValue(cmd.getValue(softwareVersions_));
+    }
+
+    // ---------- parse STL processing options ----------
+
     if (cmd.findOption("--measurement-units"))
     {
-      app.checkValue(cmd.getValue(opt_measurementUnitsCSD));
-      app.checkValue(cmd.getValue(opt_measurementUnitsCV));
-      app.checkValue(cmd.getValue(opt_measurementUnitsCM));
+        app.checkConflict("--measurement-units", "--filetype-cda", ftype_ == DT_cdaDocument);
+        app.checkConflict("--measurement-units", "--filetype-pdf", ftype_ == DT_pdfDocument);
+        app.checkValue(cmd.getValue(measurementUnitsCSD_));
+        app.checkValue(cmd.getValue(measurementUnitsCV_));
+        app.checkValue(cmd.getValue(measurementUnitsCM_));
     }
-    if (cmd.findOption("--manufacturer")) app.checkValue(cmd.getValue(opt_manufacturer));
-    if (cmd.findOption("--manufacturer-model")) app.checkValue(cmd.getValue(opt_manufacturerModelName));
-    if (cmd.findOption("--device-serial")) app.checkValue(cmd.getValue(opt_deviceSerialNumber));
-    if (cmd.findOption("--software-versions")) app.checkValue(cmd.getValue(opt_softwareVersions));
-  }
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
-  if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
-  if (cmd.findOption("--write-xfer-implicit")) opt_oxfer = EXS_LittleEndianImplicit;
-  cmd.endOptionBlock();
 
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--group-length-recalc")) opt_oglenc = EGL_recalcGL;
-  if (cmd.findOption("--group-length-create")) opt_oglenc = EGL_withGL;
-  if (cmd.findOption("--group-length-remove")) opt_oglenc = EGL_withoutGL;
-  cmd.endOptionBlock();
+    // ---------- parse input file format options ----------
 
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--length-explicit")) opt_oenctype = EET_ExplicitLength;
-  if (cmd.findOption("--length-undefined")) opt_oenctype = EET_UndefinedLength;
-  cmd.endOptionBlock();
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--write-xfer-little")) oxfer_ = EXS_LittleEndianExplicit;
+    if (cmd.findOption("--write-xfer-big")) oxfer_ = EXS_BigEndianExplicit;
+    if (cmd.findOption("--write-xfer-implicit")) oxfer_ = EXS_LittleEndianImplicit;
+    cmd.endOptionBlock();
 
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--padding-retain"))
-  {
-    app.checkConflict("--padding-retain", "--write-dataset",
-                      opt_writeMode == EWM_dataset);
-    opt_opadenc = EPD_noChange;
-  }
-  if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
-  if (cmd.findOption("--padding-create"))
-  {
-    app.checkConflict("--padding-create", "--write-dataset",
-                      opt_writeMode == EWM_dataset);
-    app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
-    app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
-    opt_opadenc = EPD_withPadding;
-  }
-  cmd.endOptionBlock();
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--group-length-remove")) oglenc_ = EGL_withoutGL;
+    if (cmd.findOption("--group-length-create")) oglenc_ = EGL_withGL;
+    cmd.endOptionBlock();
 
-  // create override attribute dataset (copied from findscu code)
-  if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
-  {
-    const char *ovKey = NULL;
-    do
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--length-explicit")) oenctype_ = EET_ExplicitLength;
+    if (cmd.findOption("--length-undefined")) oenctype_ = EET_UndefinedLength;
+    cmd.endOptionBlock();
+
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--padding-retain"))
     {
-      app.checkValue(cmd.getValue(ovKey));
-      overrideKeys.push_back(ovKey);
-    } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
-  }
-  DcmEncapsulatedDocument::setOverrideKeys(overrideKeys);
-  // initialize default for --series-from
-  if (opt_seriesFile != "" && opt_readSeriesInfo) opt_increment = OFTrue;
+      app.checkConflict("--padding-retain", "--write-dataset",
+                        writeMode_ == EWM_dataset);
+      opadenc_ = EPD_noChange;
+    }
+    if (cmd.findOption("--padding-off")) opadenc_ = EPD_withoutPadding;
+    if (cmd.findOption("--padding-create"))
+    {
+      app.checkConflict("--padding-create", "--write-dataset",
+                        writeMode_ == EWM_dataset);
+      app.checkValue(cmd.getValueAndCheckMin(filepad_, 0));
+      app.checkValue(cmd.getValueAndCheckMin(itempad_, 0));
+      opadenc_ = EPD_withPadding;
+    }
+    cmd.endOptionBlock();
 
-  cmd.beginOptionBlock();
-  if (cmd.findOption("--instance-one"))
-  {
-    app.checkConflict("--instance-one", "--series-from",
-                      (opt_seriesFile != "") && opt_readSeriesInfo);
-    opt_increment = OFFalse;
-    opt_instance = 1;
-  }
-  if (cmd.findOption("--instance-inc"))
-  {
-    app.checkDependence("--instance-inc", "--series-from",
-                        (opt_seriesFile != "") && opt_readSeriesInfo);
-    opt_increment = OFTrue;
-  }
-  if (cmd.findOption("--instance-set"))
-  {
-    opt_increment = OFFalse;
-    app.checkValue(cmd.getValueAndCheckMin(opt_instance, 1));
-  }
-  cmd.endOptionBlock();
+    // create override attribute dataset
+    overrideKeys_.clear();
+    if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
+    {
+      const char *ovKey = NULL;
+      do
+      {
+        app.checkValue(cmd.getValue(ovKey));
+        overrideKeys_.push_back(ovKey);
+      } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
+    }
+
 }
 
-OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger &appLogger)
+
+OFCondition DcmEncapsulatedDocument::createIdentifiers()
 {
   char buf[100];
   OFCondition cond = EC_Normal;
   Sint32 incrementedInstance = 0;
-  if (opt_seriesFile != "")
+  if (seriesFile_.length() > 0)
   {
+    DCMDATA_DEBUG("Reading series file");
     DcmFileFormat dfile;
-    cond = dfile.loadFile(opt_seriesFile, EXS_Unknown, EGL_noChange);
-    if (cond.bad())
-    {
-      OFLOG_WARN(appLogger, cond.text()
-              << ": reading file: " << opt_seriesFile);
-    }
-    else
+    cond = dfile.loadFile(seriesFile_, EXS_Unknown, EGL_noChange);
+
+    if (cond.good())
     {
       const char *c = NULL;
       DcmDataset *dset = dfile.getDataset();
       if (dset)
       {
-        OFLOG_TRACE(appLogger, "reading patient attributes");
+        DCMDATA_TRACE("reading patient attributes");
         c = NULL;
         if (dset->findAndGetString(DCM_PatientName, c).good() && c)
         {
-          opt_patientName = c;
+          patientName_ = c;
         }
         c = NULL;
         if (dset->findAndGetString(DCM_PatientID, c).good() && c)
         {
-          opt_patientID = c;
+          patientID_ = c;
         }
         c = NULL;
         if (dset->findAndGetString(DCM_PatientBirthDate, c).good() && c)
         {
-          opt_patientBirthdate = c;
+          patientBirthdate_ = c;
         }
         c = NULL;
         if (dset->findAndGetString(DCM_PatientSex, c).good() && c)
         {
-          opt_patientSex = c;
+          patientSex_ = c;
         }
-        OFLOG_TRACE(appLogger, "reading study attributes");
+        DCMDATA_TRACE("reading study attributes");
         c = NULL;
         if (dset->findAndGetString(DCM_StudyInstanceUID, c).good() && c)
         {
-          opt_studyUID = c;
+          studyUID_ = c;
         }
-        OFLOG_TRACE(appLogger, "reading series attributes");
-        if (opt_readSeriesInfo)
+        c = NULL;
+        if (dset->findAndGetString(DCM_SpecificCharacterSet, c).good() && c)
+        {
+          specificCharSet_ = c;
+        }
+        DCMDATA_TRACE("reading series attributes");
+        if (readSeriesInfo_)
         {
           c = NULL;
           if (dset->findAndGetString(DCM_SeriesInstanceUID, c).good() && c)
           {
-            opt_seriesUID = c;
+            seriesUID_ = c;
+          }
+          c = NULL;
+          if (dset->findAndGetString(DCM_Modality, c).good() && c)
+          {
+            modality_ = c;
           }
           if (dset->findAndGetSint32(DCM_InstanceNumber,
                                      incrementedInstance).good())
@@ -854,627 +818,807 @@ OFCondition DcmEncapsulatedDocument::createIdentifiers(OFLogger &appLogger)
           {
             incrementedInstance = 0;
           }
-          if (opt_increment) opt_instance = incrementedInstance;
+          if (increment_) instance_ = incrementedInstance;
         }
-        if (ftype == "stl")
+
+        DCMDATA_TRACE("reading reading device attributes");
+        c = NULL;
+        if (dset->findAndGetString(DCM_Manufacturer, c).good() && c)
         {
-          OFLOG_TRACE(appLogger, "reading STL specific information");
+          manufacturer_ = c;
+        }
+        c = NULL;
+        if (dset->findAndGetString(DCM_ManufacturerModelName, c).good() && c)
+        {
+          manufacturerModelName_ = c;
+        }
+        c = NULL;
+        if (dset->findAndGetString(DCM_DeviceSerialNumber, c).good() && c)
+        {
+          deviceSerialNumber_ = c;
+        }
+        c = NULL;
+        if (dset->findAndGetString(DCM_SoftwareVersions, c).good() && c)
+        {
+          softwareVersions_ = c;
+        }
+
+        if (ftype_ == DT_stlDocument || ftype_ == DT_mtlDocument || ftype_ == DT_objDocument)
+        {
+          DCMDATA_TRACE("reading STL/MTL/OBJ specific information");
           c = NULL;
-          OFLOG_TRACE(appLogger, "reading Frame of Reference Info");
           if (dset->findAndGetString(DCM_FrameOfReferenceUID, c).good() && c)
           {
-            opt_frameOfReferenceUID = c;
+            frameOfReferenceUID_ = c;
           }
           c = NULL;
           if (dset->findAndGetString(DCM_PositionReferenceIndicator, c).good() && c)
           {
-            opt_positionReferenceIndicator = c;
+            positionReferenceIndicator_ = c;
           }
-          OFLOG_TRACE(appLogger, "reading Enhanced Equipment info");
-          c = NULL;
-          if (dset->findAndGetString(DCM_Manufacturer, c).good() && c)
-          {
-            opt_manufacturer = c;
-          }
-          c = NULL;
-          if (dset->findAndGetString(DCM_ManufacturerModelName, c).good() && c)
-          {
-            opt_manufacturerModelName = c;
-          }
-          c = NULL;
-          if (dset->findAndGetString(DCM_DeviceSerialNumber, c).good() && c)
-          {
-            opt_deviceSerialNumber = c;
-          }
-          c = NULL;
-          if (dset->findAndGetString(DCM_SoftwareVersions, c).good() && c)
-          {
-            opt_softwareVersions = c;
-          }
-          OFLOG_TRACE(appLogger, "reading manufacturing 3d model info");
-          {
 
-            OFLOG_TRACE(appLogger, "manufacturing 3d model info read successfully");
-          }
         }
       }
     }
+    else
+    {
+        DCMDATA_ERROR("Error reading series file '" << seriesFile_ << "': " << cond.text());
+        return cond;
+    }
   }
-  if (opt_studyUID.empty())
+
+  if (studyUID_.empty())
   {
     dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
-    opt_studyUID = buf;
+    studyUID_ = buf;
   }
-  if (opt_seriesUID.empty())
+  if (seriesUID_.empty())
   {
     dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
-    opt_seriesUID = buf;
+    seriesUID_ = buf;
   }
+
   return cond;
 }
 
-int DcmEncapsulatedDocument::insertEncapsulatedDocument(
-        DcmItem *dataset,
-        OFLogger &appLogger)
-{
-  char buf[100];
-  size_t fileSize = 0;
-  size_t buflen = 100;
-  struct stat fileStat;
 
-  if (0 == stat(opt_ifname.c_str(), &fileStat))
-  {
-    fileSize = OFstatic_cast(size_t, fileStat.st_size);
-  }
-  else
-  {
-    OFLOG_ERROR(appLogger, "file " << opt_ifname << " not found");
-    return EXITCODE_NO_INPUT_FILES;
-  }
-  if (fileSize == 0)
-  {
-    OFLOG_ERROR(appLogger, "file " << opt_ifname << " is empty");
-    return EXITCODE_INVALID_INPUT_FILE;
-  }
-  FILE *encapfile = fopen(opt_ifname.c_str(), "rb");
-  if (encapfile == NULL)
-  {
-    OFLOG_ERROR(appLogger, "unable to read file " << opt_ifname);
-    return EXITCODE_CANNOT_READ_INPUT_FILE;
-  }
-  if (fileSize < buflen)
-  {
-    buflen = fileSize;
-  }
-  if (buflen != fread(buf, 1, buflen, encapfile))
-  {
-    OFLOG_ERROR(appLogger, "read error in file " << opt_ifname);
-    fclose(encapfile);
-    return EXITCODE_INVALID_INPUT_FILE;
-  }
-  if (ftype == "pdf")
-  {
-    // check magic word for PDF file
-    if (0 != strncmp("%PDF-", buf, 5))
+OFCondition DcmEncapsulatedDocument::formatSpecificProcessing()
+{
+    if (ftype_ == DT_cdaDocument)
     {
-      OFLOG_ERROR(appLogger, "file " << opt_ifname << " is not a PDF file");
-      fclose(encapfile);
-      return EXITCODE_INVALID_INPUT_FILE;
+        // so far we only have format specific processing code for CDA
+        return getCDAData();
     }
-    // check PDF version number
-    char *version = buf + 5;
-    OFBool found = OFFalse;
-    for (int i = 0; i < 5; ++i)
+    return EC_Normal;
+}
+
+static size_t skipWhitespaceAndCommentLines(const char *buf, size_t buflen)
+{
+    size_t i=0;
+    while (OFTrue)
     {
-      if (version[i] == 10 || version[i] == 13)
-      {
-        version[i] = 0; // insert end of string
-        found = OFTrue;
-        break;
-      }
+        // skip whitespace at beginning of line
+        while (i < buflen && (buf[i]==' ' || buf[i]=='\t')) ++i;
+
+        // skip comment line
+        if ((i < buflen) && (buf[i] == '#'))
+        {
+          // skip to the end of the comment line
+          while (i < buflen && (buf[i] != '\r' && buf[i] != '\n')) ++i;
+        }
+        else if (i < buflen && (buf[i]=='\r' || buf[i]=='\n'))
+        {
+            // skip empty line
+            ++i;
+        }
+        else return i; // end of buffer or keyword found
     }
-    if (!found)
+}
+
+static OFString getNextKeyword(const char *buf)
+{
+    size_t i=0;
+    char c = buf[i];
+    while ((c != ' ') && (c != '\t') && (c != '\0') && (c != '\r') && (c != '\n'))
     {
-      OFLOG_ERROR(appLogger, "file " << opt_ifname
-              << ": unable to decode PDF version number");
-      fclose(encapfile);
-      return EXITCODE_INVALID_INPUT_FILE;
+      ++i;
+      c = buf[i];
     }
-    OFLOG_INFO(appLogger, "file " << opt_ifname
-            << ": PDF " << version << ", "
-            << (fileSize + 1023) / 1024 << "kB");
-  }
-  else
-  {
-    if (ftype == "cda")
+    return OFString(buf, i);
+}
+
+static const char *objKeywords[] = {
+    "bevel", "bmat", "c_interp", "con", "cstype", "ctech", "curv", "curv2",
+    "d_interp", "deg", "end", "f", "g", "hole", "l", "lod", "mg", "mtllib",
+    "o", "p", "parm", "s", "scrv", "shadow_obj", "sp", "stech", "step",
+    "surf", "trace_obj", "trim", "usemtl", "v", "vn", "vp", "vt"
+};
+
+
+OFCondition DcmEncapsulatedDocument::insertEncapsulatedDocument()
+{
+#define INSERTBUFFERLENGTH 4096
+    char buf[INSERTBUFFERLENGTH+1];
+    size_t fileSize = 0;
+    size_t buflen = INSERTBUFFERLENGTH;
+    struct stat fileStat;
+    DcmDataset *dataset = dfile_.getDataset();
+
+    // determine length of document file
+    if (0 == stat(ifname_.c_str(), &fileStat))
     {
-      //xml validation occurs when getting data
-      OFLOG_INFO(appLogger, "file " << opt_ifname
-              << ": HL7 CDA file (XML Format)" << ", "
-              << (fileSize + 1023) / 1024 << "kB");
+      fileSize = OFstatic_cast(size_t, fileStat.st_size);
     }
     else
     {
-      if (ftype == "stl")
+      DCMDATA_ERROR("file " << ifname_ << " not found");
+      return EC_InvalidStream;
+    }
+    if (fileSize == 0)
+    {
+      DCMDATA_ERROR("file " << ifname_ << " is empty");
+      return EC_InvalidStream;
+    }
+
+    // read the first 4096 bytes (or the full document if shorter)
+    FILE *encapfile = fopen(ifname_.c_str(), "rb");
+    if (encapfile == NULL)
+    {
+      DCMDATA_ERROR("unable to read file " << ifname_);
+      return EC_InvalidStream;
+    }
+    if (fileSize < buflen)
+    {
+      buflen = fileSize;
+    }
+    if (buflen != fread(buf, 1, buflen, encapfile))
+    {
+      DCMDATA_ERROR("read error in file " << ifname_);
+      fclose(encapfile);
+      return EC_InvalidStream;
+    }
+
+    // null terminate buffer
+    buf[buflen] = '\0';
+
+    // if the user has not specified the file type, determine it from the file content
+
+    // check for PDF document type
+    if (ftype_ == DT_unknownDocument)
+    {
+        // If the document starts with "%PDF-", it is a PDF document
+        if ((buflen > 5) && (0 == strncmp("%PDF-", buf, 5))) ftype_ = DT_pdfDocument;
+    }
+
+    // check for CDA document type
+    if (ftype_ == DT_unknownDocument)
+    {
+        size_t i = 0;
+        // in a CDA document, the first non-whitespace character is "<"
+        while (i < buflen && OFStandard::isspace(buf[i])) ++i;
+        // we also check for the presence of the keyword "ClinicalDocument"
+        if ((i < buflen && buf[i] == '<') && (NULL != strstr(buf, "ClinicalDocument"))) ftype_ = DT_cdaDocument;
+    }
+
+    // check for binary STL document type
+    if (ftype_ == DT_unknownDocument)
+    {
+        // See comments in the STL section below for explanation of the identification algorithm
+        if (fileSize >= 84)
+        {
+            const size_t facetSize32 = 12 * sizeof(Float32) + sizeof(Uint16);
+            const size_t facetSize64 = 12 * sizeof(Float64) + sizeof(Uint16);
+
+            // the number of triangles is stored as a 32-bit little endian integer at byte offset 80 in the file
+            Uint32 nTriangles = 0;
+            for (int j = 3; j >= 0; --j)
+            {
+                nTriangles = (nTriangles << 8) + OFstatic_cast(unsigned char, buf[80 + j]);
+            }
+            if (fileSize == (84 + nTriangles * facetSize32) || fileSize == (84 + nTriangles * facetSize64)) ftype_ = DT_stlDocument;
+        }
+    }
+
+    // check for MTL document type
+    if (ftype_ == DT_unknownDocument)
+    {
+        size_t i = skipWhitespaceAndCommentLines(buf, buflen);
+        if (i < buflen)
+        {
+          OFString keyword = getNextKeyword(buf+i);
+          if (keyword == "newmtl") ftype_ = DT_mtlDocument;
+        }
+    }
+
+    // check for OBJ document type
+    if (ftype_ == DT_unknownDocument)
+    {
+        size_t i = skipWhitespaceAndCommentLines(buf, buflen);
+        if (i < buflen)
+        {
+          OFString keyword = getNextKeyword(buf+i);
+          size_t numKeywords = sizeof(objKeywords)/sizeof(const char *);
+          for (size_t j=0; j < numKeywords; ++j)
+          {
+              if (keyword == objKeywords[j])
+              {
+                  ftype_ = DT_objDocument;
+                  break;
+              }
+          }
+        }
+    }
+
+    // check if we have determined the file type, bail out otherwise
+    if (ftype_ == DT_unknownDocument)
+    {
+        DCMDATA_ERROR("file " << ifname_ << " is of unknown file type");
+        fclose(encapfile);
+        return EC_InvalidStream;
+    }
+
+    OFBool found;
+    char *version;
+
+    // Each STL facet contains:
+    //  - Normals: 3 floats (4 bytes)
+    //  - Vertices: 3x floats (4 byte each, 12 bytes total)
+    //  - AttributeCount: 1 short (2 bytes)
+    // Total: 50 bytes per facet
+    const size_t facetSize32 = 12 * sizeof(Float32) + sizeof(Uint16);
+    const size_t facetSize64 = 12 * sizeof(Float64) + sizeof(Uint16);
+    size_t i;
+
+    switch (ftype_)
+    {
+        case DT_pdfDocument: // special handling for PDF documents
+            // check magic word for PDF file
+            if (0 != strncmp("%PDF-", buf, 5))
+            {
+              DCMDATA_ERROR("file " << ifname_ << " is not a PDF file");
+              fclose(encapfile);
+              return EC_InvalidStream;
+            }
+            // check PDF version number
+            version = buf + 5;
+            found = OFFalse;
+            for (i = 0; i < 5; ++i)
+            {
+              if (version[i] == 10 || version[i] == 13)
+              {
+                version[i] = 0; // insert end of string
+                found = OFTrue;
+                break;
+              }
+            }
+            if (!found)
+            {
+              DCMDATA_ERROR("file " << ifname_ << ": unable to decode PDF version number");
+              fclose(encapfile);
+              return EC_InvalidStream;
+            }
+            DCMDATA_INFO("file " << ifname_ << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB");
+            break;
+
+        case DT_cdaDocument: // special handling for CDA documents
+            // proper xml validation occurs later
+            DCMDATA_INFO("file " << ifname_ << ": HL7 CDA file (XML Format)" << ", " << (fileSize + 1023) / 1024 << "kB");
+            break;
+
+        case DT_stlDocument: // special handling for STL documents
+            // Check for an ASCII STL document (which is not permitted in DICOM)
+            if (fileSize < 15)
+            {
+              // "solid " and "endsolid " markers for an ASCII file
+              DCMDATA_ERROR("The STL file is not long enough" << " (" << fileSize << "kB)");
+              fclose(encapfile);
+              return EC_InvalidStream;
+            }
+
+            // Binary STL files should never start with "solid ", but just in case, check for ASCII,
+            // and if not valid then check for binary... Look for text "solid " in first 6 bytes,
+            // indicating the possibility that this is an ASCII STL format.
+            if (0 == strncmp("solid ", buf, 6))
+            {
+              DCMDATA_ERROR("File " << ifname_ << " starts with 'solid '. It is an STL file but it is in ASCII and DICOM only permits binary STL");
+              return EC_InvalidStream;
+            }
+            else
+            {
+              // STL validation for Binary Format
+              DCMDATA_DEBUG("Validating binary STL file");
+              // 80-byte header + 4-byte "number of triangles" for a binary file
+              if (fileSize < 84)
+              {
+                DCMDATA_ERROR("The binary STL file is not long enough" << " (" << fileSize << "kB)");
+                fclose(encapfile);
+                return EC_InvalidStream;
+              }
+              // Header is from bytes 0-79
+              // The number of Triangles starts at byte offset 80 and is a
+              // unsigned 32-bit integer in little endian byte order
+              Uint32 nTriangles = 0;
+              for (int j = 3; j >= 0; --j)
+                nTriangles = (nTriangles << 8) + OFstatic_cast(unsigned char, buf[80 + j]);
+
+              // Verify that file size equals the sum of
+              // header + nTriangles value + all triangles
+              DCMDATA_DEBUG("verifying if the file size is consistent");
+              if (fileSize == (84 + nTriangles * facetSize32) ||
+                  fileSize == (84 + nTriangles * facetSize64))
+              {
+                DCMDATA_INFO("file " << ifname_ << ": binary STL, " << nTriangles << " triangles");
+                DCMDATA_DEBUG("The binary STL file is "
+                        << fileSize << " bytes (expected "
+                        << (84 + nTriangles * facetSize32) << " bytes for x86 or "
+                        << (84 + nTriangles * facetSize64) << " bytes for x64), number of triangles: " << nTriangles);
+              }
+              else
+              {
+                DCMDATA_ERROR("The binary STL file is not consistent. Expected "
+                        << (84 + nTriangles * facetSize32) << " bytes for x86 or "
+                        << (84 + nTriangles * facetSize64) << " bytes for x64");
+                fclose(encapfile);
+                return EC_InvalidStream;
+              }
+            }
+            break;
+
+        case DT_mtlDocument: // special handling for MTL documents
+            i = skipWhitespaceAndCommentLines(buf, buflen);
+            if (i < buflen)
+            {
+                OFString keyword = getNextKeyword(buf+i);
+                if (keyword != "newmtl")
+                {
+                    DCMDATA_ERROR("Not a valid MTL file. Expected 'newmtl' as first keyword, but found '" << keyword << "'");
+                    fclose(encapfile);
+                    return EC_InvalidStream;
+                }
+            }
+            else
+            {
+                DCMDATA_ERROR("Not a valid MTL file. No keyword found");
+                fclose(encapfile);
+                return EC_InvalidStream;
+            }
+            DCMDATA_INFO("file " << ifname_ << ": Wavefront MTL");
+            break;
+
+        case DT_objDocument: // special handling for OBJ documents
+            i = skipWhitespaceAndCommentLines(buf, buflen);
+            if (i < buflen)
+            {
+                OFString keyword = getNextKeyword(buf+i);
+                size_t numKeywords = sizeof(objKeywords)/sizeof(const char *);
+                found = OFFalse;
+                for (size_t j=0; j < numKeywords; ++j)
+                {
+                    if (keyword == objKeywords[j])
+                    {
+                        found = OFTrue;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    DCMDATA_ERROR("Not a valid OBJ file. Unsupported keyword '" << keyword << "' found");
+                    fclose(encapfile);
+                    return EC_InvalidStream;
+                }
+            }
+            else
+            {
+                DCMDATA_ERROR("Not a valid OBJ file. No keyword found");
+                fclose(encapfile);
+                return EC_InvalidStream;
+            }
+            DCMDATA_INFO("file " << ifname_ << ": Wavefront OBJ");
+            break;
+
+        case DT_unknownDocument:
+            DCMDATA_ERROR("Unsupported filetype. This should not happen.");
+            fclose(encapfile);
+            return EC_InvalidStream;
+            break;
+    }
+
+    // seek to start of file
+    if (0 != fseek(encapfile, 0, SEEK_SET))
+    {
+      DCMDATA_ERROR("file " << ifname_ << ": seek error");
+      fclose(encapfile);
+      return EC_InvalidStream;
+    }
+
+    OFCondition result = EC_Normal;
+    DcmPolymorphOBOW *elem = new DcmPolymorphOBOW(DCM_EncapsulatedDocument);
+    if (elem)
+    {
+      size_t numBytes = fileSize;
+
+      // Store Encapsulated Document Length, according to CP 1851
+      result = dataset->putAndInsertUint32(DCM_EncapsulatedDocumentLength, OFstatic_cast(Uint32, numBytes));
+
+      // allocate an even number of bytes
+      if (numBytes & 1) ++numBytes;
+      Uint8 *bytes = NULL;
+      if (result.good())
       {
-        // Each facet contains:
-        //  - Normals: 3 floats (4 bytes)
-        //  - Vertices: 3x floats (4 byte each, 12 bytes total)
-        //  - AttributeCount: 1 short (2 bytes)
-        // Total: 50 bytes per facet
-        const size_t facetSize32 = 3 * sizeof(Float32)
-                                   + 3 * 3 * sizeof(Float32)
-                                   + sizeof(Uint16);
-        const size_t facetSize64 = 3 * sizeof(Float64)
-                                   + 3 * 3 * sizeof(Float64)
-                                   + sizeof(Uint16);
-        // STL validation for ASCII CODE
-        if (fileSize < 15)
+        result = elem->createUint8Array(OFstatic_cast(Uint32, numBytes), bytes);
+      }
+      else
+      {
+        return result;
+      }
+
+      // read file content into Encapsulated Document attribute
+      if (result.good())
+      {
+        // blank pad byte
+        bytes[numBytes - 1] = 0;
+        // read file content
+        if (fileSize != fread(bytes, 1, fileSize, encapfile))
         {
-          // "solid " and "endsolid " markers for an ASCII file
-          OFLOG_ERROR(appLogger, "The STL file is not long enough"
-                  << " (" << fileSize << "kB)");
-          fclose(encapfile);
-          return EXITCODE_INVALID_INPUT_FILE;
-        }
-        // Binary files should never start with "solid ",
-        // but just in case, check for ASCII,
-        // and if not valid then check for binary...
-        // Look for text "solid " in first 6 bytes,
-        // indicating the possibility that this is an
-        // ASCII STL format.
-        if (0 == strncmp("solid ", buf, 6))
-        {
-          OFLOG_ERROR(appLogger, "File " << opt_ifname
-                  << " starts with 'solid '. "
-                  << "It is a valid STL file but it is in ASCII Code"
-                  << "and DICOM only accepts binary STL");
-          return EXITCODE_INVALID_INPUT_FILE;
-        }
-          //////STL validation for Binary Format
-        else
-        {
-          OFLOG_DEBUG(appLogger, "Magic word 'solid ' not found. "
-                  << "Validating STL file "
-                  << "in Binary format");
-          // 80-byte header + 4-byte "number of triangles" for a binary file
-          if (fileSize < 84)
-          {
-            OFLOG_ERROR(appLogger, "The binary STL file is not long enough"
-                    << " (" << fileSize << "kB)");
-            fclose(encapfile);
-            return EXITCODE_INVALID_INPUT_FILE;
-          }
-          // Header is from bytes 0-79
-          // The number of Triangles starts at byte offset 80 and is a uint32 (4 Bytes)
-          char ntriangleschar[5];
-          for (int j = 0; j < 4; j++)
-            ntriangleschar[j] = buf[80 + j];
-          ntriangleschar[4] = 0;
-          Uint32 *nTriangles = OFreinterpret_cast(Uint32*, ntriangleschar);
-          // Verify that file size equals the sum of
-          // header + nTriangles value + all triangles
-          OFLOG_DEBUG(appLogger, "verifying if the file size is consistent");
-          if (fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize32) ||
-              fileSize == (84 + *OFconst_cast(Uint32*, nTriangles) * facetSize64))
-          {
-            OFLOG_DEBUG(appLogger, "File " << opt_ifname
-                    << " passed binary STL validation." << OFendl
-                    << "Assuming valid STL file "
-                    << "in binary format"
-            );
-            OFLOG_TRACE(appLogger, "The binary STL file is:" << OFendl
-                    << fileSize << " kB " << " as expected." << OFendl
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize32) << " kB for x86" << OFendl
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize64) << " kB for x64" << OFendl
-                    << "(84 + triangles number * facet size)" << OFendl
-                    << " number of Triangles " << *OFconst_cast(Uint32 * , nTriangles) << OFendl
-                    << " nTriangles (Uint32): " << nTriangles << OFendl
-                    << " facetSize32: " << facetSize32 << OFendl
-                    << " facetSize64: " << facetSize64 << OFendl
-            );
-          }
-          else
-          {
-            OFLOG_ERROR(appLogger, "The binary STL file is not consistent." << OFendl
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize32) << " kB for x86 and "
-                    << (84 + *OFconst_cast(Uint32 * , nTriangles) * facetSize64) << " kB for x64 " << OFendl
-                    << "(84 + triangles number * facet size)" << OFendl
-                    << " number of Triangles " << *OFconst_cast(Uint32 * , nTriangles) << OFendl
-                    << " nTriangles (Uint32): " << nTriangles << OFendl
-                    << " facetSize32: " << facetSize32 << OFendl
-                    << " facetSize64: " << facetSize64 << OFendl
-            );
-            fclose(encapfile);
-            return EXITCODE_INVALID_INPUT_FILE;
-          }
+          DCMDATA_ERROR("read error in file " << ifname_);
+          return result;
         }
       }
       else
       {
-        OFLOG_WARN(appLogger, "Filetype not supported or filetype not set. Current ftype is " << ftype << OFendl
-                << "The name of the passed logger is: " << appLogger.getName());
-      }
-    }
-  }
-  if (0 != fseek(encapfile, 0, SEEK_SET))
-  {
-    OFLOG_ERROR(appLogger, "file " << opt_ifname << ": seek error");
-    fclose(encapfile);
-    return EXITCODE_CANNOT_READ_INPUT_FILE;
-  }
-  OFCondition result = EC_Normal;
-  DcmPolymorphOBOW *elem = new DcmPolymorphOBOW(DCM_EncapsulatedDocument);
-  if (elem)
-  {
-    size_t numBytes = fileSize;
-    // according to CP 1851
-    result = dataset->putAndInsertUint32(DCM_EncapsulatedDocumentLength, OFstatic_cast(Uint32, numBytes));
-    if (numBytes & 1) ++numBytes;
-    Uint8 *bytes = NULL;
-    if (result.good())
-    {
-      result = elem->createUint8Array(OFstatic_cast(Uint32, numBytes), bytes);
-    }
-    else
-    {
-      return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
-    }
-    if (result.good())
-    {
-      // blank pad byte
-      bytes[numBytes - 1] = 0;
-      // read file content
-      if (fileSize != fread(bytes, 1, fileSize, encapfile))
-      {
-        OFLOG_ERROR(appLogger, "read error in file " << opt_ifname);
-        return EXITCODE_CANNOT_READ_INPUT_FILE;
+        return EC_MemoryExhausted;
       }
     }
     else
     {
-      return EXITCODE_MEMORY_EXHAUSTED;
+      fclose(encapfile);
+      return EC_MemoryExhausted;
     }
-  }
-  else
-  {
+    // if successful, insert Encapsulated Document element into dataset
+    if (result.good())
+    {
+      result = dataset->insert(elem);
+    }
+    else
+    {
+      delete elem;
+      DCMDATA_ERROR("Unsuccessful, did not insert element.");
+      return result;
+    }
+
+    // close file end return
     fclose(encapfile);
-    return EXITCODE_MEMORY_EXHAUSTED;
-  }
-  // if successful, insert element into dataset
-  if (result.good())
-  {
-    result = dataset->insert(elem);
-  }
-  else
-  {
-    delete elem;
-    OFLOG_ERROR(appLogger, "Unsuccessful, did not insert element.");
-    return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
-  }
-  // close file
-  fclose(encapfile);
-  if (result.good())
-  {
-    return EXITCODE_NO_ERROR;
-  }
-  else
-  {
-    return EXITCODE_CANNOT_WRITE_OUTPUT_FILE;
-  }
+    return result;
 }
 
-OFCondition DcmEncapsulatedDocument::createHeader(
-        DcmItem *dataset,
-        OFLogger &logger)
+OFCondition DcmEncapsulatedDocument::addFrameOfReferenceModule(DcmItem *dataset)
 {
-  OFCondition result = EC_Normal;
-  char buf[80];
-  // insert empty type 2 attributes
-  if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_AccessionNumber);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_Manufacturer);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysicianName);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
-  if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDateTime);
-  if (result.good())
-  {
-    if (opt_conceptCSD != "" && opt_conceptCV != "" && opt_conceptCM != "")
+    DCMDATA_TRACE("Validating Frame of Reference UID value");
+    char buf [100];
+    if (frameOfReferenceUID_.empty())
     {
-      result = DcmCodec::insertCodeSequence(dataset, DCM_ConceptNameCodeSequence,
-                                            opt_conceptCSD.c_str(),
-                                            opt_conceptCV.c_str(),
-                                            opt_conceptCM.c_str());
-    }
-    else
-    {
-      result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
-    }
-  }
-  // insert const value attributes
-  if (result.good())
-  {
-    result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
-  }
-  //insert encapsulated file storage UID (CDA/PDF/STL)
-  if (result.good())
-  {
-    if (ftype == "pdf")
-    {
-      OFLOG_TRACE(logger, "Inserting SOPClassUID to dataset");
-      result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedPDFStorage);
-    }
-    if (ftype == "cda")
-    {
-      OFLOG_TRACE(logger, "Inserting SOPClassUID to dataset");
-      result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedCDAStorage);
-    }
-    if (ftype == "stl")
-    {//STL Specific modules
-      OFLOG_TRACE(logger, "Validating Frame of Reference UID value");
-      if (opt_frameOfReferenceUID.empty())
-      {
-        OFLOG_DEBUG(logger, "Frame of Reference UID "
-                << DCM_FrameOfReferenceUID
-                << " value was empty, generating a new one."
+        DCMDATA_DEBUG("Frame of Reference UID " << DCM_FrameOfReferenceUID << " value missing, generating a new one."
         );
         dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
-        opt_frameOfReferenceUID = buf;
+        frameOfReferenceUID_ = buf;
+    }
+    else
+    {
+        if (DcmUniqueIdentifier::checkStringValue(frameOfReferenceUID_, "1").bad())
+        {
+            DCMDATA_DEBUG("Frame of Reference UID " << DCM_FrameOfReferenceUID << " value was faulty, generating a new one."
+            );
+            dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
+            frameOfReferenceUID_ = buf;
+        }
+    }
+    DCMDATA_TRACE("Inserting Frame of Reference info to dataset");
+    OFCondition result = dataset->putAndInsertOFStringArray(DCM_FrameOfReferenceUID, frameOfReferenceUID_);
+
+    if (result.good())
+        result = dataset->putAndInsertOFStringArray(DCM_PositionReferenceIndicator, positionReferenceIndicator_);
+
+    return result;
+}
+
+
+OFCondition DcmEncapsulatedDocument::addEnhancedGeneralEquipmentModule(DcmItem *dataset)
+{
+    DCMDATA_TRACE("Validating and inserting Enhanced General Equipment fields");
+    if (manufacturer_.empty())
+    {
+        manufacturer_ = "DCMTK_MANUFACTURING";
+        DCMDATA_INFO("No Manufacturer " << DCM_Manufacturer << " specified, will use dummy value.");
+    }
+    OFCondition result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, manufacturer_);
+    if (result.good())
+    {
+        if (manufacturerModelName_.empty())
+        {
+            manufacturerModelName_ = "DCMTK_3DMODEL";
+            DCMDATA_INFO("No Manufacturer Model Name " << DCM_ManufacturerModelName << " specified, will use dummy value.");
+        }
+        result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, manufacturerModelName_);
+    }
+    if (result.good())
+    {
+        if (deviceSerialNumber_.empty())
+        {
+            deviceSerialNumber_ = "DCMTK_1234567890";
+            DCMDATA_INFO("No Device Serial Number " << DCM_DeviceSerialNumber << " specified, will use dummy value.");
+        }
+        result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, deviceSerialNumber_);
+    }
+    if (result.good())
+    {
+        if (softwareVersions_.empty())
+        {
+            softwareVersions_ = OFFIS_DCMTK_VERSION;
+            DCMDATA_INFO("No Software Versions " << DCM_SoftwareVersions << " specified, will use dummy value.");
+        }
+        result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, softwareVersions_);
+    }
+    return result;
+}
+
+
+OFCondition DcmEncapsulatedDocument::addManufacturing3DModelModule(DcmItem *dataset)
+{
+    OFCondition result = EC_Normal;
+
+    if ((measurementUnitsCSD_.length() > 0) && (measurementUnitsCV_.length() > 0) && (measurementUnitsCM_.length() > 0))
+    {
+      result = DcmCodec::insertCodeSequence(dataset, DCM_MeasurementUnitsCodeSequence,
+                                            measurementUnitsCSD_.c_str(),
+                                            measurementUnitsCV_.c_str(),
+                                            measurementUnitsCM_.c_str());
+    }
+    else
+    {
+      DCMDATA_DEBUG("Measurement Units Code Sequence "
+              << DCM_MeasurementUnitsCodeSequence
+              << " had one or more empty values, generating default values."
+      );
+      result = DcmCodec::insertCodeSequence(dataset, DCM_MeasurementUnitsCodeSequence, "UCUM", "um", "um");
+    }
+    return result;
+}
+
+
+OFCondition DcmEncapsulatedDocument::createHeader()
+{
+    OFCondition result = EC_Normal;
+    DcmDataset *dataset = dfile_.getDataset();
+
+    char buf[80];
+    // insert empty type 2 attributes
+    if (result.good()) result = dataset->insertEmptyElement(DCM_StudyDate);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_StudyTime);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_AccessionNumber);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ReferringPhysicianName);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDateTime);
+    if (result.good())
+    {
+      if ((conceptCSD_.length() > 0) && (conceptCV_.length() > 0) && (conceptCM_.length() > 0))
+      {
+          result = DcmCodec::insertCodeSequence(dataset, DCM_ConceptNameCodeSequence,
+                                                conceptCSD_.c_str(),
+                                                conceptCV_.c_str(),
+                                                conceptCM_.c_str());
       }
       else
       {
-        if (DcmUniqueIdentifier::checkStringValue(opt_frameOfReferenceUID, "1").bad())
-        {
-          OFLOG_DEBUG(logger, "Frame of Reference UID "
-                  << DCM_FrameOfReferenceUID
-                  << " value was faulty, generating a new one."
-          );
-          dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
-          opt_frameOfReferenceUID = buf;
-        }
-      }
-      if (result.good())
-      {
-        OFLOG_TRACE(logger, "Inserting Frame of Reference info to dataset");
-        result = dataset->putAndInsertOFStringArray(DCM_FrameOfReferenceUID, opt_frameOfReferenceUID);
-      }
-      if (result.good())
-        result = dataset->putAndInsertOFStringArray(DCM_PositionReferenceIndicator, opt_positionReferenceIndicator);
-      OFLOG_TRACE(logger, "Validating and inserting Enhanced General Equipment fields");
-      if (result.good())
-      {
-        if (opt_manufacturer.empty())
-        {
-          opt_manufacturer = "DCMTK_MANUFACTURING";
-          OFLOG_WARN(logger, "No Manufacturer "
-                  << DCM_Manufacturer
-                  << " provided nor found in series. This attribute is "
-                  << "required for Enhanced General Equipment module. "
-                  << opt_manufacturer
-                  << " will be inserted as dummy value."
-          );
-        }
-        result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, opt_manufacturer);
-      }
-      if (result.good())
-      {
-        if (opt_manufacturerModelName.empty())
-        {
-          opt_manufacturerModelName = "DCMTK_3DMODEL_3";
-          OFLOG_WARN(logger, "No Manufacturer Model Name "
-                  << DCM_ManufacturerModelName
-                  << " provided nor found in series. This attribute is "
-                  << "required for Enhanced General Equipment module. "
-                  << opt_manufacturerModelName
-                  << " will be inserted as dummy value."
-          );
-        }
-        result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, opt_manufacturerModelName);
-      }
-      if (result.good())
-      {
-        if (opt_deviceSerialNumber.empty())
-        {
-          opt_deviceSerialNumber = "DCMTK01234567890";
-          OFLOG_WARN(logger, "No Device Serial Number "
-                  << DCM_DeviceSerialNumber
-                  << " provided nor found in series. This attribute is "
-                  << "required for Enhanced General Equipment module. "
-                  << opt_deviceSerialNumber
-                  << " will be inserted as dummy value."
-          );
-        }
-        result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, opt_deviceSerialNumber);
-      }
-      if (result.good())
-      {
-        if (opt_softwareVersions.empty())
-        {
-          opt_softwareVersions = OFFIS_DCMTK_VERSION;
-          OFLOG_WARN(logger, "No Software Versions "
-                  << DCM_SoftwareVersions
-                  << " provided nor found in series. This attribute is "
-                  << "required for Enhanced General Equipment module. "
-                  << opt_softwareVersions
-                  << " will be inserted as dummy value."
-          );
-        }
-        result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, opt_softwareVersions);
-      }
-      if (result.good())
-      {
-        if (opt_measurementUnitsCSD != "" && opt_measurementUnitsCV != "" && opt_measurementUnitsCM != "")
-        {
-          result = DcmCodec::insertCodeSequence(dataset, DCM_MeasurementUnitsCodeSequence,
-                                                opt_measurementUnitsCSD.c_str(),
-                                                opt_measurementUnitsCV.c_str(),
-                                                opt_measurementUnitsCM.c_str());
-        }
-        else
-        {
-          OFLOG_DEBUG(logger, "Measurement Units Code Sequence "
-                  << DCM_FrameOfReferenceUID
-                  << "had one or more empty values, generating default values."
-          );
-          result = DcmCodec::insertCodeSequence(dataset, DCM_MeasurementUnitsCodeSequence, "UCUM", "um", "um");
-        }
-      }
-      if (result.good())
-      {
-        OFLOG_TRACE(logger, "Inserting SOPClassUID to dataset");
-        result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
+          result = dataset->insertEmptyElement(DCM_ConceptNameCodeSequence);
       }
     }
-  }
-  if (result.good())
-  {
-    if (ftype == "stl")
+
+    // there is no way we could determine a meaningful series number, so we just use a constant.
+    if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber, "1");
+
+    // insert variable value attributes
+    if (result.good()) result = dataset->putAndInsertString(DCM_DocumentTitle, documentTitle_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientName, patientName_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientID, patientID_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientBirthDate, patientBirthdate_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_PatientSex, patientSex_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation, annotation_ ? "YES" : "NO");
+    OFStandard::snprintf(buf, sizeof(buf), "%ld", OFstatic_cast(long, instance_));
+    if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber, buf);
+    dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
+    if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID, studyUID_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID, seriesUID_.c_str());
+    if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID, buf);
+    // set instance creation date and time
+    OFString s;
+    if (result.good()) result = DcmDate::getCurrentDate(s);
+    if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationDate, s);
+    if (result.good()) result = DcmTime::getCurrentTime(s);
+    if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationTime, s);
+
+    // Device data. Special handling of these attributes for STL/MTL/OBJ,
+    // where they are type 1, will be provided later in addEnhancedGeneralEquipmentModule()
+    if (result.good() && (manufacturer_.length() > 0))
+        result = dataset->putAndInsertOFStringArray(DCM_Manufacturer, manufacturer_.c_str());
+        else result = dataset->insertEmptyElement(DCM_Manufacturer);
+    if (result.good() && (manufacturerModelName_.length() > 0)) result = dataset->putAndInsertOFStringArray(DCM_ManufacturerModelName, manufacturerModelName_.c_str());
+    if (result.good() && (deviceSerialNumber_.length() > 0)) result = dataset->putAndInsertOFStringArray(DCM_DeviceSerialNumber, deviceSerialNumber_.c_str());
+    if (result.good() && (softwareVersions_.length() > 0)) result = dataset->putAndInsertOFStringArray(DCM_SoftwareVersions, softwareVersions_.c_str());
+
+    //insert encapsulated file storage UID and additional attributes required per SOP class
+    if (result.good())
     {
-      result = dataset->putAndInsertString(DCM_Modality, "M3D");
+        switch (ftype_)
+        {
+            case DT_pdfDocument:
+                DCMDATA_TRACE("Inserting SOPClassUID to dataset");
+                result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedPDFStorage);
+                if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "DOC"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'DOC', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "DOC");
+                }
+                if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+                if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
+                break;
+
+            case DT_cdaDocument:
+                DCMDATA_TRACE("Inserting SOPClassUID to dataset");
+                result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedCDAStorage);
+                if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "DOC"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'DOC', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "DOC");
+                }
+                if (result.good()) result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
+                // Patient Name and Patient ID are guaranteed to be in UTF-8 (ISO_IR 192) in the CDA document
+                // and no other attributes from the series file are affected by character set issues
+                if ((! override_) || (specificCharSet_.length() == 0) ) specificCharSet_ = "ISO_IR 192";
+                if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
+                if (result.good() && cda_mediaTypes.length() > 0)
+                {
+                    result = dataset->putAndInsertString(DCM_ListOfMIMETypes, cda_mediaTypes.c_str());
+                }
+                if (result.good() && hl7_InstanceIdentifier.length() > 0)
+                {
+                    result = dataset->putAndInsertString(DCM_HL7InstanceIdentifier, hl7_InstanceIdentifier.c_str());
+                }
+                break;
+
+            case DT_stlDocument:
+                DCMDATA_TRACE("Inserting SOPClassUID to dataset");
+                result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedSTLStorage);
+                if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/stl");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "M3D"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'M3D', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                }
+                if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
+                if (result.good()) result = addFrameOfReferenceModule(dataset);
+                if (result.good()) result = addEnhancedGeneralEquipmentModule(dataset);
+                if (result.good()) result = addManufacturing3DModelModule(dataset);
+                break;
+
+            case DT_mtlDocument:
+                DCMDATA_TRACE("Inserting SOPClassUID to dataset");
+                result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedMTLStorage);
+                if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/mtl");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "M3D"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'M3D', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                }
+                if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
+                if (result.good()) result = addFrameOfReferenceModule(dataset);
+                if (result.good()) result = addEnhancedGeneralEquipmentModule(dataset);
+                if (result.good()) result = addManufacturing3DModelModule(dataset);
+                break;
+
+            case DT_objDocument:
+                DCMDATA_TRACE("Inserting SOPClassUID to dataset");
+                result = dataset->putAndInsertString(DCM_SOPClassUID, UID_EncapsulatedOBJStorage);
+                if (result.good()) result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/obj");
+                if (result.good())
+                {
+                    if ((modality_.length() > 0) && (modality_ != "M3D"))
+                    {
+                        DCMDATA_ERROR("Cannot use series information from '" << seriesFile_ << "': modality mismatch, expected 'M3D', found '" << modality_ << "'");
+                        result = EC_InvalidValue;
+                    }
+                    else result = dataset->putAndInsertString(DCM_Modality, "M3D");
+                }
+                if (result.good() && (specificCharSet_.length() > 0)) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, specificCharSet_.c_str());
+                if (result.good()) result = addFrameOfReferenceModule(dataset);
+                if (result.good()) result = addEnhancedGeneralEquipmentModule(dataset);
+                if (result.good()) result = addManufacturing3DModelModule(dataset);
+                break;
+
+            case DT_unknownDocument:
+                break;
+        }
     }
-    else
+
+    if (result.bad())
     {
-      // we are now using "DOC" for the modality, which seems to be more appropriate than "OT" (see CP-749)
-      result = dataset->putAndInsertString(DCM_Modality, "DOC");
+        DCMDATA_ERROR("Error while creating DICOM header: " << result.text());
     }
-  }
-  if (result.good())
-  {
-    if (ftype != "stl")
-    {
-      OFLOG_TRACE(logger, "Inserting default Conversion type: Workstation (WSD) to dataset");
-      result = dataset->putAndInsertString(DCM_ConversionType, "WSD");
-    }
-    else
-    {
-      OFLOG_TRACE(logger, "STL has no Conversion Type");
-      result = EC_Normal;
-    }
-  }
-  if (result.good())
-  {
-    // according to C.24.2.1 on part 3, (0042,0012) is text/XML for CDA.
-    if (ftype == "cda")
-      result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "text/XML");
-    // according to A.45.1.4.1 on part 3, MIME Type is application/pdf for PDF.
-    if (ftype == "pdf")
-      result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "application/pdf");
-    // according to A.85.1.4.2 on part 3, MIME Type is model/stl.
-    if (ftype == "stl")
-      result = dataset->putAndInsertString(DCM_MIMETypeOfEncapsulatedDocument, "model/stl");
-  }
-  // there is no way we could determine a meaningful series number, so we just use a constant.
-  if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber, "1");
-  // insert variable value attributes
-  if (result.good()) result = dataset->putAndInsertString(DCM_DocumentTitle, opt_documentTitle.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_PatientName, opt_patientName.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_PatientID, opt_patientID.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_PatientBirthDate, opt_patientBirthdate.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_PatientSex, opt_patientSex.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_BurnedInAnnotation, opt_annotation ? "YES" : "NO");
-  if (strlen(cda_mediaTypes.c_str()) > 0)
-  {
-    if (result.good()) result = dataset->putAndInsertString(DCM_ListOfMIMETypes, cda_mediaTypes.c_str());
-  }
-  if (hl7_InstanceIdentifier.size() > 0)
-  {
-    if (result.good()) result = dataset->putAndInsertString(DCM_HL7InstanceIdentifier, hl7_InstanceIdentifier.c_str());
-  }
-  OFStandard::snprintf(buf, sizeof(buf), "%ld", OFstatic_cast(long, opt_instance));
-  if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber, buf);
-  dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
-  if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID, opt_studyUID.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID, opt_seriesUID.c_str());
-  if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID, buf);
-  // set instance creation date and time
-  OFString s;
-  if (result.good()) result = DcmDate::getCurrentDate(s);
-  if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationDate, s);
-  if (result.good()) result = DcmTime::getCurrentTime(s);
-  if (result.good()) result = dataset->putAndInsertOFStringArray(DCM_InstanceCreationTime, s);
-  return result;
+    return result;
 }
 
-OFCondition DcmEncapsulatedDocument::applyOverrideKeys(DcmDataset *outputDset)
+
+OFCondition DcmEncapsulatedDocument::applyOverrideKeys()
 {
-  // replace specific keys by those in overrideKeys, copied from findscu
-  OFListConstIterator(OFString) path = opt_overrideKeys.begin();
-  OFListConstIterator(OFString) endOfList = opt_overrideKeys.end();
-  OFCondition cond;
-  DcmPathProcessor proc;
-  while (path != endOfList)
-  {
-    cond = proc.applyPathWithValue(outputDset, *path);
-    if (cond.bad())
+    DcmDataset *outputDset = dfile_.getDataset();
+    // replace specific keys by those in overrideKeys, copied from findscu
+    OFListConstIterator(OFString) path = overrideKeys_.begin();
+    OFListConstIterator(OFString) endOfList = overrideKeys_.end();
+    OFCondition cond;
+    DcmPathProcessor proc;
+    if (path != endOfList)
     {
-      OFString err;
-      err += "Bad override key/path: ";
-      err += *path;
-      err += ": ";
-      err += cond.text();
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
+        DCMDATA_DEBUG("Applying override keys from command line");
     }
-    path++;
-  }
-  return cond;
+    while (path != endOfList)
+    {
+        cond = proc.applyPathWithValue(outputDset, *path);
+        if (cond.bad())
+        {
+          OFString err;
+          err += "Bad override key/path: ";
+          err += *path;
+          err += ": ";
+          err += cond.text();
+          DCMDATA_ERROR(err.c_str());
+          return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
+        }
+        path++;
+    }
+    return cond;
 }
 
-void DcmEncapsulatedDocument::setOverrideKeys(const OFList<OFString> &ovkeys)
+
+OFCondition DcmEncapsulatedDocument::saveFile()
 {
-  OFListConstIterator(OFString) it = ovkeys.begin();
-  OFListConstIterator(OFString) end = ovkeys.end();
-  while (it != end)
-  {
-    opt_overrideKeys.push_back(*it);
-    it++;
-  }
+    OFCondition result = dfile_.saveFile(
+        ofname_, oxfer_, oenctype_, oglenc_, opadenc_,
+        OFstatic_cast(Uint32, filepad_), OFstatic_cast(Uint32, itempad_));
+
+    if (result.bad())
+    {
+        DCMDATA_ERROR(result.text() << ": writing file: '" << ofname_ << "'");
+    }
+    return result;
 }
 
-OFCondition DcmEncapsulatedDocument::saveFile(DcmFileFormat fileformat)
-{
-  return fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-                             opt_opadenc, OFstatic_cast(Uint32, opt_filepad),
-                             OFstatic_cast(Uint32, opt_itempad));
-}
 
 OFString DcmEncapsulatedDocument::getInputFileName()
 {
-  return opt_ifname;
+    return ifname_;
 }
 
-void DcmEncapsulatedDocument::setInputFileName(OFString fName)
-{
-  opt_ifname = fName;
-}
 
 OFString DcmEncapsulatedDocument::getOutputFileName()
 {
-  return opt_ofname;
-}
-
-void DcmEncapsulatedDocument::setOutputFileName(OFString fName)
-{
-  opt_ofname = fName;
-}
-
-OFString DcmEncapsulatedDocument::getFileType()
-{
-  return ftype;
-}
-
-void DcmEncapsulatedDocument::setFileType(OFString fType)
-{
-  ftype = fType;
-}
-
-E_TransferSyntax DcmEncapsulatedDocument::getTransferSyntax()
-{
-  return opt_oxfer;
-}
-
-DcmEncapsulatedDocument::~DcmEncapsulatedDocument()
-{
+    return ofname_;
 }

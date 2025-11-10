@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -179,6 +179,10 @@ class DCMTK_DCMSR_EXPORT DSRCompositeReferenceValue
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  urlPrefix    optional URL prefix used for hyperlink to referenced composite object
+     ** @note Please note that using parameter 'urlPrefix' can lead to security issues, as an
+     *        attacker could misuse it to potentially inject dangerous content into the HTML/XHTML
+     *        output.  The value of this parameter is not checked.  This is also true for derived
+     *        classes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,

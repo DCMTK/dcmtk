@@ -52,19 +52,20 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
 
     /** destructor
      */
-    ~DcmSpecificCharacterSet();
+    virtual ~DcmSpecificCharacterSet();
 
     /** clear the internal state.  This also forgets about the currently
      *  selected character sets, so selectCharacterSet() has to be called again
      *  before a string can be converted with convertString().
      */
-    void clear();
+    virtual void clear();
 
     /** query whether selectCharacterSet() has successfully been called for this
      *  object, i.e.\ whether convertString() may be called.
      *  @return OFTrue if selectCharacterSet() was successfully called before,
      *    OFFalse if not (or clear() has been called in the meantime).
      */
+    virtual
 #ifdef HAVE_CXX11
     explicit
 #endif
@@ -75,7 +76,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @return OFTrue if selectCharacterSet() must be called before using
      *    convertString(), OFFalse if it has already been called.
      */
-    OFBool operator!() const;
+    virtual OFBool operator!() const;
 
     /** get currently selected source DICOM character set(s).  Please note that
      *  the returned string can contain multiple values (defined terms separated
@@ -85,7 +86,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @return currently selected source DICOM character set(s) or an empty
      *    string if none is selected (identical to ASCII, which is the default)
      */
-    const OFString &getSourceCharacterSet() const;
+    virtual const OFString &getSourceCharacterSet() const;
 
     /** get currently selected destination DICOM character set.  Please note
      *  that the returned string, which contains a defined term, is always
@@ -93,7 +94,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @return currently selected destination DICOM character set or an empty
      *    string if none is selected (identical to ASCII, which is the default)
      */
-    const OFString &getDestinationCharacterSet() const;
+    virtual const OFString &getDestinationCharacterSet() const;
 
     /** get currently selected destination encoding, i.e.\ the name of the
      *  character set as used by the underlying character encoding library for
@@ -102,15 +103,15 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @return currently selected destination encoding or an empty string if
      *    none is selected
      */
-    const OFString &getDestinationEncoding() const;
+    virtual const OFString &getDestinationEncoding() const;
 
     /** @copydoc OFCharacterEncoding::getConversionFlags()
      */
-    unsigned getConversionFlags() const;
+    virtual unsigned getConversionFlags() const;
 
     /** @copydoc OFCharacterEncoding::setConversionFlags()
      */
-    OFCondition setConversionFlags(const unsigned flags);
+    virtual OFCondition setConversionFlags(const unsigned flags);
 
     /** select DICOM character sets for the input and output string, between
      *  which subsequent calls of convertString() convert.  The defined terms
@@ -133,8 +134,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                       default value is "ISO_IR 192" (Unicode in UTF-8).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition selectCharacterSet(const OFString &fromCharset,
-                                   const OFString &toCharset = "ISO_IR 192");
+    virtual OFCondition selectCharacterSet(const OFString &fromCharset,
+                                           const OFString &toCharset = "ISO_IR 192");
 
     /** select DICOM character sets for the input and output string, between
      *  which subsequent calls of convertString() convert.  The source
@@ -160,12 +161,16 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                     value is "ISO_IR 192" (Unicode in UTF-8).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition selectCharacterSet(DcmItem &dataset,
-                                   const OFString &toCharset = "ISO_IR 192");
+    virtual OFCondition selectCharacterSet(DcmItem &dataset,
+                                           const OFString &toCharset = "ISO_IR 192");
 
     /** convert the given string from the selected source character set(s) to
      *  the selected destination character set.  That means selectCharacterSet()
      *  has to be called prior to this method.
+     *  @note The conversion code does not perform a thorough validation of the
+     *    string.  For example, characters that are permitted in the source
+     *    character set but forbidden in DICOM (such as byte positions 0x80-0x9F
+     *    in ISO_IR 100) may be converted without warning or error.
      *  @param  fromString  input string to be converted (using the currently
      *                      selected source character set)
      *  @param  toString    reference to variable where the converted string
@@ -177,15 +182,19 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                      always regarded as delimiters (see DICOM PS 3.5).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition convertString(const OFString &fromString,
-                              OFString &toString,
-                              const OFString &delimiters = "");
+    virtual OFCondition convertString(const OFString &fromString,
+                                      OFString &toString,
+                                      const OFString &delimiters = "");
 
     /** convert the given string from the selected source character set(s) to
      *  the selected destination character set.  That means selectCharacterSet()
      *  has to be called prior to this method.  Since the length of the input
      *  string has to be specified explicitly, the string can contain more than
      *  one NULL byte.
+     *  @note The conversion code does not perform a thorough validation of the
+     *    string.  For example, characters that are permitted in the source
+     *    character set but forbidden in DICOM (such as byte positions 0x80-0x9F
+     *    in ISO_IR 100) may be converted without warning or error.
      *  @param  fromString  input string to be converted (using the currently
      *                      selected character set)
      *  @param  fromLength  length of the input string (number of bytes without
@@ -199,10 +208,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                      always regarded as delimiters (see DICOM PS 3.5).
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition convertString(const char *fromString,
-                              const size_t fromLength,
-                              OFString &toString,
-                              const OFString &delimiters = "");
+    virtual OFCondition convertString(const char *fromString,
+                                      const size_t fromLength,
+                                      OFString &toString,
+                                      const OFString &delimiters = "");
 
     // --- static helper functions ---
 
@@ -233,7 +242,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                     output string
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition determineDestinationEncoding(const OFString &toCharset);
+    virtual OFCondition determineDestinationEncoding(const OFString &toCharset);
 
     /** select a particular DICOM character set without code extensions for
      *  subsequent conversions.  The corresponding DICOM defined term for the
@@ -241,7 +250,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  'SourceCharacterSet'.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition selectCharacterSetWithoutCodeExtensions();
+    virtual OFCondition selectCharacterSetWithoutCodeExtensions();
 
     /** select a particular DICOM character set with code extensions for
      *  subsequent conversions.  The corresponding DICOM defined terms for the
@@ -252,7 +261,7 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                    already been determined by the calling method.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition selectCharacterSetWithCodeExtensions(const unsigned long sourceVM);
+    virtual OFCondition selectCharacterSetWithCodeExtensions(const unsigned long sourceVM);
 
     /** convert the given string from the selected source character set (without
      *  code extensions) to the selected destination character set
@@ -263,10 +272,10 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @param  delimiters  string of characters regarded as delimiters
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition convertStringWithoutCodeExtensions(const char *fromString,
-                                                   const size_t fromLength,
-                                                   OFString &toString,
-                                                   const OFString &delimiters);
+    virtual OFCondition convertStringWithoutCodeExtensions(const char *fromString,
+                                                           const size_t fromLength,
+                                                           OFString &toString,
+                                                           const OFString &delimiters);
 
     /** convert the given string from the selected source character set(s) to
      *  the selected destination character set.  This method supports code
@@ -280,11 +289,11 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                         one or more escape characters (ESC)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition convertStringWithCodeExtensions(const char *fromString,
-                                                const size_t fromLength,
-                                                OFString &toString,
-                                                const OFString &delimiters,
-                                                const OFBool hasEscapeChar);
+    virtual OFCondition convertStringWithCodeExtensions(const char *fromString,
+                                                        const size_t fromLength,
+                                                        OFString &toString,
+                                                        const OFString &delimiters,
+                                                        const OFBool hasEscapeChar);
 
     /** check whether the given string contains at least one escape character
      *  (ESC), because it is used for code extension techniques like ISO 2022
@@ -292,8 +301,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @param  strLength  length of the input string
      *  @return OFTrue if an escape character has been found, OFFalse otherwise
      */
-    OFBool checkForEscapeCharacter(const char *strValue,
-                                   const size_t strLength) const;
+    virtual OFBool checkForEscapeCharacter(const char *strValue,
+                                           const size_t strLength) const;
 
     /** convert given string to octal format, i.e.\ all non-ASCII and control
      *  characters are converted to their octal representation.  The total
@@ -304,8 +313,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *  @param  strLength  length of the input string
      *  @return resulting string in octal format
      */
-    OFString convertToLengthLimitedOctalString(const char *strValue,
-                                               const size_t strLength) const;
+    virtual OFString convertToLengthLimitedOctalString(const char *strValue,
+                                                       const size_t strLength) const;
 
 
   private:

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -197,6 +197,12 @@ class DCMTK_DCMDATA_EXPORT DcmMetaInfo
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** access the file preamble after reading a DICOM file.
+     *  @return pointer to a 132-byte array containing the DICOM file preamble
+     *    (i.e. the unused first 128 bytes of a DICOM file) and the magic word
+     *    ("DICM"). If no DICOM fileformat was loaded, array will be zeroed.
+     */
+    virtual const char *getPreamble() const;
 
   private:
 

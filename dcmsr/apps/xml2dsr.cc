@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,6 +30,7 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofdiag.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>                     /* for zlibVersion() */
@@ -56,8 +57,12 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define LIBXML_ATTR_FORMAT(fmt,args)
 #endif
 
+// MacOS 15.5 defines some Clang specific pragmas in libxml header files.
+// Suppress warnings caused by these pragmas when compiling with GCC.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC
 #include <libxml/parser.h>
-
+#include DCMTK_DIAGNOSTIC_POP
 
 #define SHORTCOL 3
 #define LONGCOL 21

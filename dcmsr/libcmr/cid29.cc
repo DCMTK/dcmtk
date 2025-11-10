@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:07 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:38:52 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 29 (Acquisition Modality)
 #define CONTEXT_GROUP_NUMBER  "29"
+#define CONTEXT_GROUP_KEYWORD "AcquisitionModality"
 #define CONTEXT_GROUP_VERSION "20231115"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.19"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID29_AcquisitionModality::CodeList *CID29_AcquisitionModality::Codes = NULL;
 
 
 CID29_AcquisitionModality::CID29_AcquisitionModality(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID29_AcquisitionModality::CID29_AcquisitionModality(const DSRCodedEntryValue &s
 
 CID29_AcquisitionModality::CID29_AcquisitionModality(const EnumType selectedValue,
                                                      const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -165,7 +166,7 @@ CID29_AcquisitionModality::CodeList &CID29_AcquisitionModality::getCodes()
         Codes->insert(OFMake_pair(IntravascularOpticalCoherenceTomography, DSRBasicCodedEntry("IVOCT", "DCM", "Intravascular Optical Coherence Tomography")));
         Codes->insert(OFMake_pair(IntravascularUltrasound, DSRBasicCodedEntry("IVUS", "DCM", "Intravascular Ultrasound")));
         Codes->insert(OFMake_pair(Keratometry, DSRBasicCodedEntry("KER", "DCM", "Keratometry")));
-        Codes->insert(OFMake_pair(LaserScan, DSRBasicCodedEntry("LS", "DCM", "Laser Scan")));
+        Codes->insert(OFMake_pair(LaserSurfaceScan, DSRBasicCodedEntry("LS", "DCM", "Laser surface scan")));
         Codes->insert(OFMake_pair(Lensometry, DSRBasicCodedEntry("LEN", "DCM", "Lensometry")));
         Codes->insert(OFMake_pair(MagneticResonance, DSRBasicCodedEntry("MR", "DCM", "Magnetic Resonance")));
         Codes->insert(OFMake_pair(Mammography, DSRBasicCodedEntry("MG", "DCM", "Mammography")));

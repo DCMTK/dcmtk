@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -131,6 +131,146 @@ OFString I2DOutputPlugVLP::isValid(DcmDataset& dataset) const
 OFBool I2DOutputPlugVLP::supportsMultiframe() const
 {
   return OFFalse;
+}
+
+
+OFBool I2DOutputPlugVLP::colorModelPermitted(const OFString& photometricInterpretation, E_TransferSyntax outputTS) const
+{
+    if (photometricInterpretation == "MONOCHROME2") return OFTrue;
+
+    // DICOM part 3, C.8.12.1.1.1:
+    // Photometric Interpretation (0028,0004) shall be RGB for uncompressed or lossless compressed Transfer Syntaxes that do not have defined color space transformations,
+    // YBR_ICT for irreversible JPEG 2000 Transfer Syntaxes,
+    // YBR_RCT for reversible JPEG 2000 Transfer Syntaxes,
+    // YBR_PARTIAL_420 for MPEG2, MPEG-4 AVC/H.264, HEVC/H.265 Transfer Syntaxes and
+    // YBR_FULL_422 for JPEG lossy compressed Transfer Syntaxes.
+    // Note that YBR_FULL is explicitly not permitted for RLE in this SOP class.
+
+    switch(outputTS)
+    {
+        case EXS_JPEG2000:
+        case EXS_JPEG2000Multicomponent:
+        case EXS_HighThroughputJPEG2000:
+            return (photometricInterpretation == "YBR_ICT");
+            /* break; */
+        case EXS_JPEG2000LosslessOnly:
+        case EXS_JPEG2000MulticomponentLosslessOnly:
+        case EXS_HighThroughputJPEG2000LosslessOnly:
+        case EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly:
+            return (photometricInterpretation == "YBR_RCT");
+            /* break; */
+        case EXS_MPEG2MainProfileAtMainLevel:
+        case EXS_FragmentableMPEG2MainProfileMainLevel:
+        case EXS_MPEG2MainProfileAtHighLevel:
+        case EXS_FragmentableMPEG2MainProfileHighLevel:
+        case EXS_MPEG4HighProfileLevel4_1:
+        case EXS_FragmentableMPEG4HighProfileLevel4_1:
+        case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
+        case EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1:
+        case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
+        case EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo:
+        case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
+        case EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo:
+        case EXS_MPEG4StereoHighProfileLevel4_2:
+        case EXS_FragmentableMPEG4StereoHighProfileLevel4_2:
+        case EXS_HEVCMainProfileLevel5_1:
+        case EXS_HEVCMain10ProfileLevel5_1:
+            return (photometricInterpretation == "YBR_PARTIAL_420");
+            /* break; */
+        case EXS_JPEGProcess1:
+        case EXS_JPEGProcess2_4:
+        case EXS_JPEGProcess3_5:
+        case EXS_JPEGProcess6_8:
+        case EXS_JPEGProcess7_9:
+        case EXS_JPEGProcess10_12:
+        case EXS_JPEGProcess11_13:
+        case EXS_JPEGProcess16_18:
+        case EXS_JPEGProcess17_19:
+        case EXS_JPEGProcess20_22:
+        case EXS_JPEGProcess21_23:
+        case EXS_JPEGProcess24_26:
+        case EXS_JPEGProcess25_27:
+            return (photometricInterpretation == "YBR_FULL_422");
+            /* break; */
+        case EXS_JPEGXLLossless:
+        case EXS_JPEGXLJPEGRecompression:
+        case EXS_JPEGXL:
+            // DICOM part 3 does not (yet) specify any requirements for this IOD and JPEG-XL.
+            return OFTrue;
+            /* break; */
+        default:
+            return (photometricInterpretation == "RGB");
+            /* break; */
+    }
+}
+
+
+OFCondition I2DOutputPlugVLP::updateColorModel(OFString& photometricInterpretation, E_TransferSyntax outputTS) const
+{
+    if (photometricInterpretation == "MONOCHROME2") return EC_Normal;
+    switch(outputTS)
+    {
+        case EXS_JPEG2000:
+        case EXS_JPEG2000Multicomponent:
+        case EXS_HighThroughputJPEG2000:
+            if (photometricInterpretation == "YBR_ICT") return EC_Normal; else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
+            /* break; */
+        case EXS_JPEG2000LosslessOnly:
+        case EXS_JPEG2000MulticomponentLosslessOnly:
+        case EXS_HighThroughputJPEG2000LosslessOnly:
+        case EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly:
+            if (photometricInterpretation == "YBR_RCT") return EC_Normal; else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
+            /* break; */
+        case EXS_MPEG2MainProfileAtMainLevel:
+        case EXS_FragmentableMPEG2MainProfileMainLevel:
+        case EXS_MPEG2MainProfileAtHighLevel:
+        case EXS_FragmentableMPEG2MainProfileHighLevel:
+        case EXS_MPEG4HighProfileLevel4_1:
+        case EXS_FragmentableMPEG4HighProfileLevel4_1:
+        case EXS_MPEG4BDcompatibleHighProfileLevel4_1:
+        case EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1:
+        case EXS_MPEG4HighProfileLevel4_2_For2DVideo:
+        case EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo:
+        case EXS_MPEG4HighProfileLevel4_2_For3DVideo:
+        case EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo:
+        case EXS_MPEG4StereoHighProfileLevel4_2:
+        case EXS_FragmentableMPEG4StereoHighProfileLevel4_2:
+        case EXS_HEVCMainProfileLevel5_1:
+        case EXS_HEVCMain10ProfileLevel5_1:
+            if (photometricInterpretation == "YBR_PARTIAL_420") return EC_Normal; else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
+            /* break; */
+        case EXS_JPEGProcess1:
+        case EXS_JPEGProcess2_4:
+        case EXS_JPEGProcess3_5:
+        case EXS_JPEGProcess6_8:
+        case EXS_JPEGProcess7_9:
+        case EXS_JPEGProcess10_12:
+        case EXS_JPEGProcess11_13:
+        case EXS_JPEGProcess16_18:
+        case EXS_JPEGProcess17_19:
+        case EXS_JPEGProcess20_22:
+        case EXS_JPEGProcess21_23:
+        case EXS_JPEGProcess24_26:
+        case EXS_JPEGProcess25_27:
+            // silently replace "YBR_FULL" by "YBR_FULL_422". Most JPEG codecs won't mind.
+            if (photometricInterpretation == "YBR_FULL")
+            {
+                photometricInterpretation = "YBR_FULL_422";
+                return EC_Normal;
+            }
+            else if (photometricInterpretation == "YBR_FULL_422") return EC_Normal;
+            else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
+            /* break; */
+        case EXS_JPEGXLLossless:
+        case EXS_JPEGXLJPEGRecompression:
+        case EXS_JPEGXL:
+            // DICOM part 3 does not (yet) specify any requirements for this IOD and JPEG-XL.
+            return EC_Normal;
+            /* break; */
+        default:
+            if (photometricInterpretation == "RGB") return EC_Normal; else return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unsupported color model");
+            /* break; */
+    }
 }
 
 

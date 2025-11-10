@@ -28,10 +28,8 @@
 #include "dcmtk/dcmdata/dcdefine.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 /* needed e.g. on Solaris for definition of size_t */
 #include <sys/types.h>
-#endif
 END_EXTERN_C
 
 /*
@@ -157,7 +155,7 @@ typedef enum {
     EWM_dataset = 1,
     /// write as fileformat and update required information (e.g. SOP Class/Instance UID)
     EWM_updateMeta = 2,
-    /// write as fileformat and create new meta header (do not retain existing information)
+    /// write as fileformat and create new meta header (do not retain existing information except SOP Class/Instance UID)
     EWM_createNewMeta = 3,
     /// write as fileformat but don't update the meta header (please be careful!)
     EWM_dontUpdateMeta = 4

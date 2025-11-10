@@ -28,9 +28,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -593,7 +591,7 @@ set_src_zone(uint32_t val)
 		if (rowcol_len <= 32 / rowcol_bits)
 			break;
 	/*FALLTHROUGH*/
-	default: 
+	default:
 		goto bad;
 	}
 	rowcol_mask = 1u << (rowcol_bits - 1);

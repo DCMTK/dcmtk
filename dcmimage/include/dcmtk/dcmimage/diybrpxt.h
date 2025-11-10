@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2016, OFFIS e.V.
+ *  Copyright (C) 1998-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #define DIYBRPXT_H
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 
 #include "dcmtk/dcmimage/dicopxt.h"
 #include "dcmtk/dcmimgle/diinpx.h"  /* gcc 3.4 needs this */
@@ -90,179 +91,190 @@ class DiYBRPixelTemplate
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
-            if (rgb)    /* convert to RGB model */
+            // make sure that there is sufficient input data (for planar pixel data)
+            if (!this->PlanarConfiguration || (count >= planeSize))
             {
-                T2 *r = this->Data[0];
-                T2 *g = this->Data[1];
-                T2 *b = this->Data[2];
-                const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
-                DiPixelRepresentationTemplate<T1> rep;
-                if (bits == 8 && !rep.isSigned())          // only for unsigned 8 bit
+                if (rgb)    /* convert to RGB model */
                 {
-                    Sint16 rcr_tab[256];
-                    Sint16 gcb_tab[256];
-                    Sint16 gcr_tab[256];
-                    Sint16 bcb_tab[256];
-                    const double r_const = 0.7010 * OFstatic_cast(double, maxvalue);
-                    const double g_const = 0.5291 * OFstatic_cast(double, maxvalue);
-                    const double b_const = 0.8859 * OFstatic_cast(double, maxvalue);
-                    unsigned long l;
-                    for (l = 0; l < 256; ++l)
+                    T2 *r = this->Data[0];
+                    T2 *g = this->Data[1];
+                    T2 *b = this->Data[2];
+                    const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
+                    DiPixelRepresentationTemplate<T1> rep;
+                    if (bits == 8 && !rep.isSigned())          // only for unsigned 8 bit
                     {
-                        rcr_tab[l] = OFstatic_cast(Sint16, 1.4020 * OFstatic_cast(double, l) - r_const);
-                        gcb_tab[l] = OFstatic_cast(Sint16, 0.3441 * OFstatic_cast(double, l));
-                        gcr_tab[l] = OFstatic_cast(Sint16, 0.7141 * OFstatic_cast(double, l) - g_const);
-                        bcb_tab[l] = OFstatic_cast(Sint16, 1.7720 * OFstatic_cast(double, l) - b_const);
-                    }
-                    Sint32 sr;
-                    Sint32 sg;
-                    Sint32 sb;
-                    if (this->PlanarConfiguration)
-                    {
-/*
-                        const T1 *y = pixel;
-                        const T1 *cb = y + this->InputCount;
-                        const T1 *cr = cb + this->InputCount;
-                        for (i = count; i != 0; --i, ++y, ++cb, ++cr)
+                        Sint16 rcr_tab[256];
+                        Sint16 gcb_tab[256];
+                        Sint16 gcr_tab[256];
+                        Sint16 bcb_tab[256];
+                        const double r_const = 0.7010 * OFstatic_cast(double, maxvalue);
+                        const double g_const = 0.5291 * OFstatic_cast(double, maxvalue);
+                        const double b_const = 0.8859 * OFstatic_cast(double, maxvalue);
+                        unsigned long l;
+                        for (l = 0; l < 256; ++l)
                         {
-                            sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
-                            sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
-                            sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
-                            *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
-                            *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
-                            *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
+                            rcr_tab[l] = OFstatic_cast(Sint16, 1.4020 * OFstatic_cast(double, l) - r_const);
+                            gcb_tab[l] = OFstatic_cast(Sint16, 0.3441 * OFstatic_cast(double, l));
+                            gcr_tab[l] = OFstatic_cast(Sint16, 0.7141 * OFstatic_cast(double, l) - g_const);
+                            bcb_tab[l] = OFstatic_cast(Sint16, 1.7720 * OFstatic_cast(double, l) - b_const);
                         }
-*/
-                        const T1 *y = pixel;
-                        const T1 *cb = y + planeSize;
-                        const T1 *cr = cb + planeSize;
-                        unsigned long i = count;
-                        while (i != 0)
+                        Sint32 sr;
+                        Sint32 sg;
+                        Sint32 sb;
+                        if (this->PlanarConfiguration)
                         {
-                            /* convert a single frame */
-                            for (l = planeSize; (l != 0) && (i != 0); --l, --i, ++y, ++cb, ++cr)
+/*
+                            const T1 *y = pixel;
+                            const T1 *cb = y + this->InputCount;
+                            const T1 *cr = cb + this->InputCount;
+                            for (i = count; i != 0; --i, ++y, ++cb, ++cr)
                             {
-                                sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, *cr)]);
-                                sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, *cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, *cr)]);
-                                sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, *cb)]);
+                                sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
+                                sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
+                                sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
                                 *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                                 *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                                 *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
                             }
-                            /* jump to next frame start (skip 2 planes) */
-                            y += 2 * planeSize;
-                            cb += 2 * planeSize;
-                            cr += 2 * planeSize;
+*/
+                            const T1 *y = pixel;
+                            const T1 *cb = y + planeSize;
+                            const T1 *cr = cb + planeSize;
+                            unsigned long i = count;
+                            while (i != 0)
+                            {
+                                /* convert a single frame */
+                                for (l = planeSize; (l != 0) && (i != 0); --l, --i, ++y, ++cb, ++cr)
+                                {
+                                    const Sint32 yValue = *y;
+                                    /* conversion to unsigned integer needed for gcc 14 on Solaris */
+                                    const unsigned int cbValue = *cb;
+                                    const unsigned int crValue = *cr;
+                                    sr = yValue + rcr_tab[crValue];
+                                    sg = yValue - gcb_tab[cbValue] - gcr_tab[crValue];
+                                    sb = yValue + bcb_tab[cbValue];
+                                    *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
+                                    *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
+                                    *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
+                                }
+                                /* jump to next frame start (skip 2 planes) */
+                                y += 2 * planeSize;
+                                cb += 2 * planeSize;
+                                cr += 2 * planeSize;
+                            }
+                        }
+                        else
+                        {
+                            const T1 *p = pixel;
+                            unsigned long i;
+                            for (i = count; i != 0; --i)
+                            {
+                                const Sint32 yValue = *(p++);
+                                /* conversion to unsigned integer needed for gcc 14 on Solaris */
+                                const unsigned int cbValue = *(p++);
+                                const unsigned int crValue = *(p++);
+                                sr = yValue + rcr_tab[crValue];
+                                sg = yValue - gcb_tab[cbValue] - gcr_tab[crValue];
+                                sb = yValue + bcb_tab[cbValue];
+                                *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
+                                *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
+                                *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
+                            }
                         }
                     }
                     else
                     {
-                        const T1 *p = pixel;
-                        T1 y;
-                        T1 cb;
-                        T1 cr;
-                        unsigned long i;
-                        for (i = count; i != 0; --i)
+                        if (this->PlanarConfiguration)
                         {
-                            y  = *(p++);
-                            cb = *(p++);
-                            cr = *(p++);
-                            sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, cr)]);
-                            sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, cr)]);
-                            sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, cb)]);
-                            *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
-                            *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
-                            *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
+/*
+                            const T1 *y = pixel;
+                            const T1 *cb = y + this->InputCount;
+                            const T1 *cr = cb + this->InputCount;
+                            for (i = count; i != 0; --i)
+                                convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
+                                    removeSign(*(cr++), offset), maxvalue);
+*/
+                            unsigned long l;
+                            unsigned long i = count;
+                            const T1 *y = pixel;
+                            const T1 *cb = y + planeSize;
+                            const T1 *cr = cb + planeSize;
+                            while (i != 0)
+                            {
+                                /* convert a single frame */
+                                for (l = planeSize; (l != 0) && (i != 0); --l, --i)
+                                {
+                                    const T2 yValue = removeSign(*(y++), offset);
+                                    const T2 cbValue = removeSign(*(cb++), offset);
+                                    const T2 crValue = removeSign(*(cr++), offset);
+                                    convertValue(*(r++), *(g++), *(b++), yValue, cbValue, crValue, maxvalue);
+                                }
+                                /* jump to next frame start (skip 2 planes) */
+                                y += 2 * planeSize;
+                                cb += 2 * planeSize;
+                                cr += 2 * planeSize;
+                            }
+                        }
+                        else
+                        {
+                            const T1 *p = pixel;
+                            unsigned long i;
+                            for (i = count; i != 0; --i)
+                            {
+                                const T2 yValue = removeSign(*(p++), offset);
+                                const T2 cbValue = removeSign(*(p++), offset);
+                                const T2 crValue = removeSign(*(p++), offset);
+                                convertValue(*(r++), *(g++), *(b++), yValue, cbValue, crValue, maxvalue);
+                            }
                         }
                     }
-                }
-                else
-                {
+                } else {    /* retain YCbCr model */
+                    const T1 *p = pixel;
                     if (this->PlanarConfiguration)
                     {
 /*
-                        const T1 *y = pixel;
-                        const T1 *cb = y + this->InputCount;
-                        const T1 *cr = cb + this->InputCount;
-                        for (i = count; i != 0; --i)
-                            convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
-                                removeSign(*(cr++), offset), maxvalue);
+                        T2 *q;
+                        // number of pixels to be skipped (only applicable if 'PixelData' contains more
+                        // pixels than expected)
+                        const unsigned long skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
+                        for (int j = 0; j < 3; ++j)
+                        {
+                            q = this->Data[j];
+                            for (i = count; i != 0; --i)
+                                *(q++) = removeSign(*(p++), offset);
+                            // skip to beginning of next plane
+                            p += skip;
+                        }
 */
                         unsigned long l;
-                        unsigned long i = count;
-                        const T1 *y = pixel;
-                        const T1 *cb = y + planeSize;
-                        const T1 *cr = cb + planeSize;
-                        while (i != 0)
+                        unsigned long i = 0;
+                        while (i < count)
                         {
-                            /* convert a single frame */
-                            for (l = planeSize; (l != 0) && (i != 0); --l, --i)
+                            /* store current pixel index */
+                            const unsigned long iStart = i;
+                            for (int j = 0; j < 3; ++j)
                             {
-                                convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
-                                    removeSign(*(cr++), offset), maxvalue);
+                                /* convert a single plane */
+                                for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
+                                    this->Data[j][i] = removeSign(*(p++), offset);
                             }
-                            /* jump to next frame start (skip 2 planes) */
-                            y += 2 * planeSize;
-                            cb += 2 * planeSize;
-                            cr += 2 * planeSize;
                         }
                     }
                     else
                     {
-                        const T1 *p = pixel;
-                        T2 y;
-                        T2 cb;
-                        T2 cr;
+                        int j;
                         unsigned long i;
-                        for (i = count; i != 0; --i)
-                        {
-                            y = removeSign(*(p++), offset);
-                            cb = removeSign(*(p++), offset);
-                            cr = removeSign(*(p++), offset);
-                            convertValue(*(r++), *(g++), *(b++), y, cb, cr, maxvalue);
-                        }
+                        for (i = 0; i < count; ++i)                             /* for all pixel ... */
+                            for (j = 0; j < 3; ++j)
+                                this->Data[j][i] = removeSign(*(p++), offset);  /* ... copy planes */
                     }
                 }
-            } else {    /* retain YCbCr model */
-                const T1 *p = pixel;
-                if (this->PlanarConfiguration)
-                {
-/*
-                    T2 *q;
-                    // number of pixels to be skipped (only applicable if 'PixelData' contains more
-                    // pixels than expected)
-                    const unsigned long skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
-                    for (int j = 0; j < 3; ++j)
-                    {
-                        q = this->Data[j];
-                        for (i = count; i != 0; --i)
-                            *(q++) = removeSign(*(p++), offset);
-                        // skip to beginning of next plane
-                        p += skip;
-                    }
-*/
-                    unsigned long l;
-                    unsigned long i = 0;
-                    while (i < count)
-                    {
-                        /* store current pixel index */
-                        const unsigned long iStart = i;
-                        for (int j = 0; j < 3; ++j)
-                        {
-                            /* convert a single plane */
-                            for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
-                                this->Data[j][i] = removeSign(*(p++), offset);
-                        }
-                    }
-                }
-                else
-                {
-                    int j;
-                    unsigned long i;
-                    for (i = 0; i < count; ++i)                             /* for all pixel ... */
-                        for (j = 0; j < 3; ++j)
-                            this->Data[j][i] = removeSign(*(p++), offset);  /* ... copy planes */
-                }
+            } else {
+                // do not process the input data, as it is too short
+                DCMIMAGE_WARN("input data is too short, filling the complete image with black pixels");
+                // erase empty part of the buffer (that has not been "blackened" yet)
+                for (int j = 0; j < 3; ++j)
+                    OFBitmanipTemplate<T2>::zeroMem(this->Data[j], count);
             }
         }
     }

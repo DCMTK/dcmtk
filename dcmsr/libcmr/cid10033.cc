@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID10033_CTReconstructionAlgorithm
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:26 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:17 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 10033 (CT Reconstruction Algorithm)
 #define CONTEXT_GROUP_NUMBER  "10033"
+#define CONTEXT_GROUP_KEYWORD "CTReconstructionAlgorithm"
 #define CONTEXT_GROUP_VERSION "20130207"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.958"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID10033_CTReconstructionAlgorithm::CodeList *CID10033_CTReconstructionAlgorithm
 
 
 CID10033_CTReconstructionAlgorithm::CID10033_CTReconstructionAlgorithm(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID10033_CTReconstructionAlgorithm::CID10033_CTReconstructionAlgorithm(const DSR
 
 CID10033_CTReconstructionAlgorithm::CID10033_CTReconstructionAlgorithm(const EnumType selectedValue,
                                                                        const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

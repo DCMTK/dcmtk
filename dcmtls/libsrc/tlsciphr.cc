@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2024, OFFIS e.V.
+ *  Copyright (C) 2018-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -180,7 +180,7 @@ static const DcmCipherSuiteList globalTLS13CipherSuiteList[] =
     {"TLS_AES_256_GCM_SHA384",                        TLS1_3_RFC_AES_256_GCM_SHA384,                   TPV_TLSv13, TKE_TLSv13,     TCA_TLSv13, TCE_AES,      TCM_SHA384,  TKM_GCM,  256, 256},
 };
 
-#define GLOBAL_NUM_TLS13_CIPHERSUITES (sizeof(globalCipherSuiteList)/sizeof(DcmCipherSuiteList))
+#define GLOBAL_NUM_TLS13_CIPHERSUITES (sizeof(globalTLS13CipherSuiteList)/sizeof(DcmCipherSuiteList))
 
 
 const size_t DcmTLSCiphersuiteHandler::unknownCipherSuiteIndex = (size_t) -1;

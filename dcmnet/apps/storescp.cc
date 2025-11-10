@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,12 +22,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
-#endif
 
 // On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
 #include <signal.h>
@@ -234,6 +230,10 @@ int main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                   "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                   "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",                "-i0",     "use IPv6/IPv4 dual stack");
     cmd.addSubGroup("association negotiation profile from configuration file:");
       cmd.addOption("--config-file",            "-xf",  2, "[f]ilename, [p]rofile: string",
                                                            "use profile p from config file f");
@@ -548,6 +548,13 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
     if (cmd.findOption("--promiscuous")) opt_promiscuous = OFTrue;
     if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
+
+    // set the IP protocol version
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--ipv4")) dcmIncomingProtocolFamily.set(ASC_AF_INET);
+    if (cmd.findOption("--ipv6")) dcmIncomingProtocolFamily.set(ASC_AF_INET6);
+    if (cmd.findOption("--ip-auto")) dcmIncomingProtocolFamily.set(ASC_AF_UNSPEC);
+    cmd.endOptionBlock();
 
     if (cmd.findOption("--config-file"))
     {
@@ -1015,7 +1022,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 10
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 20
                                      NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,   // 30
-                                     NULL, NULL, NULL, NULL, NULL };                               // +5
+                                     NULL, NULL, NULL, NULL, NULL, NULL };                         // +6
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -1313,18 +1320,19 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         transferSyntaxes[27] = UID_JPEGXLLosslessTransferSyntax;
         transferSyntaxes[28] = UID_JPEGXLJPEGRecompressionTransferSyntax;
         transferSyntaxes[29] = UID_JPEGXLTransferSyntax;
-        transferSyntaxes[30] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        transferSyntaxes[31] = UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[30] = UID_DeflatedImageFrameCompressionTransferSyntax;
+        transferSyntaxes[31] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[32] = UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax;
         if (gLocalByteOrder == EBO_LittleEndian)
         {
-          transferSyntaxes[32] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[33] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-          transferSyntaxes[32] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[33] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[34] = UID_BigEndianExplicitTransferSyntax;
+        } else {
+          transferSyntaxes[33] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[34] = UID_LittleEndianExplicitTransferSyntax;
         }
-        transferSyntaxes[34] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 35;
+        transferSyntaxes[35] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 36;
       } else {
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013, OFFIS e.V.
+ *  Copyright (C) 2013-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -69,6 +69,15 @@ public:
    *  @return EC_Normal if configuration can be used, error code otherwise.
    */
   virtual OFCondition setSharedConfig(const DcmSharedSCPConfig& config);
+
+protected:
+
+  /** Drops association and clears internal structures to free memory,
+   *  resets internal m_assoc pointer to NULL so that isConnected()
+   *  will return false after this call. Exposed from DcmSCP in order
+   *  to enforce proper cleanup from derived classes.
+   */
+  virtual void dropAndDestroyAssociation();
 
 private:
 

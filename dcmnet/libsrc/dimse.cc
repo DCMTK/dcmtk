@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -80,10 +80,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
-
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmnet/dimse.h"        /* always include the module header */
 #include "dcmtk/dcmnet/cond.h"
@@ -338,6 +335,7 @@ getTransferSyntax(
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif
+        case EXS_DeflatedImageFrameCompression:
         case EXS_JPEGLSLossless:
         case EXS_JPEGLSLossy:
         case EXS_JPEG2000LosslessOnly:

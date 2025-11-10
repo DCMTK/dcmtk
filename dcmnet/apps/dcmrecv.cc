@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2024, OFFIS e.V.
+ *  Copyright (C) 2013-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -108,6 +108,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--verbose-pc",            "+v",      "show presentation contexts in verbose mode");
 
     cmd.addGroup("network options:");
+      cmd.addSubGroup("IP protocol version:");
+        cmd.addOption("--ipv4",                "-i4",     "use IPv4 only (default)");
+        cmd.addOption("--ipv6",                "-i6",     "use IPv6 only");
+        cmd.addOption("--ip-auto",             "-i0",     "use IPv6/IPv4 dual stack");
+
       cmd.addSubGroup("association negotiation profile from configuration file:");
         cmd.addOption("--config-file",         "-xf",  2, "[f]ilename, [p]rofile: string",
                                                           "use profile p from configuration file f");
@@ -177,7 +182,7 @@ int main(int argc, char *argv[])
                 return EXITCODE_NO_ERROR;
             }
 
-            // check if the command line contains the --list-profiles option
+            /* check if the command line contains the --list-profiles option */
             if (tlsOptions.listOfProfilesRequested(cmd))
             {
                 tlsOptions.printSupportedTLSProfiles(app, COUT);
@@ -195,6 +200,17 @@ int main(int argc, char *argv[])
         }
 
         /* network options */
+
+        /* set the IP protocol version */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--ipv4"))
+            dcmIncomingProtocolFamily.set(ASC_AF_INET);
+        if (cmd.findOption("--ipv6"))
+            dcmIncomingProtocolFamily.set(ASC_AF_INET6);
+        if (cmd.findOption("--ip-auto"))
+            dcmIncomingProtocolFamily.set(ASC_AF_UNSPEC);
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--config-file"))
         {
             app.checkValue(cmd.getValue(opt_configFile));

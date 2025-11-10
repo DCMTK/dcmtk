@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,7 +132,9 @@ typedef enum {
     /// annotation
     ERT_Annotation = 49,
     /// inventory
-    ERT_Inventory = 50
+    ERT_Inventory = 50,
+    /// wf presentation
+    ERT_WfPresentation = 51
 } E_DirRecType;
 
 

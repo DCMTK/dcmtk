@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,8 +24,11 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcvrus.h"
 
+#include "dcmtk/dcmimgle/dibaslut.h"
+#include "dcmtk/dcmimgle/diutils.h"
 #include "dcmtk/ofstd/ofbmanip.h"
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -90,34 +93,32 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     OriginalBitsAllocated(16),
     OriginalData(NULL)
 {
-    Uint16 us = 0;
-    const DcmElement *descElem = OFreinterpret_cast(const DcmElement *, &descriptor);
-    if (DiDocument::getElemValue(descElem, us, 0, OFTrue /*allowSigned*/) >= 3)         // number of LUT entries
+    const Uint16 *dataPtr = NULL;
+    const unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), dataPtr);
+    Init(dataPtr, count, descriptor, explanation, descripMode, first, status);
+}
+
+
+DiLookupTable::DiLookupTable(const DcmOtherByteOtherWord &data,
+                             const DcmUnsignedShort &descriptor,
+                             const DcmLongString *explanation,
+                             const EL_BitsPerTableEntry descripMode,
+                             const signed long first,
+                             EI_Status *status)
+  : DiBaseLUT(),
+    OriginalBitsAllocated(16),
+    OriginalData(NULL)
+{
+    /* check whether we have OW (16 bit data) since OB (8 bit) is not permitted for LUT data */
+    if (data.getVR() == EVR_OW)
     {
-        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                 // see DICOM supplement 5: "0" => 65536
-        DiDocument::getElemValue(descElem, FirstEntry, 1, OFTrue /*allowSigned*/);      // can be SS or US (will be typecasted later)
-        if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
-        {
-            DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table ("
-                << FirstEntry << ") ... assuming " << first);
-            FirstEntry = OFstatic_cast(Uint16, first);
-        }
-        DiDocument::getElemValue(descElem, us, 2, OFTrue /*allowSigned*/);              // bits per entry (only informational)
-        unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
-        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));             // store pointer to original data
-        if (explanation != NULL)
-            DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation);   // explanation (free form text)
-        checkTable(count, us, descripMode, status);
-     } else {
-        if (status != NULL)
-        {
-            *status = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' " << descriptor.getTag());
-        } else {
-            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' " << descriptor.getTag()
-                << " ... ignoring LUT");
-        }
-     }
+        const Uint16 *dataPtr = NULL;
+        const unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), dataPtr);
+        Init(dataPtr, count, descriptor, explanation, descripMode, first, status);
+    } else {
+        DCMIMGLE_ERROR("invalid VR for 'LookupTableData' " << data.getTag());
+        *status = EIS_InvalidImage;
+    }
 }
 
 
@@ -158,7 +159,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                          // see DICOM supplement 5: "0" => 65536
         docu->getValue(descriptor, FirstEntry, 1, item, OFTrue /*allowSigned*/); // can be SS or US (will be typecasted later)
         docu->getValue(descriptor, us, 2, item, OFTrue /*allowSigned*/);         // bits per entry (only informational)
-        unsigned long count = docu->getValue(data, Data, item);
+        const unsigned long count = docu->getValue(data, Data, item);
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));      // store pointer to original data
         if (explanation != DCM_UndefinedTagKey)
             docu->getValue(explanation, Explanation, 0 /*vm pos*/, item);        // explanation (free form text)
@@ -170,6 +171,45 @@ void DiLookupTable::Init(const DiDocument *docu,
             DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' " << descriptor);
         } else {
             DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' " << descriptor
+                << " ... ignoring LUT");
+        }
+    }
+}
+
+
+void DiLookupTable::Init(const Uint16 *data,
+                         const unsigned long count,
+                         const DcmUnsignedShort &descriptor,
+                         const DcmLongString *explanation,
+                         const EL_BitsPerTableEntry descripMode,
+                         const signed long first,
+                         EI_Status *status)
+{
+    Uint16 us = 0;
+    const DcmElement *descElem = OFreinterpret_cast(const DcmElement *, &descriptor);
+    if (DiDocument::getElemValue(descElem, us, 0, OFTrue /*allowSigned*/) >= 3)         // number of LUT entries
+    {
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                 // see DICOM supplement 5: "0" => 65536
+        DiDocument::getElemValue(descElem, FirstEntry, 1, OFTrue /*allowSigned*/);      // can be SS or US (will be typecasted later)
+        if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
+        {
+            DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table ("
+                << FirstEntry << ") ... assuming " << first);
+            FirstEntry = OFstatic_cast(Uint16, first);
+        }
+        DiDocument::getElemValue(descElem, us, 2, OFTrue /*allowSigned*/);              // bits per entry (only informational)
+        Data = data;                                                                    // store pointer to passed data
+        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));             // store pointer to original data
+        if (explanation != NULL)
+            DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation);   // explanation (free form text)
+        checkTable(count, us, descripMode, status);
+    } else {
+        if (status != NULL)
+        {
+            *status = EIS_MissingAttribute;
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' " << descriptor.getTag());
+        } else {
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' " << descriptor.getTag()
                 << " ... ignoring LUT");
         }
     }
@@ -236,8 +276,11 @@ void DiLookupTable::checkTable(unsigned long count,
             for (i = Count; i != 0; --i)
             {
                 value = *(p++);
-                if (((value >> 8) != 0) && (value & 0xff) != (value >> 8))    // lo-byte not equal to hi-byte and ...
-                    cmp = 1;
+                if ((value >> 8) != 0) // if hi-byte is not zero
+                {
+                    if ((value & 0xff) != (value >> 8))    // lo-byte not equal to hi-byte and ...
+                        cmp = 1;
+                }
                 if (value < MinValue)                                         // get global minimum
                     MinValue = value;
                 if (value > MaxValue)                                         // get global maximum
@@ -518,6 +561,18 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
         delete[] valid;
     }
     return lut;
+}
+
+
+int DiLookupTable::compareLUT(const DcmOtherByteOtherWord &data,
+                              const DcmUnsignedShort &descriptor)
+{
+    int result = 1;
+    DiBaseLUT *lut = new DiLookupTable(data, descriptor);
+    if (lut != NULL)
+        result = compare(lut);
+    delete lut;
+    return result;
 }
 
 

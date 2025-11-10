@@ -1,5 +1,5 @@
 # create library from source files
-DCMTK_ADD_LIBRARY(ofstd 
+DCMTK_ADD_LIBRARY(ofstd
   ofchrenc.cc
   ofcmdln.cc
   ofconapp.cc
@@ -14,6 +14,7 @@ DCMTK_ADD_LIBRARY(ofstd
   offilsys.cc
   offname.cc
   ofipc.cc
+  ofjsmn.cc
   oflist.cc
   ofstd.cc
   ofstring.cc
@@ -29,6 +30,7 @@ DCMTK_ADD_LIBRARY(ofstd
   ofrand.cc
   ofwhere.c
   ofstub.cc
+  ofsha256.cc
 )
 
 DCMTK_TARGET_LINK_LIBRARIES(ofstd config ${CHARSET_CONVERSION_LIBS} ${SOCKET_LIBS} ${THREAD_LIBS} ${WIN32_STD_LIBRARIES})

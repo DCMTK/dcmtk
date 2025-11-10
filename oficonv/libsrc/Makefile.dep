@@ -1,5 +1,6 @@
 citrus_bcs.o: citrus_bcs.c ../../config/include/dcmtk/config/osconfig.h \
- citrus_bcs.h
+ ../include/dcmtk/oficonv/iconv.h ../include/dcmtk/oficonv/oidefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_bcs.h
 citrus_bcs_strtol.o: citrus_bcs_strtol.c \
  ../../config/include/dcmtk/config/osconfig.h citrus_bcs.h \
  citrus_strtol.h
@@ -246,7 +247,7 @@ oficonv_iconv.o: oficonv_iconv.c \
 oficonv_logger.o: oficonv_logger.c \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/oficonv/iconv.h ../include/dcmtk/oficonv/oidefine.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h citrus_lock.h
 oficonv_strcasestr.o: oficonv_strcasestr.c \
  ../../config/include/dcmtk/config/osconfig.h oficonv_strcasestr.h
 oficonv_strlcpy.o: oficonv_strlcpy.c \

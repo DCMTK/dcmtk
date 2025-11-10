@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, Open Connections GmbH
+ *  Copyright (C) 2019-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -29,7 +29,6 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmfg/concatenationcreator.h"
 #include "dcmtk/dcmfg/fgtypes.h"
-
 
 // Maximum number of instances that make up a Concatenation
 const Uint16 ConcatenationCreator::m_MAX_INSTANCES_PER_CONCATENATION = 65535;
@@ -69,37 +68,27 @@ ConcatenationCreator::~ConcatenationCreator()
     if (m_cfgTransferOwnership)
     {
         delete m_srcDataset;
-        delete[] m_srcPixelData;
     }
+    // knows whether to free pixel data or not
+    delete m_srcPixelData;
 }
 
 OFCondition ConcatenationCreator::setCfgInput(DcmItem* srcDataset, OFBool transferOwnership)
 {
     // Check pixel data exists and is in native format (i.e. uncompressed)
-    DcmElement* elem = NULL;
-    srcDataset->findAndGetElement(DCM_PixelData, elem);
-    if (!elem)
-        return FG_EC_PixelDataMissing;
-    DcmPixelData* pixDataElem = OFstatic_cast(DcmPixelData*, elem);
-    if (!pixDataElem)
-        return FG_EC_PixelDataMissing;
-    if (!pixDataElem->canWriteXfer(EXS_LittleEndianExplicit, EXS_LittleEndianExplicit /* ignored */))
-        return EC_UnsupportedEncoding;
-    OFCondition result = pixDataElem->getUint8Array(m_srcPixelData);
-    if (!m_srcPixelData || result.bad())
-        return FG_EC_PixelDataMissing;
+    OFCondition result = initSrcPixelData(srcDataset, transferOwnership);
+    if (result.good())
+    {
+        m_srcDataset = srcDataset;
+        m_cfgTransferOwnership = transferOwnership;
+    }
 
-    m_srcDataset = srcDataset;
-
-    m_cfgTransferOwnership = transferOwnership;
-
-    // All fine
-    return EC_Normal;
+    return result;
 }
 
 OFCondition ConcatenationCreator::setCfgInput(DcmItem* srcDataset,
                                               Uint8* pixelData,
-                                              size_t /* pixelDataLength */,
+                                              size_t pixelDataLength,
                                               OFBool transferOwnership)
 {
     // Check input parameters
@@ -107,12 +96,37 @@ OFCondition ConcatenationCreator::setCfgInput(DcmItem* srcDataset,
         return FG_EC_PixelDataMissing;
 
     m_srcDataset           = srcDataset;
-    m_srcPixelData         = pixelData;
+    delete m_srcPixelData;
+    m_srcPixelData  = NULL;
+    m_srcPixelData         = new DcmIODTypes::Frame<Uint8>(pixelData, pixelDataLength);
+    m_srcPixelData->setReleaseMemory(transferOwnership);
     m_cfgTransferOwnership = transferOwnership;
 
     // All fine
     return EC_Normal;
 }
+
+
+OFCondition ConcatenationCreator::setCfgInput(DcmItem* srcDataset,
+                                              Uint16* pixelData,
+                                              size_t pixelDataLength,
+                                              OFBool transferOwnership)
+{
+    // Check input parameters
+    if (!pixelData)
+        return FG_EC_PixelDataMissing;
+
+    m_srcDataset           = srcDataset;
+    delete m_srcPixelData;
+    m_srcPixelData  = NULL;
+    m_srcPixelData         = new DcmIODTypes::Frame<Uint16>(pixelData, pixelDataLength);
+    m_srcPixelData->setReleaseMemory(transferOwnership);
+    m_cfgTransferOwnership = transferOwnership;
+
+    // All fine
+    return EC_Normal;
+}
+
 
 OFCondition ConcatenationCreator::setCfgFramesPerInstance(Uint32 numFramesPerInstance)
 {
@@ -173,9 +187,10 @@ OFCondition ConcatenationCreator::writeNextInstance(DcmItem& dstDataset)
     {
         return EC_MemoryExhausted;
     }
+    // Setting VR is necessary if Pixel Data is actually 16 bit
     dstPixelData->setVR(m_VRPixelData);
     size_t srcPos = (m_numBitsFrame * m_currentSrcFrame) / 8;
-    memcpy(dstData, &m_srcPixelData[srcPos], numTotalBytesInstance);
+    memcpy(dstData, &(OFstatic_cast(Uint8*, m_srcPixelData->getPixelData())[srcPos]), numTotalBytesInstance);
     result = dstDataset.insert(dstPixelData.release());
     if (result.good())
     {
@@ -488,4 +503,46 @@ OFCondition ConcatenationCreator::configureCommon()
 
     m_configured = OFTrue;
     return result;
+}
+
+
+OFCondition ConcatenationCreator::initSrcPixelData(DcmItem* srcDataset, OFBool transferOwnership)
+{
+    // Check pixel data exists and is in native format (i.e. uncompressed)
+    DcmElement* elem = NULL;
+    srcDataset->findAndGetElement(DCM_PixelData, elem);
+    if (!elem)
+        return FG_EC_PixelDataMissing;
+    DcmPixelData* pixDataElem = OFstatic_cast(DcmPixelData*, elem);
+    if (!pixDataElem)
+        return FG_EC_PixelDataMissing;
+    if (!pixDataElem->canWriteXfer(EXS_LittleEndianExplicit, EXS_LittleEndianExplicit /* ignored */))
+        return EC_UnsupportedEncoding;
+    size_t pixDataLength = pixDataElem->getLength();
+    Uint16 bitsAllocated = 0;
+    srcDataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
+       if ((bitsAllocated != 8) && (bitsAllocated != 16) && (bitsAllocated != 1))
+        return FG_EC_UnsupportedPixelDataLayout;
+
+    OFCondition result;
+    if (bitsAllocated <= 8)
+    {
+        Uint8 *pixelData = NULL;
+        result = pixDataElem->getUint8Array(pixelData);
+        if (!pixelData || result.bad())
+            return FG_EC_PixelDataMissing;
+        m_srcPixelData = new DcmIODTypes::Frame<Uint8>(pixelData, pixDataLength);
+    }
+    else // bits allocated = 16
+    {
+        Uint16 *pixelData = NULL;
+        result = pixDataElem->getUint16Array(pixelData);
+        if (!pixelData || result.bad())
+            return FG_EC_PixelDataMissing;
+        m_srcPixelData = new DcmIODTypes::Frame<Uint16>(pixelData, pixDataLength);
+    }
+    m_srcPixelData->setReleaseMemory(transferOwnership);
+    return EC_Normal;
+
+
 }

@@ -67,7 +67,7 @@ set(DCMTK_PACKAGE_VERSION_SUFFIX "+")
 option(DCMTK_LINK_STATIC "Statically link all libraries and tools with the runtime and third party libraries." OFF)
 # Modify linker flags and libraries for static builds if enabled by the user
 if(DCMTK_LINK_STATIC)
-    if (NOT APPLE)
+    if(NOT APPLE)
         # MacOS does not support static libraries. DCMTK_LINK_STATIC is still useful on
         # macOS though, since it will create binaries that only depend on macOS's libc.
         set(CMAKE_EXE_LINKER_FLAGS "-static")
@@ -95,14 +95,14 @@ endif()
 
 option(DCMTK_PORTABLE_LINUX_BINARIES "Create ELF binaries while statically linking all third party libraries and libstdc++." OFF)
 if(DCMTK_PORTABLE_LINUX_BINARIES)
-    if (DCMTK_LINK_STATIC)
+    if(DCMTK_LINK_STATIC)
         message(FATAL_ERROR "Options DCMTK_LINK_STATIC and DCMTK_PORTABLE_LINUX_BINARIES are mutually exclusive.")
     endif()
     # only use static versions of third party libraries
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 
     # When using gcc and clang, use the static version of libgcc/libstdc++.
-    if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+    if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
@@ -128,10 +128,19 @@ endfunction()
 # This should possibly be enhanced by using find_package() at some point. The best solution
 # would probably be to compile all third-party libraries ourself.
 if(DCMTK_LINK_STATIC OR DCMTK_PORTABLE_LINUX_BINARIES)
+    get_static_library("STATIC_ZLIB" "libz.a")
+    set(LIBPNG_EXTRA_LIBS_STATIC "${STATIC_ZLIB}")
     get_static_library("STATIC_DL" "libdl.a")
     get_static_library("STATIC_LZMA" "liblzma.a")
-    get_static_library("STATIC_ZLIB" "libz.a")
-    set(LIBXML2_EXTRA_LIBS_STATIC "${STATIC_LZMA}" "${STATIC_ZLIB}" "${STATIC_DL}")
+
+    # On Debian Linux, libxml2 depends on libicu. We do not want that dependency in our
+    # own builds since it massively increases the size of the executable binaries.
+    # If you still want to try, then enable the following two statements:
+    #
+    # get_static_library("STATIC_ICUUC" "libicuuc.a")
+    # get_static_library("STATIC_ICUDATA" "libicudata.a")
+
+    set(LIBXML2_EXTRA_LIBS_STATIC "${STATIC_LZMA}" "${STATIC_ZLIB}" "${STATIC_DL}" "${STATIC_ICUUC}" "${STATIC_ICUDATA}")
     get_static_library("STATIC_PTHREAD" "libpthread.a")
     set(OPENJPEG_EXTRA_LIBS_STATIC "${STATIC_PTHREAD}")
     set(OPENSSL_EXTRA_LIBS_STATIC "${STATIC_DL}")
@@ -146,10 +155,17 @@ if(DCMTK_LINK_STATIC OR DCMTK_PORTABLE_LINUX_BINARIES)
     get_static_library("STATIC_JBIG" "libjbig.a")
     get_static_library("STATIC_JPEG" "libjpeg.a")
     get_static_library("STATIC_DEFLATE" "libdeflate.a")
-    set(TIFF_EXTRA_LIBS_STATIC "${STATIC_WEBP}" "${STATIC_ZSTD}" "${STATIC_LZMA}" "${STATIC_JBIG}" "${STATIC_JBIG}" "${STATIC_DEFLATE}" "${STATIC_ZLIB}")
+
+    # On Debian Linux, libtiff depends on libLerc. We do not need that dependency in our
+    # own builds. If want to use Debian's libtiff, then enable the following statement:
+    #
+    # get_static_library("STATIC_LIBLERC" "libLerc.a")
+
+    set(TIFF_EXTRA_LIBS_STATIC "${STATIC_WEBP}" "${STATIC_ZSTD}" "${STATIC_LZMA}" "${STATIC_JBIG}" "${STATIC_JBIG}" "${STATIC_DEFLATE}" "${STATIC_ZLIB}" "${STATIC_LIBLERC}")
     get_static_library("STATIC_NSL" "libnsl.a")
     set(WRAP_EXTRA_LIBS_STATIC "${STATIC_NSL}")
 else()
+    set(LIBPNG_EXTRA_LIBS_STATIC)
     set(LIBXML2_EXTRA_LIBS_STATIC)
     set(OPENJPEG_EXTRA_LIBS_STATIC)
     set(OPENSSL_EXTRA_LIBS_STATIC)
@@ -177,7 +193,7 @@ option(DCMTK_WITH_PNG "Configure DCMTK with support for PNG." ON)
 option(DCMTK_WITH_XML "Configure DCMTK with support for XML." ON)
 option(DCMTK_WITH_ZLIB "Configure DCMTK with support for ZLIB." ON)
 option(DCMTK_WITH_OPENSSL "Configure DCMTK with support for OPENSSL." ON)
-option(DCMTK_WITH_SNDFILE "Configure DCMTK with support for SNDFILE." ON)
+option(DCMTK_WITH_SNDFILE "Configure DCMTK with support for SNDFILE." OFF)
 option(DCMTK_WITH_ICONV "Configure DCMTK with support for ICONV." ON)
 if(NOT WIN32)
   option(DCMTK_WITH_WRAP "Configure DCMTK with support for WRAP." ON)
@@ -224,7 +240,7 @@ else()
 endif()
 set(DCMTK_DEFAULT_DICT "${DCMTK_DEFAULT_DICT_DEFAULT}" CACHE STRING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 set_property(CACHE DCMTK_DEFAULT_DICT PROPERTY STRINGS builtin external none)
-if (DCMTK_DEFAULT_DICT EQUAL "none")
+if(DCMTK_DEFAULT_DICT EQUAL "none")
   message(WARNING "Denotes whether DCMTK will use built-in (compiled-in), external (file), or no default dictionary on startup")
 endif()
 
@@ -234,14 +250,14 @@ option(DCMTK_USE_DCMDICTPATH "Enable reading dictionary that is defined through 
 
 # Declare the option DCMTK_ENABLE_BUILTIN_OFICONV_DATA, which by default is ON when
 # we are compiling shared libraries.
-if (BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
   option(DCMTK_ENABLE_BUILTIN_OFICONV_DATA "Embed oficonv data files into oficonv library" ON)
 else()
   option(DCMTK_ENABLE_BUILTIN_OFICONV_DATA "Embed oficonv data files into oficonv library" OFF)
 endif()
 
 # evaluate the option DCMTK_ENABLE_BUILTIN_OFICONV_DATA
-if (DCMTK_ENABLE_BUILTIN_OFICONV_DATA)
+if(DCMTK_ENABLE_BUILTIN_OFICONV_DATA)
   add_definitions(-DDCMTK_ENABLE_BUILTIN_OFICONV_DATA)
 endif()
 
@@ -370,7 +386,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 if(WIN32)
   option(DCMTK_OVERWRITE_WIN32_COMPILER_FLAGS  "Modify the default compiler flags selected by CMake." ON)
   option(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL "Compile DCMTK using the Multithreaded DLL runtime library." OFF)
-  if (BUILD_SHARED_LIBS)
+  if(BUILD_SHARED_LIBS)
     set(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL ON)
   endif()
 else()
@@ -380,7 +396,7 @@ else()
 endif()
 
 if(WIN32 AND CMAKE_GENERATOR MATCHES "Visual Studio .*|NMake .*")
-  if (POLICY CMP0091)
+  if(POLICY CMP0091)
     # CMake 3.15 and newer use CMAKE_MSVC_RUNTIME_LIBRARY to select
     # the MSVC runtime library
     if(DCMTK_COMPILE_WIN32_MULTITHREADED_DLL OR BUILD_SHARED_LIBS)
@@ -527,7 +543,7 @@ else()   # ... for non-Windows systems
   endif()
 
   # When compiling with IBM xlC, add flags to suppress some noisy C++ warnings
-  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XL")
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "XL")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -qsuppress=1500-029:1500-030")
   endif()
 
@@ -551,28 +567,34 @@ endif()
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
+option(DCMTK_PERMIT_CXX98 "Permit (deprecated) compilation with C++98 language standard. This will cease to function in a future DCMTK release." OFF)
+
 # If desired C++ standard is at least C++11, set DCMTK_MODERN_CXX_STANDARD to true
 # and remember it in global property DCMTK_MODERN_CXX_STANDARD.
 # This is later evaluated in GenerateDCMTKConfigure.cmake in order to check
 # whether the compiler actually supports the required C++ standards up to the
 # version specified in CMAKE_CXX_STANDARD. Finally, the highest C++ version
 # (<= CMAKE_CXX_STANDARD) will be selected that the compiler actually supports.
-if (NOT DEFINED CMAKE_CXX_STANDARD)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 11)
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
+elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$" AND NOT DCMTK_PERMIT_CXX98)
+  message(FATAL_ERROR "DCMTK will require C++11 or later in the future. Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now)")
 elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$")
   set(DCMTK_MODERN_CXX_STANDARD FALSE)
-  message(WARNING "DCMTK will require C++11 or later in the future.")
+  message(WARNING "DCMTK will require C++11 or later in the future, continuing for now.")
 elseif(CMAKE_CXX_STANDARD GREATER 20)
   MESSAGE(WARNING "DCMTK is only known to compile for C++ versions <= 20 (C++${CMAKE_CXX_STANDARD} requested).")
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
 else() # CMAKE_CXX_STANDARD is 11, 14, 17 or 20
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
 endif()
+
 define_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD
   BRIEF_DOCS "TRUE when compiling C++11 (or newer) code."
   FULL_DOCS "TRUE when the compiler does support and is configured for C++11 or a later C++ standard."
 )
+
 # Remember globally that we use at least C++11
 set_property(GLOBAL PROPERTY DCMTK_MODERN_CXX_STANDARD ${DCMTK_MODERN_CXX_STANDARD})
 # Build global list of all modern C++ standard versions supported so far
@@ -597,12 +619,12 @@ if(MSVC)
     add_compile_options("/W4")
 else()
     # Add -Wall to the compiler flags if we are compiling with gcc or Clang.
-    if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "XLClang"))
-        add_compile_options("-Wall")
+    if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "ARMClang") OR
+       (CMAKE_CXX_COMPILER_ID STREQUAL "XLClang"))
+       add_compile_options("-Wall")
     endif()
 endif()
 
@@ -720,8 +742,10 @@ function(DCMTK_TEST_SOCKET_LIBRARY NAME SYMBOL)
   endif()
 endfunction()
 
-DCMTK_TEST_SOCKET_LIBRARY(nsl "gethostbyname")
-DCMTK_TEST_SOCKET_LIBRARY(socket "socket")
+if(CMAKE_SYSTEM_NAME MATCHES "SunOS" AND CMAKE_SYSTEM_VERSION VERSION_LESS "11.4")
+  DCMTK_TEST_SOCKET_LIBRARY(nsl "gethostbyname")
+  DCMTK_TEST_SOCKET_LIBRARY(socket "socket")
+endif()
 
 #-----------------------------------------------------------------------------
 # Test if SunPro compiler and add features

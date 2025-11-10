@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2024, OFFIS e.V.
+ *  Copyright (C) 1993-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,9 +25,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
@@ -131,7 +129,6 @@ main(int argc, char *argv[])
 #endif
 
   OFCommandLine cmd;
-
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("port", "tcp/ip port number to listen on\n(default: in config file)", OFCmdParam::PM_Optional);
 
@@ -185,6 +182,11 @@ main(int argc, char *argv[])
 #endif
 
   cmd.addGroup("network options:");
+    cmd.addSubGroup("IP protocol version:");
+      cmd.addOption("--ipv4",                   "-i4",     "use IPv4 only (default)");
+      cmd.addOption("--ipv6",                   "-i6",     "use IPv6 only");
+      cmd.addOption("--ip-auto",                "-i0",     "use IPv6/IPv4 dual stack");
+
     cmd.addSubGroup("association negotiation profiles from configuration file:");
       cmd.addOption("--assoc-config-file",      "-xf",  3, "[f]ilename, [i]n-prof, [o]ut-prof: string",
                                                            "use profile i from f for incoming,\nand profile o from f for outgoing associations");
@@ -518,6 +520,13 @@ main(int argc, char *argv[])
       if (cmd.findOption("--ignore")) options.ignoreStoreData_ = OFTrue;
       if (cmd.findOption("--uid-padding")) options.correctUIDPadding_ = OFTrue;
 
+      // set the IP protocol version
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--ipv4")) dcmIncomingProtocolFamily.set(ASC_AF_INET);
+      if (cmd.findOption("--ipv6")) dcmIncomingProtocolFamily.set(ASC_AF_INET6);
+      if (cmd.findOption("--ip-auto")) dcmIncomingProtocolFamily.set(ASC_AF_UNSPEC);
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--assoc-config-file"))
       {
         // check conflicts with other command line options
@@ -798,6 +807,7 @@ main(int argc, char *argv[])
 
       // evaluate (most of) the TLS command line options (if we are compiling with OpenSSL)
       tlsOptions.parseArguments(app, cmd);
+      options.secureConnectionRequested_ = tlsOptions.secureConnectionRequested();
     }
 
     /* print resource identifier */

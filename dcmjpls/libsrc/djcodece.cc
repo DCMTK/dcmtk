@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2024, OFFIS e.V.
+ *  Copyright (C) 2007-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -55,15 +55,9 @@
 #include "intrface.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* for O_RDONLY */
-#endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* required for sys/stat.h */
-#endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat, fstat */
-#endif
 END_EXTERN_C
 
 
@@ -674,7 +668,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   jls_params.width = width;
   jls_params.allowedlossyerror = 0; // must be zero for raw mode
   jls_params.outputBgr = false;
-  // No idea what this one does, but I don't think DICOM says anything about it
+  // color transformation is a non-standard HP/JPEG-LS extension
   jls_params.colorTransform = 0;
   // Unset: jls_params.jfif (thumbnail, dpi)
 
@@ -1023,12 +1017,17 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     case EPR_Sint8:
       {
         // image representation is 8 bit signed or unsigned
+        Uint8 mask = 0xFF >> (8-depth);
         if (samplesPerPixel == 1)
         {
           const Uint8 *yv = OFreinterpret_cast(const Uint8 *, planes[0]) + framesize * frame;
           buffer_size = framesize;
           buffer = new Uint8[buffer_size];
-          memcpy(buffer, yv, framesize);
+          for (size_t i=0; i < framesize; ++i)
+          {
+              buffer[i] = *yv & mask;
+              yv++;
+          }
         }
         else
         {
@@ -1044,9 +1043,9 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
           {
             for (int col=width; col; --col)
             {
-              buffer[i++] = *rv;
-              buffer[i++] = *gv;
-              buffer[i++] = *bv;
+              buffer[i++] = *rv & mask;
+              buffer[i++] = *gv & mask;
+              buffer[i++] = *bv & mask;
 
               rv++;
               gv++;
@@ -1060,12 +1059,23 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     case EPR_Sint16:
       {
         // image representation is 16 bit signed or unsigned
+        Uint16 mask = 0xFFFF >> (16-depth);
         if (samplesPerPixel == 1)
         {
           const Uint16 *yv = OFreinterpret_cast(const Uint16 *, planes[0]) + framesize * frame;
-          buffer_size = framesize*sizeof(Uint16);
-          buffer = new Uint8[buffer_size];
-          memcpy(buffer, yv, buffer_size);
+
+          buffer_size = framesize;
+          Uint16 *buffer16 = new Uint16[buffer_size];
+          buffer = OFreinterpret_cast(Uint8 *, buffer16);
+
+          // Convert to byte count
+          buffer_size *= 2;
+
+          for (size_t i=0; i < framesize; ++i)
+          {
+              buffer16[i] = *yv & mask;
+              yv++;
+          }
         }
         else
         {
@@ -1085,9 +1095,9 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
           {
             for (int col=width; col; --col)
             {
-              buffer16[i++] = *rv;
-              buffer16[i++] = *gv;
-              buffer16[i++] = *bv;
+              buffer16[i++] = *rv & mask;
+              buffer16[i++] = *gv & mask;
+              buffer16[i++] = *bv & mask;
 
               rv++;
               gv++;
@@ -1112,7 +1122,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   jls_params.allowedlossyerror = nearLosslessDeviation;
   jls_params.outputBgr = false;
   jls_params.bitspersample = depth;
-  // No idea what this one does, but I don't think DICOM says anything about it
+  // color transformation is a non-standard HP/JPEG-LS extension
   jls_params.colorTransform = 0;
 
   // This was already checked for a sane value above

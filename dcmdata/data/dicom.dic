@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2024, OFFIS e.V.
+#  Copyright (C) 1994-2025, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2024e and PS 3.7-2024e.
-# File created on 2024-11-16 10:17:21 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2025d and PS 3.7-2025d.
+# File created on 2025-10-07 12:17:31 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -300,6 +300,10 @@
 (0008,119B)	SQ	FailedStudySequence	1	DICOM
 (0008,1200)	SQ	StudiesContainingOtherReferencedInstancesSequence	1	DICOM
 (0008,1250)	SQ	RelatedSeriesSequence	1	DICOM
+(0008,1301)	SQ	PrincipalDiagnosisCodeSequence	1	DICOM
+(0008,1302)	SQ	PrimaryDiagnosisCodeSequence	1	DICOM
+(0008,1303)	SQ	SecondaryDiagnosesCodeSequence	1	DICOM
+(0008,1304)	SQ	HistologicalDiagnosesCodeSequence	1	DICOM
 (0008,2111)	ST	DerivationDescription	1	DICOM
 (0008,2112)	SQ	SourceImageSequence	1	DICOM
 (0008,2120)	SH	StageName	1	DICOM
@@ -344,6 +348,12 @@
 (0008,9459)	FL	RecommendedDisplayFrameRateInFloat	1	DICOM
 (0008,9460)	CS	SkipFrameRangeFlag	1	DICOM
 (0010,0010)	PN	PatientName	1	DICOM
+(0010,0011)	SQ	PersonNamesToUseSequence	1	DICOM
+(0010,0012)	LT	NameToUse	1	DICOM
+(0010,0013)	UT	NameToUseComment	1	DICOM
+(0010,0014)	SQ	ThirdPersonPronounsSequence	1	DICOM
+(0010,0015)	SQ	PronounCodeSequence	1	DICOM
+(0010,0016)	UT	PronounComment	1	DICOM
 (0010,0020)	LO	PatientID	1	DICOM
 (0010,0021)	LO	IssuerOfPatientID	1	DICOM
 (0010,0022)	CS	TypeOfPatientID	1	DICOM
@@ -357,6 +367,13 @@
 (0010,0034)	LO	PatientDeathDateInAlternativeCalendar	1	DICOM
 (0010,0035)	CS	PatientAlternativeCalendar	1	DICOM
 (0010,0040)	CS	PatientSex	1	DICOM
+(0010,0041)	SQ	GenderIdentitySequence	1	DICOM
+(0010,0042)	UT	SexParametersForClinicalUseCategoryComment	1	DICOM
+(0010,0043)	SQ	SexParametersForClinicalUseCategorySequence	1	DICOM
+(0010,0044)	SQ	GenderIdentityCodeSequence	1	DICOM
+(0010,0045)	UT	GenderIdentityComment	1	DICOM
+(0010,0046)	SQ	SexParametersForClinicalUseCategoryCodeSequence	1	DICOM
+(0010,0047)	UR	SexParametersForClinicalUseCategoryReference	1-n	DICOM
 (0010,0050)	SQ	PatientInsurancePlanCodeSequence	1	DICOM
 (0010,0101)	SQ	PatientPrimaryLanguageCodeSequence	1	DICOM
 (0010,0102)	SQ	PatientPrimaryLanguageModifierCodeSequence	1	DICOM
@@ -395,8 +412,8 @@
 (0010,2152)	LO	RegionOfResidence	1	DICOM
 (0010,2154)	SH	PatientTelephoneNumbers	1-n	DICOM
 (0010,2155)	LT	PatientTelecomInformation	1	DICOM
-(0010,2160)	SH	EthnicGroup	1	DICOM
 (0010,2161)	SQ	EthnicGroupCodeSequence	1	DICOM
+(0010,2162)	UC	EthnicGroups	1-n	DICOM
 (0010,2180)	SH	Occupation	1	DICOM
 (0010,21A0)	CS	SmokingStatus	1	DICOM
 (0010,21B0)	LT	AdditionalPatientHistory	1	DICOM
@@ -614,6 +631,18 @@
 (0014,40A0)	LO	ImageQualityIndicatorType	1-n	DICOM/DICONDE
 (0014,40A1)	LO	ImageQualityIndicatorMaterial	1-n	DICOM/DICONDE
 (0014,40A2)	LO	ImageQualityIndicatorSize	1-n	DICOM/DICONDE
+(0014,4101)	SQ	WaveDimensionsDefinitionSequence	1	DICOM/DICONDE
+(0014,4102)	US	WaveDimensionNumber	1	DICOM/DICONDE
+(0014,4103)	LO	WaveDimensionDescription	1	DICOM/DICONDE
+(0014,4104)	US	WaveDimensionUnit	1	DICOM/DICONDE
+(0014,4105)	CS	WaveDimensionValueType	1	DICOM/DICONDE
+(0014,4106)	SQ	WaveDimensionValuesSequence	1-n	DICOM/DICONDE
+(0014,4107)	US	ReferencedWaveDimension	1	DICOM/DICONDE
+(0014,4108)	SL	IntegerNumericValue	1	DICOM/DICONDE
+(0014,4109)	OB	ByteNumericValue	1	DICOM/DICONDE
+(0014,410A)	OW	ShortNumericValue	1	DICOM/DICONDE
+(0014,410B)	OF	SinglePrecisionFloatingPointNumericValue	1	DICOM/DICONDE
+(0014,410C)	OD	DoublePrecisionFloatingPointNumericValue	1	DICOM/DICONDE
 (0014,5002)	IS	LINACEnergy	1	DICOM/DICONDE
 (0014,5004)	IS	LINACOutput	1	DICOM/DICONDE
 (0014,5100)	US	ActiveAperture	1	DICOM/DICONDE
@@ -2534,6 +2563,8 @@
 (0040,A030)	DT	VerificationDateTime	1	DICOM
 (0040,A032)	DT	ObservationDateTime	1	DICOM
 (0040,A033)	DT	ObservationStartDateTime	1	DICOM
+(0040,A034)	DT	EffectiveStartDateTime	1	DICOM
+(0040,A035)	DT	EffectiveStopDateTime	1	DICOM
 (0040,A040)	CS	ValueType	1	DICOM
 (0040,A043)	SQ	ConceptNameCodeSequence	1	DICOM
 (0040,A050)	CS	ContinuityOfContent	1	DICOM
@@ -2591,6 +2622,25 @@
 (0040,A807)	SQ	TableColumnDefinitionSequence	1	DICOM
 (0040,A808)	SQ	CellValuesSequence	1	DICOM
 (0040,B020)	SQ	WaveformAnnotationSequence	1	DICOM
+(0040,B030)	SQ	StructuredWaveformAnnotationSequence	1	DICOM
+(0040,B031)	SQ	WaveformAnnotationDisplaySelectionSequence	1	DICOM
+(0040,B032)	US	ReferencedMontageIndex	1	DICOM
+(0040,B033)	SQ	WaveformTextualAnnotationSequence	1	DICOM
+(0040,B034)	DT	AnnotationDateTime	1	DICOM
+(0040,B035)	SQ	DisplayedWaveformSegmentSequence	1	DICOM
+(0040,B036)	DT	SegmentDefinitionDateTime	1	DICOM
+(0040,B037)	SQ	MontageActivationSequence	1	DICOM
+(0040,B038)	DS	MontageActivationTimeOffset	1	DICOM
+(0040,B039)	SQ	WaveformMontageSequence	1	DICOM
+(0040,B03A)	IS	ReferencedMontageChannelNumber	1	DICOM
+(0040,B03B)	LT	MontageName	1	DICOM
+(0040,B03C)	SQ	MontageChannelSequence	1	DICOM
+(0040,B03D)	US	MontageIndex	1	DICOM
+(0040,B03E)	IS	MontageChannelNumber	1	DICOM
+(0040,B03F)	LO	MontageChannelLabel	1	DICOM
+(0040,B040)	SQ	MontageChannelSourceCodeSequence	1	DICOM
+(0040,B041)	SQ	ContributingChannelSourcesSequence	1	DICOM
+(0040,B042)	FL	ChannelWeight	1	DICOM
 (0040,DB00)	CS	TemplateIdentifier	1	DICOM
 (0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	DICOM
 (0040,E001)	ST	HL7InstanceIdentifier	1	DICOM
@@ -2638,6 +2688,7 @@
 (0044,0108)	UI	ReferencedAssertionUID	1	DICOM
 (0044,0109)	SQ	ApprovalSubjectSequence	1	DICOM
 (0044,010A)	SQ	OrganizationalRoleCodeSequence	1	DICOM
+(0044,0110)	SQ	RTAssertionsSequence	1	DICOM
 (0046,0012)	LO	LensDescription	1	DICOM
 (0046,0014)	SQ	RightLensSequence	1	DICOM
 (0046,0015)	SQ	LeftLensSequence	1	DICOM
@@ -2761,6 +2812,7 @@
 (0048,0301)	CS	PixelOriginInterpretation	1	DICOM
 (0048,0302)	UL	NumberOfOpticalPaths	1	DICOM
 (0048,0303)	UL	TotalPixelMatrixFocalPlanes	1	DICOM
+(0048,0304)	CS	TilesOverlap	1	DICOM
 (0050,0004)	CS	CalibrationImage	1	DICOM
 (0050,0010)	SQ	DeviceSequence	1	DICOM
 (0050,0012)	SQ	ContainerComponentTypeCodeSequence	1	DICOM
@@ -3748,6 +3800,11 @@
 (3004,0070)	DS	DVHMinimumDose	1	DICOM
 (3004,0072)	DS	DVHMaximumDose	1	DICOM
 (3004,0074)	DS	DVHMeanDose	1	DICOM
+(3004,0080)	SQ	DoseCalculationModelSequence	1	DICOM
+(3004,0081)	SQ	DoseCalculationAlgorithmSequence	1	DICOM
+(3004,0082)	CS	CommissioningStatus	1	DICOM
+(3004,0083)	SQ	DoseCalculationModelParameterSequence	1	DICOM
+(3004,0084)	CS	DoseDepositionCalculationMedium	1	DICOM
 (3006,0002)	SH	StructureSetLabel	1	DICOM
 (3006,0004)	LO	StructureSetName	1	DICOM
 (3006,0006)	ST	StructureSetDescription	1	DICOM
@@ -4257,6 +4314,8 @@
 (300A,0398)	FL	ScanningSpotSize	2	DICOM
 (300A,0399)	FL	ScanSpotSizesDelivered	2-2n	DICOM
 (300A,039A)	IS	NumberOfPaintings	1	DICOM
+(300A,039B)	FL	ScanSpotGantryAngles	1-n	DICOM
+(300A,039C)	FL	ScanSpotPatientSupportAngles	1-n	DICOM
 (300A,03A0)	SQ	IonToleranceTableSequence	1	DICOM
 (300A,03A2)	SQ	IonBeamSequence	1	DICOM
 (300A,03A4)	SQ	IonBeamLimitingDeviceSequence	1	DICOM
@@ -4897,6 +4956,7 @@
 (0010,1000)	LO	RETIRED_OtherPatientIDs	1-n	DICOM/retired
 (0010,1050)	LO	RETIRED_InsurancePlanIdentification	1-n	DICOM/retired
 (0010,1090)	LO	RETIRED_MedicalRecordLocator	1	DICOM/retired
+(0010,2160)	SH	RETIRED_EthnicGroup	1	DICOM/retired
 (0014,0023)	ST	RETIRED_CADFileFormat	1	DICOM/retired
 (0014,0024)	ST	RETIRED_ComponentReferenceSystem	1	DICOM/retired
 (0014,0045)	ST	RETIRED_MaterialPropertiesFileFormatRetired	1	DICOM/retired
@@ -5325,7 +5385,6 @@
 (7F00-7FFF,0011)	US	RETIRED_VariableNextDataGroup	1	DICOM/retired
 (7F00-7FFF,0020)	OW	RETIRED_VariableCoefficientsSDVN	1	DICOM/retired
 (7F00-7FFF,0030)	OW	RETIRED_VariableCoefficientsSDHN	1	DICOM/retired
-(7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
 (7F00-7FFF,0040)	OW	RETIRED_VariableCoefficientsSDDN	1	DICOM/retired
 #
 #---------------------------------------------------------------------------

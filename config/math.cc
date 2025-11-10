@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, OFFIS e.V.
+ *  Copyright (C) 2015-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -46,37 +46,21 @@ struct dcmtk_config_math
 {
   static inline OFBool isnan( float f )
   {
-#ifdef HAVE_PROTOTYPE_STD__ISNAN
     return STD_NAMESPACE isnan(f);
-#else
-    return ::isnan(f);
-#endif
   }
 
   static inline OFBool isnan( double d )
   {
-#ifdef HAVE_PROTOTYPE_STD__ISNAN
     return STD_NAMESPACE isnan(d);
-#else
-    return ::isnan(d);
-#endif
   }
 
   static inline OFBool isinf( float f )
   {
-#ifdef HAVE_PROTOTYPE_STD__ISINF
     return STD_NAMESPACE isinf( f );
-#else
-    return ::isinf( f );
-#endif
   }
 
   static inline OFBool isinf( double d )
   {
-#ifdef HAVE_PROTOTYPE_STD__ISINF
     return STD_NAMESPACE isinf( d );
-#else
-    return ::isinf( d );
-#endif
   }
 };

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2024, OFFIS e.V.
+ *  Copyright (C) 2008-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -124,7 +124,7 @@ OFCondition DcmSCU::initNetwork()
     }
 
     /* initialize association parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&m_params, m_maxReceivePDULength, m_tcpConnectTimeout);
+    cond = ASC_createAssociationParameters(&m_params, m_maxReceivePDULength, m_tcpConnectTimeout, m_implIdentification);
     if (cond.bad())
     {
         DCMNET_ERROR(DimseCondition::dump(tempStr, cond));
@@ -2575,6 +2575,11 @@ void DcmSCU::setAssocConfigFileAndProfile(const OFString& filename, const OFStri
 {
     m_assocConfigFilename = filename;
     m_assocConfigProfile  = profile;
+}
+
+void DcmSCU::setImplementationIdentification(const T_ASC_ImplementationIdentification& implIdentification)
+{
+    m_implIdentification = implIdentification;
 }
 
 void DcmSCU::setStorageDir(const OFString& storeDir)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -603,7 +603,7 @@ OFCondition DcmByteString::makeMachineByteString(const Uint32 length)
                 if (realLength > 0)
                 {
                     size_t i = OFstatic_cast(size_t, realLength);
-                    while ((i > 0) && (value[i - 1] == paddingChar))
+                    while ((i > 0) && ((value[i - 1] == paddingChar) || (value[i - 1] == '\0')))
                         value[--i] = '\0';
                     realLength = OFstatic_cast(Uint32, i);
                 }
@@ -639,22 +639,11 @@ Uint8 *DcmByteString::newValueField()
             return NULL;
         }
         /* allocate space for extra padding character (required for the DICOM representation of the string) */
-#ifdef HAVE_STD__NOTHROW
+
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
         value = new (std::nothrow) Uint8[lengthField + 2];
-#else
-        /* make sure that the pointer is set to NULL in case of error */
-        try
-        {
-            value = new Uint8[lengthField + 2];
-        }
-        catch (STD_NAMESPACE bad_alloc const &)
-        {
-            value = NULL;
-        }
-#endif
 
         /* terminate string after real length */
         if (value != NULL)
@@ -668,22 +657,11 @@ Uint8 *DcmByteString::newValueField()
         }
     } else {
         /* length is even, but we need an extra byte for the terminating 0 byte */
-#ifdef HAVE_STD__NOTHROW
+
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
         value = new (std::nothrow) Uint8[lengthField + 1];
-#else
-        /* make sure that the pointer is set to NULL in case of error */
-        try
-        {
-            value = new Uint8[lengthField + 1];
-        }
-        catch (STD_NAMESPACE bad_alloc const &)
-        {
-            value = NULL;
-        }
-#endif
     }
     /* make sure that the string is properly terminated by a 0 byte */
     if (value != NULL)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -88,7 +88,7 @@ class DiColorMonoTemplate
     {
         if (pixel != NULL)
         {
-            this->Data = new T[this->Count];
+            this->Data = new (std::nothrow) T[this->Count];
             if (this->Data != NULL)
             {
                 const T *r = pixel[0];

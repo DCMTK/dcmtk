@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -136,6 +136,11 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--no-sq-expansion",     "-nse",    "disable expansion of empty sequences in C-FIND\nrequest messages");
 
   cmd->addGroup("network options:");
+    cmd->addSubGroup("IP protocol version:");
+      cmd->addOption("--ipv4",                "-i4",     "use IPv4 only (default)");
+      cmd->addOption("--ipv6",                "-i6",     "use IPv6 only");
+      cmd->addOption("--ip-auto",             "-i0",     "use IPv6/IPv4 dual stack");
+
     cmd->addSubGroup("preferred network transfer syntaxes:");
       cmd->addOption("--prefer-uncompr",      "+x=",     "prefer explicit VR local byte order (default)");
       cmd->addOption("--prefer-little",       "+xe",     "prefer explicit VR little endian TS");
@@ -255,6 +260,14 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
 
     // network options
+
+    // set the IP protocol version
+    cmd->beginOptionBlock();
+    if (cmd->findOption("--ipv4")) dcmIncomingProtocolFamily.set(ASC_AF_INET);
+    if (cmd->findOption("--ipv6")) dcmIncomingProtocolFamily.set(ASC_AF_INET6);
+    if (cmd->findOption("--ip-auto")) dcmIncomingProtocolFamily.set(ASC_AF_UNSPEC);
+    cmd->endOptionBlock();
+
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
     if( cmd->findOption("--prefer-little") ) opt_networkTransferSyntax = EXS_LittleEndianExplicit;

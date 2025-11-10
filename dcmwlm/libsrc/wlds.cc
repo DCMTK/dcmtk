@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2023, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1071,7 +1071,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_AdmittingDiagnosesDescription                     (0008,1080)  LO  O  3  (from the Visit Admission Module)
 //                   DCM_RETIRED_OtherPatientIDs                           (0010,1000)  LO  O  3  (from the Patient Identification Module)
 //                   DCM_PatientSize                                       (0010,1020)  DS  O  3  (from the Patient Demographic Module)
-//                   DCM_EthnicGroup                                       (0010,2160)  SH  O  3  (from the Patient Demographic Module)
+//                   DCM_RETIRED_EthnicGroup                               (0010,2160)  SH  O  3  (from the Patient Demographic Module)
 //                   DCM_PatientComments                                   (0010,4000)  LT  O  3  (from the Patient Demographic Module)
 //                   DCM_AdditionalPatientHistory                          (0010,21b0)  LT  O  3  (from the Patient Medical Module)
 //                   DCM_LastMenstrualDate                                 (0010,21d0)  DA  O  3  (from the Patient Medical Module)
@@ -1195,7 +1195,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_AdmittingDiagnosesDescription                     ||
         elementKey == DCM_RETIRED_OtherPatientIDs                           ||
         elementKey == DCM_PatientSize                                       ||
-        elementKey == DCM_EthnicGroup                                       ||
+        elementKey == DCM_RETIRED_EthnicGroup                               ||
         elementKey == DCM_PatientComments                                   ||
         elementKey == DCM_AdditionalPatientHistory                          ||
         elementKey == DCM_LastMenstrualDate                                 ||

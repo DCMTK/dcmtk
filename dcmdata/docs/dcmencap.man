@@ -1,0 +1,320 @@
+/*!
+
+\if MANPAGES
+\page dcmencap Encapsulate document into DICOM format
+\else
+\page dcmencap dcmencap: Encapsulate document into DICOM format
+\endif
+
+\section dcmencap_synopsis SYNOPSIS
+
+\verbatim
+dcmencap [options] docfile-in dcmfile-out
+\endverbatim
+
+\section dcmencap_description DESCRIPTION
+
+The \b dcmencap utility reads a document file in one of the supported file formats,
+converts it to a SOP instance of the corresponding DICOM Encapsulated Storage SOP Class
+and stores the converted data in an output file (\e dcmfile-out).
+
+\section dcmencap_parameters PARAMETERS
+
+\verbatim
+docfile-in   input filename to be converted
+
+dcmfile-out  DICOM output filename ("-" for stdout)
+\endverbatim
+
+\section dcmencap_options OPTIONS
+
+\subsection dcmencap_general_options general options
+\verbatim
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -q   --quiet
+         quiet mode, print no warnings and errors
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+
+  -ll  --log-level  [l]evel: string constant
+         (fatal, error, warn, info, debug, trace)
+         use level l for the logger
+
+  -lc  --log-config  [f]ilename: string
+         use config file f for the logger
+\endverbatim
+
+\subsection dcmencap_input_options input options
+\verbatim
+input file format:
+
+  +fa  --filetype-auto
+         automatically determine file type (default)
+
+  +fp  --filetype-pdf
+         expect PDF file
+
+  +fc  --filetype-cda
+         expect CDA file
+
+  +fs  --filetype-stl
+         expect STL file
+
+  +fm  --filetype-mtl
+         expect MTL file
+
+  +fo  --filetype-obj
+         expect OBJ file
+\endverbatim
+
+\subsection dcmencap_dicom_document_options DICOM document options
+\verbatim
+document title:
+
+  +t   --title  [t]itle: string (default: empty)
+         document title
+
+  +cn  --concept-name  [CSD] [CV] [CM]: string (default: empty)
+         coded representation of document title defined by coding
+         scheme designator CSD, code value CV and code meaning CM
+
+patient data:
+
+  +pn  --patient-name  [n]ame: string
+         patient's name in DICOM PN syntax
+
+  +pi  --patient-id  [i]d: string
+         patient identifier
+
+  +pb  --patient-birthdate  [d]ate: string (YYYYMMDD)
+         patient's birth date
+
+  +ps  --patient-sex  [s]ex: string (M, F or O)
+         patient's sex
+
+device data:
+
+  +mn  --manufacturer  [n]ame: string
+         manufacturer's name
+
+  +mm  --manufacturer-model  [n]ame: string
+         manufacturer's model name
+
+  +ds  --device-serial  [n]umber: string
+         device serial number
+
+  +sv  --software-versions  [v]ersions: string
+         software versions
+
+manufacturing 3d model data (STL/MTL/OBJ only):
+
+  +mu  --measurement-units  [CSD] [CV] [CM]: string
+         measurement units with coding scheme designator CSD,
+         code value CV and code meaning CM (default: UCUM, um, um)
+
+study and series:
+
+  +sg  --generate
+         generate new study and series UIDs (default)
+
+  +st  --study-from  [f]ilename: string
+         read patient/study data from DICOM file
+
+  +se  --series-from  [f]ilename: string
+         read patient/study/series data from DICOM file
+
+instance number:
+
+  +i1  --instance-one
+         use instance number 1 (default, not with +se)
+
+  +ii  --instance-inc
+         increment instance number (only with +se)
+
+  +is  --instance-set [i]nstance number: integer
+         use instance number i
+
+burned-in annotation:
+
+  +an  --annotation-yes
+         document contains patient identifying data (default)
+
+  -an  --annotation-no
+         document does not contain patient identifying data
+\endverbatim
+
+\subsection dcmencap_processing_options processing options
+\verbatim
+CDA processing options:
+
+  -ov  --no-override
+         CDA patient and document data must match study,
+         series or manually entered information (default)
+
+  +ov  --override
+         CDA's data will be overwritten by study, series
+         or manually entered information
+
+other processing options:
+
+  -k   --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+         add further attribute
+\endverbatim
+
+\subsection dcmencap_output_options output options
+\verbatim
+output transfer syntax:
+  +te  --write-xfer-little
+         write with explicit VR little endian (default)
+
+  +tb  --write-xfer-big
+         write with explicit VR big endian TS
+
+  +ti  --write-xfer-implicit
+         write with implicit VR little endian TS
+
+group length encoding:
+
+  -g   --group-length-remove
+         write without group length elements (default)
+
+  +g   --group-length-create
+         write with group length elements
+
+length encoding in sequences and items:
+
+  +e   --length-explicit
+         write with explicit lengths (default)
+
+  -e   --length-undefined
+         write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes
+         and items on multiple of i bytes
+\endverbatim
+
+\section dcmencap_notes NOTES
+
+\subsection dcmencap_attribute_sources Attribute Sources
+
+The application may be fed with some additional input for filling mandatory
+(and optional) attributes in the new DICOM file like patient, study and series
+information:
+
+- The \e --key option can be used to add further attributes to the DICOM output
+  file.
+
+- It is also possible to specify sequences, items and nested attributes using
+  the \e --key option. In these cases, a special "path" notation has to be
+  used.  Details on this path notation can be found in the documentation of
+  \b dcmodify.
+
+- The \e --key option can be present more than once.
+
+- The value part (after the '=') may be absent causing the attribute to be set
+  with zero length.
+
+- Please be advised that the \e --key option is applied at the very end, just
+  before saving the DICOM file, so there is no value checking whatsoever.
+
+\section dcmencap_logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user.  By default, only errors and warnings
+are written to the standard error stream.  Using option \e --verbose also
+informational messages like processing details are reported.  Option
+\e --debug can be used to get more details on the internal activity, e.g. for
+debugging purposes.  Other logging levels can be selected using option
+\e --log-level.  In \e --quiet mode only fatal errors are reported.  In such
+very severe error events, the application will usually terminate.  For more
+details on the different logging levels, see documentation of module "oflog".
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \e --log-config
+can be used.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated.  An example
+configuration file is provided in <em>\<etcdir\>/logger.cfg</em>.
+
+\section dcmencap_command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behavior conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation.  Please note that a command
+file cannot contain another command file.  This simple but effective approach
+allows one to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em>\<datadir\>/dumppat.txt</em>).
+
+\section dcmencap_exit_codes EXIT CODES
+
+The \b dcmencap utility uses the following exit codes when terminating.  This
+enables the user to check for the reason why the application terminated.
+
+\subsection dcmencap_exit_codes_general general
+\verbatim
+EXITCODE_NO_ERROR                 0
+\endverbatim
+
+\subsection dcmencap_exit_codes_input_file_errors input file errors
+\verbatim
+EXITCODE_INVALID_INPUT_FILE       22
+\endverbatim
+
+\subsection dcmencap_exit_codes_output_file_errors output file errors
+\verbatim
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE 40
+\endverbatim
+
+\section dcmencap_environment ENVIRONMENT
+
+The \b dcmencap utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, i.e. if the
+\e DCMDICTPATH environment variable is not set, the file
+<em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows).
+
+The default behavior should be preferred and the \e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required.  The
+\e DCMDICTPATH environment variable has the same format as the Unix shell
+\e PATH variable in that a colon (":") separates entries.  On Windows systems,
+a semicolon (";") is used as a separator.  The data dictionary code will
+attempt to load each file specified in the \e DCMDICTPATH environment
+variable.
+It is an error if no data dictionary can be loaded.
+
+\section dcmencap_copyright COPYRIGHT
+
+Copyright (C) 2018-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+
+*/

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -96,9 +96,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_SOCKET_H
 #ifndef DCOMPAT_SYS_SOCKET_H_
 #define DCOMPAT_SYS_SOCKET_H_
@@ -184,18 +182,6 @@ END_EXTERN_C
 #endif
 #endif
 
-#ifndef HAVE_ACCESS
-
-#ifndef R_OK
-#define R_OK 0x01
-#define W_OK 0x02
-#define X_OK 0x04
-#define F_OK 0x08
-#endif
-
-DCMTK_DCMNET_EXPORT int access(const char* path, int amode);
-#else /* HAVE_ACCESS */
-
 #ifdef _WIN32
 /* windows defines access but not the constants */
 #ifndef R_OK
@@ -205,8 +191,6 @@ DCMTK_DCMNET_EXPORT int access(const char* path, int amode);
 #define X_OK 00 /* Execute permission has no meaning under Windows, treat as existence */
 #endif /* R_OK */
 #endif /* _WIN32 */
-
-#endif /* HAVE_ACCESS */
 
 #ifdef _WIN32
 #define NULL_DEVICE_NAME "nul"

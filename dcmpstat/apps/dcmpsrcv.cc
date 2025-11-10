@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2024, OFFIS e.V.
+ *  Copyright (C) 1999-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,15 +22,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* for O_RDONLY */
-#endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* required for sys/stat.h */
-#endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat, fstat */
-#endif
 END_EXTERN_C
 
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
@@ -861,6 +855,8 @@ int main(int argc, char *argv[])
     OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen();
     OFBool useTLS = dvi.getTargetUseTLS(opt_cfgID);
     OFBool notifyTermination      = OFTrue;  // notify IPC server of application termination
+    T_ASC_ProtocolFamily targetProtocol = dvi.getTargetProtocol(opt_cfgID);
+    dcmIncomingProtocolFamily.set(targetProtocol);
 
     if (validationMode)
     {

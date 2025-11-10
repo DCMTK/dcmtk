@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -83,9 +83,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 /* sys/socket.h included via "dcmtk/ofstd/ofsockad.h" - needed for Ultrix */
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -103,9 +101,7 @@ BEGIN_EXTERN_C
 #include <tcpd.h>               /* for hosts_ctl */
 int dcmtk_hosts_access(struct request_info *req);
 #endif
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>              /* for FD_CLOEXEC */
-#endif
 
 /* declare extern "C" typedef for signal handler function pointer */
 typedef void(*mySIG_TYP)(int);
@@ -139,6 +135,7 @@ OFGlobal<DcmNativeSocketType> dcmExternalSocketHandle(DCMNET_INVALID_SOCKET);
 OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
 OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
 OFGlobal<size_t> dcmAssociatePDUSizeLimit(0x100000);
+OFGlobal<T_ASC_ProtocolFamily> dcmIncomingProtocolFamily(ASC_AF_Default);
 
 static int networkInitialized = 0;
 
@@ -1566,7 +1563,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     struct timeval timeout_val;
     socklen_t len;
     int nfound, connected;
-    struct sockaddr from;
+    struct sockaddr_storage from;
     struct linger sockarg;
 
 #ifdef HAVE_FORK
@@ -1590,7 +1587,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
       connected = 1;
 
       len = sizeof(from);
-      if (getpeername(sock, &from, &len))
+      if (getpeername(sock, OFreinterpret_cast(struct sockaddr*, &from), &len))
       {
           OFOStringStream stream;
           stream << "TCP Initialization Error: " << OFStandard::getLastNetworkErrorCode().message()
@@ -1695,7 +1692,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         len = sizeof(from);
         do
         {
-            sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
+            sock = accept((*network)->networkSpecific.TCP.listenSocket, OFreinterpret_cast(struct sockaddr*, &from), &len);
 #ifdef _WIN32
         } while (sock == INVALID_SOCKET && WSAGetLastError() == WSAEINTR);
         if (sock == INVALID_SOCKET)
@@ -1915,8 +1912,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
 #endif
     {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
+        OFOStringStream stream;
+        stream << "TCP Initialization Error: " << OFStandard::getLastNetworkErrorCode().message()
+               << ", setsockopt failed on socket " << sock << OFStringStream_ends;
+        OFSTRINGSTREAM_GETOFSTRING(stream, msg)
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     }
     setTCPBufferLength(sock);
@@ -1959,8 +1958,10 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
       if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
       {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
+        OFOStringStream stream;
+        stream << "TCP Initialization Error: " << OFStandard::getLastNetworkErrorCode().message()
+               << ", setsockopt failed on socket " << sock << OFStringStream_ends;
+        OFSTRINGSTREAM_GETOFSTRING(stream, msg)
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
       }
 #ifdef DISABLE_NAGLE_ALGORITHM
@@ -1969,28 +1970,49 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
     }
 
-    // create string containing numerical IP address.
-    OFString client_dns_name;
-    char client_ip_address[20];
-    OFStandard::snprintf(client_ip_address, sizeof(client_ip_address), "%-d.%-d.%-d.%-d",  // this code is ugly but thread safe
-       ((int) from.sa_data[2]) & 0xff,
-       ((int) from.sa_data[3]) & 0xff,
-       ((int) from.sa_data[4]) & 0xff,
-       ((int) from.sa_data[5]) & 0xff);
 
+    // lookup string containing numerical IP address.
+    OFString client_dns_name;
+    OFString client_ip_address;
+    char host[NI_MAXHOST]; // buffer for numerical IP address in text form
+    char serv[NI_MAXSERV]; // buffer for port number in text form
+    if (getnameinfo((struct sockaddr*)&from, len,
+                    host, sizeof(host),
+                    serv, sizeof(serv),
+                    NI_NUMERICHOST | NI_NUMERICSERV) == 0)
+    {
+        client_ip_address = host;
+    }
+    else
+    {
+        client_ip_address = "unknown address";
+    }
+
+    // lookup hostname
     if (! dcmDisableGethostbyaddr.get())
-       client_dns_name = OFStandard::getHostnameByAddress(&from.sa_data[2], sizeof(struct in_addr), AF_INET);
+    {
+         struct sockaddr *saddr = OFreinterpret_cast(struct sockaddr*, &from);
+         if (saddr->sa_family == AF_INET6)
+         {
+             client_dns_name = OFStandard::getHostnameByAddress(&saddr->sa_data[6], sizeof(struct in6_addr), AF_INET6);
+         }
+         else if (saddr->sa_family == AF_INET)
+         {
+             client_dns_name = OFStandard::getHostnameByAddress(&saddr->sa_data[2], sizeof(struct in_addr), AF_INET);
+         }
+    }
 
     if (client_dns_name.length() == 0)
     {
         // reverse DNS lookup disabled or host not found, use numerical address
-        OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address,
+        OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address.c_str(),
           sizeof(params->callingPresentationAddress));
-        OFStandard::strlcpy((*association)->remoteNode, client_ip_address, sizeof((*association)->remoteNode));
-        DCMNET_DEBUG("Association Received: " << params->callingPresentationAddress );
+        OFStandard::strlcpy((*association)->remoteNode, client_ip_address.c_str(),
+          sizeof((*association)->remoteNode));
     }
     else
     {
+        // use either full domain name (if DUL_FULLDOMAINNAME is set) or just the hostname
         char node[260];
         if ((*network)->options & DUL_FULLDOMAINNAME)
             OFStandard::strlcpy(node, client_dns_name.c_str(), sizeof(node));
@@ -2000,8 +2022,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         }
         OFStandard::strlcpy((*association)->remoteNode, node, sizeof((*association)->remoteNode));
         OFStandard::strlcpy(params->callingPresentationAddress, node, sizeof(params->callingPresentationAddress));
-        DCMNET_DEBUG("Association Received: " << params->callingPresentationAddress );
     }
+    DCMNET_DEBUG("Association Received: " << params->callingPresentationAddress );
 
 #ifdef WITH_TCPWRAPPER
     const char *daemon = dcmTCPWrapperDaemonName.get();
@@ -2014,7 +2036,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
         struct request_info request;
         request_init(&request, RQ_CLIENT_NAME, client_dns_name.c_str(), 0);
-        request_set(&request, RQ_CLIENT_ADDR, client_ip_address, 0);
+        request_set(&request, RQ_CLIENT_ADDR, client_ip_address.c_str(), 0);
         request_set(&request, RQ_USER, STRING_UNKNOWN, 0);
         request_set(&request, RQ_DAEMON, daemon, 0);
 
@@ -2168,100 +2190,192 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) &&
         (! processIsForkedChild))
     {
-
-      socklen_t length;
-
 #ifdef _WIN32
-      SOCKET sock;
+        SOCKET sock = INVALID_SOCKET;
 #else
-      int sock;
+        int sock = -1;
 #endif
-      struct sockaddr_in server;
 
-      /* Create socket for Internet type communication */
-      (*key)->networkSpecific.TCP.port = *(int *) parameter;
+        // extract port number from the generic parameter passed to this function
+        (*key)->networkSpecific.TCP.port = *(int *) parameter;
+        int port = (*key)->networkSpecific.TCP.port;
 
-      // Create socket and prevent leakage of the open socket to processes called with exec()
-      // by using SOCK_CLOEXEC (where available) or FD_CLOEXEC (POSIX.1-2008)
+        // determine which protocol family we should support
+        T_ASC_ProtocolFamily supportedFamily = dcmIncomingProtocolFamily.get();
+        int af = 0;
+        switch(supportedFamily)
+        {
+            case ASC_AF_Default:
+              af = AF_INET; // for now the default is to use IPv4 only
+              break;
+            case ASC_AF_INET:
+              af = AF_INET; // IPv4 only
+              break;
+            case ASC_AF_INET6:
+              af = AF_INET6; // IPv6 only
+              break;
+            case ASC_AF_UNSPEC:
+              af = AF_INET6; // IPv6 in dual-stack mode
+              break;
+        }
+
+        // Create socket and prevent leakage of the open socket to processes called with exec()
+        // by using SOCK_CLOEXEC (where available) or FD_CLOEXEC (POSIX.1-2008)
 #ifdef SOCK_CLOEXEC
-      (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
-      sock = (*key)->networkSpecific.TCP.listenSocket;
+        sock = socket(af, SOCK_STREAM | SOCK_CLOEXEC, 0);
 #elif defined(FD_CLOEXEC)
-      (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-      sock = (*key)->networkSpecific.TCP.listenSocket;
-      if (sock >= 0)
-      {
-          int flags = fcntl(sock, F_GETFD, 0);
-          fcntl(sock, F_SETFD, FD_CLOEXEC | flags);
-      }
+        sock = socket(af, SOCK_STREAM, 0);
+        if (sock >= 0)
+        {
+            int flags = fcntl(sock, F_GETFD, 0);
+            fcntl(sock, F_SETFD, FD_CLOEXEC | flags);
+        }
 #else
-      (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-      sock = (*key)->networkSpecific.TCP.listenSocket;
+        sock = socket(af, SOCK_STREAM, 0);
 #endif
-
 #ifdef _WIN32
-      if (sock == INVALID_SOCKET)
+        if (sock == INVALID_SOCKET)
 #else
-      if (sock < 0)
+        if (sock < 0)
 #endif
-      {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-      }
-      reuse = 1;
+        {
+            OFString msg = "TCP Initialization Error: ";
+            msg += OFStandard::getLastNetworkErrorCode().message();
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+        }
+
+        // store socket handle
+        (*key)->networkSpecific.TCP.listenSocket = sock;
+
+        // make sure that no other process is already bound to the same port.
+        // In this case we want bind() to fail.
 #ifdef _WIN32
-      if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
+        if (setsockopt(sock, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char *) &reuse, sizeof(reuse)) < 0)
 #else
-      if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
 #endif
-      {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-      }
+        {
+#ifdef _WIN32
+            (void) shutdown(sock,  1 /* SD_SEND */);
+            closesocket(sock);
+            (*key)->networkSpecific.TCP.listenSocket = INVALID_SOCKET;
+#else
+            close(sock);
+            (*key)->networkSpecific.TCP.listenSocket = -1;
+#endif
+            OFString msg = "TCP Initialization Error: ";
+            msg += OFStandard::getLastNetworkErrorCode().message();
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+        }
 
-      /* Name socket using wildcards */
-      server.sin_family = AF_INET;
-      server.sin_addr.s_addr = INADDR_ANY;
-      server.sin_port = htons(OFstatic_cast(Uint16, ((*key)->networkSpecific.TCP.port)));
-      if (bind(sock, (struct sockaddr *) & server, sizeof(server)))
-      {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-      }
-      /* Find out assigned port number and print it out */
-      length = sizeof(server);
-      if (getsockname(sock, (struct sockaddr *) &server, &length))
-      {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-      }
+        // configure the IPv6 socket either as IPv6 only or as a dual stack socket
+        // that accepts IPv4 via v4-mapped
+        if (af == AF_INET6)
+        {
+            int off = (supportedFamily == ASC_AF_UNSPEC) ? 0 : 1;
+            if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (char*)&off, sizeof(off)))
+            {
+#ifdef _WIN32
+                (void) shutdown(sock,  1 /* SD_SEND */);
+                closesocket(sock);
+                (*key)->networkSpecific.TCP.listenSocket = INVALID_SOCKET;
+#else
+                close(sock);
+                (*key)->networkSpecific.TCP.listenSocket = -1;
+#endif
+                OFString msg = "TCP Initialization Error: ";
+                msg += OFStandard::getLastNetworkErrorCode().message();
+                return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+            }
+        }
 
-      /* If port 0 was specified by the client, the OS has assigned an unused port. */
-      if ((*key)->networkSpecific.TCP.port == 0) {
-        const u_short assignedPort = ntohs(server.sin_port);
-        (*key)->networkSpecific.TCP.port = assignedPort;
-        *(int *) parameter = assignedPort;
-      }
+        // bind the socket to the given port number
+        OFBool bind_ok = OFFalse;
+        if (af == AF_INET6) {
+            struct sockaddr_in6 server6;
+            memset(&server6, 0, sizeof(server6));
+            server6.sin6_family = AF_INET6;
+            server6.sin6_addr = in6addr_any;
+            server6.sin6_port = htons(OFstatic_cast(Uint16, port));
+            if (bind(sock, (struct sockaddr *)&server6, sizeof(server6)) == 0) bind_ok = OFTrue;
+        } else if (af == AF_INET) {
+            struct sockaddr_in server;
+            memset(&server, 0, sizeof(server));
+            server.sin_family = AF_INET;
+            server.sin_addr.s_addr = INADDR_ANY;
+            server.sin_port = htons(OFstatic_cast(Uint16, port));
+            if (bind(sock, (struct sockaddr *)&server, sizeof(server)) == 0) bind_ok = OFTrue;
+        }
 
-      sockarg.l_onoff = 0;
-      if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
-      {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-      }
+        if (! bind_ok) {
+#ifdef _WIN32
+            (void) shutdown(sock,  1 /* SD_SEND */);
+            closesocket(sock);
+            (*key)->networkSpecific.TCP.listenSocket = INVALID_SOCKET;
+#else
+            close(sock);
+           (*key)->networkSpecific.TCP.listenSocket = -1;
+#endif
+           OFString msg = "TCP Initialization Error: ";
+           msg += OFStandard::getLastNetworkErrorCode().message();
+           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+       }
 
-      /* Listen on the socket */
-      if (listen(sock, PRV_LISTENBACKLOG) < 0)
-      {
-        OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
-        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
-      }
+       // disable linger mode, i.e. when closing the socket,
+       // do not wait until all queued messages for the socket have been
+       // successfully sent or the linger timeout has been reached.
+       sockarg.l_onoff = 0;
+       if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
+       {
+#ifdef _WIN32
+           (void) shutdown(sock,  1 /* SD_SEND */);
+            closesocket(sock);
+            (*key)->networkSpecific.TCP.listenSocket = INVALID_SOCKET;
+#else
+            close(sock);
+            (*key)->networkSpecific.TCP.listenSocket = -1;
+#endif
+            OFString msg = "TCP Initialization Error: ";
+            msg += OFStandard::getLastNetworkErrorCode().message();
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+        }
+
+        // listen for incoming connections, limit backlog to at most
+        // PRV_LISTENBACKLOG (i.e. 50) incoming connection request
+        if (listen(sock, PRV_LISTENBACKLOG) < 0)
+        {
+#ifdef _WIN32
+            (void) shutdown(sock,  1 /* SD_SEND */);
+            closesocket(sock);
+            (*key)->networkSpecific.TCP.listenSocket = INVALID_SOCKET;
+#else
+            close(sock);
+            (*key)->networkSpecific.TCP.listenSocket = -1;
+#endif
+            OFString msg = "TCP Initialization Error: ";
+            msg += OFStandard::getLastNetworkErrorCode().message();
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+        }
+
+        // If port 0 was specified by the caller, the OS has assigned an unused port.
+        // store this port and return it in the parameter passed to this function
+        if (port == 0)
+        {
+            if (af == AF_INET6)
+            {
+                struct sockaddr_in6 sin6; socklen_t sl = sizeof(sin6);
+                if (getsockname(sock, (struct sockaddr *)&sin6, &sl) == 0)
+                    port = ntohs(sin6.sin6_port);
+            }
+            else
+            {
+                struct sockaddr_in sin; socklen_t sl = sizeof(sin);
+                if (getsockname(sock, (struct sockaddr *)&sin, &sl) == 0)
+                    port = ntohs(sin.sin_port);
+            }
+            (*key)->networkSpecific.TCP.port = port;
+            *(int *) parameter = port;
+        }
     }
 
     (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer();

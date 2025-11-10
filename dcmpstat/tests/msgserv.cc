@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024 OFFIS e.V.
+ *  Copyright (C) 2000-2025 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,9 +29,7 @@
 #endif
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* we have to include this before sys/time.h on Solaris */
-#endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>    /* for struct timeval on Linux */
 #endif

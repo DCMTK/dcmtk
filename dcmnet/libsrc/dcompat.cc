@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -89,12 +89,8 @@
 #include "dcmtk/dcmnet/diutil.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -264,30 +260,6 @@ int dcmtk_flock(int fd, int operation)
 
 #endif /* HAVE_FLOCK */
 
-#ifndef HAVE_ACCESS
-
-/*
-** The access function is OS dependent.
-*/
-
-#if defined(macintosh) || defined(_WIN32)
-int access(const char* path, int /* amode */)
-{
-    int rc;
-    struct stat buf;
-
-    rc = stat(path, &buf);
-
-    /* WARNING
-    ** on the macintosh if a file is there we can do anything with it except
-    ** if it is locked or on a read only filesystem.  Trying to find out about
-    ** that is too complicated at the moment.
-    */
-    return rc;
-}
-#endif
-
-#endif /* HAVE_ACCESS */
 
 DCMTK_DCMNET_EXPORT void dcmtk_plockerr(const char *s)
 {

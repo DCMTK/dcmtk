@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -436,6 +436,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_EncapsulatedUncompressedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.98"
 /// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
+/// Deflated Image Frame Compression
+#define UID_DeflatedImageFrameCompressionTransferSyntax  "1.2.840.10008.1.2.8.1"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
  *  for Lossy JPEG 8 Bit Image Compression
  */
@@ -622,6 +624,8 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_ElectrooculogramWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.7.3"
 #define UID_SleepElectroencephalogramWaveformStorage               "1.2.840.10008.5.1.4.1.1.9.7.4"
 #define UID_BodyPositionWaveformStorage                            "1.2.840.10008.5.1.4.1.1.9.8.1"
+#define UID_WaveformPresentationStateStorage                       "1.2.840.10008.5.1.4.1.1.9.100.1"
+#define UID_WaveformAcquisitionPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.9.100.2"
 #define UID_RETIRED_StandaloneModalityLUTStorage                   "1.2.840.10008.5.1.4.1.1.10"
 #define UID_RETIRED_StandaloneVOILUTStorage                        "1.2.840.10008.5.1.4.1.1.11"
 #define UID_GrayscaleSoftcopyPresentationStateStorage              "1.2.840.10008.5.1.4.1.1.11.1"
@@ -777,6 +781,7 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define UID_DICONDE_EddyCurrentMultiframeImageStorage              "1.2.840.10008.5.1.4.1.1.601.2"
 #define UID_DICONDE_ThermographyImageStorage                       "1.2.840.10008.5.1.4.1.1.601.3"
 #define UID_DICONDE_ThermographyMultiFrameImageStorage             "1.2.840.10008.5.1.4.1.1.601.4"
+#define UID_DICONDE_UltrasoundWaveformStorage                      "1.2.840.10008.5.1.4.1.1.601.5"
 
 // Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"

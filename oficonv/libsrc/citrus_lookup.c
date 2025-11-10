@@ -27,11 +27,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_lookup.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-
-
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
 #endif

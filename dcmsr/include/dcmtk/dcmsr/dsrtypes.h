@@ -657,8 +657,12 @@ class DCMTK_DCMSR_EXPORT DSRTypes
         PT_MultipleVolumeRendering,
         /// Variable Modality LUT Softcopy Presentation State (VML-SPS)
         PT_VariableModalityLUT,
+        /// Waveform Presentation State (WPS)
+        PT_Waveform,
+        /// Waveform Acquisition Presentation State (WAPS)
+        PT_WaveformAcquisition,
         /// internal type used to mark the last entry
-        PT_last = PT_VariableModalityLUT
+        PT_last = PT_WaveformAcquisition
     };
 
     /** SR graphic types.  Used for content item SCOORD.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,9 +35,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_SOCKET_H
 #ifndef DCOMPAT_SYS_SOCKET_H_
 #define DCOMPAT_SYS_SOCKET_H_
@@ -126,6 +124,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_JPEGLSLossyTransferSyntax,                                             "JPEGLSNearLossless",                                                 "JPEGLSLossy",                                                        { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
     { UID_RLELosslessTransferSyntax,                                             "RLELossless",                                                        "RLELossless",                                                        { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,                          "DeflatedExplicitVRLittleEndian",                                     "DeflatedLittleEndianExplicit",                                       { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
+    { UID_DeflatedImageFrameCompressionTransferSyntax,                           "DeflatedImageFrameCompression",                                      "DeflatedImageFrameCompression",                                      { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
     { UID_JPEG2000LosslessOnlyTransferSyntax,                                    "JPEG2000Lossless",                                                   "JPEG2000LosslessOnly",                                               { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
     { UID_JPEG2000TransferSyntax,                                                "JPEG2000",                                                           "JPEG2000",                                                           { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
     { UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax, "JPEG2000MCLossless",                                                 "JPEG2000MulticomponentLosslessOnly",                                 { EUS_DICOM, EUV_Standard, EUT_TransferSyntax, EUST_other, EUIT_other, UID_PROP_NONE } },
@@ -327,7 +326,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,                             "VLSlideCoordinatesMicroscopicImageStorage",                          "VLSlideCoordinatesMicroscopicImageStorage",                          { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
     { UID_VLWholeSlideMicroscopyImageStorage,                                    "VLWholeSlideMicroscopyImageStorage",                                 "VLWholeSlideMicroscopyImageStorage",                                 { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_ENHANCED_MF } },
     { UID_VolumeRenderingVolumetricPresentationStateStorage,                     "VolumeRenderingVolumetricPresentationStateStorage",                  "VolumeRenderingVolumetricPresentationStateStorage",                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
+    { UID_WaveformAcquisitionPresentationStateStorage,                           "WaveformAcquisitionPresentationStateStorage",                        "WaveformAcquisitionPresentationStateStorage",                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
     { UID_WaveformAnnotationSRStorage,                                           "WaveformAnnotationSRStorage",                                        "WaveformAnnotationSRStorage",                                        { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_StructuredReport,  UID_PROP_NONE } },
+    { UID_WaveformPresentationStateStorage,                                      "WaveformPresentationStateStorage",                                   "WaveformPresentationStateStorage",                                   { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_PresentationState, UID_PROP_NONE } },
     { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,     "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage",  "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage",  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
     { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,               "WideFieldOphthalmicPhotography3DCoordinatesImageStorage",            "WideFieldOphthalmicPhotography3DCoordinatesImageStorage",            { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image,             UID_PROP_NONE } },
     { UID_XADefinedProcedureProtocolStorage,                                     "XADefinedProcedureProtocolStorage",                                  "XADefinedProcedureProtocolStorage",                                  { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_other,             UID_PROP_NON_PATIENT | UID_PROP_NO_DIR_RECORD } },
@@ -366,6 +367,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DICONDE_EddyCurrentMultiframeImageStorage,                             "EddyCurrentMultiFrameImageStorage",                                  "DICONDE_EddyCurrentMultiframeImageStorage",                          { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
     { UID_DICONDE_ThermographyImageStorage,                                      "ThermographyImageStorage",                                           "DICONDE_ThermographyImageStorage",                                   { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
     { UID_DICONDE_ThermographyMultiFrameImageStorage,                            "ThermographyMultiFrameImageStorage",                                 "DICONDE_ThermographyMultiFrameImageStorage",                         { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Image, UID_PROP_NONE } },
+    { UID_DICONDE_UltrasoundWaveformStorage,                                     "UltrasoundWaveformStorage",                                          "DICONDE_UltrasoundWaveformStorage",                                  { EUS_DICONDE, EUV_Standard, EUT_SOPClass, EUST_Storage, EUIT_Waveform, UID_PROP_NONE } },
 
     // Query/Retrieve
     { UID_FINDPatientRootQueryRetrieveInformationModel,                          "PatientRootQueryRetrieveInformationModelFind",                       "FINDPatientRootQueryRetrieveInformationModel",                       { EUS_DICOM, EUV_Standard, EUT_SOPClass, EUST_QueryRetrieve, EUIT_other, UID_PROP_NONE } },
@@ -642,10 +644,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DRAFT_UnifiedProcedureStepPushSOPClass,                                "UnifiedProcedureStepPushTrial",                                      "DRAFT_UnifiedProcedureStepPushSOPClass",                             { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
     { UID_DRAFT_UnifiedProcedureStepWatchSOPClass,                               "UnifiedProcedureStepWatchTrial",                                     "DRAFT_UnifiedProcedureStepWatchSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
     { UID_DRAFT_UnifiedProcedureStepPullSOPClass,                                "UnifiedProcedureStepPullTrial",                                      "DRAFT_UnifiedProcedureStepPullSOPClass",                             { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
-    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,                               "UnifiedProcedureStepEventTrial",                                     "DRAFT_UnifiedProcedureStepEventSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } },
-
-    // end of the list
-    { NULL, NULL, NULL, { EUS_other, EUV_other, EUT_other, EUST_other, EUIT_other, UID_PROP_NONE } }
+    { UID_DRAFT_UnifiedProcedureStepEventSOPClass,                               "UnifiedProcedureStepEventTrial",                                     "DRAFT_UnifiedProcedureStepEventSOPClass",                            { EUS_DICOM, EUV_Draft, EUT_SOPClass,     EUST_other,   EUIT_other,            UID_PROP_NONE } }
 };
 
 static const int uidNameMap_size = OFstatic_cast(int, sizeof(uidNameMap) / sizeof(UIDNameMap));
@@ -820,7 +819,9 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_VLWholeSlideMicroscopyImageStorage,
     UID_VolumeRenderingVolumetricPresentationStateStorage,
+    UID_WaveformAcquisitionPresentationStateStorage,
     UID_WaveformAnnotationSRStorage,
+    UID_WaveformPresentationStateStorage,
     UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
     UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
     UID_XAPerformedProcedureProtocolStorage,
@@ -867,6 +868,7 @@ const char* dcmAllStorageSOPClassUIDs[] = {
     UID_DICONDE_EddyCurrentMultiframeImageStorage,
     UID_DICONDE_ThermographyImageStorage,
     UID_DICONDE_ThermographyMultiFrameImageStorage,
+    UID_DICONDE_UltrasoundWaveformStorage,
     NULL
 };
 
@@ -1066,7 +1068,9 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_TractographyResultsStorage,
 //  UID_VariableModalityLUTSoftcopyPresentationStateStorage,
 //  UID_VolumeRenderingVolumetricPresentationStateStorage,
+//  UID_WaveformAcquisitionPresentationStateStorage,
 //  UID_WaveformAnnotationSRStorage,
+//  UID_WaveformPresentationStateStorage,
 //  UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
 //  UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
 //  UID_XAPerformedProcedureProtocolStorage,
@@ -1115,6 +1119,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] = {
 //  UID_DICONDE_EddyCurrentMultiframeImageStorage,
 //  UID_DICONDE_ThermographyImageStorage,
 //  UID_DICONDE_ThermographyMultiFrameImageStorage,
+//  UID_DICONDE_UltrasoundWaveformStorage,
     NULL
 };
 
@@ -1491,7 +1496,9 @@ static const DcmModalityTable modalities[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,               "VLs",  768 * 576 * 3 },
     { UID_VLWholeSlideMicroscopyImageStorage,                      "VLw",  10000 * 10000 * 3 },
     { UID_VolumeRenderingVolumetricPresentationStateStorage,       "VPv",  4096 },
+    { UID_WaveformAcquisitionPresentationStateStorage,             "PSq",  4096 },
     { UID_WaveformAnnotationSRStorage,                             "SRw",  4096 },
+    { UID_WaveformPresentationStateStorage,                        "PSw",  4096 },
     { UID_WideFieldOphthalmicPhotographyStereographicProjectionImageStorage, "OWs", 768 * 576 * 3 },
     { UID_WideFieldOphthalmicPhotography3DCoordinatesImageStorage, "OW3",  768 * 576 * 3 },
     { UID_XADefinedProcedureProtocolStorage,                       "PPxd", 4096 },
@@ -1536,7 +1543,8 @@ static const DcmModalityTable modalities[] = {
     { UID_DICONDE_EddyCurrentImageStorage,                         "EC",   512 * 512 },
     { UID_DICONDE_EddyCurrentMultiframeImageStorage,               "ECm",  512 * 512 },
     { UID_DICONDE_ThermographyImageStorage,                        "TG",   512 * 512 },
-    { UID_DICONDE_ThermographyMultiFrameImageStorage,              "TGm",  512 * 512 }
+    { UID_DICONDE_ThermographyMultiFrameImageStorage,              "TGm",  512 * 512 },
+    { UID_DICONDE_UltrasoundWaveformStorage,                       "UW",   4096 }
 };
 
 static const int numberOfDcmModalityTableEntries = OFstatic_cast(int, sizeof(modalities) / sizeof(DcmModalityTable));
@@ -1545,7 +1553,6 @@ static const int numberOfDcmModalityTableEntries = OFstatic_cast(int, sizeof(mod
 /*
  * Public Function Prototypes
  */
-
 
 const char *dcmSOPClassUIDToModality(const char *sopClassUID,
                                      const char *defaultValue)
@@ -1595,6 +1602,7 @@ dcmFindNameOfUID(const char* uid, const char* defaultValue)
     return defaultValue;
 }
 
+
 /*
 ** dcmFindUIDFromName(const char* name)
 ** Return the UID of a name.
@@ -1631,6 +1639,7 @@ dcmFindKeywordOfUID(const char* uid, const char* defaultValue)
     }
     return defaultValue;
 }
+
 
 /*
 ** dcmFindUIDFromKeyword(const char* keyword)

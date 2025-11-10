@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7469_GenericIntensityAndSizeMeasurement
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:23 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:13 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 7469 (Generic Intensity and Size Measurement)
 #define CONTEXT_GROUP_NUMBER  "7469"
+#define CONTEXT_GROUP_KEYWORD "GenericIntensityAndSizeMeasurement"
 #define CONTEXT_GROUP_VERSION "20240913"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.1003"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID7469_GenericIntensityAndSizeMeasurement::CodeList *CID7469_GenericIntensityAn
 
 
 CID7469_GenericIntensityAndSizeMeasurement::CID7469_GenericIntensityAndSizeMeasurement(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID7469_GenericIntensityAndSizeMeasurement::CID7469_GenericIntensityAndSizeMeasu
 
 CID7469_GenericIntensityAndSizeMeasurement::CID7469_GenericIntensityAndSizeMeasurement(const EnumType selectedValue,
                                                                                        const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

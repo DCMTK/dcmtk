@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2022, OFFIS e.V.
+ *  Copyright (C) 2013-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -185,6 +185,7 @@ OFCondition DcmStorageSCP::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
         {
             // handle incoming C-ECHO request
             status = handleECHORequest(incomingMsg->msg.CEchoRQ, presInfo.presentationContextID);
+            // TODO: need to handle invalid abstract syntax
         }
         else if (incomingMsg->CommandField == DIMSE_C_STORE_RQ)
         {

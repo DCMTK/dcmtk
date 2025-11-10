@@ -30,8 +30,7 @@
 
 #ifdef _WIN32
 
-/* This used to be _MSC_VER >= 1400, but MSVC 2005 is broken */
-#if (defined (_MSC_VER) && _MSC_VER > 1400)
+#ifdef _MSC_VER
 #  define DCMTK_LOG4CPLUS_HAVE_INTRIN_H
 #endif
 
@@ -39,7 +38,7 @@
 #define DCMTK_LOG4CPLUS_HAVE_TIME_H
 #define DCMTK_LOG4CPLUS_HAVE_SYS_TIMEB_H
 #define DCMTK_LOG4CPLUS_HAVE_FTIME
-#if defined (_MSC_VER) || defined (__BORLANDC__)
+#if defined (_MSC_VER) || defined (HAVE_CLASSIC_BORLAND_COMPILER)
 #define DCMTK_LOG4CPLUS_HAVE_GMTIME_S
 #endif
 
@@ -68,9 +67,6 @@
 // MSVC has both and so does MinGW.
 #define DCMTK_LOG4CPLUS_HAVE_VSNPRINTF
 #define DCMTK_LOG4CPLUS_HAVE__VSNPRINTF
-#if _MSC_VER <= 1200 /* Additional settings for VC6 and older */
-#undef DCMTK_LOG4CPLUS_HAVE_VSNPRINTF
-#endif
 
 // MS secure versions of vprintf().
 #ifdef HAVE_VSPRINTF_S
@@ -137,13 +133,10 @@
 #  pragma warning( disable : 4251 )
 
 #  define DCMTK_LOG4CPLUS_INLINES_ARE_EXPORTED
-
-#  if _MSC_VER >= 1400
-#    define DCMTK_LOG4CPLUS_WORKING_LOCALE
-#    define DCMTK_LOG4CPLUS_HAVE_FUNCTION_MACRO
-#    define DCMTK_LOG4CPLUS_HAVE_FUNCSIG_MACRO
-#    define DCMTK_LOG4CPLUS_HAVE_C99_VARIADIC_MACROS
-#  endif
+#  define DCMTK_LOG4CPLUS_WORKING_LOCALE
+#  define DCMTK_LOG4CPLUS_HAVE_FUNCTION_MACRO
+#  define DCMTK_LOG4CPLUS_HAVE_FUNCSIG_MACRO
+#  define DCMTK_LOG4CPLUS_HAVE_C99_VARIADIC_MACROS
 #endif
 
 #if defined (__GNUC__)

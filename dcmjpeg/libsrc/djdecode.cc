@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2018, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -47,7 +47,8 @@ void DJDecoderRegistration::registerCodecs(
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable,
     OFBool cornellWorkaroundEnable,
-    OFBool pForceSingleFragmentPerFrame)
+    OFBool pForceSingleFragmentPerFrame,
+    OFBool setPreserveBitsStored)
 {
   if (! registered)
   {
@@ -58,7 +59,12 @@ void DJDecoderRegistration::registerCodecs(
       pPlanarConfiguration,
       predictor6WorkaroundEnable,
       cornellWorkaroundEnable,
-      pForceSingleFragmentPerFrame);
+      pForceSingleFragmentPerFrame,
+      OFFalse, 0, 0, 0, OFTrue,
+      ESS_444, OFFalse, OFFalse,
+      0, 0, 0.0, 0.0, 0, 0, 0, 0,
+      OFTrue, OFFalse, OFFalse, OFFalse, OFTrue,
+      setPreserveBitsStored);
 
     if (cp)
     {

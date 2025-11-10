@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,8 +35,8 @@
  *  macro definition  *
  *--------------------*/
 
-// Only use wchar_t on windows (not mingw) and don't use it on MSC6
-#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER > 1200)
+// Only use wchar_t on windows (not mingw)
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 # define DCMTK_USE_WCHAR_T
 #endif
 #if defined(WIDE_CHAR_MAIN_FUNCTION) && defined(DCMTK_USE_WCHAR_T)

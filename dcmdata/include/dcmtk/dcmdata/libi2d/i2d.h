@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -45,7 +45,7 @@ public:
 
   /** Destructor, frees plugin memory
    */
-  ~Image2Dcm();
+  virtual ~Image2Dcm();
 
   /** Start the conversion. Needs a fully configured input plugin
    *  and a fully configured output plugin to operate. Returns
@@ -78,6 +78,12 @@ public:
   OFCondition convertNextFrame(
     I2DImgSource *inputPlug,
     size_t frameNumber);
+
+  /** Adjust byte order of the pixel data to local byte order for the OW VR.
+   *  @param numberOfFrames - [in] The number of frames to be written
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  virtual OFCondition adjustByteOrder(size_t numberOfFrames);
 
   /** Update the offset table in the case of an encapsulated image
    *  @return EC_Normal if offset table could be updated, error code otherwise
@@ -197,6 +203,7 @@ protected:
   /** Reads pixel data and corresponding attributes like rows etc. from image
    *  file and inserts them into dataset.
    *  @param imageSource - [in] The input plugin that actually reads the pixel data
+   *  @param outPlug - [in] The output plugin for specific SOP class output
    *  @param numberOfFrames - [in] The number of frames to be written
    *  @param dset - [out] The dataset to export the pixel data attributes to
    *  @param outputTS - [out] The proposed transfex syntax of the dataset
@@ -205,6 +212,7 @@ protected:
    */
   OFCondition readAndInsertPixelDataFirstFrame(
     I2DImgSource* imageSource,
+    I2DOutputPlug *outPlug,
     size_t numberOfFrames,
     DcmDataset* dset,
     E_TransferSyntax& outputTS,

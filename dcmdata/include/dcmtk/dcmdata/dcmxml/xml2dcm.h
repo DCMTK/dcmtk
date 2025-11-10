@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,7 @@
 
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofdiag.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 
 #ifdef __ibmxl__
@@ -46,7 +47,12 @@ typedef xmlNode *xmlNodePtr;
 typedef struct _xmlDoc xmlDoc;
 typedef xmlDoc *xmlDocPtr;
 
+// MacOS 15.5 defines some Clang specific pragmas in libxml header files.
+// Suppress warnings caused by these pragmas when compiling with GCC.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC
 #include <libxml/xmlstring.h>
+#include DCMTK_DIAGNOSTIC_POP
 
 class DcmElement;
 class DcmItem;

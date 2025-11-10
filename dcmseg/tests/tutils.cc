@@ -21,10 +21,12 @@
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
 
-#include "dcmtk/dcmiod/iodtypes.h"
 #include "dcmtk/dcmseg/segutils.h"
+#include "dcmtk/dcmseg/segtypes.h"
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oftime.h" // For debugByte2Bin
+#include <iostream>
 
 #define bufLen 4
 
@@ -32,29 +34,28 @@
 // Check whether packing of sparse frames into binary packed frames works correctly
 OFTEST(dcmseg_packBinaryFrame)
 {
-
     // Check whether the following statically defined frames are packed correctly
     Uint8 sparseFrame1[8] = {1, 1, 1, 1, 0, 0, 0, 0};
-    DcmIODTypes::Frame* packed = DcmSegUtils::packBinaryFrame(sparseFrame1, 4, 2);
+    DcmIODTypes::Frame<Uint8>* packed = DcmSegUtils::packBinaryFrame(sparseFrame1, 4, 2);
     OFCHECK(packed != NULL);
-    OFCHECK(packed->length == 1);
-    OFCHECK_MSG(packed->pixData[0] == 0b00001111, OFString("Expected 0b00001111, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[0]));
+    OFCHECK(packed->getLengthInBytes() == 1);
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[0] == 0b00001111, OFString("Expected 0b00001111, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[0]));
     delete packed;
 
     Uint8 sparseFrame2[8] = {1, 0, 1, 0, 1, 0, 1, 0};
     packed = DcmSegUtils::packBinaryFrame(sparseFrame2, 4, 2);
     OFCHECK(packed != NULL);
-    OFCHECK(packed->length == 1);
-    OFCHECK_MSG(packed->pixData[0] == 0b01010101, OFString("Expected 0b01010101, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[0]));
+    OFCHECK(packed->getLengthInBytes() == 1);
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[0] == 0b01010101, OFString("Expected 0b01010101, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[0]));
     delete packed;
 
     // Now try the that is larger than a byte and not a multiple of 8, with every third pixel set to 1
     Uint8 sparseFrame3[15] = {0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1};
     packed = DcmSegUtils::packBinaryFrame(sparseFrame3, 5, 3);
     OFCHECK(packed != NULL);
-    OFCHECK(packed->length == 2);
-    OFCHECK_MSG(packed->pixData[0] == 0b00100100, OFString("Expected 0b00100100, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[0]));
-    OFCHECK_MSG(packed->pixData[1] == 0b01001001, OFString("Expected 0b01001001, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[1]));
+    OFCHECK(packed->getLengthInBytes() == 2);
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[0] == 0b00100100, OFString("Expected 0b00100100, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[0]));
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[1] == 0b01001001, OFString("Expected 0b01001001, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[1]));
     delete packed;
 
     // Now the same but with every 5th pixel set to 1, and rows=7 and cols=5
@@ -66,22 +67,23 @@ OFTEST(dcmseg_packBinaryFrame)
     }
     packed = DcmSegUtils::packBinaryFrame(sparseFrame4, 7, 5);
     OFCHECK(packed != NULL);
-    OFCHECK(packed->length == 5);
-    OFCHECK_MSG(packed->pixData[0] == 0b00100001, OFString("Expected 0b00100001, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[0]));
-    OFCHECK_MSG(packed->pixData[1] == 0b10000100, OFString("Expected 0b10000100, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[1]));
-    OFCHECK_MSG(packed->pixData[2] == 0b00010000, OFString("Expected 0b00010000, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[2]));
-    OFCHECK_MSG(packed->pixData[3] == 0b01000010, OFString("Expected 0b01000010, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[3]));
-    OFCHECK_MSG(packed->pixData[4] == 0b00000000, OFString("Expected 0b00000000, got ") + DcmSegUtils::debugByte2Bin(packed->pixData[4]));
+    OFCHECK(packed->getLengthInBytes() == 5);
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[0] == 0b00100001, OFString("Expected 0b00100001, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[0]));
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[1] == 0b10000100, OFString("Expected 0b10000100, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[1]));
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[2] == 0b00010000, OFString("Expected 0b00010000, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[2]));
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[3] == 0b01000010, OFString("Expected 0b01000010, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[3]));
+    OFCHECK_MSG(OFstatic_cast(Uint8*, packed->getPixelData())[4] == 0b00000000, OFString("Expected 0b00000000, got ") + DcmSegUtils::debugByte2Bin(  OFstatic_cast(Uint8*, packed->getPixelData())[4]));
     delete packed;
 
     // In 1000 iterations create sparse frames and pack them. Check whether the
     // packed frame is correct. This is not bullet proof but we use the same addressing
-    // as in the packing/unpacking code to make sure we address the right bit.
+    // as in the packing/unpacking code to make sure we address the correct bit.
     // Use a random number of cols and rows (each between 1 and 100).
     // If the packed frame is not correct, the test fails.
-    unsigned int now = OFstatic_cast(unsigned int, time(NULL));
+    OFTime tm;
     for (unsigned int i = 0; i < 1000; i++)
     {
+        unsigned int now = OFstatic_cast(unsigned int, time(NULL));
         Uint16 cols = OFrand_r(now) % 100 + 1;
         Uint16 rows = OFrand_r(now) % 100 + 1;
         Uint16 pixelCount = cols * rows;
@@ -92,11 +94,12 @@ OFTEST(dcmseg_packBinaryFrame)
         // Create a random sparse frame
         for (unsigned int j = 0; j < pixelCount; j++)
         {
-            sparseFrame[j] =  OFrand_r(now) % 2;
+            tm.setCurrentTime();
+            unsigned int micro = tm.getMicroSecond();
+            sparseFrame[j] =  OFrand_r(micro) % 2;
         }
-
         // Pack the frame
-        DcmIODTypes::Frame* packedFrame = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
+        DcmIODTypes::Frame<Uint8>* packedFrame = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
         OFCHECK(packedFrame != NULL);
 
         // Check the result
@@ -105,12 +108,15 @@ OFTEST(dcmseg_packBinaryFrame)
             Uint32 byteIndex = j / 8;
             Uint32 bitIndex = j % 8;
             Uint8 mask = 1 << bitIndex;
-            if ((sparseFrame[j] != 0) != ((packedFrame->pixData[byteIndex] & mask) != 0))
+            Uint8 currentByte = OFstatic_cast(Uint8*, packedFrame->getPixelData())[byteIndex];
+            // Check whether the bit at position j is set correctly
+            if ((sparseFrame[j] == 0) != ((currentByte & mask) == 0))
             {
                 OFCHECK_FAIL("Failed for row " << j / cols << " and column " << j % cols);
             }
         }
 
+        // Clean up
         delete[] sparseFrame;
         delete packedFrame;
     }
@@ -131,8 +137,8 @@ OFTEST(dcmseg_packAndUnpackBinaryFrame)
 
         Uint8* sparseFrame = new Uint8[pixelCount];
         OFCHECK(sparseFrame != NULL);
-        DcmIODTypes::Frame* packed;
-        DcmIODTypes::Frame* unpacked;
+        DcmIODTypes::FrameBase* packed;
+        DcmIODTypes::FrameBase* unpacked;
 
         // Create a random sparse frame
         for (unsigned int j = 0; j < pixelCount; j++)
@@ -143,11 +149,11 @@ OFTEST(dcmseg_packAndUnpackBinaryFrame)
         // Pack and unpack the frame
         packed = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
         OFCHECK(packed != NULL);
-        unpacked = DcmSegUtils::unpackBinaryFrame(packed, rows, cols);
+        unpacked = DcmSegUtils::unpackBinaryFrame(OFstatic_cast(DcmIODTypes::Frame<Uint8>*, packed), rows, cols);
         OFCHECK(unpacked != NULL);
 
         // Compare the result
-        OFCHECK(memcmp(sparseFrame, unpacked->pixData, pixelCount) == 0);
+        OFCHECK(memcmp(sparseFrame, unpacked->getPixelData(), pixelCount) == 0);
 
         delete[] sparseFrame;
         delete packed;
@@ -163,20 +169,20 @@ OFTEST(dcmseg_packAndUnpackBinaryFrame)
         Uint8* sparseFrame = new Uint8[pixelCount];
         OFCHECK(sparseFrame != NULL);
         memset(sparseFrame, 0, pixelCount);
-        DcmIODTypes::Frame* packed = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
+        DcmIODTypes::FrameBase* packed = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
         OFCHECK(packed != NULL);
-        DcmIODTypes::Frame* unpacked = DcmSegUtils::unpackBinaryFrame(packed, rows, cols);
+        DcmIODTypes::FrameBase* unpacked = DcmSegUtils::unpackBinaryFrame(OFstatic_cast(DcmIODTypes::Frame<Uint8>*, packed), rows, cols);
         OFCHECK(unpacked != NULL);
-        OFCHECK(memcmp(sparseFrame, unpacked->pixData, pixelCount) == 0);
+        OFCHECK(memcmp(sparseFrame, unpacked->getPixelData(), pixelCount) == 0);
         delete packed;
         delete unpacked;
 
         memset(sparseFrame, 1, pixelCount);
         packed = DcmSegUtils::packBinaryFrame(sparseFrame, rows, cols);
         OFCHECK(packed != NULL);
-        unpacked = DcmSegUtils::unpackBinaryFrame(packed, rows, cols);
+        unpacked = DcmSegUtils::unpackBinaryFrame(OFstatic_cast(DcmIODTypes::Frame<Uint8>*, packed), rows, cols);
         OFCHECK(unpacked != NULL);
-        OFCHECK(memcmp(sparseFrame, unpacked->pixData, pixelCount) == 0);
+        OFCHECK(memcmp(sparseFrame, unpacked->getPixelData(), pixelCount) == 0);
         delete packed;
         delete unpacked;
 
@@ -191,11 +197,11 @@ OFTEST(dcmseg_concatBinaryFrames)
     const int cols = 4;
     Uint8 sparseFrame1[rows * cols] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     Uint8 sparseFrame2[rows * cols] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-    DcmIODTypes::Frame* packed1 = DcmSegUtils::packBinaryFrame(sparseFrame1, rows, cols);
-    DcmIODTypes::Frame* packed2 = DcmSegUtils::packBinaryFrame(sparseFrame2, rows, cols);
+    DcmIODTypes::FrameBase* packed1 = DcmSegUtils::packBinaryFrame(sparseFrame1, rows, cols);
+    DcmIODTypes::FrameBase* packed2 = DcmSegUtils::packBinaryFrame(sparseFrame2, rows, cols);
     OFCHECK(packed1 != NULL);
     OFCHECK(packed2 != NULL);
-    OFVector<DcmIODTypes::Frame*> inputFrames;
+    OFVector<DcmIODTypes::FrameBase*> inputFrames;
     inputFrames.push_back(packed1);
     inputFrames.push_back(packed2);
     // Now concatenate the two frames into a single bit array

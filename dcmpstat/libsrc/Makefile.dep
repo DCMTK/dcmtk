@@ -2966,6 +2966,7 @@ dvpspl2.o: dvpspl2.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
@@ -3070,6 +3071,7 @@ dvpspll.o: dvpspll.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../include/dcmtk/dcmpstat/dvpsibl.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
  ../../dcmimgle/include/dcmtk/dcmimgle/didefine.h \
@@ -3110,7 +3112,6 @@ dvpspll.o: dvpspll.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvruc.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
@@ -3432,7 +3433,8 @@ dvpsri.o: dvpsri.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/oferror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
- ../include/dcmtk/dcmpstat/dvpsdef.h
+ ../include/dcmtk/dcmpstat/dvpsdef.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
 dvpsril.o: dvpsril.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmpstat/dvpsril.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \

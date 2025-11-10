@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -28,29 +28,35 @@
 #include "dcmtk/dcmfg/concatenationcreator.h" // for writing concatenations
 #include "dcmtk/dcmfg/concatenationloader.h"  // for loading concatenations
 #include "dcmtk/dcmfg/fginterface.h"          // for multi-frame functional group interface
+#include "dcmtk/dcmfg/fgseg.h"                // for FGSegmentation class
 #include "dcmtk/dcmiod/iodimage.h"            // common image IOD attribute access
-#include "dcmtk/dcmiod/iodmacro.h"
-#include "dcmtk/dcmiod/modenhequipment.h" // for enhanced general equipment module
-#include "dcmtk/dcmiod/modimagepixel.h"
+#include "dcmtk/dcmiod/iodmacro.h"            // various macros
+#include "dcmtk/dcmiod/modenhequipment.h"     // for enhanced general equipment module
+#include "dcmtk/dcmiod/modimagepixel.h"       //  for image pixel module
 #include "dcmtk/dcmiod/modmultiframedimension.h" // for multi-frame dimension module
+#include "dcmtk/dcmiod/modiccprofile.h"          // for ICC profile module
 #include "dcmtk/dcmiod/modmultiframefg.h"        // for multi-frame functional group module
 #include "dcmtk/dcmiod/modsegmentationseries.h"  // for segmentation series module
-#include "dcmtk/dcmseg/segdef.h"
+#include "dcmtk/dcmiod/modpalettecolorlut.h"     // for palette color LUT module
+#include "dcmtk/dcmseg/segdef.h"   //for definitions
+#include "dcmtk/dcmseg/segment.h"  // for DcmSegment class
 #include "dcmtk/dcmseg/segtypes.h" // for segmentation data types
-#include "dcmtk/ofstd/ofvector.h"  // for OFVector
+#include "dcmtk/dcmseg/segutils.h" // fo packBinaryFrame()
+#include "dcmtk/ofstd/ofvector.h"  // for OFVector class
 
-// Forward declarations
-class DcmSegment;
 class FGSegmentation;
 class FGDerivationImage;
 class DcmFileFormat;
-
 /** Class representing an object of the "Segmentation SOP Class".
  */
-class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint8> >
+
+class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint16>, IODImagePixelModule<Uint8> >
 {
 
 public:
+
+    struct LoadingFlags;
+
     // -------------------- destruction -------------------------------
 
     /** Destructor, frees memory
@@ -65,9 +71,22 @@ public:
      *  @param  filename The file to read from
      *  @param  segmentation  The resulting segmentation object. NULL if dataset
      *          could not be read successfully.
+     *  @param  flags Flags to configure the loading of the segmentation object
      *  @return EC_Normal if reading was successful, error otherwise
      */
-    static OFCondition loadFile(const OFString& filename, DcmSegmentation*& segmentation);
+    static OFCondition loadFile(const OFString& filename, DcmSegmentation*& segmentation, const DcmSegmentation::LoadingFlags& flags = LoadingFlags());
+
+
+    /** Static method to load a Segmentation object from a file.
+     *  The memory of the resulting Segmentation object has to be freed by the
+     *  caller.
+     *  @param  filename The file to read from
+     *  @param  segmentation  The resulting segmentation object. NULL if dataset
+     *          could not be read successfully.
+     *  @param  flags Flags to configure the loading of the segmentation object
+     *  @return EC_Normal if reading was successful, error otherwise
+     */
+    static OFCondition loadFile(const OFFile& filename, DcmSegmentation*& segmentation, const DcmSegmentation::LoadingFlags& flags = LoadingFlags());
 
     /** Static method to load a Segmentation object from a dataset object.
      *  The memory of the resulting Segmentation object has to be freed by the
@@ -75,9 +94,10 @@ public:
      *  @param  dataset The dataset to read from
      *  @param  segmentation  The resulting segmentation object. NULL if dataset
      *          could not be read successfully.
+     *  @param  flags Flags to configure the loading of the segmentation object
      *  @return EC_Normal if reading was successful, error otherwise
      */
-    static OFCondition loadDataset(DcmDataset& dataset, DcmSegmentation*& segmentation);
+    static OFCondition loadDataset(DcmDataset& dataset, DcmSegmentation*& segmentation, const DcmSegmentation::LoadingFlags& flags = LoadingFlags());
 
     /** Static method to load a concatenation of a DICOM Segmentation instance
      *  into a DcmSegmentation object.
@@ -130,6 +150,16 @@ public:
      */
     virtual OFBool getCheckFGOnWrite();
 
+    /** Set whether attribute values should be checked on writing, i.e. if writing
+     *  should fail if attribute values violate their VR, VM, character set or value length.
+     *  A missing but required value is always considered an error, independent of this setting.
+     *  If set to OFFalse, writing will always succeed, even if attribute value constraints
+     *  are violated. A warning instead of an error will be printed to the logger.
+     *  @param  doCheck If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
+     *          any errors are ignored.
+     */
+    virtual void setValueCheckOnWrite(const OFBool doCheck);
+
     /** If enabled, dimensions are checked before actual writing.
      *  This can be very time-consuming if many frames are present.
      *  Disabling should only be done if the user knows that the functional groups
@@ -170,6 +200,35 @@ public:
                                                 const IODGeneralEquipmentModule::EquipmentInfo& equipmentInfo,
                                                 const ContentIdentificationMacro& contentIdentification);
 
+    /** Factory method to create a labelmap segmentation object from the minimal
+     *  set of information required. The actual segments and the frame data is
+     *  added separately.
+     *  The memory of the resulting Segmentation object has to be freed by the
+     *  caller.
+     *  @param  segmentation The resulting segmentation object if provided data is
+     *          valid. Otherwise NULL is returned.
+     *  @param  rows Number of rows of segmentation frame data
+     *  @param  columns Number of rows of segmentation frame data
+     *  @param  equipmentInfo Equipment that is responsible for creating the
+     *          segmentation. All attributes in equipmentInfo must have
+     *          non-empty values.
+     *  @param  contentIdentification Basic content identification information
+     *  @param  use16Bit Denote whether to use 16 bit pixel data, i.e
+     *          allow for more than 255 segments (labels) in the segmentation
+     *          object (up to 65535). If OFTrue, 16 bit pixel data is used,
+     *          otherwise 8 bit.
+     *  @param  colorModel The color model to be used for the labelmap. Default
+     *          is MONOCHROME2, alternative is PALETTE.
+     *  @return EC_Normal if creation was successful, error otherwise
+     */
+    static OFCondition createLabelmapSegmentation(DcmSegmentation*& segmentation,
+                                                  const Uint16 rows,
+                                                  const Uint16 columns,
+                                                  const IODGeneralEquipmentModule::EquipmentInfo& equipmentInfo,
+                                                  const ContentIdentificationMacro& contentIdentification,
+                                                  const OFBool use16Bit,
+                                                  const DcmSegTypes::E_SegmentationLabelmapColorModel colorModel = DcmSegTypes::SLCM_MONOCHROME2);
+
     /** Factory method to create a fractional segmentation object from the minimal
      *  set of information required. The actual segments and the frame data is
      *  added separately.
@@ -209,6 +268,8 @@ public:
                                                       const OFString& derivationDescription);
 
     // -------------------- access ---------------------
+
+    OFBool has16BitPixelData() const;
 
     /** Get number of frames, based on the number of items in the shared
      *  functional functional groups sequence (i.e.\ the attribute Number of
@@ -288,7 +349,12 @@ public:
      *  @param  segmentNumber The logical segment number
      *  @return The segment if segment number is valid, NULL otherwise
      */
-    virtual DcmSegment* getSegment(const size_t segmentNumber);
+    virtual DcmSegment* getSegment(const Uint16 segmentNumber);
+
+    /** Get all segments
+     *  @return  The resulting segments
+     */
+    virtual const OFMap<Uint16, DcmSegment*>& getSegments();
 
     /** Get logical segment number by providing a pointer to a given segment
      *  @param  segment The segment to find the logical segment number for
@@ -308,7 +374,7 @@ public:
      *  @param  frameNo The number of the frame to get (starting with 0)
      *  @return The frame requested or NULL if not existing
      */
-    virtual const DcmIODTypes::Frame* getFrame(const size_t& frameNo);
+    virtual const DcmIODTypes::FrameBase* getFrame(const size_t& frameNo);
 
     /** Get the frame numbers that belong to a specific segment number
      *  @param  segmentNumber The segment to search frames for
@@ -320,8 +386,16 @@ public:
 
     /** Add segment to segmentation object
      *  @param  seg The segment that should be added
-     *  @param  segmentNumber The logical segment number that was assigned for
-     *          this segment. Contains 0 if adding failed.
+     *  @param  segmentNumber Depending on the type of segmentation, this
+     *          parameter is handled differently:
+     *          - For binary and fractional segmentations the segment number
+     *            is automatically assigned and will be returned in this
+     *            parameter. It is assigned from 0 onwards, i.e. the first
+     *            segment added will have segment number 1, the second 2, etc.
+     *          - For labelmap segmentations, the segment number is taken from
+     *            this parameter and can be >= 0. If the segment number is
+     *            already used, the method will overwrite an old segment with
+     *            this number.
      *  @return EC_Normal if adding was successful, error otherwise
      */
     virtual OFCondition addSegment(DcmSegment* seg, Uint16& segmentNumber);
@@ -334,20 +408,24 @@ public:
 
     /** Add frame to segmentation object
      *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
-     *          For binary segmentations (bit depth i.e.\ Bits
-     *          Allocated/Stored=1), each byte equal to 0 will be interpreted as
-     *          "not set", while every other value is interpreted as "set". For
-     *          fractional segmentations the full byte is copied as is.
+     *          - For binary segmentations (bit depth i.e.\ Bits
+     *            Allocated/Stored=1), each byte equal to 0 will be interpreted as
+     *            "not set", while every other value is interpreted as "set".
+     *          - For fractional segmentations the full byte is copied as is.
+     *          - For labelmap segmentations, the value of each byte is interpreted
+     *            as the segment number. In that case the segmentNumber parameters
+     *            is ignored.
      *  @param  segmentNumber The logical segment number (>=1) this frame refers to.
      *          The segment identified by the segmentNumber must already exist.
+     *          For labelmap segmentations, this parameter is ignored.
      *  @param  perFrameInformation The functional groups that identify this frame (i.e.
      *          which are planned to be not common for all other frames). The
      *          functional groups are copied, so ownership of each group stays
      *          with the caller no matter what the method returns.
      *  @return EC_Normal if adding was successful, error otherwise
      */
-    virtual OFCondition
-    addFrame(Uint8* pixData, const Uint16 segmentNumber, const OFVector<FGBase*>& perFrameInformation);
+    template <typename T>
+    OFCondition addFrame(T* pixData, const Uint16 segmentNumber, const OFVector<FGBase*>& perFrameInformation);
 
     /** Return reference to content content identification of this segmentation object
      *  @return Reference to content identification data
@@ -358,6 +436,16 @@ public:
      *  @return Reference to multi-frame dimension module
      */
     virtual IODMultiframeDimensionModule& getDimensions();
+
+    /** Return reference to ICC Profile Module
+     *  @return Reference to ICC Profile Module
+     */
+    virtual IODICCProfileModule& getICCProfile();
+
+    /** Return reference to Palette Color Lookup Table module
+     *  @return Reference to Palette Color Lookup Table module
+     */
+    virtual IODPaletteColorLUTModule& getPaletteColorLUT();
 
     /** Set lossy compression flag of the segmentation object to "01". If one of the
      *  source images of this segmentation has undergone lossy compression then
@@ -429,11 +517,26 @@ public:
      */
     virtual OFCondition importFromSourceImage(const OFString& filename, const OFBool takeOverCharset = OFTrue);
 
+    /// Flags for loading segmentation objects. These flags can be used to
+    /// configure the loading of segmentation objects.
+    struct LoadingFlags
+    {
+        // Number of threads to use for reading per-frame functional groups
+        // (will also be applied to writing, if applicable later on)
+        Uint32 m_numThreads;
+
+        // Constructor to initialize the flags
+        LoadingFlags() : m_numThreads(1) {}
+    };
+
+
 protected:
+
     /** Protected default constructor. Library users should the factory create..()
      *  method in order to create an object from scratch
      */
-    DcmSegmentation();
+     template <typename ImagePixel>
+    DcmSegmentation(OFin_place_type_t(ImagePixel));
 
     /** Overwrites DcmIODImage::read()
      *  @param  dataset The dataset to read from
@@ -447,13 +550,23 @@ protected:
      */
     OFCondition readWithoutPixelData(DcmItem& dataset);
 
-    /** Writes the complete dataset without pixel data
+    /** Writes the complete dataset without pixel data, and write pixel data separately.
+     *  Version for 8 bit pixel data.
      *  @param  dataset The dataset to write to
      *  @param  pixData Buffer for pixel data to write to
      *  @param  pixDataLength Length of pixData buffer
      *  @return EC_Normal if writing succeeded, error otherwise
      */
     OFCondition writeWithSeparatePixelData(DcmItem& dataset, Uint8*& pixData, size_t& pixDataLength);
+
+    /** Writes the complete dataset without pixel data, and write pixel data separately
+     *  Version for 16 bit pixel data.
+     *  @param  dataset The dataset to write to
+     *  @param  pixData Buffer for pixel data to write to
+     *  @param  pixDataLength Length of pixData buffer
+     *  @return EC_Normal if writing succeeded, error otherwise
+     */
+    OFCondition writeWithSeparatePixelData(DcmItem& dataset, Uint16*& pixData, size_t& pixDataLength);
 
     /** Create those data structures common for binary and fractional
      *  segmentations
@@ -462,19 +575,31 @@ protected:
      *  @param  columns The number of columns for the segmentation
      *  @param  equipmentInfo Equipment information
      *  @param  contentIdentification Content meta information
+     *  @param  bitsAllocated The number of bits allocated for the pixel data
+     *          8 for binary and fractional segmentations, 8 or 16 for labelmaps
      *  @return EC_Normal if creation was successful, error otherwise
      */
     static OFCondition createCommon(DcmSegmentation*& segmentation,
                                     const Uint16 rows,
                                     const Uint16 columns,
                                     const IODGeneralEquipmentModule::EquipmentInfo& equipmentInfo,
-                                    const ContentIdentificationMacro& contentIdentification);
+                                    const ContentIdentificationMacro& contentIdentification,
+                                    const Uint16 bitsAllocated);
 
-    /** Hide same function from IODImage since do not want the user to access
-     *  the image pixel module manually.
-     *  @return The Image Pixel Module
+    /** Creates segmentation object with pixel data matching required bit depths (as defined by Bits Allocated)
+     *  @param item The item to read Bits Allocated from (1, 8 or 16 bits permitted)
+     *  @param segmentation The segmentation object to create
+     *  @return EC_Normal if creation was successful, error otherwise
      */
-    virtual IODImagePixelModule<Uint8>& getImagePixel();
+    static OFCondition createRequiredBitDepth(DcmItem& item, DcmSegmentation*& segmentation);
+
+    /** Creates segmentation object with pixel data matching given bit depths
+     *  @param bitsAllocated The Bits Allocated value to use (1, 8 or 16 permitted)
+     *  @param segmentation The segmentation object to create
+     *  @return EC_Normal if creation was successful, error otherwise
+     */
+    static OFCondition createRequiredBitDepth(const Uint16 bitsAllocated, DcmSegmentation*& segmentation);
+
 
     /** Initialize IOD rules
      */
@@ -490,7 +615,8 @@ protected:
      *  @param  pixData The filled pixel data buffer returned by the method
      *  @return EC_Normal if writing was successful, error otherwise
      */
-    OFCondition writeFractionalFrames(Uint8* pixData);
+    template <typename T>
+    OFCondition writeByteBasedFrames(T* pixData);
 
     /** Write binary frames to given given pixel data buffer
      *  @param  pixData The filled pixel data buffer returned by the method
@@ -531,6 +657,15 @@ protected:
      */
     virtual OFCondition readFrames(DcmItem& dataset);
 
+    /** Read pixel data from given pixel data element
+     *  @param  pixelData The pixel data element to read from
+     *  @param  numFrames The number of frames expected in the pixel data element
+     *  @param  pixelsPerFrame The number of pixels per frame (rows*columns)
+     *  @param  bitsAlloc Bits Allocated value (1, 8 or 16)
+     *  @return EC_Normal if reading was successful, error otherwise
+     */
+    virtual OFCondition readPixelData(DcmElement* pixelData, const size_t numFrames, const size_t pixelsPerFrame, const Uint16 bitsAlloc);
+
     /** Get Image Pixel module attributes and perform some basic checking
      *  @param  dataset Item to read from, usually main dataset level
      *  @param  allocated Bits Allocated
@@ -560,9 +695,41 @@ protected:
      *          Pixel data is copied so it must be freed by the caller.
      *  @return EC_Normal if adding was successful, error otherwise
      */
-    virtual OFCondition addFrame(Uint8* pixData);
+    template <typename T>
+    OFCondition addFrame(T* pixData);
+
+    /** Determine color model. The color model is always MONOCHROME2, except for
+     *  labelmaps where PALETTE is permitted. This method checks whether the
+     *  we have a labelmap and if returns the correct string for setting Photometric
+     *  Interpretation based on desired color model setting (m_LabelmapColorModel).
+     *  If unknown color model is requested, MONOCHROME2 and a warning is printed.
+     *  @return The color model string for Photometric Interpretation attribute.
+     */
+    OFString determineColorModel();
+
+    /** Checks whether color model found in photometricInterpretation parameter is valid,
+     *  i.e. MONOCHROME2, or in case of labelmaps MONOCHROME2 or PALETTE.
+     *  Sets internal flag m_labelmapColorModel (for labelmaps) accordingly.
+     *  @param  photometricInterpretation The color model to check
+     *          (e.g. MONOCHROME2, PALETTE, etc.)
+     *  @return OFTrue if color model is valid, OFFalse otherwise
+     */
+    OFBool checkColorModel(const OFString& photometricInterpretation);
+
+    /** Sets the SOP Class UID based on the segmentation type,
+     *  i.e. whether it is a binary or fractional (Segmentation Storage SOP Class)
+     *  or a labelmap segmentation (Labelmap Segmentation Storage SOP Class).
+     *  The SOP Class UID is set to the following values:
+     *  If the segmentation type is unknown, the SOP Class UID is set to
+     *  Segmentation Storage SOP Class as well but a warning is printed.
+    */
+    void setSOPClassUIDBasedOnSegmentationType();
 
 private:
+
+    struct SetRowsAndCols;
+    struct SetImagePixelModuleVisitor;
+
     // Modules supported:
     //
     // Patient Module (through DcmIODImage)
@@ -575,6 +742,7 @@ private:
     // Enhanced General Equipment Module (through DcmIODImage)
     // General Image Module (through DcmIODImage)
     // Image Pixel Module (through DcmIODImage)
+    // Palette Color LUT Module (through this class)
     // Segmentation Image Module (through this class)
     // Multi-frame Functional Group Module
     // Multi-Frame Dimension Module
@@ -593,8 +761,21 @@ private:
     /// Multi-frame Dimension Module
     IODMultiframeDimensionModule m_DimensionModule;
 
+    /// Palette Color LUT Module
+    IODPaletteColorLUTModule m_PaletteColorLUTModule;
+
+    /// ICC Profile
+    IODICCProfileModule m_ICCProfileModule;
+
     /// Binary frame data
-    OFVector<DcmIODTypes::Frame*> m_Frames;
+    OFVector<DcmIODTypes::FrameBase*> m_Frames;
+
+    /// Denotes whether 16 bit pixel data is used
+    OFBool m_16BitPixelData;
+
+    /// Denotes in case of label maps the color model to be used
+    /// (only relevant for label maps, ignored for binary and fractional segmentations)
+    DcmSegTypes::E_SegmentationLabelmapColorModel m_LabelmapColorModel;
 
     /* Image level information */
 
@@ -615,8 +796,11 @@ private:
     /// Maximum Fractional Value: (US, 1, 1C) (required if fractional type is FRACTIONAL)
     DcmUnsignedShort m_MaximumFractionalValue;
 
-    /// Segment descriptions from Segment Sequence
-    OFVector<DcmSegment*> m_Segments;
+    /// Segment descriptions from Segment Sequence.
+    /// Maps Segment Number to Segment Description data.
+    /// For Labelmaps, the Segment Number is the label value, i.e. the pixel
+    /// value used in the pixel data to denote the segment.
+    OFMap<Uint16, DcmSegment*> m_Segments;
 
     /// Multi-frame Functional Groups high level interface
     FGInterface m_FGInterface;
@@ -631,11 +815,12 @@ private:
      *  @param  pixelData The Pixel Data element
      *  @param  rows Number of rows
      *  @param  cols Number of columns
+     *  @param  bytesPerPixel Bytes per pixel (1 for 1 or 8 bit data, or 2 for 16 bit data)
      *  @param  numberOfFrames Number of frames
      *  @result OFTrue if length is valid, OFFalse otherwise
      */
     OFBool
-    checkPixDataLength(DcmElement* pixelData, const Uint16 rows, const Uint16 cols, const Uint32& numberOfFrames);
+    checkPixDataLength(DcmElement* pixelData, const Uint16 rows, const Uint16 cols, const Uint16 bytesPerPixel, const Uint32& numberOfFrames);
 
     /** Loads file
      *  @param  dcmff The file format to load into
@@ -651,6 +836,7 @@ private:
      *  size_t type is not able to hold the result of intermediate computations.
      *  @param  rows Number of rows of a frame
      *  @param  cols Number of cols of a frame
+     *  @param  bytesPerPixel Bytes per pixel (use 1 for 1 or 8 bit data, or 2 for 16 bit data)
      *  @param  numberOfFrames The number of frames of the object
      *  @param  bytesRequired Will hold the result of the computation,
      *          if successful. Does not any padding into account.
@@ -658,7 +844,7 @@ private:
      *          otherwise.
      */
     OFCondition
-    getTotalBytesRequired(const Uint16& rows, const Uint16& cols, const Uint32& numberOfFrames, size_t& bytesRequired);
+    getTotalBytesRequired(const Uint16& rows, const Uint16& cols, const Uint16& bytesPerPixel, const Uint32& numberOfFrames, size_t& bytesRequired);
 
     /** Read Fractional Type of segmentation.
      *  @param  item The item to read from
@@ -681,5 +867,221 @@ private:
      */
     static OFCondition decompress(DcmDataset& dset);
 };
+
+
+template <typename T>
+OFCondition DcmSegmentation::addFrame(T* pixData)
+{
+    if (m_Frames.size() >= DCM_SEG_MAX_FRAMES)
+        return SG_EC_MaxFramesReached;
+
+    OFCondition result;
+    Uint16 rows = 0;
+    Uint16 cols = 0;
+    if (getImagePixel().getRows(rows).good() && getImagePixel().getColumns(cols).good())
+    {
+        DcmIODTypes::Frame<T>* frame = NULL;
+
+        // Diagnostic push/pop for Visual Studio that disables
+        // warning on constant expressions, in this case the
+        // if statement if (sizeof(T) != 1) which is known for
+        // each template instantiation at compile time. One can
+        // use constexpr if available to avoid this warning but this
+        // is not available in all cases
+        #include DCMTK_DIAGNOSTIC_PUSH
+        #include DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_CONSTANT_EXPRESSION_WARNING
+        switch (m_SegmentationType)
+        {
+            case DcmSegTypes::ST_BINARY:
+            {
+                if (sizeof(T) != 1) // 8 bit pixel data
+                {
+                    DCMSEG_ERROR("Cannot add frame: 16 bit pixel data expected but 8 bit pixel data provided");
+                    result = IOD_EC_InvalidPixelData;
+                    break;
+                }
+                // Pack the binary frame
+                frame = DcmSegUtils::packBinaryFrame<T>(pixData, rows, cols);
+                if (!frame)
+                    result = IOD_EC_CannotInsertFrame;
+                break;
+            }
+            case DcmSegTypes::ST_FRACTIONAL:
+            case DcmSegTypes::ST_LABELMAP:
+            {
+                frame = new DcmIODTypes::Frame<T>(rows * cols);
+
+                if (frame)
+                {
+                    if (frame->m_pixData)
+                    {
+                        memcpy(frame->m_pixData, pixData, frame->getLengthInBytes());
+                    }
+                    else
+                    {
+                        delete frame;
+                        result = EC_MemoryExhausted;
+                    }
+                }
+                else
+                    result = EC_MemoryExhausted;
+                break;
+            }
+            case DcmSegTypes::ST_UNKNOWN:
+            default:
+                result = SG_EC_UnknownSegmentationType;
+                break;
+        }
+        // re-enable diagnostic warnings
+        #include DCMTK_DIAGNOSTIC_POP
+        if (result.good())
+        {
+            m_Frames.push_back(frame);
+        }
+    }
+    else
+    {
+        DCMSEG_ERROR("Cannot add frame since rows and/or columns are unknown");
+        result = IOD_EC_CannotInsertFrame;
+    }
+    return result;
+}
+
+
+/** Add frame to segmentation object
+ *  @param  pixData Pixel data to be added. Length must be rows*columns bytes.
+ *          - For binary segmentations (bit depth i.e.\ Bits
+ *            Allocated/Stored=1), each byte equal to 0 will be interpreted as
+ *            "not set", while every other value is interpreted as "set".
+ *          - For fractional segmentations the full byte is copied as is.
+ *          - For labelmap segmentations, the value of each byte is interpreted
+ *            as the segment number. In that case the segmentNumber parameters
+ *            is ignored.
+ *  @param  segmentNumber The logical segment number (>=1) this frame refers to.
+ *          The segment identified by the segmentNumber must already exist.
+ *          For labelmap segmentations, this parameter is ignored.
+ *  @param  perFrameInformation The functional groups that identify this frame (i.e.
+ *          which are planned to be not common for all other frames). The
+ *          functional groups are copied, so ownership of each group stays
+ *          with the caller no matter what the method returns.
+ *  @return EC_Normal if adding was successful, error otherwise
+ */
+template <typename T>
+OFCondition
+DcmSegmentation::addFrame(T* pixData, const Uint16 segmentNumber, const OFVector<FGBase*>& perFrameInformation)
+{
+    if (m_Frames.size() >= DCM_SEG_MAX_FRAMES)
+        return SG_EC_MaxFramesReached;
+
+    if (m_16BitPixelData && (sizeof(T) != 2))
+    {
+        DCMSEG_ERROR("Cannot add frame: 16 bit pixel data expected but 8 bit pixel data provided");
+        return IOD_EC_InvalidPixelData;
+    }
+    else if (!m_16BitPixelData && (sizeof(T) == 2))
+    {
+        DCMSEG_ERROR("Cannot add frame: 8 bit pixel data expected but 16 bit pixel data provided");
+        return IOD_EC_InvalidPixelData;
+    }
+
+    Uint32 frameNo = OFstatic_cast(Uint32, m_Frames.size()); // will be the index of the frame (counted from 0)
+    OFCondition result;
+
+    // Check input parameters
+    if (pixData == NULL)
+    {
+        DCMSEG_ERROR("No pixel data provided or zero length");
+        result = EC_IllegalParameter;
+    }
+    if (segmentNumber == 0)
+    {
+        if (m_SegmentationType != DcmSegTypes::ST_LABELMAP)
+        {
+            DCMSEG_ERROR("Cannot add frame: Segment number 0 is not permitted for segmentation type "
+                         << DcmSegTypes::segtype2OFString(m_SegmentationType));
+            result = SG_EC_NoSuchSegment;
+        }
+        // we ignore the segment number for label maps
+    }
+    // If this is not a labelmap, check if segment the frame refers to actually exists
+    else if  ((m_SegmentationType != DcmSegTypes::ST_LABELMAP) && (getSegment(segmentNumber) == NULL) )
+    {
+        DCMSEG_ERROR("Cannot add frame: Segment with given number " << segmentNumber << " does not exist");
+        result = SG_EC_NoSuchSegment;
+    }
+    if (result.bad())
+        return result;
+
+    OFVector<FGBase*>::const_iterator it = perFrameInformation.begin();
+    while (it != perFrameInformation.end())
+    {
+        // Labelmap is not permitted to have Segmentation Functional Group,
+        // and for other segmentation types we create it automatically, ignore if found
+        if ((*it)->getType() == DcmFGTypes::EFG_SEGMENTATION)
+        {
+            if (m_SegmentationType == DcmSegTypes::ST_LABELMAP)
+            {
+                DCMSEG_WARN("Ignoring provided Segmentation Functional Group, not permitted for labelmap segmentation");
+                it++;
+                continue;
+            }
+            else
+            {
+                DCMSEG_WARN("Ignoring provided Segmentation Functional Group, will be created automatically");
+                it++;
+                continue;
+            }
+        }
+        result = (*it)->check();
+        if (result.bad())
+        {
+            DCMSEG_ERROR("Could not add new frame since functional group of type: "
+                         << (*it)->getType() << " is invalid: " << result.text());
+            break;
+        }
+        result = m_FGInterface.addPerFrame(frameNo, *(*it));
+        if (result.bad())
+        {
+            DCMSEG_ERROR("Could not add new frame since functional group of type " << (*it)->getType() << ": "
+                                                                                   << result.text());
+            break;
+        }
+        it++;
+    }
+
+    // Now also add Segmentation Functional Group
+    if (result.good() && (m_SegmentationType != DcmSegTypes::ST_LABELMAP))
+    {
+        FGSegmentation seg;
+        result = seg.setReferencedSegmentNumber(segmentNumber);
+        if (result.good())
+        {
+            result = m_FGInterface.addPerFrame(frameNo, seg);
+        }
+        else
+        {
+            DCMSEG_ERROR("Could not add new frame, invalid segment number " << segmentNumber << ": " << result.text());
+        }
+    }
+
+    // Insert pixel data
+    if (result.good())
+    {
+        result = addFrame<T>(pixData);
+    }
+
+    // Cleanup any per-frame groups that might have been inserted and return
+    if (result.bad())
+    {
+        for (OFVector<FGBase*>::const_iterator it2 = perFrameInformation.begin(); it2 != perFrameInformation.end();
+             it2++)
+        {
+            m_FGInterface.deletePerFrame(frameNo, (*it2)->getType());
+        }
+    }
+
+    return result;
+}
+
 
 #endif // SEGDOC_H

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2024, OFFIS e.V.
+ *  Copyright (C) 2007-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,12 +25,13 @@
 #include "dcmtk/dcmdata/libi2d/i2d.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
-#include "dcmtk/dcmdata/dcfilefo.h"  /* for DcmFileFormat */
-#include "dcmtk/dcmdata/dcdeftag.h"  /* for DCM_ defines */
-#include "dcmtk/dcmdata/dcuid.h"     /* for SITE_SERIES_UID_ROOT */
-#include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
-#include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
-#include "dcmtk/dcmdata/dcmxml/xml2dcm.h"   /* for DcmXMLParseHelper */
+#include "dcmtk/dcmdata/dcfilefo.h"        /* for DcmFileFormat */
+#include "dcmtk/dcmdata/dcdeftag.h"        /* for DCM_ defines */
+#include "dcmtk/dcmdata/dcuid.h"           /* for SITE_SERIES_UID_ROOT */
+#include "dcmtk/dcmdata/dcpixseq.h"        /* for DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpath.h"          /* for override keys */
+#include "dcmtk/dcmdata/dcswap.h"          /* for swapIfNecessary() */
+#include "dcmtk/dcmdata/dcmxml/xml2dcm.h"  /* for DcmXMLParseHelper */
 
 OFLogger DCM_dcmdataLibi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
 
@@ -147,7 +148,7 @@ OFCondition Image2Dcm::convertFirstFrame(
 
   // Read and insert pixel data
   m_compressionRatio = 1.0;
-  cond = readAndInsertPixelDataFirstFrame(inputPlug, numberOfFrames, tempDataset.get(), proposedTS, m_compressionRatio);
+  cond = readAndInsertPixelDataFirstFrame(inputPlug, outPlug, numberOfFrames, tempDataset.get(), proposedTS, m_compressionRatio);
   if (cond.bad())
   {
     return cond;
@@ -584,6 +585,7 @@ OFCondition Image2Dcm::insertEncapsulatedPixelDataNextFrame(
 
 OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
   I2DImgSource* imgSource,
+  I2DOutputPlug *outPlug,
   size_t numberOfFrames,
   DcmDataset* dset,
   E_TransferSyntax& outputTS,
@@ -651,6 +653,22 @@ OFCondition Image2Dcm::readAndInsertPixelDataFirstFrame(
   cond = dset->putAndInsertUint16(DCM_SamplesPerPixel, m_samplesPerPixel);
   if (cond.bad())
     return cond;
+
+  if (! outPlug->colorModelPermitted(m_photometricInterpretation, outputTS))
+  {
+      OFString old_photometricInterpretation = m_photometricInterpretation;
+      cond = outPlug->updateColorModel(m_photometricInterpretation, outputTS);
+      DcmXfer xf(outputTS);
+      if (cond.good())
+      {
+          DCMDATA_LIBI2D_WARN("Image2Dcm: photometric interpretation '" << old_photometricInterpretation << "' not permitted for the selected SOP class in '" << xf.getXferName() << "' transfer syntax, using '" << m_photometricInterpretation << "' instead");
+      }
+      else
+      {
+          DCMDATA_LIBI2D_ERROR("Image2Dcm: photometric interpretation '" << old_photometricInterpretation << "' not permitted for the selected SOP class in '" << xf.getXferName() << "' transfer syntax");
+          return cond;
+      }
+  }
 
   cond = dset->putAndInsertOFStringArray(DCM_PhotometricInterpretation, m_photometricInterpretation);
   if (cond.bad())
@@ -1039,4 +1057,23 @@ OFCondition Image2Dcm::updateOffsetTable()
   OFCondition result = EC_Normal;
   if (m_offsetTable) result = m_offsetTable->createOffsetTable(m_offsetList);
   return result;
+}
+
+
+OFCondition Image2Dcm::adjustByteOrder(size_t numberOfFrames)
+{
+  if (m_output_buffer)
+  {
+    // unencapsulated pixel data, byte swapping may be necessary
+    if (m_bitsAllocated < 9)
+    {
+      size_t bufSize = m_frameLength * numberOfFrames;
+      if (bufSize & 1) ++bufSize;
+      if (bufSize > 1)
+      {
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, m_output_buffer, OFstatic_cast(Uint32, bufSize), sizeof(Uint16));
+      }
+    }
+  }
+  return EC_Normal;
 }

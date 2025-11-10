@@ -90,9 +90,7 @@ yield()
 #if defined(DCMTK_LOG4CPLUS_USE_PTHREADS)
     sched_yield();
 #elif defined(_WIN32)
-#if !defined(_MSC_VER) || _MSC_VER > 1200 /* MSC 6 doesn't know this */
     if (! SwitchToThread ())
-#endif
         Sleep (0);
 #endif
 }

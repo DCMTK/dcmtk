@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -98,7 +98,7 @@ int DcmOtherByteOtherWord::compare(const DcmElement& rhs) const
      * swapping is applied as necessary. */
     void* thisData = myThis->getValue();
     void* rhsData = myRhs->getValue();
-    return memcmp(thisData, rhsData, thisLength);
+    return compareValues(thisData, rhsData, thisLength);
 }
 
 
@@ -848,31 +848,44 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmOtherByteOtherWord::writeJson(STD_NAMESPACE ostream &out,
                                              DcmJsonFormat &format)
 {
+    OFCondition result = EC_Normal;
+
     /* write JSON Opener */
     writeJsonOpener(out, format);
+
     /* for an empty value field, we do not need to do anything */
     if (getLengthField() > 0)
     {
-        OFString value;
-        if (format.asBulkDataURI(getTag(), value))
-        {
-            /* return defined BulkDataURI */
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, value);
-        }
-        else
-        {
-            /* encode binary data as Base64 */
-            format.printInlineBinaryPrefix(out);
-            out << "\"";
-            /* adjust byte order to little endian */
-            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
-            out << "\"";
-        }
+        /* adjust byte order to little endian */
+        Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+        result = format.writeBinaryAttribute(out, getTag(), getLengthField(), byteValues);
     }
+
     /* write JSON Closer */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return result;
+}
+
+
+// ********************************
+
+int DcmOtherByteOtherWord::compareValues(const void* myValue,
+                                         const void* rhsValue,
+                                         const unsigned long valLength) const
+{
+    /* check for null pointers before comparing */
+    if (myValue == OFnullptr || rhsValue == OFnullptr)
+    {
+        /* handle null pointers appropriately, e.g., treat null as less than non-null */
+        if (myValue == OFnullptr && rhsValue == OFnullptr)
+            return 0; // both are null, considered equal
+        else if (myValue == OFnullptr)
+            return -1; // null is less than non-null
+        else
+            return 1; // non-null is greater than null
+    }
+    else {
+        /* Proceed with the comparison */
+        return memcmp(myValue, rhsValue, valLength);
+    }
 }

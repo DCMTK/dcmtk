@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2024, OFFIS e.V.
+ *  Copyright (C) 1993-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -295,8 +295,6 @@ void DcmQueryRetrieveConfig::panic(const char *fmt, ...)
 {
    va_list  ap;
    va_start(ap, fmt);
-
-#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
    char buf[4096];
 
 #ifdef HAVE_PROTOTYPE_STD__VSNPRINTF
@@ -310,11 +308,6 @@ void DcmQueryRetrieveConfig::panic(const char *fmt, ...)
    buf[4095] = '\0';
 
    DCMQRDB_ERROR("CONFIG Error: " << buf << "!");
-#else
-   fprintf(stderr, "CONFIG Error: ");
-   vfprintf(stderr, fmt, ap);
-   fprintf(stderr, "!\n");
-#endif
    va_end(ap);
 }
 

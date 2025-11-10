@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2022, OFFIS e.V.
+ *  Copyright (C) 2007-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -259,13 +259,15 @@ protected:
      *  @param imageHeight - [out] The height of the image
      *  @param samplesPerPixel - [out] Number of components per pixel
      *  @param bitsPerSample - [out] Number of bits per pixel component
+     *  @param colorModel - [out] color model of the JPEG bitstream
      *  @return EC_Normal, if successful, error otherwise
      */
     OFCondition getSOFImageParameters(const JPEGFileMapEntry& entry,
                                       Uint16& imageWidth,
                                       Uint16& imageHeight,
                                       Uint16& samplesPerPixel,
-                                      Uint16& bitsPerSample);
+                                      Uint16& bitsPerSample,
+                                      OFString& colorModel);
 
     /** Get image parameters as found at given SOF marker of the JPEG image.
      *  Used for JPEG-LS codec.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2022, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -30,12 +30,8 @@
 
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>    /* for time_t */
-#endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat() */
-#endif
 END_EXTERN_C
 
 /* give up after this number of unsuccessful attempts to create a unique filename */

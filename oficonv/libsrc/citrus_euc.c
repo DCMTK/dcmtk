@@ -59,11 +59,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_euc.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-
-
 #include <errno.h>
 #include <limits.h>
 #include <stddef.h>

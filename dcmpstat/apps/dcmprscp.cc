@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -22,9 +22,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* for O_RDONLY */
-#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -253,6 +251,8 @@ int main(int argc, char *argv[])
     unsigned short targetPort   = dvi.getTargetPort(opt_printer);
     OFBool targetDisableNewVRs  = dvi.getTargetDisableNewVRs(opt_printer);
     OFBool targetUseTLS         = dvi.getTargetUseTLS(opt_printer);
+    T_ASC_ProtocolFamily targetProtocol = dvi.getTargetProtocol(opt_printer);
+    dcmIncomingProtocolFamily.set(targetProtocol);
 
     if (targetPort == 0)
     {

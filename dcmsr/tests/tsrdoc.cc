@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2021, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -49,6 +49,9 @@ OFTEST(dcmsr_setAndGetPatientData)
     OFCHECK(doc.getPatientSex(value).good());
     OFCHECK_EQUAL(value, "M");
     /* also check some recently introduced attributes */
+    OFCHECK(doc.setPatientAge("042Y").good());
+    OFCHECK(doc.getPatientAge(value).good());
+    OFCHECK_EQUAL(value, "042Y");
     OFCHECK(doc.setPatientSize("1.88").good());
     OFCHECK(doc.getPatientSize(value).good());
     OFCHECK_EQUAL(value, "1.88");

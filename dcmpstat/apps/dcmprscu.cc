@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999-2024, OFFIS e.V.
+ *  Copyright (C) 1999-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,9 +37,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_IO_H
 #include <io.h>
 #endif
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>      /* for O_RDONLY */
-#endif
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstream.h"

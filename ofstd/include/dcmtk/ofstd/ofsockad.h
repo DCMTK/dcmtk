@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2021, OFFIS e.V.
+ *  Copyright (C) 2017-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -35,9 +35,7 @@ END_EXTERN_C
 #endif
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_SOCKET_H
 /* some systems (such as DEC Ultrix) don't protect <sys/socket.h> from double inclusion */
 #ifndef DCOMPAT_SYS_SOCKET_H_
@@ -65,7 +63,7 @@ struct sockaddr;
 struct sockaddr_in;
 struct sockaddr_in6;
 
-/** A simple wrapper class for a struct sockaddr_storage object 
+/** A simple wrapper class for a struct sockaddr_storage object
  *  that can be used to store an TCP/IPv4 (struct sockaddr_in) or TCP/IPv6
  *  (struct sockaddr_in6) address.
  */

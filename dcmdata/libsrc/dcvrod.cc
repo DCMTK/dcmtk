@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2020, OFFIS e.V.
+ *  Copyright (C) 2013-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,11 +24,13 @@
 
 #include "dcmtk/ofstd/ofuuid.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofmath.h"
 
 #include "dcmtk/dcmdata/dcvrod.h"
 #include "dcmtk/dcmdata/dcswap.h"
 #include "dcmtk/dcmdata/dcjson.h"
 
+#include <cmath>
 
 // ********************************
 
@@ -95,6 +97,15 @@ unsigned long DcmOtherDouble::getVM()
 
 // ********************************
 
+/* need to check for "Not a Number" in order to avoid possible output of "-nan" */
+static inline void checkAndOutputFloatValue(STD_NAMESPACE ostream &out,
+                                            const Float64 value)
+{
+    if (OFMath::isnan(value))
+        out << "nan";
+    else
+        out << value;
+}
 
 OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
@@ -140,12 +151,18 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                 {
                     /* increase default precision - see DcmFloatingPointDouble::print() */
                     const STD_NAMESPACE streamsize oldPrecision = out.precision(17);
+                    /* use the standard "C" locale for proper decimal point */
+                    const STD_NAMESPACE locale oldLocale = out.imbue(STD_NAMESPACE locale("C"));
                     /* print float values with separators */
-                    out << (*(floatValues++));
+                    checkAndOutputFloatValue(out, *(floatValues++));
                     for (unsigned long i = 1; i < count; i++)
-                        out << "\\" << (*(floatValues++));
-                    /* reset i/o manipulators */
+                    {
+                        out << "\\";
+                        checkAndOutputFloatValue(out, *(floatValues++));
+                    }
+                    /* reset i/o manipulators and locale */
                     out.precision(oldPrecision);
+                    out.imbue(oldLocale);
                 }
             }
         }
@@ -163,33 +180,22 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
 OFCondition DcmOtherDouble::writeJson(STD_NAMESPACE ostream &out,
                                       DcmJsonFormat &format)
 {
-    /* always write JSON Opener */
+    OFCondition result = EC_Normal;
+
+    /* write JSON Opener */
     writeJsonOpener(out, format);
+
     /* for an empty value field, we do not need to do anything */
     if (getLengthField() > 0)
     {
-        OFString value;
-        if (format.asBulkDataURI(getTag(), value))
-        {
-            /* return defined BulkDataURI */
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, value);
-        }
-        else
-        {
-            /* encode binary data as Base64 */
-            format.printInlineBinaryPrefix(out);
-            out << "\"";
-            /* adjust byte order to little endian */
-            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
-            out << "\"";
-        }
+        /* adjust byte order to little endian */
+        Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+        result = format.writeBinaryAttribute(out, getTag(), getLengthField(), byteValues);
     }
-    /* write JSON Closer  */
+
+    /* write JSON Closer */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return result;
 }
 
 

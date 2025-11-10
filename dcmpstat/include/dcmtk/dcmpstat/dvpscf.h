@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -671,6 +671,12 @@ class DCMTK_DCMPSTAT_EXPORT DVConfiguration
    *  @return entry if present and parsable in the config file, 0 otherwise.
    */
   unsigned long getQueryRetrieveMaxAssociations();
+
+  /** returns the protocol family to be supported by the Query/Retrieve SCP
+   *  as configured in section GENERAL/QUERY_RETRIEVE/PROTOCOL in the config file.
+   *  @return send application path name or NULL if absent.
+   */
+  T_ASC_ProtocolFamily getQueryRetrieveProtocolFamily();
 
   /** returns the database folder to be used for sending/receiving/browsing.
    *  Value is taken from the section GENERAL/DATABASE/DIRECTORY

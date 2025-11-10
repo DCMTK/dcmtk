@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2024, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -346,13 +346,13 @@ OFCondition DJCodecDecoder::decode(
                   }
 
                   // Bits Stored cannot be larger than precision
-                  if ((result.good()) && (imageBitsStored > precision))
+                  if ((result.good()) && (imageBitsStored > precision) && (! djcp->getPreserveBitsStored()))
                   {
                     result = OFreinterpret_cast(DcmItem*, dataset)->putAndInsertUint16(DCM_BitsStored, precision);
                   }
 
                   // High Bit cannot be larger than precision - 1
-                  if ((result.good()) && (imageHighBit >= precision))
+                  if ((result.good()) && (imageHighBit >= precision) && (! djcp->getPreserveBitsStored()))
                   {
                     result = OFreinterpret_cast(DcmItem*, dataset)->putAndInsertUint16(DCM_HighBit, OFstatic_cast(Uint16, precision-1));
                   }
@@ -588,6 +588,11 @@ OFCondition DJCodecDecoder::decodeFrame(
                     // decompression is complete, finally adjust byte order if necessary
                     if (jpeg->bytesPerSample() == 1) // we're writing bytes into words
                     {
+                      if ((gLocalByteOrder == EBO_BigEndian) && (frameSize & 1))
+                      {
+                        DCMJPEG_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
+                      }
+
                       result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, OFreinterpret_cast(Uint16*, buffer), OFstatic_cast(Uint32, frameSize), sizeof(Uint16));
                     }
                   }

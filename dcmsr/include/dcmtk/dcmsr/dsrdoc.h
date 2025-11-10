@@ -32,6 +32,7 @@
 #include "dcmtk/dcmsr/dsrrefin.h"
 #include "dcmtk/dcmsr/dsrcsidl.h"
 
+#include "dcmtk/dcmdata/dcvras.h"
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrds.h"
@@ -200,6 +201,10 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      *                      objects.  If NULL, the default URL prefix is used, which is
      *                      defined by DEFAULT_HTML_HYPERLINK_PREFIX_FOR_COMPOSITE_OBJECTS
      *                      (http://localhost/dicom.cgi).
+     ** @note Please note that using the parameter 'styleSheet' or 'urlPrefix' can lead to
+     *        security issues, as an attacker could misuse them to potentially inject dangerous
+     *        content into the HTML/XHTML output.  The values passed to these parameters are not
+     *        checked, neither the URL and prefix nor the content of the specified CSS file.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &stream,
@@ -532,6 +537,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
     virtual OFCondition getPatientSex(OFString &value,
                                       const signed long pos = 0) const;
 
+    /** get patient's age
+     ** @param  value  reference to variable in which the value should be stored
+     *  @param  pos    index of the value to get (0..vm-1), -1 for all components
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getPatientAge(OFString &value,
+                                      const signed long pos = 0) const;
+
     /** get patient's size
      ** @param  value  reference to variable in which the value should be stored
      *  @param  pos    index of the value to get (0..vm-1), -1 for all components
@@ -806,6 +819,14 @@ class DCMTK_DCMSR_EXPORT DSRDocument
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setPatientSex(const OFString &value,
+                                      const OFBool check = OFTrue);
+
+    /** set patient's age
+     ** @param  value  value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (AS) and VM (1) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setPatientAge(const OFString &value,
                                       const OFBool check = OFTrue);
 
     /** set patient's size
@@ -1408,6 +1429,8 @@ class DCMTK_DCMSR_EXPORT DSRDocument
 
     // --- Patient Study Module (U) ---
 
+    /// Patient's Age: (AS, 1, 3)
+    DcmAgeString        PatientAge;
     /// Patient's Size: (DS, 1, 3)
     DcmDecimalString    PatientSize;
     /// Patient's Weight: (DS, 1, 3)

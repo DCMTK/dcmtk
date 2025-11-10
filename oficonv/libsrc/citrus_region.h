@@ -32,10 +32,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
-
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 
 
 struct _citrus_region {

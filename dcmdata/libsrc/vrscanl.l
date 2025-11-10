@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2022, OFFIS e.V.
+ *  Copyright (C) 1997-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,7 +44,7 @@ charset_without_control_chars         [\040-\133\135-\176\240-\377\033]+
 charset_with_control_chars            [\040-\176\240-\377\011\012\014\015\033]+
 spaces                                [ ]*
 zero_byte_padding                     \000?
-dt_offset                             (\-1200)|(\+1400)|(((\-((0[1-9])|(1[0-1])))|(\+((0[1-9])|(1[0-3])))){tm_minute})
+dt_offset                             (\-1200)|(\+1400)|(((\-((0[1-9])|(1[0-1])))|(\+((0[0-9])|(1[0-3])))){tm_minute})
 da_year                               (18[5-9][0-9])|(19[0-9]{2})|(20[0-4][0-9])
 da_year_dub                           [0-9]{4}
 da_month                              (0[1-9])|(1[0-2])

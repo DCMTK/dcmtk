@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2017, OFFIS e.V.
+ *  Copyright (C) 2012-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,11 +40,7 @@ using OFunique_ptr = std::unique_ptr<ARGS...>;
 #if defined HAVE_SYNC_ADD_AND_FETCH && defined HAVE_SYNC_SUB_AND_FETCH
 #define OF_SHARED_PTR_COUNTER_TYPE size_t
 #elif defined HAVE_INTERLOCKED_INCREMENT && defined HAVE_INTERLOCKED_DECREMENT
-#if _MSC_VER <= 1200
-#define OF_SHARED_PTR_COUNTER_TYPE LONG
-#else
 #define OF_SHARED_PTR_COUNTER_TYPE volatile LONG
-#endif
 #else
 #define OF_SHARED_PTR_COUNTER_TYPE size_t
 #define OF_SHARED_PTR_NEED_MUTEX 1

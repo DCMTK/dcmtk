@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -26,17 +26,17 @@
 
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmiod/iodmacro.h"
-#include "dcmtk/dcmseg/segdoc.h"
 #include "dcmtk/dcmseg/segtypes.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrut.h"
 
-/** Class representing a segment from the Segment Identification Sequence,
- *  as used within the Segmentation Image Module. It includes the Segment
- *  Description Macro.
- */
+class DcmSegmentation;
 
+/** Class that represents a Segment inside a Segmentation object.
+ *  It mostly represents data as found in an item of the Segment Identification
+ *  Sequence (Segmentation Image Module).
+ */
 class DCMTK_DCMSEG_EXPORT DcmSegment
 {
 
@@ -259,6 +259,14 @@ public:
      */
     virtual OFCondition setTrackingUID(const OFString& value, const OFBool checkValue = OFTrue);
 
+    /** THIS IS ONLY FOR INTERNAL USE. DO NOT USE this as a regular API user.
+     *  Get Segment Number as read from the Segment Sequence for this segment.
+     *  It may be different from the Segment Number as returned by getSegmentNumber(),
+     *  i.e. do not rely on this method for anything.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual Uint16 getSegmentNumberRead();
+
     /// The utility class must access the protected default constructor
     friend class DcmIODUtil;
 
@@ -290,6 +298,12 @@ private:
 
     /// The segmentation document where this segment is located in
     DcmSegmentation* m_SegmentationDoc;
+
+    /// The segment number as read from the Segment Number attribute.
+    /// This attribute only holds the number read from the file/item,
+    /// and will be updated only during a write process. It is not meant
+    /// to be used by the API user at all but only for internal purposes.
+    DcmUnsignedShort m_SegmentNumber;
 
     /// Segment Description Macro
     SegmentDescriptionMacro m_SegmentDescription;

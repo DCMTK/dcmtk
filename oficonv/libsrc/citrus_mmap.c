@@ -31,17 +31,11 @@
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
-#endif
 
 #include <errno.h>
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>  /* for O_RDONLY, O_CLOEXEC */
-#endif
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

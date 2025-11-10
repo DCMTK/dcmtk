@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2022, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -82,6 +82,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     IssuerOfPatientID(DCM_IssuerOfPatientID),
     PatientBirthDate(DCM_PatientBirthDate),
     PatientSex(DCM_PatientSex),
+    PatientAge(DCM_PatientAge),
     PatientSize(DCM_PatientSize),
     PatientWeight(DCM_PatientWeight),
     Manufacturer(DCM_Manufacturer),
@@ -156,6 +157,7 @@ void DSRDocument::clear()
     IssuerOfPatientID.clear();
     PatientBirthDate.clear();
     PatientSex.clear();
+    PatientAge.clear();
     PatientSize.clear();
     PatientWeight.clear();
     Manufacturer.clear();
@@ -592,6 +594,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
             if (VerificationFlagEnum == VF_invalid)
                 printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
+            else if ((VerificationFlagEnum == VF_Unverified) && !VerifyingObserver.isEmpty())
+                DCMSR_WARN("Verifying Observer(s) should not be present when Verification Flag is 'UNVERIFIED'");
             else if (VerificationFlagEnum == VF_Verified)
                 checkElementValue(VerifyingObserver, "1-n", "1", obsSearchCond, "SRDocumentGeneralModule");
         }
@@ -635,6 +639,7 @@ OFCondition DSRDocument::readStudyData(DcmItem &dataset,
     getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", "GeneralStudyModule");
     getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", "GeneralStudyModule");
     // --- Patient Study Module ---
+    getAndCheckElementFromDataset(dataset, PatientAge, "1", "3", "PatientStudyModule");
     getAndCheckElementFromDataset(dataset, PatientSize, "1", "3", "PatientStudyModule");
     getAndCheckElementFromDataset(dataset, PatientWeight, "1", "3", "PatientStudyModule");
     /* also read data from Patient Module */
@@ -695,6 +700,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmCodeString(PatientSex), "1", "2", "PatientModule");
 
         // --- Patient Study Module ---
+        addElementToDataset(result, dataset, new DcmAgeString(PatientAge), "1", "3", "PatientStudyModule");
         addElementToDataset(result, dataset, new DcmDecimalString(PatientSize), "1", "3", "PatientStudyModule");
         addElementToDataset(result, dataset, new DcmDecimalString(PatientWeight), "1", "3", "PatientStudyModule");
 
@@ -979,7 +985,8 @@ OFCondition DSRDocument::readXMLPatientData(const DSRXMLDocument &doc,
             else if (doc.getElementFromNodeContent(cursor, PatientID, "id").bad() &&
                      doc.getElementFromNodeContent(cursor, IssuerOfPatientID, "issuer").bad() &&
                      doc.getElementFromNodeContent(cursor, PatientSex, "sex").bad() &&
-                     /* strictly speaking, Patient's Size and Weight belong to the Study IE */
+                     /* strictly speaking, Patient's Age, Size and Weight belong to the Study IE */
+                     doc.getElementFromNodeContent(cursor, PatientAge, "age").bad() &&
                      doc.getElementFromNodeContent(cursor, PatientSize, "size").bad() &&
                      doc.getElementFromNodeContent(cursor, PatientWeight, "weight").bad())
             {
@@ -1185,7 +1192,11 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                     result = readXMLVerifyingObserverData(doc, cursor.getChild(), flags);
                     /* allow absence in case of UNVERIFIED */
                     if (VerificationFlagEnum == VF_Unverified)
+                    {
+                        if (!VerifyingObserver.isEmpty())
+                            DCMSR_WARN("Verifying Observer(s) should not be present when Verification Flag is 'UNVERIFIED'");
                         result = EC_Normal;
+                    }
                 } else
                     printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             }
@@ -1377,7 +1388,8 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             stream << "</birthday>" << OFendl;
         }
         writeStringFromElementToXML(stream, PatientSex, "sex", (flags & XF_writeEmptyTags) > 0);
-        /* strictly speaking, Patient's Size and Weight belong to the Study IE */
+        /* strictly speaking, Patient's Age, Size and Weight belong to the Study IE */
+        writeStringFromElementToXML(stream, PatientAge, "age", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, PatientSize, "size", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, PatientWeight, "weight", (flags & XF_writeEmptyTags) > 0);
         stream << "</patient>" << OFendl;
@@ -2308,6 +2320,13 @@ OFCondition DSRDocument::getPatientSex(OFString &value,
 }
 
 
+OFCondition DSRDocument::getPatientAge(OFString &value,
+                                       const signed long pos) const
+{
+    return getStringValueFromElement(PatientAge, value, pos);
+}
+
+
 OFCondition DSRDocument::getPatientSize(OFString &value,
                                         const signed long pos) const
 {
@@ -2568,6 +2587,16 @@ OFCondition DSRDocument::setPatientSex(const OFString &value,
     OFCondition result = (check) ? DcmCodeString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = PatientSex.putOFStringArray(value);
+    return result;
+}
+
+
+OFCondition DSRDocument::setPatientAge(const OFString &value,
+                                       const OFBool check)
+{
+    OFCondition result = (check) ? DcmAgeString::checkStringValue(value, "1") : EC_Normal;
+    if (result.good())
+        result = PatientAge.putOFStringArray(value);
     return result;
 }
 
@@ -2835,6 +2864,7 @@ void DSRDocument::createNewStudy()
     AccessionNumber.clear();
     StudyDescription.clear();
     /* also need to clear the attributes from the Patient Study Module */
+    PatientAge.clear();
     PatientSize.clear();
     PatientWeight.clear();
     /* the following method also creates new a study (since UID is empty) and SOP instance */

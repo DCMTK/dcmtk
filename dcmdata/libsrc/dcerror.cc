@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -79,11 +79,18 @@ makeOFConditionConst(EC_PixelDataExplLengthIllegal,      OFM_dcmdata, 53, OF_err
 makeOFConditionConst(EC_ElemLengthExceeds32BitField,     OFM_dcmdata, 54, OF_error, "Length of element value exceeds maximum of 32-bit length field" );
 makeOFConditionConst(EC_CannotWriteJsonNumber,           OFM_dcmdata, 55, OF_error, "Cannot write 'nan' or 'inf' as JSON number" );
 makeOFConditionConst(EC_CannotWriteJsonInlineBinary,     OFM_dcmdata, 56, OF_error, "JSON InlineBinary encoding not supported for compressed pixel data" );
-makeOFConditionConst(EC_XMLParseError,                   OFM_dcmdata, 57, OF_error, "XML parse error" );
-makeOFConditionConst(EC_XMLValidationFailure,            OFM_dcmdata, 58, OF_error, "XML validation failure" );
-makeOFConditionConst(EC_SOPClassMismatch,                OFM_dcmdata, 59, OF_error, "SOP class mismatch" );
+makeOFConditionConst(EC_XMLParseError,                   OFM_dcmdata, 57, OF_error, "XML parse error"                            );
+makeOFConditionConst(EC_XMLValidationFailure,            OFM_dcmdata, 58, OF_error, "XML validation failure"                     );
+makeOFConditionConst(EC_SOPClassMismatch,                OFM_dcmdata, 59, OF_error, "SOP Class mismatch"                         );
 makeOFConditionConst(EC_UnknownUIDName,                  OFM_dcmdata, 60, OF_error, "Unknown UID name: No mapping to UID value defined" );
-makeOFConditionConst(EC_CannotWriteStringAsJsonNumber,   OFM_dcmdata, 61, OF_error, "Cannot write IS/DS string as JSON number" );
+makeOFConditionConst(EC_CannotWriteStringAsJSONNumber,   OFM_dcmdata, 61, OF_error, "Cannot write IS/DS string as JSON number"   );
+makeOFConditionConst(EC_CannotWriteBulkDataFile,         OFM_dcmdata, 62, OF_error, "Cannot write bulk data file"                );
+makeOFConditionConst(EC_CannotWriteJSONMultiframe,       OFM_dcmdata, 63, OF_error, "JSON encoding not supported for encapsulated multi-frame pixel data" );
+makeOFConditionConst(EC_InvalidJSONType,                 OFM_dcmdata, 64, OF_error, "Invalid JSON type"                          );
+makeOFConditionConst(EC_InvalidJSONContent,              OFM_dcmdata, 65, OF_error, "Invalid JSON content"                       );
+makeOFConditionConst(EC_BulkDataURINotSupported,         OFM_dcmdata, 66, OF_error, "BulkDataURI not yet supported"              );
+makeOFConditionConst(EC_UnsupportedURIType,              OFM_dcmdata, 67, OF_error, "Unsupported URI type"                       );
+makeOFConditionConst(EC_CommandLineFailed,               OFM_dcmdata, 68, OF_error, "Execution of command line failed"           );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;

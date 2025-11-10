@@ -29,9 +29,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #include <stdint.h>
 
 #ifndef OFICONV_CITRUS_WC_T_DEFINED

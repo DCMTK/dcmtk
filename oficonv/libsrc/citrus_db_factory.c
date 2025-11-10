@@ -27,9 +27,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_db_factory.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_QUEUE_H
 #include <sys/queue.h>
 #else

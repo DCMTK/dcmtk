@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2016, OFFIS e.V.
+ *  Copyright (C) 1996-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -125,16 +125,9 @@ class DiColorPixelTemplate
      */
     virtual ~DiColorPixelTemplate()
     {
-#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
-        /* use a non-throwing delete (if available) */
         operator delete[] (Data[0], std::nothrow);
         operator delete[] (Data[1], std::nothrow);
         operator delete[] (Data[2], std::nothrow);
-#else
-        delete[] Data[0];
-        delete[] Data[1];
-        delete[] Data[2];
-#endif
     }
 
     /** get integer representation
@@ -365,7 +358,7 @@ class DiColorPixelTemplate
                         data = new Uint32[count];
                     if (data != NULL)
                     {
-                        Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint8 *q = OFstatic_cast(Uint8 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -373,10 +366,11 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* normal sample order: 0-R-G-B */
-                                    *(q++) = (OFstatic_cast(Uint32, *(r++)) << 16) |
-                                             (OFstatic_cast(Uint32, *(g++)) << 8) |
-                                             OFstatic_cast(Uint32, *(b++));
+                                    /* sample order: B-G-R-0 */
+                                    *(q++) = OFstatic_cast(Uint8, *(b++));
+                                    *(q++) = OFstatic_cast(Uint8, *(g++));
+                                    *(q++) = OFstatic_cast(Uint8, *(r++));
+                                    *(q++) = 0;
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -393,10 +387,11 @@ class DiColorPixelTemplate
                                 {
                                     for (x = width; x != 0; x--)
                                     {
-                                        /* normal sample order: 0-R-G-B */
-                                        *(q++) = (OFstatic_cast(Uint32, *(r++) * gradient2) << 16) |
-                                                 (OFstatic_cast(Uint32, *(g++) * gradient2) << 8) |
-                                                 OFstatic_cast(Uint32, *(b++) * gradient2);
+                                        /* sample order: B-G-R-0 */
+                                        *(q++) = OFstatic_cast(Uint8, *(b++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(g++) * gradient2);
+                                        *(q++) = OFstatic_cast(Uint8, *(r++) * gradient2);
+                                        *(q++) = 0;
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -405,10 +400,11 @@ class DiColorPixelTemplate
                                 {
                                     for (x = width; x != 0; x--)
                                     {
-                                        /* normal sample order: 0-R-G-B */
-                                        *(q++) = (OFstatic_cast(Uint32, OFstatic_cast(double, *(r++)) * gradient1) << 16) |
-                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(g++)) * gradient1) << 8) |
-                                                 OFstatic_cast(Uint32, OFstatic_cast(double, *(b++)) * gradient1);
+                                        /* sample order: B-G-R-0 */
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(b++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(g++)) * gradient1);
+                                        *(q++) = OFstatic_cast(Uint8, OFstatic_cast(double, *(r++)) * gradient1);
+                                        *(q++) = 0;
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -422,10 +418,11 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* normal sample order: 0-R-G-B */
-                                    *(q++) = (OFstatic_cast(Uint32, *(r++) >> shift) << 16) |
-                                             (OFstatic_cast(Uint32, *(g++) >> shift) << 8) |
-                                             OFstatic_cast(Uint32, *(b++) >> shift);
+                                    /* sample order: B-G-R-0 */
+                                    *(q++) = OFstatic_cast(Uint8, *(b++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(g++) >> shift);
+                                    *(q++) = OFstatic_cast(Uint8, *(r++) >> shift);
+                                    *(q++) = 0;
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -556,25 +553,17 @@ class DiColorPixelTemplate
             /* allocate data buffer for the 3 planes */
             for (int j = 0; j < 3; j++)
             {
-#ifdef HAVE_STD__NOTHROW
                 /* use a non-throwing new here (if available) because the allocated buffer can be huge */
                 Data[j] = new (std::nothrow) T[Count];
-#else
-                /* make sure that the pointer is set to NULL in case of error */
-                try
-                {
-                    Data[j] = new T[Count];
-                }
-                catch (STD_NAMESPACE bad_alloc const &)
-                {
-                    Data[j] = NULL;
-                }
-#endif
                 if (Data[j] != NULL)
                 {
                     /* erase empty part of the buffer (=blacken the background) */
                     if (InputCount < Count)
-                        OFBitmanipTemplate<T>::zeroMem(Data[j] + InputCount, Count - InputCount);
+                    {
+                        const size_t count = (Count - InputCount);
+                        DCMIMAGE_TRACE("filing empty part of the intermediate pixel data (" << count << " pixels) of plane " << j << " with value = 0");
+                        OFBitmanipTemplate<T>::zeroMem(Data[j] + InputCount, count);
+                    }
                 } else {
                     DCMIMAGE_DEBUG("cannot allocate memory buffer for 'Data[" << j << "]' in DiColorPixelTemplate::Init()");
                     result = 0;     // at least one buffer could not be allocated!

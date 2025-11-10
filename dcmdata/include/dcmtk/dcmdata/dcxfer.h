@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -88,72 +88,74 @@ typedef enum {
     EXS_RLELossless = 23,
     /// Deflated Explicit VR Little Endian
     EXS_DeflatedLittleEndianExplicit = 24,
+    /// Deflated Image Frame Compression
+    EXS_DeflatedImageFrameCompression = 25,
     /// JPEG-LS (lossless)
-    EXS_JPEGLSLossless = 25,
+    EXS_JPEGLSLossless = 26,
     /// JPEG-LS (lossless or near-lossless mode)
-    EXS_JPEGLSLossy = 26,
+    EXS_JPEGLSLossy = 27,
     /// JPEG 2000 (lossless)
-    EXS_JPEG2000LosslessOnly = 27,
+    EXS_JPEG2000LosslessOnly = 28,
     /// JPEG 2000 (lossless or lossy)
-    EXS_JPEG2000 = 28,
+    EXS_JPEG2000 = 29,
     /// JPEG 2000 part 2 multi-component extensions (lossless)
-    EXS_JPEG2000MulticomponentLosslessOnly = 29,
+    EXS_JPEG2000MulticomponentLosslessOnly = 30,
     /// JPEG 2000 part 2 multi-component extensions (lossless or lossy)
-    EXS_JPEG2000Multicomponent = 30,
+    EXS_JPEG2000Multicomponent = 31,
     /// JPIP Referenced
-    EXS_JPIPReferenced = 31,
+    EXS_JPIPReferenced = 32,
     /// JPIP Referenced Deflate
-    EXS_JPIPReferencedDeflate = 32,
+    EXS_JPIPReferencedDeflate = 33,
     /// MPEG2 Main Profile at Main Level
-    EXS_MPEG2MainProfileAtMainLevel = 33,
+    EXS_MPEG2MainProfileAtMainLevel = 34,
     /// Fragmentable MPEG2 Main Profile / Main Level
-    EXS_FragmentableMPEG2MainProfileMainLevel = 34,
+    EXS_FragmentableMPEG2MainProfileMainLevel = 35,
     /// MPEG2 Main Profile at High Level
-    EXS_MPEG2MainProfileAtHighLevel = 35,
+    EXS_MPEG2MainProfileAtHighLevel = 36,
     /// Fragmentable MPEG2 Main Profile / High Level
-    EXS_FragmentableMPEG2MainProfileHighLevel = 36,
+    EXS_FragmentableMPEG2MainProfileHighLevel = 37,
     /// MPEG4 High Profile / Level 4.1
-    EXS_MPEG4HighProfileLevel4_1 = 37,
+    EXS_MPEG4HighProfileLevel4_1 = 38,
     /// Fragmentable MPEG4 High Profile / Level 4.1
-    EXS_FragmentableMPEG4HighProfileLevel4_1 = 38,
+    EXS_FragmentableMPEG4HighProfileLevel4_1 = 39,
     /// MPEG4 BD-compatible High Profile / Level 4.1
-    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 39,
+    EXS_MPEG4BDcompatibleHighProfileLevel4_1 = 40,
     /// Fragmentable MPEG4 BD-compatible High Profile / Level 4.1
-    EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1 = 40,
+    EXS_FragmentableMPEG4BDcompatibleHighProfileLevel4_1 = 41,
     /// MPEG4 High Profile / Level 4.2 For 2D Video
-    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 41,
+    EXS_MPEG4HighProfileLevel4_2_For2DVideo = 42,
     /// Fragmentable MPEG4 High Profile / Level 4.2 For 2D Video
-    EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo = 42,
+    EXS_FragmentableMPEG4HighProfileLevel4_2_For2DVideo = 43,
     /// MPEG4 High Profile / Level 4.2 For 3D Video
-    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 43,
+    EXS_MPEG4HighProfileLevel4_2_For3DVideo = 44,
     /// Fragmentable MPEG4 Stereo High Profile / Level 4.2
-    EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo = 44,
+    EXS_FragmentableMPEG4HighProfileLevel4_2_For3DVideo = 45,
     /// MPEG4 Stereo High Profile / Level 4.2
-    EXS_MPEG4StereoHighProfileLevel4_2 = 45,
+    EXS_MPEG4StereoHighProfileLevel4_2 = 46,
     /// Fragmentable HEVC/H.265 Main Profile / Level 5.1
-    EXS_FragmentableMPEG4StereoHighProfileLevel4_2 = 46,
+    EXS_FragmentableMPEG4StereoHighProfileLevel4_2 = 47,
     /// HEVC/H.265 Main Profile / Level 5.1
-    EXS_HEVCMainProfileLevel5_1 = 47,
+    EXS_HEVCMainProfileLevel5_1 = 48,
     /// HEVC/H.265 Main 10 Profile / Level 5.1
-    EXS_HEVCMain10ProfileLevel5_1 = 48,
+    EXS_HEVCMain10ProfileLevel5_1 = 49,
     /// JPEG XL Lossless
-    EXS_JPEGXLLossless = 49,
+    EXS_JPEGXLLossless = 50,
     /// JPEG XL JPEG Recompression
-    EXS_JPEGXLJPEGRecompression = 50,
+    EXS_JPEGXLJPEGRecompression = 51,
     /// JPEG XL
-    EXS_JPEGXL = 51,
+    EXS_JPEGXL = 52,
     /// High-Throughput JPEG 2000 Image Compression (Lossless Only)
-    EXS_HighThroughputJPEG2000LosslessOnly = 52,
+    EXS_HighThroughputJPEG2000LosslessOnly = 53,
     /// High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)
-    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 53,
+    EXS_HighThroughputJPEG2000withRPCLOptionsLosslessOnly = 54,
     /// High-Throughput JPEG 2000 Image Compression
-    EXS_HighThroughputJPEG2000 = 54,
+    EXS_HighThroughputJPEG2000 = 55,
     /// JPIP HTJ2K Referenced
-    EXS_JPIPHTJ2KReferenced = 55,
+    EXS_JPIPHTJ2KReferenced = 56,
     /// JPIP HTJ2K Referenced Deflate
-    EXS_JPIPHTJ2KReferencedDeflate = 56,
+    EXS_JPIPHTJ2KReferencedDeflate = 57,
     /// Private GE Little Endian Implicit with big endian pixel data
-    EXS_PrivateGE_LEI_WithBigEndianPixelData = 57
+    EXS_PrivateGE_LEI_WithBigEndianPixelData = 58
 } E_TransferSyntax;
 
 
@@ -555,6 +557,23 @@ public:
         return isPixelDataLosslessCompressed() || isDatasetCompressed();
     }
 
+    /** get DICOMweb MIME type for pixel data in this transfer syntax
+     *  @return DICOMweb MIME type for pixel data in this transfer syntax
+     */
+    inline const char *getMIMEType() const
+    {
+        return mimeType;
+    }
+
+    /** get suggested filename extension to use when storing pixel data
+     *  of this transfer syntax as bulk data for use with DICOMweb
+     *  @return suggested filename extension
+     */
+    inline const char *getFilenameExtension() const
+    {
+        return filenameExtension;
+    }
+
     /** get the number of bytes needed to describe the tag, length, VR and any
      *  reserved fields for this transfer syntax when encoding the specified VR.
      *  @param evr value representation to be encoded in this transfer syntax
@@ -601,6 +620,13 @@ private:
 
     /// validity of the transfer syntax definition (e.g. standard, retired, private)
     E_XferValidity         xferValidity;
+
+    /// MIME type used for this transfer syntax in DICOMweb
+    const char            *mimeType;
+
+    /// file name extension for storing bulk data in this transfer syntax
+    const char            *filenameExtension;
+
 };
 
 /** global constant describing the byte order on the machine the application

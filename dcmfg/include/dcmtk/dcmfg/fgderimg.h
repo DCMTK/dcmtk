@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,7 +24,7 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmfg/fgbase.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/ofstd/ofstring.h"
@@ -65,6 +65,20 @@ public:
      *  @return EC_Normal if data is valid, error otherwise
      */
     virtual ImageSOPInstanceReferenceMacro& getImageSOPInstanceReference();
+
+    /** Get Spatial Locations Preserved
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all components
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getSpatialLocationsPreserved(OFString& value, const signed long pos = 0) const;
+
+    /** Set Spatial Locations Preserved
+     *  @param  value Value to be set (single value only) or "" for no value
+     *  @param  checkValue Check 'value' for conformance with VR (CS) and VM (1) if enabled
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setSpatialLocationsPreserved(const OFString& value, const OFBool checkValue);
 
     /** Reads source image item from given item
      *  @param  itemOfSourceImageSequence Reference to item of Source Image Sequence
@@ -118,6 +132,9 @@ private:
     /// Contains the referenced images (as represented by one of the items of
     /// "this" Source Image Sequence)
     ImageSOPInstanceReferenceMacro m_ImageSOPInstanceReference;
+
+    /// Denotes whether spatial locations from source image have been preseved
+    DcmCodeString m_SpatialLocationsPreserved;
 };
 
 /// Iterator for traversing over items of the Source Image Sequence

@@ -70,7 +70,10 @@ concatenationcreator.o: concatenationcreator.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../include/dcmtk/dcmfg/concatenationcreator.h \
- ../include/dcmtk/dcmfg/fgdefine.h ../include/dcmtk/dcmfg/fgtypes.h
+ ../include/dcmtk/dcmfg/fgdefine.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../include/dcmtk/dcmfg/fgtypes.h
 concatenationloader.o: concatenationloader.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
@@ -1118,17 +1121,18 @@ fgderimg.o: fgderimg.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
- ../include/dcmtk/dcmfg/fgderimg.h ../include/dcmtk/dcmfg/fgbase.h \
- ../include/dcmtk/dcmfg/fgtypes.h ../include/dcmtk/dcmfg/fgdefine.h \
+ ../include/dcmtk/dcmfg/fgderimg.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../include/dcmtk/dcmfg/fgbase.h ../include/dcmtk/dcmfg/fgtypes.h \
+ ../include/dcmtk/dcmfg/fgdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
@@ -1231,7 +1235,6 @@ fgfact.o: fgfact.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmfg/fgcttabledynamics.h \
  ../include/dcmtk/dcmfg/fgctxraydetails.h \
  ../include/dcmtk/dcmfg/fgderimg.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
  ../include/dcmtk/dcmfg/fgfact.h ../include/dcmtk/dcmfg/fgfracon.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
@@ -1256,6 +1259,7 @@ fgfact.o: fgfact.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmfg/fgtemporalposition.h \
  ../include/dcmtk/dcmfg/fgusimagedescription.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodutil.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h
 fgfracon.o: fgfracon.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \

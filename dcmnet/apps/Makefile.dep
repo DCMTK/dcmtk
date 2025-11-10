@@ -678,7 +678,12 @@ movescu.o: movescu.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+ ../include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 storescp.o: storescp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -28,11 +28,13 @@
 
 DSRContextGroup::DSRContextGroup(const OFString &contextIdentifier,
                                  const OFString &mappingResource,
+                                 const OFString &contextGroupKeyword,
                                  const OFString &contextGroupVersion,
                                  const OFString &contextGroupUID,
                                  const DSRCodedEntryValue &selectedValue)
   : Identifier(contextIdentifier),
     MappingResource(mappingResource),
+    Keyword(contextGroupKeyword),
     Version(contextGroupVersion),
     UID(contextGroupUID),
     SelectedValue(selectedValue),
@@ -149,6 +151,7 @@ void DSRContextGroup::printHeader(STD_NAMESPACE ostream &stream) const
     /* output some general information on the context group */
     stream << "CID " << getIdentifier() << OFendl;
     stream << "  Resource : " << getMappingResource() << OFendl;
+    stream << "  Keyword  : " << getKeyword() << OFendl;
     stream << "  Version  : " << getVersion() << OFendl;
     stream << "  UID      : " << getUID() << OFendl;
     stream << "  Type     : " << (isExtensible() ? "extensible" : "non-extensible") << OFendl;

@@ -7,6 +7,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmsr_tests
   tsrdoc.cc
   tsrdoctr.cc
   tsrlist.cc
+  tsrimgvl.cc
   tsrnumvl.cc
   tsrtpl.cc
   tsrtree.cc

@@ -126,7 +126,7 @@ DCMTK_UNSET(SYSTEM_PROCESSOR)
 
 # Define the complete package version name that will be used as a subdirectory
 # name for the installation of configuration files, data files and documents.
-if (DCMTK_PACKAGE_VERSION_SUFFIX STREQUAL "+")
+if(DCMTK_PACKAGE_VERSION_SUFFIX STREQUAL "+")
   # development version
   set(DCMTK_COMPLETE_PACKAGE_VERSION "${DCMTK_PACKAGE_VERSION}-${DCMTK_PACKAGE_DATE}")
 else()
@@ -226,12 +226,9 @@ else()
 endif()
 
 # Check the sizes of various types
-include (CheckTypeSize)
-CHECK_TYPE_SIZE("double" SIZEOF_DOUBLE)
-CHECK_TYPE_SIZE("float" SIZEOF_FLOAT)
+include(CheckTypeSize)
 CHECK_TYPE_SIZE("int" SIZEOF_INT)
 CHECK_TYPE_SIZE("long" SIZEOF_LONG)
-CHECK_TYPE_SIZE("short" SIZEOF_SHORT)
 CHECK_TYPE_SIZE("void*" SIZEOF_VOID_P)
 
 # Check for include files, libraries, and functions
@@ -304,14 +301,12 @@ endif()
   CHECK_INCLUDE_FILE_CXX("cstdint" HAVE_CSTDINT)
   CHECK_INCLUDE_FILE_CXX("dirent.h" HAVE_DIRENT_H)
   CHECK_INCLUDE_FILE_CXX("err.h" HAVE_ERR_H)
-  CHECK_INCLUDE_FILE_CXX("fcntl.h" HAVE_FCNTL_H)
   CHECK_INCLUDE_FILE_CXX("fnmatch.h" HAVE_FNMATCH_H)
   CHECK_INCLUDE_FILE_CXX("grp.h" HAVE_GRP_H)
   CHECK_INCLUDE_FILE_CXX("ieeefp.h" HAVE_IEEEFP_H)
   CHECK_INCLUDE_FILE_CXX("io.h" HAVE_IO_H)
   CHECK_INCLUDE_FILE_CXX("langinfo.h" HAVE_LANGINFO_H)
   CHECK_INCLUDE_FILE_CXX("libc.h" HAVE_LIBC_H)
-  CHECK_INCLUDE_FILE_CXX("malloc.h" HAVE_MALLOC_H)
   CHECK_INCLUDE_FILE_CXX("mqueue.h" HAVE_MQUEUE_H)
   CHECK_INCLUDE_FILE_CXX("netdb.h" HAVE_NETDB_H)
   CHECK_INCLUDE_FILE_CXX("png.h" HAVE_PNG_H)
@@ -319,7 +314,6 @@ endif()
   CHECK_INCLUDE_FILE_CXX("pthread.h" HAVE_PTHREAD_H)
   CHECK_INCLUDE_FILE_CXX("pwd.h" HAVE_PWD_H)
   CHECK_INCLUDE_FILE_CXX("semaphore.h" HAVE_SEMAPHORE_H)
-  CHECK_INCLUDE_FILE_CXX("stdint.h" HAVE_STDINT_H)
   CHECK_INCLUDE_FILE_CXX("strings.h" HAVE_STRINGS_H)
   CHECK_INCLUDE_FILE_CXX("synch.h" HAVE_SYNCH_H)
   CHECK_INCLUDE_FILE_CXX("sys/dir.h" HAVE_SYS_DIR_H)
@@ -332,12 +326,10 @@ endif()
   CHECK_INCLUDE_FILE_CXX("sys/resource.h" HAVE_SYS_RESOURCE_H)
   CHECK_INCLUDE_FILE_CXX("sys/select.h" HAVE_SYS_SELECT_H)
   CHECK_INCLUDE_FILE_CXX("sys/socket.h" HAVE_SYS_SOCKET_H)
-  CHECK_INCLUDE_FILE_CXX("sys/stat.h" HAVE_SYS_STAT_H)
   CHECK_INCLUDE_FILE_CXX("sys/syscall.h" HAVE_SYS_SYSCALL_H)
   CHECK_INCLUDE_FILE_CXX("sys/systeminfo.h" HAVE_SYS_SYSTEMINFO_H)
   CHECK_INCLUDE_FILE_CXX("sys/time.h" HAVE_SYS_TIME_H)
   CHECK_INCLUDE_FILE_CXX("sys/timeb.h" HAVE_SYS_TIMEB_H)
-  CHECK_INCLUDE_FILE_CXX("sys/types.h" HAVE_SYS_TYPES_H)
   CHECK_INCLUDE_FILE_CXX("sys/un.h" HAVE_SYS_UN_H)
   CHECK_INCLUDE_FILE_CXX("sys/utime.h" HAVE_SYS_UTIME_H)
   CHECK_INCLUDE_FILE_CXX("sys/utsname.h" HAVE_SYS_UTSNAME_H)
@@ -347,8 +339,6 @@ endif()
   CHECK_INCLUDE_FILE_CXX("unistd.h" HAVE_UNISTD_H)
   CHECK_INCLUDE_FILE_CXX("unix.h" HAVE_UNIX_H)
   CHECK_INCLUDE_FILE_CXX("utime.h" HAVE_UTIME_H)
-  CHECK_INCLUDE_FILE_CXX("system_error" HAVE_SYSTEM_ERROR)
-  CHECK_INCLUDE_FILE_CXX("tuple" HAVE_TUPLE)
   CHECK_INCLUDE_FILE_CXX("type_traits" HAVE_TYPE_TRAITS)
   CHECK_INCLUDE_FILE_CXX("atomic" HAVE_ATOMIC)
 
@@ -363,11 +353,8 @@ endif()
 
   # This mimics the autoconf test. There are systems out there
   # (e.g. FreeBSD and NeXT) where tcp.h can't be compiled on its own.
-  set(TCP_H_DEPS "")
-  if(HAVE_SYS_TYPES_H)
-    # This one is needed to make FreeBSD happy
-    set(TCP_H_DEPS "sys/types.h")
-  endif()
+  # This one is needed to make FreeBSD happy
+  set(TCP_H_DEPS "sys/types.h")
   CHECK_INCLUDE_FILES("${TCP_H_DEPS};netinet/in_systm.h" HAVE_NETINET_IN_SYSTM_H)
   if(HAVE_NETINET_IN_SYSTM_H)
     set(TCP_H_DEPS "${TCP_H_DEPS};netinet/in_systm.h")
@@ -393,9 +380,6 @@ endif()
     set(HAVE_NO_TYPEDEF_PID_T TRUE)
   else()
     set(HAVE_NO_TYPEDEF_PID_T FALSE)
-    if(NOT ${HAVE_SYS_TYPES_H})
-      set(HAVE_NO_TYPEDEF_SSIZE_T TRUE)
-    endif()
   endif()
 
   set(HEADERS)
@@ -431,11 +415,7 @@ endif()
   endif()
 
   set(HEADERS ${HEADERS} stdlib.h)
-
-  if(HAVE_STDINT_H)
-    set(HEADERS ${HEADERS} stdint.h)
-  endif()
-
+  set(HEADERS ${HEADERS} stdint.h)
   set(HEADERS ${HEADERS} stddef.h)
 
   if(HAVE_NETDB_H)
@@ -464,17 +444,13 @@ endif()
     set(HEADERS ${HEADERS} sys/resource.h)
   endif()
 
-  if(HAVE_SYS_TYPES_H)
-    set(HEADERS ${HEADERS} sys/types.h)
-  endif()
+  set(HEADERS ${HEADERS} sys/types.h)
 
   if(HAVE_SYS_SOCKET_H)
     set(HEADERS ${HEADERS} sys/socket.h)
   endif()
 
-  if(HAVE_SYS_STAT_H)
-    set(HEADERS ${HEADERS} sys/stat.h)
-  endif()
+  set(HEADERS ${HEADERS} sys/stat.h)
 
   if(HAVE_SYS_TIMEB_H)
     set(HEADERS ${HEADERS} sys/timeb.h)
@@ -539,12 +515,9 @@ endif()
 
   CHECK_FUNCTION_EXISTS(_findfirst HAVE__FINDFIRST)
   CHECK_FUNCTION_EXISTS(_set_output_format HAVE__SET_OUTPUT_FORMAT)
-  CHECK_FUNCTION_EXISTS(access HAVE_ACCESS)
   CHECK_FUNCTION_EXISTS(atoll HAVE_ATOLL)
-  CHECK_FUNCTION_EXISTS(bcmp HAVE_BCMP)
   CHECK_FUNCTION_EXISTS(cuserid HAVE_CUSERID)
   CHECK_FUNCTION_EXISTS(fgetln HAVE_FGETLN)
-  CHECK_FUNCTION_EXISTS(finite HAVE_FINITE)
   CHECK_FUNCTION_EXISTS(flock HAVE_FLOCK)
   CHECK_FUNCTION_EXISTS(fork HAVE_FORK)
   CHECK_FUNCTION_EXISTS(fseeko HAVE_FSEEKO)
@@ -556,27 +529,18 @@ endif()
   CHECK_FUNCTION_EXISTS(gethostid HAVE_GETHOSTID)
   CHECK_FUNCTION_EXISTS(getlogin HAVE_GETLOGIN)
   CHECK_FUNCTION_EXISTS(getlogin_r HAVE_GETLOGIN_R)
-  CHECK_FUNCTION_EXISTS(getpid HAVE_GETPID)
   CHECK_FUNCTION_EXISTS(getpwnam HAVE_GETPWNAM)
-  CHECK_FUNCTION_EXISTS(getrusage HAVE_GETRUSAGE)
   CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)
   CHECK_FUNCTION_EXISTS(getuid HAVE_GETUID)
   CHECK_FUNCTION_EXISTS(gmtime_r HAVE_GMTIME_R)
-  CHECK_FUNCTION_EXISTS(index HAVE_INDEX)
-  CHECK_FUNCTION_EXISTS(itoa HAVE_ITOA)
-  CHECK_FUNCTION_EXISTS(listen HAVE_LISTEN)
   CHECK_FUNCTION_EXISTS(localtime_r HAVE_LOCALTIME_R)
   CHECK_FUNCTION_EXISTS(lockf HAVE_LOCKF)
   CHECK_FUNCTION_EXISTS(lstat HAVE_LSTAT)
   CHECK_FUNCTION_EXISTS(malloc_debug HAVE_MALLOC_DEBUG)
   CHECK_FUNCTION_EXISTS(mkstemp HAVE_MKSTEMP)
-  CHECK_FUNCTION_EXISTS(mktemp HAVE_MKTEMP)
   CHECK_FUNCTION_EXISTS(nanosleep HAVE_NANOSLEEP)
-  CHECK_FUNCTION_EXISTS(rindex HAVE_RINDEX)
   CHECK_FUNCTION_EXISTS(setuid HAVE_SETUID)
   CHECK_FUNCTION_EXISTS(sleep HAVE_SLEEP)
-  CHECK_FUNCTION_EXISTS(stat HAVE_STAT)
-  CHECK_FUNCTION_EXISTS(strdup HAVE_STRDUP)
   CHECK_FUNCTION_EXISTS(strlcat HAVE_STRLCAT)
   CHECK_FUNCTION_EXISTS(strlcpy HAVE_STRLCPY)
   CHECK_FUNCTION_EXISTS(sysinfo HAVE_SYSINFO)
@@ -586,10 +550,6 @@ endif()
 
   CHECK_SYMBOL_EXISTS(strcasestr "string.h" HAVE_PROTOTYPE_STRCASESTR)
 
-  CHECK_FUNCTIONWITHHEADER_EXISTS(feenableexcept "${HEADERS}" HAVE_PROTOTYPE_FEENABLEEXCEPT)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(finite "${HEADERS}" HAVE_PROTOTYPE_FINITE)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("std::isinf(0.)" "${CXXHEADERS}" HAVE_PROTOTYPE_STD__ISINF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("std::isnan(0.)" "${CXXHEADERS}" HAVE_PROTOTYPE_STD__ISNAN)
   CHECK_FUNCTIONWITHHEADER_EXISTS(flock "${HEADERS}" HAVE_PROTOTYPE_FLOCK)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gethostbyname_r "${HEADERS}" HAVE_PROTOTYPE_GETHOSTBYNAME_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gethostbyaddr_r "${HEADERS}" HAVE_PROTOTYPE_GETHOSTBYADDR_R)
@@ -600,14 +560,10 @@ endif()
 # not be defined in the standard C++ headers.
   CHECK_FUNCTIONWITHHEADER_EXISTS(_vsnprintf_s "${HEADERS}" HAVE__VSNPRINTF_S)
   CHECK_FUNCTIONWITHHEADER_EXISTS(vfprintf_s "${HEADERS}" HAVE_VFPRINTF_S)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(vsnprintf "${HEADERS}" HAVE_VSNPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(vsprintf_s "${HEADERS}" HAVE_VSPRINTF_S)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(std::vfprintf "${CXXHEADERS}" HAVE_PROTOTYPE_STD__VFPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(std::vsnprintf "${CXXHEADERS}" HAVE_PROTOTYPE_STD__VSNPRINTF)
   CHECK_FUNCTIONWITHHEADER_EXISTS(_stricmp "${HEADERS}" HAVE_PROTOTYPE__STRICMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(gettimeofday "${HEADERS}" HAVE_PROTOTYPE_GETTIMEOFDAY)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(mkstemp "${HEADERS}" HAVE_PROTOTYPE_MKSTEMP)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(mktemp "${HEADERS}" HAVE_PROTOTYPE_MKTEMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strcasecmp "${HEADERS}" HAVE_PROTOTYPE_STRCASECMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strncasecmp "${HEADERS}" HAVE_PROTOTYPE_STRNCASECMP)
   CHECK_FUNCTIONWITHHEADER_EXISTS(strerror_r "${HEADERS}" HAVE_PROTOTYPE_STRERROR_R)
@@ -617,24 +573,16 @@ endif()
   CHECK_FUNCTIONWITHHEADER_EXISTS("__sync_sub_and_fetch((int*)0,0)" "${HEADERS}" HAVE_SYNC_SUB_AND_FETCH)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedIncrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_INCREMENT)
   CHECK_FUNCTIONWITHHEADER_EXISTS("InterlockedDecrement((long*)0)" "${HEADERS}" HAVE_INTERLOCKED_DECREMENT)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("_fpclassf(0.0f)" "${HEADERS}" HAVE_PROTOTYPE__FPCLASSF)
   CHECK_FUNCTIONWITHHEADER_EXISTS("getgrnam_r((char*)0,(group*)0,(char*)0,0,(group**)0)" "${HEADERS}" HAVE_GETGRNAM_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS("getpwnam_r((char*)0,(passwd*)0,(char*)0,0,(passwd**)0)" "${HEADERS}" HAVE_GETPWNAM_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS("readdir_r((DIR*)0,(dirent*)0,(dirent**)0)" "${HEADERS}" HAVE_READDIR_R)
   CHECK_FUNCTIONWITHHEADER_EXISTS("readdir_r((DIR*)0,(dirent*)0)" "${HEADERS}" HAVE_OLD_READDIR_R)
-  CHECK_FUNCTIONWITHHEADER_EXISTS(nanosleep "${HEADERS}" HAVE_PROTOTYPE_NANOSLEEP)
   CHECK_FUNCTIONWITHHEADER_EXISTS("&passwd::pw_gecos" "${HEADERS}" HAVE_PASSWD_GECOS)
   CHECK_FUNCTIONWITHHEADER_EXISTS("TryAcquireSRWLockShared((PSRWLOCK)0)" "${HEADERS}" HAVE_PROTOTYPE_TRYACQUIRESRWLOCKSHARED)
-  # "definition" is an (exchangeable) identifier that is needed for successful compile test
-  CHECK_FUNCTIONWITHHEADER_EXISTS("fp_except_t definition" "${HEADERS}" HAVE_DECLARATION_FP_EXCEPT_T)
 
   # Check for some type definitions needed by JasPer and defines them if necessary
   # Even if not functions but types are looked for, the script works fine.
   # "definition" is an (exchangeable) identifier that is needed for successful compile test
-  CHECK_FUNCTIONWITHHEADER_EXISTS("uchar definition" "${HEADERS}" HAVE_UCHAR_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("ushort definition" "${HEADERS}" HAVE_USHORT_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("uint definition" "${HEADERS}" HAVE_UINT_TYPEDEF)
-  CHECK_FUNCTIONWITHHEADER_EXISTS("ulong definition" "${HEADERS}" HAVE_ULONG_TYPEDEF)
   CHECK_FUNCTIONWITHHEADER_EXISTS("long long definition" "${HEADERS}" HAVE_LONG_LONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("unsigned long long definition" "${HEADERS}" HAVE_UNSIGNED_LONG_LONG)
   CHECK_FUNCTIONWITHHEADER_EXISTS("int64_t definition" "${HEADERS}" HAVE_INT64_T)
@@ -652,9 +600,6 @@ endif()
   # popen and pclose are nonstandard and may not be available in the C++ headers
   CHECK_FUNCTIONWITHHEADER_EXISTS("popen" "${HEADERS}" HAVE_POPEN)
   CHECK_FUNCTIONWITHHEADER_EXISTS("pclose" "${HEADERS}" HAVE_PCLOSE)
-
-  # Signal handling functions
-  CHECK_FUNCTIONWITHHEADER_EXISTS("sigjmp_buf definition" "setjmp.h" HAVE_SIGJMP_BUF)
 
 if(HAVE_LOCKF AND ANDROID)
   # When Android introduced lockf, they forgot to put the constants like F_LOCK in the
@@ -702,7 +647,7 @@ else()
 
 #include <pthread.h>
 
-int main ()
+int main()
 {
   pthread_t p;
   unsigned long l = p;
@@ -961,49 +906,6 @@ endfunction()
 
 DCMTK_CHECK_ENABLE_LFS()
 
-if(WIN32)
-  # If someone can tell me how to convince TRY_COMPILE to link against winsock,
-  # we could use tests for these. Until then, here is what would be the result:
-  set(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-  set(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-else()
-  # Check if socket functions accept an int*
-  DCMTK_TRY_COMPILE(HAVE_INTP_SOCKET, "socket functions accept an int* argument"
-      "
-#ifdef __cplusplus
-extern \"C\" {
-#endif
-#ifdef _WIN32
-/* Windows is pure evil */
-#include <windows.h>
-#else
-#include <sys/socket.h>
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-int main()
-{
-    int i;
-    struct sockaddr *addr = 0;
-    int addrlen = 0;
-    int optlen = 0;
-
-    i = accept(1, addr, &addrlen);
-    i = getsockopt(0, 0, 0, 0, &optlen);
-
-    return 0;
-}")
-  if(HAVE_INTP_SOCKET)
-    set(HAVE_INTP_ACCEPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-    set(HAVE_INTP_GETSOCKOPT 1 CACHE INTERNAL "Set if socket functions accept an int* argument")
-  else()
-    set(HAVE_INTP_ACCEPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
-    set(HAVE_INTP_GETSOCKOPT 0 CACHE INTERNAL "Set if socket functions accept an int* argument")
-  endif()
-endif()
-
 # Check for alignment query / specifier support
 DCMTK_TRY_COMPILE(HAVE_GNU_ALIGNOF "__alignof__ is supported"
     "int main()
@@ -1059,32 +961,6 @@ struct enable<0> { enum { result = 0 }; };
 int main()
 {
     return enable<sizeof(sfinae<test>(0)) == sizeof(yes_type)>::result;
-}")
-
-DCMTK_TRY_COMPILE(HAVE_STD_NAMESPACE "ANSI standard C++ includes use std namespace"
-    "#include <iostream>
-int main()
-{
-    using namespace std;
-    std::cout << endl;
-    return 0;
-}")
-
-DCMTK_TRY_COMPILE(HAVE_STD__NOTHROW "the compiler supports std::nothrow"
-    "#include <new>
-int main()
-{
-    int* i = new (std::nothrow) int;
-    return 0;
-}")
-
-DCMTK_TRY_COMPILE(HAVE_NOTHROW_DELETE "the compiler supports operator delete (std::nothrow)"
-    "#include <new>
-int main()
-{
-    int* i = 0;
-    operator delete (i,std::nothrow);
-    return 0;
 }")
 
 DCMTK_TRY_COMPILE(HAVE_STATIC_ASSERT "the compiler supports static_assert"
@@ -1325,7 +1201,7 @@ endfunction()
 set(FORCE_MSVC_CPLUSPLUS_MACRO "")
 if(MSVC)
   if(NOT (MSVC_VERSION LESS 1910)) # VS 2017 and above
-    set (FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
+    set(FORCE_MSVC_CPLUSPLUS_MACRO "/Zc:__cplusplus")
   endif()
 endif()
 
@@ -1356,6 +1232,12 @@ if(MSVC)
   endforeach()
 endif()
 
+if(NOT HAVE_CXX11 AND NOT DCMTK_PERMIT_CXX98)
+  # Since the situation where the user has explicitly requested CMAKE_CXX_STANDARD=98
+  # has already been handled in dcmtkPrepare.cmake, we are apparently using a compiler
+  # that uses C++98 by default, and the user has not requested anything specific.
+  message(FATAL_ERROR "DCMTK will require C++11 or later in the future (which is apparently not supported by this compiler). Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now).")
+endif()
 
 if(CMAKE_CROSSCOMPILING)
   set(DCMTK_CROSS_COMPILING ${CMAKE_CROSSCOMPILING})

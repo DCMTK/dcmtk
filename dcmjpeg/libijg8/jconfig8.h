@@ -23,12 +23,12 @@
 
 #include "dcmtk/config/osconfig.h"
 
-/* We assume ANSI C and don't support DOS, 
- * so the following settings need not be tested 
+/* We assume ANSI C and don't support DOS,
+ * so the following settings need not be tested
  */
-#define HAVE_PROTOTYPES 
-#define HAVE_UNSIGNED_CHAR 
-#define HAVE_UNSIGNED_SHORT 
+#define HAVE_PROTOTYPES
+#define HAVE_UNSIGNED_CHAR
+#define HAVE_UNSIGNED_SHORT
 #undef NEED_FAR_POINTERS
 #undef INCOMPLETE_TYPES_BROKEN
 
@@ -38,9 +38,7 @@
 #define CHAR_IS_UNSIGNED
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
 #define NEED_SYS_TYPES_H
-#endif
 
 /* must always be defined for our implementation */
 #define NEED_SHORT_EXTERNAL_NAMES

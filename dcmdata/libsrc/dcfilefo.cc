@@ -52,7 +52,9 @@
 
 DcmFileFormat::DcmFileFormat()
   : DcmSequenceOfItems(DCM_InternalUseTag),
-    FileReadMode(ERM_autoDetect)
+    FileReadMode(ERM_autoDetect),
+    ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
+    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -67,7 +69,9 @@ DcmFileFormat::DcmFileFormat()
 DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
                              OFBool deepCopy)
   : DcmSequenceOfItems(DCM_InternalUseTag),
-    FileReadMode(ERM_autoDetect)
+    FileReadMode(ERM_autoDetect),
+    ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
+    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -93,7 +97,9 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
 
 DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
   : DcmSequenceOfItems(old),
-    FileReadMode(old.FileReadMode)
+    FileReadMode(old.FileReadMode),
+    ImplementationClassUID(old.ImplementationClassUID),
+    ImplementationVersionName(old.ImplementationVersionName)
 {
 }
 
@@ -120,6 +126,8 @@ DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
   {
     DcmSequenceOfItems::operator=(obj);
     FileReadMode = obj.FileReadMode;
+    ImplementationClassUID = obj.ImplementationClassUID;
+    ImplementationVersionName = obj.ImplementationVersionName;
   }
 
   return *this;
@@ -265,12 +273,13 @@ OFCondition DcmFileFormat::writeJson(STD_NAMESPACE ostream &out,
 // ********************************
 
 
-OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
-                                                DcmDataset *dataset,
-                                                const DcmTagKey &atagkey,
-                                                DcmObject *obj,
-                                                const E_TransferSyntax oxfer,
-                                                const E_FileWriteMode writeMode)
+OFCondition DcmFileFormat::checkMetaHeaderValue(
+    DcmMetaInfo *metainfo,
+    DcmDataset *dataset,
+    const DcmTagKey &atagkey,
+    DcmObject *obj,
+    const E_TransferSyntax oxfer,
+    const E_FileWriteMode writeMode) const
     /*
      * This function checks if a particular data element of the file meta information header is
      * existent.  If the element is not existent, it will be inserted.  Additionally, this function
@@ -360,7 +369,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
+                if ((writeMode == EWM_updateMeta) || (writeMode == EWM_createNewMeta) || (elem->getLength() == 0))
                 {
                     if (dataset->search(DCM_SOPClassUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
@@ -402,7 +411,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                if ((writeMode == EWM_updateMeta) || (elem->getLength() == 0))
+                if ((writeMode == EWM_updateMeta) || (writeMode == EWM_createNewMeta) || (elem->getLength() == 0))
                 {
                     if (dataset->search(DCM_SOPInstanceUID, stack).good() && (stack.top()->ident() == EVR_UI))
                     {
@@ -468,8 +477,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_UI)
             {
-                const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
-                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
+                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(ImplementationClassUID.c_str());
             }
         }
         else if (tag == DCM_ImplementationVersionName)     // (0002,0013)
@@ -481,8 +489,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(DcmMetaInfo *metainfo,
             }
             if (elem->ident() == EVR_SH)
             {
-                const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
-                OFstatic_cast(DcmShortString *, elem)->putString(uid);
+                OFstatic_cast(DcmShortString *, elem)->putString(ImplementationVersionName.c_str());
             }
         }
         else if ((tag == DCM_SourceApplicationEntityTitle) ||  // (0002,0016)
@@ -566,13 +573,27 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
         {
             DCMDATA_WARN("DcmFileFormat: Meta Information Header is not updated!");
         } else {
-            /* start with empty file meta information */
-            if (writeMode == EWM_createNewMeta)
-                metinf->clear();
-
             /* in the following, we want to make sure all elements of the meta header */
             /* are existent in metinf and contain correct values */
             DcmStack stack;
+
+            /* start with empty file meta information */
+            if (writeMode == EWM_createNewMeta)
+            {
+                /* search, and if present, store and remove the media storage SOP class and instance UID. */
+                metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
+                DcmElement *sopClassUID = metinf->remove(stack.top());
+                metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
+                DcmElement *sopInstanceUID = metinf->remove(stack.top());
+
+                /* clear the meta-header and the search stack */
+                metinf->clear();
+                stack.clear();
+
+                /* re-insert SOP class UID and SOP instance UID */
+                if (sopClassUID) metinf->insert(sopClassUID);
+                if (sopInstanceUID) metinf->insert(sopInstanceUID);
+            }
 
             /* DCM_FileMetaInformationGroupLength */
             metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
@@ -752,6 +773,11 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                     // remember the parent
                     dataset->setParent(this);
                 }
+
+                // initialize dataset transfer syntax members
+                // to make sure the values are correct even if the dataset is empty
+                dataset->initializeXfer(newxfer);
+
                 // check whether to read the dataset at all
                 if (FileReadMode != ERM_metaOnly)
                 {
@@ -817,6 +843,12 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
      *                         in the file meta information header.
      */
 {
+    /* write as dataset (without meta header) */
+    if (writeMode == EWM_dataset)
+    {
+        return getDataset()->write(outStream, oxfer, enctype, wcache, glenc,
+            padenc, padlen, subPadlen, instanceLength);
+    }
     /* if the transfer state of this is not initialized, this is an illegal call */
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -975,6 +1007,7 @@ OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,
                                     const Uint32 subPadLength,
                                     const E_FileWriteMode writeMode)
 {
+    /* save as dataset (without meta header) */
     if (writeMode == EWM_dataset)
     {
         return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
@@ -1170,4 +1203,19 @@ OFCondition DcmFileFormat::convertToUTF8()
 {
     // the DICOM defined term "ISO_IR 192" is used for "UTF-8"
     return convertCharacterSet("ISO_IR 192", 0 /*flags*/);
+}
+
+void DcmFileFormat::setImplementationClassUID(const OFString& implementationClassUID)
+{
+    ImplementationClassUID = implementationClassUID;
+}
+
+void DcmFileFormat::setImplementationVersionName(const OFString& implementationVersionName)
+{
+    ImplementationVersionName = implementationVersionName;
+    if (ImplementationVersionName.length() > 16)
+    {
+        DCMDATA_WARN("DcmFileFormat: implementation version name too long");
+        ImplementationVersionName.erase(16);
+    }
 }

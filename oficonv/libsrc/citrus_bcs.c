@@ -25,11 +25,24 @@
  */
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/oficonv/iconv.h"
 #include "citrus_bcs.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+char *oficonv_path = NULL;
+
+void OFiconv_setpath(const char *runtime_path) {
+    if (oficonv_path) {
+        free(oficonv_path);
+        oficonv_path = NULL;
+    }
+    if (runtime_path) {
+        oficonv_path = strdup(runtime_path);
+    }
+}
 
 /*
  * case insensitive comparison between two C strings.
@@ -183,6 +196,9 @@ void get_data_path(char *path_out, size_t path_size, const char *dirname, const 
 
     // retrieve the DCMICONVPATH environment variable
     env = getenv(OFICONV_PATH_VARIABLE);
+
+    // if the environment variable is not set, use the runtime oficonv path instead:
+    if ( env == NULL && oficonv_path != NULL ) env = oficonv_path;
 
     // if the environment variable is not set, use DEFAULT_SUPPORT_DATA_DIR instead
     if (env == NULL) env = DEFAULT_SUPPORT_DATA_DIR;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -25,7 +25,7 @@
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
 #include "dcmtk/dcmdata/dcitem.h"     /* for class DcmItem */
 #include "dcmtk/dcmdata/dcdeftag.h"   /* for tag definitions */
-#include "dcmtk/dcmdata/dcjson.h"     /* json helper classes */
+#include "dcmtk/dcmdata/dcjson.h"     /* JSON helper classes */
 #include "dcmtk/dcmdata/dcmatch.h"
 
 //
@@ -224,19 +224,23 @@ OFCondition DcmCharString::getSpecificCharacterSet(OFString &charset)
 OFCondition DcmCharString::writeJson(STD_NAMESPACE ostream &out,
     DcmJsonFormat &format)
 {
+    OFCondition result = EC_Normal;
+
     /* always write JSON Opener */
     DcmElement::writeJsonOpener(out, format);
+
     /* write element value (if non-empty) */
     if (!isEmpty())
     {
-        OFString value;
-        if (format.asBulkDataURI(getTag(), value))
+        if (format.asBulkDataURI(getTag(), getLength()))
         {
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, value);
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+            result = format.writeBulkData(out, getTag(), getLengthField(), byteValues);
         }
         else
         {
+            OFString value;
             OFCondition status = getOFString(value, 0L);
             if (status.bad())
                 return status;
@@ -254,10 +258,10 @@ OFCondition DcmCharString::writeJson(STD_NAMESPACE ostream &out,
             format.printValueSuffix(out);
         }
     }
+
     /* write JSON Closer  */
     DcmElement::writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return result;
 }
 
 

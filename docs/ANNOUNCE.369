@@ -1,28 +1,168 @@
--------------------------------------------------------------------------------
-  Since this is a development version of the DCMTK, there is no public
-  announcement.  This file will be updated for the next official release.
--------------------------------------------------------------------------------
-
-
 ANNOUNCEMENT
 
-Version X.Y.Z of the OFFIS DCMTK (DICOM ToolKit) software is now available for
+Version 3.6.9 of the OFFIS DCMTK (DICOM toolkit) software is now available for
 public release.  This release includes the following main changes over the
-previous version 3.6.9:
+previous version 3.6.8:
 
-  [...]
+- DCMTK 3.6.9 builds correctly on older and up-to-date versions of GNU gcc
+  (9.5.0 to 14.2.0), Clang (14.0.6 to 18.1.8), Apple Clang (14.0.3 to 15.0.0),
+  and Microsoft Visual Studio (2017 to 2022).
+
+- Tested with the following operating systems/environments:
+  - Android on arm64
+  - FreeBSD on x86_64
+  - Linux on x86_64 and x86
+  - MacOS X on x86_64 and arm64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86_64
+  - Windows (including MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see the INSTALL file.
+
+- Updated DICOM data dictionary, list of SOP classes, well-known frame of
+  references, transfer syntaxes, code definitions, supported context group
+  classes, and directory record types for DICOM standard release 2024e:
+
+  - This also includes the latest attributes and SOP classes for the DICONDE
+    standard, e.g. for thermography images (based on ASTM E3440).
+
+  - Also updated the DICOMDIR generation code and tools accordingly.
+
+
+- The new JPEG XL and HTJ2K transfer syntaxes as well as the encapsulated
+  uncompressed transfer syntax are now supported for reading and writing, i.e.
+  for both files and network transfer.  However, encoders or decoders have not
+  been implemented yet.
+
+- Added new command line tool dcm2img that unifies and replaces the tools
+  dcm2pnm, dcmj2pnm and dcml2pnm, and adds support for JPEG-LS as an export
+  format for image files.  The command line options are identical to the older
+  tools, so that dcm2img can serve as a drop-in replacement:
+
+  - By default, the new command line tool determines the output format
+    automatically based on the extension of the output filename.
+
+  - The deprecated command line tools were replaced by stubs, which are provided
+    for the user's convenience, but will be removed with a future release.
+
+- Added new command line tool dcm2cda that extracts a CDA document from a DICOM
+  Encapsulated CDA Storage SOP Instance and stores it in a separate file.
+
+- Replaced command line tool dcmgpdir by a stub that calls the more
+  comprehensive command line tool dcmmkdir.
+
+- Further enhanced and updated DICOM Structured Reporting (SR) module "dcmsr":
+
+  - Added support for the new Waveform Annotation SR IOD (introduced with
+    Supplement 239).
+
+  - Made URL prefix for hyperlinks to composite objects configurable.
+
+  - Updated code definitions and supported context group classes (see above).
+
+  - Fixed issue with various IOD constraint checkers (see CP-2084).
+
+- Added IPv6 support to DCMTK's association requestors.  All DCMTK "client"
+  applications that only request outgoing DICOM network associations can now
+  explicitly select the protocol version to be used.  IPv6 support is not yet
+  implemented for association acceptors ("server" applications).
+
+- Various TLS enhancements:
+
+  - Added TLS support to the command line tools dcmqrscp and getscu.
+
+  - Added support for the Modified BCP 195 RFC 8996 TLS Profile.
+
+  - Added new command line option --list-profiles to all TLS-enabled tools.
+    This option prints a list of the TLS Secure Transport Connection Profiles
+    supported.
+
+  - Removed support for OpenSSL 1.0.2 and 1.1.0 and added support for OpenSSL
+    3.1.0 to 3.4.0.
+
+- Extended central DCMTK data structure where all SOP Classes are defined with
+  their associated properties, e.g. type and sub-type.
+
+- Largely enhanced basic transfer syntax class DcmXfer, e.g. to distinguish
+  more clearly between encapsulation and compression.  Please note that some of
+  the old methods have been deprecated and will be removed in a future release.
+
+- Enhanced performance of OFGlobal class, especially when used in applications
+  with many threads that read global objects of this class concurrently.
+
+- New, fully standards compliant implementations of OFStandard::atof() and
+  OFStandard::ftoa(), DCMTK's locale independent conversion routines between
+  floating point numbers and text.
+
+- Removed support for ICU-based character set conversion.  Since the oficonv
+  module in DCMTK supports all DICOM Specific Character Sets, the ICU support,
+  which was never complete, has been removed.
+
+- DCMTK now requires compilers to provide conformance to C++98 and supports
+  compilation with newer C++ versions up to C++20, which can be enabled via
+  CMake's CMAKE_CXX_STANDARD variable.  By default, C++11 is now enabled on
+  compilers that support this.
+
+- CMake-related enhancements and other changes:
+
+  - The configure process now respects CMake's CMAKE_CROSSCOMPILING_EMULATOR
+    variable.
+
+  - Exposed the CMAKE_DEBUG_POSTFIX variable to the user.  There are extra
+    options to also enable the postfix for Windows DLLs as well as executables.
+
+- Many configure tests related to outdated compilers or libraries were removed,
+  thus significantly speeding up the configuration process.
+
+- Fixed binary segmentations with certain dimensions (some cases where number
+  of total bits per frame is not divisible by 8) that were broken when being
+  serialized into a dataset.
+
+- Fixed various other issues that occurred after the official 3.6.8 release,
+  and further improved the performance.  See CHANGES file for details.
 
 Many people have contributed to this new release of DCMTK, appearing here in
 alphabetical order.  Thank you very much for your support!
 
-  [...]
+  Christian Wetzel <wetzel@phoenix-pacs.de>
+  David Gobbi <david.gobbi@gmail.com>
+  David Seifert <soap@gentoo.org>
+  Giulio Simonetti <giulio.simonetti@datamind.biz>
+  Helmut Steiner <helmut@shl.at>
+  Jean Pierre Bassenge <jp.bassenge@fiagon.com>
+  Jean-Christophe Fillion-Robin <jchris.fillionr@kitware.com>
+  Jesper Alf Dam <Jesper.Dam@mi.medical.canon>
+  Kevin Leonardic <kevin@leonardic.de>
+  Marcel Pham <Marcel.Pham@examion.com>
+  Mario Galijot <mario@salaourn.com>
+  Markus Sabin <Markus.Sabin@soft-gate.de>
+  Martin Zeiser of the Cisco Talos team <vulndiscovery@external.cisco.com>
+  Mathieu Malaterre <mathieu.malaterre@gmail.com>
+  Matt McCormick <matt.mccormick@kitware.com>
+  Melanie Michels <melanie.michels@snkeos.com>
+  Nils Bars <nils.bars@rub.de>
+  Peter Klotz <peter.klotz@siemens-healthineers.com>
+  Phileas Lebada <phileas@contextflow.com>
+  Piotr Batko <Piotr.Batko@gehealthcare.com>
+  Sam James <sam@gentoo.org>
+  Sobhita Mercy <sobhitamercy@gmail.com>
+  Yoshinaga Kosuke <kosuke.yoshinaga@goodmankk.com>
+
+  DCMTK forum users "andreasb", "Fabian Guenther", "nbeck", "Oleh", "saltcreek"
+
+  GitHub users "akaraivanov", "bananabr", "khangthk", "luissantosHCIT",
+    "malaterre", "mrbean-bremen", "percontation", "thewtex"
 
 Members of the DCMTK Team who have worked on this release are:
 
-  [...]
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Tingyan Xu <tingyan.xu@offis.de>
 
 The DCMTK software can be downloaded via:
 
   https://dicom.offis.de/dcmtk or https://www.dcmtk.org/
 
-OFFIS e.V., Oldenburg, Germany, 2024-12-13
+OFFIS e.V., Oldenburg, Germany, 2024-12-10

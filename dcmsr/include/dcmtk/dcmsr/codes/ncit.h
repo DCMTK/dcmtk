@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2024e
- *  File created on 2024-11-16 10:17:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025d
+ *  File created on 2025-10-07 12:23:18 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 51
+// total number of codes: 58
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -59,6 +59,7 @@
 #define CODE_NCIt_4Kscore                                                  DSRBasicCodedEntry("C142184", "NCIt", "4Kscore")
 #define CODE_NCIt_SoftTissueSarcoma_excludingRhabdomyosarcoma              DSRBasicCodedEntry("C148457", "NCIt", "Soft tissue sarcoma, excluding rhabdomyosarcoma")
 #define CODE_NCIt_Cryoablation                                             DSRBasicCodedEntry("C15215", "NCIt", "Cryoablation")
+#define CODE_NCIt_PAXgeneTissueSystem                                      DSRBasicCodedEntry("C185113", "NCIt", "PAXgene Tissue System")
 #define CODE_NCIt_166Holmium                                               DSRBasicCodedEntry("C1943", "NCIt", "^166^Holmium")
 #define CODE_NCIt_MouseMammaryFatPad                                       DSRBasicCodedEntry("C22550", "NCIt", "Mouse mammary fat pad")
 #define CODE_NCIt_Middle                                                   DSRBasicCodedEntry("C25569", "NCIt", "Middle")
@@ -83,6 +84,12 @@
 #define CODE_NCIt_FocusedUltrasoundAblation                                DSRBasicCodedEntry("C68681", "NCIt", "Focused ultrasound ablation")
 #define CODE_NCIt_UnitConversionFactor                                     DSRBasicCodedEntry("C70774", "NCIt", "Unit Conversion Factor")
 #define CODE_NCIt_MedicalProductExpirationDate                             DSRBasicCodedEntry("C70854", "NCIt", "Medical Product Expiration Date")
+#define CODE_NCIt_FitzpatrickSkinTypeI                                     DSRBasicCodedEntry("C74569", "NCIt", "Fitzpatrick Skin Type I")
+#define CODE_NCIt_FitzpatrickSkinTypeII                                    DSRBasicCodedEntry("C74570", "NCIt", "Fitzpatrick Skin Type II")
+#define CODE_NCIt_FitzpatrickSkinTypeIII                                   DSRBasicCodedEntry("C74571", "NCIt", "Fitzpatrick Skin Type III")
+#define CODE_NCIt_FitzpatrickSkinTypeIV                                    DSRBasicCodedEntry("C74572", "NCIt", "Fitzpatrick Skin Type IV")
+#define CODE_NCIt_FitzpatrickSkinTypeV                                     DSRBasicCodedEntry("C74573", "NCIt", "Fitzpatrick Skin Type V")
+#define CODE_NCIt_FitzpatrickSkinTypeVI                                    DSRBasicCodedEntry("C74574", "NCIt", "Fitzpatrick Skin Type VI")
 #define CODE_NCIt_CardiotonicAgent                                         DSRBasicCodedEntry("C78322", "NCIt", "Cardiotonic agent")
 #define CODE_NCIt_NonEnhancingLesion                                       DSRBasicCodedEntry("C81175", "NCIt", "Non-Enhancing Lesion")
 #define CODE_NCIt_ImagingRegionOfInterest                                  DSRBasicCodedEntry("C85402", "NCIt", "Imaging Region of Interest")

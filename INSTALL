@@ -1,3 +1,13 @@
+-------------------------------------------------------------------------------
+ IMPORTANT NOTE FOR CURRENT DEVELOPMENT VERSION 3.6.9+DEV
+-------------------------------------------------------------------------------
+ Please note that most sections of this document refer to the official release
+ DCMTK 3.6.9, i.e. they have not yet been updated to reflect the changes in
+ the latest development version.  This will be done for the next release at
+ the latest, which will probably be called version 3.7.0.
+-------------------------------------------------------------------------------
+
+
 ==================================
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
@@ -396,13 +406,16 @@ variable "CMAKE_CXX_STANDARD".
 By default, DCMTK will compile with "CMAKE_CXX_STANDARD" set to "11" (CXX11).
 The user can choose to build with a newer C++ standard by setting
 "CMAKE_CXX_STANDARD" accordingly.  The following versions are supported:
+
 - 11 (CXX11)
 - 14 (CXX14)
 - 17 (CXX17)
 - 20 (CXX20)
 
-DCMTK will still compile with "CMAKE_CXX_STANDARD" set to "98" (CXX98), but
-support will be removed in future versions of DCMTK.
+Compilation of DCMTK with C++98 is deprecated.  In this release, it can be
+enabled by setting "CMAKE_CXX_STANDARD=98" and "DCMTK_PERMIT_CXX98=ON", but
+support for C++ releases before C++11 will be removed in future versions
+of DCMTK.
 
 Using C++11 or later will change some parts of DCMTK's API, so a C++11 build of
 DCMTK is potentially incompatible with a classic (C++98) build of DCMTK.  This
@@ -615,10 +628,15 @@ Through CMake, perform the following steps:
        "libchset_d.lib"    - debug version
        "libchset_o.lib"    - release version (optimized)
 
-   The debug versions of all libraries must be compiled for the multithread
-   debug version of the runtime (/MTd), the release version must be compiled
-   for the non-debug multithread runtime (/MT).  Precompiled versions of all
-   libraries (*) can be downloaded from https://dcmtk.org/develop/#lib-win .
+   The debug and release versions of all libraries must be compiled with the
+   same runtime library dependency as DCMTK (i.e., /MT[d] or /MD[d]).
+   By default, DCMTK is compiled with /MTd for Debug and /MT for Release mode
+   unless the CMake variables "DCMTK_COMPILE_WIN32_MULTITHREADED_DLL" or
+   "BUILD_SHARED_LIBS" (see below) are set to true, in which case DCMTK is
+   compiled with /MDd for Debug and /MD for Release mode.
+
+   Precompiled versions of all libraries (*) can be downloaded from
+   https://dcmtk.org/develop/#lib-win .
 
    (*) Starting with DCMTK 3.6.8, libiconv is no longer part of the download
        package.  That also means that libxml2 was built without this library.
@@ -1050,4 +1068,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2024-12-10 (Onken)
+Last revised: 2025-03-22 (Riesmeier)

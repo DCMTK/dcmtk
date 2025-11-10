@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2024, OFFIS e.V.
+ *  Copyright (C) 2010-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,12 +28,7 @@
 
 // Use the standard template library (STL) vector class.
 #include <vector>
-
-#ifdef HAVE_STD_NAMESPACE
 #define OFVector std::vector
-#else
-#define OFVector vector
-#endif
 
 #else
 

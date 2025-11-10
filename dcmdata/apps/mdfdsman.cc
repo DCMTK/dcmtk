@@ -618,7 +618,9 @@ OFCondition MdfDatasetManager::saveFile(const char* file_name,
         {
             opt_xfer = EXS_LittleEndianExplicit;
         }
-        /* write DICOM file */
+        /* write DICOM file. We deliberately use write mode EWM_fileformat here because
+         * EWM_createNewMeta would break the "--no-meta-uid" command line option
+         */
         result = dfile->saveFile(file_name,
                                  opt_xfer,
                                  opt_enctype,
@@ -626,7 +628,7 @@ OFCondition MdfDatasetManager::saveFile(const char* file_name,
                                  opt_padenc,
                                  OFstatic_cast(Uint32, opt_filepad),
                                  OFstatic_cast(Uint32, opt_itempad),
-                                 (opt_dataset) ? EWM_dataset : EWM_createNewMeta);
+                                 (opt_dataset) ? EWM_dataset : EWM_fileformat);
     }
     else
     {

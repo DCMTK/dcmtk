@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2024, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,15 +121,11 @@ END_EXTERN_C
 #include <sstream>
 
 BEGIN_EXTERN_C
-#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>    /* for stat() */
-#endif
 #ifdef HAVE_IO_H
 #include <io.h>          /* for access() on Win32 */
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* for opendir() and closedir() */
-#endif
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>      /* for opendir() and closedir() */
 #else
@@ -225,8 +221,9 @@ END_EXTERN_C
 #if !defined(ENABLE_OLD_OFSTD_FTOA_IMPLEMENTATION) && !defined(ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION) && !defined(ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION)
 #ifdef _WIN32
 // on Windows, the iostream-based implementation of atof is extremely slow,
-// and we do have a locale independent version of sscanf. Use this version.
-#define ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+// and we do have a locale independent version of sprintf, called _snprintf_s_l.
+// Use this version.
+#define ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
 #else
 // on other platforms, we assume that the iobased-implementation, being the
 // cleanest one, is appropriate. This is known to be the case for gcc and clang with glibc.
@@ -349,37 +346,7 @@ int OFStandard::vsnprintf(char *str, size_t size, const char *format, va_list ap
     return ::vsnprintf(str, size, format, ap);
 #endif /* _MSC_VER < 1900 */
 #else /* _MSC_VER */
-#ifdef HAVE_VSNPRINTF
     return ::vsnprintf(str, size, format, ap);
-#else /* HAVE_VSNPRINTF */
-#ifdef DCMTK_ENABLE_UNSAFE_VSNPRINTF
-    // This implementation internally uses vsprintf (which is inherently unsafe).
-    // It allocates a buffer that is 1 kByte larger than "size",
-    // formats the string into that buffer, and then uses strlcpy() to
-    // copy the formatted string into the output buffer, truncating if necessary.
-    // This will work in most cases, since few snprintf calls should overrun
-    // the provided buffer by more than 1K, but it can be easily abused by
-    // a malicious attacker to cause a buffer overrun.
-    //
-    // Therefore, this implementation should only be used as a "last resort"
-    // and we strongly advise against using it in production code.
-    // The macro "DCMTK_ENABLE_UNSAFE_VSNPRINTF" must explicitly be defined
-    // by the used to enable this implementation.
-    int count = -1;
-    if (size != 0)
-    {
-      char *buf = new char[size+1024];
-      count = ::vsprintf(buf, format, ap);
-      OFStandard::strlcpy(str, buf, size);
-      delete[] buf;
-    }
-    return count;
-#warning Using unsafe implementation of vsnprintf(3)
-#else /* DCMTK_ENABLE_UNSAFE_VSNPRINTF */
-    return -1;
-#error vsnprintf(3) not found. Use different compiler or compile with DCMTK_ENABLE_UNSAFE_VSNPRINTF (unsafe!)
-#endif /* DCMTK_ENABLE_UNSAFE_VSNPRINTF */
-#endif /* HAVE_VSNPRINTF */
 #endif /* _MSC_VER */
 }
 
@@ -472,7 +439,6 @@ OFBool OFStandard::pathExists(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#ifdef HAVE_ACCESS
         /* check existence with "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -481,31 +447,6 @@ OFBool OFStandard::pathExists(const OFFilename &pathName)
         else
 #endif
             result = (access(pathName.getCharPointer(), F_OK) == 0);
-#else /* HAVE_ACCESS */
-#ifdef HAVE_WINDOWS_H
-        /* get file attributes */
-        DWORD fileAttr;
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
-        /* check whether to use the wide-char version of the API function */
-        if (pathName.usesWideChars())
-            fileAttr = GetFileAttributesW(pathName.getWideCharPointer());
-        else
-#endif
-            fileAttr = GetFileAttributes(pathName.getCharPointer());
-        result = (fileAttr != 0xffffffff);
-#else /* HAVE_WINDOWS_H */
-#ifdef HAVE_SYS_STAT_H
-        /* check existence with "stat()" */
-        struct stat stat_buf;
-        result = (stat(pathName.getCharPointer(), &stat_buf) == 0);
-#else
-        /* try to open the given "file" (or directory) in read-only mode */
-        OFFile file;
-        result = file.fopen(pathName, "r");
-        file.fclose();
-#endif /* HAVE_SYS_STAT_H */
-#endif /* HAVE_WINDOWS_H */
-#endif /* HAVE_ACCESS */
     }
     return result;
 }
@@ -582,7 +523,6 @@ OFBool OFStandard::isReadable(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#ifdef HAVE_ACCESS
         /* check whether the path is readable using "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -591,11 +531,6 @@ OFBool OFStandard::isReadable(const OFFilename &pathName)
         else
 #endif
             result = (access(pathName.getCharPointer(), R_OK) == 0);
-#else /* HAVE_ACCESS */
-        /* try to open the given "file" (or directory) in read-only mode */
-        OFFile file;
-        result = file.fopen(pathName, "r");
-#endif /* HAVE_ACCESS */
 }
     return result;
 }
@@ -607,7 +542,6 @@ OFBool OFStandard::isWriteable(const OFFilename &pathName)
     /* check for valid path name (avoid NULL or empty string) */
     if (!pathName.isEmpty())
     {
-#ifdef HAVE_ACCESS
         /* check whether the path is writable using "access()" */
 #if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
         /* check whether to use the wide-char version of the API function */
@@ -616,11 +550,6 @@ OFBool OFStandard::isWriteable(const OFFilename &pathName)
         else
 #endif
             result = (access(pathName.getCharPointer(), W_OK) == 0);
-#else /* HAVE_ACCESS */
-        /* try to open the given "file" (or directory) in write mode */
-        OFFile file;
-        result = file.fopen(pathName, "w");
-#endif /* HAVE_ACCESS */
     }
     return result;
 }
@@ -1989,6 +1918,13 @@ double OFStandard::atof(const char *s, OFBool *success)
         return OFnumeric_limits<double>::quiet_NaN();
     }
 
+    // handle negative NaN as a special case, since iostream does not
+    if ((ss.length() >= 4) && (ss[0] == '-') && (ss[1] == 'n' || ss[1] == 'N') && (ss[2] == 'a' || ss[2] == 'A') && (ss[3] == 'n' || ss[3] == 'N'))
+    {
+        if (success) *success = OFTrue;
+        return OFnumeric_limits<double>::quiet_NaN();
+    }
+
     // handle positive infinity as a special case, since iostream does not
     if ((ss.length() >= 3) && (ss[0] == 'i' || ss[0] == 'I') && (ss[1] == 'n' || ss[1] == 'N') && (ss[2] == 'f' || ss[2] == 'F'))
     {
@@ -2016,6 +1952,9 @@ double OFStandard::atof(const char *s, OFBool *success)
     if ((iss >> d) && success) *success = OFTrue;
 
 #else /* ENABLE_IOSTREAM_BASED_ATOF_IMPLEMENTATION */
+
+// This is the implementation in use when ENABLE_CSTDIO_BASED_ATOF_IMPLEMENTATION
+// is defined.
 
 #ifdef _WIN32
 
@@ -2435,6 +2374,9 @@ static void ftoa_convert(
 
 #else /* ENABLE_IOSTREAM_BASED_FTOA_IMPLEMENTATION */
 
+// This is the implementation in use when ENABLE_CSTDIO_BASED_FTOA_IMPLEMENTATION
+// is defined.
+
 static void ftoa_convert(
   char *dst,
   size_t siz,
@@ -2527,7 +2469,7 @@ void OFStandard::ftoa(
     if (!success || d != val)
     {
       // really need precision 17 (DBL_DECIMAL_DIG)
-      ftoa_convert(dst, siz, val, flags, width, prec);
+      ftoa_convert(dst, siz, val, flags, width, 17);
     }
   }
   else
@@ -3073,10 +3015,8 @@ long OFStandard::getProcessID()
 {
 #ifdef _WIN32
   return _getpid();
-#elif defined(HAVE_GETPID)
-  return getpid();
 #else
-  return 0; // Workaround for MAC
+  return getpid();
 #endif
 }
 

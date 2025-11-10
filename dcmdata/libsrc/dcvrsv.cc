@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, OFFIS e.V.
+ *  Copyright (C) 2019-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -399,6 +399,8 @@ OFCondition DcmSigned64bitVeryLong::verify(const OFBool autocorrect)
 OFCondition DcmSigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
                                               DcmJsonFormat &format)
 {
+    OFCondition status = EC_Normal;
+
     /* always write JSON Opener */
     writeJsonOpener(out, format);
 
@@ -406,11 +408,11 @@ OFCondition DcmSigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
     {
 
         /* write element value */
-        OFString bulkDataValue;
-        if (format.asBulkDataURI(getTag(), bulkDataValue))
+        if (format.asBulkDataURI(getTag(), getLength()))
         {
-            format.printBulkDataURIPrefix(out);
-            DcmJsonFormat::printString(out, bulkDataValue);
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+            status = format.writeBulkData(out, getTag(), getLengthField(), byteValues);
         }
         else
         {
@@ -418,7 +420,7 @@ OFCondition DcmSigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
             OFString value;
             Sint64 v = 0;
 
-            OFCondition status = getOFString(value, 0L);
+            status = getOFString(value, 0L);
             if (status.bad()) return status;
             format.printValuePrefix(out);
 
@@ -448,6 +450,5 @@ OFCondition DcmSigned64bitVeryLong::writeJson(STD_NAMESPACE ostream &out,
 
     /* write JSON Closer  */
     writeJsonCloser(out, format);
-    /* always report success */
-    return EC_Normal;
+    return status;
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,10 +24,8 @@
 #define DCFILEFO_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcdatset.h"
-
 
 // forward declarations
 class DcmMetaInfo;
@@ -390,6 +388,20 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
         FileReadMode = readMode;
     }
 
+    /** set Implementation Class UID to be used when writing the file
+     *  (unless the write mode EWM_dontUpdateMeta is used,
+     *  in which case the metaheader is not updated.)
+     *  @param implementationClassUID implementation class UID
+     */
+    void setImplementationClassUID(const OFString& implementationClassUID);
+
+    /** set Implementation Version Name to be used when writing the file
+     *  (unless the write mode EWM_dontUpdateMeta is used,
+     *  in which case the metaheader is not updated.)
+     *  @param implementationVersionName implementation version name
+     */
+    void setImplementationVersionName(const OFString& implementationVersionName);
+
     /** method inherited from base class that shall not be used for instances of this class.
      *  Method immediately returns with error code.
      *  @param item item
@@ -481,12 +493,12 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param writeMode flag indicating whether to update the file meta information or not
      *  @return EC_Normal if successful, an error code otherwise
      */
-    static OFCondition checkMetaHeaderValue(DcmMetaInfo *metainfo,
+    OFCondition checkMetaHeaderValue(DcmMetaInfo *metainfo,
                                             DcmDataset *dataset,
                                             const DcmTagKey &atagkey,
                                             DcmObject *obj,
                                             const E_TransferSyntax oxfer,
-                                            const E_FileWriteMode writeMode);
+                                            const E_FileWriteMode writeMode) const;
 
     /** read DCM_TransferSyntaxUID from meta header dataset and return as E_TransferSyntax value
      *  @param metainfo meta-header dataset
@@ -496,6 +508,12 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
 
     /// file read mode, specifies whether to read the meta header or not
     E_FileReadMode FileReadMode;
+
+    /// implementation class UID to write in the meta-header
+    OFString ImplementationClassUID;
+
+    /// implementation version name to write in the meta-header
+    OFString ImplementationVersionName;
 };
 
 

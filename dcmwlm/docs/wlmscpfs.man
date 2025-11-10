@@ -108,6 +108,17 @@ other processing options:
 
 \subsection wlmscpfs_network_options network options
 \verbatim
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use IPv6/IPv4 dual stack
+
 preferred network transfer syntaxes:
 
   +x=   --prefer-uncompr
@@ -380,7 +391,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0010,1080) MilitaryRank
 (0010,2000) MedicalAlerts
 (0010,2110) ContrastAllergies
-(0010,2160) EthnicGroup
+(0010,2160) EthnicGroup (retired)
 (0010,21a0) SmokingStatus
 (0010,21b0) AdditionalPatientHistory
 (0010,21c0) PregnancyStatus
@@ -515,6 +526,6 @@ It is an error if no data dictionary can be loaded.
 
 \section wlmscpfs_copyright COPYRIGHT
 
-Copyright (C) 1996-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

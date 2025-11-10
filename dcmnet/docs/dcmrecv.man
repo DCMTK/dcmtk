@@ -63,6 +63,17 @@ port  tcp/ip port number to listen on
 
 \subsection dcmrecv_network_options network options
 \verbatim
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use IPv6/IPv4 dual stack
+
 association negotiation profile from configuration file:
 
   -xf   --config-file  [f]ilename, [p]rofile: string
@@ -480,6 +491,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

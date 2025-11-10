@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -84,6 +84,14 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
     inline const OFString &getMappingResource() const
     {
         return MappingResource;
+    }
+
+    /** get context group keyword
+     ** @return keyword of the context group (might be empty)
+     */
+    inline const OFString &getKeyword() const
+    {
+        return Keyword;
     }
 
     /** get context group version (optional)
@@ -203,6 +211,7 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
     /** constructor
      ** @param  contextIdentifier    identifier of the context group
      *  @param  mappingResource      mapping resource that defines the context group
+     *  @param  contextGroupKeyword  keyword of the context group (optional)
      *  @param  contextGroupVersion  version of the context group (optional)
      *  @param  contextGroupUID      unique identifier of the context group (optional)
      *  @param  selectedValue        coded entry to be selected as the current value
@@ -210,6 +219,7 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
      */
     DSRContextGroup(const OFString &contextIdentifier,
                     const OFString &mappingResource,
+                    const OFString &contextGroupKeyword = "",
                     const OFString &contextGroupVersion = "",
                     const OFString &contextGroupUID = "",
                     const DSRCodedEntryValue &selectedValue = DSRCodedEntryValue());
@@ -265,6 +275,8 @@ class DCMTK_DCMSR_EXPORT DSRContextGroup
     const OFString Identifier;
     /// mapping resource (VR=CS, mandatory)
     const OFString MappingResource;
+    /// context group keyword (optional)
+    const OFString Keyword;
     /// context group version (VR=DT, optional)
     const OFString Version;
     /// context group UID (VR=UI, optional)

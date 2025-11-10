@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID7181_AbstractMultiDimensionalImageModelComponentUnit
  *
- *  Generated automatically from DICOM PS 3.16-2024d
- *  File created on 2024-10-08 10:25:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025c
+ *  File created on 2025-07-16 12:39:06 by J. Riesmeier
  *
  */
 
@@ -18,6 +18,7 @@
 
 // general information on CID 7181 (Abstract Multi-dimensional Image Model Component Unit)
 #define CONTEXT_GROUP_NUMBER  "7181"
+#define CONTEXT_GROUP_KEYWORD "AbstractMultiDimensionalImageModelComponentUnit"
 #define CONTEXT_GROUP_VERSION "20180605"
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.918"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible */
@@ -27,7 +28,7 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnit::CodeList *CID7181_Abstr
 
 
 CID7181_AbstractMultiDimensionalImageModelComponentUnit::CID7181_AbstractMultiDimensionalImageModelComponentUnit(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -35,7 +36,7 @@ CID7181_AbstractMultiDimensionalImageModelComponentUnit::CID7181_AbstractMultiDi
 
 CID7181_AbstractMultiDimensionalImageModelComponentUnit::CID7181_AbstractMultiDimensionalImageModelComponentUnit(const EnumType selectedValue,
                                                                                                                  const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2024, OFFIS e.V.
+ *  Copyright (C) 2009-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -386,14 +386,16 @@ OFCondition DcmSCP::waitForAssociationRQ(T_ASC_Network* network)
     OFBool useSecureLayer = m_cfg->transportLayerEnabled();
 
     // Listen to a socket for timeout seconds and wait for an association request
-    OFCondition cond = ASC_receiveAssociation(network,
-                                              &m_assoc,
-                                              m_cfg->getMaxReceivePDULength(),
-                                              NULL,
-                                              NULL,
-                                              useSecureLayer,
-                                              m_cfg->getConnectionBlockingMode(),
-                                              OFstatic_cast(int, timeout));
+    OFCondition cond = ASC_receiveAssociation(
+        network,
+        &m_assoc,
+        m_cfg->getMaxReceivePDULength(),
+        NULL,
+        NULL,
+        useSecureLayer,
+        m_cfg->getConnectionBlockingMode(),
+        OFstatic_cast(int, timeout),
+        m_cfg->getImplementationIdentification());
 
     // In case of a timeout in non-blocking mode, call notifier (and return
     // to main event loop later)

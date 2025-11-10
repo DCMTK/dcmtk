@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -379,6 +379,15 @@ class DCMTK_DCMDATA_EXPORT DcmDataset
      *  @return always returns OFTrue, i.e.\ SpecificCharacterSet should be checked
      */
     virtual OFBool checkForSpecificCharacterSet() const { return OFTrue; }
+
+    /** initialize the OriginalXfer and CurrentXfer member variables.
+     *  This method sets the values for OriginalXfer (i.e. the transfer syntax
+     *  in which a dataset is or was originally read) and CurrentXfer
+     *  (i.e. the currently active transfer syntax).
+     *  The method should only be called during import operations.
+     *  @param xfer new value for OriginalXfer and CurrentXfer
+     */
+    void initializeXfer(const E_TransferSyntax xfer);
 
   protected:
 

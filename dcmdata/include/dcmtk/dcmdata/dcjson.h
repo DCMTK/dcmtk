@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2017-2022, OFFIS e.V.
+*  Copyright (C) 2017-2025, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -23,11 +23,11 @@
 #define DCJSON_H
 
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
-
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstring.h"
-
 #include "dcmtk/dcmdata/dctagkey.h"
+
+class OFCondition;
 
 /** Class for handling JSON format options.
  *  Base class to implement custom formatting.
@@ -88,9 +88,9 @@ public:
    };
 
     /** A class to create small proxy objects that ease indention handling.
-     *  Each Indention object only contains a reference to the DcmJsonFormat object
-     *  that created it and its only purpose is to call the respective methods
-     *  of that object when one of its overloaded operators is used.
+     *  Each Indention object only contains a reference to the DcmJsonFormat
+     *  object that created it and its only purpose is to call the respective
+     *  methods of that object when one of its overloaded operators is used.
      */
     class Indention
     {
@@ -214,14 +214,17 @@ public:
                                    OFString &value);
 
     /** Constructor
-     *  @param printMetaInfo parameter that defines if meta information should be written
+     *  @param printMetaInfo parameter that defines if meta information should
+     *    be written
      */
     inline DcmJsonFormat(const OFBool printMetaInfo)
     : printMetaheaderInformation(printMetaInfo)
     , enableJsonExtension(OFFalse)
     , numStringPolicy(NSP_auto)
+    , minBulkDataSize(-1)
+    , bulkDataURIPrefix()
+    , bulkDataDirectory()
     {
-
     }
 
     /** Virtual destructor, does nothing
@@ -238,7 +241,8 @@ public:
      */
     virtual OFString space() = 0;
 
-    /** Method to return an indention proxy object for increasing, decreasing or printing indention
+    /** Method to return an indention proxy object for increasing, decreasing or
+     *  printing indention
      *  @return an indention proxy object.
      */
     inline Indention indent()
@@ -250,37 +254,20 @@ public:
      *  Override this function to implement bulk data URI output.
      *  @param tag the tag of the attribute being printed, for letting
      *    the implementation decide how to handle it.
-     *  @param uri the resulting URI to output.
+     *  @param len the length of the attribute value, in bytes
      *  @return OFTrue if yes, OFFalse if no.
-     *  @details
-     *  <h3>Usage Example:</h3>
-     *  @code{.cpp}
-     *  struct BulkDataURIJsonFormat : DcmJsonFormatPretty
-     *  {
-     *    CustomJsonFormat(const OFBool printMetaInfo = OFTrue,
-     *                     ... bulkDataURIDatabase)
-     *    : DcmJsonFormatPretty(printMetaInfo)
-     *    , TheDatabase(bulkDataURIDatabase)
-     *    {
-     *
-     *    }
-     *
-     *    virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri)
-     *    {
-     *      ... result = TheDatabase.findBulkDataFor(tag);
-     *      if (result.found())
-     *      {
-     *        uri = result.uri();
-     *        return OFTrue;
-     *      }
-     *      return OFFalse;
-     *    }
-     *
-     *    ... TheDatabase;
-     *  }
-     *  @endcode
      */
-    virtual OFBool asBulkDataURI(const DcmTagKey& tag, OFString& uri);
+    virtual OFBool asBulkDataURI(const DcmTagKey& tag, Uint32 len) const;
+
+    /** return path of bulk data directory
+     *  @param directory path returned in this parameter
+     */
+    virtual void getBulkDataDirectory(OFString& directory) const;
+
+    /** return the current bulk data URI prefix
+     *  @return prefix current bulk data URI prefix returned in this parameter
+     */
+    virtual void getBulkDataURIPrefix(OFString& prefix) const;
 
     /** Print the Prefix which for JSON Values needed
      *  with indention and newlines as in the format Variable given.
@@ -367,6 +354,51 @@ public:
      */
     const OFBool printMetaheaderInformation;
 
+    /** set the minimum size of binary attributes stored as bulk data.
+     *  @param min_bulk_size minimum bulk data size in kBytes, negative number for no bulk data
+     */
+    virtual void setMinBulkSize(ssize_t min_bulk_size);
+
+    /** set the prefix for URIs generated for bulk data
+     *  @param bulk_uri_prefix URI prefix string
+     */
+    virtual void setBulkURIPrefix(const char *bulk_uri_prefix);
+
+    /** set the directory to which bulk data files should be written
+     *  @param bulk_dir directory for bulk data files, must exist and be writable
+     */
+    virtual void setBulkDir(const char *bulk_dir);
+
+    /** write an attribute as BulkDataURI.
+     *  @param out output stream
+     *  @param tagkey tag key of the attribute
+     *  @param len length of the attribute value
+     *  @param byteValues pointer to the raw attribute value in little endian byte order
+     *  @param extension file name extension
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeBulkData(
+        STD_NAMESPACE ostream &out,
+        const DcmTagKey& tagkey,
+        Uint32 len,
+        Uint8 *byteValues,
+        const char *extension = ".bin");
+
+    /** write a binary attribute either as InlineBinary or as BulkDataURI.
+     *  @param out output stream
+     *  @param tagkey tag key of the attribute
+     *  @param len length of the attribute value
+     *  @param byteValues pointer to the raw attribute value in little endian byte order
+     *  @param extension file name extension
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeBinaryAttribute(
+        STD_NAMESPACE ostream &out,
+        const DcmTagKey& tagkey,
+        Uint32 len,
+        Uint8 *byteValues,
+        const char *extension = ".bin");
+
 protected:
     /** Indent to the specific level.
      *  @param out output stream to which the indention is written.
@@ -394,6 +426,22 @@ private:
      *  as number or string. Default is NSP_auto.
      */
     NumStringPolicy numStringPolicy;
+
+    /** minimum size of binary attributes to be written as bulk data,
+     *  in kBytes. A negative value means that no bulk data is written.
+     */
+    ssize_t minBulkDataSize;
+
+    /** prefix for bulk data URIs to be generated. The filename will
+     *  be appended to this prefix.
+     */
+    OFString bulkDataURIPrefix;
+
+    /** directory to which files for bulk data will be written.
+     *  Must exist and be writable.
+     */
+    OFString bulkDataDirectory;
+
 };
 
 

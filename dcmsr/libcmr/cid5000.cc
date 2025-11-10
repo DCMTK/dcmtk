@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2022, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID5000_Language
@@ -17,6 +17,7 @@
 
 // general information on CID 5000 (Language)
 #define CONTEXT_GROUP_NUMBER  "5000"
+#define CONTEXT_GROUP_KEYWORD "Language"
 #define CONTEXT_GROUP_VERSION ""      /* unknown */
 #define CONTEXT_GROUP_UID     "1.2.840.10008.6.1.328"
 #define CONTEXT_GROUP_TYPE    OFTrue  /* extensible? */
@@ -26,7 +27,7 @@ CID5000_Language::CodeList *CID5000_Language::Codes = NULL;
 
 
 CID5000_Language::CID5000_Language(const DSRCodedEntryValue &selectedValue)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, selectedValue)
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }
@@ -34,7 +35,7 @@ CID5000_Language::CID5000_Language(const DSRCodedEntryValue &selectedValue)
 
 CID5000_Language::CID5000_Language(const EnumType selectedValue,
                                   const OFBool enhancedEncodingMode)
-  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
+  : DSRContextGroup(CONTEXT_GROUP_NUMBER, "DCMR", CONTEXT_GROUP_KEYWORD, CONTEXT_GROUP_VERSION, CONTEXT_GROUP_UID, getCodedEntry(selectedValue, enhancedEncodingMode))
 {
     setExtensible(CONTEXT_GROUP_TYPE);
 }

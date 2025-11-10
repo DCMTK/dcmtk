@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,18 +33,13 @@
 #endif /* LIBXML_SCHEMAS_ENABLED */
 
 // This function is also used in xml2dcm, try to stay in sync!
-#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
 extern "C" void errorFunction(void * ctx, const char *msg, ...)
-#else
-extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
-#endif
 {
     OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
 
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
         return;
 
-#if defined(HAVE_VSNPRINTF) && defined(HAVE_PROTOTYPE_VSNPRINTF)
     // libxml calls us multiple times for one line of log output which would
     // result in garbled output. To avoid this, we buffer the output in a local
     // string in the caller which we get through our 'ctx' parameter. Then, we
@@ -76,23 +71,6 @@ extern "C" void errorFunction(void * /* ctx */, const char *msg, ...)
 
         pos = buffer.find('\n');
     }
-#else
-    // No vsnprint, but at least vfprintf. Output the messages directly to stderr.
-    va_list ap;
-    va_start(ap, msg);
-#ifdef HAVE_PROTOTYPE_STD__VFPRINTF
-    std::vfprintf(stderr, msg, ap);
-#else
-    vfprintf(stderr, msg, ap);
-#endif
-    va_end(ap);
-#endif
-
-#ifndef HAVE_VSNPRINTF
-    // Only the vsnprintf() branch above uses 'buffer' which means the compiler
-    // would warn about an unused variable if HAVE_VSNPRINTF is undefined.
-    buffer += "";
-#endif
 }
 
 #endif /* WITH_LIBXML */

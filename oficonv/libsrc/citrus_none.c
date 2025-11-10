@@ -30,11 +30,7 @@
 
 #include "dcmtk/oficonv/iconv.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-
-
 #include <errno.h>
 #include <stddef.h>
 #include <stdio.h>

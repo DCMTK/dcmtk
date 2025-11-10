@@ -226,7 +226,11 @@ PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
 PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
 PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
 WaveformAnnotationSRStorage                  1.2.840.10008.5.1.4.1.1.88.77
+
+RenditionSelectionDocumentRealTimeCommunication 1.2.840.10008.10.4 (*)
 \endverbatim
+
+(*) This is not a Storage SOP Class, but used for Real-Time Communication.
 
 \section dsrdump_logging LOGGING
 
@@ -301,6 +305,6 @@ replace any built-in tables.
 
 \section dsrdump_copyright COPYRIGHT
 
-Copyright (C) 2000-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

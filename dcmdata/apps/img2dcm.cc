@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2023, OFFIS e.V.
+ *  Copyright (C) 2007-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -468,6 +468,9 @@ static OFCondition startConversion(
     inputPlug->setImageFile(*if_iter++);
     cond = i2d.convertNextFrame(inputPlug, ++frameNum);
   }
+
+  // adjust byte order of pixel data to local OW byte order
+  if (cond.good()) cond = i2d.adjustByteOrder(inputFiles.size());
 
   // update offset table if image type is encapsulated
   if (cond.good()) cond = i2d.updateOffsetTable();

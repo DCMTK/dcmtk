@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -89,6 +89,7 @@ static const char* transferSyntaxes[] = {
       UID_JPEGProcess14SV1TransferSyntax,
       UID_RLELosslessTransferSyntax,
       UID_DeflatedExplicitVRLittleEndianTransferSyntax,
+      UID_DeflatedImageFrameCompressionTransferSyntax,
       UID_JPEGLSLosslessTransferSyntax,
       UID_JPEGLSLossyTransferSyntax,
       UID_JPEG2000LosslessOnlyTransferSyntax,

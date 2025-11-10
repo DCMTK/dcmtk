@@ -257,7 +257,11 @@ PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
 PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
 PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
 WaveformAnnotationSRStorage                  1.2.840.10008.5.1.4.1.1.88.77
+
+RenditionSelectionDocumentRealTimeCommunication 1.2.840.10008.10.4 (*)
 \endverbatim
+
+(*) This is not a Storage SOP Class, but used for Real-Time Communication.
 
 \subsection dsr2html_character_encoding Character Encoding
 
@@ -295,6 +299,14 @@ hebrew.
 
 Option \e --convert-to-utf8 can be used to convert the DICOM file or data set
 to UTF-8 encoding prior to the rendering to HTML/XHTML format.
+
+\subsection dsr2html_security Security
+
+Please note that using one of the options \e --css-reference, \e --css-file or
+\e --hyperlink-url-prefix can lead to security issues, as an attacker could
+misuse them to potentially inject dangerous content into the HTML/XHTML output.
+The values passed to these options are not checked, neither the URL and prefix
+nor the content of the specified CSS file.
 
 \section dsr2html_logging LOGGING
 
@@ -366,7 +378,7 @@ replace any built-in tables.
 \section dsr2html_files FILES
 
 <em>\<datadir\>/report.css</em> - Sample Cascading Stylesheet file for HTML
-<em>\<datadir\>/reportx.css</em> - Sample Cascading Stylesheet file for XHTML
+\n<em>\<datadir\>/reportx.css</em> - Sample Cascading Stylesheet file for XHTML
 
 \section dsr2html_see_also SEE ALSO
 
@@ -374,6 +386,6 @@ replace any built-in tables.
 
 \section dsr2html_copyright COPYRIGHT
 
-Copyright (C) 2000-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

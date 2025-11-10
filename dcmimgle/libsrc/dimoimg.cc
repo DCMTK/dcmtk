@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024 OFFIS e.V.
+ *  Copyright (C) 1996-2025 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1717,18 +1717,19 @@ unsigned long DiMonoImage::createDIB(void *&data,
                         data = new Uint32[count];               // allocated memory buffer
                     if (data != NULL)
                     {
-                        Uint32 *q = OFstatic_cast(Uint32 *, data);
-                        Uint32 value;
+                        Uint8 *q = OFstatic_cast(Uint8 *, data);
+                        Uint8 value;
                         Uint16 x;
                         Uint16 y;
+                        int j;
                         for (y = Rows; y != 0; --y)
                         {
                             for (x = Columns; x != 0; --x)
                             {
                                 value = *(p++);                 // store gray value
-                                *(q++) = (value << 16) |
-                                         (value << 8) |
-                                         value;                 // copy to the three RGB-planes
+                                for (j = 3; j != 0; --j)
+                                    *(q++) = value;             // copy to the three RGB-planes
+                                *(q++) = 0;                     // alpha channel is always zero
                             }
                             p += nextRow;                       // jump (backwards) to next row
                         }

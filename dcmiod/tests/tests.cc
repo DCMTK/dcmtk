@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, OFFIS e.V.
+ *  Copyright (C) 2016-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,10 @@ OFTEST_REGISTER(dcmiod_component_check_missing_value);
 OFTEST_REGISTER(dcmiod_component_check_vm_violated);
 OFTEST_REGISTER(dcmiod_component_check_vr_violated);
 OFTEST_REGISTER(dcmiod_codes);
+OFTEST_REGISTER(dcmiod_icc_profile_module);
 OFTEST_REGISTER(dcmiod_imagepixel);
 OFTEST_REGISTER(dcmiod_tcielabutil);
+OFTEST_REGISTER(dcmiod_palette_color_lut_module);
+OFTEST_REGISTER(dcmiod_palette_color_lut_module_segmented);
+OFTEST_REGISTER(dcmiod_palette_color_lut_module_extra_checks);
 OFTEST_MAIN("dcmiod")

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2022, OFFIS e.V.
+ *  Copyright (C) 1993-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,9 +34,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
-#endif
 END_EXTERN_C
 
 
@@ -317,6 +315,17 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
             DCMQRDB_ERROR("moveSCP: Cannot create Association-params for sub-ops: " << DimseCondition::dump(temp_str, cond));
         }
     }
+
+    if (cond.good()) {
+        // use the same network protocol family for incoming and outgoing connections
+        ASC_setProtocolFamily(params, dcmIncomingProtocolFamily.get());
+
+        cond = ASC_setTransportLayerType(params, options_.secureConnectionRequested_);
+        if (cond.bad()) {
+            DCMQRDB_ERROR("moveSCP: Cannot create TLS transport layer for sub-ops: " << DimseCondition::dump(temp_str, cond));
+        }
+    }
+
     if (cond.good()) {
         OFStandard::snprintf(dstHostNamePlusPort, sizeof(DIC_NODENAME), "%s:%d", dstHostName, dstPortNumber);
         ASC_setPresentationAddresses(params, OFStandard::getHostName().c_str(),
@@ -330,6 +339,12 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
         }
         if (cond.bad()) {
             DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
+        }
+        else {
+            cond = ASC_setTransportLayerType(params, secureConnection);
+            if (cond.bad()) {
+                DCMQRDB_ERROR(DimseCondition::dump(temp_str, cond));
+            }
         }
         DCMQRDB_DEBUG("Request Parameters:" << OFendl << ASC_dumpParameters(temp_str, params, ASC_ASSOC_RQ));
     }
@@ -352,6 +367,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     if (cond.good()) {
         assocStarted = OFTrue;
     }
+
     return cond;
 }
 

@@ -1,6 +1,6 @@
   /*
  *
- *  Copyright (C) 2016-2024, Open Connections GmbH
+ *  Copyright (C) 2016-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -203,6 +203,10 @@ OFCondition TrcTractographyResults::write(DcmItem &dataset)
   // SOP Common Module
   // Common Instance Reference Module
   if (result.good()) result = DcmIODCommon::write(dataset);
+
+  // Write Tractography Results Series attributes which is not covered by a specific class
+  // but part of "this" class
+  if (result.good()) result = IODComponent::write(*getData(), *getRules(), dataset, "TractographyResultsSeries", getValueCheckOnWrite());
 
   return result;
 }

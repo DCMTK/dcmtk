@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -74,14 +74,10 @@
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
 #endif
 
 BEGIN_EXTERN_C
@@ -2463,9 +2459,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
                 if ((*association)->connection) delete (*association)->connection;
                 (*association)->connection = NULL;
 
-                char buf[256];
                 OFString msg = "TCP Initialization Error: ";
-                msg += OFStandard::strerror(socketError, buf, sizeof(buf));
+                msg += OFStandard::getLastNetworkErrorCode().message();
                 return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
             }
         }
@@ -2490,6 +2485,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     {
         // an error other than timeout in non-blocking mode has occurred,
         // either in connect() or in select().
+        OFerror_code ec = OFStandard::getLastNetworkErrorCode();
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */);
         (void) closesocket(s);
@@ -2501,7 +2497,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         (*association)->connection = NULL;
 
         OFString msg = "TCP Initialization Error: ";
-        msg += OFStandard::getLastNetworkErrorCode().message();
+        msg += ec.message();
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
     } else {
         // success - we've opened a TCP transport connection
@@ -3550,7 +3546,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     if (!found)
     {
         char buf[256];
-        OFStandard::snprintf(buf, sizeof(buf), "Unrecognized PDU type: %2x", *type);
+        OFStandard::snprintf(buf, sizeof(buf), "Unrecognized PDU type: %2.2x", *type);
         return makeDcmnetCondition(DULC_UNRECOGNIZEDPDUTYPE, OF_error, buf);
     }
 

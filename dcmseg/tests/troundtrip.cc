@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, OFFIS e.V.
+ *  Copyright (C) 2019-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,6 +36,7 @@
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/oftest.h"
+//#include <iostream>
 
 static const Uint8 NUM_ROWS             = 10;
 static const Uint8 NUM_COLS             = 10;
@@ -150,7 +151,9 @@ static void setGenericValues(DcmSegmentation* seg)
     OFCHECK(seg->getSOPCommon().setSOPInstanceUID("1.2.276.0.7230010.3.1.4.8323329.14863.1565940357.864813").good());
     OFCHECK(seg->getGeneralImage().setContentDate("20190927").good());
     OFCHECK(seg->getGeneralImage().setContentTime("153857").good());
+    OFCHECK(seg->getGeneralImage().setContentTime("153857").good());
 }
+
 
 static void addSharedFGs(DcmSegmentation* seg)
 {
@@ -178,9 +181,9 @@ static void addFrames(DcmSegmentation* seg)
     if (!seg)
         return;
 
-    FGSegmentation* fg_seg = new FGSegmentation();
+    // Segmentation FG is created automatically
     FGFrameContent* fg     = new FGFrameContent();
-    OFCHECK(fg && fg_seg);
+    OFCHECK(fg);
     fg->setStackID("1");
     if (fg)
     {
@@ -209,16 +212,13 @@ static void addFrames(DcmSegmentation* seg)
             {
                 data[i] = i;
             }
-            OFCHECK(fg_seg->setReferencedSegmentNumber(frameNo).good());
             OFVector<FGBase*> perFrameFGs;
             perFrameFGs.push_back(fg);
-            perFrameFGs.push_back(fg_seg);
-            OFCHECK(seg->addFrame(data, frameNo, perFrameFGs).good());
+            OFCHECK(seg->addFrame<Uint8>(data, frameNo, perFrameFGs).good());
             delete[] data;
         }
     }
     delete fg;
-    delete fg_seg;
 }
 
 static void addDimensions(DcmSegmentation* seg)
@@ -354,13 +354,13 @@ static void checkConcatenationInstance(size_t numInstance, DcmSegmentation* srcI
     OFCHECK(fg != NULL);
     OFCHECK(perFrame == OFFalse);
 
-    const DcmIODTypes::Frame* frame = concat->getFrame(0);
+    const DcmIODTypes::Frame<Uint8>* frame = OFstatic_cast(const DcmIODTypes::Frame<Uint8>*, concat->getFrame(0));
     OFCHECK(frame != OFnullptr);
-    OFCHECK(frame->pixData != OFnullptr);
-    OFCHECK(OFstatic_cast(Uint8, frame->length) == NUM_PIXELS_PER_FRAME);
-    for (size_t pix = 0; pix < frame->length; pix++)
+    OFCHECK(frame->m_pixData != OFnullptr);
+    OFCHECK(OFstatic_cast(Uint8, frame->getLengthInBytes()) == NUM_PIXELS_PER_FRAME);
+    for (size_t pix = 0; pix < frame->getLengthInBytes(); pix++)
     {
-        OFCHECK(frame->pixData[pix] == pix);
+        OFCHECK(frame->m_pixData[pix] == pix);
     }
     delete concat;
 }
@@ -719,6 +719,7 @@ static void prepareExpectedDump()
     EXPECTED_DUMP += "(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
     EXPECTED_DUMP += "(0062,000e) US 255                                      #   2, 1 MaximumFractionalValue\n";
     EXPECTED_DUMP += "(0062,0010) CS [OCCUPANCY]                              #  10, 1 SegmentationFractionalType\n";
+    EXPECTED_DUMP += "(0062,0013) CS [UNDEFINED]                              #  10, 1 SegmentsOverlap\n";
     EXPECTED_DUMP += "(0070,0080) CS [LABEL]                                  #   6, 1 ContentLabel\n";
     EXPECTED_DUMP += "(0070,0081) LO [DESCRIPTION]                            #  12, 1 ContentDescription\n";
     EXPECTED_DUMP += "(0070,0084) PN [Doe^John]                               #   8, 1 ContentCreatorName\n";

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -97,7 +97,7 @@ public:
      */
     virtual OFCondition getReferencedSegmentNumber(Uint16& value, const unsigned long pos = 0);
 
-    /** Set Referenced Segment Number
+    /** Set Referenced Segment Number (starting from 1)
      *  @param  segmentNumber Value to be set
      *  @return EC_Normal if successful, an error code otherwise
      */

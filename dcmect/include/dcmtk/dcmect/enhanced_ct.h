@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, Open Connections GmbH
+ *  Copyright (C) 2019-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -203,6 +203,16 @@ public:
      *  @return OFTrue if checking is performed, OFFalse otherwise
      */
     virtual OFBool getCheckFGOnWrite();
+
+    /** Set whether attribute values should be checked on writing, i.e. if writing
+     *  should fail if attribute values violate their VR, VM, character set or value length.
+     *  A missing but required value is always considered an error, independent of this setting.
+     *  If set to OFFalse, writing will always succeed, even if attribute value constraints
+     *  are violated. A warning instead of an error will be printed to the logger.
+     *  @param  doCheck If OFTrue, attribute value errors are handled as errors on writing, if OFFalse
+     *          any errors are ignored.
+     */
+    virtual void setValueCheckOnWrite(const OFBool doCheck);
 
     // -------------------- creation ---------------------
 
@@ -739,7 +749,7 @@ private:
     IODCommonInstanceReferenceModule m_CommonInstanceReferenceModule;
 
     /// Binary frame data
-    OFVector<DcmIODTypes::Frame*> m_Frames;
+    OFVector<DcmIODTypes::FrameBase*> m_Frames;
 
     /// Multi-frame Functional Groups high level interface
     FGInterface m_FGInterface;

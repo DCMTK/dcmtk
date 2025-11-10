@@ -27,10 +27,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "citrus_dechanyu.h"
 
-#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-
 #ifndef __CONCAT
 #define __CONCAT(x,y) x ## y
 #endif

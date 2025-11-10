@@ -18,16 +18,17 @@ oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmioddir = $(top_srcdir)/../dcmiod
 dcmfgdir = $(top_srcdir)/../dcmfg
+dcmimgledir = $(top_srcdir)/../dcmimgle
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmioddir)/libsrc -L$(dcmfgdir)/libsrc \
-	-L$(oficonvdir)/libsrc
-LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) \
+	-L$(oficonvdir)/libsrc -L$(dcmimgledir)/libsrc
+LOCALLIBS = -ldcmseg -ldcmfg -ldcmiod -ldcmimgle  -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) \
 	$(CHARCONVLIBS) $(MATHLIBS)
 LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include \
 
-test_objs = tbigdim.o tconcat_binary.o tests.o troundtrip.o tutils.o
+test_objs = tbigdim.o tconcat_binary.o tests.o tlabelmap.o troundtrip.o tutils.o
 objs = $(test_objs)
 progs = tests
 

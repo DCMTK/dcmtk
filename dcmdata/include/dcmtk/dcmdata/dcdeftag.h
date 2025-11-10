@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2024-11-16 10:42:04
+**   Date: 2025-10-07 12:19:47
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2024-11-16 10:42:04"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2025-10-07 12:19:47"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5206
+** Number of entries: 5266
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -317,6 +317,10 @@
 #define DCM_FailedStudySequence                  DcmTagKey(0x0008, 0x119b)
 #define DCM_StudiesContainingOtherReferencedInstancesSequence DcmTagKey(0x0008, 0x1200)
 #define DCM_RelatedSeriesSequence                DcmTagKey(0x0008, 0x1250)
+#define DCM_PrincipalDiagnosisCodeSequence       DcmTagKey(0x0008, 0x1301)
+#define DCM_PrimaryDiagnosisCodeSequence         DcmTagKey(0x0008, 0x1302)
+#define DCM_SecondaryDiagnosesCodeSequence       DcmTagKey(0x0008, 0x1303)
+#define DCM_HistologicalDiagnosesCodeSequence    DcmTagKey(0x0008, 0x1304)
 #define DCM_RETIRED_LossyImageCompressionRetired DcmTagKey(0x0008, 0x2110)
 #define DCM_DerivationDescription                DcmTagKey(0x0008, 0x2111)
 #define DCM_SourceImageSequence                  DcmTagKey(0x0008, 0x2112)
@@ -380,6 +384,12 @@
 #define DCM_RecommendedDisplayFrameRateInFloat   DcmTagKey(0x0008, 0x9459)
 #define DCM_SkipFrameRangeFlag                   DcmTagKey(0x0008, 0x9460)
 #define DCM_PatientName                          DcmTagKey(0x0010, 0x0010)
+#define DCM_PersonNamesToUseSequence             DcmTagKey(0x0010, 0x0011)
+#define DCM_NameToUse                            DcmTagKey(0x0010, 0x0012)
+#define DCM_NameToUseComment                     DcmTagKey(0x0010, 0x0013)
+#define DCM_ThirdPersonPronounsSequence          DcmTagKey(0x0010, 0x0014)
+#define DCM_PronounCodeSequence                  DcmTagKey(0x0010, 0x0015)
+#define DCM_PronounComment                       DcmTagKey(0x0010, 0x0016)
 #define DCM_PatientID                            DcmTagKey(0x0010, 0x0020)
 #define DCM_IssuerOfPatientID                    DcmTagKey(0x0010, 0x0021)
 #define DCM_TypeOfPatientID                      DcmTagKey(0x0010, 0x0022)
@@ -393,6 +403,13 @@
 #define DCM_PatientDeathDateInAlternativeCalendar DcmTagKey(0x0010, 0x0034)
 #define DCM_PatientAlternativeCalendar           DcmTagKey(0x0010, 0x0035)
 #define DCM_PatientSex                           DcmTagKey(0x0010, 0x0040)
+#define DCM_GenderIdentitySequence               DcmTagKey(0x0010, 0x0041)
+#define DCM_SexParametersForClinicalUseCategoryComment DcmTagKey(0x0010, 0x0042)
+#define DCM_SexParametersForClinicalUseCategorySequence DcmTagKey(0x0010, 0x0043)
+#define DCM_GenderIdentityCodeSequence           DcmTagKey(0x0010, 0x0044)
+#define DCM_GenderIdentityComment                DcmTagKey(0x0010, 0x0045)
+#define DCM_SexParametersForClinicalUseCategoryCodeSequence DcmTagKey(0x0010, 0x0046)
+#define DCM_SexParametersForClinicalUseCategoryReference DcmTagKey(0x0010, 0x0047)
 #define DCM_PatientInsurancePlanCodeSequence     DcmTagKey(0x0010, 0x0050)
 #define DCM_PatientPrimaryLanguageCodeSequence   DcmTagKey(0x0010, 0x0101)
 #define DCM_PatientPrimaryLanguageModifierCodeSequence DcmTagKey(0x0010, 0x0102)
@@ -434,8 +451,9 @@
 #define DCM_RegionOfResidence                    DcmTagKey(0x0010, 0x2152)
 #define DCM_PatientTelephoneNumbers              DcmTagKey(0x0010, 0x2154)
 #define DCM_PatientTelecomInformation            DcmTagKey(0x0010, 0x2155)
-#define DCM_EthnicGroup                          DcmTagKey(0x0010, 0x2160)
+#define DCM_RETIRED_EthnicGroup                  DcmTagKey(0x0010, 0x2160)
 #define DCM_EthnicGroupCodeSequence              DcmTagKey(0x0010, 0x2161)
+#define DCM_EthnicGroups                         DcmTagKey(0x0010, 0x2162)
 #define DCM_Occupation                           DcmTagKey(0x0010, 0x2180)
 #define DCM_SmokingStatus                        DcmTagKey(0x0010, 0x21a0)
 #define DCM_AdditionalPatientHistory             DcmTagKey(0x0010, 0x21b0)
@@ -656,6 +674,18 @@
 #define DCM_ImageQualityIndicatorType            DcmTagKey(0x0014, 0x40a0)
 #define DCM_ImageQualityIndicatorMaterial        DcmTagKey(0x0014, 0x40a1)
 #define DCM_ImageQualityIndicatorSize            DcmTagKey(0x0014, 0x40a2)
+#define DCM_WaveDimensionsDefinitionSequence     DcmTagKey(0x0014, 0x4101)
+#define DCM_WaveDimensionNumber                  DcmTagKey(0x0014, 0x4102)
+#define DCM_WaveDimensionDescription             DcmTagKey(0x0014, 0x4103)
+#define DCM_WaveDimensionUnit                    DcmTagKey(0x0014, 0x4104)
+#define DCM_WaveDimensionValueType               DcmTagKey(0x0014, 0x4105)
+#define DCM_WaveDimensionValuesSequence          DcmTagKey(0x0014, 0x4106)
+#define DCM_ReferencedWaveDimension              DcmTagKey(0x0014, 0x4107)
+#define DCM_IntegerNumericValue                  DcmTagKey(0x0014, 0x4108)
+#define DCM_ByteNumericValue                     DcmTagKey(0x0014, 0x4109)
+#define DCM_ShortNumericValue                    DcmTagKey(0x0014, 0x410a)
+#define DCM_SinglePrecisionFloatingPointNumericValue DcmTagKey(0x0014, 0x410b)
+#define DCM_DoublePrecisionFloatingPointNumericValue DcmTagKey(0x0014, 0x410c)
 #define DCM_LINACEnergy                          DcmTagKey(0x0014, 0x5002)
 #define DCM_LINACOutput                          DcmTagKey(0x0014, 0x5004)
 #define DCM_ActiveAperture                       DcmTagKey(0x0014, 0x5100)
@@ -2775,6 +2805,8 @@
 #define DCM_VerificationDateTime                 DcmTagKey(0x0040, 0xa030)
 #define DCM_ObservationDateTime                  DcmTagKey(0x0040, 0xa032)
 #define DCM_ObservationStartDateTime             DcmTagKey(0x0040, 0xa033)
+#define DCM_EffectiveStartDateTime               DcmTagKey(0x0040, 0xa034)
+#define DCM_EffectiveStopDateTime                DcmTagKey(0x0040, 0xa035)
 #define DCM_ValueType                            DcmTagKey(0x0040, 0xa040)
 #define DCM_ConceptNameCodeSequence              DcmTagKey(0x0040, 0xa043)
 #define DCM_RETIRED_MeasurementPrecisionDescriptionTrial DcmTagKey(0x0040, 0xa047)
@@ -2880,6 +2912,25 @@
 #define DCM_CellValuesSequence                   DcmTagKey(0x0040, 0xa808)
 #define DCM_RETIRED_UniformResourceLocatorTrial  DcmTagKey(0x0040, 0xa992)
 #define DCM_WaveformAnnotationSequence           DcmTagKey(0x0040, 0xb020)
+#define DCM_StructuredWaveformAnnotationSequence DcmTagKey(0x0040, 0xb030)
+#define DCM_WaveformAnnotationDisplaySelectionSequence DcmTagKey(0x0040, 0xb031)
+#define DCM_ReferencedMontageIndex               DcmTagKey(0x0040, 0xb032)
+#define DCM_WaveformTextualAnnotationSequence    DcmTagKey(0x0040, 0xb033)
+#define DCM_AnnotationDateTime                   DcmTagKey(0x0040, 0xb034)
+#define DCM_DisplayedWaveformSegmentSequence     DcmTagKey(0x0040, 0xb035)
+#define DCM_SegmentDefinitionDateTime            DcmTagKey(0x0040, 0xb036)
+#define DCM_MontageActivationSequence            DcmTagKey(0x0040, 0xb037)
+#define DCM_MontageActivationTimeOffset          DcmTagKey(0x0040, 0xb038)
+#define DCM_WaveformMontageSequence              DcmTagKey(0x0040, 0xb039)
+#define DCM_ReferencedMontageChannelNumber       DcmTagKey(0x0040, 0xb03a)
+#define DCM_MontageName                          DcmTagKey(0x0040, 0xb03b)
+#define DCM_MontageChannelSequence               DcmTagKey(0x0040, 0xb03c)
+#define DCM_MontageIndex                         DcmTagKey(0x0040, 0xb03d)
+#define DCM_MontageChannelNumber                 DcmTagKey(0x0040, 0xb03e)
+#define DCM_MontageChannelLabel                  DcmTagKey(0x0040, 0xb03f)
+#define DCM_MontageChannelSourceCodeSequence     DcmTagKey(0x0040, 0xb040)
+#define DCM_ContributingChannelSourcesSequence   DcmTagKey(0x0040, 0xb041)
+#define DCM_ChannelWeight                        DcmTagKey(0x0040, 0xb042)
 #define DCM_TemplateIdentifier                   DcmTagKey(0x0040, 0xdb00)
 #define DCM_RETIRED_TemplateVersion              DcmTagKey(0x0040, 0xdb06)
 #define DCM_RETIRED_TemplateLocalVersion         DcmTagKey(0x0040, 0xdb07)
@@ -2932,6 +2983,7 @@
 #define DCM_ReferencedAssertionUID               DcmTagKey(0x0044, 0x0108)
 #define DCM_ApprovalSubjectSequence              DcmTagKey(0x0044, 0x0109)
 #define DCM_OrganizationalRoleCodeSequence       DcmTagKey(0x0044, 0x010a)
+#define DCM_RTAssertionsSequence                 DcmTagKey(0x0044, 0x0110)
 #define DCM_LensDescription                      DcmTagKey(0x0046, 0x0012)
 #define DCM_RightLensSequence                    DcmTagKey(0x0046, 0x0014)
 #define DCM_LeftLensSequence                     DcmTagKey(0x0046, 0x0015)
@@ -3058,6 +3110,7 @@
 #define DCM_PixelOriginInterpretation            DcmTagKey(0x0048, 0x0301)
 #define DCM_NumberOfOpticalPaths                 DcmTagKey(0x0048, 0x0302)
 #define DCM_TotalPixelMatrixFocalPlanes          DcmTagKey(0x0048, 0x0303)
+#define DCM_TilesOverlap                         DcmTagKey(0x0048, 0x0304)
 #define DCM_CalibrationImage                     DcmTagKey(0x0050, 0x0004)
 #define DCM_DeviceSequence                       DcmTagKey(0x0050, 0x0010)
 #define DCM_ContainerComponentTypeCodeSequence   DcmTagKey(0x0050, 0x0012)
@@ -4109,6 +4162,11 @@
 #define DCM_DVHMinimumDose                       DcmTagKey(0x3004, 0x0070)
 #define DCM_DVHMaximumDose                       DcmTagKey(0x3004, 0x0072)
 #define DCM_DVHMeanDose                          DcmTagKey(0x3004, 0x0074)
+#define DCM_DoseCalculationModelSequence         DcmTagKey(0x3004, 0x0080)
+#define DCM_DoseCalculationAlgorithmSequence     DcmTagKey(0x3004, 0x0081)
+#define DCM_CommissioningStatus                  DcmTagKey(0x3004, 0x0082)
+#define DCM_DoseCalculationModelParameterSequence DcmTagKey(0x3004, 0x0083)
+#define DCM_DoseDepositionCalculationMedium      DcmTagKey(0x3004, 0x0084)
 #define DCM_StructureSetLabel                    DcmTagKey(0x3006, 0x0002)
 #define DCM_StructureSetName                     DcmTagKey(0x3006, 0x0004)
 #define DCM_StructureSetDescription              DcmTagKey(0x3006, 0x0006)
@@ -4633,6 +4691,8 @@
 #define DCM_ScanningSpotSize                     DcmTagKey(0x300a, 0x0398)
 #define DCM_ScanSpotSizesDelivered               DcmTagKey(0x300a, 0x0399)
 #define DCM_NumberOfPaintings                    DcmTagKey(0x300a, 0x039a)
+#define DCM_ScanSpotGantryAngles                 DcmTagKey(0x300a, 0x039b)
+#define DCM_ScanSpotPatientSupportAngles         DcmTagKey(0x300a, 0x039c)
 #define DCM_IonToleranceTableSequence            DcmTagKey(0x300a, 0x03a0)
 #define DCM_IonBeamSequence                      DcmTagKey(0x300a, 0x03a2)
 #define DCM_IonBeamLimitingDeviceSequence        DcmTagKey(0x300a, 0x03a4)

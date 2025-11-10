@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -64,6 +64,12 @@ OFCondition FGSegmentation::getReferencedSegmentNumber(Uint16& value, const unsi
 
 OFCondition FGSegmentation::setReferencedSegmentNumber(const Uint16& segmentNumber)
 {
+    if (segmentNumber == 0)
+    {
+        // Segment numbers start at 1, so 0 is invalid
+        DCMFG_ERROR("Segment Number must not be 0");
+        return FG_EC_InvalidData;
+    }
     return m_ReferencedSegmentNumber.putUint16(segmentNumber);
 }
 

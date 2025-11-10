@@ -59,9 +59,7 @@
 #endif
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>                       /*  for O_BINARY */
-#endif
 #ifdef HAVE_IO_H
 #include <io.h>                          /* for setmode() on Windows */
 #endif
@@ -739,6 +737,7 @@ int main(int argc, char *argv[])
     OFBool              opt_predictor6WorkaroundEnable = OFFalse;
     OFBool              opt_cornellWorkaroundEnable = OFFalse;
     OFBool              opt_forceSingleFragmentPerFrame = OFFalse;
+    OFBool              opt_preserveBitsStored = OFFalse;
 
     // JPEG-LS parameters
     OFBool              opt_true_lossless = OFFalse;
@@ -846,6 +845,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-guess-lossy",   "+cgl",    "convert to RGB if lossy JPEG and YCbCr is\nguessed by the underlying JPEG library");
       cmd.addOption("--conv-always",        "+ca",     "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",         "+cn",     "never convert color space");
+
+     cmd.addSubGroup("bits stored:");
+      cmd.addOption("--bits-stored-fix",     "+bs",    "correct inconsistent bits stored value (default)");
+      cmd.addOption("--bits-stored-keep",    "-bs",    "preserve inconsistent bits stored value");
 
      cmd.addSubGroup("workaround options for incorrect encodings (JPEG compressed images only):");
       cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
@@ -1095,9 +1098,15 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--check-lut-depth"))
             opt_compatibilityMode |= CIF_CheckLutBitDepth;
         if (cmd.findOption("--ignore-mlut-depth"))
+        {
+            app.checkConflict("--ignore-mlut-depth", "--check-lut-depth", (opt_compatibilityMode & CIF_CheckLutBitDepth) > 0);
             opt_compatibilityMode |= CIF_IgnoreModalityLutBitDepth;
+        }
         if (cmd.findOption("--ignore-vlut-depth"))
+        {
+            app.checkConflict("--ignore-vlut-depth", "--check-lut-depth", (opt_compatibilityMode & CIF_CheckLutBitDepth) > 0);
             opt_ignoreVoiLutDepth = OFTrue;
+        }
 
         /* image processing options: frame selection */
 
@@ -1212,6 +1221,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--conv-never"))
             opt_decompCSconversion = EDC_never;
         cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--bits-stored-fix")) opt_preserveBitsStored = OFFalse;
+        if (cmd.findOption("--bits-stored-keep")) opt_preserveBitsStored = OFTrue;
+        cmd.beginOptionBlock();
 
         if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
         if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
@@ -1647,7 +1661,7 @@ int main(int argc, char *argv[])
     // register JPEG decompression codecs
     DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default,
         EPC_default, opt_predictor6WorkaroundEnable, opt_cornellWorkaroundEnable,
-        opt_forceSingleFragmentPerFrame);
+        opt_forceSingleFragmentPerFrame, opt_preserveBitsStored);
 
     // register JPEG-LS decompression codecs
     DJLSDecoderRegistration::registerCodecs();
@@ -1657,16 +1671,16 @@ int main(int argc, char *argv[])
     if (opt_use_openjpeg)
     {
         // register global OpenJPEG decompression codecs
-        O2DecoderRegistration::registerCodecs(EJ2UC_default, EJ2PC_restore, OFstatic_cast(int, openJPEGNumThreads), 0 /* decoder flags */, OFTrue, OFTrue);
+        O2DecoderRegistration::registerCodecs(EJ2UC_default, EJ2PC_restore, OFstatic_cast(int, openJPEGNumThreads), 0 /* decoder flags */, OFTrue, OFTrue, opt_preserveBitsStored);
     }
     else
     {
         // register global JasPer decompression codecs
-        D2DecoderRegistration::registerCodecs();
+        D2DecoderRegistration::registerCodecs(EJ2UC_default, EJ2PC_restore, OFTrue, OFTrue, opt_preserveBitsStored);
     }
 #else /* WITH_OPENJPEG */
     // register global JasPer decompression codecs
-    D2DecoderRegistration::registerCodecs();
+    D2DecoderRegistration::registerCodecs(EJ2UC_default, EJ2PC_restore, OFTrue, OFTrue, opt_preserveBitsStored);
 #endif /* WITH_OPENJPEG */
 #endif /* BUILD_DCM2IMG_AS_DCM2KIMG */
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2022, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/oflog/oflog.h"
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/libi2d/i2define.h"
 
 extern DCMTK_I2D_EXPORT OFLogger DCM_dcmdataLibi2dLogger;
@@ -85,6 +86,21 @@ public:
    *  @return true if multiframe is supported, false otherwise
    */
   virtual OFBool supportsMultiframe() const = 0;
+
+  /** checks if the output SOP class permits the given combination of
+   *  transfer syntax and photometric interpretation
+   *  @param photometricInterpretation  - [in] photometric interpretation
+   *  @param outputTS - [in] output transfer syntax
+   *  @return true if combination permitted, false otherwise
+   */
+  virtual OFBool colorModelPermitted(const OFString& photometricInterpretation, E_TransferSyntax outputTS) const = 0;
+
+  /** change the photometric interpretation to the next best permitted one, for lenient mode
+   *  @param photometricInterpretation  - [in/out] photometric interpretation
+   *  @param outputTS - [in] output transfer syntax
+   *  @return EC_Normal if a "compatible" replacement exists, an error code otherwise
+   */
+  virtual OFCondition updateColorModel(OFString& photometricInterpretation, E_TransferSyntax outputTS) const = 0;
 
   /** Add multiframe specific attributes
    *  @param targetDataset pointer to DICOM dataset, must not be NULL

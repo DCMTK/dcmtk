@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2021, OFFIS e.V.
+ *  Copyright (C) 2000-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -32,9 +32,7 @@ END_EXTERN_C
 
 
 BEGIN_EXTERN_C
-#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
-#endif
 #ifdef HAVE_IO_H
 #include <io.h>
 #endif
@@ -154,7 +152,7 @@ void OFConsole::mergeStderrStdout()
         }
     }
 
-#ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
+#ifndef HAVE_CLASSIC_BORLAND_COMPILER  /* setvbuf on stdout/stderr does not work with Borland C++ */
     /* set stdout and stderr to unbuffered mode */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
@@ -166,7 +164,7 @@ void OFConsole::mergeStderrStdout()
         OFConsole::instance().lockCerr() << "Unable to switch stderr to unbuffered mode" << OFendl;
         OFConsole::instance().unlockCerr();
     }
-#endif /* __BORLANDC__ */
+#endif /* HAVE_CLASSIC_BORLAND_COMPILER */
 }
 
 
@@ -181,7 +179,7 @@ void OFConsole::unmergeStderrStdout()
             OFConsole::instance().unlockCerr();
         }
 
-#ifndef __BORLANDC__
+#ifndef HAVE_CLASSIC_BORLAND_COMPILER
         /* switch stdout to buffered mode */
         if (setvbuf(stdout, NULL, _IOFBF, BUFSIZ ) != 0 )
         {
@@ -189,7 +187,7 @@ void OFConsole::unmergeStderrStdout()
             OFConsole::instance().unlockCerr();
 
         }
-#endif /* __BORLANDC__ */
+#endif /* HAVE_CLASSIC_BORLAND_COMPILER */
     }
 }
 

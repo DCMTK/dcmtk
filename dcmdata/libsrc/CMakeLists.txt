@@ -15,6 +15,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcdict.cc
   dcdictbi.cc
   dcdirrec.cc
+  dcdocdec.cc
   dcelem.cc
   dcencdoc.cc
   dcerror.cc
@@ -28,6 +29,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcistrmz.cc
   dcitem.cc
   dcjson.cc
+  dcjsonrd.cc
   dclist.cc
   dcmatch.cc
   dcmetinf.cc

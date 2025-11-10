@@ -191,7 +191,6 @@ format_message (j_common_ptr cinfo, char * buffer)
   }
 
   /* Format the message into the passed buffer */
-#ifdef HAVE_VSNPRINTF
   if (isstring)
     snprintf(buffer, JMSG_LENGTH_MAX, msgtext, err->msg_parm.s);
   else
@@ -200,16 +199,6 @@ format_message (j_common_ptr cinfo, char * buffer)
         err->msg_parm.i[2], err->msg_parm.i[3],
         err->msg_parm.i[4], err->msg_parm.i[5],
         err->msg_parm.i[6], err->msg_parm.i[7]);
-#else /* HAVE_VSNPRINTF */
-  if (isstring)
-    sprintf(buffer, msgtext, err->msg_parm.s);
-  else
-    sprintf(buffer, msgtext,
-        err->msg_parm.i[0], err->msg_parm.i[1],
-        err->msg_parm.i[2], err->msg_parm.i[3],
-        err->msg_parm.i[4], err->msg_parm.i[5],
-        err->msg_parm.i[6], err->msg_parm.i[7]);
-#endif /* HAVE_VSNPRINTF */
 }
 
 

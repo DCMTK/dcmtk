@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -46,3 +46,4 @@ makeOFConditionConst(IOD_EC_InvalidElementValue, OFM_dcmiod, 11, OF_error, "Valu
 makeOFConditionConst(IOD_EC_InvalidReference, OFM_dcmiod, 12, OF_error, "One or more invalid SOP references");
 makeOFConditionConst(
     IOD_EC_ReferencesOmitted, OFM_dcmiod, 13, OF_error, "One or more SOP references have been omitted");
+makeOFConditionConst(IOD_EC_InvalidColorPalette, OFM_dcmiod, 14, OF_error, "Invalid Color Palette LUT");

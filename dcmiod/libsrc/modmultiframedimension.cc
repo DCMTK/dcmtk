@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -46,6 +46,7 @@ IODMultiframeDimensionModule::IODMultiframeDimensionModule()
     : IODModule()
     , m_DimensionIndexSequence()
     , m_DimensionOrganizationSequence()
+    , m_CheckOnWrite(OFTrue)
 {
     resetRules();
 }
@@ -200,8 +201,8 @@ OFCondition IODMultiframeDimensionModule::checkDimensions(DcmItem* fgItem)
     DcmSequenceOfItems* perFrame = NULL;
     if (fgItem->findAndGetSequence(DCM_PerFrameFunctionalGroupsSequence, perFrame).bad())
     {
-        DCMIOD_WARN(
-            "Will not check dimension consistency with functional groups (no per-frame functional groups found)");
+        DCMIOD_DEBUG(
+            "Omitting dimension consistency check with functional groups (Per-frame FGs not yet present)");
     }
 
     OFCondition result;
