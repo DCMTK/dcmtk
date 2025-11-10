@@ -110,6 +110,7 @@ SET_AND_CHECK(DCMTK_TARGETS "@PACKAGE_DCMTK_CMKDIR_CONFIG@/DCMTKTargets.cmake")
 set(DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIRS})
 
 # Depend packages
+include(CMakeFindDependencyMacro)
 if(DCMTK_WITH_ZLIB)
   if(NOT ZLIB_FOUND)
     find_dependency(ZLIB)
