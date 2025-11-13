@@ -152,6 +152,7 @@ extern DCMTK_DCMNET_EXPORT OFGlobal<T_ASC_ProtocolFamily> dcmIncomingProtocolFam
 typedef void DUL_NETWORKKEY;
 typedef void DUL_ASSOCIATIONKEY;
 typedef unsigned char DUL_PRESENTATIONCONTEXTID;
+typedef void (*DUL_CREATEPROCESS_CALLBACK)(void *);
 
 /** pure virtual base class for DUL mode callbacks
  */
@@ -583,8 +584,10 @@ DCMTK_DCMNET_EXPORT OFCondition DUL_readSocketHandleAsForkedChild();
  *     The content of this parameter is ignored on Posix platforms but required
  *     on Win32, where the child process is created with CreateProcess and the
  *     command line parameters have to be passed from parent to child.
+ *  @param pointer to a callback function that will be called on Windows
+ *     when a child process has been created using CreateProcessA().
  */
-DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
+DCMTK_DCMNET_EXPORT void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[], DUL_CREATEPROCESS_CALLBACK cb = NULL);
 
 /** this function sets a flag in the association that the current process
  *  is the parent process after a fork() operation and that the association

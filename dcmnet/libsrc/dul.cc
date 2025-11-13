@@ -193,6 +193,7 @@ static OFBool shouldFork = OFFalse;
 #ifdef _WIN32
 static char **command_argv = NULL;
 static int command_argc = 0;
+static DUL_CREATEPROCESS_CALLBACK create_process_callback = NULL;
 #endif
 
 OFBool DUL_processIsForkedChild()
@@ -243,16 +244,18 @@ OFCondition DUL_readSocketHandleAsForkedChild()
 }
 
 
-void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[])
+void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[], DUL_CREATEPROCESS_CALLBACK cb)
 {
   shouldFork = OFTrue;
 #ifdef _WIN32
   command_argc = argc;
   command_argv = argv;
+  create_process_callback = cb;
 #else
   // Work around "Unused parameters"
   (void) argc;
   (void) argv;
+  (void) cb;
 #endif
 }
 
@@ -1860,7 +1863,18 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 // close handles in PROCESS_INFORMATION structure
                 // and our local copy of the socket handle.
                 CloseHandle(hParentProcessHandle);
-                CloseHandle(pi.hProcess);
+
+                if (create_process_callback)
+                {
+                    // hand the process handle over to the callback process.
+                    // The user code is now responsible for closing the handle when not needed anymore.
+                    (*create_process_callback)(pi.hProcess);
+                }
+                else
+                {
+                    CloseHandle(pi.hProcess);
+                }
+
                 CloseHandle(pi.hThread);
                 closesocket(sock);
 
