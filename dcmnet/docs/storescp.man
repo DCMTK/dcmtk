@@ -67,6 +67,9 @@ port  tcp/ip port number to listen on
 
         --fork
           fork child process for each association
+
+        --max-associations  [m]ax: integer (default: unlimited)
+          limit number of parallel associations to m
 \endverbatim
 
 \subsection storescp_network_options network options

@@ -38,6 +38,7 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofbmanip.h"       /* for OFBitmanipTemplate */
+#include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcmtk/dcmnet/dimse.h"
@@ -110,6 +111,59 @@ enum E_SortStudyMode
     ESM_PatientName
 };
 
+#ifdef WIN32
+struct ChildProcessData
+{
+    HANDLE processHandle;
+    HANDLE waitHandle;
+    bool   done;
+};
+
+OFList< ChildProcessData * > ChildProcessList;
+HANDLE ChildProcessEvent = NULL;
+
+// This callback function will be executed by Windows in a separate thread when
+// a child process has ended, similar to the SIGCHLD callback on Posix systems
+static void CALLBACK onExitedCallback(void* context, BOOLEAN /* isTimeOut */)
+{
+    // mark the related entry for the client process that has ended as "done", i.e. ready for clean-up
+    bool *done = OFstatic_cast(bool *, context);
+    *done = true;
+
+    // if the main thread is in a blocking wait in cleanChildren() because
+    // the maximum number of child processes was running, let the main thread continue now
+    if (ChildProcessEvent) SetEvent(ChildProcessEvent);
+}
+
+// This callback function will be called in the main thread by receiveTransportConnectionTCP()
+// whenever a new child process has been create by CreateProcessA().
+// The context parameter is a pointer to the process handle, which we must store
+// and close when not needed anymore.
+static void processCreatedCallback(void *context)
+{
+    // event handler for blocking wait in cleanChildren()
+    if (ChildProcessEvent == NULL) ChildProcessEvent = CreateEventA(NULL, FALSE, FALSE, NULL);
+
+    // create new entry in list of child processes
+    ChildProcessData *cbd = new ChildProcessData();
+    cbd->processHandle = OFstatic_cast(HANDLE, context);
+    cbd->done = false;
+
+    // request Windows to call onExitedCallback() when the child process with the given process handle has exited
+    if (RegisterWaitForSingleObject(&cbd->waitHandle, cbd->processHandle, onExitedCallback, &cbd->done, INFINITE, WT_EXECUTEONLYONCE))
+    {
+        ChildProcessList.push_back(cbd);
+    }
+    else
+    {
+        OFLOG_WARN(storescpLogger, "RegisterWaitForSingleObject() failed, unable to track child process");
+        CloseHandle(cbd->processHandle);
+        delete cbd;
+    }
+}
+
+#endif
+
 OFBool             opt_showPresentationContexts = OFFalse;
 OFBool             opt_uniqueFilenames = OFFalse;
 OFString           opt_fileNameExtension;
@@ -168,20 +222,23 @@ OFBool             opt_forkMode = OFFalse;
 
 OFBool             opt_forkedChild = OFFalse;
 OFBool             opt_execSync = OFFalse;            // default: execute in background
-
+volatile size_t    numChildren = 0;
+OFCmdUnsignedInt   opt_maxChildren = OFstatic_cast(OFCmdUnsignedInt, -1);
 
 #ifdef HAVE_WAITPID
+
 /** signal handler for SIGCHLD signals that immediately cleans up
- *  terminated children.
+ *  terminated children and adjusts the count of child processes
  */
 extern "C" void sigChildHandler(int)
 {
-  int status = 0;
-  waitpid( -1, &status, WNOHANG );
-  signal(SIGCHLD, sigChildHandler);
+    while (waitpid( -1, NULL, WNOHANG) > 0)
+    {
+        if (numChildren > 0) --numChildren;
+    }
 }
-#endif
 
+#endif
 
 /* helper macro for converting stream output to a string */
 #define CONVERT_TO_STRING(output, string) \
@@ -227,6 +284,7 @@ int main(int argc, char *argv[])
 #ifdef _WIN32
     cmd.addOption("--forked-child",                        "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
+    cmd.addOption("--max-associations",                 1, "[m]ax: integer (default: unlimited)", "limit number of parallel associations to m");
 #endif
 
   cmd.addGroup("network options:");
@@ -415,6 +473,14 @@ int main(int argc, char *argv[])
     {
       opt_inetd_mode = OFTrue;
       opt_forkMode = OFFalse;
+      if (cmd.findOption("--fork"))
+      {
+        app.checkConflict("--inetd", "--fork", opt_inetd_mode);
+      }
+      if (cmd.findOption("--max-associations"))
+      {
+        app.checkDependence("--max-associations", "--fork", opt_forkMode);
+      }
 
       // duplicate stdin, which is the socket passed by inetd
       int inetd_fd = dup(0);
@@ -450,13 +516,17 @@ int main(int argc, char *argv[])
       opt_forkMode = OFFalse;
     if (cmd.findOption("--fork"))
     {
-      app.checkConflict("--inetd", "--fork", opt_inetd_mode);
       opt_forkMode = OFTrue;
     }
     cmd.endOptionBlock();
 #ifdef _WIN32
     if (cmd.findOption("--forked-child")) opt_forkedChild = OFTrue;
 #endif
+    if (cmd.findOption("--max-associations"))
+    {
+      app.checkDependence("--max-associations", "--fork", opt_forkMode);
+      app.checkValue(cmd.getValueAndCheckMin(opt_maxChildren, 1));
+    }
 #endif
 
     if (opt_inetd_mode)
@@ -932,7 +1002,7 @@ int main(int argc, char *argv[])
   else
   {
     // parent process
-    if (opt_forkMode) DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+    if (opt_forkMode) DUL_requestForkOnTransportConnectionReceipt(argc, argv, &processCreatedCallback);
   }
 #endif
 
@@ -960,16 +1030,35 @@ int main(int argc, char *argv[])
 
 #ifdef HAVE_WAITPID
   // register signal handler
-  signal(SIGCHLD, sigChildHandler);
+  struct sigaction sa;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_NOCLDSTOP | SA_RESTART;
+  sa.sa_handler = sigChildHandler;
+  sigaction(SIGCHLD, &sa, NULL);
 #endif
 
   while (cond.good())
   {
+#if defined(HAVE_WAITPID) || defined(WIN32)
+    /* if the maximum number of child processes is active,
+     * wait until at least one child terminates before
+     * continuing to accept incoming associations
+     */
+    if (numChildren == opt_maxChildren)
+    {
+        OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for child process to terminate");
+        while (numChildren == opt_maxChildren)
+        {
+            cleanChildren(-1, OFTrue);
+        }
+    }
+#endif
+
     /* receive an association and acknowledge or reject it. If the association was */
     /* acknowledged, offer corresponding services and invoke one or more if required. */
     cond = acceptAssociation(net, asccfg, tlsOptions.secureConnectionRequested());
 
-    /* remove zombie child processes */
+    /* remove zombie child processes, do not block */
     cleanChildren(-1, OFFalse);
 
     /* since storescp is usually terminated with SIGTERM or the like,
@@ -1034,7 +1123,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond.code() == DULC_FORKEDCHILD)
   {
-    // OFLOG_DEBUG(storescpLogger, DimseCondition::dump(temp_str, cond));
+    // we are the parent process in fork mode and have successfully forked a child process
+    // that will handle the association. Just clean up the association in this process.
+    numChildren++;
     goto cleanup;
   }
 
@@ -1087,8 +1178,10 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   if (opt_forkMode)
+  {
     OFLOG_INFO(storescpLogger, "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
         << " process (pid: " << OFStandard::getProcessID() << ")");
+  }
   else
 #endif
   OFLOG_INFO(storescpLogger, "Association Received");
@@ -2465,9 +2558,12 @@ static void executeCommand( const OFString &cmd )
     OFLOG_ERROR(storescpLogger, "cannot execute command '" << cmd << "' (fork failed)");
   else if (pid > 0)
   {
-    /* we are the parent process */
-    /* remove pending zombie child processes */
-    cleanChildren(pid, opt_execSync);
+    /* we are the parent process. If we are in fork mode or
+     * in synchronous exec mode, wait for the child process to terminate
+     * and then clean up the process to avoid interference with the
+     * counter that counts the number of child process in the main process
+     */
+    cleanChildren(pid, opt_execSync || opt_forkMode);
   }
   else // in case we are the child process, execute the command etc.
   {
@@ -2509,7 +2605,7 @@ static void executeCommand( const OFString &cmd )
 #ifdef HAVE_WAITPID
 static void cleanChildren(pid_t pid, OFBool synch)
 #else
-static void cleanChildren(pid_t /* pid */, OFBool /* synch */)
+static void cleanChildren(pid_t /* pid */, OFBool synch)
 #endif
   /*
    * This function removes child processes that have terminated,
@@ -2517,23 +2613,50 @@ static void cleanChildren(pid_t /* pid */, OFBool /* synch */)
    */
 {
 #ifdef HAVE_WAITPID
-  int stat_loc;
-  int child = 1;
-  int options = synch ? 0 : WNOHANG;
-  while (child > 0)
-  {
-    child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
-    if (child < 0)
+    int stat_loc;
+    int child = 1;
+    int options = synch ? 0 : WNOHANG;
+    while (child > 0)
     {
-      if (errno != ECHILD)
+      child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
+      if (child > 0)
       {
-        char buf[256];
-        OFLOG_WARN(storescpLogger, "wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        if (numChildren > 0) --numChildren;
       }
+      else if (child < 0)
+      {
+        if (errno != ECHILD)
+        {
+          char buf[256];
+          OFLOG_WARN(storescpLogger, "wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+        }
+      }
+      if (synch) options = 0; // break out of loop
     }
-
-    if (synch) child = -1; // break out of loop
-  }
+#elif defined(WIN32)
+    if (synch && ChildProcessEvent)
+    {
+        // block until a child process has ended
+        WaitForSingleObject(ChildProcessEvent, INFINITE);
+    }
+    OFListIterator(ChildProcessData *) first = ChildProcessList.begin();
+    OFListIterator(ChildProcessData *) last = ChildProcessList.end();
+    while (first != last)
+    {
+        if ((*first)->done)
+        {
+            // clean up wait handle
+            UnregisterWaitEx((*first)->waitHandle, INVALID_HANDLE_VALUE);
+            // close process handle
+            CloseHandle((*first)->processHandle);
+            // delete list entry
+            delete *first;
+            first = ChildProcessList.erase(first);
+            // decrease counter for child processes
+            --numChildren;
+        }
+        else ++first;
+    }
 #endif
 }
 
