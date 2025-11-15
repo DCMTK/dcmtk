@@ -234,7 +234,12 @@ extern "C" void sigChildHandler(int)
 {
     while (waitpid( -1, NULL, WNOHANG) > 0)
     {
-        if (numChildren > 0) --numChildren;
+        if (numChildren > 0)
+        {
+            // In C++20, operator-- on variables with volateile qualifier is deprecated.
+            size_t n = numChildren - 1;
+            numChildren = n;
+        }
     }
 }
 
@@ -1125,7 +1130,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   {
     // we are the parent process in fork mode and have successfully forked a child process
     // that will handle the association. Just clean up the association in this process.
-    numChildren++;
+    // Note: in C++20, operator++ on variables with volateile qualifier is deprecated.
+    size_t n = numChildren + 1;
+    numChildren = n;
     goto cleanup;
   }
 
@@ -2621,7 +2628,12 @@ static void cleanChildren(pid_t /* pid */, OFBool synch)
       child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
       if (child > 0)
       {
-        if (numChildren > 0) --numChildren;
+        if (numChildren > 0)
+        {
+          // In C++20, operator-- on variables with volateile qualifier is deprecated.
+          size_t n = numChildren - 1;
+          numChildren = n;
+        }
       }
       else if (child < 0)
       {
@@ -2653,7 +2665,9 @@ static void cleanChildren(pid_t /* pid */, OFBool synch)
             delete *first;
             first = ChildProcessList.erase(first);
             // decrease counter for child processes
-            --numChildren;
+            // Note: in C++20, operator-- on variables with volateile qualifier is deprecated.
+            size_t n = numChildren - 1;
+            numChildren = n;
         }
         else ++first;
     }
