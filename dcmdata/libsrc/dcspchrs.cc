@@ -175,12 +175,12 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromChar
         if (sourceVM == 0)
         {
             // no character set specified, use ASCII
-            status = DefaultEncodingConverter.selectEncoding("ASCII", DestinationEncoding);
+            status = DefaultEncodingConverter.selectEncoding("ASCII", getDestinationEncoding());
             // output some useful debug information
             if (status.good())
             {
                 DCMDATA_DEBUG("DcmSpecificCharacterSet: Selected character set '' (ASCII) "
-                    << "for the conversion to " << DestinationEncoding);
+                    << "for the conversion to " << getDestinationEncoding());
             }
         }
         else if (sourceVM == 1)
@@ -327,12 +327,12 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithoutCodeExtensions()
     // check whether an appropriate character encoding has been found
     if (!fromEncoding.empty())
     {
-        status = DefaultEncodingConverter.selectEncoding(fromEncoding, DestinationEncoding);
+        status = DefaultEncodingConverter.selectEncoding(fromEncoding, getDestinationEncoding());
         // output some useful debug information
         if (status.good())
         {
             DCMDATA_DEBUG("DcmSpecificCharacterSet: Selected character set '" << SourceCharacterSet
-                << "' (" << fromEncoding << ") for the conversion to " << DestinationEncoding);
+                << "' (" << fromEncoding << ") for the conversion to " << getDestinationEncoding());
         }
     }
     return status;
@@ -469,12 +469,12 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
             // but first check whether this encoding has already been added before
             if (conv.second)
             {
-                status = conv.first->second.selectEncoding(encodingName, DestinationEncoding);
+                status = conv.first->second.selectEncoding(encodingName, getDestinationEncoding());
                 if (status.good())
                 {
                     // output some useful debug information
                     DCMDATA_DEBUG("DcmSpecificCharacterSet: Added character set '" << definedTerm
-                        << "' (" << encodingName << ") for the conversion to " << DestinationEncoding);
+                        << "' (" << encodingName << ") for the conversion to " << getDestinationEncoding());
                     // also remember the default descriptor, which refers to the first character set
                     if (i == 0)
                     {
@@ -502,12 +502,12 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSetWithCodeExtensions(const 
             OFMake_pair(OFString("ISO 2022 IR 6"), OFCharacterEncoding()));
         if (conv.second)
         {
-            status = conv.first->second.selectEncoding("ASCII", DestinationEncoding);
+            status = conv.first->second.selectEncoding("ASCII", getDestinationEncoding());
             if (status.good())
             {
                 // output some useful debug information
                 DCMDATA_DEBUG("DcmSpecificCharacterSet: Added character set 'ISO 2022 IR 6' (ASCII) "
-                    << "for the conversion to " << DestinationEncoding
+                    << "for the conversion to " << getDestinationEncoding()
                     << " (because it is needed for one or more of the previously added character sets)");
             } else {
                 DCMDATA_ERROR("DcmSpecificCharacterSet: 'ISO 2022 IR 6' is not supported by"
@@ -549,14 +549,14 @@ OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
     if (status.good())
     {
         // finally, output some debug information
-        if (DestinationEncoding == "UTF-8")
+        if (getDestinationEncoding() == "UTF-8")
         {
             // output code points only in case of UTF-8 output
-            DCMDATA_TRACE("Converted result in " << DestinationEncoding << " is '"
+            DCMDATA_TRACE("Converted result in " << getDestinationEncoding() << " is '"
                 << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "' ("
                 << countCharactersInUTF8String(toString) << " code points)");
         } else {
-            DCMDATA_TRACE("Converted result in " << DestinationEncoding << " is '"
+            DCMDATA_TRACE("Converted result in " << getDestinationEncoding() << " is '"
                 << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "'");
         }
     }
