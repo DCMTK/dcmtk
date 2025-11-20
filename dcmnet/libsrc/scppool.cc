@@ -38,7 +38,7 @@ DcmBaseSCPPool::DcmBaseSCPPool()
     m_workersIdle(),
     m_cfg(),
     m_maxWorkers(5),
-    m_runMode( LISTEN )
+    m_runMode( SHUTDOWN ) // LISTEN mode will be set, once actual listening will be started.
     // not implemented yet: m_workersBusyTimeout(60),
     // not implemented yet: m_waiting(),
 {
@@ -83,7 +83,10 @@ OFCondition DcmBaseSCPPool::listen()
   T_ASC_Network *network = NULL;
   OFCondition cond = initializeNetwork(&network);
   if(cond.bad())
-    return cond;
+  {
+    finishListening();
+    return cond;      
+  }
 
   /* As long as all is fine (or we have been to busy handling last connection request) keep listening */
   while ( m_runMode == LISTEN && ( cond.good() || (cond == NET_EC_SCPBusy) ) )
@@ -153,11 +156,7 @@ OFCondition DcmBaseSCPPool::listen()
   else
     DCMNET_DEBUG("DcmBaseSCPPool: Leaving listen loop, result: " << cond.text() << " (runMode: " << m_runMode << ")");
 
-  // Now all workers must be in idle list which will be deleted in destructor.
-  m_criticalSection.lock();
-  // Set run mode to SHUTDOWN which signals destructor that its time to clean up
-  m_runMode = SHUTDOWN;
-  m_criticalSection.unlock();
+  finishListening();
 
   /* In the end, clean up the rest of the memory and drop network */
   ASC_dropNetwork(&network);
@@ -417,5 +416,16 @@ void DcmBaseSCPPool::DcmBaseSCPWorker::rerun()
 {
   DcmBaseSCPPool::DcmBaseSCPWorker::run();
 }
+
+// ----------------------------------------------------------------------------
+
+void DcmBaseSCPPool::finishListening()
+{
+  m_criticalSection.lock();
+  // Set run mode to SHUTDOWN which signals destructor that its time to clean up
+  m_runMode = SHUTDOWN;
+  m_criticalSection.unlock();
+}
+
 
 #endif // WITH_THREADS
