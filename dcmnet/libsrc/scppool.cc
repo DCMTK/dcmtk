@@ -49,7 +49,8 @@ DcmBaseSCPPool::DcmBaseSCPPool()
 DcmBaseSCPPool::~DcmBaseSCPPool()
 {
   // Wait that we are in SHUTDOWN mode
-  while (m_runMode != SHUTDOWN)
+  // Let busy threads finish their work and get moved from the busy list to the idle list.
+  while (m_runMode != SHUTDOWN || DcmBaseSCPPool::numThreads(true) != 0)
   {
     DCMNET_DEBUG("DcmBaseSCPPool: Destructor called, waiting for runMode to become SHUTDOWN (currently " << m_runMode << ")");
     OFStandard::forceSleep(1);
