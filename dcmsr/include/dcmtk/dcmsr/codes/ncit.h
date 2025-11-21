@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2025d
- *  File created on 2025-10-07 12:23:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025e
+ *  File created on 2025-11-21 11:52:23 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 58
+// total number of codes: 61
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -57,6 +57,7 @@
 #define CODE_NCIt_Sarcosine_C11                                            DSRBasicCodedEntry("C122684", "NCIt", "Sarcosine C^11^")
 #define CODE_NCIt_IrreversibleElectroporation                              DSRBasicCodedEntry("C131483", "NCIt", "Irreversible electroporation")
 #define CODE_NCIt_4Kscore                                                  DSRBasicCodedEntry("C142184", "NCIt", "4Kscore")
+#define CODE_NCIt_Pembrolizumab_89Zr                                       DSRBasicCodedEntry("C148167", "NCIt", "Pembrolizumab ^89^Zr")
 #define CODE_NCIt_SoftTissueSarcoma_excludingRhabdomyosarcoma              DSRBasicCodedEntry("C148457", "NCIt", "Soft tissue sarcoma, excluding rhabdomyosarcoma")
 #define CODE_NCIt_Cryoablation                                             DSRBasicCodedEntry("C15215", "NCIt", "Cryoablation")
 #define CODE_NCIt_PAXgeneTissueSystem                                      DSRBasicCodedEntry("C185113", "NCIt", "PAXgene Tissue System")
@@ -79,6 +80,7 @@
 #define CODE_NCIt_Experience                                               DSRBasicCodedEntry("C54627", "NCIt", "Experience")
 #define CODE_NCIt_Reviewer                                                 DSRBasicCodedEntry("C54634", "NCIt", "Reviewer")
 #define CODE_NCIt_Ion                                                      DSRBasicCodedEntry("C597", "NCIt", "Ion")
+#define CODE_NCIt_FluoroazomycinArabinoside_F18                            DSRBasicCodedEntry("C62520", "NCIt", "Fluoroazomycin arabinoside F^18^")
 #define CODE_NCIt_AdLibitum                                                DSRBasicCodedEntry("C64636", "NCIt", "ad libitum")
 #define CODE_NCIt_ActivitySession                                          DSRBasicCodedEntry("C67447", "NCIt", "Activity Session")
 #define CODE_NCIt_FocusedUltrasoundAblation                                DSRBasicCodedEntry("C68681", "NCIt", "Focused ultrasound ablation")
@@ -100,6 +102,7 @@
 #define CODE_NCIt_HousingHumidity                                          DSRBasicCodedEntry("C90395", "NCIt", "Housing humidity")
 #define CODE_NCIt_LightCycle                                               DSRBasicCodedEntry("C90419", "NCIt", "Light cycle")
 #define CODE_NCIt_WaterDelivery                                            DSRBasicCodedEntry("C90486", "NCIt", "Water delivery")
+#define CODE_NCIt_2Thymidine_C11                                           DSRBasicCodedEntry("C90936", "NCIt", "2-Thymidine C^11^")
 #define CODE_NCIt_Dosimetrist                                              DSRBasicCodedEntry("C93176", "NCIt", "Dosimetrist")
 #define CODE_NCIt_Abnormality                                              DSRBasicCodedEntry("C9440", "NCIt", "Abnormality")
 #define CODE_NCIt_ReferenceRegion                                          DSRBasicCodedEntry("C94970", "NCIt", "Reference Region")

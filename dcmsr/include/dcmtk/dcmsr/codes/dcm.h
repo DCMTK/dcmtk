@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2025d
- *  File created on 2025-10-07 12:23:04 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025e
+ *  File created on 2025-11-21 11:52:18 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 5072
+// total number of codes: 5092
 // - retired: 208
 // - no name: 27
 // - not unique: 17
@@ -2465,6 +2465,9 @@
 #define CODE_DCM_AddendedReport                                            DSRBasicCodedEntry("121361", "DCM", "Addended report")
 #define CODE_DCM_PreliminaryReport                                         DSRBasicCodedEntry("121362", "DCM", "Preliminary report")
 #define CODE_DCM_PartialReport                                             DSRBasicCodedEntry("121363", "DCM", "Partial report")
+#define CODE_DCM_ComposedFromDeformableRegistration                        DSRBasicCodedEntry("121367", "DCM", "Composed from deformable registration")
+#define CODE_DCM_ComposedFromImageSeriesOtherThanPlanningImageSeries       DSRBasicCodedEntry("121368", "DCM", "Composed from image series other than planning image series")
+#define CODE_DCM_ComposedFromSetupPerturbation                             DSRBasicCodedEntry("121369", "DCM", "Composed from setup perturbation")
 #define CODE_DCM_ComposedFromPriorDoses                                    DSRBasicCodedEntry("121370", "DCM", "Composed from prior doses")
 #define CODE_DCM_ComposedFromPriorDosesAndCurrentPlan                      DSRBasicCodedEntry("121371", "DCM", "Composed from prior doses and current plan")
 #define CODE_DCM_SourceDoseForComposingCurrentDose                         DSRBasicCodedEntry("121372", "DCM", "Source dose for composing current dose")
@@ -3409,6 +3412,7 @@
 #define CODE_DCM_R1507_89Zr                                                DSRBasicCodedEntry("126518", "DCM", "R1507 ^89^Zr")
 #define CODE_DCM_E4G10_89Zr                                                DSRBasicCodedEntry("126519", "DCM", "E4G10 ^89^Zr")
 #define CODE_DCM_DfCD45_89Zr                                               DSRBasicCodedEntry("126520", "DCM", "Df-CD45 ^89^Zr")
+#define CODE_DCM_Glucose_C11                                               DSRBasicCodedEntry("126521", "DCM", "Glucose C^11^")
 #define CODE_DCM_44Scandium                                                DSRBasicCodedEntry("126600", "DCM", "^44^Scandium")
 #define CODE_DCM_51Manganese                                               DSRBasicCodedEntry("126601", "DCM", "^51^Manganese")
 #define CODE_DCM_70Arsenic                                                 DSRBasicCodedEntry("126602", "DCM", "^70^Arsenic")
@@ -5120,5 +5124,21 @@
 #define CODE_DCM_DVAWavePeakVelocity                                       DSRBasicCodedEntry("131352", "DCM", "DV a-wave peak velocity")
 #define CODE_DCM_DVPreloadIndex                                            DSRBasicCodedEntry("131353", "DCM", "DV preload index")
 #define CODE_DCM_DVSA                                                      DSRBasicCodedEntry("131354", "DCM", "DV S/a")
+#define CODE_DCM_RejectionWithdrawn                                        DSRBasicCodedEntry("131360", "DCM", "Rejection Withdrawn")
+#define CODE_DCM_FetalAnatomySurvey                                        DSRBasicCodedEntry("131370", "DCM", "Fetal Anatomy Survey")
+#define CODE_DCM_AbdominalAttachmentOfUmbilicalCord                        DSRBasicCodedEntry("131371", "DCM", "Abdominal attachment of umbilical cord")
+#define CODE_DCM_RetronasalTriangle                                        DSRBasicCodedEntry("131372", "DCM", "Retronasal triangle")
+#define CODE_DCM_MidsagittalFacialProfile                                  DSRBasicCodedEntry("131373", "DCM", "Midsagittal facial profile")
+#define CODE_DCM_CardiacAxis                                               DSRBasicCodedEntry("131374", "DCM", "Cardiac axis")
+#define CODE_DCM_JugularLymphaticSac                                       DSRBasicCodedEntry("131375", "DCM", "Jugular lymphatic sac")
+#define CODE_DCM_TransthalamicCoronalView                                  DSRBasicCodedEntry("131376", "DCM", "Transthalamic coronal view")
+#define CODE_DCM_MidsagittalView                                           DSRBasicCodedEntry("131377", "DCM", "Midsagittal view")
+#define CODE_DCM_HighShortAxisView                                         DSRBasicCodedEntry("131378", "DCM", "High short axis view")
+#define CODE_DCM_AntegradeDuctusVenosus                                    DSRBasicCodedEntry("131379", "DCM", "Antegrade ductus venosus")
+#define CODE_DCM_ISUOG1stTrimester2023                                     DSRBasicCodedEntry("131380", "DCM", "ISUOG 1st Trimester 2023")
+#define CODE_DCM_ISUOG2ndTrimester2022                                     DSRBasicCodedEntry("131381", "DCM", "ISUOG 2nd Trimester 2022")
+#define CODE_DCM_ISUOG3rdTrimester2024                                     DSRBasicCodedEntry("131382", "DCM", "ISUOG 3rd Trimester 2024")
+#define CODE_DCM_JSUMFetalMorphology2021                                   DSRBasicCodedEntry("131383", "DCM", "JSUM Fetal Morphology 2021")
+#define CODE_DCM_JDMSFetalAnatomy2014                                      DSRBasicCodedEntry("131384", "DCM", "JDMS Fetal Anatomy 2014")
 
 #endif

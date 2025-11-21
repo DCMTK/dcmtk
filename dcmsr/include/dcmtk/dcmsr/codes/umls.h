@@ -5,8 +5,8 @@
  *
  *  Header file with UMLS Code Definitions (Coding Scheme "UMLS")
  *
- *  Generated automatically from DICOM PS 3.16-2025d
- *  File created on 2025-10-07 12:23:16 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025e
+ *  File created on 2025-11-21 11:52:22 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 59
+// total number of codes: 60
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -68,6 +68,7 @@
 #define CODE_UMLS_Duration                                                 DSRBasicCodedEntry("C0449238", "UMLS", "Duration")
 #define CODE_UMLS_InfantOfMotherWithGestationalDiabetes                    DSRBasicCodedEntry("C0456029", "UMLS", "Infant of mother with gestational diabetes")
 #define CODE_UMLS_CoefficientOfVariance                                    DSRBasicCodedEntry("C0681921", "UMLS", "Coefficient of Variance")
+#define CODE_UMLS_HeartSize                                                DSRBasicCodedEntry("C0744689", "UMLS", "Heart size")
 #define CODE_UMLS_PercutaneousClosureOfAtrialSeptalDefect                  DSRBasicCodedEntry("C0844084", "UMLS", "Percutaneous closure of atrial septal defect")
 #define CODE_UMLS_ManufacturerName                                         DSRBasicCodedEntry("C0947322", "UMLS", "Manufacturer Name")
 #define CODE_UMLS_Intern                                                   DSRBasicCodedEntry("C1144859", "UMLS", "Intern")
