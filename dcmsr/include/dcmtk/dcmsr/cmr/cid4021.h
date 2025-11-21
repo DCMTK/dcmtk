@@ -5,8 +5,8 @@
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2025c
- *  File created on 2025-07-16 12:39:01 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025e
+ *  File created on 2025-11-21 12:16:47 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 4021 - PET Radiopharmaceutical.
- *  (type: extensible, version: 20250709)
+ *  (type: extensible, version: 20251111)
  */
 class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
   : public DSRContextGroup
@@ -44,6 +44,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         _28H1_89Zr,
         /// (126713,DCM,"2FA F^18^")
         _2FA_F18,
+        /// (C90936,NCIt,"2-Thymidine C^11^")
+        _2Thymidine_C11,
+        /// (771875003,SCT,"3-N-Methylspiperone C^11^")
+        _3NMethylspiperone_C11,
         /// (126751,DCM,"7D12 ^89^Zr")
         _7D12_89Zr,
         /// (126750,DCM,"7E11 ^89^Zr")
@@ -96,10 +100,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         CMAbU36_89Zr,
         /// (126515,DCM,"cU36 ^89^Zr")
         CU36_89Zr,
+        /// (C412822,MSH,"DASB C^11^")
+        DASB_C11,
         /// (C96234,NCIt,"DCFBC F^18^")
         DCFBC_F18,
-        /// (C116352,NCIt,"Piflufolastat F^18^")
-        Piflufolastat_F18,
         /// (126762,DCM,"Df-[FK](2) ^89^Zr")
         DfFK2_89Zr,
         /// (126763,DCM,"Df-[FK](2)-3PEG(4) ^89^Zr")
@@ -112,6 +116,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         DfFKPEG3_89Zr,
         /// (126747,DCM,"DN30 ^89^Zr")
         DN30_89Zr,
+        /// (724025002,SCT,"Dotatate Ga^68^")
+        Dotatate_Ga68,
         /// (126765,DCM,"DPA-713 ^11^C")
         DPA713_11C,
         /// (126766,DCM,"DPA-714 ^18^F")
@@ -148,6 +154,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Flumazenil_F18,
         /// (424708001,SCT,"Fluorethyltyrosin F^18^")
         Fluorethyltyrosin_F18,
+        /// (C62520,NCIt,"Fluoroazomycin arabinoside F^18^")
+        FluoroazomycinArabinoside_F18,
         /// (423546004,SCT,"Fluorobenzothiazole F^18^")
         Fluorobenzothiazole_F18,
         /// (456992002,SCT,"Fluorocholine F^18^")
@@ -166,6 +174,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Fluoromisonidazole_F18,
         /// (C2934038,UMLS,"Fluoropropyl-dihydrotetrabenazine F^18^")
         FluoropropylDihydrotetrabenazine_F18,
+        /// (764937002,SCT,"Fluorothymidine F^18^")
+        Fluorothymidine_F18,
         /// (126707,DCM,"Fluorotriopride F^18^")
         Fluorotriopride_F18,
         /// (425236000,SCT,"Fluorouracil F^18^")
@@ -182,6 +192,8 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Germanium_Ge68,
         /// (126724,DCM,"Glembatumumab vedotin ^89^Zr")
         GlembatumumabVedotin_89Zr,
+        /// (126521,DCM,"Glucose C^11^")
+        Glucose_C11,
         /// (129509006,SCT,"Glutamate N^13^")
         Glutamate_N13,
         /// (126709,DCM,"Glutamine C^11^")
@@ -230,12 +242,16 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         Panitumumab_89Zr,
         /// (126728,DCM,"Pegdinetanib ^89^Zr")
         Pegdinetanib_89Zr,
+        /// (C148167,NCIt,"Pembrolizumab ^89^Zr")
+        Pembrolizumab_89Zr,
+        /// (C5433257,UMLS,"PI-2620 F^18^")
+        PI2620_F18,
+        /// (C116352,NCIt,"Piflufolastat F^18^")
+        Piflufolastat_F18,
         /// (126725,DCM,"Pinatuzumab vedotin ^89^Zr")
         PinatuzumabVedotin_89Zr,
         /// (126500,DCM,"Pittsburgh compound B C^11^")
         PittsburghCompoundB_C11,
-        /// (C5433257,UMLS,"PI-2620 F^18^")
-        PI2620_F18,
         /// (C1609883,UMLS,"PK11195 ^11^C")
         PK11195_11C,
         /// (126726,DCM,"Polatuzumab vedotin ^89^Zr")
@@ -288,14 +304,10 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         THK5317_F18,
         /// (C4279748,UMLS,"THK5351 F^18^")
         THK5351_F18,
-        /// (129502002,SCT,"Thymidine F^18^")
-        Thymidine_F18,
         /// (126512,DCM,"Trastuzumab ^89^Zr")
         Trastuzumab_89Zr,
         /// (126749,DCM,"TRC105 ^89^Zr")
         TRC105_89Zr,
-        /// (724025002,SCT,"Dotatate Ga^68^")
-        Dotatate_Ga68,
         /// (126739,DCM,"Ublituximab ^89^Zr")
         Ublituximab_89Zr,
         /// (C4506788,UMLS,"UCB-J C^11^")

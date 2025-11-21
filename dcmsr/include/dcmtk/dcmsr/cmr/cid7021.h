@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7021_MeasurementReportDocumentTitle
  *
- *  Generated automatically from DICOM PS 3.16-2025c
- *  File created on 2025-07-16 12:39:05 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2025e
+ *  File created on 2025-11-21 12:16:50 by J. Riesmeier
  *
  */
 
