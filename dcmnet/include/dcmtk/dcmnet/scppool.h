@@ -261,6 +261,9 @@ private:
 
   /// Current run mode of pool
   volatile runmode m_runMode;
+
+  /// Set m_runMode to SHUTDOWN on return from listen function
+  void finishListening();
 };
 
 /** Implementation of DICOM SCP server pool. The pool waits for incoming
