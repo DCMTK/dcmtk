@@ -763,7 +763,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     // check if we are attempting to convert a dataset containing
     // a pixel data URL. In that case we only continue if the target
     // transfer syntax also uses a pixel data URL.
-    if (tagExists(DCM_PixelDataProviderURL, OFTrue))
+    if (tagExists(DCM_PixelDataProviderURL, OFFalse))
     {
       if (! torep.usesReferencedPixelData())
       {
