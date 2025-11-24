@@ -86,6 +86,7 @@ t_huge_concat.o: t_huge_concat.cc \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
@@ -219,6 +220,7 @@ t_overflow.o: t_overflow.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
@@ -374,6 +376,7 @@ t_roundtrip.o: t_roundtrip.cc \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \

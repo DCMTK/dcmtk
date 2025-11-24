@@ -22,7 +22,7 @@ LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmioddir)/include -I$(dcmfgdir)/include
 LOCALDEFS =
 
-objs = segdoc.o segment.o segtypes.o segutils.o
+objs = overlaputil.o segdoc.o segment.o segtypes.o segutils.o
 
 library = libdcmseg.$(LIBEXT)
 

@@ -37,33 +37,46 @@ IODRules* IODRules::clone()
     IODRules* newRules = new IODRules();
     if (newRules)
     {
-        OFMap<DcmTagKey, IODRule*>::iterator it = m_Rules.begin();
-        while (it != m_Rules.end())
-        {
-            if (it->second)
-            {
-                IODRule* newRule = it->second->clone();
-                if (newRule)
-                {
-                    newRules->addRule(newRule);
-                }
-                else
-                {
-                    DCMIOD_WARN("Cannot create new IODRule, memory exhausted?");
-                }
-            }
-            else
-            {
-                DCMIOD_WARN("Found NULL IODRule, cannot clone");
-            }
-            it++;
-        }
+        *newRules = *this;
     }
     else
     {
         DCMIOD_WARN("Cannot create new IODRules, memory exhausted?");
     }
     return newRules;
+}
+
+// Copy constructor
+IODRules::IODRules(const IODRules& other)
+    : m_Rules()
+{
+   // use assignment operator
+   *this = other;
+}
+
+// Assignment operator (deep copy)
+IODRules& IODRules::operator=(const IODRules& other)
+{
+    if (this != &other)
+    {
+        clear();  // Clear existing rules
+        // Perform deep copy of all rules
+        OFMap<DcmTagKey, IODRule*>::const_iterator it = other.m_Rules.begin();
+        while (it != other.m_Rules.end())
+        {
+            IODRule* newRule = it->second->clone();
+            if (newRule)
+            {
+                m_Rules.insert(OFMake_pair(it->first, newRule));
+            }
+            else
+            {
+                DCMIOD_WARN("Cannot create new IODRule, memory exhausted?");
+            }
+            ++it;
+        }
+    }
+    return *this;
 }
 
 IODRule* IODRules::getByTag(const DcmTagKey& key) const

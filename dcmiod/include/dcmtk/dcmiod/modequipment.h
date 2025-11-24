@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2019, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -167,6 +167,12 @@ public:
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getSoftwareVersions(OFString& value, const signed long pos = 0) const;
+
+    /** Get a copy altogether as EquipmentInfo
+     *  @return EquipmentInfo object containing all relevant information
+     *    If some data is not available, it will contain an empty string
+     */
+    virtual IODGeneralEquipmentModule::EquipmentInfo getEquipmentInfo() const;
 
     /** Set Manufacturer
      *  @param  value Value to be set (single value only) or "" for no value

@@ -83,6 +83,22 @@ extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_NotEnoughData;
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_MaxFramesReached;
 /// error: invalid bit depth
 extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_InvalidBitDepth;
+/// error: frames are not parallel
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_FramesNotParallel;
+/// error: no segmentation SOP class (Segmentation or Label Map Segmentation SOP Class)
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_NoSegmentationBasedSOPClass;
+/// error: segmentation-based object does not require conversion
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_NoConversionRequired;
+/// error: cannot convert fractional to labelmap segmentations
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_CannotConvertFractionalToLabelmap;
+/// error: segmentation-based object is already a label map
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_AlreadyLabelMap;
+/// error: binary segmentation contains overlapping segments
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_OverlappingSegments;
+/// error: cannot convert to PALETTE color model since not all segments contain Recommended Display CIELab Value Macro
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_CannotConvertMissingCIELab;
+/// error: missing Plane Position (Patient) Functional Group
+extern DCMTK_DCMSEG_EXPORT const OFConditionConst SG_EC_MissingPlanePositionPatient;
 
 ///@}
 
@@ -216,6 +232,24 @@ public:
      */
     virtual ~SegmentedPropertyTypeCodeItem();
 
+    /** Clone method, creates a new instance of this class and performs
+     *  a deep copy of all data.
+     *  @return Pointer to newly created SegmentedPropertyTypeCodeItem object. The
+     *          caller is responsible for deleting the object after use.
+     */
+    virtual SegmentedPropertyTypeCodeItem* clone();
+
+    /** Assignment operator, performs deep copy
+     *  @param  rhs The right-hand side SegmentedPropertyTypeCodeItem to assign from
+     *  @return Reference to this SegmentedPropertyTypeCodeItem
+     */
+    SegmentedPropertyTypeCodeItem& operator=(const SegmentedPropertyTypeCodeItem& rhs);
+
+    /** Copy constructor
+     *  @param  rhs The right-hand side SegmentedPropertyTypeCodeItem to copy from
+     */
+    SegmentedPropertyTypeCodeItem(const SegmentedPropertyTypeCodeItem& rhs);
+
     /** Clear all data
      */
     virtual void clearData();
@@ -270,6 +304,19 @@ public:
     /** Virtual destructor, frees memory
      */
     virtual ~SegmentDescriptionMacro();
+
+    /** Clone method, creates a new instance of this class and performs
+     *  a deep copy of all data.
+     *  @return Pointer to newly created SegmentDescriptionMacro object. The
+     *          caller is responsible for deleting the object after use.
+     */
+    virtual SegmentDescriptionMacro* clone();
+
+    /** Assignment operator, performs deep copy
+     *  @param  rhs The right-hand side SegmentDescriptionMacro to assign from
+     *  @return Reference to this SegmentDescriptionMacro
+     */
+    SegmentDescriptionMacro& operator=(const SegmentDescriptionMacro& rhs);
 
     /** Clear all data
      */

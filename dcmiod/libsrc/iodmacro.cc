@@ -781,7 +781,10 @@ OFCondition ImageSOPInstanceReferenceMacro::create(const OFString& sopClassUID,
     {
         if (!refFramesOrSegments.empty())
         {
-            if (sopClassUID == UID_SegmentationStorage)
+            if ( (sopClassUID == UID_SegmentationStorage)
+                 || (sopClassUID == UID_LabelMapSegmentationStorage)
+                 || (sopClassUID == UID_SurfaceSegmentationStorage)
+                 || (sopClassUID == UID_HeightMapSegmentationStorage) )
             {
                 cond = result->setReferencedSegmentNumber(refFramesOrSegments);
             }

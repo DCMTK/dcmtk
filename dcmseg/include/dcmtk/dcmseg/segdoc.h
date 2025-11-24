@@ -43,11 +43,14 @@
 #include "dcmtk/dcmseg/segtypes.h" // for segmentation data types
 #include "dcmtk/dcmseg/segutils.h" // fo packBinaryFrame()
 #include "dcmtk/ofstd/ofvector.h"  // for OFVector class
+#include "dcmtk/ofstd/ofdiag.h"    // for DCMTK_DIAGNOSTIC_PUSH etc.
 
 class FGSegmentation;
 class FGDerivationImage;
 class DcmFileFormat;
-/** Class representing an object of the "Segmentation SOP Class".
+
+/** Class representing an object of the "Segmentation IOD"
+ *  or "Label Map Segmentation IOD".
  */
 
 class DCMTK_DCMSEG_EXPORT DcmSegmentation : public DcmIODImage<IODImagePixelModule<Uint16>, IODImagePixelModule<Uint8> >
@@ -75,7 +78,6 @@ public:
      *  @return EC_Normal if reading was successful, error otherwise
      */
     static OFCondition loadFile(const OFString& filename, DcmSegmentation*& segmentation, const DcmSegmentation::LoadingFlags& flags = LoadingFlags());
-
 
     /** Static method to load a Segmentation object from a file.
      *  The memory of the resulting Segmentation object has to be freed by the
@@ -177,6 +179,14 @@ public:
      */
     virtual OFBool getCheckDimensionsOnWrite();
 
+    /** Get input transfer syntax. Returns EXS_Unknown if object has been
+     *  created from scratch (and not from file or dataset).  If the
+     *  segmentation has been loaded from a concatenation, the value
+     *  will be EXS_Unknown.
+     *  @return Input transfer syntax
+     */
+    virtual E_TransferSyntax getInputTransferSyntax() const;
+
     // -------------------- creation ---------------------
 
     /** Factory method to create a binary segmentation object from the minimal
@@ -270,6 +280,10 @@ public:
     // -------------------- access ---------------------
 
     OFBool has16BitPixelData() const;
+
+    Uint16 getRows();
+
+    Uint16 getColumns();
 
     /** Get number of frames, based on the number of items in the shared
      *  functional functional groups sequence (i.e.\ the attribute Number of
@@ -525,8 +539,19 @@ public:
         // (will also be applied to writing, if applicable later on)
         Uint32 m_numThreads;
 
-        // Constructor to initialize the flags
-        LoadingFlags() : m_numThreads(1) {}
+        // Transfer syntax to use for reading/writing.
+        // transfer syntax used to read the data (auto detection if EXS_Unknown)
+        E_TransferSyntax m_readTransferSyntax;
+
+        /** Constructor to initialize the flags */
+        LoadingFlags() : m_numThreads(1), m_readTransferSyntax(EXS_Unknown) {}
+
+        /** Clear all flags to their default values */
+        void clear()
+        {
+            m_numThreads = 1;
+            m_readTransferSyntax = EXS_Unknown;
+        }
     };
 
 
@@ -805,6 +830,12 @@ private:
     /// Multi-frame Functional Groups high level interface
     FGInterface m_FGInterface;
 
+    /// Input transfer syntax; can be EXS_Unknown if object has been
+    /// created from scratch (and not from file or dataset). If the
+    /// segmentation has been loaded from a concatenation, the value
+    /// will be EXS_Unknown.
+    E_TransferSyntax m_inputXfer;
+
     // --------------- private helper functions -------------------
 
     /** Clear old data
@@ -826,9 +857,11 @@ private:
      *  @param  dcmff The file format to load into
      *  @param  filename The filename of the file to load
      *  @param  dset Pointer to dataset after loading
+     *  @param  xfer Transfer syntax to use for reading
+     *    (if EXS_Unknown,the default, auto detection is used)
      *  @return EC_Normal if loading was successful, error otherwise
      */
-    static OFCondition loadFile(DcmFileFormat& dcmff, const OFString& filename, DcmDataset*& dset);
+    static OFCondition loadFile(DcmFileFormat& dcmff, const OFString& filename, DcmDataset*& dset, const E_TransferSyntax xfer);
 
     /** Computes the number of total bytes required for the frame data of this
      *  segmentation object. Takes into account dimensions and number of frames,

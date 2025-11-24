@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015, OFFIS e.V.
+ *  Copyright (C) 2015-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,6 +42,7 @@ public:
 
     static OFBool (isinf) (float f);
     static OFBool (isinf) (double d);
+    static double (sqrt) (double d);
     template<typename Integer>
     static inline OFTypename OFenable_if<OFis_integral<Integer>::value,OFBool>::type
     (isinf) ( const Integer i ) { return (isinf) ( OFstatic_cast( double, i ) ); }
@@ -76,6 +77,12 @@ public:
      *  @return OFTrue if d is infinite, OFFalse otherwise.
      */
     static OFBool isinf( double d );
+
+    /** Computes the square root of a floating point number.
+     *  @param d the floating point value to inspect.
+     *  @return the square root of d.
+     */
+    static double sqrt( double d );
 
     /** Casts the argument to double and calls OFMath::isinf(double) on the result.
      *  @param i an integer, i.e. <kbd>OFis_integral<Integer>::value</kbd> equals <kbd>OFTrue</kbd>.

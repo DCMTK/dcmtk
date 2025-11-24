@@ -47,6 +47,7 @@ iodcommn.o: iodcommn.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modcommoninstanceref.h \
@@ -161,7 +162,9 @@ iodcontentitemmacro.o: iodcontentitemmacro.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -237,7 +240,9 @@ iodmacro.o: iodmacro.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -327,8 +332,9 @@ iodreferences.o: iodreferences.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
- ../include/dcmtk/dcmiod/iodtypes.h ../include/dcmtk/dcmiod/iodutil.h \
- ../include/dcmtk/dcmiod/iodrules.h \
+ ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../include/dcmtk/dcmiod/iodutil.h ../include/dcmtk/dcmiod/iodrules.h \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h
@@ -376,6 +382,7 @@ iodrules.o: iodrules.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
@@ -435,7 +442,8 @@ iodtypes.o: iodtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def
 iodutil.o: iodutil.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
@@ -501,6 +509,7 @@ iodutil.o: iodutil.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
@@ -559,6 +568,7 @@ modacquisitioncontext.o: modacquisitioncontext.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -641,6 +651,7 @@ modbase.o: modbase.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
@@ -713,7 +724,9 @@ modcommoninstanceref.o: modcommoninstanceref.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -777,6 +790,7 @@ modenhequipment.o: modenhequipment.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -871,7 +885,9 @@ modenhusimage.o: modenhusimage.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -954,7 +970,9 @@ modenhusseries.o: modenhusseries.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -1015,6 +1033,7 @@ modequipment.o: modequipment.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -1110,6 +1129,7 @@ modfloatingpointimagepixel.o: modfloatingpointimagepixel.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
 modfor.o: modfor.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -1174,6 +1194,7 @@ modfor.o: modfor.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
@@ -1232,6 +1253,7 @@ modgeneralimage.o: modgeneralimage.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -1333,6 +1355,7 @@ modgeneralseries.o: modgeneralseries.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -1416,7 +1439,9 @@ modgeneralstudy.o: modgeneralstudy.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -1555,7 +1580,9 @@ modiccprofile.o: modiccprofile.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../include/dcmtk/dcmiod/modiccprofile.h \
  ../include/dcmtk/dcmiod/iodrules.h ../include/dcmtk/dcmiod/iodtypes.h \
- ../include/dcmtk/dcmiod/ioddef.h ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
@@ -1569,7 +1596,8 @@ modiccprofile.o: modiccprofile.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
- ../../ofstd/include/dcmtk/ofstd/oftime.h
+ ../../ofstd/include/dcmtk/ofstd/oftime.h \
+ ../include/dcmtk/dcmiod/iccexample.h
 modimagepixel.o: modimagepixel.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmiod/modimagepixel.h \
@@ -1635,6 +1663,7 @@ modimagepixel.o: modimagepixel.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
@@ -1710,6 +1739,7 @@ modimagepixelbase.o: modimagepixelbase.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
@@ -1766,6 +1796,7 @@ modmultiframedimension.o: modmultiframedimension.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -1846,6 +1877,7 @@ modmultiframefg.o: modmultiframefg.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -1934,6 +1966,7 @@ modpalettecolorlut.o: modpalettecolorlut.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
  ../include/dcmtk/dcmiod/iodtypes.h ../include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../include/dcmtk/dcmiod/modbase.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
  ../../ofstd/include/dcmtk/ofstd/offile.h \
@@ -2003,6 +2036,7 @@ modpatient.o: modpatient.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -2080,6 +2114,7 @@ modpatientstudy.o: modpatientstudy.cc \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
  ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../include/dcmtk/dcmiod/modbase.h \
@@ -2175,6 +2210,7 @@ modsegmentationseries.o: modsegmentationseries.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../include/dcmtk/dcmiod/iodutil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
@@ -2249,6 +2285,7 @@ modsopcommon.o: modsopcommon.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
@@ -2336,6 +2373,7 @@ modsynchronization.o: modsynchronization.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
@@ -2403,6 +2441,7 @@ modusfor.o: modusfor.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
  ../include/dcmtk/dcmiod/ioddef.h ../include/dcmtk/dcmiod/iodrules.h \
  ../include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \

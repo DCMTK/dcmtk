@@ -63,4 +63,9 @@ struct dcmtk_config_math
   {
     return STD_NAMESPACE isinf( d );
   }
+
+  static inline double sqrt( double d )
+  {
+    return STD_NAMESPACE sqrt(d);
+  }
 };

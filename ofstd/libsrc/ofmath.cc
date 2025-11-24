@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2016, OFFIS e.V.
+ *  Copyright (C) 2015-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -44,4 +44,9 @@ OFBool OFMath::isinf( float f )
 OFBool OFMath::isinf( double d )
 {
   return (dcmtk_config_math::isinf)( d );
+}
+
+double OFMath::sqrt(double d)
+{
+  return (dcmtk_config_math::sqrt)( d );
 }

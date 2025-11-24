@@ -68,13 +68,59 @@ OFCondition DcmSegment::create(DcmSegment*& segment,
     return result;
 }
 
+
+
+DcmSegment* DcmSegment::clone(DcmSegmentation* seg)
+{
+    DcmSegment* newSegment = new DcmSegment(*this);
+    if (newSegment != NULL)
+    {
+        if (seg != NULL)
+            newSegment->m_SegmentationDoc = seg;
+        // else: keep reference to same DcmSegmentation document
+    }
+    return newSegment;
+}
+
+DcmSegment::DcmSegment(const DcmSegment& rhs)
+    : m_SegmentationDoc(rhs.m_SegmentationDoc)
+    , m_SegmentNumber(rhs.m_SegmentNumber)
+    , m_SegmentDescription(rhs.m_SegmentDescription)
+    , m_SegmentAlgorithmName(rhs.m_SegmentAlgorithmName)
+    , m_SegmentationAlgorithmIdentification(rhs.m_SegmentationAlgorithmIdentification)
+    , m_RecommendedDisplayGrayscaleValue(rhs.m_RecommendedDisplayGrayscaleValue)
+    , m_RecommendedDisplayCIELabValue(rhs.m_RecommendedDisplayCIELabValue)
+    , m_TrackingID(rhs.m_TrackingID)
+    , m_TrackingUID(rhs.m_TrackingUID)
+    , m_Rules(rhs.m_Rules->clone())
+{
+}
+
+DcmSegment& DcmSegment::operator=(const DcmSegment& rhs)
+{
+    if (this != &rhs)
+    {
+        m_SegmentationDoc                        = rhs.m_SegmentationDoc;
+        m_SegmentNumber                          = rhs.m_SegmentNumber;
+        m_SegmentDescription                     = rhs.m_SegmentDescription;
+        m_SegmentAlgorithmName                   = rhs.m_SegmentAlgorithmName;
+        m_SegmentationAlgorithmIdentification    = rhs.m_SegmentationAlgorithmIdentification;
+        m_RecommendedDisplayGrayscaleValue       = rhs.m_RecommendedDisplayGrayscaleValue;
+        m_RecommendedDisplayCIELabValue          = rhs.m_RecommendedDisplayCIELabValue;
+        m_TrackingID                             = rhs.m_TrackingID;
+        m_TrackingUID                            = rhs.m_TrackingUID;
+        m_Rules                                  = rhs.m_Rules->clone();
+    }
+    return *this;
+}
+
 OFCondition DcmSegment::read(DcmItem& item, const OFBool clearOldData)
 {
     if (clearOldData)
         clearData();
 
     m_SegmentDescription.read(item);
-    DcmIODUtil::getAndCheckElementFromDataset(item, m_SegmentAlgorithmName, m_Rules.getByTag(DCM_SegmentAlgorithmName));
+    DcmIODUtil::getAndCheckElementFromDataset(item, m_SegmentAlgorithmName, m_Rules->getByTag(DCM_SegmentAlgorithmName));
 
     DcmIODUtil::readSingleItem<AlgorithmIdentificationMacro>(item,
                                                              DCM_SegmentationAlgorithmIdentificationSequence,
@@ -83,12 +129,12 @@ OFCondition DcmSegment::read(DcmItem& item, const OFBool clearOldData)
                                                              "Segmentation Image Module");
 
     DcmIODUtil::getAndCheckElementFromDataset(
-        item, m_RecommendedDisplayGrayscaleValue, m_Rules.getByTag(DCM_RecommendedDisplayGrayscaleValue));
+        item, m_RecommendedDisplayGrayscaleValue, m_Rules->getByTag(DCM_RecommendedDisplayGrayscaleValue));
     DcmIODUtil::getAndCheckElementFromDataset(
-        item, m_RecommendedDisplayCIELabValue, m_Rules.getByTag(DCM_RecommendedDisplayCIELabValue));
-    DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingID, m_Rules.getByTag(DCM_TrackingID));
-    DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingUID, m_Rules.getByTag(DCM_TrackingUID));
-    DcmIODUtil::getAndCheckElementFromDataset(item, m_SegmentNumber, m_Rules.getByTag(DCM_SegmentNumber));
+        item, m_RecommendedDisplayCIELabValue, m_Rules->getByTag(DCM_RecommendedDisplayCIELabValue));
+    DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingID, m_Rules->getByTag(DCM_TrackingID));
+    DcmIODUtil::getAndCheckElementFromDataset(item, m_TrackingUID, m_Rules->getByTag(DCM_TrackingUID));
+    DcmIODUtil::getAndCheckElementFromDataset(item, m_SegmentNumber, m_Rules->getByTag(DCM_SegmentNumber));
 
     return EC_Normal;
 }
@@ -97,7 +143,7 @@ OFCondition DcmSegment::write(DcmItem& item)
 {
     OFCondition result;
     result = m_SegmentDescription.write(item);
-    DcmIODUtil::copyElementToDataset(result, item, m_SegmentAlgorithmName, m_Rules.getByTag(DCM_SegmentAlgorithmName));
+    DcmIODUtil::copyElementToDataset(result, item, m_SegmentAlgorithmName, m_Rules->getByTag(DCM_SegmentAlgorithmName));
 
     if (result.good() && m_SegmentationAlgorithmIdentification.check(OFTrue /* quiet */).good())
     {
@@ -110,13 +156,13 @@ OFCondition DcmSegment::write(DcmItem& item)
     }
 
     DcmIODUtil::copyElementToDataset(
-        result, item, m_RecommendedDisplayGrayscaleValue, m_Rules.getByTag(DCM_RecommendedDisplayGrayscaleValue));
+        result, item, m_RecommendedDisplayGrayscaleValue, m_Rules->getByTag(DCM_RecommendedDisplayGrayscaleValue));
     DcmIODUtil::copyElementToDataset(
-        result, item, m_RecommendedDisplayCIELabValue, m_Rules.getByTag(DCM_RecommendedDisplayCIELabValue));
-    DcmIODUtil::copyElementToDataset(result, item, m_TrackingID, m_Rules.getByTag(DCM_TrackingID));
-    DcmIODUtil::copyElementToDataset(result, item, m_TrackingUID, m_Rules.getByTag(DCM_TrackingUID));
+        result, item, m_RecommendedDisplayCIELabValue, m_Rules->getByTag(DCM_RecommendedDisplayCIELabValue));
+    DcmIODUtil::copyElementToDataset(result, item, m_TrackingID, m_Rules->getByTag(DCM_TrackingID));
+    DcmIODUtil::copyElementToDataset(result, item, m_TrackingUID, m_Rules->getByTag(DCM_TrackingUID));
     m_SegmentNumber.putUint16(getSegmentNumber());
-    DcmIODUtil::copyElementToDataset(result, item, m_SegmentNumber, m_Rules.getByTag(DCM_SegmentNumber));
+    DcmIODUtil::copyElementToDataset(result, item, m_SegmentNumber, m_Rules->getByTag(DCM_SegmentNumber));
 
     return result;
 }
@@ -150,25 +196,25 @@ DcmSegment::DcmSegment()
     , m_RecommendedDisplayCIELabValue(DCM_RecommendedDisplayCIELabValue)
     , m_TrackingID(DCM_TrackingID)
     , m_TrackingUID(DCM_TrackingUID)
-    , m_Rules()
+    , m_Rules(new IODRules())
 {
     initIODRules();
 }
 
 void DcmSegment::initIODRules()
 {
-    m_Rules.addRule(new IODRule(DCM_SegmentNumber, "1", "1", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
+    m_Rules->addRule(new IODRule(DCM_SegmentNumber, "1", "1", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
                     OFTrue);
-    m_Rules.addRule(new IODRule(DCM_SegmentAlgorithmName, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
+    m_Rules->addRule(new IODRule(DCM_SegmentAlgorithmName, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
                     OFTrue);
-    m_Rules.addRule(
+    m_Rules->addRule(
         new IODRule(DCM_RecommendedDisplayGrayscaleValue, "1", "3", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
         OFTrue);
-    m_Rules.addRule(
+    m_Rules->addRule(
         new IODRule(DCM_RecommendedDisplayCIELabValue, "3", "3", "SegmentationImageModule", DcmIODTypes::IE_IMAGE),
         OFTrue);
-    m_Rules.addRule(new IODRule(DCM_TrackingID, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
-    m_Rules.addRule(new IODRule(DCM_TrackingUID, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
+    m_Rules->addRule(new IODRule(DCM_TrackingID, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
+    m_Rules->addRule(new IODRule(DCM_TrackingUID, "1", "1C", "SegmentationImageModule", DcmIODTypes::IE_IMAGE), OFTrue);
 }
 
 // -------------- getters --------------------
@@ -276,6 +322,11 @@ Uint16 DcmSegment::getSegmentNumberRead()
     {
         return 0;
     }
+}
+
+OFshared_ptr<IODRules> DcmSegment::getIODRules()
+{
+    return m_Rules;
 }
 
 // -------------- setters --------------------

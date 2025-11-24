@@ -1107,7 +1107,7 @@ OFBool FGInterface::check()
     for (size_t frameCount = 0; frameCount < numFrames; frameCount++)
     {
         DCMFG_TRACE("Checking frame " << frameCount << "...");
-        // Every frame requires the FrameContent functional group, check "en passant"
+        // Most IODS require the FrameContent functional group, check "en passant"
         OFBool foundFrameContent                           = OFFalse;
         OFMap<Uint32, FunctionalGroups*>::iterator frameFG = m_perFrame.begin();
         OFMap<Uint32, FunctionalGroups*>::iterator end     = m_perFrame.end();
@@ -1144,8 +1144,9 @@ OFBool FGInterface::check()
         }
         if (!foundFrameContent)
         {
-            DCMFG_ERROR("Frame Content Functional group missing for frame #" << frameCount);
-            numErrors++;
+            // TODO: This is an error for some IODs but not all (it used to be in earlier editions of the standard)
+            DCMFG_WARN("Frame Content Functional group missing for frame #" << frameCount);
+            // numErrors++;
         }
     }
 

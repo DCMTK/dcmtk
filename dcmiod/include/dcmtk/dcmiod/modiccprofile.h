@@ -107,6 +107,14 @@ public:
     virtual OFCondition
     setICCProfile(const Uint8* value, const unsigned long numBytes, const OFBool checkValue = OFTrue);
 
+    /** Set default ICC Profile data (SRGB)
+     *  @param  setColorSpaceDescription If OFTrue, Color Space Description (0028,2004)
+     *          is set to "SRGB" when setting the default profile. If not, this attribute
+     *          is not touched by this method (i.e. by default it remains unset).
+     *  @return EC_Normal if value is set, an error code otherwise
+     */
+    virtual OFCondition setDefaultProfile(const OFBool& setColorSpaceDescription = OFTrue);
+
     /** Set Color Space
      *  @param  value The value of Color Space
      *  @param  checkValue Check value for conformance with VR (CS) and VM (1) if enabled

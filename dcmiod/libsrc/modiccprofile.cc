@@ -30,6 +30,7 @@
 #include "dcmtk/dcmiod/modiccprofile.h"
 #include "dcmtk/dcmiod/iodutil.h"
 #include "dcmtk/dcmiod/iodrules.h"
+#include "dcmtk/dcmiod/iccexample.h"
 
 const OFString IODICCProfileModule::m_ModuleName = "ICCProfileModule";
 
@@ -124,6 +125,15 @@ OFCondition IODICCProfileModule::setICCProfile(const Uint8* value, const unsigne
     return m_Item->putAndInsertUint8Array(DCM_ICCProfile, value, numBytes);
 }
 
+OFCondition IODICCProfileModule::setDefaultProfile(const OFBool& setColorSpaceDescription)
+{
+    OFCondition result = setICCProfile(DCMTK_SRGB_ICC_SAMPLE, DCMTK_SRGB_ICC_SAMPLE_LEN, OFFalse /* do not check, we expect this is valid */);
+    if (result.good() && setColorSpaceDescription)
+    {
+        result = setColorSpace("SRGB", OFFalse /* do not check, we expect this is valid */);
+    }
+    return result;
+}
 
 OFCondition IODICCProfileModule::setColorSpace(const OFString& value, const OFBool checkValue)
 {

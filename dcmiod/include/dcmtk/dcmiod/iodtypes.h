@@ -81,7 +81,7 @@ public:
         /** Get pointer to pixel data
          *  @return Pointer to pixel data
          */
-        virtual void* getPixelData() = 0;
+        virtual void* getPixelData() const = 0;
 
         /** Get bytes used per pixel
          *  @return Bytes per pixel (right now 8 or 16)
@@ -93,14 +93,14 @@ public:
          *  @param index The index to get the value from
          *  @return EC_Normal if successful, EC_IllegalCall if index is out of bounds
          */
-        virtual OFCondition getUint8AtIndex(Uint8 &byteVal, const size_t index) =0;
+        virtual OFCondition getUint8AtIndex(Uint8 &byteVal, const size_t index) const =0;
 
         /** Get value at given index as 16 bit value
          *  @param shortVal The value at the given index
          *  @param index The index to get the value from
          *  @return EC_Normal if successful, EC_IllegalCall if index is out of bounds
          */
-        virtual OFCondition getUint16AtIndex(Uint16 &shortVal, const size_t index) =0;
+        virtual OFCondition getUint16AtIndex(Uint16 &shortVal, const size_t index) const =0;
 
         /** Set whether Frame class should release memory (default) or whether it will
          *  be released externally.
@@ -111,7 +111,7 @@ public:
         /** Print frame data to string (for debugging purposes)
          *  @return String representation of frame data
          */
-        virtual OFString print() = 0;
+        virtual OFString print() const = 0;
 
         /** Deconstructor, frees frame data if not disabled via setReleaseMemory() method
          */
@@ -195,7 +195,7 @@ public:
         /** Returns pointer to pixel data (untyped)
          *  @return Pointer to pixel data
          */
-        virtual void* getPixelData()
+        virtual void* getPixelData() const
         {
             return m_pixData;
         }
@@ -203,7 +203,7 @@ public:
         /** Returns pointer to pixel data (typed)
          *  @return Pointer to pixel data
          */
-        virtual PixelType* getPixelDataTyped()
+        virtual PixelType* getPixelDataTyped() const
         {
             return m_pixData;
         }
@@ -221,7 +221,7 @@ public:
          *  @param index The index to get the value from
          *  @return EC_Normal if successful, EC_IllegalCall if index is out of bounds
          */
-        virtual OFCondition getUint8AtIndex(Uint8 &byteVal, const size_t index)
+        virtual OFCondition getUint8AtIndex(Uint8 &byteVal, const size_t index) const
         {
             if (index >= m_numPixels) {
                 return EC_IllegalCall;
@@ -246,7 +246,7 @@ public:
          *  @param index The index to get the value from
          *  @return EC_Normal if successful, EC_IllegalCall if index is out of bounds
          */
-        virtual OFCondition getUint16AtIndex(Uint16 &shortVal, const size_t index)
+        virtual OFCondition getUint16AtIndex(Uint16 &shortVal, const size_t index) const
         {
             if (index >= m_numPixels) {
                 return EC_IllegalCall;
@@ -258,7 +258,7 @@ public:
         /** Print frame data to string (for debugging purposes)
          *  @return String representation of frame data
          */
-        virtual OFString print()
+        virtual OFString print() const
         {
             OFStringStream ss;
             ss << "Frame with " << m_numPixels << " bytes:\n";

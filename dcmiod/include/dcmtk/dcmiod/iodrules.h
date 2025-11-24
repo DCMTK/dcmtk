@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2021, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -106,6 +106,17 @@ public:
     /** Destructor
      */
     virtual ~IODRules();
+
+    /** Copy constructor, performs deep copy
+     *  @param  other The other rule set to copy from
+     */
+    IODRules(const IODRules& other);
+
+    /** Assignment operator, performs deep copy
+     *  @param  other The other rule set to copy from
+     *  @return Reference to this object
+     */
+    IODRules& operator=(const IODRules& other);
 
 private:
     /// Map that holds all rules, accessible by their tag key

@@ -50,7 +50,7 @@ OFCondition DcmSegUtils::concatBinaryFrames(const OFVector<DcmIODTypes::FrameBas
     }
 
     // Initialize the target pixData array to 0
-    std::memset(pixData, 0, pixDataLength);
+    memset(pixData, 0, pixDataLength);
 
     // Concatenate the bits
     size_t bitIndex = 0;

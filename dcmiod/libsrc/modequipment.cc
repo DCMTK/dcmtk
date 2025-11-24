@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -103,6 +103,16 @@ OFCondition IODGeneralEquipmentModule::getManufacturerModelName(OFString& value,
 OFCondition IODGeneralEquipmentModule::getSoftwareVersions(OFString& value, const long signed int pos) const
 {
     return DcmIODUtil::getStringValueFromItem(DCM_SoftwareVersions, *m_Item, value, pos);
+}
+
+IODGeneralEquipmentModule::EquipmentInfo IODGeneralEquipmentModule::getEquipmentInfo() const
+{
+    EquipmentInfo info;
+    getManufacturer(info.m_Manufacturer);
+    getManufacturerModelName(info.m_ManufacturerModelName);
+    getDeviceSerialNumber(info.m_DeviceSerialNumber);
+    getSoftwareVersions(info.m_SoftwareVersions);
+    return info;
 }
 
 OFCondition IODGeneralEquipmentModule::setDeviceSerialNumber(const OFString& value, const OFBool checkValue)

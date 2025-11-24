@@ -92,9 +92,6 @@ public:
 /** Pack the given segmentation pixel data, provided "unpacked", into
  *  the packed format expected by DICOM. This is the default version which prints an error
  *  and returns NULL.
- *  @param  pixelData Pixel data in unpacked format, i.e on byte per pixel, either 0 (not set) or non-0 (set)
- *  @param  rows Number of rows in the pixel data
- *  @param  columns The number of columns in the pixel data
  *  @return Returns NULL
  */
 template<typename T>

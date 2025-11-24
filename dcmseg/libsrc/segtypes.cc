@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2052, Open Connections GmbH
+ *  Copyright (C) 2015-2025, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -40,6 +40,14 @@ makeOFConditionConst(SG_EC_InvalidValue, OFM_dcmseg, 4, OF_error, "Invalid value
 makeOFConditionConst(SG_EC_NotEnoughData, OFM_dcmseg, 5, OF_error, "Not enough data");
 makeOFConditionConst(SG_EC_MaxFramesReached, OFM_dcmseg, 6, OF_error, "Maximum Number of Frames reached");
 makeOFConditionConst(SG_EC_InvalidBitDepth, OFM_dcmseg, 7, OF_error, "Invalid bit depth for given Segmentation Type");
+makeOFConditionConst(SG_EC_FramesNotParallel, OFM_dcmseg, 8, OF_error, "Frames are not parallel");
+makeOFConditionConst(SG_EC_NoSegmentationBasedSOPClass, OFM_dcmseg, 9, OF_error, "No segmentation SOP class (Segmentation or Label Map Segmentation SOP Class)");
+makeOFConditionConst(SG_EC_NoConversionRequired, OFM_dcmseg, 10, OF_ok, "Segmentation-based object does not require requested conversion");
+makeOFConditionConst(SG_EC_AlreadyLabelMap, OFM_dcmseg, 11, OF_error, "Segmentation-based object is already a label map");
+makeOFConditionConst(SG_EC_CannotConvertFractionalToLabelmap, OFM_dcmseg, 12, OF_error, "Cannot convert fractional to label map segmentations");
+makeOFConditionConst(SG_EC_OverlappingSegments, OFM_dcmseg, 13, OF_error, "Binary segmentation contains overlapping segments");
+makeOFConditionConst(SG_EC_CannotConvertMissingCIELab, OFM_dcmseg, 14, OF_error, "Cannot convert to PALETTE color model since not all segments contain Recommended Display CIELab Value Macro");
+makeOFConditionConst(SG_EC_MissingPlanePositionPatient, OFM_dcmseg, 15, OF_error, "Missing Plane Position (Patient) Functional Group");
 
 DcmSegTypes::E_SegmentationType DcmSegTypes::OFString2Segtype(const OFString& value)
 {
@@ -157,6 +165,27 @@ SegmentDescriptionMacro::SegmentDescriptionMacro()
 SegmentDescriptionMacro::~SegmentDescriptionMacro()
 {
 }
+
+SegmentDescriptionMacro& SegmentDescriptionMacro::operator=(const SegmentDescriptionMacro& rhs)
+{
+    if (this != &rhs)
+    {
+        m_SegmentLabel = rhs.m_SegmentLabel;
+        m_SegmentDescription = rhs.m_SegmentDescription;
+        m_SegmentAlgorithmType = rhs.m_SegmentAlgorithmType;
+        m_GeneralAnatomyCode = rhs.m_GeneralAnatomyCode;
+        m_SegmentedPropertyCategoryCode = rhs.m_SegmentedPropertyCategoryCode;
+        m_SegmentedPropertyType = rhs.m_SegmentedPropertyType;
+    }
+    return *this;
+}
+
+
+SegmentDescriptionMacro* SegmentDescriptionMacro::clone()
+{
+    return new SegmentDescriptionMacro(*this);
+}
+
 
 void SegmentDescriptionMacro::clearData()
 {
@@ -307,6 +336,28 @@ SegmentedPropertyTypeCodeItem::SegmentedPropertyTypeCodeItem()
     : m_SegmentedPropertyTypeCode()
     , m_SegmentedPropertyTypeModifierCode()
 {
+}
+
+SegmentedPropertyTypeCodeItem& SegmentedPropertyTypeCodeItem::operator=(const SegmentedPropertyTypeCodeItem& rhs)
+{
+    if (this != &rhs)
+    {
+        m_SegmentedPropertyTypeCode = rhs.m_SegmentedPropertyTypeCode;
+        DcmIODUtil::copyContainer(rhs.m_SegmentedPropertyTypeModifierCode, m_SegmentedPropertyTypeModifierCode);
+    }
+    return *this;
+}
+
+SegmentedPropertyTypeCodeItem* SegmentedPropertyTypeCodeItem::clone()
+{
+    return new SegmentedPropertyTypeCodeItem(*this);
+}
+
+SegmentedPropertyTypeCodeItem::SegmentedPropertyTypeCodeItem(const SegmentedPropertyTypeCodeItem& rhs)
+    : m_SegmentedPropertyTypeCode(rhs.m_SegmentedPropertyTypeCode)
+    , m_SegmentedPropertyTypeModifierCode()
+{
+    DcmIODUtil::copyContainer(rhs.m_SegmentedPropertyTypeModifierCode, m_SegmentedPropertyTypeModifierCode);
 }
 
 SegmentedPropertyTypeCodeItem::~SegmentedPropertyTypeCodeItem()

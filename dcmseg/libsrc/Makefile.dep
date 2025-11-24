@@ -1,3 +1,128 @@
+overlaputil.o: overlaputil.cc ../include/dcmtk/dcmseg/overlaputil.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../config/include/dcmtk/config/osconfig.h \
+ ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../oflog/include/dcmtk/oflog/oflog.h \
+ ../../oflog/include/dcmtk/oflog/logger.h \
+ ../../oflog/include/dcmtk/oflog/config.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+ ../../oflog/include/dcmtk/oflog/config/defines.h \
+ ../../oflog/include/dcmtk/oflog/helpers/threadcf.h \
+ ../../oflog/include/dcmtk/oflog/loglevel.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvector.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../oflog/include/dcmtk/oflog/tstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+ ../../oflog/include/dcmtk/oflog/tchar.h \
+ ../../oflog/include/dcmtk/oflog/spi/apndatch.h \
+ ../../oflog/include/dcmtk/oflog/appender.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmem.h \
+ ../../ofstd/include/dcmtk/ofstd/ofutil.h \
+ ../../ofstd/include/dcmtk/ofstd/oftraits.h \
+ ../../ofstd/include/dcmtk/ofstd/variadic/tuplefwd.h \
+ ../../oflog/include/dcmtk/oflog/layout.h \
+ ../../oflog/include/dcmtk/oflog/streams.h \
+ ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+ ../../oflog/include/dcmtk/oflog/thread/syncprim.h \
+ ../../oflog/include/dcmtk/oflog/spi/filter.h \
+ ../../oflog/include/dcmtk/oflog/helpers/lockfile.h \
+ ../../oflog/include/dcmtk/oflog/spi/logfact.h \
+ ../../oflog/include/dcmtk/oflog/logmacro.h \
+ ../../oflog/include/dcmtk/oflog/helpers/snprintf.h \
+ ../../oflog/include/dcmtk/oflog/tracelog.h \
+ ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdiag.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/push.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/useafree.def \
+ ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
+ ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../../dcmfg/include/dcmtk/dcmfg/framesorter.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmath.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fginterface.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fg.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgbase.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+ ../../ofstd/include/dcmtk/ofstd/offile.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+ ../../ofstd/include/dcmtk/ofstd/oflist.h \
+ ../../ofstd/include/dcmtk/ofstd/oflimits.h \
+ ../../ofstd/include/dcmtk/ofstd/oferror.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+ ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+ ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+ ../../ofstd/include/dcmtk/ofstd/ofdeprec.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/ignrattr.def \
+ ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgtypes.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgplanpo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgplanor.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgpixmsr.h \
+ ../../dcmfg/include/dcmtk/dcmfg/fgseg.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+ ../include/dcmtk/dcmseg/segdoc.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+ ../../dcmfg/include/dcmtk/dcmfg/concatenationcreator.h \
+ ../../dcmfg/include/dcmtk/dcmfg/concatenationloader.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodimage.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodcommn.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
+ ../../dcmiod/include/dcmtk/dcmiod/iodreferences.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modequipment.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modfor.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modgeneralseries.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modgeneralstudy.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modpatient.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modpatientstudy.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modsopcommon.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modgeneralimage.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixelvariant.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixelbase.h \
+ ../../ofstd/include/dcmtk/ofstd/ofvriant.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/stralias.def \
+ ../../dcmiod/include/dcmtk/dcmiod/modenhequipment.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modimagepixel.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modmultiframedimension.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modiccprofile.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modmultiframefg.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h \
+ ../../dcmiod/include/dcmtk/dcmiod/modpalettecolorlut.h \
+ ../include/dcmtk/dcmseg/segdef.h ../include/dcmtk/dcmseg/segment.h \
+ ../include/dcmtk/dcmseg/segtypes.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+ ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+ ../include/dcmtk/dcmseg/segutils.h \
+ ../../ofstd/include/dcmtk/ofstd/oftimer.h
 segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -63,6 +188,7 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmfg/include/dcmtk/dcmfg/fgdefine.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../dcmfg/include/dcmtk/dcmfg/fgderimg.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
@@ -118,8 +244,7 @@ segdoc.o: segdoc.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmseg/segtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
- ../include/dcmtk/dcmseg/segutils.h \
- ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def
+ ../include/dcmtk/dcmseg/segutils.h
 segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
@@ -187,6 +312,7 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
@@ -238,8 +364,7 @@ segment.o: segment.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
- ../include/dcmtk/dcmseg/segutils.h \
- ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def
+ ../include/dcmtk/dcmseg/segutils.h
 segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
@@ -305,6 +430,7 @@ segtypes.o: segtypes.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/oflist.h \
  ../../dcmiod/include/dcmtk/dcmiod/modbase.h \
@@ -364,6 +490,7 @@ segutils.o: segutils.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/diag/pop.def \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../include/dcmtk/dcmseg/segtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \

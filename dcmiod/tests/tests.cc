@@ -28,6 +28,7 @@ OFTEST_REGISTER(dcmiod_component_check_missing_value);
 OFTEST_REGISTER(dcmiod_component_check_vm_violated);
 OFTEST_REGISTER(dcmiod_component_check_vr_violated);
 OFTEST_REGISTER(dcmiod_codes);
+OFTEST_REGISTER(dcmiod_content_identification_macro);
 OFTEST_REGISTER(dcmiod_icc_profile_module);
 OFTEST_REGISTER(dcmiod_imagepixel);
 OFTEST_REGISTER(dcmiod_tcielabutil);

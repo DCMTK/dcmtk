@@ -69,6 +69,7 @@ dpmmodparametricmapimage.o: dpmmodparametricmapimage.cc \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
@@ -146,6 +147,7 @@ dpmmodparametricmapseries.o: dpmmodparametricmapseries.cc \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
@@ -225,6 +227,7 @@ dpmparametricmapbase.o: dpmparametricmapbase.cc \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
  ../../ofstd/include/dcmtk/ofstd/oftime.h \
@@ -349,6 +352,7 @@ dpmparametricmapiod.o: dpmparametricmapiod.cc \
  ../../dcmiod/include/dcmtk/dcmiod/iodrules.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodtypes.h \
  ../../dcmiod/include/dcmtk/dcmiod/ioddef.h \
+ ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
  ../../dcmiod/include/dcmtk/dcmiod/modcommoninstanceref.h \
  ../../dcmiod/include/dcmtk/dcmiod/iodmacro.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
