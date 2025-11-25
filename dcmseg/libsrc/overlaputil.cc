@@ -416,6 +416,14 @@ OFCondition OverlapUtil::getNonOverlappingSegments(SegmentGroups& segmentGroups)
         m_nonOverlappingSegments.push_back(OFVector<Uint32>());
         for (size_t i = 0; i < m_segmentOverlapMatrix.size(); ++i)
         {
+            // make sure we can cast this later to Uint32
+            if (i > OFnumeric_limits<Uint32>::max())
+            {
+                DCMSEG_ERROR("getNonOverlappingSegments(): Number of segments "
+                             << m_segmentOverlapMatrix.size()
+                             << " exceeds maximum number of possible segments (2^32-1)");
+                return EC_IllegalParameter;
+            }
             // Loop over all groups and check whether the current segment overlaps with any of them
             OFBool overlaps = OFFalse;
             for (size_t j = 0; j < m_nonOverlappingSegments.size(); ++j)
@@ -435,7 +443,7 @@ OFCondition OverlapUtil::getNonOverlappingSegments(SegmentGroups& segmentGroups)
                 if (!overlaps)
                 {
                     // Add segment to current group
-                    m_nonOverlappingSegments[j].push_back(i + 1);
+                    m_nonOverlappingSegments[j].push_back(OFstatic_cast(Uint32, i) + 1);
                     break;
                 }
             }
@@ -443,7 +451,7 @@ OFCondition OverlapUtil::getNonOverlappingSegments(SegmentGroups& segmentGroups)
             {
                 // Create new group and add segment to it
                 m_nonOverlappingSegments.push_back(OFVector<Uint32>());
-                m_nonOverlappingSegments.back().push_back(i + 1);
+                m_nonOverlappingSegments.back().push_back(OFstatic_cast(Uint32, i) + 1);
             }
         }
     }
@@ -664,8 +672,8 @@ OFCondition OverlapUtil::checkFramesOverlapBinary(const Uint32& f1,
                                                   const Uint32& f2,
                                                   const DcmIODTypes::Frame<Uint8>* f1_data,
                                                   const DcmIODTypes::Frame<Uint8>* f2_data,
-                                                  const Uint16& rows,
-                                                  const Uint16 cols,
+                                                  const Uint16& /* rows */,
+                                                  const Uint16& /* cols */,
                                                   OFBool& overlap)
 {
     DCMSEG_TRACE("checkFramesOverlap(): Comparing frames " << f1 << " and " << f2 << " for overlap (fast binary mode)");
@@ -789,9 +797,9 @@ OFCondition OverlapUtil::groupFramesByLogicalPosition()
         {
             DCMSEG_DEBUG("Assigning to same new frame bucket");
             // Create new vector
-            OFVector<Uint32> vec;
-            vec.push_back(m_framePositions[j].m_frameNumber);
-            m_logicalFramePositions.push_back(vec);
+            OFVector<Uint32> newVec;
+            newVec.push_back(m_framePositions[j].m_frameNumber);
+            m_logicalFramePositions.push_back(newVec);
         }
     }
 

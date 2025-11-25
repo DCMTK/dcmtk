@@ -109,7 +109,7 @@ DcmSegment& DcmSegment::operator=(const DcmSegment& rhs)
         m_RecommendedDisplayCIELabValue          = rhs.m_RecommendedDisplayCIELabValue;
         m_TrackingID                             = rhs.m_TrackingID;
         m_TrackingUID                            = rhs.m_TrackingUID;
-        m_Rules                                  = rhs.m_Rules->clone();
+        m_Rules.reset(rhs.m_Rules->clone());
     }
     return *this;
 }

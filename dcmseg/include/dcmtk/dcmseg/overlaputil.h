@@ -126,7 +126,7 @@ public:
          *  @param  s Segment number
          *  @param  f Logical frame number
          */
-        SegNumAndFrameNum(const Uint16& s, const Uint16 f)
+        SegNumAndFrameNum(const Uint16 s, const Uint32 f)
             : m_segmentNumber(s)
             , m_frameNumber(f)
         {
@@ -142,7 +142,7 @@ public:
         /// Segment number as used in DICOM segmentation object (1-n)
         Uint16 m_segmentNumber;
         /// Logical frame number (number of frame in DistinctFramePositions vector)
-        Uint16 m_frameNumber;
+        Uint32 m_frameNumber;
     };
 
     /// Segments and their phyiscal frame number (inner set), grouped by their
@@ -295,8 +295,8 @@ protected:
      *  @param  f2 Frame 2, provided by its physical frame number
      *  @param  f1_data Pixel data of frame 1
      *  @param  f2_data Pixel data of frame 2
-     *  @param  rows Number of rows of the frame(s)
-     *  @param  cols Number of columns of the frame(s)
+     *  @param  rows Number of rows of the frame(s), not used right now
+     *  @param  cols Number of columns of the frame(s), not used right now
      *  @param  overlap Resulting overlap (overlaps if OFTrue, otherwise not)
      *  @return EC_Normal if successful, error otherwise
      */
@@ -304,8 +304,8 @@ protected:
                                          const Uint32& f2,
                                          const DcmIODTypes::Frame<Uint8>* f1_data,
                                          const DcmIODTypes::Frame<Uint8>* f2_data,
-                                         const Uint16& rows,
-                                         const Uint16 cols,
+                                         const Uint16& /* rows */,
+                                         const Uint16& /* cols */,
                                          OFBool& overlap);
 
     /** Checks whether the given two frames overlap by using comparing their pixel data

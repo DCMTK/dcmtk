@@ -105,7 +105,9 @@ public:
 
   /** Default constructor, does nothing
    */
-  FrameSorter(){};
+  FrameSorter()
+  : m_fg(NULL)
+  {}
 
   /** Set input data for this sorter
    *  @param  fg The functional groups to work on. Ownership
