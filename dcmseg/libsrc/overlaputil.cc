@@ -159,7 +159,8 @@ OFCondition OverlapUtil::ensureFramesAreParallel()
     m_imageOrientation.clear();
     m_imageOrientation.resize(6);
     FGBase* group = fg.get(0, DcmFGTypes::EFG_PLANEORIENTPATIENT, perFrame);
-    if (group && (pop = OFstatic_cast(FGPlaneOrientationPatient*, group)))
+    pop = OFstatic_cast(FGPlaneOrientationPatient*, group);
+    if (pop)
     {
         if (perFrame == OFFalse)
         {
@@ -751,7 +752,8 @@ OFCondition OverlapUtil::groupFramesByLogicalPosition()
     Float64 sliceThickness   = 0.0;
     FGPixelMeasures* pm      = NULL;
     FGBase* group            = fg.get(0, DcmFGTypes::EFG_PIXELMEASURES, perFrame);
-    if (group && (pm = OFstatic_cast(FGPixelMeasures*, group)))
+    pm = OFstatic_cast(FGPixelMeasures*, group);
+    if (pm)
     {
         // Get/compute Slice Thickness
         cond = pm->getSliceThickness(sliceThickness);
