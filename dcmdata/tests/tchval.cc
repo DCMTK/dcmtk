@@ -165,8 +165,9 @@ OFTEST(dcmdata_checkStringValue)
 // maximum length cannot be checked if given in characters (and not bytes)
 //  CHECK_BAD ( "LO-07", DcmLongString::checkStringValueu("OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany, http://www.offis.de/", "1") )
   CHECK_GOOD( "LO-08", DcmLongString::checkStringValue("\\ _2_ \\ _3_ \\ _4_ \\ _5_ \\", "6") )
-  CHECK_GOOD( "LO-09", DcmLongString::checkStringValue("ESC\033aping", "1") )
-  CHECK_BAD ( "LO-10", DcmLongString::checkStringValue("not allowed: \r\014", "1") )
+  // actually, the following test should fail
+  CHECK_GOOD( "LO-09", DcmLongString::checkStringValue("ESC only allowed for ISO 2022 character set control sequences: \033", "1") )
+  CHECK_BAD ( "LO-10", DcmLongString::checkStringValue("also not allowed: \r\014", "1") )
 
   /* test "Long Text" */
   CHECK_GOOD( "LT-01", DcmLongText::checkStringValue(" Hello \\ 12345 \\ \344\366\374\337 ", "ISO_IR 100") )
@@ -214,8 +215,10 @@ OFTEST(dcmdata_checkStringValue)
   CHECK_GOOD( "SH-08", DcmShortString::checkStringValue("\\ _2_ \\ _3_ \\ _4_ \\ _5_ \\", "6") )
   CHECK_BAD ( "SH-09", DcmShortString::checkStringValue(" ", "2") )
   CHECK_GOOD( "SH-10", DcmShortString::checkStringValue("", "2") )
-  CHECK_GOOD( "SH-11", DcmShortString::checkStringValue("ESC\033aping", "1") )
-  CHECK_BAD ( "SH-12", DcmShortString::checkStringValue("not allowed: \n\010\r\014", "1") )
+  // actually, the following test should fail
+  CHECK_GOOD( "SH-11", DcmShortString::checkStringValue("not allowed: \033", "1") )
+  CHECK_BAD ( "SH-12", DcmShortString::checkStringValue("not allowed: \n\r", "1") )
+  CHECK_BAD ( "SH-13", DcmShortString::checkStringValue("not allowed: \010\014", "1") )
 
   /* test "Short Text" */
   CHECK_GOOD( "ST-01", DcmShortText::checkStringValue(" umlaut characters are allowed: \304\326\334\344\366\374\naccented characters also: \341\340\351\350\355\354\342\352\364\rand control characters, of course, including \033=ESC ", "ISO_IR 100") )
