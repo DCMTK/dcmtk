@@ -24,5 +24,5 @@ DCMTK_ADD_LIBRARY(dcmimage
   diyp2img.cc
 )
 
-DCMTK_TARGET_LINK_MODULES(dcmimage oflog dcmdata dcmimgle)
-DCMTK_TARGET_LINK_LIBRARIES(dcmimage ${LIBTIFF_LIBS} ${LIBPNG_LIBS})
+DCMTK_TARGET_LINK_MODULES(dcmimage PUBLIC oflog dcmdata dcmimgle)
+DCMTK_TARGET_LINK_LIBRARIES(dcmimage PRIVATE ${LIBTIFF_LIBS} ${LIBPNG_LIBS})
