@@ -193,14 +193,17 @@ lookup_mapper_entry(const char *dir, const char *mapname, void *linebuf,
     /* get module name */
     *module = p;
     cq = _citrus_bcs_skip_nonws_len(cp, &len);
-    strlcpy(p, cp, (size_t)(cq - cp + 1));
+    /* we cannot use strlcpy here because cp is not guaranteed to be null terminated */
+    strncpy(p, cp, (size_t)(cq - cp));
+    *(p + (cq - cp)) = '\0';
     p += cq - cp + 1;
 
     /* get variable */
     *variable = p;
     cp = _citrus_bcs_skip_ws_len(cq, &len);
-    strlcpy(p, cp, len + 1);
-
+    /* we cannot use strlcpy here because cp is not guaranteed to be null terminated */
+    strncpy(p, cp, len);
+    *(p+len) = '\0';
     ret = 0;
 
 quit:
