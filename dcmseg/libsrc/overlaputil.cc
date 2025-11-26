@@ -175,7 +175,6 @@ OFCondition OverlapUtil::ensureFramesAreParallel()
             DCMSEG_DEBUG("Image Orientation Patient set to : " << m_imageOrientation[0] << ", " << m_imageOrientation[1]
                       << ", " << m_imageOrientation[2] << ", " << m_imageOrientation[3] << ", " << m_imageOrientation[4]
                       << ", " << m_imageOrientation[5]);
-            return cond;
         }
         else
         {
@@ -190,7 +189,7 @@ OFCondition OverlapUtil::ensureFramesAreParallel()
             "ensureFramesAreParallel(): Plane Orientation (Patient) FG not found, cannot check for parallel frames");
         return EC_TagNotFound;
     }
-    return EC_Normal;
+    return cond;
 }
 
 OFCondition OverlapUtil::groupFramesByPosition()
