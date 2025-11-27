@@ -84,7 +84,7 @@ public:
 
     /// Lists frames for each segment where segment with index i is represented by the vector at index i,
     /// and index 0 is unused. I.e. index i is segment number, value is vector of physical frame numbers.
-    typedef OFVector<OFVector<Uint32>> FramesForSegment;
+    typedef OFVector<OFVector<Uint32> > FramesForSegment;
 
     /// Implements comparision operator to be used for sorting of frame positions,
     /// making the sorting order depend on the coordinate given in the constructor
@@ -113,10 +113,10 @@ public:
 
     /// Matrix of N x N segment numbers, where N is the number of segments.
     /// Value is 1 at x,y if x and y overlap, 0 if they don't overlap, and -1 if not initialized.
-    typedef OFVector<OFVector<Sint8>> OverlapMatrix;
+    typedef OFVector<OFVector<Sint8> > OverlapMatrix;
 
     /// Group of non-overlapping segments (each represented by its segment number)
-    typedef OFVector<OFVector<Uint32>> SegmentGroups;
+    typedef OFVector<OFVector<Uint32> > SegmentGroups;
 
     /** Represents a segment number and a logical frame number it is found at
      */
@@ -376,3 +376,4 @@ private:
 };
 
 #endif // OVERLAPUTIL_H
+

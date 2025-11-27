@@ -125,7 +125,7 @@ DcmSegmentation::DcmSegmentation(OFin_place_type_t(ImagePixel))
     , m_MaximumFractionalValue(DCM_MaximumFractionalValue)
     , m_Segments()
     , m_FGInterface()
-    , m_inputXfer(E_TransferSyntax::EXS_Unknown)
+    , m_inputXfer(EXS_Unknown)
 {
     DcmSegmentation::initIODRules();
 }
