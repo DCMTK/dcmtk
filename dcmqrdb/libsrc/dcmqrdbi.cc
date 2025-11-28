@@ -1377,8 +1377,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
                 dcelem->getString(s);
+
                 /* the available space is always elem.ValueLength+1 */
-                OFStandard::strlcpy(elem.PValueField, s, elem.ValueLength+1);
+                if (s) OFStandard::strlcpy(elem.PValueField, s, elem.ValueLength+1);
+                    else elem.PValueField[0]='\0';
             }
             /** If element is the Query Level, store it in handle
              */
@@ -2062,8 +2064,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 /* only char string type tags are supported at the moment */
                 char *s = NULL;
                 dcelem->getString(s);
+
                 /* the available space is always elem.ValueLength+1 */
-                OFStandard::strlcpy(elem.PValueField, s, elem.ValueLength+1);
+                if (s) OFStandard::strlcpy(elem.PValueField, s, elem.ValueLength+1);
+                    else elem.PValueField[0]='\0';
             }
 
             /** If element is the Query Level, store it in handle
