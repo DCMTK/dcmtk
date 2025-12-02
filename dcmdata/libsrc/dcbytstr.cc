@@ -647,7 +647,11 @@ Uint8 *DcmByteString::newValueField()
 
         /* terminate string after real length */
         if (value != NULL)
+        {
             value[lengthField] = 0;
+            value[lengthField+1] = 0;
+        }
+
         /* enforce old (pre DCMTK 3.5.2) behaviour? */
         if (!dcmAcceptOddAttributeLength.get())
         {
