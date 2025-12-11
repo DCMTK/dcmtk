@@ -22,15 +22,9 @@
 #       * STOPPED  - the emulated device has been
 #                    shutdown or is currently being
 #                    shutdown
-#  EMULATOR_UUID: a generated ID to identify the emulator
-#    instance. Meant to prevent accessing the wrong device
-#    in case multiple Android devices are accessible.
 #  EMULATOR_NAME: the name of the emulator instance.
 #    all running emulator instances are named by the SDK
-#    in a locally unique fashion. The name will only be
-#    available in case the state is 'RUNNING', since
-#    only the name of running devices can be retrieved
-#    by UUID matching.
+#    in a locally unique fashion from the provided port.
 #    An emulator instance is accessed by the different
 #    tools of the NDK (e. g. 'adb') by referring to the
 #    instance with the value of EMULATOR_NAME.
@@ -42,23 +36,19 @@ include(CMakeParseArguments)
 # individual components.
 # VAR - the emulator instance handle object to unpack
 # EMULATOR_STATE - will contain the emulators state
-# EMULATOR_UUID  - will contain the generated UUID that
-#                  identifies the emulator instance
 # EMULATOR_NAME  - will contain the instance name, required
 #                  to access the emulator via 'adb' etc.
-# All three outputs will be unset if the object in VAR
+# All two outputs will be unset if the object in VAR
 # is not a valid emulator instance handle.
 # All additional arguments will be ignored.
 #
 macro(DCMTK_ANDROID_GET_OBJECT_PROPERTIES VAR)
     list(LENGTH ${VAR} ${VAR}_LENGTH)
-    if(${VAR}_LENGTH EQUAL 3)
+    if(${VAR}_LENGTH EQUAL 2)
         list(GET ${VAR} 0 EMULATOR_STATE)
-        list(GET ${VAR} 1 EMULATOR_UUID)
-        list(GET ${VAR} 2 EMULATOR_NAME)
+        list(GET ${VAR} 1 EMULATOR_NAME)
     else()
         unset(EMULATOR_STATE)
-        unset(EMULATOR_UUID)
         unset(EMULATOR_NAME)
     endif()
 endmacro()
@@ -69,12 +59,11 @@ endmacro()
 # VAR - the name of the variable that shall contain the
 #       resulting instance handle object.
 # EMULATOR_STATE - the state to set
-# EMULATOR_UUID  - the UUID to set
 # EMULATOR_NAME  - the name to set
 # All additional arguments will be ignored.
 #
-macro(DCMTK_ANDROID_SET_OBJECT_PROPERTIES VAR EMULATOR_STATE EMULATOR_UUID EMULATOR_NAME)
-    set(${VAR} "${EMULATOR_STATE}" "${EMULATOR_UUID}" "${EMULATOR_NAME}" CACHE INTERNAL "")
+macro(DCMTK_ANDROID_SET_OBJECT_PROPERTIES VAR EMULATOR_STATE EMULATOR_NAME)
+    set(${VAR} "${EMULATOR_STATE}" "${EMULATOR_NAME}" CACHE INTERNAL "")
 endmacro()
 
 #
@@ -117,7 +106,7 @@ endfunction()
 #
 function(DCMTK_SETUP_ANDROID_EMULATOR)
     if(NOT ANDROID_TEMPORARY_FILES_LOCATION)
-        set(ANDROID_TEMPORARY_FILES_LOCATION "/cache" CACHE STRING "The path on the Android device that should be used for temporary files")
+        set(ANDROID_TEMPORARY_FILES_LOCATION "/data/local/cache" CACHE STRING "The path on the Android device that should be used for temporary files")
     endif()
     if(NOT ANDROID_SDK_ROOT)
         if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
@@ -127,20 +116,20 @@ function(DCMTK_SETUP_ANDROID_EMULATOR)
             set(ANDROID_SDK_ROOT "/opt/android-sdk" CACHE PATH "Location of the Android SDK")
         endif()
     endif()
-    find_program(ANDROID_EMULATOR_PROGRAM emulator PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+    find_program(ANDROID_EMULATOR_PROGRAM emulator PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES emulator NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
     if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-        find_program(ANDROID_ANDROID_PROGRAM android.bat PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+        find_program(ANDROID_AVDMANAGER_PROGRAM avdmanager PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
     else()
-        find_program(ANDROID_ANDROID_PROGRAM android PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+      find_program(ANDROID_AVDMANAGER_PROGRAM avdmanager PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES cmdline-tools/latest/bin NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
     endif()
     find_program(ANDROID_ADB_PROGRAM adb PATHS ${ANDROID_SDK_ROOT} PATH_SUFFIXES platform-tools NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
-    if(NOT ANDROID_EMULATOR_PROGRAM OR NOT ANDROID_ANDROID_PROGRAM OR NOT ANDROID_ADB_PROGRAM)
+    if(NOT ANDROID_EMULATOR_PROGRAM OR NOT ANDROID_AVDMANAGER_PROGRAM OR NOT ANDROID_ADB_PROGRAM)
         message(FATAL_ERROR
             "Failed to detect the Android SDK, please set ANDROID_SDK_ROOT to the location of your Android SDK"
             "or set the missing tools manually!"
         )
     else()
-        execute_process(COMMAND "${ANDROID_ANDROID_PROGRAM}" list avd RESULT_VARIABLE RESULT OUTPUT_VARIABLE OUTPUT ERROR_QUIET)
+        execute_process(COMMAND "${ANDROID_AVDMANAGER_PROGRAM}" list avd RESULT_VARIABLE RESULT OUTPUT_VARIABLE OUTPUT ERROR_QUIET)
         string(REGEX MATCHALL "Name:[ \t]*[^\r\n]*" ANDROID_AVAILABLE_AVDS ${OUTPUT})
         string(REGEX REPLACE "Name:[ \t]*([^\r\n;]*)" "\\1" ANDROID_AVAILABLE_AVDS "${ANDROID_AVAILABLE_AVDS}")
         set(ANDROID_EMULATOR_AVD "${ANDROID_EMULATOR_AVD}" CACHE STRING "Android emulator Android Virtual Device (AVD) configuration" FORCE)
@@ -190,60 +179,52 @@ function(DCMTK_ANDROID_LIST_EMULATORS ONLINE OFFLINE)
 endfunction()
 
 #
-# Generate a random ID that is hopefully unique
-# enough to be used as the instance UUID.
+# Generate the emulator name from the provided port.
+# Since the port decides the name of the emulator
+# anyway, this is just to check if the emulator really
+# exists under the expected name.
 # VAR - the name of the variable that will receive
-#       the generated UUID as a string value
+#       the generated name as a string value
 # Will ignore all additional arguments.
 #
-function(DCMTK_ANDROID_EMULATOR_GENERATE_UUID VAR)
-    string(RANDOM LENGTH 20 RAND)
-    string(TIMESTAMP TM)
-    set(${VAR} "${TM}${RAND}")
-    string(MD5 ${VAR} ${${VAR}})
+function(DCMTK_ANDROID_EMULATOR_GENERATE_NAME_FROM_PORT VAR)
+    set(${VAR} "emulator-${ANDROID_EMULATOR_PORT}")
     set(${VAR} ${${VAR}} PARENT_SCOPE)
 endfunction()
 
 #
-# Tries to query the UUID property of an accessible Android device.
+# Tries to query the emulator name of an accessible Android device.
 # EMULATOR_NAME - the device name, as returned by DCMTK_ANDROID_LIST_EMULATORS
-# VAR           - the name of the variable that will be set to the device UUID
+# VAR           - the name of the variable that will be set to the emulator name
 # Will unset the variable referred to by VAR if no device with the given name
 # is accessible or the device is offline.
 # Will ignore all additional arguments.
 #
-function(DCMTK_ANDROID_GET_EMULATOR_UUID EMULATOR_NAME VAR)
-    execute_process(
-        COMMAND "${ANDROID_ADB_PROGRAM}" -s "${EMULATOR_NAME}" shell getprop "ro.emu.uuid"
-        RESULT_VARIABLE RESULT
-        OUTPUT_VARIABLE OUTPUT
-        ERROR_QUIET
-    )
+function(DCMTK_ANDROID_GET_EMULATOR_NAME_FROM_PORT EMULATOR_NAME VAR)
     DCMTK_UNSET_PARENT_SCOPE(${VAR})
-    if(NOT RESULT)
-        string(STRIP "${OUTPUT}" UUID)
-        if(UUID)
-            set("${VAR}" ${UUID} PARENT_SCOPE)
-        endif()
+    if(ANDROID_EMULATOR_PORT)
+        set(EMULATOR_NAME "emulator-${ANDROID_EMULATOR_PORT}" PARENT_SCOPE)
     endif()
 endfunction()
 
 #
 # Retrieves the name of the emulator instance referred to by
-# the given UUID. Will wait until the device becomes online
+# the given port. Will wait until the device becomes online
 # to query the name.
 # VAR           - the name of the variable that will be set
 #                 to the device name
-# EMULATOR_UUID - the emulator UUID of the device to inquired
+# EMULATOR_NAME_FROM_PORT - the emulator name of the device to inquired
 # Will wait until all available devices are online or the right
 # one has been found.
 # Will ignore all additional arguments.
 #
-function(DCMTK_ANDROID_GET_EMULATOR_NAME VAR EMULATOR_UUID)
+function(DCMTK_ANDROID_GET_EMULATOR_NAME VAR EMULATOR_NAME_FROM_PORT)
     DCMTK_ANDROID_LIST_EMULATORS(ONLINE_EMULATORS OFFLINE_EMULATORS)
     foreach(EMULATOR ${ONLINE_EMULATORS})
-        DCMTK_ANDROID_GET_EMULATOR_UUID("${EMULATOR}" UUID)
-        if(EMULATOR_UUID STREQUAL UUID)
+        DCMTK_ANDROID_GET_EMULATOR_NAME_FROM_PORT("${EMULATOR}" ANDROID_EMULATOR_PORT)
+        # The emulator could have a different name in another language, but the port should always
+        # be the same.
+        if(EMULATOR_NAME MATCHES ".*-${ANDROID_EMULATOR_PORT}")
             set("${VAR}" "${EMULATOR}" PARENT_SCOPE)
             return()
         endif()
@@ -259,9 +240,8 @@ function(DCMTK_ANDROID_GET_EMULATOR_NAME VAR EMULATOR_UUID)
             ERROR_QUIET
         )
         if(NOT RESULT)
-            DCMTK_ANDROID_GET_EMULATOR_UUID("${EMULATOR}" UUID)
-            if(UUID)
-                if(EMULATOR_UUID STREQUAL UUID)
+            if(ANDROID_EMULATOR_PORT)
+                if(EMULATOR_NAME STREQUAL "emulator-${ANDROID_EMULATOR_PORT}")
                     set("${VAR}" "${EMULATOR}" PARENT_SCOPE)
                     return()
                 endif()
@@ -287,36 +267,41 @@ endfunction()
 #
 function(DCMTK_ANDROID_START_EMULATOR VAR)
     DCMTK_SETUP_ANDROID_EMULATOR()
+    if(NOT ANDROID_EMULATOR_PORT)
+        message(FATAL_ERROR "Please provide the port the Android emulator should use. The range is 5554 to 5682 and the port should be an even number.")
+    else()
+      set(ANDROID_EMULATOR_PORT ${ANDROID_EMULATOR_PORT} CACHE INTERNAL "")
+    endif()
     if(NOT ANDROID_EMULATOR_AVD)
         message(FATAL_ERROR "Please select which Android emulator Android Virtual Device (AVD) configuration to use!")
     else()
         DCMTK_ANDROID_GET_OBJECT_PROPERTIES("${VAR}")
         if(NOT EMULATOR_STATE)
-            DCMTK_ANDROID_EMULATOR_GENERATE_UUID(EMULATOR_UUID)
+            DCMTK_ANDROID_EMULATOR_GENERATE_NAME_FROM_PORT(EMULATOR_NAME_FROM_PORT)
         elseif(EMULATOR_STATE STREQUAL "RUNNING")
-            DCMTK_ANDROID_GET_EMULATOR_UUID("${EMULATOR_NAME}" UUID)
+            DCMTK_ANDROID_GET_EMULATOR_NAME_FROM_PORT("${EMULATOR_NAME}" EMULATOR_NAME_FROM_PORT)
             # Do nothing if the running emulator instance is ok and can be reused.
             # Otherwise restart it.
-            if(UUID STREQUAL EMULATOR_UUID)
+            if(EMULATOR_NAME_FROM_PORT STREQUAL EMULATOR_NAME)
                 message(STATUS "Reusing already running Android device emulator...")
                 return()
             endif()
         elseif(EMULATOR_STATE STREQUAL "STARTING")
             # Is it really starting, or has somebody aborted it?
             message(STATUS "Found previously started Android device emulator, checking if it's still present...")
-            DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_UUID}")
+            DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_NAME_FROM_PORT}")
             if(EMULATOR_NAME)
               message(STATUS "Found previously started Android device emulator, checking if it's still present... yes")
-              DCMTK_ANDROID_SET_OBJECT_PROPERTIES(${VAR} RUNNING "${EMULATOR_UUID}" "${EMULATOR_NAME}")
+              DCMTK_ANDROID_SET_OBJECT_PROPERTIES(${VAR} RUNNING "${EMULATOR_NAME}")
               return()
             endif()
             message(STATUS "Found previously started Android device emulator, checking if it's still present... no")
         endif()
         message(STATUS "Starting the Android device emulator...")
         if(CMAKE_HOST_SYSTEM MATCHES "Windows.*")
-            set(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
+            set(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-boot-anim -port ${ANDROID_EMULATOR_PORT} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
         else()
-            set(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-window -no-boot-anim -prop ro.emu.uuid=${EMULATOR_UUID} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
+            set(COMMAND sh -c "${ANDROID_EMULATOR_PROGRAM} -avd ${ANDROID_EMULATOR_AVD} -no-window -no-boot-anim -port ${ANDROID_EMULATOR_PORT} >${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/android-emulator.log 2>&1 < /dev/null &")
         endif()
         execute_process(
             COMMAND ${COMMAND}
@@ -325,7 +310,7 @@ function(DCMTK_ANDROID_START_EMULATOR VAR)
             ERROR_QUIET
         )
         if(NOT RESULT)
-            DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" STARTING "${EMULATOR_UUID}" "")
+            DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" STARTING "${EMULATOR_NAME}")
         else()
             DCMTK_ANDROID_DESTROY_OBJECT("${VAR}")
             message(FATAL_ERROR "Error starting Android emulator.")
@@ -337,7 +322,7 @@ endfunction()
 # Restart adb/the emulated device in root mode so that we gain write access to
 # the device.
 # Newer versions of the SDK seem to require this for doing anything meaningful
-# with it.
+# with it. It also only works on emulated devices without Playstore API.
 # EMULATOR_NAME - the name of the emulated device that shall be rooted.
 # Will ignore all additional arguments.
 #
@@ -347,9 +332,8 @@ function(DCMTK_ANDROID_ADB_ROOT EMULATOR_NAME)
         OUTPUT_QUIET
         ERROR_QUIET
     )
-    # the SDK was seemingly designed by a five year old, the device will
-    # become invisible while it is being rooted, therefore, wait until
-    # it is ready again
+    # The device will become invisible while it is being rooted, therefore,
+    # wait until it is ready again.
     set(STATUS 1)
     while(STATUS)
         execute_process(
@@ -383,10 +367,10 @@ function(DCMTK_ANDROID_WAIT_FOR_EMULATOR VAR)
     else()
         message(STATUS "Waiting until the Android device emulator is ready to receive instructions...")
         while(NOT EMULATOR_NAME)
-            DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_UUID}")
+            DCMTK_ANDROID_GET_EMULATOR_NAME(EMULATOR_NAME "${EMULATOR_NAME_FROM_PORT}")
         endwhile()
         DCMTK_ANDROID_ADB_ROOT("${EMULATOR_NAME}")
-        DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" RUNNING "${EMULATOR_UUID}" "${EMULATOR_NAME}")
+        DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" RUNNING "${EMULATOR_NAME}")
     endif()
 endfunction()
 
@@ -453,7 +437,7 @@ function(DCMTK_ANDROID_STOP_EMULATOR VAR)
           ERROR_QUIET
         )
         if(NOT RESULT)
-            DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" STOPPED "${EMULATOR_UUID}" "")
+            DCMTK_ANDROID_SET_OBJECT_PROPERTIES("${VAR}" STOPPED "${EMULATOR_NAME}")
         else()
             message(WARNING "Unable to stop the android device emulator, please shutdown \"${EMULATOR_NAME}\" manually!")
         endif()

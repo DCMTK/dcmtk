@@ -134,6 +134,7 @@ if(CMAKE_CROSSCOMPILING)
       get_filename_component(FILE "${DICTIONARY}" NAME)
       set(DCMDICTPATH "${DCMDICTPATH}:${ANDROID_TEMPORARY_FILES_LOCATION}/${FILE}")
     endforeach()
+    set(DCMICONVPATH "${ANDROID_TEMPORARY_FILES_LOCATION}/data")
     configure_file("${DCMTK_SOURCE_DIR}/CMake/CTest/CTestCustomAndroid.cmake.in"
       "${DCMTK_BINARY_DIR}/CTestCustom.cmake" ESCAPE_QUOTES @ONLY
     )
