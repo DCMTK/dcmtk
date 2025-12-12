@@ -197,7 +197,7 @@ public:
   void setACSETimeout(const Uint32 acseTimeout);
 
   /** Set the timeout that should be waited for connection requests.
-   *  Only relevant in non-blocking mode (default).
+   *  Only relevant in non-blocking mode (which is not the default).
    *  @param timeout [in] TCP/IP connection timeout in seconds.
    */
   void setConnectionTimeout(const Uint32 timeout);
