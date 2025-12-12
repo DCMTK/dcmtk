@@ -99,6 +99,7 @@ static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, c
 
 WlmActivityManager::WlmActivityManager(
     WlmDataSource *dataSourcev,
+    DcmTransportLayer *transportLayerv,
     OFCmdUnsignedInt opt_portv,
     OFBool opt_refuseAssociationv,
     OFBool opt_rejectWithoutImplementationUIDv,
@@ -120,6 +121,7 @@ WlmActivityManager::WlmActivityManager(
 // Author       : Thomas Wilkens
 // Task         : Constructor.
 // Parameters   : dataSourcev                         - [in] Pointer to the data source which shall be used.
+//                transportLayer                      - [in] Pointer to the transport layer which shall be used.
 //                opt_portv                           - [in] The port on which the application is supposed to listen.
 //                opt_refuseAssociationv              - [in] Specifies if an association shall always be refused by the SCP.
 //                opt_rejectWithoutImplementationUIDv - [in] Specifies if the application shall reject an association if no implementation class UID is provided by the calling SCU.
@@ -135,7 +137,7 @@ WlmActivityManager::WlmActivityManager(
 //                argcv                               - [in] Number of arguments in command line
 //                argvv                               - [in/out] Holds complete commandline
 // Return Value : none.
-  : dataSource( dataSourcev ), opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
+  : dataSource( dataSourcev ), transportLayer ( transportLayerv ), opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
     opt_rejectWithoutImplementationUID( opt_rejectWithoutImplementationUIDv ), opt_sleepBeforeFindReq( opt_sleepBeforeFindReqv ),
     opt_sleepAfterFind( opt_sleepAfterFindv ), opt_sleepDuringFind( opt_sleepDuringFindv ),
     opt_maxPDU( opt_maxPDUv ), opt_networkTransferSyntax( opt_networkTransferSyntaxv ),
@@ -260,6 +262,12 @@ OFCondition WlmActivityManager::StartProvidingService()
   // Initialize network, i.e. create an instance of T_ASC_Network*.
   cond = ASC_initializeNetwork( NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net );
   if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
+
+  if (transportLayer)
+  {
+      cond = ASC_setTransportLayer( net, transportLayer, 0 /* Do not take over ownership */ );
+      if( cond.bad() ) return cond;
+  }
 
   /* drop root privileges now and revert to the calling user id (if we are running as setuid root) */
   cond = OFStandard::dropPrivileges();
@@ -395,7 +403,8 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   }
 
   // Listen to a socket for timeout seconds and wait for an association request.
-  OFCondition cond = ASC_receiveAssociation( net, &assoc, opt_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, timeout );
+  OFBool useSecureLayer = transportLayer ? OFTrue : OFFalse;
+  OFCondition cond = ASC_receiveAssociation( net, &assoc, opt_maxPDU, NULL, NULL, useSecureLayer, DUL_NOBLOCK, timeout );
 
   // just return, if timeout occurred (DUL_NOASSOCIATIONREQUEST)
   // or (WIN32) if dcmnet has started a child for us, to handle this
