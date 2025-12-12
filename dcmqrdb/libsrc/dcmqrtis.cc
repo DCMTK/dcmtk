@@ -775,9 +775,9 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_storeImage(char *sopClass, char *sopI
      /* shared lock image file */
     int lockfd;
 #ifdef O_BINARY
-    lockfd = open(imgFile, O_RDONLY | O_BINARY, 0666);
+    lockfd = open(imgFile, O_RDONLY | O_BINARY);
 #else
-    lockfd = open(imgFile, O_RDONLY, 0666);
+    lockfd = open(imgFile, O_RDONLY);
 #endif
     if (lockfd < 0) {
         DCMQRDB_WARN("CTN has deleted image, giving up (no imgFile): "

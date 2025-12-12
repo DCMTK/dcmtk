@@ -84,9 +84,9 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
 #ifdef LOCK_IMAGE_FILES
     /* shared lock image file */
 #ifdef O_BINARY
-    int lockfd = open(imgFile, O_RDONLY | O_BINARY, 0666);
+    int lockfd = open(imgFile, O_RDONLY | O_BINARY);
 #else
-    int lockfd = open(imgFile, O_RDONLY, 0666);
+    int lockfd = open(imgFile, O_RDONLY);
 #endif
     if (lockfd < 0)
     {

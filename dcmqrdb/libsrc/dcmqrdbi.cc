@@ -2359,9 +2359,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 #ifdef LOCK_IMAGE_FILES
     int lockfd;
 #ifdef O_BINARY
-    lockfd = open(imgFile, O_RDWR | O_BINARY, 0666);    /* obtain file descriptor */
+    lockfd = open(imgFile, O_RDWR | O_BINARY);    /* obtain file descriptor */
 #else
-    lockfd = open(imgFile, O_RDWR, 0666);   /* obtain file descriptor */
+    lockfd = open(imgFile, O_RDWR);   /* obtain file descriptor */
 #endif
     if (lockfd < 0) {
       DCMQRDB_WARN("DB ERROR: cannot open image file for deleting: " << imgFile);

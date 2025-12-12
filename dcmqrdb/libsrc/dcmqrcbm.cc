@@ -199,9 +199,9 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     /* shared lock image file */
     int lockfd;
 #ifdef O_BINARY
-    lockfd = open(fname, O_RDONLY | O_BINARY, 0666);
+    lockfd = open(fname, O_RDONLY | O_BINARY);
 #else
-    lockfd = open(fname, O_RDONLY , 0666);
+    lockfd = open(fname, O_RDONLY);
 #endif
     if (lockfd < 0) {
         /* due to quota system the file could have been deleted */
