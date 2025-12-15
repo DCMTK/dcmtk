@@ -7,6 +7,7 @@ IMPORTANT NOTE FOR CURRENT DEVELOPMENT VERSION 3.7.0+DEV
  the latest.
 -------------------------------------------------------------------------------
 
+
 ==================================
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
@@ -254,7 +255,7 @@ Libtiff Support
 
 DCMTK supports the conversion of DICOM images to TIFF.  DCMTK relies on the
 libtiff toolkit (www.libtiff.org) for this purpose.  This release of DCMTK is
-known to compile with libtiff release 4.7.1, although other releases
+known to compile with libtiff releases 4.5.1 to 4.7.1, although other releases
 may work as well.
 
 When using CMake, a compiled version of the libtiff libraries and include files
@@ -266,7 +267,7 @@ Libpng Support
 
 DCMTK supports the conversion of DICOM images to PNG.  DCMTK relies on the
 libpng toolkit (www.libpng.org) for this purpose.  This release of DCMTK is
-known to compile with libpng releases 1.6.47 to 1.6.51, although other releases
+known to compile with libpng releases 1.6.43 to 1.6.51, although other releases
 may work as well.
 
 When using CMake, a compiled version of the libpng libraries and include files
@@ -278,7 +279,7 @@ Libxml2 Support
 
 DCMTK supports the conversion of XML documents to DICOM files.  DCMTK relies on
 the libxml2 toolkit (www.libxml.org) for this purpose.  This release of DCMTK
-is known to compile with libxml2 releases 2.13.9 to 2.15.1, although other
+is known to compile with libxml2 releases 2.9.14 to 2.15.1, although other
 releases may work as well.
 
 When using CMake, if support for XML import is desired, a compiled version of
