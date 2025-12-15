@@ -6,7 +6,7 @@ We would like to thank the following individuals, companies and organizations
 Open Source DICOM Toolkit DCMTK:
 
 Carl Zeiss Meditec: The preparation and publication of the DCMTK 3.6.2 release
-  as well as several extensions in wlmscpfs and dcmqrscp were supported by
+  as well as several extensions in "wlmscpfs" and "dcmqrscp" were supported by
   funding from Carl Zeiss Meditec AG (Muenchen, Germany).
 
 DKFZ: The work on the DCMTK module "dcmrt" was supported in part by funding
@@ -17,7 +17,7 @@ Epilepsieforschung: The Gesellschaft fuer Epilepsieforschung e.V. (Bielefeld,
   tool "dcmrecv" and the underlying class "DcmStorageSCP".
 
 GE Aviation: GE Aviation supported DCMTK by sponsoring the development of the
-  dcmect library and basic concatenation support in dcmfg.
+  "dcmect" library and basic concatenation support in "dcmfg".
 
 ICSMED: From 2006 to 2012, the work on the DCMTK was supported by employees of
   the ICSMED AG (Oldenburg, Germany), a spin-off from the OFFIS institute.
@@ -35,7 +35,7 @@ M. Malaterre: The GDCM developer Mathieu Malaterre (Lyon, France) regularly
   reports possible issues to the DCMTK team.  He was also responsible for
   packaging the DCMTK library and tools for the Debian operating system.
 
-Mathworks: Funded implementation of TLS support in getscu, introduced
+Mathworks: Funded implementation of TLS support in "getscu", introduced
   in DCMTK 3.6.9.
 
 Medpace: Funded the development of the "dcm2img" tool introduced in DCMTK
@@ -62,6 +62,10 @@ SlicerDMRI: The work on DCMTK Tractography modules was supported in part by
   initiative, to project Open Source Diffusion MRI Technology For Brain Cancer
   Research, award U01 CA199459.
 
+Twisted Ceptors: Funded the extension of the "storescp" application by the
+  "--max-associations" option that allows the user to limit the number of
+  clients served in parallel when operating in "--fork mode".
+
 VISUS: The work on various extensions of the DCMTK was supported in part by
   funding from the VISUS Technology Transfer GmbH (Bochum, Germany).
 
@@ -72,4 +76,4 @@ YXLON: The work on the initial version of the DICONDE data dictionary was
 Please note that this list does not claim to be exhaustive.  Just send us an
 email if you think that you or your company/organization should also be listed.
 
-DCMTK Team, 2024-11-21
+DCMTK Team, 2025-12-15
