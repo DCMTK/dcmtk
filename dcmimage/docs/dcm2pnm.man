@@ -23,6 +23,6 @@ the same command line parameters, and more.
 
 \section dcm2pnm_copyright COPYRIGHT
 
-Copyright (C) 1998-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

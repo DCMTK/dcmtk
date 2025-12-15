@@ -23,6 +23,6 @@ the same command line parameters, and more.
 
 \section dcmgpdir_copyright COPYRIGHT
 
-Copyright (C) 1996-2024 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
