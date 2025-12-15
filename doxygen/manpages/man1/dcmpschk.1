@@ -1,4 +1,4 @@
-.TH "dcmpschk" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmpschk" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmpschk \- Checking tool for presentation states
@@ -59,6 +59,21 @@ dcmfile-in  presentation state file(s) to be checked
          use config file f for the logger
 .fi
 .PP
+.SS "validation options"
+.PP
+.nf
+       --validate-std
+         images referenced by GSPS must belong to the
+         same SOP class (default)
+
+       --validate-related
+         images referenced by GSPS may belong to related
+         'for presentation' and 'for processing' SOP class
+
+       --validate-relaxed
+         images referenced by GSPS may be any SOP class
+.fi
+.PP
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -78,4 +93,4 @@ The \fBdcmpschk\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

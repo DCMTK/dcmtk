@@ -1,4 +1,4 @@
-.TH "dsrdump" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsrdump" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsrdump \- Dump DICOM SR file and data set
@@ -219,8 +219,12 @@ PatientRadiationDoseSRStorage                1.2.840.10008.5.1.4.1.1.88.73
 PlannedImagingAgentAdministrationSRStorage   1.2.840.10008.5.1.4.1.1.88.74
 PerformedImagingAgentAdministrationSRStorage 1.2.840.10008.5.1.4.1.1.88.75
 WaveformAnnotationSRStorage                  1.2.840.10008.5.1.4.1.1.88.77
+
+RenditionSelectionDocumentRealTimeCommunication 1.2.840.10008.10.4 (*)
 .fi
 .PP
+.PP
+(*) This is not a Storage SOP Class, but used for Real-Time Communication\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -247,4 +251,4 @@ The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICO
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2000-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

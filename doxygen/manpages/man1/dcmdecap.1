@@ -1,25 +1,25 @@
-.TH "dcmpsmk" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdecap" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmpsmk \- Create DICOM grayscale softcopy presentation state
+dcmdecap \- Extract encapsulated file from DICOM encapsulated storage object
 
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
-dcmpsmk [options] dcmfile-in dcmfile-out
+dcmdecap [options] dcmfile-in encfile-out
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmpsmk\fP utility reads a DICOM image file and creates a grayscale softcopy presentation state object according to Supplement 33\&. The presentation state object is written back to file\&. A number of command line options allow one to specify how certain constructs that might be present in the image file should be referenced or activated in the presentation state\&. The newly created presentation state references the source image and contains values that should allow for a 'reasonable' display of the image when rendered under control of the presentation state\&.
+The \fBdcmdecap\fP utility reads a DICOM file of one of the Encapsulated Storage SOP Classes (\fIdcmfile-in\fP), extracts the embedded document and writes it to an output file (\fIencfile-out\fP)\&. Optionally a command can be executed after the creation of the output file\&.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
-dcmfile-in   DICOM image file(s) to be read ("-" for stdin)
+dcmfile-in   DICOM input filename ("-" for stdin)
 
-dcmfile-out  DICOM presentation state file to be created ("-" for stdout)
+encfile-out  Encapsulated document output filename ("-" for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -83,121 +83,95 @@ input transfer syntax:
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+
+parsing of odd-length attributes:
+
+  +ao  --accept-odd-length
+         accept odd length attributes (default)
+
+  +ae  --assume-even-length
+         assume real length is one byte larger
+
+handling of undefined length UN elements:
+
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
+
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
+
+handling of defined length UN elements:
+
+  -uc  --retain-un
+         retain elements as UN (default)
+
+  +uc  --convert-un
+         convert to real VR if known
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
+
+bitstream format of deflated input:
+
+  +bd  --bitstream-deflated
+         expect deflated bitstream (default)
+
+  +bz  --bitstream-zlib
+         expect deflated zlib bitstream
 .fi
 .PP
 .SS "processing options"
+execution options:
 .PP
 .nf
-VOI transform handling:
+  -x   --exec  [c]ommand: string
+         execute command c after document extraction
 
-  +Vl  --voi-lut
-         use first VOI LUT if present (default)
-
-  +Vw  --voi-window
-         use first window center/width if present
-
-  -V   --voi-ignore
-         ignore VOI LUT and window center/width
-
-curve handling:
-
-  +c   --curve-activate
-         activate curve data if present (default)
-
-  -c   --curve-ignore
-         ignore curve data
-
-overlay handling:
-
-  +oc  --overlay-copy
-         copy overlays if not embedded, activate otherwise (default)
-
-  +oa  --overlay-activate
-         activate overlays
-
-  -o   --overlay-ignore
-         ignore overlays
-
-shutter handling:
-
-  +s   --shutter-activate
-         use shutter if present in image (default)
-
-  -s   --shutter-ignore
-         ignore shutter
-
-presentation LUT shape handling:
-
-  +p   --plut-activate
-         use presentation LUT shape if present (default)
-
-  -p   --plut-ignore
-         ignore presentation LUT shape
-
-layering:
-
-  +l1  --layer-single
-         all curves and overlays are in one layer
-
-  +l2  --layer-double
-         one layer for curves, one for overlays (default)
-
-  +ls  --layer-separate
-         separate layers for each curve and overlay
-
-location of referenced image:
-
-  -lx  --location-none
-         image reference without location (default)
-
-  -ln  --location-network  [a]etitle: string
-         image located at application entity a
-
-  -lm  --location-media  [f]ilesetID, fileset[UID]: string
-         image located on storage medium
-.fi
-.PP
-.SS "validation options"
-.PP
-.nf
-       --validate-std
-          images referenced by GSPS must belong to the
-          same SOP class (default)
-
-       --validate-related
-          images referenced by GSPS may belong to related
-          'for presentation' and 'for processing' SOP class
-
-       --validate-relaxed
-          images referenced by GSPS may be any SOP class
-.fi
-.PP
-.SS "output options"
-.PP
-.nf
-output transfer syntax:
-
-  +t=   --write-xfer-same
-          write with same TS as image file (default)
-
-  +te   --write-xfer-little
-          write with explicit VR little endian TS
-
-  +tb   --write-xfer-big
-          write with explicit VR big endian TS
-
-  +ti   --write-xfer-implicit
-          write with implicit VR little endian TS
 .fi
 .PP
 .SH "NOTES"
 .PP
-If more than one input file (\fIdcmfile-in\fP) is specified, the additional image files are only referenced from the created presentation state file, but no further (e\&.g\&. display-related) information is taken over\&.
+Option \fI--exec\fP allows for the execution of a certain command line after the creation of the PDF document\&. The command line to be executed is passed to this option as a parameter\&. The specified command line may contain the placeholder '#f', which will be replaced by the output filename at run time\&. The specified command line is executed in the foreground, i\&.e\&. \fBdcmdecap\fP will be blocked until the command terminates\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
 .PP
 In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
+.SH "EXIT CODES"
+.PP
+The \fBdcmdecap\fP utility uses the following exit codes when terminating\&. This enables the user to check for the reason why the application terminated\&.
+.SS "general"
+.PP
+.nf
+EXITCODE_NO_ERROR                         0
+EXITCODE_COMMANDLINE_SYNTAX_ERROR         1
+.fi
+.PP
+.SS "input file errors"
+.PP
+.nf
+EXITCODE_CANNOT_READ_INPUT_FILE          20
+EXITCODE_NO_INPUT_FILES                  21
+EXITCODE_INVALID_INPUT_FILE              22
+.fi
+.PP
+.SS "output file errors"
+.PP
+.nf
+EXITCODE_CANNOT_WRITE_OUTPUT_FILE        40
+.fi
+.PP
+.SS "processing errors"
+.PP
+.nf
+EXITCODE_EXEC_FAILED                     91
+.fi
+.PP
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
@@ -207,9 +181,12 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmpsmk\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
+The \fBdcmdecap\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
 .PP
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+.SH "SEE ALSO"
+.PP
+\fBdcmencap\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "dcm2json" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2json" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2json \- Convert DICOM file and data set to JSON
@@ -108,6 +108,27 @@ encoding of IS and DS (integer/decimal string) elements:
 
   -is  --is-ds-string
          always encode as string
+
+bulk data URI options:
+
+  -b   --bulk-disabled
+         write everything as inline binary (default)
+
+  +b   --bulk-enabled
+         write large attributes as bulk data
+
+  +bz  --bulk-size  [s]ize: integer (default: 1)
+         use bulk data for attributes >= s kBytes
+
+  +bp  --bulk-uri-prefix  [u]ri prefix: string
+         use prefix u when generating bulk data URIs (default: file URI)
+
+  +bd  --bulk-dir  [d]irectory: string
+         write bulk data files to d (default: '.')
+
+  +bs  --bulk-subdir
+         create subdirectory for each SOP instance
+         (default: no subdirectory)
 .fi
 .PP
 .SS "output options"
@@ -291,13 +312,37 @@ The basic structure of the JSON output created from a DICOM file looks like the 
 .fi
 .PP
 .SS "Bulk Data"
-Binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB or OW, as well as OD, OF, OL, OV and UN values are always written as 'InlineBinary' (base64 encoding) to the JSON output\&. A future version of this tool might optionally use a 'BulkDataURI' instead, i\&.e\&. the WADO-RS URL of a bulk data item that contains the element value\&. This would be particularly useful for large amounts of data, such as pixel data\&.
+By default, binary data, i\&.e\&. DICOM element values with Value Representations (VR) of OB, OD, OF, OL, OV, OW, and UN values are written as 'InlineBinary' (base64 encoding) to the JSON output\&. Option \fI--bulk-enabled\fP causes binary data as well as DS, FD, FL, IS, SV and UV to be replaced by 'BulkDataURI' values if the element value is larger than the cut-off threshold (default: 1 kByte)\&. The cut-off threshold can be specified with the \fI--bulk-size\fP option\&. The element values themselves are written as files to the directory given by the \fI--bulk-dir\fP option (default: current directory)\&. The filename is based on a SHA-256 checksum of the element value\&. By default, file URIs are generated that point to the bulk directory\&. For production use, a URI prefix for a WADO-RS service over which the element values can be retrieved should be specified using the \fI--bulk-uri-prefix\fP option\&. This can be implemented by configuring a web server that has read access to \fBdcm2json's\fP bulk directory\&. Finally, the option \fI--bulk-subdir\fP will cause a separate subdirectory to be created (and used in the bulk data URI) for each distinct SOP instance\&.
+.PP
+Note that the JSON syntax for the representation of encapsulated pixel data in 'InlineBinary' form is unspecified in DICOM, as is the JSON representation of encapsulated multi-frame pixel data\&. These DICOM files cannot be converted to JSON using \fBdcm2json\fP\&.
+.PP
+The file name extension for the bulk data files generated can be used to determine the MIME type that should be returned by the WADO-RS server:
+.PP
+.PP
+.nf
+  Extension     MIME Type
+
+  .bin          application/octet-stream
+  .jpeg         image/jpeg
+  .dicom-rle    image/dicom-rle
+  .jls          image/jls
+  .jp2          image/jp2
+  .jpx          image/jpx
+  .jphc         image/jphc
+  .jxl          image/jxl
+  .mpeg         video/mpeg
+  .mp4          video/mp4
+  .H265         video/H265
+.fi
+.PP
+.PP
+Finally, it should be noted that bulk data will be written 'as is', i\&.e\&. \fBdcm2json\fP will not attempt to validate or modify the element value in any way\&. For example, \fBdcm2json\fP will not add a JFIF header in the case of JPEG baseline compressed images, which some JPEG viewers may expect\&.
 .SH "NOTES"
 .PP
 .SS "Numbers as Strings"
 The DICOM standard allows certain numeric DICOM value representations, DS, IS, SV and UV, to be converted either to a JSON number or a JSON string\&. \fBdcm2json\fP converts DS and IS values to JSON numbers if they are valid decimal strings or integer strings, and to strings if they contain any illegal character\&. \fBdcm2json\fP converts SV and UV values to numbers if they are not larger than 9007199254740991ll or smaller than -9007199254740991ll, and to strings otherwise\&. While the JSON specification permits larger numbers, these are the largest integers that JavaScript can handle\&. Therefore, many JSON parsers cannot process larger numbers\&.
 .SS "Character Encoding"
-As required by the DICOM JSON encoding, \fBdcm2json\fP always creates output in Unicode UTF-8 encoding and converts DICOM datasets accordingly\&. If this is not possible, for example because DCMTK has been compiled without character set conversion support, an error is returned\&.
+As required by the DICOM JSON encoding, \fBdcm2json\fP always creates output in Unicode UTF-8 encoding and converts DICOM data sets accordingly\&. If this is not possible, for example because DCMTK has been compiled without character set conversion support, an error is returned\&.
 .SH "LOGGING"
 .PP
 The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
@@ -351,4 +396,4 @@ The \fBdcm2json\fP utility will attempt to load character set mapping tables\&. 
 The mapping table files are expected in DCMTK's \fI<datadir>\fP\&. The \fIDCMICONVPATH\fP environment variable can be used to specify a different location\&. If a different location is specified, those mapping tables also replace any built-in tables\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2016-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2016-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

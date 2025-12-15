@@ -1,4 +1,4 @@
-.TH "dcm2img" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2img" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2img \- Convert DICOM image to standard image format
@@ -170,6 +170,22 @@ color space conversion (JPEG compressed images only):
 
   +cn   --conv-never
           never convert color space
+
+bits stored:
+
+  +bs  --bits-stored-fix
+         correct inconsistent bits stored value (default)
+
+  # If the value of BitsStored in the compressed bitstream is smaller
+  # than the value in the DICOM dataset, update the value in the dataset
+  # (JPEG compressed images only)
+
+  -bs  --bits-stored-keep
+         preserve inconsistent bits stored value
+
+  # Keep the value of BitsStored even if inconsistent with the
+  # compressed bitstream. This may help in correctly decoding some
+  # defective images JPEG compressed images only)
 
 workaround options for incorrect encodings (JPEG compressed images only):
 
@@ -555,4 +571,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2001-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

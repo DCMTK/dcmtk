@@ -1,4 +1,4 @@
-.TH "dcmrecv" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmrecv" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmrecv \- Simple DICOM storage SCP (receiver)
@@ -57,6 +57,17 @@ port  tcp/ip port number to listen on
 .SS "network options"
 .PP
 .nf
+IP protocol version:
+
+  -i4   --ipv4
+          use IPv4 only (default)
+
+  -i6   --ipv6
+          use IPv6 only
+
+  -i0   --ip-auto
+          use IPv6/IPv4 dual stack
+
 association negotiation profile from configuration file:
 
   -xf   --config-file  [f]ilename, [p]rofile: string
@@ -409,4 +420,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmsend\fP(1), \fBstorescu\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2013-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2013-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "Wed Dec 11 2024" "Version 3.6.9" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -314,7 +314,7 @@ Color and grayscale images are supported\&. CP-1843 enforce that the value of Pl
 .PP
 For DICOM it is clear that SPIFF header should not be present in the DICOM object's internal JPEG-LS stream\&. The plugin will simply rejects any input JPEG-LS file containing a SPIFF header at marker APP8\&.
 .PP
-By default, all APPn markers are cut off from the original JPEG-LS stream\&. However, if you want to keep APPn markers (e\&.g\&. APP8/HP color transform information, aka 'mrfx') inside the DICOM stream, the option \fI--keep-appn\fP does the trick\&. Pay attention that the plugin will check the actual color transform specified in the APP8/HP marker\&. Since DICOM does not allow any color transform to be specified in the APP8 marker, only a value of \fC0\fP (no color transform) is accepted\&.
+By default, all APPn markers are cut off from the original JPEG-LS stream\&. However, if you want to keep APPn markers (e\&.g\&. APP8/HP color transform information, aka 'mrfx') inside the DICOM stream, the option \fI--keep-appn\fP does the trick\&. Pay attention that the plugin will check the actual color transform specified in the APP8/HP marker\&. Since DICOM does not allow any color transform to be specified in the APP8 marker, only a value of 0 (no color transform) is accepted\&.
 .SS "BMP Input Plugin"
 \fBimg2dcm\fP supports BMP as input format\&. However, so far only the most common BMP images are supported\&. In particular, BMP images which use bit fields or run length encoding will be rejected\&. Such images are uncommon\&. Input images will either be converted into a DICOM image with RGB color model and a bit depth of 24, or into an image with MONOCHROME2 color model an 8 bits per pixel\&. There are no specific options for fine-tuning BMP format conversion\&.
 .SS "Output Plugins"
@@ -387,4 +387,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1), \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2024 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
