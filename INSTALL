@@ -1,3 +1,12 @@
+-------------------------------------------------------------------------------
+IMPORTANT NOTE FOR CURRENT DEVELOPMENT VERSION 3.7.0+DEV
+-------------------------------------------------------------------------------
+ Please note that most sections of this document refer to the official release
+ DCMTK 3.7.0, i.e. they have not yet been updated to reflect the changes in
+ the latest development version.  This will be done for the next release at
+ the latest.
+-------------------------------------------------------------------------------
+
 ==================================
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
@@ -1044,4 +1053,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu, H. Roesen
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2025-12-02 (Riesmeier)
+Last revised: 2025-12-15.
