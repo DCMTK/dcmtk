@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -51,19 +51,19 @@ DcmPixelItem::DcmPixelItem(const DcmPixelItem &old)
 
 DcmPixelItem &DcmPixelItem::operator=(const DcmPixelItem &obj)
 {
-  DcmOtherByteOtherWord::operator=(obj);
-  return *this;
+    DcmOtherByteOtherWord::operator=(obj);
+    return *this;
 }
 
 
 OFCondition DcmPixelItem::copyFrom(const DcmObject &rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmPixelItem &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmPixelItem &, rhs);
+    }
+    return EC_Normal;
 }
 
 

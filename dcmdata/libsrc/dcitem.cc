@@ -115,9 +115,11 @@ DcmItem::DcmItem(const DcmItem &old)
         do
         {
             DcmObject *dO = old.elementList->get()->clone();
-            elementList->insert(dO, ELP_next);
-            // remember the parent
-            dO->setParent(this);
+            if (elementList->insert(dO, ELP_next))
+            {
+                // remember the parent
+                dO->setParent(this);
+            }
         } while (old.elementList->seek(ELP_next));
     }
 }
@@ -143,9 +145,11 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
             do
             {
                 DcmObject *dO = obj.elementList->get()->clone();
-                elementList->insert(dO, ELP_next);
-                // remember the parent
-                dO->setParent(this);
+                if (elementList->insert(dO, ELP_next))
+                {
+                    // remember the parent
+                    dO->setParent(this);
+                }
             } while (obj.elementList->seek(ELP_next));
         }
     }
@@ -201,12 +205,12 @@ int DcmItem::compare(const DcmItem& rhs) const
 
 OFCondition DcmItem::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-      if (rhs.ident() != ident()) return EC_IllegalCall;
-      *this = OFstatic_cast(const DcmItem &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmItem &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -824,26 +828,26 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         if (dO->getETag() == 0x0000 && dO->ident() != EVR_UL)
                         {
                             delete elementList->remove();
-                            DcmTag tagUL(actGrp, 0x0000, EVR_UL);
-                            DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
-                            elementList->insert(dUL, ELP_prev);
-                            dO = dUL;
-                            // remember the parent
-                            dO->setParent(this);
+                            dO = new DcmUnsignedLong(DcmTag(actGrp, 0x0000, EVR_UL));
+                            if (elementList->insert(dO, ELP_prev))
+                            {
+                                // remember the parent
+                                dO->setParent(this);
+                            }
                             DCMDATA_WARN("DcmItem: Group Length with VR other than UL found, corrected");
                         }
                         /* if the above mentioned condition is not met but the caller specified */
                         /* that we want to add group length elements, we need to add such an element */
                         else if (glenc == EGL_withGL)
                         {
-                            // Create GroupLength element
-                            DcmTag tagUL(actGrp, 0x0000, EVR_UL);
-                            DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
+                            // create GroupLength element
+                            dO = new DcmUnsignedLong(DcmTag(actGrp, 0x0000, EVR_UL));
                             // insert new GroupLength element
-                            elementList->insert(dUL, ELP_prev);
-                            dO = dUL;
-                            // remember the parent
-                            dO->setParent(this);
+                            if (elementList->insert(dO, ELP_prev))
+                            {
+                                // remember the parent
+                                dO->setParent(this);
+                            }
                         }
 
                         /* in case we want to add padding elements and the current element is a */
@@ -905,7 +909,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         }
                         else
                         {
-                          grplen += sublen;
+                            grplen += sublen;
                         }
                     }
 
@@ -923,14 +927,14 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
         /* i.e. do not write it for this group. */
         if (l_error.good() && (glenc == EGL_withGL || glenc == EGL_recalcGL) && actGLElem)
         {
-          if (groupLengthExceeded)
-          {
-            exceededGroupLengthElems.push_back(actGLElem);
-          }
-          else
-          {
-            actGLElem->putUint32(grplen);
-          }
+            if (groupLengthExceeded)
+            {
+                exceededGroupLengthElems.push_back(actGLElem);
+            }
+            else
+            {
+                actGLElem->putUint32(grplen);
+            }
         }
 
         /* if the caller specified that we want to add padding elements and */
@@ -1823,7 +1827,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
             if (dE == NULL)
             {
                 /* insert new element at the beginning of elementList */
-                elementList->insert(elem, ELP_first);
+                const OFBool inserted = (elementList->insert(elem, ELP_first) != NULL);
                 if (checkInsertOrder)
                 {
                     // check if we have inserted at the end of the list
@@ -1842,8 +1846,11 @@ OFCondition DcmItem::insert(DcmElement *elem,
                     DCMDATA_DEBUG("DcmItem::insert() Element " << elem->getTag() << " already has a parent: "
                       << elem->getParent()->getTag() << " VR=" << DcmVR(elem->getParent()->getVR()).getVRName());
                 }
-                /* remember the parent (i.e. the surrounding item/dataset) */
-                elem->setParent(this);
+                if (inserted)
+                {
+                    /* remember the parent (i.e. the surrounding item/dataset) */
+                    elem->setParent(this);
+                }
                 /* terminate do-while-loop */
                 break;
             }
@@ -1852,7 +1859,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
             else if (elem->getTag() > dE->getTag().getTagKey() /* only compare the attribute tag */)
             {
                 /* insert the new element after the current element */
-                elementList->insert(elem, ELP_next);
+                const OFBool inserted = (elementList->insert(elem, ELP_next) != NULL);
                 if (checkInsertOrder)
                 {
                     // check if we have inserted at the end of the list
@@ -1871,8 +1878,11 @@ OFCondition DcmItem::insert(DcmElement *elem,
                     DCMDATA_DEBUG("DcmItem::insert() Element " << elem->getTag() << " already has a parent: "
                         << elem->getParent()->getTag() << " VR=" << DcmVR(elem->getParent()->getVR()).getVRName());
                 }
-                /* remember the parent (i.e. the surrounding item/dataset) */
-                elem->setParent(this);
+                if (inserted)
+                {
+                    /* remember the parent (i.e. the surrounding item/dataset) */
+                    elem->setParent(this);
+                }
                 /* terminate do-while-loop */
                 break;
             }
@@ -1903,7 +1913,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                             delete remObj;
                         }
                         /* insert the new element before the current element */
-                        elementList->insert(elem, ELP_prev);
+                        const OFBool inserted = (elementList->insert(elem, ELP_prev) != NULL);
                         /* dump some information if required */
                         DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
                             << " VR=\"" << DcmVR(elem->getVR()).getVRName()
@@ -1914,8 +1924,11 @@ OFCondition DcmItem::insert(DcmElement *elem,
                             DCMDATA_DEBUG("DcmItem::insert() Element " << elem->getTag() << " already has a parent: "
                                 << elem->getParent()->getTag() << " VR=" << DcmVR(elem->getParent()->getVR()).getVRName());
                         }
-                        /* remember the parent (i.e. the surrounding item/dataset) */
-                        elem->setParent(this);
+                        if (inserted)
+                        {
+                            /* remember the parent (i.e. the surrounding item/dataset) */
+                            elem->setParent(this);
+                        }
                     }   // if (replaceOld)
                     /* or else, i.e. the current element shall not be replaced by the new element */
                     else {
@@ -1989,9 +2002,9 @@ OFCondition DcmItem::nextObject(DcmStack &stack,
                                 const OFBool intoSub)
 {
     OFCondition l_error = EC_Normal;
-    DcmObject * container = NULL;
-    DcmObject * obj = NULL;
-    DcmObject * result = NULL;
+    DcmObject *container = NULL;
+    DcmObject *obj = NULL;
+    DcmObject *result = NULL;
     OFBool examSub = intoSub;
 
     if (stack.empty())

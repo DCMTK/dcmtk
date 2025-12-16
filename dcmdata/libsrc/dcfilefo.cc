@@ -74,10 +74,13 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
     ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
-    DcmSequenceOfItems::itemList->insert(MetaInfo);
-    MetaInfo->setParent(this);
+    if (DcmSequenceOfItems::itemList->insert(MetaInfo))
+    {
+        // remember the parent
+        MetaInfo->setParent(this);
+    }
 
-    DcmDataset* insertion;
+    DcmDataset *insertion;
     if (dataset == NULL)
     {
         insertion = new DcmDataset();
@@ -90,8 +93,11 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
     {
         insertion = dataset;
     }
-    insertion->setParent(this);
-    DcmSequenceOfItems::itemList->insert(insertion);
+    if (DcmSequenceOfItems::itemList->insert(insertion))
+    {
+        // remember the parent
+        insertion->setParent(this);
+    }
 }
 
 
@@ -106,12 +112,12 @@ DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
 
 OFCondition DcmFileFormat::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmFileFormat &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmFileFormat &, rhs);
+    }
+    return EC_Normal;
 }
 
 
@@ -122,15 +128,14 @@ DcmFileFormat::~DcmFileFormat()
 
 DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
 {
-  if (this != &obj)
-  {
-    DcmSequenceOfItems::operator=(obj);
-    FileReadMode = obj.FileReadMode;
-    ImplementationClassUID = obj.ImplementationClassUID;
-    ImplementationVersionName = obj.ImplementationVersionName;
-  }
-
-  return *this;
+    if (this != &obj)
+    {
+        DcmSequenceOfItems::operator=(obj);
+        FileReadMode = obj.FileReadMode;
+        ImplementationClassUID = obj.ImplementationClassUID;
+        ImplementationVersionName = obj.ImplementationVersionName;
+    }
+    return *this;
 }
 
 
@@ -741,9 +746,11 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
             if (metaInfo == NULL && getTransferState() == ERW_init)
             {
                 metaInfo = new DcmMetaInfo();
-                itemList->insert(metaInfo, ELP_first);
-                // remember the parent
-                metaInfo->setParent(this);
+                if (itemList->insert(metaInfo, ELP_first))
+                {
+                    // remember the parent
+                    metaInfo->setParent(this);
+                }
             }
             if (metaInfo && metaInfo->transferState() != ERW_ready)
             {
@@ -768,10 +775,12 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                 if (dataset == NULL && getTransferState() == ERW_init)
                 {
                     dataset = new DcmDataset();
-                    itemList->seek (ELP_first);
-                    itemList->insert(dataset, ELP_next);
-                    // remember the parent
-                    dataset->setParent(this);
+                    itemList->seek(ELP_first);
+                    if (itemList->insert(dataset, ELP_next))
+                    {
+                        // remember the parent
+                        dataset->setParent(this);
+                    }
                 }
 
                 // initialize dataset transfer syntax members
@@ -1148,12 +1157,20 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
     if (object != NULL && object->ident() == EVR_dataset)
     {
         data = OFstatic_cast(DcmDataset *, itemList->remove());
-        // forget about the parent
-        data->setParent(NULL);
-        DcmDataset *Dataset = new DcmDataset();
-        DcmSequenceOfItems::itemList->insert(Dataset, ELP_last);
-        // remember the parent
-        Dataset->setParent(this);
+        if (data)
+        {
+            // forget about the parent
+            data->setParent(NULL);
+            // create new data set
+            DcmDataset *newData = new DcmDataset();
+            if (DcmSequenceOfItems::itemList->insert(newData, ELP_last))
+            {
+                // remember the parent
+                newData->setParent(this);
+            }
+        }
+        else
+            errorFlag = EC_CorruptedData;
     }
     else
         errorFlag = EC_IllegalCall;
