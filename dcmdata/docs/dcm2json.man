@@ -480,6 +480,10 @@ The \e DCMICONVPATH environment variable can be used to specify a different
 location.  If a different location is specified, those mapping tables also
 replace any built-in tables.
 
+\section dcm2json_see_also SEE ALSO
+
+<b>json2dcm</b>(1)
+
 \section dcm2json_copyright COPYRIGHT
 
 Copyright (C) 2016-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
