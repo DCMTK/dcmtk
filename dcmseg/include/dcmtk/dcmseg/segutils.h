@@ -38,7 +38,8 @@ class DCMTK_DCMSEG_EXPORT DcmSegUtils
 public:
     /** Pack the given segmentation pixel data, provided "unpacked", into
      *  the packed format expected by DICOM
-     *  @param  pixelData Pixel data in unpacked format, i.e on byte per pixel, either 0 (not set) or non-0 (set)
+     *  @param  pixelData Pixel data in unpacked format, i.e on byte per pixel,
+     *          either 0 (not set) or non-0 (set)
      *  @param  rows Number of rows in the pixel data
      *  @param  columns The number of columns in the pixel data
      *  @return The frame data if successful, NULL if an error occurs
@@ -47,20 +48,22 @@ public:
     static DcmIODTypes::Frame<T>* packBinaryFrame(const T* pixelData, const Uint16 rows, const Uint16 columns);
 
     /** Concatenate given frames into a single bit array
-     *  @param  frames The frames to concatenate. Each frame is expected to be in packed format (1 bit per pixel),
-     *          with the last byte padded with 0s if necessary
+     *  @param  frames The frames to concatenate. Each frame is expected to be
+     *          in packed format (1 bit per pixel), with the last byte padded
+     *          with 0s if necessary
      *  @param  rows The number of rows in the frames
      *  @param  cols The number of columns in the frames
-     *  @param  pixData The buffer to store the concatenated frames. Must be pre-allocated and have a size of at least
-     *          pixDataLength bytes. Bytes are set to 0 before concatenation.
+     *  @param  pixData The buffer to store the concatenated frames. Must be
+     *          pre-allocated and have a size of at least pixDataLength bytes.
+     *          Bytes are set to 0 before concatenation.
      *  @param  pixDataLength The length of the pixData buffer in bytes
      *  @return EC_Normal if successful, an error code otherwise
      */
     static OFCondition concatBinaryFrames(const OFVector<DcmIODTypes::FrameBase*>& frames, const Uint16 rows, const Uint16 cols, Uint8* pixData, const size_t pixDataLength);
 
-    /** Unpacks a binary segmentation frame into a "sparse" pixel data frame where
-     *  every resulting byte represents a single bit of the frame being either
-     *  0 (not set) or 1 (set).
+    /** Unpacks a binary segmentation frame into a "sparse" pixel data frame
+     *  where every resulting byte represents a single bit of the frame being
+     *  either 0 (not set) or 1 (set).
      *  @param  frame The input buffer with the frame in packed format
      *  @param  rows The rows of the frame
      *  @param  cols The cols of the frame
@@ -89,8 +92,8 @@ public:
 
 };
 
-/** Pack the given segmentation pixel data, provided "unpacked", into
- *  the packed format expected by DICOM. This is the default version which prints an error
+/** Pack the given segmentation pixel data, provided "unpacked", into the packed
+ *  format expected by DICOM. This is the default version which prints an error
  *  and returns NULL.
  *  @return Returns NULL
  */
@@ -106,7 +109,8 @@ DcmSegUtils::packBinaryFrame(const T*, const Uint16, const Uint16)
 /** Pack the given segmentation pixel data, provided "unpacked", into
  *  the packed format expected by DICOM. This is the 8 bit version which
  *  is the only version actually used for segmentation objects.
- *  @param  pixelData Pixel data in unpacked format, i.e on byte per pixel, either 0 (not set) or non-0 (set)
+ *  @param  pixelData Pixel data in unpacked format, i.e on byte per pixel,
+ *          either 0 (not set) or non-0 (set)
  *  @param  rows Number of rows in the pixel data
  *  @param  columns The number of columns in the pixel data
  *  @return Frame data if successful, NULL if an error occurs

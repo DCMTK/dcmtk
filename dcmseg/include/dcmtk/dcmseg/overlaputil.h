@@ -60,7 +60,7 @@ public:
         }
         /** Constructor
          *  @param  pos Image position
-         *   @param  num Physical frame number
+         *  @param  num Physical frame number
          */
         FramePositionAndNumber(const ImagePosition& pos, const Uint32& num)
             : m_position(pos)
@@ -86,7 +86,7 @@ public:
     /// and index 0 is unused. I.e. index i is segment number, value is vector of physical frame numbers.
     typedef OFVector<OFVector<Uint32> > FramesForSegment;
 
-    /// Implements comparision operator to be used for sorting of frame positions,
+    /// Implements comparison operator to be used for sorting of frame positions,
     /// making the sorting order depend on the coordinate given in the constructor
     struct ComparePositions
     {
@@ -145,11 +145,11 @@ public:
         Uint32 m_frameNumber;
     };
 
-    /// Segments and their phyiscal frame number (inner set), grouped by their
-    /// respective logical frame number (outer vector) .The inner vector is not
-    // sorted by segment number but will uniquely contain each segment only once.
-    // A std::set would be more appropriate, but since this is not supported by all
-    // compilers used for DCMTK, we use a vector and check for duplicates manually.
+    /// Segments and their physical frame number (inner set), grouped by their
+    /// respective logical frame number (outer vector). The inner vector is not
+    /// sorted by segment number but will uniquely contain each segment only once.
+    /// A std::set would be more appropriate, but since this is not supported by all
+    /// compilers used for DCMTK, we use a vector and check for duplicates manually.
     typedef OFVector<OFVector<SegNumAndFrameNum> > SegmentsByPosition;
 
     // ------------------------------------------ Methods ------------------------------------------
@@ -184,9 +184,9 @@ public:
      */
     OFCondition getSegmentsByPosition(SegmentsByPosition& result);
 
-    /** Get phyiscal frames for a specific segment by its segment number
-     *  @param segmentNumber Segment number to get frames for (1..n)
-     *  @param frames Resulting vector of physical frame numbers (first frame is frame 0)
+    /** Get physical frames for a specific segment by its segment number
+     *  @param  segmentNumber Segment number to get frames for (1..n)
+     *  @param  frames Resulting vector of physical frame numbers (first frame is frame 0)
      *  @return EC_Normal if successful, error otherwise
      */
     OFCondition getFramesForSegment(const Uint32 segmentNumber, OFVector<Uint32>& frames);
@@ -259,7 +259,7 @@ protected:
     OFCondition groupFramesByLogicalPosition();
 
     /** Builds the overlap matrix, if not already done.
-     *  @return EC_Normal if successful or already existant, error otherwise
+     *  @return EC_Normal if successful or already existent, error otherwise
      */
     OFCondition buildOverlapMatrix();
 
@@ -280,9 +280,9 @@ protected:
     OFCondition groupFramesByPosition();
 
     /** Checks whether the given two frames overlap
-     *  @param f1 Frame 1, provided by its physical frame number
-     *  @param f2 Frame 2, provided by its physical frame number
-     *  @param overlap Resulting overlap (overlaps if OFTrue, otherwise not)
+     *  @param  f1 Frame 1, provided by its physical frame number
+     *  @param  f2 Frame 2, provided by its physical frame number
+     *  @param  overlap Resulting overlap (overlaps if OFTrue, otherwise not)
      *  @return EC_Normal if successful, error otherwise
      */
     OFCondition checkFramesOverlap(const Uint32& f1, const Uint32& f2, OFBool& overlap);
@@ -304,8 +304,8 @@ protected:
                                          const Uint32& f2,
                                          const DcmIODTypes::Frame<Uint8>* f1_data,
                                          const DcmIODTypes::Frame<Uint8>* f2_data,
-                                         const Uint16& /* rows */,
-                                         const Uint16& /* cols */,
+                                         const Uint16& rows,
+                                         const Uint16& cols,
                                          OFBool& overlap);
 
     /** Checks whether the given two frames overlap by using comparing their pixel data
@@ -341,7 +341,7 @@ private:
     /// Image Orientation Patient
     OFVector<Float64> m_imageOrientation;
 
-    /// Phyiscal frames with their respective positions (IPP)
+    /// Physical frames with their respective positions (IPP)
     FramePositions m_framePositions;
 
     /// Outer vector with one entry per segment. Index is the DICOM segment
