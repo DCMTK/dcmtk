@@ -1495,7 +1495,7 @@ OFCondition DcmSegmentation::writeSegmentationImageModule(DcmItem& dataset)
             {
                 bitsAlloc = 1;
                 bitsStored = 1;
-                highBit = 1;
+                highBit = 0;
                 dataset.putAndInsertOFStringArray(DCM_SegmentationType, "BINARY");
                 dataset.putAndInsertOFStringArray(DCM_SegmentsOverlap, "UNDEFINED");
                 break;
