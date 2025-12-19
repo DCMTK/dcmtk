@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -314,7 +314,6 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
 
-      if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-correction")) opt_automaticDataCorrection = OFTrue;
@@ -335,10 +334,17 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(opt_extractXMLFilename));
       }
       cmd.endOptionBlock();
+
       if (cmd.findOption("--limit-output"))
       {
           app.checkDependence("--limit-output", "--extract, --extract-xml or --extract-xml-single", opt_extractResponses != FEM_none);
           app.checkValue(cmd.getValueAndCheckMin(opt_limitOutputToNResponses, 1));
+      }
+
+      if (cmd.findOption("--output-directory"))
+      {
+          app.checkDependence("--output-directory", "--extract, --extract-xml or --extract-xml-single", opt_extractResponses != FEM_none);
+          app.checkValue(cmd.getValue(opt_outputDirectory));
       }
 
       /* finally parse filenames */
