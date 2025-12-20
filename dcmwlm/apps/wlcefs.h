@@ -25,6 +25,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmtls/tlsopt.h"
 
 class WlmDataSource;
 class OFConsoleApplication;
@@ -96,6 +97,8 @@ class WlmConsoleEngineFileSystem
     char **command_argv;
     /// data source which shall be queried on incoming C-Find RQ messages
     WlmDataSource *dataSource;
+    /// TLS options for the TCP connection
+    DcmTLSOptions tlsOptions;
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.
