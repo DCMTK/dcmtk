@@ -22,7 +22,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcmtk/ofstd/ofuuid.h"
+#include "dcmtk/ofstd/ofuuidgenerator.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofmath.h"
 
@@ -131,9 +131,9 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                 out << "</InlineBinary>" << OFendl;
             } else {
                 /* generate a new UID but the binary data is not (yet) written. */
-                OFUUID uuid;
+                OFUUID uuid(OFUUIDGenerator::create());
                 out << "<BulkData uuid=\"";
-                uuid.print(out, OFUUID::ER_RepresentationHex);
+                uuid.print(out, OFUUID::NotationHex);
                 out << "\"/>" << OFendl;
             }
         }

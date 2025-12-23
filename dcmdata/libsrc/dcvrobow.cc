@@ -24,7 +24,7 @@
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofuuid.h"
+#include "dcmtk/ofstd/ofuuidgenerator.h"
 #include "dcmtk/ofstd/offile.h"
 #include "dcmtk/dcmdata/dcjson.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
@@ -765,9 +765,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                 out << "</InlineBinary>" << OFendl;
             } else {
                 /* generate a new UID but the binary data is not (yet) written. */
-                OFUUID uuid;
+                OFUUID uuid(OFUUIDGenerator::create());
                 out << "<BulkData uuid=\"";
-                uuid.print(out, OFUUID::ER_RepresentationHex);
+                uuid.print(out, OFUUID::NotationHex);
                 out << "\"/>" << OFendl;
             }
         }

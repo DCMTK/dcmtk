@@ -25,6 +25,7 @@ DCMTK_ADD_LIBRARY(ofstd
   oftempf.cc
   ofxml.cc
   ofuuid.cc
+  ofuuidgenerator.cc
   ofmath.cc
   ofsockad.cc
   ofrand.cc
