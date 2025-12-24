@@ -587,34 +587,44 @@ OFCondition DcmSpecificCharacterSet::convertStringWithoutCodeExtensions(const ch
         size_t pos = 0;
         const char *firstChar = fromString;
         const char *currentChar = fromString;
+        const bool isNonASCIIMultiByte = isNonASCIIConformMultiByteSingleValueCharacterSet(getSourceCharacterSet());
+
         // iterate over all characters of the string (as long as there is no error)
         while ((pos < fromLength) && status.good())
         {
             const char c0 = *currentChar++;
-            // check for characters HT, LF, FF, CR or any other specified delimiter
-            const OFBool isDelimiter =  ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
-                (delimiters.find(c0) != OFString_npos));
-            if (isDelimiter)
+            // check for 2-byte character or the first or second part of a 4-byte character
+            if (isNonASCIIMultiByte && ((c0 & 0x80) != 0))
             {
-                // convert the sub-string (before the delimiter) with the current character set
-                const size_t convertLength = currentChar - firstChar - 1;
-                if (convertLength > 0)
+                // skip the next byte of the current character
+                ++currentChar;
+                ++pos;
+            } else {
+                // check for characters HT, LF, FF, CR or any other specified delimiter
+                const OFBool isDelimiter =  ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
+                    (delimiters.find(c0) != OFString_npos));
+                if (isDelimiter)
                 {
+                    // convert the sub-string (before the delimiter) with the current character set
+                    const size_t convertLength = currentChar - firstChar - 1;
+                    if (convertLength > 0)
+                    {
+                        // output some debug information
+                        DCMDATA_TRACE("    Converting sub-string '"
+                            << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+                        status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
+                        if (status.bad())
+                            DCMDATA_TRACE("    -> ERROR: " << status.text());
+                    }
                     // output some debug information
-                    DCMDATA_TRACE("    Converting sub-string '"
-                        << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
-                    status = DefaultEncodingConverter.convertString(firstChar, convertLength, toString, OFFalse /*clearMode*/);
-                    if (status.bad())
-                        DCMDATA_TRACE("    -> ERROR: " << status.text());
+                    DCMDATA_TRACE("    Appending delimiter '"
+                        << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
+                        << "' to the output");
+                    // don't forget to append the delimiter
+                    toString += c0;
+                    // start new sub-string after delimiter
+                    firstChar = currentChar;
                 }
-                // output some debug information
-                DCMDATA_TRACE("    Appending delimiter '"
-                    << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
-                    << "' to the output");
-                // don't forget to append the delimiter
-                toString += c0;
-                // start new sub-string after delimiter
-                firstChar = currentChar;
             }
             ++pos;
         }
@@ -935,4 +945,11 @@ size_t DcmSpecificCharacterSet::countCharactersInUTF8String(const OFString &utf8
 {
     // just call the appropriate function from the underlying class
     return OFCharacterEncoding::countCharactersInUTF8String(utf8String);
+}
+
+
+OFBool DcmSpecificCharacterSet::isNonASCIIConformMultiByteSingleValueCharacterSet(const OFString &charset)
+{
+    // currently, only Chinese character sets are affected
+    return (charset == "GBK") || (charset == "GB18030");
 }

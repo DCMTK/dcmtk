@@ -232,6 +232,18 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      */
     static size_t countCharactersInUTF8String(const OFString &utf8String);
 
+    /** check whether the given specific character set value belongs to a
+     *  multi-byte character set that is only allowed as a single value in
+     *  the DICOM attribute Specific Character Set (0008,0005) and that may
+     *  contain bytes that look like ASCII (e.g. with the highest bit cleared),
+     *  but are part of a multi-byte non-ASCII character.
+     *  This currently includes only Chinese character sets, as in UTF-8 any
+     *  byte belonging to a non-ASCII character has the highest bit set.
+     *  @param  charset  specific character set value to be checked
+     *  @return OFTrue if the above check is true, OFFalse otherwise
+     */
+    static OFBool isNonASCIIConformMultiByteSingleValueCharacterSet(const OFString &charset);
+
 
   protected:
 

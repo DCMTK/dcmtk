@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -132,7 +132,7 @@ OFTEST(dcmdata_specificCharacterSet_3)
         const OFString delimiters("\\^=");
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
         // check whether string conversion from Japanese language to UTF-8 works
-        // (only the ICONV library supports these character sets)
+        // (only the ICONV library supports these character sets).
         // example taken from DICOM PS 3.5 Annex H.3.1
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).good());
@@ -142,7 +142,7 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.convertString("\324\317\300\336^\300\333\263=\033$B;3ED\033(J^\033$BB@O:\033(J=\033$B$d$^$@\033(J^\033$B$?$m$&\033(J", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "\357\276\224\357\276\217\357\276\200\357\276\236^\357\276\200\357\276\233\357\275\263=\345\261\261\347\224\260^\345\244\252\351\203\216=\343\202\204\343\201\276\343\201\240^\343\201\237\343\202\215\343\201\206");
 #endif
-        // check whether string conversion from Korean language to UTF-8 works
+        // check whether string conversion from Korean language to UTF-8 works.
         // example taken from DICOM PS 3.5 Annex I.2
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 149").good());
         OFCHECK(converter.convertString("Hong^Gildong=\033$)C\373\363^\033$)C\321\316\324\327=\033$)C\310\253^\033$)C\261\346\265\277", resultStr, delimiters).good());
@@ -155,7 +155,11 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.selectCharacterSet("GB18030").good());
         OFCHECK(converter.convertString("Wang^XiaoDong=\315\365^\320\241\266\253=", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Wang^XiaoDong=\347\216\213^\345\260\217\344\270\234=");
-        // check whether string conversion from Chinese language to UTF-8 works
+        // check whether a byte looking like a delimiter inside a multi-byte character is not handled as delimiter.
+        // 0x5c is the byte for a backslash in single-byte encodings, but here part of two Kanji characters.
+        OFCHECK(converter.convertString("Noriwa=\x81\x5c\x82\x5c", resultStr, delimiters).good());
+        OFCHECK_EQUAL(resultStr, "Noriwa=\xe4\xb9\x97\xe4\xbf\x93");
+        // check whether string conversion from Chinese language to UTF-8 works.
         // example taken from DICOM PS 3.5 Annex K.2
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 58").good());
         OFCHECK(converter.convertString("Zhang^XiaoDong=\033\044\051\101\325\305\136\033\044\051\101\320\241\266\253=", resultStr, delimiters).good());
