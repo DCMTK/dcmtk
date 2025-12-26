@@ -825,7 +825,7 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
     if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
     {
         DCMNET_INFO("Sending C-STORE Request");
-        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, NULL, pcid));
+        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, dataset, pcid));
     }
     else
     {
