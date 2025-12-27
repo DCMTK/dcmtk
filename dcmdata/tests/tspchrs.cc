@@ -64,8 +64,8 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 203").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 13 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-        // (only the ICONV library supports these character sets)
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+        // (only the [OF]ICONV library supports these character sets)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87 ").good());
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 159").good());
 #endif
@@ -89,7 +89,7 @@ OFTEST(dcmdata_specificCharacterSet_1)
         OFCHECK(converter.selectCharacterSet("ISO_IR 192", " ISO_IR 100 ").good());
         OFCHECK(converter.selectCharacterSet("ISO_IR 192", "ISO 2022 IR 100\\ISO 2022 IR 126").bad());
     } else {
-        // in case there is no libiconv, report a warning but do not fail
+        // in case there is no conversion library, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
     }
 }
@@ -116,7 +116,7 @@ OFTEST(dcmdata_specificCharacterSet_2)
         converter.clear();
         OFCHECK(converter.convertString("Some Text", resultStr).bad());
     } else {
-        // in case there is no libiconv, report a warning but do not fail
+        // in case there is no conversion library, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
     }
 }
@@ -128,11 +128,11 @@ OFTEST(dcmdata_specificCharacterSet_3)
     if (converter.isConversionAvailable())
     {
         OFString resultStr;
-        // we need the PN delimiters for a standard comformant conversion
+        // we need the PN delimiters for a standard conformant conversion
         const OFString delimiters("\\^=");
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
         // check whether string conversion from Japanese language to UTF-8 works
-        // (only the ICONV library supports these character sets).
+        // (only the [OF]ICONV library supports these character sets).
         // example taken from DICOM PS 3.5 Annex H.3.1
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).good());
@@ -176,7 +176,7 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 166").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).bad());
     } else {
-        // in case there is no libiconv, report a warning but do not fail
+        // in case there is no conversion library, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
     }
 }
@@ -194,8 +194,8 @@ OFTEST(dcmdata_specificCharacterSet_4)
         OFCHECK_EQUAL(resultStr, "J\366rg");
         OFCHECK(converter.convertString("J\303\251r\303\264me", resultStr).good());
         OFCHECK_EQUAL(resultStr, "J\351r\364me");
-#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV
-        // (only the ICONV library supports this character set)
+#if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
+        // (only the [OF]ICONV library supports this character set)
         // the following should fail
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87", "ISO_IR 100").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr).bad());
@@ -223,7 +223,7 @@ OFTEST(dcmdata_specificCharacterSet_4)
 #endif
         }
     } else {
-        // in case there is no libiconv, report a warning but do not fail
+        // in case there is no conversion library, report a warning but do not fail
         DCMDATA_WARN("Cannot test DcmSpecificCharacterSet since the underlying character set conversion library is not available");
     }
 }
