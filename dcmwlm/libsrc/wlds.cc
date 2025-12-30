@@ -1039,6 +1039,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
 //                   DCM_StudyDate                                         (0008,0020)  DA  O  3
 //                   DCM_StudyTime                                         (0008,0030)  TM  O  3
+//                   DCM_StudyDescription                                  (0008,1030)  LO  O  3 (from the General Study Module)
 //                   DCM_ReferencedStudySequence                           (0008,1110)  SQ  O  2
 //                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  1
 //                    > DCM_ReferencedSOPInstanceUID                       (0008,1155)  UI  O  1
@@ -1047,6 +1048,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
+//                   DCM_ReferringPhysicianAddress                         (0008,0092)  ST  O  3  (from the Visit Admission Module)
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
 //                   DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
@@ -1058,9 +1060,13 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
 //                   DCM_IssuerOfPatientID                                 (0010,0021)  LO  O  3  (from the Patient Identification Module)
 //                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
+//                   DCM_PatientAge                                        (0010,1010)  AS  O  3  (from the Patient Demographic Module)
 //                   DCM_PatientSex                                        (0010,0040)  CS  O  2
 //                   DCM_PatientWeight                                     (0010,1030)  DS  O  2
-//                   DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2
+//                   DCM_PatientSpeciesDescription                         (0010,2201)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_PatientSexNeutered                                (0010,2203)  CS  O  3  (from the Patient Demographic Module)
+//                   DCM_PatientBreedDescription                           (0010,2292)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2  (from the Patient Medical Module)
 //                   DCM_PatientState                                      (0038,0500)  LO  O  2
 //                   DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
 //                   DCM_MedicalAlerts                                     (0010,2000)  LO  O  2
@@ -1167,12 +1173,14 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_StudyInstanceUID                                  ||
         elementKey == DCM_StudyDate                                         ||
         elementKey == DCM_StudyTime                                         ||
+        elementKey == DCM_StudyDescription                                  ||
         elementKey == DCM_ReferencedStudySequence                           ||
         elementKey == DCM_RequestedProcedurePriority                        ||
         elementKey == DCM_PatientTransportArrangements                      ||
         elementKey == DCM_AccessionNumber                                   ||
         elementKey == DCM_RequestingPhysician                               ||
         elementKey == DCM_ReferringPhysicianName                            ||
+        elementKey == DCM_ReferringPhysicianAddress                         ||
         elementKey == DCM_AdmissionID                                       ||
         elementKey == DCM_CurrentPatientLocation                            ||
         elementKey == DCM_ReferencedPatientSequence                         ||
@@ -1182,8 +1190,12 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_PatientID                                         ||
         elementKey == DCM_IssuerOfPatientID                                 ||
         elementKey == DCM_PatientBirthDate                                  ||
+        elementKey == DCM_PatientAge                                        ||
         elementKey == DCM_PatientSex                                        ||
         elementKey == DCM_PatientWeight                                     ||
+        elementKey == DCM_PatientSpeciesDescription                         ||
+        elementKey == DCM_PatientSexNeutered                                ||
+        elementKey == DCM_PatientBreedDescription                           ||
         elementKey == DCM_ConfidentialityConstraintOnPatientDataDescription ||
         elementKey == DCM_PatientState                                      ||
         elementKey == DCM_PregnancyStatus                                   ||

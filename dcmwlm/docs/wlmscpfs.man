@@ -366,11 +366,13 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 \verbatim
 (0008,0020) StudyDate
 (0008,0030) StudyTime
+(0008,1030) StudyDescription
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
 (0008,1040) InstitutionalDepartmentName
 (0008,0090) ReferringPhysicianName
+(0008,0092) ReferringPhysicianAddress
 (0008,1080) AdmittingDiagnosesDescription
 (0008,1110) ReferencedStudySequence
   (0008,1150) > ReferencedSOPClassUID
@@ -382,11 +384,15 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0010,0020) PatientID
 (0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
+(0010,1010) PatientAge
 (0010,0040) PatientSex
 (0010,1000) OtherPatientIDs (retired)
 (0010,1001) OtherPatientNames
 (0010,1020) PatientSize
 (0010,1030) PatientWeight
+(0010,2201) PatientSpeciesDescription
+(0010,2203) PatientSexNeutered
+(0010,2292) PatientBreedDescription
 (0010,1040) PatientAddress
 (0010,1080) MilitaryRank
 (0010,2000) MedicalAlerts
