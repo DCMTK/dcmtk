@@ -335,8 +335,8 @@ LIBICONV SUPPORT
 
 The libiconv toolkit (www.gnu.org/software/libiconv/) may be used as DCMTK's
 underlying character set conversion implementation.  This release of DCMTK is
-known to compile with the libiconv release 1.17, although other releases may
-work as well.
+known to compile with the libiconv releases 1.17 and 1.18, although other
+releases may work as well.
 
 When using CMake, a compiled version of the libiconv and libcharset libraries
 and include files must be available during compilation of DCMTK.  See discussion
@@ -954,7 +954,7 @@ standard path), e.g.:
                 --with-libpnginc=/usr/local/apps/libpng-1.6.51
                 --with-libxmlinc=/usr/local/apps/libxml2-2.15.1
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
-                --with-libiconvinc=/usr/local/apps/libiconv-1.17
+                --with-libiconvinc=/usr/local/apps/libiconv-1.18
 
 Different configure options can be combined in any order.  "configure --help"
 will print a list of all existing configure options.  "configure --help=short"
@@ -1054,4 +1054,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu, H. Roesen
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2025-12-15.
+Last revised: 2025-12-31.
