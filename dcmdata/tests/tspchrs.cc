@@ -137,6 +137,9 @@ OFTEST(dcmdata_specificCharacterSet_3)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Yamada^Tarou=\345\261\261\347\224\260^\345\244\252\351\203\216=\343\202\204\343\201\276\343\201\240^\343\201\237\343\202\215\343\201\206");
+        // another example with a backslash-like byte in a multi-byte character
+        OFCHECK(converter.convertString("Japanese=\x1b$BK\\\x1b(B", resultStr, delimiters).good());
+        OFCHECK_EQUAL(resultStr, "Japanese=\xe6\x9c\xac");
         // example taken from DICOM PS 3.5 Annex H.3.2
         OFCHECK(converter.selectCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87").good());
         OFCHECK(converter.convertString("\324\317\300\336^\300\333\263=\033$B;3ED\033(J^\033$BB@O:\033(J=\033$B$d$^$@\033(J^\033$B$?$m$&\033(J", resultStr, delimiters).good());
@@ -196,7 +199,7 @@ OFTEST(dcmdata_specificCharacterSet_4)
         OFCHECK_EQUAL(resultStr, "J\351r\364me");
 #if DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_ICONV || DCMTK_ENABLE_CHARSET_CONVERSION == DCMTK_CHARSET_CONVERSION_OFICONV
         // (only the [OF]ICONV library supports this character set)
-        // the following should fail
+        // the following should fail (cannot convert all characters)
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 87", "ISO_IR 100").good());
         OFCHECK(converter.convertString("Yamada^Tarou=\033$B;3ED\033(B^\033$BB@O:\033(B=\033$B$d$^$@\033(B^\033$B$?$m$&\033(B", resultStr).bad());
 #endif
