@@ -88,27 +88,38 @@ OFTEST(ofstd_OFUUID_equalities)
   // Verify that an OFUUID is equal to itself.
   OFUUID const a(OFUUIDGenerator::create());
   OFCHECK(a == a);
+  OFCHECK(!(a != a));
 
   // Verify that a copy constructed OFUUID is equal to it's origin.
   OFUUID const b(a);
   OFCHECK(a == b);
+  OFCHECK(!(a != b));
+
   OFCHECK(b == a);
+  OFCHECK(!(b != a));
 
   // Verify that a copy assigned OFUUID is equal to it's origin.
   OFUUID c(OFUUIDGenerator::create());
   c = a;
   OFCHECK(a == c);
+  OFCHECK(!(a != c));
+
   OFCHECK(c == a);
+  OFCHECK(!(c != a));
 }
 
 OFTEST(ofstd_OFUUID_inequalities)
 {
-  // Verify that two OFUUIDs are unequal.
+  // Verify that two OFUUIDs created one after the other are unequal.
   OFUUID const a(OFUUIDGenerator::create());
   OFUUID const b(OFUUIDGenerator::create());  
   OFCHECK(a != b);
+  OFCHECK(!(a == b));
+
   OFCHECK(b != a);
+  OFCHECK(!(b == a));
 }
+
 
 OFTEST(ofstd_OFUUID_notation_integer)
 {
@@ -155,7 +166,7 @@ OFTEST(ofstd_OFUUID_notation_urn)
 OFTEST(ofstd_OFUUID_variant)
 {
   // Verify that an OFUUID's variant is 0b10 (two (2)).
-  // The hex notation is required to hold one of characters '8', '9'*, 'a', 
+  // The hex notation is required to hold one of characters '8', '9', 'a', 
   // or 'b' at position 19 (counting from 0) - cf. RFC 9562, section 4.1.
   OFUUID const a(OFUUIDGenerator::create());
   OFString const s = a.toString(OFUUID::NotationHex);
@@ -180,7 +191,10 @@ OFTEST(ofstd_OFUUID_monotonicity)
   for (size_t i = 0; i < 5000; ++i) {
     OFUUID const b(OFUUIDGenerator::create());
     OFCHECK(a < b);
+    OFCHECK(!(a >= b));
+
     OFCHECK(b > a);
+    OFCHECK(!(b <= a));
 
     a = b;
   }
