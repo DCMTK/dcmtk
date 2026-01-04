@@ -77,7 +77,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     opt_forkedChild( OFFalse ), opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ),
     opt_enableRejectionOfIncompleteWlFiles( OFTrue ), opt_blockMode(DIMSE_BLOCKING),
     opt_dimse_timeout(0), opt_acse_timeout(30), app( NULL ), cmd( NULL ), command_argc( argc ),
-    command_argv(argv), dataSource( dataSourcev )
+    command_argv(argv), dataSource( dataSourcev ), tlsOptions ( NET_ACCEPTOR )
 {
   // Initialize application identification string.
   OFStandard::snprintf(rcsid, sizeof(rcsid), "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
@@ -166,6 +166,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
                                                          "0=uncompressed, 1=fastest, 9=best compression");
 #endif
 
+    // add TLS specific command line options if (and only if) we are compiling with OpenSSL
+    tlsOptions.addTLSCommandlineOptions(*cmd);
+
     cmd->addSubGroup("other network options:");
       cmd->addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
       cmd->addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
@@ -211,10 +214,13 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       {
         app->printHeader(OFTrue /*print host identifier*/);
         ofConsole.lockCout() << OFendl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
+#if !defined(WITH_OPENSSL) && !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
         ofConsole.getCout() << " none" << OFendl;
 #else
         ofConsole.getCout() << OFendl;
+#endif
+#ifdef WITH_OPENSSL
+        tlsOptions.printLibraryVersion();
 #endif
 #ifdef WITH_ZLIB
         ofConsole.getCout() << "- ZLIB, Version " << zlibVersion() << OFendl;
@@ -338,7 +344,17 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
         app->checkDependence("--request-file-format", "--request-file-path", !opt_rfPath.empty());
         app->checkValue(cmd->getValue(opt_rfFormat));
     }
+
+    tlsOptions.parseArguments(*app, *cmd);
   }
+
+#if defined(HAVE_FORK) // TODO FIXME
+  if (!opt_singleProcess && tlsOptions.secureConnectionRequested())
+  {
+    OFLOG_WARN(wlmscpfsLogger, "TLS enabled, forcing single process mode");
+    opt_singleProcess = OFTrue;
+  }
+#endif
 
   // dump application information
   if (!opt_forkedChild)
@@ -393,9 +409,20 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
     return( 1 );
   }
 
+  cond = tlsOptions.createTransportLayer(NULL, NULL, *app, *cmd);
+  if (cond.bad())
+  {
+    // in case something unexpected happened, dump a corresponding message
+    OFLOG_ERROR(wlmscpfsLogger, cond.text());
+
+    // return error
+    return( 1 );
+  }
+
   // start providing the basic worklist management service
   WlmActivityManager *activityManager = new WlmActivityManager(
       dataSource,
+      tlsOptions.getTransportLayer(),
       opt_port,
       opt_refuseAssociation,
       opt_rejectWithoutImplementationUID,
