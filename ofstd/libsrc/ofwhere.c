@@ -165,7 +165,7 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
   return OFgetModulePath_(NULL, out, capacity, dirname_length);
 }
 
-#elif defined(__linux__) || defined(__CYGWIN__) || defined(__sun) || defined(WAI_USE_PROC_SELF_EXE)
+#elif defined(__linux__) || defined(__CYGWIN__) || defined(__sun) || defined(__GNU__) || defined(WAI_USE_PROC_SELF_EXE)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -183,6 +183,10 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
 #else
 #define WAI_PROC_SELF_EXE "/proc/self/exe"
 #endif
+#endif
+
+#if !defined(PATH_MAX)
+#define PATH_MAX 1024
 #endif
 
 
