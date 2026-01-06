@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 2017-2025, OFFIS e.V.
+*  Copyright (C) 2017-2026, OFFIS e.V.
 *  All rights reserved.  See COPYRIGHT file for details.
 *
 *  This software and supporting documentation were developed by
@@ -398,6 +398,15 @@ public:
         Uint32 len,
         Uint8 *byteValues,
         const char *extension = ".bin");
+
+    /** get the minimum size of binary attributes to be written as bulk data,
+     *  in kBytes. A negative value means that no bulk data is written.
+     *  @return minimum size of binary attributes to be written as bulk data
+     */
+    virtual ssize_t getMinBulkSize() const
+    {
+        return minBulkDataSize;
+    }
 
 protected:
     /** Indent to the specific level.
