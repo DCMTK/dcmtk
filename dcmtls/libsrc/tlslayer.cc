@@ -1061,7 +1061,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     OFString certValidNotAfter;               /* certificate validity - not after */
     char certSubjectName[1024];               /* certificate subject name (DN) */
     char certIssuerName[1024];                /* certificate issuer name (DN) */
-    const char *certPubKeyType = "unknown";   /* certificate public key type */
+    OFString certPubKeyType = "unknown";      /* certificate public key type */
     int certPubKeyBits = 0;                   /* certificate number of bits in public key */
     certSubjectName[0]= '\0';
     certIssuerName[0]= '\0';
@@ -1111,7 +1111,15 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
           certPubKeyType = "DH";
           break;
         default:
-          /* nothing */
+          int pkt_nid = EVP_PKEY_get_id(pubkey);
+          if (pkt_nid > 0 && pkt_nid != NID_undef)
+          {
+            const char *pubkeyalg = OBJ_nid2sn(pkt_nid);
+            if (pubkeyalg)
+            {
+              certPubKeyType = pubkeyalg;
+            }
+          }
           break;
       }
       certPubKeyBits = EVP_PKEY_bits(pubkey);
