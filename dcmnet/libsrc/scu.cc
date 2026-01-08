@@ -1537,19 +1537,7 @@ DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID, DcmDataset* qu
             return cond;
         }
 
-        if (rsp.CommandField == DIMSE_C_FIND_RSP)
-        {
-            if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-            {
-                DCMNET_INFO("Received C-FIND Response");
-                DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, NULL, pcid));
-            }
-            else
-            {
-                DCMNET_INFO("Received C-FIND Response (" << DU_cfindStatusString(rsp.msg.CFindRSP.DimseStatus) << ")");
-            }
-        }
-        else
+        if (rsp.CommandField != DIMSE_C_FIND_RSP)
         {
             DCMNET_ERROR("Expected C-FIND response but received DIMSE command 0x"
                          << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
@@ -1582,6 +1570,17 @@ DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID, DcmDataset* qu
             if (cond.bad())
                 return DIMSE_BADDATA;
             findRSP->m_dataset = rspDataset;
+        }
+
+        // Log C-FIND response with dataset if present
+        if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        {
+            DCMNET_INFO("Received C-FIND Response");
+            DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, rsp, DIMSE_INCOMING, findRSP->m_dataset, pcid));
+        }
+        else
+        {
+            DCMNET_INFO("Received C-FIND Response (" << DU_cfindStatusString(rsp.msg.CFindRSP.DimseStatus) << ")");
         }
 
         // Handle C-FIND response (has to handle all possible status flags)
