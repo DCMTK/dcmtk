@@ -1056,7 +1056,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
   if (peerCertificate)
   {
     long certVersion = 0;                     /* certificate type */
-    long certSerialNumber = -1;               /* certificate serial number */
+    OFString certSerialNumber;                /* certificate serial number */
     OFString certValidNotBefore;              /* certificate validity - not before */
     OFString certValidNotAfter;               /* certificate validity - not after */
     char certSubjectName[1024];               /* certificate subject name (DN) */
@@ -1066,9 +1066,16 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     certSubjectName[0]= '\0';
     certIssuerName[0]= '\0';
     certVersion = X509_get_version(peerCertificate) +1;
-    certSerialNumber = ASN1_INTEGER_get(X509_get_serialNumber(peerCertificate));
-    BIO *certValidNotBeforeBIO = BIO_new(BIO_s_mem());
+    BIO *certSerialNumberBIO = BIO_new(BIO_s_mem());
     char *bufptr = NULL;
+    if (certSerialNumberBIO) {
+      i2a_ASN1_INTEGER(certSerialNumberBIO, X509_get0_serialNumber(peerCertificate));
+      BIO_write(certSerialNumberBIO,"\0",1);
+      BIO_get_mem_data(certSerialNumberBIO, OFreinterpret_cast(char *, &bufptr));
+      if (bufptr) certSerialNumber = bufptr;
+      BIO_free(certSerialNumberBIO);
+    }
+    BIO *certValidNotBeforeBIO = BIO_new(BIO_s_mem());
     if (certValidNotBeforeBIO)
     {
       ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(peerCertificate));
