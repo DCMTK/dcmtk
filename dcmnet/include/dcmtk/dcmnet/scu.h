@@ -37,6 +37,7 @@
  *  @brief general Service Class User (SCU) class
  */
 
+
 /** Different types of closing an association
  */
 enum DcmCloseAssociationType
@@ -189,11 +190,99 @@ private:
  *  support for negotiating associations and sending and receiving arbitrary DIMSE messages
  *  on that connection. DcmSCU has built-in C-ECHO support so derived classes do not have to
  *  implement that capability on their own.
+ *
+ *  The class supports both secure (TLS) and unsecure connections.
+ *
+ *  Logging:
+ *
+ *  Most log messages are sent to the "dcmtk.dcmnet" logger. The log level of that logger
+ *  can be used to globally control the verbosity of DcmSCU and derived classes.
+ *  There are some specific loggers defined and used by DcmSCU which can be enabled or disabled
+ *  individually via the DcmSCU::Logger member on DcmSCU instance level:
+ *  - "dcmtk.dcmnet.scu.findrq.dataset": Logs C-FIND request datasets to DEBUG level
+ *     (default level: enabled, i.e. logged by default)
+ *  - "dcmtk.dcmnet.scu.findrsp.dataset": Logs C-FIND response datasets to DEBUG level
+ *     (default level: OFF, i.e. not logged by default)
+ *  - "dcmtk.dcmnet.scu.cstorerq.dataset": Logs C-STORE request datasets to DEBUG level
+ *     (default level: OFF, i.e. not logged by default)
+ *
+ *  These loggers can be enabled or disabled individually via the DcmSCU::Logger member,
+ *  e.g. `scu.Logger.setEnabled(DcmSCU::TLogger::LOGGER_C_STORE_RQ_DATASET, OFTrue);`
+ *  if scu is an instance of DcmSCU and C-STORE request datasets should be logged.
  */
 class DCMTK_DCMNET_EXPORT DcmSCU
 {
 
 public:
+
+    /** Struct encapsulating different extra loggers utilized by DcmSCU.
+     *  Each logger can be enabled or disabled individually. All loggers can
+     *  also be enabled or disabled at once via the special enum value
+     *  LOGGER_NUM_LOGGERS.
+     */
+    struct TLogger
+    {
+        public:
+
+            /// Enumerate extra loggers utilized by DcmSCU.
+            enum E_LOGGER
+            {
+                /// Logger for C-FIND-RQ dataset, enabled per default
+                LOGGER_C_FIND_RQ_DATASET = 0,
+                /// Logger for C-FIND-RSP dataset, disabled per default
+                LOGGER_C_FIND_RSP_DATASET = 1,
+                /// Logger for C-STORE-RQ dataset, disabled per default
+                LOGGER_C_STORE_RQ_DATASET = 2,
+                /// Number of loggers; provides number of loggers and can be
+                /// used a a placeholder to enable/disable all loggers at once
+                LOGGER_NUM_LOGGERS = 3
+            };
+
+            /// Default constructor, initializes logger names and sets defaults
+            /// for enabled states.
+            TLogger();
+
+            /** [] operator to access logger names by enum value.
+             *  @param logger The logger enum value
+             *  @return The name of the logger as OFString
+             */
+            const OFString& operator[](const E_LOGGER logger) const;
+
+            /** Check if the given logger is enabled.
+             *  If LOGGER_NUM_LOGGERS is given, the function checks if all loggers are enabled
+             *  and returns OFTrue in this case. If at least one logger is disabled,
+             *  OFFalse is returned.
+             *  @param logger The logger enum value
+             *  @return OFTrue if enabled, OFFalse otherwise
+             */
+            OFBool isEnabled(const E_LOGGER logger) const;
+
+            /** Enable or disable a logger.
+             *  If LOGGER_NUM_LOGGERS is given, the function enables or disables all loggers
+             *  at once.
+             *  @param logger The logger enum value
+             *  @param enabled OFTrue to enable, OFFalse to disable
+             */
+            void setEnabled(const E_LOGGER logger, const OFBool enabled);
+
+        protected:
+
+            /// Holds extra logger names utilized by DcmSCU.
+            /// Static since the logger names used are identical for all instances of DcmSCU.
+            static OFString m_loggerName[LOGGER_NUM_LOGGERS];
+
+            /// Enabled states of the loggers, specific for each DcmSCU instance.
+            OFBool m_loggerEnabled[LOGGER_NUM_LOGGERS];
+    };
+
+    /// Member holding information to extra loggers utilized by DcmSCU.
+    /// | Logger Enum                         | Logger Name                        | Description                                  | Default State |
+    /// |-------------------------------------|------------------------------------|--------------------------------------- ------|---------------|
+    /// | LOGGER_C_FIND_RQ_DATASET            | dcmtk.dcmnet.scu.findrq.dataset    | Logs C-FIND request datasets to DEBUG level  | Enabled       |
+    /// | LOGGER_C_FIND_RSP_DATASET           | dcmtk.dcmnet.scu.findrsp.dataset   | Logs C-FIND response datasets to DEBUG level | Disabled      |
+    /// | LOGGER_C_STORE_RQ_DATASET           | dcmtk.dcmnet.scu.cstorerq.dataset  | Logs C-STORE request datasets to DEBUG level | Disabled      |
+    TLogger Logger;
+
     /** Constructor, just initializes internal class members
      */
     DcmSCU();

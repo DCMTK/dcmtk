@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2019, OFFIS e.V.
+ *  Copyright (C) 2009-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -101,6 +101,13 @@ class DCMTK_LOG4CPLUS_EXPORT OFLog
      *  @return requested logger object
      */
     static OFLogger getLogger(const char *name);
+
+    /** create a new logger object.
+     *  Logger objects have a reference counting copy-constructor, so returning by-value is cheap.
+     *  @param name the name of the logger
+     *  @return requested logger object
+     */
+    static OFLogger getLogger(const OFString &name);
 
     /** set up the logging and enable it
      *  @param level the verbosity that you want

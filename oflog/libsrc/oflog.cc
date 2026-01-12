@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2019, OFFIS e.V.
+ *  Copyright (C) 2009-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -93,6 +93,12 @@ OFLogger OFLog::getLogger(const char *loggerName)
     OFLog_init();
     // logger objects have a reference counting copy-constructor, so returning by-value is cheap
     return dcmtk::log4cplus::Logger::getInstance(loggerName);
+}
+
+OFLogger OFLog::getLogger(const OFString &loggerName)
+{
+    // use existing C string version
+    return getLogger(loggerName.c_str());
 }
 
 /** Adds our known variables to the Properties instance

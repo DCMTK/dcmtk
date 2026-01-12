@@ -33,8 +33,18 @@
 #include <zlib.h> /* for zlibVersion() */
 #endif
 
+// Define the static logger name array for DcmSCU::TLogger
+OFString DcmSCU::TLogger::m_loggerName[DcmSCU::TLogger::LOGGER_NUM_LOGGERS] = {
+    "dcmtk.dcmnet.scu.findrq.dataset",
+    "dcmtk.dcmnet.scu.findrsp.dataset",
+    "dcmtk.dcmnet.scu.cstorerq.dataset"
+    // Add more if your enum has more entries
+};
+
+
 DcmSCU::DcmSCU()
-    : m_assoc(NULL)
+    : Logger()
+    , m_assoc(NULL)
     , m_net(NULL)
     , m_params(NULL)
     , m_assocConfigFilename()
@@ -832,6 +842,12 @@ OFCondition DcmSCU::sendSTORERequest(const T_ASC_PresentationContextID presID,
         DCMNET_INFO("Sending C-STORE Request (MsgID " << req->MessageID << ", "
                                                       << dcmSOPClassUIDToModality(sopClassUID.c_str(), "OT") << ")");
     }
+    // Print dataset if related logger is enabled
+    if (Logger.isEnabled(TLogger::LOGGER_C_STORE_RQ_DATASET))
+    {
+        OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_C_STORE_RQ_DATASET], "C-STORE request dataset:" << OFendl
+                    << DcmObject::PrintHelper(*dataset));
+    }
     cond = sendDIMSEMessage(pcid, &msg, dataset);
     delete fileformat;
     fileformat = NULL;
@@ -1503,10 +1519,10 @@ DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID, DcmDataset* qu
     OFStandard::strlcpy(req->AffectedSOPClassUID, abstractSyntax.c_str(), sizeof(req->AffectedSOPClassUID));
 
     /* Send request */
-    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    if (Logger.isEnabled(TLogger::LOGGER_C_FIND_RQ_DATASET))
     {
         DCMNET_INFO("Sending C-FIND Request");
-        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, queryKeys, pcid));
+        OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_C_FIND_RQ_DATASET], DIMSE_dumpMessage(tempStr, msg, DIMSE_OUTGOING, queryKeys, pcid));
     }
     else
     {
@@ -1582,6 +1598,12 @@ DcmSCU::sendFINDRequest(const T_ASC_PresentationContextID presID, DcmDataset* qu
             if (cond.bad())
                 return DIMSE_BADDATA;
             findRSP->m_dataset = rspDataset;
+            // Print dataset if related logger is enabled
+            if (Logger.isEnabled(TLogger::LOGGER_C_FIND_RSP_DATASET))
+            {
+                OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_C_FIND_RSP_DATASET], "C-FIND response dataset:" << OFendl
+                            << DcmObject::PrintHelper(*findRSP->m_dataset));
+            }
         }
 
         // Handle C-FIND response (has to handle all possible status flags)
@@ -2748,4 +2770,66 @@ void RetrieveResponse::print()
     DCMNET_INFO("  Number of Completed Suboperations : " << m_numberOfCompletedSubops);
     DCMNET_INFO("  Number of Failed Suboperations    : " << m_numberOfFailedSubops);
     DCMNET_INFO("  Number of Warning Suboperations   : " << m_numberOfWarningSubops);
+}
+
+
+/* ************************************************************************* */
+/*                          class DcmSCU::TLogger                            */
+/* ************************************************************************* */
+
+// Default constructor, initializes logger names and sets defaults for enabled states
+DcmSCU::TLogger::TLogger()
+{
+    // By default, only the C-FIND-RQ logger is enabled
+    m_loggerEnabled[LOGGER_C_FIND_RQ_DATASET] = OFTrue;
+    m_loggerEnabled[LOGGER_C_FIND_RSP_DATASET] = OFFalse;
+    m_loggerEnabled[LOGGER_C_STORE_RQ_DATASET] = OFFalse;
+}
+
+// Access logger names by enum value
+const OFString& DcmSCU::TLogger::operator[](const E_LOGGER logger) const
+{
+    return m_loggerName[logger];
+}
+
+// Check if a logger is enabled
+OFBool DcmSCU::TLogger::isEnabled(const E_LOGGER logger) const
+{
+    if (logger < LOGGER_NUM_LOGGERS)
+    {
+        return m_loggerEnabled[logger];
+    }
+    else if (logger == LOGGER_NUM_LOGGERS)
+    {
+        for (int i = 0; i < LOGGER_NUM_LOGGERS; ++i)
+        {
+            if (!m_loggerEnabled[i])
+                return OFFalse;
+        }
+        return OFTrue;
+    }
+    else
+    {
+        DCMNET_WARN("DcmSCU::TLogger::isEnabled(): Invalid logger enum value ");
+    }
+    return OFFalse;
+}
+
+// Enable or disable a logger
+void DcmSCU::TLogger::setEnabled(const E_LOGGER logger, const OFBool enabled)
+{
+    if (logger < LOGGER_NUM_LOGGERS)
+    {
+        m_loggerEnabled[logger] = enabled;
+    }
+    else if (logger == LOGGER_NUM_LOGGERS)
+    {
+        for (int i = 0; i < LOGGER_NUM_LOGGERS; ++i)
+        {
+            m_loggerEnabled[i] = enabled;
+        }
+    }
+    else {
+        DCMNET_WARN("DcmSCU::TLogger::setEnabled(): Invalid logger enum value ");
+    }
 }
