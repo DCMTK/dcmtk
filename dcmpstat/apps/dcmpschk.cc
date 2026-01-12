@@ -319,7 +319,8 @@ static int checkelem(
        if (isaStringVR(vr)) {
            /* only strings have variable length components */
            char* value = NULL;
-        ((DcmByteString*)elem)->getString(value);
+        if (EC_Normal == ((DcmByteString*)elem)->getString(value))
+        {
 
            char **fields = new char*[vm+1];
            if (fields == NULL) {
@@ -362,6 +363,7 @@ static int checkelem(
                }
                delete[] fields;
            }
+        }
        } else {
            Uint32 componentSize = len; /* vm is 0 if value field is too short, e.g. < 8 bytes for FD */
            if (vm>0) componentSize = len/vm;
