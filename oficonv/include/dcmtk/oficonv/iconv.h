@@ -198,7 +198,7 @@ DCMTK_OFICONV_EXPORT int OFiconv_close_in(iconv_allocation_t *ptr);
  *  This function may be called at application exit in order to avoid
  *  reports of memory leaks when a memory leak checker is in use.
  */
-DCMTK_OFICONV_EXPORT void OFiconv_cleanup();
+DCMTK_OFICONV_EXPORT void OFiconv_cleanup(void);
 
 /*
  * OFiconvctl() request macros
@@ -345,7 +345,7 @@ DCMTK_OFICONV_EXPORT void set_oficonv_logger_callback(oficonv_logger_callback_t 
 /** get the current logger callback used by the oficonv module
  *  @return pointer to logger function, may be NULL
  */
-DCMTK_OFICONV_EXPORT oficonv_logger_callback_t get_oficonv_logger_callback();
+DCMTK_OFICONV_EXPORT oficonv_logger_callback_t get_oficonv_logger_callback(void);
 
 /** set the log level to be used as long as direct logging to stderr is active
  *  @param level log level, 0=trace, 1=debug, 2=info, 3=warn, 4=error, 5=fatal (default: 3=warn)
