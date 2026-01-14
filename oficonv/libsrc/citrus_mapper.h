@@ -48,6 +48,7 @@ int  _citrus_mapper_open_direct(
         struct _citrus_csmapper * *,
         const char *, const char *);
 void     _citrus_csmapper_close(struct _citrus_csmapper *);
+void     _citrus_mapper_close_nohash(struct _citrus_csmapper *);
 void     _citrus_mapper_set_persistent(struct _citrus_csmapper * );
 END_EXTERN_C
 

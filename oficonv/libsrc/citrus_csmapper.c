@@ -366,6 +366,19 @@ quit:
     return (ret);
 }
 
+
+void _citrus_cleanup_csmapper_none()
+{
+    WLOCK(&ma_lock);
+    if (csm_none) {
+        _citrus_mapper_close_nohash(csm_none);
+        csm_none = NULL;
+    }
+    UNLOCK(&ma_lock);
+    return;
+}
+
+
 int
 _citrus_csmapper_open(struct _citrus_csmapper * * rcsm,
     const char * src, const char * dst, uint32_t flags,

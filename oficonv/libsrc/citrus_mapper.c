@@ -212,11 +212,11 @@ quit:
 }
 
 /*
- * mapper_close:
+ * _citrus_mapper_close_nohash:
  *  simply close a mapper. (without handling hash)
  */
-static void
-mapper_close(struct _citrus_csmapper *cm)
+void
+_citrus_mapper_close_nohash(struct _citrus_csmapper *cm)
 {
     if (cm->cm_module) {
         if (cm->cm_ops) {
@@ -303,7 +303,7 @@ mapper_open(struct _citrus_mapper_area * ma,
     return (0);
 
 err:
-    mapper_close(cm);
+    _citrus_mapper_close_nohash(cm);
     return (ret);
 }
 
@@ -420,7 +420,7 @@ _citrus_csmapper_close(struct _citrus_csmapper *cm)
             free(cm->cm_key);
         }
         UNLOCK(&cm_lock);
-        mapper_close(cm);
+        _citrus_mapper_close_nohash(cm);
         return;
 quit:
         UNLOCK(&cm_lock);
