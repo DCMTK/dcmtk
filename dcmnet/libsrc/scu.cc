@@ -35,8 +35,8 @@
 
 // Define the static logger name array for DcmSCU::TLogger
 OFString DcmSCU::TLogger::m_loggerName[DcmSCU::TLogger::LOGGER_NUM_LOGGERS] = {
-    "dcmtk.dcmnet.scu.findrq.dataset",
-    "dcmtk.dcmnet.scu.findrsp.dataset",
+    "dcmtk.dcmnet.scu.cfindrq.dataset",
+    "dcmtk.dcmnet.scu.cfindrsp.dataset",
     "dcmtk.dcmnet.scu.cstorerq.dataset"
     // Add more if your enum has more entries
 };

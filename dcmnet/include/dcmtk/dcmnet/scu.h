@@ -199,9 +199,9 @@ private:
  *  can be used to globally control the verbosity of DcmSCU and derived classes.
  *  There are some specific loggers defined and used by DcmSCU which can be enabled or disabled
  *  individually via the DcmSCU::Logger member on DcmSCU instance level:
- *  - "dcmtk.dcmnet.scu.findrq.dataset": Logs C-FIND request datasets to DEBUG level
+ *  - "dcmtk.dcmnet.scu.cfindrq.dataset": Logs C-FIND request datasets to DEBUG level
  *     (default level: enabled, i.e. logged by default)
- *  - "dcmtk.dcmnet.scu.findrsp.dataset": Logs C-FIND response datasets to DEBUG level
+ *  - "dcmtk.dcmnet.scu.cfindrsp.dataset": Logs C-FIND response datasets to DEBUG level
  *     (default level: OFF, i.e. not logged by default)
  *  - "dcmtk.dcmnet.scu.cstorerq.dataset": Logs C-STORE request datasets to DEBUG level
  *     (default level: OFF, i.e. not logged by default)
@@ -278,8 +278,8 @@ public:
     /// Member holding information to extra loggers utilized by DcmSCU.
     /// | Logger Enum                         | Logger Name                        | Description                                  | Default State |
     /// |-------------------------------------|------------------------------------|--------------------------------------- ------|---------------|
-    /// | LOGGER_C_FIND_RQ_DATASET            | dcmtk.dcmnet.scu.findrq.dataset    | Logs C-FIND request datasets to DEBUG level  | Enabled       |
-    /// | LOGGER_C_FIND_RSP_DATASET           | dcmtk.dcmnet.scu.findrsp.dataset   | Logs C-FIND response datasets to DEBUG level | Disabled      |
+    /// | LOGGER_C_FIND_RQ_DATASET            | dcmtk.dcmnet.scu.cfindrq.dataset   | Logs C-FIND request datasets to DEBUG level  | Enabled       |
+    /// | LOGGER_C_FIND_RSP_DATASET           | dcmtk.dcmnet.scu.cfindrsp.dataset  | Logs C-FIND response datasets to DEBUG level | Disabled      |
     /// | LOGGER_C_STORE_RQ_DATASET           | dcmtk.dcmnet.scu.cstorerq.dataset  | Logs C-STORE request datasets to DEBUG level | Disabled      |
     TLogger Logger;
 
