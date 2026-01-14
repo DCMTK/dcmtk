@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -326,6 +326,23 @@ convertNewlineCharacters(char *s)
     }
 }
 
+
+static void adjustPathSeparators(OFString& filename)
+{
+    // replace all '/' and '\\' characters by the current operating system's path separator.
+    size_t l = filename.length();
+    char c;
+    for (size_t i=0; i<l; ++i)
+    {
+        c = filename[i];
+        if ((c == '/') || (c == '\\'))
+        {
+            filename[i] = PATH_SEPARATOR;
+        }
+    }
+}
+
+
 static OFBool
 parseValue(char *&s, char *&value, DcmEVR &vr, const DcmTagKey &tagkey)
 {
@@ -542,6 +559,9 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                 {
                     if (value[0] == '=' && (newTagVR == EVR_OB || newTagVR == EVR_OW || newTagVR == EVR_pixelItem))
                     {
+                        OFString filename = value + 1;
+                        adjustPathSeparators(filename);
+
                         /*
                          * Special case handling for OB, OW and pixel item data.
                          * Allow a value beginning with a '=' character to represent
@@ -549,7 +569,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                          * A '=' character is not a normal value since OB and OW values
                          * must be written as multivalued hexadecimal (e.g. "00\ff\0d\8f");
                          */
-                        l_error = putFileContentsIntoElement(newElement, value + 1);
+                        l_error = putFileContentsIntoElement(newElement, filename.c_str());
                     } else {
                         l_error = newElement->putString(value);
                     }
