@@ -63,7 +63,7 @@ OFTEST_REGISTER(ofstd_OFTime);
 OFTEST_REGISTER(ofstd_OFUUID_equalities);
 OFTEST_REGISTER(ofstd_OFUUID_inequalities);
 OFTEST_REGISTER(ofstd_OFUUID_notation_integer);
-OFTEST_REGISTER(ofstd_OFUUID_notation_hex);
+OFTEST_REGISTER(ofstd_OFUUID_notation_canonical);
 OFTEST_REGISTER(ofstd_OFUUID_notation_oid);
 OFTEST_REGISTER(ofstd_OFUUID_notation_urn);
 OFTEST_REGISTER(ofstd_OFUUID_variant);

@@ -55,6 +55,11 @@ public:
    */
   Uint16 getRND16();
 
+  /** return a random Uint8 value
+   *  @return random unsigned 8-bit number
+   */
+  Uint8 getRND8();
+
   /** Re-seed the PRNG with the given parameter.
    *  This method should only be used when a reproducible sequence of pseudo-random numbers is desired, e.g. in test routines.
    *  @param sval seed value

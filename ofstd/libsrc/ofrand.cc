@@ -186,6 +186,12 @@ Uint16 OFRandom::getRND16()
   return OFstatic_cast(Uint16, getRND32());
 }
 
+Uint8 OFRandom::getRND8()
+{
+  // use one 32-bit random number and ignore the extra bits
+  return OFstatic_cast(Uint8, getRND32());
+}
+
 Uint64 OFRandom::getRND64()
 {
   // get a 32-bit random number

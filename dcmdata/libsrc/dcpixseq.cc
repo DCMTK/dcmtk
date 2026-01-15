@@ -23,7 +23,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofuuidgenerator.h"
+#include "dcmtk/ofstd/ofuuidgn.h"
 #include "dcmtk/ofstd/ofsha256.h"
 
 #include "dcmtk/dcmdata/dcpixseq.h"
@@ -166,9 +166,13 @@ OFCondition DcmPixelSequence::writeXML(STD_NAMESPACE ostream &out,
                 out << "</InlineBinary>" << OFendl;
             } else {
                 /* generate a new UID but the binary data is not (yet) written. */
-                OFUUID uuid(OFUUIDGenerator::create());
+                OFshared_ptr<OFUUID> const uuid = OFUUIDGenerator::create();
                 out << "<BulkData uuid=\"";
-                uuid.print(out, OFUUID::NotationHex);
+                if (uuid) {
+                  uuid->print(out, OFUUID::NotationCanonical);
+                } else {
+                  OFUUID::nil.print(out, OFUUID::NotationCanonical);
+                }
                 out << "\"/>" << OFendl;
             }
         }
