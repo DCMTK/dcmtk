@@ -32,6 +32,7 @@ Here are some further utilities that may be of interest:
 \li \b OFTime
 \li \b OFtuple
 \li \b OFunique_ptr
+\li \b OFUUID
 \li \b OFvariant
 
 \section Testing
