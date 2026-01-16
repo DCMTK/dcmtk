@@ -42,11 +42,11 @@ public:
 
   /**
    *  Creates an OFUUID based on <a
-   * href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.7.
+   * href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>, section 5.7.
    *  @param rnd A random number generator (RNG) functor. Provide if special
    *  requirements with respect to unguessability of the to be created OFUUID
-   *  exist. See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC
-   * 9562</a>, section 6.9 for details.
+   *  exist. See <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>,
+   *  section 6.9 for details.
    *
    *  @return A OFshared_ptr encapsulating a newly created OFUUID instance.
    *  @warning The returned object may contain a null pointer (@ref

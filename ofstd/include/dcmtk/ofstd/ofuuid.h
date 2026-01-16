@@ -16,7 +16,7 @@
  *  Author:  Uli Schlachter, Harald Roesen
  *
  *  Purpose: Definition of a Universally Unique IDentifier (UUID),
- *           based on RFC 9562., section 5.7.
+ *           based on RFC 9562, section 5.7.
  *
  */
 
@@ -110,7 +110,7 @@ public:
     /**
      * The OFUUID is represented in the canonical "hex-and-dash" format consisting of multiple
      * groups of lowercase alphanumeric hexadecimal characters separated by single dashes/hyphens.
-    */
+     */
     NotationCanonical,
 
     /**
@@ -118,10 +118,14 @@ public:
      */
     NotationOID,
 
-    /** The OFUUID is represented in canonical notation with the prefix <em>urn:uuid:</em>. */
+    /**
+     *  The OFUUID is represented in canonical notation with the prefix <em>urn:uuid:</em>.
+     */
     NotationURN,
 
-    /** The default notation that is used when none is given. */
+    /**
+     *  The default notation that is used when none is given.
+     */
     NotationDefault = NotationCanonical
   } Notation;
 

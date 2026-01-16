@@ -185,7 +185,7 @@ OFUUIDGenerator::setupOFUUIDDataMember(OFUUID * const ofuuid,
   }
 
   // [ofuuid.data_[2], ofuuid.data_[5]] := last_ms_since_epoch_.low_
-  // All 32 bits are used.  (cf. RFC9562,section 5.7)
+  // All 32 bits are used.  (cf. RFC9562, section 5.7)
   value = OFUUIDGenerator::last_ms_since_epoch_.low_;
   for (int i = 5; i >= 2; --i) {
     ofuuid->data_[OFstatic_cast(size_t, i)] = OFstatic_cast(Uint8, value);
@@ -201,7 +201,7 @@ OFUUIDGenerator::setupOFUUIDDataMember(OFUUID * const ofuuid,
   }
 
   // The four (4) most significant bits of ofuuid.data_[6] will contain the UUID
-  // version  (cf. RFC9562,sections 4.2 and 5.7)
+  // version  (cf. RFC9562, sections 4.2 and 5.7)
   (ofuuid->data_[6] &= 0x0f) |= OFUUIDGenerator::OFUUID_VERSION_MASK;
 
   // [ofuuid.data_[8], ofuuid.data_[15]] are filled with random data, except for
@@ -211,7 +211,7 @@ OFUUIDGenerator::setupOFUUIDDataMember(OFUUID * const ofuuid,
   }
 
   // The two (2) most significant bits of ofuuid.data_[8] will contain the UUID
-  // variant  (cf. RFC9562,sections 4.2 and 5.7)
+  // variant  (cf. RFC9562, sections 4.2 and 5.7)
   (ofuuid->data_[8] &= 0x3f) |= OFUUIDGenerator::OFUUID_VARIANT_MASK;
 }
 
