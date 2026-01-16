@@ -70,23 +70,23 @@ DcmPixelSequence::~DcmPixelSequence()
 
 DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 {
-  if (this != &obj)
-  {
-    DcmSequenceOfItems::operator=(obj);
-    Xfer = obj.Xfer;
-  }
-  return *this;
+    if (this != &obj)
+    {
+        DcmSequenceOfItems::operator=(obj);
+        Xfer = obj.Xfer;
+    }
+    return *this;
 }
 
 
 OFCondition DcmPixelSequence::copyFrom(const DcmObject& rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmPixelSequence &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmPixelSequence &, rhs);
+    }
+    return EC_Normal;
 }
 
 // ********************************
@@ -169,9 +169,9 @@ OFCondition DcmPixelSequence::writeXML(STD_NAMESPACE ostream &out,
                 OFshared_ptr<OFUUID> const uuid = OFUUIDGenerator::create();
                 out << "<BulkData uuid=\"";
                 if (uuid) {
-                  uuid->print(out, OFUUID::NotationCanonical);
+                    uuid->print(out, OFUUID::NotationCanonical);
                 } else {
-                  OFUUID::nil.print(out, OFUUID::NotationCanonical);
+                    OFUUID::nil.print(out, OFUUID::NotationCanonical);
                 }
                 out << "\"/>" << OFendl;
             }
@@ -224,7 +224,7 @@ OFCondition DcmPixelSequence::writeJson(
     DcmXfer xfer(Xfer);
     OFString bulkname;
     char hashstring[3];
-    for (int i=0; i < 32; ++i)
+    for (int i = 0; i < 32; ++i)
     {
         OFStandard::snprintf(hashstring, sizeof(hashstring), "%02x", hash[i]);
         bulkname.append(hashstring);
@@ -239,7 +239,7 @@ OFCondition DcmPixelSequence::writeJson(
      * we would create now since the SHA-256 checksum is the same. So we can just
      * use the existing file.
      */
-    if (! OFStandard::fileExists(bulkpath))
+    if (!OFStandard::fileExists(bulkpath))
     {
         OFFile bulkfile;
         if (! bulkfile.fopen(bulkpath.c_str(), "wb"))
@@ -334,16 +334,17 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
     errorFlag = EC_Normal;
     if (item != NULL)
     {
+        OFBool inserted = OFFalse;
         // special case: last position
         if (where == DCM_EndOfListIndex)
         {
             // insert at end of list (avoid seeking)
-            itemList->append(item);
+            inserted = (itemList->append(item) != NULL);
             DCMDATA_TRACE("DcmPixelSequence::insert() Item at last position inserted");
         } else {
             // insert after "where"
             itemList->seek_to(where);
-            itemList->insert(item);
+            inserted = (itemList->insert(item) != NULL);
             DCMDATA_TRACE("DcmPixelSequence::insert() Item at position " << where << " inserted");
         }
         // check whether the new item already has a parent
@@ -352,8 +353,11 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
             DCMDATA_DEBUG("DcmPixelSequence::insert() PixelItem already has a parent: "
                 << item->getParent()->getTag() << " VR=" << DcmVR(item->getParent()->getVR()).getVRName());
         }
-        // remember the parent (i.e. the surrounding sequence)
-        item->setParent(this);
+        if (inserted)
+        {
+            // remember the parent (i.e. the surrounding sequence)
+            item->setParent(this);
+        }
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
