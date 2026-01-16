@@ -15,7 +15,8 @@
  *
  *  Author:  Uli Schlachter, Harald Roesen
  *
- *  Purpose: Definition of a Universally Unique IDentifier (UUID), based on RFC 9562., section 5.7.
+ *  Purpose: Definition of a Universally Unique IDentifier (UUID),
+ *           based on RFC 9562., section 5.7.
  *
  */
 
@@ -32,7 +33,7 @@
 
 /**
  * A OFUUID represents a Universally Unique Identifier (UUID) as described in
- * <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.7.
+ * <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>, section 5.7.
  */
 class DCMTK_OFSTD_EXPORT OFUUID {
 public:
@@ -45,7 +46,7 @@ public:
    *
    *  @return The stream written to.
    */
-  friend STD_NAMESPACE ostream & operator<<(STD_NAMESPACE ostream & os, OFUUID const & uuid);
+  friend DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream & operator<<(STD_NAMESPACE ostream & os, OFUUID const & uuid);
 
   /**
    *  Equality operator.
@@ -54,7 +55,7 @@ public:
    *
    *  @return OFTrue iff lhs' and rhs' integer notations are mathematically equal.
    */
-  friend OFBool operator==(OFUUID const & lhs, OFUUID const & rhs);
+  friend DCMTK_OFSTD_EXPORT OFBool operator==(OFUUID const & lhs, OFUUID const & rhs);
 
   /**
    *  Inequality operator.
@@ -63,7 +64,7 @@ public:
    *
    *  @return OFTrue iff lhs' and rhs' integer notations are mathematically unequal.
    */
-  friend OFBool operator!=(OFUUID const & lhs,OFUUID const & rhs);
+  friend DCMTK_OFSTD_EXPORT OFBool operator!=(OFUUID const & lhs,OFUUID const & rhs);
 
   /**
    *  Less than operator.
@@ -72,7 +73,7 @@ public:
    *
    *  @return OFTrue iff lhs' integer notation is mathematically smaller than rhs' integer notation.
    */
-  friend OFBool operator<(OFUUID const & lhs, OFUUID const & rhs);
+  friend DCMTK_OFSTD_EXPORT OFBool operator<(OFUUID const & lhs, OFUUID const & rhs);
 
   /**
    *  Less than or equal to operator.
@@ -81,7 +82,7 @@ public:
    *
    *  @return OFTrue iff lhs' integer notation is mathematically less than or equal to rhs' integer notation.
    */
-  friend OFBool operator<=(OFUUID const & lhs, OFUUID const & rhs);
+  friend DCMTK_OFSTD_EXPORT OFBool operator<=(OFUUID const & lhs, OFUUID const & rhs);
 
   /**
    *  Greater than operator.
@@ -90,7 +91,7 @@ public:
    *
    *  @return OFTrue iff lhs' integer notation is mathematically bigger than rhs' integer notation.
    */
-  friend OFBool operator>(OFUUID const & lhs, OFUUID const & rhs);
+  friend DCMTK_OFSTD_EXPORT OFBool operator>(OFUUID const & lhs, OFUUID const & rhs);
 
   /**
    *  Greater than or equal to operator.
@@ -99,7 +100,7 @@ public:
    *
    *  @return OFTrue iff lhs' integer notation is mathematically bigger than or equal to rhs' integer notation.
    */
-  friend OFBool operator>=(OFUUID const & lhs, OFUUID const & rhs);
+  friend DCMTK_OFSTD_EXPORT OFBool operator>=(OFUUID const & lhs, OFUUID const & rhs);
 
   /** The possible notations of a OFUUID. */
   typedef enum {
@@ -179,7 +180,8 @@ private:
   static size_t const DATA_LENGTH = 16;
 
   /**
-   *  Default constructor.
+   *  Constructor.
+   *  @param fill Value to be assigned to each array member of @ref data_.
    *
    *  To create a OFUUID use OFUUIDGenerator::create().
    */

@@ -184,7 +184,7 @@ OFTEST(ofstd_OFUUID_notation_urn)
 OFTEST(ofstd_OFUUID_variant)
 {
   // Verify that an OFUUID's variant is 0b10 (two (2)).
-  // The hex notation is required to hold one of characters '8', '9', 'a',
+  // The canonical notation is required to hold one of characters '8', '9', 'a',
   // or 'b' at position 19 (counting from 0) - cf. RFC 9562, section 4.1.
   OFshared_ptr<OFUUID> const a = OFUUIDGenerator::create();
   OFCHECK_MSG(a, "a is NULL");
@@ -200,7 +200,7 @@ OFTEST(ofstd_OFUUID_variant)
 OFTEST(ofstd_OFUUID_version)
 {
   // Verify that an OFUUID's version is 0b0111 (seven (7)).
-  // The hex notation is required to hold the character '7' at position
+  // The canonical notation is required to hold the character '7' at position
   // 14 (counting from 0) - cf. RFC 9562, section 4.2.
   OFshared_ptr<OFUUID> const a = OFUUIDGenerator::create();
   OFCHECK_MSG(a, "a is NULL");

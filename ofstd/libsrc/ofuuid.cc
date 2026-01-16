@@ -15,7 +15,8 @@
  *
  *  Author:  Uli Schlachter, Harald Roesen
  *
- *  Purpose: Implementaion of a Universally Unique IDentifier (UUID), based on RFC 9562, section 5.7.
+ *  Purpose: Implementation of a Universally Unique IDentifier (UUID),
+ *           based on RFC 9562, section 5.7.
  *
  */
 

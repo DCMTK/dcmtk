@@ -44,7 +44,7 @@ public:
    *  Creates an OFUUID based on <a
    * href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.7.
    *  @param rnd A random number generator (RNG) functor. Provide if special
-   *  requirements with respect to unguessebility of the to be created OFUUID
+   *  requirements with respect to unguessability of the to be created OFUUID
    *  exist. See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC
    * 9562</a>, section 6.9 for details.
    *
@@ -70,7 +70,7 @@ private:
      *
      *  @return OFTrue iff \p lhs and \p rhs are equal.
      */
-    friend OFBool operator==(Uint32_32 const & lhs, Uint32_32 const & rhs) {
+    friend DCMTK_OFSTD_EXPORT OFBool operator==(Uint32_32 const & lhs, Uint32_32 const & rhs) {
       return (lhs.high_ == rhs.high_) && (lhs.low_ == rhs.low_);
     }
 
@@ -81,7 +81,7 @@ private:
      *
      *  @return @ref OFTrue iff \p lhs and \p rhs are unequal.
      */
-    friend OFBool operator!=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
+    friend DCMTK_OFSTD_EXPORT OFBool operator!=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
       return !(lhs == rhs);
     }
 
@@ -92,7 +92,7 @@ private:
      *
      *  @return OFTrue iff \p lhs is smaller than \p rhs.
      */
-    friend OFBool operator<(Uint32_32 const & lhs, Uint32_32 const & rhs) {
+    friend DCMTK_OFSTD_EXPORT OFBool operator<(Uint32_32 const & lhs, Uint32_32 const & rhs) {
       if (lhs.high_ < rhs.high_) {
         return OFTrue;
       }
@@ -111,7 +111,7 @@ private:
      *
      *  @return OFTrue iff \p lhs is smaller than or equal to \p rhs.
      */
-    friend OFBool operator<=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
+    friend DCMTK_OFSTD_EXPORT OFBool operator<=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
       return !(rhs < lhs);
     }
 
@@ -122,7 +122,7 @@ private:
      *
      *  @return OFTrue iff \p lhs is bigger than \p rhs.
      */
-    friend OFBool operator>(Uint32_32 const & lhs, Uint32_32 const & rhs) {
+    friend DCMTK_OFSTD_EXPORT OFBool operator>(Uint32_32 const & lhs, Uint32_32 const & rhs) {
       return (rhs < lhs);
     }
 
@@ -133,7 +133,7 @@ private:
      *
      *  @return OFTrue iff \p lhs is bigger than or equal to \p rhs.
      */
-    friend OFBool operator>=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
+    friend DCMTK_OFSTD_EXPORT OFBool operator>=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
       return !(lhs < rhs);
     }
 

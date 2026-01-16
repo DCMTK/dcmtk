@@ -84,7 +84,7 @@ OFUUIDGenerator::getMillisecondsSinceEpoch() {
 
   // 'ft' is the number of 100ns ticks since January 1, 1601 (UTC).
   FILETIME ft;
-  GetSystemTimeAsFileTime(&ft));
+  GetSystemTimeAsFileTime(&ft);
 
   // 'uli' is (also) the number of 100ns ticks since January 1, 1601 (UTC),
   // but we want the number of milliseconds since January 1, 1970; so lets
@@ -99,10 +99,10 @@ OFUUIDGenerator::getMillisecondsSinceEpoch() {
   // Add the number of milliseconds from January 1, 1601 (UTC) until
   // January 1, 1970. The number of days between these two days is 36524.
   uli.QuadPart += (  OFstatic_cast(unsigned __int64, 36524)
-                   * OFstatic_cast(unsigned __int64, 60 * 60 * 24) // seconds per day
-                   * OFstatic_cast(unsigned __int64, 1000 * 1000)) // milliseconds per second
-  ms_since_unix_epoch.ladd(OFstatic_cast, Uint32, uli.LowPart);
-  ms_since_unix_epoch.hadd(OFstatic_cast, Uint32, uli.HighPart);
+                   * OFstatic_cast(unsigned __int64, 60 * 60 * 24)  // seconds per day
+                   * OFstatic_cast(unsigned __int64, 1000 * 1000)); // milliseconds per second
+  ms_since_unix_epoch.ladd(OFstatic_cast(Uint32, uli.LowPart));
+  ms_since_unix_epoch.hadd(OFstatic_cast(Uint32, uli.HighPart));
 
   #else
 
