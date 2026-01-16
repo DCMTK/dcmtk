@@ -264,15 +264,3 @@ OFUUIDGenerator::Uint32_32::Uint32_32(Uint32 const value) :
 OFUUIDGenerator::Uint32_32::~Uint32_32() {
   // DELIBERATELY EMPTY
 }
-
-
-
-
-
-
-
-
-
-
-
-
