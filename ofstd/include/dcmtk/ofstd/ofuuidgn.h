@@ -41,8 +41,9 @@ public:
   typedef Uint8 (*rnd8)();
 
   /**
-   *  Creates an OFUUID based on <a
-   * href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>, section 5.7.
+   *  Creates an OFUUID based on
+   *  <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>,
+   *  section 5.7.
    *  @param rnd A random number generator (RNG) functor. Provide if special
    *  requirements with respect to unguessability of the to be created OFUUID
    *  exist. See <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>,
@@ -59,83 +60,57 @@ private:
    *  Helper type for internal use in @ref OFUUIDGenerator.
    *  Encapsulating two Uint32 members to mimic an Uint64. These members are
    *  referred to as high, i.e. most significant, and low, i.e. least
-   * significant, respectively.
+   *  significant, respectively.
    */
   class DCMTK_OFSTD_EXPORT Uint32_32 {
   public:
     /**
      *  Equality operator. Interpret Uint32_32 as Uint64.
-     *  @param lhs The left Uint32_32 for comparison.
-     *  @param rhs The right Uint32_32 for comparison.
+     *  @param rhs The object to compare with.
      *
-     *  @return OFTrue iff \p lhs and \p rhs are equal.
+     *  @return OFTrue iff \p this and \p rhs are equal.
      */
-    friend DCMTK_OFSTD_EXPORT OFBool operator==(Uint32_32 const & lhs, Uint32_32 const & rhs) {
-      return (lhs.high_ == rhs.high_) && (lhs.low_ == rhs.low_);
-    }
+    OFBool operator==(Uint32_32 const & rhs) const;
 
     /**
      *  Inequality operator. Interpret Uint32_32 as Uint64.
-     *  @param lhs The left Uint32_32 for comparison.
-     *  @param rhs The right Uint32_32 for comparison.
+     *  @param rhs The object to compare with.
      *
-     *  @return @ref OFTrue iff \p lhs and \p rhs are unequal.
+     *  @return @ref OFTrue iff \p this and \p rhs are unequal.
      */
-    friend DCMTK_OFSTD_EXPORT OFBool operator!=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
-      return !(lhs == rhs);
-    }
+    OFBool operator!=(Uint32_32 const & rhs) const;
 
     /**
      *  Less than operator. Interpret Uint32_32 as Uint64.
-     *  @param lhs The left Uint32_32 for comparison.
-     *  @param rhs The right Uint32_32 for comparison.
+     *  @param rhs The object to compare with.
      *
-     *  @return OFTrue iff \p lhs is smaller than \p rhs.
+     *  @return OFTrue iff \p this is smaller than \p rhs.
      */
-    friend DCMTK_OFSTD_EXPORT OFBool operator<(Uint32_32 const & lhs, Uint32_32 const & rhs) {
-      if (lhs.high_ < rhs.high_) {
-        return OFTrue;
-      }
-
-      if (lhs.high_ > rhs.high_) {
-        return OFFalse;
-      }
-
-      return (lhs.low_ < rhs.low_);
-    }
+    OFBool operator<(Uint32_32 const & rhs) const;
 
     /**
      *  Less than or equal to operator. Interpret Uint32_32 as Uint64.
-     *  @param lhs The left Uint32_32 for comparison.
-     *  @param rhs The right Uint32_32 for comparison.
+     *  @param rhs The object to compare with.
      *
-     *  @return OFTrue iff \p lhs is smaller than or equal to \p rhs.
+     *  @return OFTrue iff \p this is smaller than or equal to \p rhs.
      */
-    friend DCMTK_OFSTD_EXPORT OFBool operator<=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
-      return !(rhs < lhs);
-    }
+    OFBool operator<=(Uint32_32 const & rhs) const;
 
     /**
      *  Greater than operator. Interpret Uint32_32 as Uint64.
-     *  @param lhs The left Uint32_32 for comparison.
-     *  @param rhs The right Uint32_32 for comparison.
+     *  @param rhs The object to compare with.
      *
-     *  @return OFTrue iff \p lhs is bigger than \p rhs.
+     *  @return OFTrue iff \p this is bigger than \p rhs.
      */
-    friend DCMTK_OFSTD_EXPORT OFBool operator>(Uint32_32 const & lhs, Uint32_32 const & rhs) {
-      return (rhs < lhs);
-    }
+    OFBool operator>(Uint32_32 const & rhs) const;
 
     /**
      *  Greater than or equal to operator. Interpret Uint32_32 as Uint64.
-     *  @param lhs The left Uint32_32 for comparison.
-     *  @param rhs The right Uint32_32 for comparison.
+     *  @param rhs The object to compare with.
      *
-     *  @return OFTrue iff \p lhs is bigger than or equal to \p rhs.
+     *  @return OFTrue iff \p this is bigger than or equal to \p rhs.
      */
-    friend DCMTK_OFSTD_EXPORT OFBool operator>=(Uint32_32 const & lhs, Uint32_32 const & rhs) {
-      return !(lhs < rhs);
-    }
+    OFBool operator>=(Uint32_32 const & rhs) const;
 
     /**
      *  Default constructor.
@@ -164,7 +139,7 @@ private:
      *  Assigns a value to @ref low_ and resets @ref high_ to 0.
      *  @param value Value to be assigned to @ref low_.
      *
-     *  @return The object operated on (*this).
+     *  @return A reference to \p *this.
      */
     Uint32_32 & operator=(Uint32 const value);
 
@@ -172,7 +147,7 @@ private:
      *  Adds a value to @ref high_.
      *  @param value Value to be added to @ref high_.
      *
-     *  @return The object operated on (*this).
+     *  @return A reference to \p *this.
      */
     Uint32_32 & hadd(Uint32 const value);
 
@@ -180,7 +155,7 @@ private:
      *  Adds a value to @ref low_.
      *  @param value Value to be added to @ref low_.
      *
-     *  @return The object operated on (*this).
+     *  @return A reference to \p *this.
      */
     Uint32_32 & ladd(Uint32 const value);
 

@@ -44,7 +44,7 @@ public:
    *  @param os The stream to write to.
    *  @param uuid The OFUUID to write.
    *
-   *  @return The stream written to.
+   *  @return \p os
    */
   friend DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream & operator<<(STD_NAMESPACE ostream & os, OFUUID const & uuid);
 
@@ -149,7 +149,7 @@ public:
    *  @param os The stream to write to.
    *  @param notation The Notation to use.
    *
-   *  @return os
+   *  @return \p os
    */
   STD_NAMESPACE ostream & print(STD_NAMESPACE ostream & os, Notation const notation = NotationDefault) const;
 
@@ -202,18 +202,18 @@ private:
   OFUUID & operator=(OFUUID const & rhs);
 
   /**
-   *  Checks if this OFUUID is equal to @ref OFFUID::max.*
+   *  Checks if this OFUUID is equal to @ref OFUUID::max.
    *  See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.10 for details.
    *
-   *  @return OFTrue iff all bits of data_ are one (1).
+   *  @return OFTrue iff all bits of @ref data_ are one (1).
    */
   OFBool isMax() const;
 
   /**
-   *  Checks if this OFUUID is equal to @ref OFFUID::max.
+   *  Checks if this OFUUID is equal to @ref OFUUID::nil.
    *  See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.9 for details.
    *
-   *  @return OFTrue iff all bits of data_ are zero (0).
+   *  @return OFTrue iff all bits of @ref data_ are zero (0).
    */
   OFBool isNil() const;
 

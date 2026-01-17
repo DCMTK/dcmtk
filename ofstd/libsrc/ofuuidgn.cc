@@ -238,12 +238,50 @@ OFUUIDGenerator::Uint32_32::ladd(Uint32 const value) {
   return *this;
 }
 
+OFBool
+OFUUIDGenerator::Uint32_32::operator!=(OFUUIDGenerator::Uint32_32 const & rhs) const {
+  return !(*this == rhs);
+}
+
+OFBool
+OFUUIDGenerator::Uint32_32::operator<(Uint32_32 const & rhs) const {
+  if (this->high_ < rhs.high_) {
+    return OFTrue;
+  }
+
+  if (this->high_ > rhs.high_) {
+    return OFFalse;
+  }
+
+  return (this->low_ < rhs.low_);
+}
+
+OFBool
+OFUUIDGenerator::Uint32_32::operator<=(Uint32_32 const & rhs) const {
+  return !(rhs < *this);
+}
+
 OFUUIDGenerator::Uint32_32 &
 OFUUIDGenerator::Uint32_32::operator=(Uint32 const value) {
   high_ = 0;
   low_ = value;
 
   return *this;
+}
+
+OFBool
+OFUUIDGenerator::Uint32_32::operator==(OFUUIDGenerator::Uint32_32 const & rhs) const {
+  return (this->high_ == rhs.high_) && (this->low_ == rhs.low_);
+}
+
+OFBool
+OFUUIDGenerator::Uint32_32::operator>(Uint32_32 const & rhs) const {
+  return (rhs < *this);
+}
+
+OFBool
+OFUUIDGenerator::Uint32_32::operator>=(Uint32_32 const & rhs) const {
+  return !(*this < rhs);
 }
 
 OFUUIDGenerator::Uint32_32::Uint32_32() :
