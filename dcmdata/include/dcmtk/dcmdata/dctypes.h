@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -232,11 +232,11 @@ struct DCMTK_DCMDATA_EXPORT DCMTypes
     ///@{
 
     /// try to approximate characters that cannot be represented through similar
-    /// looking characters.  See DcmSpecificCharacterSet::getTransliterationMode().
+    /// looking characters.  See OFCharacterEncoding::ConversionFlags.
     static const size_t CF_transliterate;
 
     /// discard characters that cannot be represented in destination character set.
-    /// See DcmSpecificCharacterSet::getDiscardIllegalSequenceMode().
+    /// See OFCharacterEncoding::ConversionFlags.
     static const size_t CF_discardIllegal;
 
     ///@}
