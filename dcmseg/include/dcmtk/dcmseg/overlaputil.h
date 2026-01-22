@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2023-2025, Open Connections GmbH
+ *  Copyright (C) 2023-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,6 +26,7 @@
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofvector.h"
+#include "dcmtk/dcmseg/segdef.h" // for DCMTK_DCMSEG_EXPORT
 
 class DcmSegmentation;
 
@@ -42,14 +43,14 @@ class DcmSegmentation;
  *    This will not necessarily return the optimal solution, but a solution that should be good enough.
  *    For the method used see getNonOverlappingSegments().
  */
-class OverlapUtil
+class DCMTK_DCMSEG_EXPORT OverlapUtil
 {
 public:
     /// Image Position Patient tuple (x,y,z)
     typedef OFVector<Float64> ImagePosition; // might be defined in respective functional group
 
     /// Physical Frame number with its respective position
-    struct FramePositionAndNumber
+    struct DCMTK_DCMSEG_EXPORT FramePositionAndNumber
     {
         /** Default constructor required for vector initialization
          */
@@ -88,7 +89,7 @@ public:
 
     /// Implements comparison operator to be used for sorting of frame positions,
     /// making the sorting order depend on the coordinate given in the constructor
-    struct ComparePositions
+    struct DCMTK_DCMSEG_EXPORT ComparePositions
     {
         /** Constructor, used to configure coordinate position to be used for sorting
          *  @param  c Coordinate position to be used for sorting
@@ -120,7 +121,7 @@ public:
 
     /** Represents a segment number and a logical frame number it is found at
      */
-    struct SegNumAndFrameNum
+    struct DCMTK_DCMSEG_EXPORT SegNumAndFrameNum
     {
         /** Constructor
          *  @param  s Segment number
