@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, OFFIS e.V.
+ *  Copyright (C) 2016-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -246,6 +246,13 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS <unspecified>
 
+/*! @brief A macro to disable warnings about formatted I/O functions
+ *  such as snprintf and vsnprintf that might result in output truncation
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_FORMAT_TRUNCATION <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -276,6 +283,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS "dcmtk/ofstd/diag/unarymin.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC "dcmtk/ofstd/diag/clangprg.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_CONSTANT_EXPRESSION_WARNING "dcmtk/ofstd/diag/vsconstexp.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_FORMAT_TRUNCATION "dcmtk/ofstd/diag/formtrnc.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\
