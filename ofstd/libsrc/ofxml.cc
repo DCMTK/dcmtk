@@ -2302,7 +2302,7 @@ int XMLNode::detachFromParent(XMLNodeData *d)
     int i=0;
     while ((OFreinterpret_cast(void*, pa[i].d))!=(OFreinterpret_cast(void*, d))) i++;
     d->pParent->nChild--;
-    if (d->pParent->nChild) memmove(pa+i,pa+i+1,(d->pParent->nChild-i)*sizeof(XMLNode));
+    if (d->pParent->nChild) memmove(OFstatic_cast(void *, pa+i),pa+i+1,(d->pParent->nChild-i)*sizeof(XMLNode));
     else { free(pa); d->pParent->pChild=NULL; }
     return removeOrderElement(d->pParent,eNodeChild,i);
 }
