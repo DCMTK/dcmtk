@@ -32,11 +32,18 @@
 
 
 /**
- * A OFUUID represents a Universally Unique Identifier (UUID) as described in
- * <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>, section 5.7.
+ *  A OFUUID represents a Universally Unique Identifier (UUID) as described in
+ *  <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>. The constants
+ *  @ref OFUUID::nil and @ref OFUUID::max do not comply to
+ *  <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a> but may be
+ *  considered UUIDs nonetheless. See <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>,
+ *  sections 5.9 and 5.10 for details.
  */
 class DCMTK_OFSTD_EXPORT OFUUID {
 public:
+  /**
+   *  Means to create an OFUUID.
+   */
   friend class OFUUIDGenerator;
 
   /**
@@ -203,7 +210,8 @@ private:
 
   /**
    *  Checks if this OFUUID is equal to @ref OFUUID::max.
-   *  See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.10 for details.
+   *  See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>,
+   *  section 5.10 for details.
    *
    *  @return OFTrue iff all bits of @ref data_ are one (1).
    */
@@ -211,7 +219,8 @@ private:
 
   /**
    *  Checks if this OFUUID is equal to @ref OFUUID::nil.
-   *  See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>, section 5.9 for details.
+   *  See <a href="https://www.rfc-editor.org/info/rfc9562"> RFC 9562</a>,
+   *  section 5.9 for details.
    *
    *  @return OFTrue iff all bits of @ref data_ are zero (0).
    */
