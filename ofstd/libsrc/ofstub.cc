@@ -153,7 +153,7 @@ extern char** environ; // required to exist by the Single Unix Specification
 #endif /* _WIN32 */
 
 
-int OFstub_main(int argc, char** argv, const char *stubName, const char *appName)
+int OFstub_main(int argc, char** argv, const char *stubName, const char *appName, OFBool printWarning)
 {
     if ((argv==NULL) || (stubName==NULL) || (appName==NULL))
     {
@@ -161,43 +161,46 @@ int OFstub_main(int argc, char** argv, const char *stubName, const char *appName
       return EXITCODE_ILLEGAL_PARAMS;
     }
 
-    long len = 43 - OFstatic_cast(long, strlen(stubName)) - OFstatic_cast(long, strlen(appName));
-    if (len < 0) len = 0;
+    if (printWarning)
+    {
+        long len = 43 - OFstatic_cast(long, strlen(stubName)) - OFstatic_cast(long, strlen(appName));
+        if (len < 0) len = 0;
 
 #ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
-    OFString logger_name = "dcmtk.apps.";
-    logger_name += stubName;
-    OFLogger logger = OFLog::getLogger(logger_name.c_str());
+        OFString logger_name = "dcmtk.apps.";
+        logger_name += stubName;
+        OFLogger logger = OFLog::getLogger(logger_name.c_str());
 
-    OFString output =
-        "##########################################################################\n"
-        "#                                                                        #\n#";
-    output.append(len/2, ' ');
-    output.append(stubName);
-    output.append(" is deprecated, use ");
-    output.append(appName);
-    output.append(" instead!");
-    output.append(len - (len/2), ' ');
-    output.append("#\n"
-        "#                                                                        #\n"
-        "##########################################################################\n");
-      OFLOG_WARN(logger, output);
+        OFString output =
+            "##########################################################################\n"
+            "#                                                                        #\n#";
+        output.append(len/2, ' ');
+        output.append(stubName);
+        output.append(" is deprecated, use ");
+        output.append(appName);
+        output.append(" instead!");
+        output.append(len - (len/2), ' ');
+        output.append("#\n"
+            "#                                                                        #\n"
+            "##########################################################################\n");
+          OFLOG_WARN(logger, output);
 #else
-    OFString output =
-        "W: ##########################################################################\n"
-        "W: #                                                                        #\nW: #";
-    output.append(len/2, ' ');
-    output.append(stubName);
-    output.append(" is deprecated, use ");
-    output.append(appName);
-    output.append(" instead!");
-    output.append(len - (len/2), ' ');
-    output.append("#\n"
-        "W: #                                                                        #\n"
-        "W: ##########################################################################\n\n");
+        OFString output =
+            "W: ##########################################################################\n"
+            "W: #                                                                        #\nW: #";
+        output.append(len/2, ' ');
+        output.append(stubName);
+        output.append(" is deprecated, use ");
+        output.append(appName);
+        output.append(" instead!");
+        output.append(len - (len/2), ' ');
+        output.append("#\n"
+            "W: #                                                                        #\n"
+            "W: ##########################################################################\n\n");
 
-    fprintf(stderr, "%s", output.c_str());
+        fprintf(stderr, "%s", output.c_str());
 #endif
+    } // if (printWarning)
 
     // get real path in which the stub executable is located
     int dirname_length = 0;

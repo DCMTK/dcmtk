@@ -26,6 +26,7 @@
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofdefine.h"    /* for DCMTK_OFSTD_EXPORT */
+#include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 
 /** main function to be called in a command line stub application that
  *  calls another command line tool located in the same directory
@@ -35,6 +36,7 @@
  *  @param argv array of command line parameters as passed to main()
  *  @param stubName name of the stub command line tool
  *  @param appName name of the real command line tool to be called
+ *  @param printWarning whether a deprecated warning should be called
  *  @return value to be returned from main(). If the command line tool given as appName
  *    cannot be executed, returns an error code. Otherwise, on Posix platform, this
  *    function will never returns, as it calls execve(). The calling process will instead
@@ -42,6 +44,6 @@
  *    until the child process terminates and will then return the child process's
  *    return code. In any case, the stub can simply return the result of this function.
  */
-DCMTK_OFSTD_EXPORT int OFstub_main(int argc, char** argv, const char *stubName, const char *appName);
+DCMTK_OFSTD_EXPORT int OFstub_main(int argc, char** argv, const char *stubName, const char *appName, OFBool printWarning = OFTrue);
 
 #endif // #ifndef OFSTUB_H
