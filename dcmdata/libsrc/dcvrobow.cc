@@ -740,6 +740,7 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
 OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                                             const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     /* OB/OW data requires special handling in the Native DICOM Model format */
     if (flags & DCMTypes::XF_useNativeModel)
     {
@@ -766,13 +767,13 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
             } else {
                 /* generate a new UID but the binary data is not (yet) written. */
                 OFshared_ptr<OFUUID> const uuid = OFUUIDGenerator::create();
-                out << "<BulkData uuid=\"";
                 if (uuid) {
-                  uuid->print(out, OFUUID::NotationCanonical);
+                    out << "<BulkData uuid=\"";
+                    uuid->print(out, OFUUID::NotationCanonical);
+                    out << "\"/>" << OFendl;
                 } else {
-                  OFUUID::nil.print(out, OFUUID::NotationCanonical);
+                    l_error = EC_MemoryExhausted;
                 }
-                out << "\"/>" << OFendl;
             }
         }
         /* write XML end tag */
@@ -841,8 +842,8 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
         /* XML end tag: </element> */
         writeXMLEndTag(out, flags);
     }
-    /* always report success */
-    return EC_Normal;
+
+    return l_error;
 }
 
 

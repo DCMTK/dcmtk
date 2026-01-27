@@ -167,13 +167,13 @@ OFCondition DcmPixelSequence::writeXML(STD_NAMESPACE ostream &out,
             } else {
                 /* generate a new UID but the binary data is not (yet) written. */
                 OFshared_ptr<OFUUID> const uuid = OFUUIDGenerator::create();
-                out << "<BulkData uuid=\"";
                 if (uuid) {
+                    out << "<BulkData uuid=\"";
                     uuid->print(out, OFUUID::NotationCanonical);
+                    out << "\"/>" << OFendl;
                 } else {
-                    OFUUID::nil.print(out, OFUUID::NotationCanonical);
+                    l_error = EC_MemoryExhausted;
                 }
-                out << "\"/>" << OFendl;
             }
         }
         /* write XML end tag */

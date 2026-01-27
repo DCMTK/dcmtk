@@ -110,6 +110,7 @@ static inline void checkAndOutputFloatValue(STD_NAMESPACE ostream &out,
 OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
 {
+    OFCondition l_error = EC_Normal;
     /* always write XML start tag */
     writeXMLStartTag(out, flags);
     /* OD data requires special handling in the Native DICOM Model format */
@@ -132,13 +133,13 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
             } else {
                 /* generate a new UID but the binary data is not (yet) written. */
                 OFshared_ptr<OFUUID> const uuid = OFUUIDGenerator::create();
-                out << "<BulkData uuid=\"";
                 if (uuid) {
-                  uuid->print(out, OFUUID::NotationCanonical);
+                    out << "<BulkData uuid=\"";
+                    uuid->print(out, OFUUID::NotationCanonical);
+                    out << "\"/>" << OFendl;
                 } else {
-                  OFUUID::nil.print(out, OFUUID::NotationCanonical);
+                    l_error = EC_MemoryExhausted;
                 }
-                out << "\"/>" << OFendl;
             }
         }
     } else {
@@ -173,8 +174,9 @@ OFCondition DcmOtherDouble::writeXML(STD_NAMESPACE ostream &out,
     }
     /* always write XML end tag */
     writeXMLEndTag(out, flags);
+
     /* always report success */
-    return EC_Normal;
+    return l_error;
 }
 
 
