@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -750,8 +750,8 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     DcmStack resultStack;
     resultStack.push(this);
 
-    // check if we are attempting to compress but the image contains
-    // floating point or double floating point pixel data, which our codecs don't support.
+    // check if we are attempting to compress, but the image contains floating
+    // point or double floating point pixel data, which our codecs don't support.
     if ((tagExists(DCM_FloatPixelData, OFTrue) || tagExists(DCM_DoubleFloatPixelData, OFTrue)) &&
          (fromrep.isPixelDataCompressed() || torep.isPixelDataCompressed()))
     {
@@ -760,20 +760,22 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
         return l_error;
     }
 
-    // check if we are attempting to convert a dataset containing
-    // a pixel data URL. In that case we only continue if the target
-    // transfer syntax also uses a pixel data URL.
-    if (tagExists(DCM_PixelDataProviderURL, OFTrue))
+    // check if we are attempting to convert a data set containing a pixel data
+    // provider URL in the top-level data set (i.e., from "Image Pixel Module").
+    // In that case, we only continue if the target transfer syntax also requires
+    // a pixel data URL.
+    if (tagExists(DCM_PixelDataProviderURL, OFFalse /*searchIntoSub*/))
     {
-      if (! torep.usesReferencedPixelData())
-      {
-        DCMDATA_ERROR("DcmDataset: Unable to compress image containing a pixel data provider URL, cannot change representation");
-        l_error = EC_CannotChangeRepresentation;
-        return l_error;
-      }
+
+        if (!torep.usesReferencedPixelData())
+        {
+            DCMDATA_ERROR("DcmDataset: Unable to compress image containing a pixel data provider URL in the top-level data set, cannot change representation");
+            l_error = EC_CannotChangeRepresentation;
+            return l_error;
+        }
     }
 
-    // Now search for all PixelData elements in this dataset
+    // Now search for all PixelData elements in this data set
     while (search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good() && l_error.good())
     {
         pixelDataEncountered = OFTrue;
@@ -790,17 +792,17 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
         }
     }
 
-    // If there are no pixel data elements in the dataset, issue a warning
-    if (! pixelDataEncountered)
+    // If there are no pixel data elements in the data set, issue a warning
+    if (!pixelDataEncountered)
     {
-      if (torep.isPixelDataCompressed() && fromrep.isPixelDataUncompressed())
-      {
-        DCMDATA_WARN("DcmDataset: No pixel data present, nothing to compress");
-      }
-      if (torep.isPixelDataUncompressed() && fromrep.isPixelDataCompressed())
-      {
-        DCMDATA_WARN("DcmDataset: No pixel data present, nothing to decompress");
-      }
+        if (torep.isPixelDataCompressed() && fromrep.isPixelDataUncompressed())
+        {
+            DCMDATA_WARN("DcmDataset: No pixel data present, nothing to compress");
+        }
+        if (torep.isPixelDataUncompressed() && fromrep.isPixelDataCompressed())
+        {
+            DCMDATA_WARN("DcmDataset: No pixel data present, nothing to decompress");
+        }
     }
 
     // then call the method doing the real work for all pixel data elements found
