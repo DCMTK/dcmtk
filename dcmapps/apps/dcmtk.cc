@@ -23,6 +23,7 @@
 #include "dcmtk/ofstd/ofstub.h"       /* for OFstub*/
 #include "dcmtk/ofstd/ofexit.h"       /* for EXITCODE constants */
 #include "dcmtk/ofstd/ofconsol.h"     /* for COUT/CERR */
+#include "dcmtk/ofstd/ofconapp.h"     /* for OFConsoleApplication */
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmtk"
@@ -31,210 +32,144 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-// List of dcmtk command line tools. Each tool is listed in "tools"
-// AND in one of conversion, compression, network or misc.
-static OFString tools[][2] = { // 55 entries
-    {"dcm2img",  "Convert DICOM image to standard image format"},
-    {"dcm2json", "Convert DICOM file and data set to JSON"},
-    {"dcm2xml",  "Convert DICOM file and data set to XML"},
-    {"dcmcjpeg", "Encode DICOM file to JPEG transfer syntax"},
-    {"dcmcjpls", "Encode DICOM file to JPEG-LS transfer syntax"},
-    {"dcmconv",  "Convert DICOM file encoding"},
-    {"dcmcrle",  "Encode DICOM file to RLE transfer syntax"},
-    {"dcmdecap", "Extract file from DICOM encapsulated storage"},
-    {"dcmdjpeg", "Decode JPEG-compressed DICOM file"},
-    {"dcmdjpls", "Decode JPEG-LS compressed DICOM file"},
-    {"dcmdrle",  "Decode RLE-compressed DICOM file"},
-    {"dcmdspfn", "Export standard display curves to a text file"},
-    {"dcmdump",  "Dump DICOM file and data set"},
-    {"dcmencap", "Encapsulate document into DICOM format"},
-    {"dcmftest", "Test if file uses DICOM part 10 format"},
-    {"dcmicmp",  "Compare DICOM images and compute difference metrics"},
-    {"dcmmkcrv", "Add 2D curve data to image"},
-    {"dcmmkdir", "Create a DICOMDIR file"},
-    {"dcmmklut", "Create DICOM look-up tables"},
-    {"dcmodify", "Modify DICOM files"},
-    {"dcmp2pgm", "Read DICOM image and presentation state and render bitmap"},
-    {"dcmprscp", "DICOM basic grayscale print management SCP"},
-    {"dcmprscu", "Print spooler for presentation state viewer"},
-    {"dcmpschk", "Checking tool for presentation states"},
-    {"dcmpsmk",  "Create DICOM grayscale softcopy presentation state"},
-    {"dcmpsprt", "Read DICOM images and presentation states and render print job"},
-    {"dcmpsrcv", "Network receive for presentation state viewer"},
-    {"dcmpssnd", "Network send for presentation state viewer"},
-    {"dcmqridx", "Register a DICOM image file in an image database index file"},
-    {"dcmqrscp", "DICOM image archive (central test node)"},
-    {"dcmqrti",  "Telnet Initiator"},
-    {"dcmquant", "Convert DICOM color images to palette color"},
-    {"dcmrecv",  "Simple DICOM storage SCP (receiver)"},
-    {"dcmscale", "Scale DICOM images"},
-    {"dcmsend",  "Simple DICOM storage SCU (sender)"},
-    {"dcmsign",  "Sign and Verify DICOM Files"},
-    {"dcod2lum", "Convert hardcopy characteristic curve file to softcopy format"},
-    {"dconvlum", "Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files"},
-    {"drtdump",  "Dump DICOM RT file and data set"},
-    {"dsr2html", "Render DICOM SR file and data set to HTML/XHTML"},
-    {"dsr2xml",  "Convert DICOM SR file and data set to XML"},
-    {"dsrdump",  "Dump DICOM SR file and data set"},
-    {"dump2dcm", "Convert ASCII dump to DICOM file"},
-    {"echoscu",  "DICOM verification (C-ECHO) SCU"},
-    {"findscu",  "DICOM query (C-FIND) SCU"},
-    {"getscu",   "DICOM retrieve (C-GET) SCU"},
-    {"img2dcm",  "Convert standard image formats into DICOM format"},
-    {"json2dcm", "Convert JSON document to DICOM file or data set"},
-    {"movescu",  "DICOM retrieve (C-MOVE) SCU"},
-    {"storescp", "DICOM storage (C-STORE) SCP"},
-    {"storescu", "DICOM storage (C-STORE) SCU"},
-    {"termscu",  "DICOM termination SCU"},
-    {"wlmscpfs", "DICOM Basic Worklist Management SCP (based on data files)"},
-    {"xml2dcm",  "Convert XML document to DICOM file or data set"},
-    {"xml2dsr",  "Convert XML document to DICOM SR file"},
+// tool category for command line tools
+enum DcmAppType
+{
+  AT_conversion,
+  AT_compression,
+  AT_network,
+  AT_misc
 };
 
-static OFString conversionTools[][2] =
+// struct for the list of tools
+struct DcmToolEntry
 {
-    {"dcm2img",  "Convert DICOM image to standard image format"},
-    {"dcm2json", "Convert DICOM file and data set to JSON"},
-    {"dcm2xml",  "Convert DICOM file and data set to XML"},
-    {"dcmconv",  "Convert DICOM file encoding"},
-    {"dcmdecap", "Extract file from DICOM encapsulated storage"},
-    {"dcmdump",  "Dump DICOM file and data set"},
-    {"dcmencap", "Encapsulate document into DICOM format"},
-    {"dcmodify", "Modify DICOM files"},
-    {"dcmp2pgm", "Read DICOM image and presentation state and render bitmap"},
-    {"drtdump",  "Dump DICOM RT file and data set"},
-    {"dsr2html", "Render DICOM SR file and data set to HTML/XHTML"},
-    {"dsr2xml",  "Convert DICOM SR file and data set to XML"},
-    {"dsrdump",  "Dump DICOM SR file and data set"},
-    {"dump2dcm", "Convert ASCII dump to DICOM file"},
-    {"img2dcm",  "Convert standard image formats into DICOM format"},
-    {"json2dcm", "Convert JSON document to DICOM file or data set"},
-    {"xml2dcm",  "Convert XML document to DICOM file or data set"},
-    {"xml2dsr",  "Convert XML document to DICOM SR file"},
+  OFString name;
+  OFString description;
+  DcmAppType apptype;
 };
 
-static OFString compressionTools[][2] =
+// list of DCMTK command line tools in alphabetical order
+static DcmToolEntry tools[] =
 {
-    {"dcmcjpeg", "Encode DICOM file to JPEG transfer syntax"},
-    {"dcmcjpls", "Encode DICOM file to JPEG-LS transfer syntax"},
-    {"dcmcrle",  "Encode DICOM file to RLE transfer syntax"},
-    {"dcmdjpeg", "Decode JPEG-compressed DICOM file"},
-    {"dcmdjpls", "Decode JPEG-LS compressed DICOM file"},
-    {"dcmdrle",  "Decode RLE-compressed DICOM file"},
-};
-
-static OFString networkTools[][2] =
-{
-    {"dcmprscp", "DICOM basic grayscale print management SCP"},
-    {"dcmprscu", "Print spooler for presentation state viewer"},
-    {"dcmpsrcv", "Network receive for presentation state viewer"},
-    {"dcmpssnd", "Network send for presentation state viewer"},
-    {"dcmqrscp", "DICOM image archive (central test node)"},
-    {"dcmrecv", "Simple DICOM storage SCP (receiver)"},
-    {"dcmsend", "Simple DICOM storage SCU (sender)"},
-    {"echoscu", "DICOM verification (C-ECHO) SCU"},
-    {"findscu", "DICOM query (C-FIND) SCU"},
-    {"getscu", "DICOM retrieve (C-GET) SCU"},
-    {"movescu", "DICOM retrieve (C-MOVE) SCU"},
-    {"storescp", "DICOM storage (C-STORE) SCP"},
-    {"storescu", "DICOM storage (C-STORE) SCU"},
-    {"termscu", "DICOM termination SCU"},
-    {"wlmscpfs", "DICOM Basic Worklist Management SCP (based on data files)"},
-};
-
-static OFString miscellaneousTools[][2] =
-{
-    {"dcmdspfn", "Export standard display curves to a text file"},
-    {"dcmftest", "Test if file uses DICOM part 10 format"},
-    {"dcmicmp",  "Compare DICOM images and compute difference metrics"},
-    {"dcmmkcrv", "Add 2D curve data to image"},
-    {"dcmmkdir", "Create a DICOMDIR file"},
-    {"dcmmklut", "Create DICOM look-up tables"},
-    {"dcmpschk", "Checking tool for presentation states"},
-    {"dcmpsmk",  "Create DICOM grayscale softcopy presentation state"},
-    {"dcmpsprt", "Read DICOM images and presentation states and render print job"},
-    {"dcmqridx", "Register a DICOM image file in an image database index file"},
-    {"dcmqrti",  "Telnet Initiator"},
-    {"dcmquant", "Convert DICOM color images to palette color"},
-    {"dcmscale", "Scale DICOM images"},
-    {"dcmsign",  "Sign and Verify DICOM Files"},
-    {"dcod2lum", "Convert hardcopy characteristic curve file to softcopy format"},
-    {"dconvlum", "Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files"},
+    {"dcm2img",  "Convert DICOM image to standard image format", AT_conversion },
+    {"dcm2json", "Convert DICOM file and data set to JSON", AT_conversion },
+    {"dcm2xml",  "Convert DICOM file and data set to XML", AT_conversion },
+    {"dcmcjpeg", "Encode DICOM file to JPEG transfer syntax", AT_compression },
+    {"dcmcjpls", "Encode DICOM file to JPEG-LS transfer syntax", AT_compression },
+    {"dcmconv",  "Convert DICOM file encoding", AT_conversion },
+    {"dcmcrle",  "Encode DICOM file to RLE transfer syntax", AT_compression },
+    {"dcmdecap", "Extract file from DICOM encapsulated storage", AT_conversion },
+    {"dcmdjpeg", "Decode JPEG-compressed DICOM file", AT_compression },
+    {"dcmdjpls", "Decode JPEG-LS compressed DICOM file", AT_compression },
+    {"dcmdrle",  "Decode RLE-compressed DICOM file", AT_compression },
+    {"dcmdspfn", "Export standard display curves to a text file", AT_misc },
+    {"dcmdump",  "Dump DICOM file and data set", AT_conversion },
+    {"dcmencap", "Encapsulate document into DICOM format", AT_conversion },
+    {"dcmftest", "Test if file uses DICOM part 10 format", AT_misc },
+    {"dcmicmp",  "Compare DICOM images and compute difference metrics", AT_misc },
+    {"dcmmkcrv", "Add 2D curve data to image", AT_misc },
+    {"dcmmkdir", "Create a DICOMDIR file", AT_misc },
+    {"dcmmklut", "Create DICOM look-up tables", AT_misc },
+    {"dcmodify", "Modify DICOM files", AT_conversion },
+    {"dcmp2pgm", "Read DICOM image and presentation state and render bitmap", AT_conversion },
+    {"dcmprscp", "DICOM basic grayscale print management SCP", AT_network },
+    {"dcmprscu", "Print spooler for presentation state viewer", AT_network },
+    {"dcmpschk", "Checking tool for presentation states", AT_misc },
+    {"dcmpsmk",  "Create DICOM grayscale softcopy presentation state", AT_misc },
+    {"dcmpsprt", "Read DICOM images and presentation states and render print job", AT_misc },
+    {"dcmpsrcv", "Network receive for presentation state viewer", AT_network },
+    {"dcmpssnd", "Network send for presentation state viewer", AT_network },
+    {"dcmqridx", "Register a DICOM image file in an image database index file", AT_misc },
+    {"dcmqrscp", "DICOM image archive (central test node)", AT_network },
+    {"dcmqrti",  "Telnet Initiator", AT_misc },
+    {"dcmquant", "Convert DICOM color images to palette color", AT_misc },
+    {"dcmrecv", "Simple DICOM storage SCP (receiver)", AT_network },
+    {"dcmscale", "Scale DICOM images", AT_misc },
+    {"dcmsend", "Simple DICOM storage SCU (sender)", AT_network },
+    {"dcmsign",  "Sign and Verify DICOM Files", AT_misc },
+    {"dcod2lum", "Convert hardcopy characteristic curve file to softcopy format", AT_misc },
+    {"dconvlum", "Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files", AT_misc },
+    {"drtdump",  "Dump DICOM RT file and data set", AT_conversion },
+    {"dsr2html", "Render DICOM SR file and data set to HTML/XHTML", AT_conversion },
+    {"dsr2xml",  "Convert DICOM SR file and data set to XML", AT_conversion },
+    {"dsrdump",  "Dump DICOM SR file and data set", AT_conversion },
+    {"dump2dcm", "Convert ASCII dump to DICOM file", AT_conversion },
+    {"echoscu", "DICOM verification (C-ECHO) SCU", AT_network },
+    {"findscu", "DICOM query (C-FIND) SCU", AT_network },
+    {"getscu", "DICOM retrieve (C-GET) SCU", AT_network },
+    {"img2dcm",  "Convert standard image formats into DICOM format", AT_conversion },
+    {"json2dcm", "Convert JSON document to DICOM file or data set", AT_conversion },
+    {"movescu", "DICOM retrieve (C-MOVE) SCU", AT_network },
+    {"storescp", "DICOM storage (C-STORE) SCP", AT_network },
+    {"storescu", "DICOM storage (C-STORE) SCU", AT_network },
+    {"termscu", "DICOM termination SCU", AT_network },
+    {"wlmscpfs", "DICOM Basic Worklist Management SCP (based on data files)", AT_network },
+    {"xml2dcm",  "Convert XML document to DICOM file or data set", AT_conversion },
+    {"xml2dsr",  "Convert XML document to DICOM SR file", AT_conversion }
 };
 
 static const size_t numTools = sizeof(tools) / sizeof(*tools);
+
+static void printTools(DcmAppType toolType)
+{
+  size_t len = 0;
+  for (size_t i = 0; i < numTools; ++i)
+    {
+        if (tools[i].apptype == toolType)
+        {
+            len = tools[i].name.size();
+            COUT << "      " << tools[i].name << ": ";
+            for (size_t j = 1; j <= 8 - len; j++)
+                COUT << " ";
+            COUT << tools[i].description << OFendl;
+        }
+    }
+}
 
 static void printHelp(OFBool sorted)
 {
     COUT << rcsid << OFendl << OFendl;
     COUT << OFFIS_CONSOLE_APPLICATION << ": " << OFFIS_CONSOLE_DESCRIPTION << OFendl;
-    COUT << "usage: dcmtk tool [parameters...]" << OFendl << OFendl;
+    COUT << "usage: dcmtk tool [parameters...]\n" << OFendl;
 
-    COUT << "general options :" << OFendl;
-    COUT << "  -h   --help" << OFendl <<
-            "         print the list of possible tools and exit" << OFendl << OFendl;
-    COUT << "       --version" << OFendl <<
-            "         print version information and exit" << OFendl << OFendl;
+    COUT << "general options:\n"
+         << "  -h   --help     print this help text and exit\n"
+         << "       --version  print version information and exit\n"
+         << "  -d   --debug    debug mode, print debug information\n" << OFendl;
 
     COUT << "tools:" << OFendl;
     if (sorted)
     {
-        size_t num = sizeof(conversionTools) / sizeof(*conversionTools);
         COUT << "  conversion tools:" << OFendl;
-        for (size_t i = 0; i < num; ++i) {
-            const size_t len = conversionTools[i][0].size();
-            COUT << "      " << conversionTools[i][0];
-            for (size_t j = 1; j <= 8 - len; j++)
-                COUT << " ";
-            COUT << ": " << conversionTools[i][1] << OFendl;
-        }
+        printTools(AT_conversion);
 
-        num = sizeof(compressionTools) / sizeof(*compressionTools);
         COUT << OFendl << "  compression tools:" << OFendl;
-        for (size_t i = 0; i < num; ++i) {
-            const size_t len = compressionTools[i][0].size();
-            COUT << "      " << compressionTools[i][0];
-            for (size_t j = 1; j <= 8 - len; j++)
-                COUT << " ";
-            COUT << ": " << compressionTools[i][1] << OFendl;
-        }
+        printTools(AT_compression);
 
-        num = sizeof(networkTools) / sizeof(*networkTools);
         COUT << OFendl << "  network tools:" << OFendl;
-        for (size_t i = 0; i < num; ++i) {
-            const size_t len = networkTools[i][0].size();
-            COUT << "      " << networkTools[i][0];
-            for (size_t j = 1; j <= 8 - len; j++)
-                COUT << " ";
-            COUT << ": " << networkTools[i][1] << OFendl;
-        }
+        printTools(AT_network);
 
-        num = sizeof(miscellaneousTools) / sizeof(*miscellaneousTools);
         COUT << OFendl << "  miscellaneus tools:" << OFendl;
-        for (size_t i = 0; i < num; ++i) {
-            const size_t len = miscellaneousTools[i][0].size();
-            COUT << "      " << miscellaneousTools[i][0];
-            for (size_t j = 1; j <= 8 - len; j++)
-                COUT << " ";
-            COUT << ": " << miscellaneousTools[i][1] << OFendl;
-        }
+        printTools(AT_misc);
     }
     else
     {
+        size_t len;
         for (size_t i = 0; i < numTools; ++i) {
-            const size_t len = tools[i][0].size();
-            COUT << "   " << tools[i][0];
+            len = tools[i].name.size();
+            COUT << "   " << tools[i].name << ": ";
             for (size_t j = 1; j <= 8 - len; j++)
                 COUT << " ";
-            COUT << ": " << tools[i][1] << OFendl;
+            COUT << tools[i].description << OFendl;
         }
     }
 }
 
 static void printVersion()
 {
-    COUT << rcsid << OFendl << OFendl;
-    COUT << OFFIS_CONSOLE_APPLICATION << ": " << OFFIS_CONSOLE_DESCRIPTION;
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , OFFIS_CONSOLE_DESCRIPTION, rcsid);
+    app.printHeader(OFTrue, OFTrue);
 }
 
 /* main program */
@@ -248,7 +183,23 @@ int main(int argc, char* argv[])
         return EXITCODE_NO_ERROR;
     }
 
+    OFBool debug = OFFalse;
     OFString tool = argv[1];
+    int offset = 1;
+
+    if (tool == "-d" || tool == "--debug")
+    {
+        debug = OFTrue;
+        if (argc < 3)
+        {
+            // no further arguments given, print help text and exit
+            printHelp(OFTrue);
+            return EXITCODE_NO_ERROR;
+        }
+        offset = 2;
+        tool = argv[2];
+    }
+
     if (tool == "-h" || tool == "--help")
     {
         // print help text and exit
@@ -265,16 +216,9 @@ int main(int argc, char* argv[])
 
     // find corresponding applet and call.
     for (size_t i = 0; i < numTools; ++i) {
-        if (tool == tools[i][0])
+        if (tool == tools[i].name)
         {
-#ifdef DEBUG
-            COUT << OFFIS_CONSOLE_APPLICATION << ": calling tool " << tool << OFendl;
-            COUT << "  with parameters:";
-            for (int j = 0; j < argc - 2; j ++)
-                COUT << " \"" << argv[j + 2] << "\"";
-            COUT << OFendl << OFendl;
-#endif
-            return OFstub_main(argc - 1, argv + 1, tool.c_str(), tool.c_str(), OFFalse /* printWarning */);
+            return OFstub_main(argc - offset, argv + offset, tool.c_str(), tool.c_str(), OFFalse /* printWarning */, debug);
         }
     }
 

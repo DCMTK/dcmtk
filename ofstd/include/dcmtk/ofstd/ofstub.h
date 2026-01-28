@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024, OFFIS e.V.
+ *  Copyright (C) 2024-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -37,6 +37,7 @@
  *  @param stubName name of the stub command line tool
  *  @param appName name of the real command line tool to be called
  *  @param printWarning whether a deprecated warning should be called
+ *  @param debug whether debug information should be printed
  *  @return value to be returned from main(). If the command line tool given as appName
  *    cannot be executed, returns an error code. Otherwise, on Posix platform, this
  *    function will never returns, as it calls execve(). The calling process will instead
@@ -44,6 +45,11 @@
  *    until the child process terminates and will then return the child process's
  *    return code. In any case, the stub can simply return the result of this function.
  */
-DCMTK_OFSTD_EXPORT int OFstub_main(int argc, char** argv, const char *stubName, const char *appName, OFBool printWarning = OFTrue);
+DCMTK_OFSTD_EXPORT int OFstub_main(
+    int argc, char** argv,
+    const char *stubName,
+    const char *appName,
+    OFBool printWarning = OFTrue,
+    OFBool debug = OFFalse);
 
 #endif // #ifndef OFSTUB_H

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024-2025, OFFIS e.V.
+ *  Copyright (C) 2024-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -153,7 +153,7 @@ extern char** environ; // required to exist by the Single Unix Specification
 #endif /* _WIN32 */
 
 
-int OFstub_main(int argc, char** argv, const char *stubName, const char *appName, OFBool printWarning)
+int OFstub_main(int argc, char** argv, const char *stubName, const char *appName, OFBool printWarning, OFBool debug)
 {
     if ((argv==NULL) || (stubName==NULL) || (appName==NULL))
     {
@@ -233,11 +233,21 @@ int OFstub_main(int argc, char** argv, const char *stubName, const char *appName
         newpath = "\"" + newpath + ".exe\"";
         else newpath += ".exe";
 
+    if (debug)
+    {
+#ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
+      OFLOG_DEBUG(logger, "Executing: " << newpath);
+#else
+      fprintf(stderr, "D: Executing: %s \n", newpath);
+#endif
+    }
+
     if (argc > 1)
     {
         // add arguments to new command line
         newpath += " " + argvToCommandLine(argc-1, argv+1);
     }
+
 
     // prepare data for CreateProcessA
     STARTUPINFOA siStartInfo;
@@ -292,6 +302,15 @@ int OFstub_main(int argc, char** argv, const char *stubName, const char *appName
     return OFstatic_cast(int, exit_code);
 
 #else /* _WIN32 */
+
+    if (debug)
+    {
+#ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
+      OFLOG_DEBUG(logger, "Executing: " << newpath);
+#else
+      fprintf(stderr, "D: Executing: %s \n", newpath.c_str());
+#endif
+    }
 
     // call the application for which we are a stub
     (void) execve(newpath.c_str(), argv, environ);

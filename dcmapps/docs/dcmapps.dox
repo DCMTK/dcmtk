@@ -8,6 +8,7 @@ DCMTK modules.
 \section Tools
 
 This module contains the following command line tools:
+\li \ref dcmtk
 \li \ref dcm2img
 
 */
