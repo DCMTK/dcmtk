@@ -105,13 +105,18 @@ DCM2IMG_LIBS = $(dcmjpeglib) $(dcmjplslib) $(libcharlslib) $(dcmimagelib) \
 	$(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) $(oficonvlib) \
 	$(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-objs = dcm2img.o
-progs = dcm2img
+DCMTK_LIBS = $(ofstdlib) $(oficonvlib) $(CHARCONVLIBS) $(MATHLIBS)
+
+objs = dcm2img.o dcmtk.o
+progs = dcm2img dcmtk
 
 all: $(progs)
 
 dcm2img: dcm2img.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcm2img.o $(DCM2IMG_LIBS) $(LIBS)
+
+dcmtk: dcmtk.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmtk.o $(DCMTK_LIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)

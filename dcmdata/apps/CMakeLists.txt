@@ -11,11 +11,8 @@ DCMTK_ADD_EXECUTABLE(dcmodify
   mdfconen.cc
   mdfdsman.cc)
 
-DCMTK_ADD_EXECUTABLE(dcmtk
-  dcmtkapp.cc)
-
 # make sure executables are linked to the corresponding libraries
-foreach(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2dcm stl2dcm pdf2dcm dcm2pdf dcm2json json2dcm cda2dcm dcm2cda dcmencap dcmdecap dcmtk)
+foreach(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2dcm stl2dcm pdf2dcm dcm2pdf dcm2json json2dcm cda2dcm dcm2cda dcmencap dcmdecap)
   DCMTK_TARGET_LINK_MODULES(${PROGRAM} dcmdata)
 endforeach()
 

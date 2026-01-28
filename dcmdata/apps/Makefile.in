@@ -26,11 +26,11 @@ LIBDCMXML = -ldcmxml
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
 	cda2dcm.o stl2dcm.o pdf2dcm.o dcm2pdf.o dcm2cda.o img2dcm.o dcm2json.o \
-	json2dcm.o dcmencap.o dcmdecap.o dcmtkapp.o
+	json2dcm.o dcmencap.o dcmdecap.o
 
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
 	dcmdrle dcmodify pdf2dcm stl2dcm cda2dcm dcm2pdf dcm2cda img2dcm dcm2json \
-	json2dcm dcmencap dcmdecap dcmtk
+	json2dcm dcmencap dcmdecap
 
 
 all: $(progs)
@@ -95,9 +95,6 @@ dcmencap: dcmencap.o
 
 dcmdecap: dcmdecap.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
-dcmtk: dcmtkapp.o
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ dcmtkapp.o $(LOCALLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
