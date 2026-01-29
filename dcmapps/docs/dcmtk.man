@@ -9,7 +9,7 @@
 \section dcmtkapp_synopsis SYNOPSIS
 
 \verbatim
-dcmtk tool [parameters...]
+dcmtk [options] tool [tool-parameters-and-options]
 \endverbatim
 
 \section dcmtkapp_description DESCRIPTION
@@ -24,7 +24,7 @@ simultaneously.
 \section dcmtkapp_parameters PARAMETERS
 
 \verbatim
-tool  the DCMTK command line tool to call
+tool  the DCMTK command line tool to call (see list below)
 \endverbatim
 
 \section dcmtkapp_options OPTIONS
@@ -113,13 +113,13 @@ miscellaneous tools:
 dcmtk dcmdump file.dcm
 \endverbatim
 
-Calls the dcmdump tool with the parameter 'file.dcm'.
+Calls the \b dcmdump tool with the parameter 'file.dcm'.
 
 \verbatim
 dcmtk dcmodify -m "PatientName=Doe^John" file.dcm
 \endverbatim
 
-Calls the dcmodify tool to change the patient's name in 'file.dcm'.
+Calls the \b dcmodify tool to change the patient's name in 'file.dcm'.
 
 \section dcmtkapp_see_also SEE ALSO
 

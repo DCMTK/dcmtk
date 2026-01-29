@@ -131,7 +131,10 @@ static void printHelp(OFBool sorted)
 {
     COUT << rcsid << OFendl << OFendl;
     COUT << OFFIS_CONSOLE_APPLICATION << ": " << OFFIS_CONSOLE_DESCRIPTION << OFendl;
-    COUT << "usage: dcmtk tool [parameters...]\n" << OFendl;
+    COUT << "usage: dcmtk [options] tool [tool-parameters-and-options]\n" << OFendl;
+
+    COUT << "parameters:\n"
+         << "  tool  the DCMTK command line tool to call (see list below)\n" << OFendl;
 
     COUT << "general options:\n"
          << "  -h  --help     print this help text and exit\n"
