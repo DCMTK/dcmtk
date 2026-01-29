@@ -84,9 +84,9 @@ static DcmToolEntry tools[] =
     {"dcmqrscp", "DICOM image archive (central test node)", AT_network },
     {"dcmqrti",  "Telnet Initiator", AT_misc },
     {"dcmquant", "Convert DICOM color images to palette color", AT_misc },
-    {"dcmrecv", "Simple DICOM storage SCP (receiver)", AT_network },
+    {"dcmrecv",  "Simple DICOM storage SCP (receiver)", AT_network },
     {"dcmscale", "Scale DICOM images", AT_misc },
-    {"dcmsend", "Simple DICOM storage SCU (sender)", AT_network },
+    {"dcmsend",  "Simple DICOM storage SCU (sender)", AT_network },
     {"dcmsign",  "Sign and Verify DICOM Files", AT_misc },
     {"dcod2lum", "Convert hardcopy characteristic curve file to softcopy format", AT_misc },
     {"dconvlum", "Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files", AT_misc },
@@ -95,15 +95,15 @@ static DcmToolEntry tools[] =
     {"dsr2xml",  "Convert DICOM SR file and data set to XML", AT_conversion },
     {"dsrdump",  "Dump DICOM SR file and data set", AT_conversion },
     {"dump2dcm", "Convert ASCII dump to DICOM file", AT_conversion },
-    {"echoscu", "DICOM verification (C-ECHO) SCU", AT_network },
-    {"findscu", "DICOM query (C-FIND) SCU", AT_network },
-    {"getscu", "DICOM retrieve (C-GET) SCU", AT_network },
+    {"echoscu",  "DICOM verification (C-ECHO) SCU", AT_network },
+    {"findscu",  "DICOM query (C-FIND) SCU", AT_network },
+    {"getscu",   "DICOM retrieve (C-GET) SCU", AT_network },
     {"img2dcm",  "Convert standard image formats into DICOM format", AT_conversion },
     {"json2dcm", "Convert JSON document to DICOM file or data set", AT_conversion },
-    {"movescu", "DICOM retrieve (C-MOVE) SCU", AT_network },
+    {"movescu",  "DICOM retrieve (C-MOVE) SCU", AT_network },
     {"storescp", "DICOM storage (C-STORE) SCP", AT_network },
     {"storescu", "DICOM storage (C-STORE) SCU", AT_network },
-    {"termscu", "DICOM termination SCU", AT_network },
+    {"termscu",  "DICOM termination SCU", AT_network },
     {"wlmscpfs", "DICOM Basic Worklist Management SCP (based on data files)", AT_network },
     {"xml2dcm",  "Convert XML document to DICOM file or data set", AT_conversion },
     {"xml2dsr",  "Convert XML document to DICOM SR file", AT_conversion }
@@ -134,9 +134,9 @@ static void printHelp(OFBool sorted)
     COUT << "usage: dcmtk tool [parameters...]\n" << OFendl;
 
     COUT << "general options:\n"
-         << "  -h   --help     print this help text and exit\n"
-         << "       --version  print version information and exit\n"
-         << "  -d   --debug    debug mode, print debug information\n" << OFendl;
+         << "  -h  --help     print this help text and exit\n"
+         << "      --version  print version information and exit\n"
+         << "  -d  --debug    debug mode, print debug information\n" << OFendl;
 
     COUT << "tools:" << OFendl;
     if (sorted)
@@ -150,7 +150,7 @@ static void printHelp(OFBool sorted)
         COUT << OFendl << "  network tools:" << OFendl;
         printTools(AT_network);
 
-        COUT << OFendl << "  miscellaneus tools:" << OFendl;
+        COUT << OFendl << "  miscellaneous tools:" << OFendl;
         printTools(AT_misc);
     }
     else
@@ -223,6 +223,8 @@ int main(int argc, char* argv[])
     }
 
    //  If not in list, print error
-    CERR << OFFIS_CONSOLE_APPLICATION << ": there is no DCMTK tool named \"" << tool << "\".\nTo show the list of available tools, call \"" << OFFIS_CONSOLE_APPLICATION << " --help\"." << OFendl;
+    CERR << OFFIS_CONSOLE_APPLICATION << ": there is no DCMTK tool named \"" << tool
+        << "\".\nTo show the list of available tools, call \"" << OFFIS_CONSOLE_APPLICATION
+        << " --help\"." << OFendl;
     return EXITCODE_COMMANDLINE_SYNTAX_ERROR;
 }

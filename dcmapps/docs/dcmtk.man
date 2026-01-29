@@ -14,12 +14,12 @@ dcmtk tool [parameters...]
 
 \section dcmtkapp_description DESCRIPTION
 
-The \b dcmtk tool maintains a list of all available DCMTK command line
-tools and acts as a proxy for calling the tools, passing on all arguments
-and options. The \b dcmtk tool will look for the command line tools in
-the same directory where \b dcmtk is present, ignoring the system PATH
-environment variable. This is useful when multiple versions of DCMTK
-are installed simultaneously.
+The \b dcmtk tool maintains a list of all available DCMTK command line tools
+and acts as a proxy for calling the tools, passing on all arguments and
+options.  The \b dcmtk tool will look for the command line tools in the same
+directory where \b dcmtk is present, ignoring the system PATH environment
+variable.  This is useful when multiple versions of DCMTK are installed
+simultaneously.
 
 \section dcmtkapp_parameters PARAMETERS
 
@@ -31,14 +31,14 @@ tool  the DCMTK command line tool to call
 
 \subsection dcmtkapp_general_options general options
 \verbatim
--h   --help
-       print this help text and exit
+  -h  --help
+        print this help text and exit
 
-     --version
-       print version information and exit
+      --version
+        print version information and exit
 
--d   --debug
-       debug mode, print debug information
+  -d  --debug
+        debug mode, print debug information
 \endverbatim
 
 \subsection dcmtkapp_tools_list tools
@@ -88,7 +88,7 @@ network tools:
     termscu:  DICOM termination SCU
     wlmscpfs: DICOM Basic Worklist Management SCP (based on data files)
 
-miscellaneus tools:
+miscellaneous tools:
     dcmdspfn: Export standard display curves to a text file
     dcmftest: Test if file uses DICOM part 10 format
     dcmicmp:  Compare DICOM images and compute difference metrics
