@@ -111,11 +111,15 @@ miscellaneus tools:
 
 \verbatim
 dcmtk dcmdump file.dcm
-      Calls the dcmdump tool with the parameter 'file.dcm'.
-
-dcmtk dcmodify -m "PatientName=Doe^John" file.dcm
-      Calls the dcmodify tool to change the patient name in 'file.dcm'.
 \endverbatim
+
+Calls the dcmdump tool with the parameter 'file.dcm'.
+
+\verbatim
+dcmtk dcmodify -m "PatientName=Doe^John" file.dcm
+\endverbatim
+
+Calls the dcmodify tool to change the patient's name in 'file.dcm'.
 
 \section dcmtkapp_see_also SEE ALSO
 

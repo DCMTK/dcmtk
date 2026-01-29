@@ -46,8 +46,8 @@ application source code (apps), library source code (libsrc), library
 include files (include), configuration data (etc), documentation (docs),
 sample and support data (data) as well as test programs (tests).
 
-A list of all command line tools in DCMTK is available
-through the \ref dcmtk "dcmtk" command.
+A list of all command line tools in DCMTK is available through the \ref dcmtk
+"dcmtk" command.
 
 To build and install the DCMTK package, see the \ref file_install "INSTALL"
 file.  For copyright information, see the \ref file_copyright "COPYRIGHT" file.

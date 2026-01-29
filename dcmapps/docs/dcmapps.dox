@@ -2,8 +2,8 @@
 
 \page mod_dcmapps dcmapps: a collection of cross-module command line tools
 
-This module contains command line tools that depend on (almost) all other
-DCMTK modules.
+This module contains command line tools that either depend on (almost) all other
+DCMTK modules or do not fit into any other module.
 
 \section Tools
 
