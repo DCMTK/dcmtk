@@ -743,6 +743,7 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
 {
     OFCondition l_error = EC_Normal;
     OFBool pixelDataEncountered = OFFalse;
+    OFBool pixelURLEncountered = OFFalse;
     OFStack<DcmStack> pixelStack;
     DcmXfer torep(repType);
     DcmXfer fromrep(CurrentXfer);
@@ -750,49 +751,68 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
     DcmStack resultStack;
     resultStack.push(this);
 
-    // check if we are attempting to compress, but the image contains floating
-    // point or double floating point pixel data, which our codecs don't support.
+    // check if we are attempting to compress or decompress, but the image contains
+    // floating point or double floating point pixel data, which our codecs don't
+    // support
     if ((tagExists(DCM_FloatPixelData, OFTrue) || tagExists(DCM_DoubleFloatPixelData, OFTrue)) &&
          (fromrep.isPixelDataCompressed() || torep.isPixelDataCompressed()))
     {
         DCMDATA_ERROR("DcmDataset: Unable to compress/decompress floating point pixel data, cannot change representation");
-        l_error = EC_CannotChangeRepresentation;
-        return l_error;
+        return EC_CannotChangeRepresentation;
     }
 
-    // check if we are attempting to convert a data set containing a pixel data
+    // Check if we are attempting to convert a data set containing a pixel data
     // provider URL in the top-level data set (i.e., from "Image Pixel Module").
     // In that case, we only continue if the target transfer syntax also requires
-    // a pixel data URL.
+    // a pixel data provider URL.
     if (tagExists(DCM_PixelDataProviderURL, OFFalse /*searchIntoSub*/))
     {
-
-        if (!torep.usesReferencedPixelData())
+        if (fromrep.usesReferencedPixelData())
         {
-            DCMDATA_ERROR("DcmDataset: Unable to compress image containing a pixel data provider URL in the top-level data set, cannot change representation");
-            l_error = EC_CannotChangeRepresentation;
-            return l_error;
+            if (torep.usesReferencedPixelData())
+            {
+                // remember that we found a pixel data provider URL element
+                pixelURLEncountered = OFTrue;
+            } else {
+                DCMDATA_ERROR("DcmDataset: Unable to " << (torep.isPixelDataCompressed() ? "compress" : "decompress")
+                    << " image containing a pixel data provider URL in the top-level data set, cannot change representation");
+                return EC_CannotChangeRepresentation;
+            }
+        } else {
+            DCMDATA_WARN("DcmDataset: Ignoring pixel data provider URL in a data set with transfer syntax " << fromrep.getXferName());
         }
     }
 
-    // Now search for all PixelData elements in this data set
+    // Now, search for all pixel data elements in this data set. If successful,
+    // the 'resultStack' contains at least two pointers: one to the pixel data
+    // element and one to the item or data set this element is contained in.
     while (search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good() && l_error.good())
     {
         pixelDataEncountered = OFTrue;
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
-            if (!pixelData->canChooseRepresentation(repType, repParam))
+            // if there are both pixel data and pixel data provider URL elements
+            // in the top-level data set, return with an error
+            if (pixelURLEncountered && (resultStack.elem(1)->ident() == EVR_dataset))
+            {
+                DCMDATA_ERROR("DcmDataset: Found both pixel data and pixel data provider URL in the top-level data set,"
+                    << " cannot change representation");
                 l_error = EC_CannotChangeRepresentation;
-            pixelStack.push(resultStack);
+            } else {
+                // check whether changing the encoding of the pixel data element would work
+                DcmPixelData *pixelData = OFstatic_cast(DcmPixelData *, resultStack.top());
+                if (!pixelData->canChooseRepresentation(repType, repParam))
+                    l_error = EC_CannotChangeRepresentation;
+                pixelStack.push(resultStack);
+            }
         } else {
-            /* something is fishy with the pixel data element (wrong class) */
+            // something is fishy with the pixel data element (wrong class)
             DCMDATA_ERROR("DcmDataset: Wrong class for pixel data element, cannot change representation");
             l_error = EC_CannotChangeRepresentation;
         }
     }
 
-    // If there are no pixel data elements in the data set, issue a warning
+    // if there are no pixel data elements in the data set, issue a warning
     if (!pixelDataEncountered)
     {
         if (torep.isPixelDataCompressed() && fromrep.isPixelDataUncompressed())
@@ -812,9 +832,9 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
             chooseRepresentation(repType, repParam, pixelStack.top());
 
 #ifdef PIXELSTACK_MEMORY_LEAK_WORKAROUND
-        // on certain platforms there seems to be a memory leak
-        // at this point since for some reason pixelStack.pop does
-        // not completely destruct the DcmStack object taken from the stack.
+        // On certain platforms there seems to be a memory leak at this point
+        // since for some reason pixelStack.pop() does not completely destruct
+        // the DcmStack object taken from the stack.
         // The following work-around should solve this issue.
         pixelStack.top().clear();
 #endif
@@ -896,12 +916,12 @@ OFCondition DcmDataset::doPostReadChecks()
           {
               if (dcmUseExplLengthPixDataForEncTS.get() == OFFalse /* default case */)
               {
-                  /* length of top level dataset's Pixel Data is explicitly */
+                  /* length of top-level dataset's Pixel Data is explicitly */
                   /* defined but we have a transfer syntax requiring */
                   /* encapsulated pixel data (always encoded with undefined */
                   /* length). Print and return an error. */
-                  DCMDATA_ERROR("Found explicit length Pixel Data in top level "
-                      << "dataset with transfer syntax " << xf.getXferName()
+                  DCMDATA_ERROR("Found explicit length Pixel Data in top-level "
+                      << "data set with transfer syntax " << xf.getXferName()
                       << ": Only undefined length permitted");
                   result = EC_PixelDataExplLengthIllegal;
               }
@@ -910,8 +930,8 @@ OFCondition DcmDataset::doPostReadChecks()
                   /* Only print warning if requested by related OFGlobal, */
                   /* and behave like as we have the same case as for an */
                   /* icon image, which is always uncompressed (see above). */
-                  DCMDATA_WARN("Found explicit length Pixel Data in top level "
-                      << "dataset with transfer syntax " << xf.getXferName()
+                  DCMDATA_WARN("Found explicit length Pixel Data in top-level "
+                      << "data set with transfer syntax " << xf.getXferName()
                       << ": Only undefined length permitted (ignored on explicit request)");
               }
           }
