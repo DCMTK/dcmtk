@@ -238,7 +238,7 @@ int OFstub_main(int argc, char** argv, const char *stubName, const char *appName
 #ifdef DCMTK_USE_OFLOG_LOGGER_IN_STUB
       OFLOG_DEBUG(logger, "Executing: " << newpath);
 #else
-      fprintf(stderr, "D: Executing: %s \n", newpath);
+      fprintf(stderr, "D: Executing: %s \n", newpath.c_str());
 #endif
     }
 
