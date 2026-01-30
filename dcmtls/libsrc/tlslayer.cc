@@ -1092,7 +1092,8 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     EVP_PKEY *pubkey = X509_get_pubkey(peerCertificate); // creates copy of public key
     if (pubkey)
     {
-      switch (EVP_PKEY_base_id(pubkey))
+      int pkt_nid = EVP_PKEY_base_id(pubkey);
+      switch (pkt_nid)
       {
         case EVP_PKEY_RSA:
           certPubKeyType = "RSA";
@@ -1104,7 +1105,6 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
           certPubKeyType = "DH";
           break;
         default:
-          int pkt_nid = EVP_PKEY_get_id(pubkey);
           if (pkt_nid > 0 && pkt_nid != NID_undef)
           {
             const char *pubkeyalg = OBJ_nid2sn(pkt_nid);
