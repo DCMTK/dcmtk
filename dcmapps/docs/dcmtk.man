@@ -45,73 +45,90 @@ tool  the DCMTK command line tool to call (see list below)
 
 \subsection dcmtkapp_conversion_tools conversion tools
 \verbatim
-  dcm2img:  Convert DICOM image to standard image format
-  dcm2json: Convert DICOM file and data set to JSON
-  dcm2xml:  Convert DICOM file and data set to XML
-  dcmconv:  Convert DICOM file encoding
-  dcmdecap: Extract file from DICOM encapsulated storage
-  dcmdump:  Dump DICOM file and data set
-  dcmencap: Encapsulate document into DICOM format
-  dcmodify: Modify DICOM files
-  dcmp2pgm: Read DICOM image and presentation state and render bitmap
-  drtdump:  Dump DICOM RT file and data set
-  dsr2html: Render DICOM SR file and data set to HTML/XHTML
-  dsr2xml:  Convert DICOM SR file and data set to XML
-  dsrdump:  Dump DICOM SR file and data set
-  dump2dcm: Convert ASCII dump to DICOM file
-  img2dcm:  Convert standard image formats into DICOM format
-  json2dcm: Convert JSON document to DICOM file or data set
-  xml2dcm:  Convert XML document to DICOM file or data set
-  xml2dsr:  Convert XML document to DICOM SR file
+  dcm2img   - Convert DICOM image to standard image format
+  dcm2json  - Convert DICOM file and data set to JSON
+  dcm2xml   - Convert DICOM file and data set to XML
+  dcmconv   - Convert DICOM file encoding
+  dcmdecap  - Extract file from DICOM encapsulated storage
+  dcmdump   - Dump DICOM file and data set
+  dcmencap  - Encapsulate document into DICOM format
+  dcmodify  - Modify DICOM files
+  dcmp2pgm  - Read DICOM image and presentation state and render bitmap
+  drtdump   - Dump DICOM RT file and data set
+  dsr2html  - Render DICOM SR file and data set to HTML/XHTML
+  dsr2xml   - Convert DICOM SR file and data set to XML
+  dsrdump   - Dump DICOM SR file and data set
+  dump2dcm  - Convert ASCII dump to DICOM file
+  img2dcm   - Convert standard image formats into DICOM format
+  json2dcm  - Convert JSON document to DICOM file or data set
+  xml2dcm   - Convert XML document to DICOM file or data set
+  xml2dsr   - Convert XML document to DICOM SR file
 \endverbatim
 
 \subsection dcmtkapp_compression_tools compression tools
 \verbatim
-  dcmcjpeg: Encode DICOM file to JPEG transfer syntax
-  dcmcjpls: Encode DICOM file to JPEG-LS transfer syntax
-  dcmcrle:  Encode DICOM file to RLE transfer syntax
-  dcmdjpeg: Decode JPEG-compressed DICOM file
-  dcmdjpls: Decode JPEG-LS compressed DICOM file
-  dcmdrle:  Decode RLE-compressed DICOM file
+  dcmcjpeg  - Encode DICOM file to JPEG transfer syntax
+  dcmcjpls  - Encode DICOM file to JPEG-LS transfer syntax
+  dcmcrle   - Encode DICOM file to RLE transfer syntax
+  dcmdjpeg  - Decode JPEG-compressed DICOM file
+  dcmdjpls  - Decode JPEG-LS compressed DICOM file
+  dcmdrle   - Decode RLE-compressed DICOM file
 \endverbatim
 
 \subsection dcmtkapp_network_tools network tools
 \verbatim
-  dcmprscp: DICOM basic grayscale print management SCP
-  dcmprscu: Print spooler for presentation state viewer
-  dcmpsrcv: Network receive for presentation state viewer
-  dcmpssnd: Network send for presentation state viewer
-  dcmqrscp: DICOM image archive (central test node)
-  dcmrecv:  Simple DICOM storage SCP (receiver)
-  dcmsend:  Simple DICOM storage SCU (sender)
-  echoscu:  DICOM verification (C-ECHO) SCU
-  findscu:  DICOM query (C-FIND) SCU
-  getscu:   DICOM retrieve (C-GET) SCU
-  movescu:  DICOM retrieve (C-MOVE) SCU
-  storescp: DICOM storage (C-STORE) SCP
-  storescu: DICOM storage (C-STORE) SCU
-  termscu:  DICOM termination SCU
-  wlmscpfs: DICOM Basic Worklist Management SCP (based on data files)
+  dcmprscp  - DICOM basic grayscale print management SCP
+  dcmprscu  - Print spooler for presentation state viewer
+  dcmpsrcv  - Network receive for presentation state viewer
+  dcmpssnd  - Network send for presentation state viewer
+  dcmqrscp  - DICOM image archive (central test node)
+  dcmrecv   - Simple DICOM storage SCP (receiver)
+  dcmsend   - Simple DICOM storage SCU (sender)
+  echoscu   - DICOM verification (C-ECHO) SCU
+  findscu   - DICOM query (C-FIND) SCU
+  getscu    - DICOM retrieve (C-GET) SCU
+  movescu   - DICOM retrieve (C-MOVE) SCU
+  storescp  - DICOM storage (C-STORE) SCP
+  storescu  - DICOM storage (C-STORE) SCU
+  termscu   - DICOM termination SCU
+  wlmscpfs  - DICOM Basic Worklist Management SCP (based on data files)
 \endverbatim
 
 \subsection dcmtkapp_miscellaneous_tools miscellaneous tools
 \verbatim
-  dcmdspfn: Export standard display curves to a text file
-  dcmftest: Test if file uses DICOM part 10 format
-  dcmicmp:  Compare DICOM images and compute difference metrics
-  dcmmkcrv: Add 2D curve data to image
-  dcmmkdir: Create a DICOMDIR file
-  dcmmklut: Create DICOM look-up tables
-  dcmpschk: Checking tool for presentation states
-  dcmpsmk:  Create DICOM grayscale softcopy presentation state
-  dcmpsprt: Read DICOM images and presentation states and render print job
-  dcmqridx: Register a DICOM image file in an image database index file
-  dcmqrti:  Telnet Initiator
-  dcmquant: Convert DICOM color images to palette color
-  dcmscale: Scale DICOM images
-  dcmsign:  Sign and Verify DICOM Files
-  dcod2lum: Convert hardcopy characteristic curve file to softcopy format
-  dconvlum: Convert VeriLUM "CCx_xx.dat" files to DCMTK display files
+  dcmdspfn  - Export standard display curves to a text file
+  dcmftest  - Test if file uses DICOM part 10 format
+  dcmicmp   - Compare DICOM images and compute difference metrics
+  dcmmkcrv  - Add 2D curve data to image
+  dcmmkdir  - Create a DICOMDIR file
+  dcmmklut  - Create DICOM look-up tables
+  dcmpschk  - Checking tool for presentation states
+  dcmpsmk   - Create DICOM grayscale softcopy presentation state
+  dcmpsprt  - Read DICOM images and presentation states and render print job
+  dcmqridx  - Register a DICOM image file in an image database index file
+  dcmqrti   - Telnet Initiator
+  dcmquant  - Convert DICOM color images to palette color
+  dcmscale  - Scale DICOM images
+  dcmsign   - Sign and Verify DICOM Files
+  dcod2lum  - Convert hardcopy characteristic curve file to softcopy format
+  dconvlum  - Convert VeriLUM "CCx_xx.dat" files to DCMTK display files
+\endverbatim
+
+\subsection dcmtkapp_aliases aliases for common tools
+\verbatim
+  convert   - Changes the encoding of a DICOM file (calls dcmconv)
+  dump      - Dumps the contents of a DICOM file (calls dcmdump)
+  echo      - Checks whether a DICOM server is accessible (calls echoscu)
+  find      - Queries a Q/R or Modality Worklist server (calls findscu)
+  get       - Downloads from a Q/R server using C-GET (calls getscu)
+  mkdir     - Creates a DICOMDIR file for storage media (calls dcmmkdir)
+  modify    - Modifies the contents of a DICOM file (calls dcmodify)
+  move      - Downloads from a Q/R server using C-MOVE (calls movescu)
+  send      - Transfers DICOM instances to a Storage server (calls dcmsend)
+  sign      - Creates and verifies digital signatures (calls dcmsign)
+  toimg     - Renders a DICOM image to another image format (calls dcm2img)
+  tojson    - Converts a DICOM file to JSON format (calls dcm2json)
+  toxml     - Converts a DICOM file to XML format (calls dcm2xml)
 \endverbatim
 
 \section dcmtkapp_examples EXAMPLES
