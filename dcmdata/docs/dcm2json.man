@@ -136,6 +136,14 @@ bulk data URI options:
   +bs  --bulk-subdir
          create subdirectory for each SOP instance
          (default: no subdirectory)
+
+charset handling:
+
+  +c   --charset-keep
+         write the original charset to JSON (default)
+
+  -c   --charset-replace
+         replace the original charset with UTF-8 in JSON
 \endverbatim
 
 \subsection dcm2json_output_options output options

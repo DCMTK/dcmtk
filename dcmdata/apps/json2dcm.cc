@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024-2025, OFFIS e.V.
+ *  Copyright (C) 2024-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -40,6 +40,7 @@
 
 #define EXITCODE_INVALID_JSON_CONTENT                   65
 #define EXITCODE_BULKDATA_URI_NOT_SUPPORTED             66
+#define EXITCODE_CHARSET_CONVERSION_FAILED              72
 
 static OFLogger json2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
@@ -71,6 +72,10 @@ void addProcessOptions(OFCommandLine& cmd)
         cmd.addOption("--array-select",        "+as", 1, "[n]umber: integer",
                                                          "select data set n from array");
         cmd.addOption("--array-sequence",      "+ar",    "store all data sets in private sequence");
+
+      cmd.addSubGroup("charset handling:");
+        cmd.addOption("--charset-convert",     "+c",     "convert to the specific character set given in JSON (default)");
+        cmd.addOption("--charset-utf8",        "-c",     "write DICOM file with UTF-8 (ISO_IR 192), no conversion");
 }
 
 void addOutputOptions(OFCommandLine& cmd)
@@ -97,9 +102,6 @@ void addOutputOptions(OFCommandLine& cmd)
       cmd.addSubGroup("length encoding in sequences and items:");
         cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
         cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
-      cmd.addSubGroup("charset handling:");
-        cmd.addOption("--charset-accept",      "+c",     "write with the given charset in JSON (default)");
-        cmd.addOption("--charset-replace",     "-c",     "replace the given charset in JSON with UTF-8");
 #ifdef WITH_ZLIB
       cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
         cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
@@ -135,7 +137,7 @@ OFCondition parseArguments(
     OFBool& opt_overwriteUIDs,
     E_TransferSyntax& opt_xfer,
     E_EncodingType& opt_enctype,
-    OFBool& opt_replaceCharset,
+    OFBool& opt_useUTF8Charset,
     E_FileWriteMode& opt_writeMode,
     const char*& opt_ifname,
     const char*& opt_ofname,
@@ -263,10 +265,10 @@ OFCondition parseArguments(
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--charset-accept"))
-        opt_replaceCharset = OFFalse;
-    if (cmd.findOption("--charset-replace"))
-        opt_replaceCharset = OFTrue;
+    if (cmd.findOption("--charset-convert"))
+        opt_useUTF8Charset = OFFalse;
+    if (cmd.findOption("--charset-utf8"))
+        opt_useUTF8Charset = OFTrue;
     cmd.endOptionBlock();
 
 #ifdef WITH_ZLIB
@@ -306,46 +308,57 @@ void generateUIDs(DcmItem *dataset, OFBool overwriteUIDs, E_FileWriteMode& write
     }
 }
 
-void updateCharacterSet(DcmItem *dataset, const char *ifname, OFBool replaceCharset)
+int updateCharacterSet(DcmItem *dataset, const char *ifname, OFBool useUTF8Charset)
 {
     OFString allowedCharset = "ISO_IR 192";
     OFString asciiCharset = "ISO_IR 6";
     const char *elemValue;
-    OFCondition result = dataset->findAndGetString(DCM_SpecificCharacterSet, elemValue, OFTrue /*searchIntoSub*/);
-    if (replaceCharset)
+    DcmElement* elem = NULL;
+    dataset->findAndGetElement(DCM_SpecificCharacterSet, elem);
+    (void) dataset->findAndGetString(DCM_SpecificCharacterSet, elemValue, OFTrue /*searchIntoSub*/);
+
+    if (useUTF8Charset)
     {
-        if (result.bad() || elemValue == NULL)
+        if (elemValue != NULL && allowedCharset.compare(elemValue) != 0)
         {
-            OFLOG_WARN(json2dcmLogger, "JSON file '" << ifname << "' does not specify a character set, it will be set to UTF-8 ('" << allowedCharset << "')");
-            dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
+            OFLOG_DEBUG(json2dcmLogger, "JSON file '" << ifname << "' specifies a character set('" << elemValue << "') other than UTF-8, "
+                << "it will be set to UTF-8 ('" << allowedCharset << "')");
         }
-        else if (allowedCharset.compare(elemValue) != 0)
-        {
-            OFLOG_WARN(json2dcmLogger, "JSON file '" << ifname << "' specifies a character set other than UTF-8, it will be set to UTF-8 ('" << allowedCharset << "')");
-            dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str());
-        }
+        if (dataset->putAndInsertString(DCM_SpecificCharacterSet, allowedCharset.c_str()).good()) return 0; else return EXITCODE_CHARSET_CONVERSION_FAILED;
     }
-    else
+
+    // useUTF8Charset is false, perform charset conversion if necessary
+    if (elem != NULL && elem->getVM() > 1)
     {
-        if ((result.bad() || elemValue == NULL))
-        {
-            if (dataset->containsExtendedCharacters())
-            {
-                // JSON dataset contains non-ASCII characters but no specific character set
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << ifname << "' does not specify a character set, the file is encoded in UTF-8 ('" << allowedCharset << "')");
-            }
-        }
-        else if (allowedCharset.compare(elemValue) != 0)
-        {
-            // JSON dataset specifies a specific character set other then ISO_IR 192
-            if (dataset->containsExtendedCharacters() || (asciiCharset.compare(elemValue) != 0))
-            {
-                // JSON dataset is not ASCII (ISO_IR 6) either
-                OFLOG_WARN(json2dcmLogger, "JSON file '" << ifname << "' specifies the character set '"
-                    << elemValue << "' but the file is encoded in UTF-8 ('" << allowedCharset << "')");
-            }
-        }
+        // there are multiple character sets in use
+        OFLOG_ERROR(json2dcmLogger, "The JSON file specifies multiple character sets (" << elemValue << "). "
+            << "Conversion to multiple character sets not supported.\n"
+            << "Use option '--charset-replace' instead to keep UTF-8 ('" << allowedCharset << "')");
+        return EXITCODE_CHARSET_CONVERSION_FAILED;
     }
+
+    // no charset value found. none will be set in resulting file
+    // JSON dataset contains non-ASCII characters but no specific character set
+    if (elemValue == NULL && dataset->containsExtendedCharacters())
+    {
+        OFLOG_WARN(json2dcmLogger, "JSON file '" << ifname << "' does not specify a character set, "
+            << "none will be specified and the file will be encoded in UTF-8 ('" << allowedCharset << "')");
+    }
+
+    // specific charset given other than ISO_IR 192 and ASCII (ISO_IR 6)
+    // and non-ASCII characters are present: convert dataset
+    if (elemValue != NULL && allowedCharset.compare(elemValue) != 0
+            && (asciiCharset.compare(elemValue) != 0 || dataset->containsExtendedCharacters()))
+    {
+        OFLOG_DEBUG(json2dcmLogger, "JSON file '" << ifname << "' specifies the character set '"
+            << elemValue << "' other than UTF-8 ('" << allowedCharset << "'), '"
+            << elemValue << "' will be used in the resulting file");
+
+        // convert from utf8 to the target charset
+        if (dataset->convertCharacterSet(allowedCharset, elemValue, 0 /*flags*/).good()) return 0; else return EXITCODE_CHARSET_CONVERSION_FAILED;
+    }
+
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -354,7 +367,7 @@ int main(int argc, char *argv[])
     OFBool opt_overwriteUIDs = OFFalse;
     E_TransferSyntax opt_xfer = EXS_Unknown;
     E_EncodingType opt_enctype = EET_ExplicitLength;
-    OFBool opt_replaceCharset = OFFalse;
+    OFBool opt_useUTF8Charset = OFFalse;
     E_FileWriteMode opt_writeMode = EWM_fileformat;
 
     const char *opt_ifname = NULL;
@@ -408,7 +421,7 @@ int main(int argc, char *argv[])
         opt_overwriteUIDs,
         opt_xfer,
         opt_enctype,
-        opt_replaceCharset,
+        opt_useUTF8Charset,
         opt_writeMode,
         opt_ifname,
         opt_ofname,
@@ -450,12 +463,14 @@ int main(int argc, char *argv[])
     }
 
     // check and update SpecificCharacterSet
-    updateCharacterSet(fileformat.getDataset(), opt_ifname, opt_replaceCharset);
+    int res = updateCharacterSet(fileformat.getDataset(), opt_ifname, opt_useUTF8Charset);
+    if (res != 0) // other than success
+        return res;
 
     // determine the transfer syntax for writing the file
     if (opt_xfer == EXS_Unknown)
     {
-        /* use Explicit VR Little Endian as default if no transfer syntax is given otherwise */
+        // use Explicit VR Little Endian as default if no transfer syntax is given otherwise
         if (jsonReader.getTransferSyntax() == EXS_Unknown)
             opt_xfer = EXS_LittleEndianExplicit;
         else

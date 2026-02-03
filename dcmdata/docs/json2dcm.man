@@ -102,6 +102,14 @@ handling of arrays with multiple data sets:
 
   +ar  --array-sequence
          store all data sets in private sequence
+
+charset handling:
+
+  +c   --charset-convert
+         convert to the specific character set given in JSON (default)
+
+  -c   --charset-utf8
+         write DICOM file with UTF-8 (ISO_IR 192), no conversion
 \endverbatim
 
 \subsection json2dcm_output_options output options
@@ -157,14 +165,6 @@ length encoding in sequences and items:
 
   -e   --length-undefined
          write with undefined lengths
-
-charset handling:
-
-  +c   --charset-accept
-         write with the given charset in JSON (default)
-
-  -c   --charset-replace
-         replace the given charset in JSON with UTF-8
 
 deflate compression level (only with --write-xfer-deflated):
 
@@ -335,10 +335,22 @@ DICOM Part 18 Section F for details):
 
 \subsection json2dcm_character_encoding Character Encoding
 
-The JSON format only supports UTF-8 encoding.  Thus the generated DICOM file
-will also contain UTF-8 encoding.  If the JSON file does not contain a specific
-character set, or a specific character set other than "ISO_IR 192", a warning
-will be issued.
+The JSON format always uses UTF-8 encoding, but Specific Character Set
+(0008,0005) may specifiy the original encoding that was in use prior to
+conversion to JSON. By default, \b json2dcm will convert the encoding
+back to the given specific character set. This will fail if multiple
+character sets were in use, e.g. for the Japanese language:
+\verbatim
+"00080005": {
+  "vr": "CS",
+  "Value": [
+    "ISO 2022 IR 13",
+    "ISO 2022 IR 87"
+  ]
+},
+\endverbatim
+In this case, use the --charset-utf8 option, which will write the
+DICOM file with UTF-8 (ISO_IR 192) encoding and not attempt any conversion.
 
 \subsection json2dcm_bulk_data Binary Data, Bulk Data, and Pixel Data
 
@@ -450,6 +462,8 @@ EXITCODE_CANNOT_WRITE_OUTPUT_FILE               40
 \verbatim
 EXITCODE_INVALID_JSON_CONTENT                   65
 EXITCODE_BULKDATA_URI_NOT_SUPPORTED             66
+EXITCODE_CHARSET_CONVERSION_FAILED              72
+
 \endverbatim
 
 \section json2dcm_environment ENVIRONMENT
@@ -474,6 +488,6 @@ It is an error if no data dictionary can be loaded.
 
 \section json2dcm_copyright COPYRIGHT
 
-Copyright (C) 2024-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2024-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

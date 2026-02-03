@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2025, OFFIS e.V.
+ *  Copyright (C) 2016-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -186,6 +186,7 @@ int main(int argc, char *argv[])
 {
     OFBool opt_format = OFTrue;
     OFBool opt_addMetaInformation = OFFalse;
+    OFBool opt_replaceCharset = OFFalse;
     OFBool opt_encode_extended = OFFalse;
     DcmJsonFormat::NumStringPolicy opt_ns_policy = DcmJsonFormat::NSP_auto;
 
@@ -239,6 +240,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--bulk-uri-prefix",    "+bp", 1, "[u]ri prefix: string",  "use prefix u when generating bulk data URIs\n(default: file URI)");
         cmd.addOption("--bulk-dir",           "+bd", 1, "[d]irectory: string",  "write bulk data files to d (default: '.')");
         cmd.addOption("--bulk-subdir",        "+bs",    "create subdirectory for each SOP instance\n(default: no subdirectory)");
+      cmd.addSubGroup("charset handling:");
+        cmd.addOption("--charset-keep",       "+c",     "write the original charset to JSON (default)");
+        cmd.addOption("--charset-replace",    "-c",     "replace the original charset with UTF-8 in JSON");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output format:");
@@ -366,6 +370,15 @@ int main(int argc, char *argv[])
             app.checkConflict("--write-meta", "--read-dataset", opt_readMode == ERM_dataset);
             opt_addMetaInformation = OFTrue;
         }
+
+        /* charset options */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--charset-keep"))
+            opt_replaceCharset = OFFalse;
+        if (cmd.findOption("--charset-replace"))
+            opt_replaceCharset = OFTrue;
+        cmd.endOptionBlock();
+
     }
 
     /* print resource identifier */
@@ -410,12 +423,27 @@ int main(int argc, char *argv[])
             /* check for SpecificCharacterSet on any data set level */
             if (dset->tagExistsWithValue(DCM_SpecificCharacterSet, OFTrue /*searchIntoSub*/))
             {
+                OFString originalCharset;
+
+                /* we ignore the error if specific character set does not exist */
+                (void) dset->findAndGetOFStringArray(DCM_SpecificCharacterSet, originalCharset);
+
                 /* convert entire DICOM file or data set to UTF-8 encoding */
                 status = dfile.convertToUTF8();
                 if (status.bad())
                 {
                     OFLOG_FATAL(dcm2jsonLogger, status.text() << ": converting file to UTF-8: " << ifname);
                     result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
+                }
+
+                if ((! opt_replaceCharset) && (originalCharset.length() > 0))
+                {
+                    status = dset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, originalCharset, OFTrue);
+                    if (status.bad())
+                    {
+                        OFLOG_ERROR(dcm2jsonLogger, status.text() << ": unable to set original character set: " << originalCharset);
+                        result = EXITCODE_CANNOT_CONVERT_TO_UNICODE;
+                    }
                 }
             }
             else
