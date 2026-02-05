@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2025, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -462,7 +462,7 @@ class DCMTK_DCMWLM_EXPORT WlmDataSource
 #endif
 
       /** Set value in a member variable in a derived class.
-       *  @param int The value to set.
+       *  @param . The value to set.
        */
     virtual void SetInstitutionId( const unsigned int /*value*/ ) {}
 

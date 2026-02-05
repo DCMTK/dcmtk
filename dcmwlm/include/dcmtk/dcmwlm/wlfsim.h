@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -54,6 +54,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 
       /** Privately defined assignment operator.
        *  @param obj Object which shall be copied.
+       *  @return Reference to the object which was copied.
        */
     WlmFileSystemInteractionManager &operator=(const WlmFileSystemInteractionManager &obj);
 
@@ -69,6 +70,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 
       /** Increment the given directory iterator until it refers to a worklist file (or past-the-end).
        *  @param it A reference to an OFdirectory_iterator.
+       *  @return The incremented OFdirectory_iterator which either refers to a worklist file or is past-the-end.
        */
     OFdirectory_iterator& FindNextWorklistFile( OFdirectory_iterator& it );
 
