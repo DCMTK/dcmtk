@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,12 +52,12 @@ class DCMTK_DCMWLM_EXPORT WlmDataSourceFileSystem : public WlmDataSource
        *  that is specified through dfPath and calledApplicationEntityTitle.
        *  @return true in case the read lock has been set successfully, false otherwise.
        */
-    OFBool SetReadlock();
+    virtual OFBool SetReadlock();
 
       /** This function releases a read lock on the LOCKFILE in the given directory.
        *  @return true in case the read lock has been released successfully, false otherwise.
        */
-    OFBool ReleaseReadlock();
+    virtual OFBool ReleaseReadlock();
 
       /** This function takes care of handling a certain non-sequence element within
        *  the structure of a certain result dataset. This function assumes that all

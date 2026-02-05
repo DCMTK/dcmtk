@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2022, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -92,10 +92,26 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
     ///   \ #t: timestamp in the format YYYYMMDDhhmmssffffff
     OFString opt_requestFileFormat;
 
+    /// Denotes whether a stop of the application was requested.
+    //  This variable is set to true when RequestStop() is called
+    //  and is checked in the main loop of the application.
+    OFBool stopRequested;
+
+    /// Mutex for synchronizing access to the stopRequested variable.
+    OFMutex stopRequestedMutex;
+
+    /// The connection timeout in seconds. If this timeout is > 0, the application will
+    /// stop waiting for a client connection after the specified time has elapsed and check
+    /// whether a stop was requested (see RequestStop()). If the timeout is 0,
+    /// the application will wait indefinitely for a client connection.
+    /// The default value is 60 seconds.
+    int connectionTimeout;
+
       /** This function takes care of receiving, negotiating and accepting/refusing an
        *  association request. Additionally, it handles the request the association
        *  requesting application transmits after a connection is established.
        *  @param net Contains network parameters.
+       *  @return Indicator which shows if function was executed successfully.
        */
     OFCondition WaitForAssociation( T_ASC_Network *net );
 
@@ -108,6 +124,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
       /** This function negotiates a presentation context which will be used by this application
        *  and the other DICOM application that requests an association.
        *  @param assoc The association (network connection to another DICOM application).
+       *  @return OFCondition value denoting success or error.
        */
     OFCondition NegotiateAssociation( T_ASC_Association *assoc );
 
@@ -193,7 +210,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        *  @param opt_blockModev                      Specifies the blocking mode for DIMSE operations
        *  @param opt_dimse_timeoutv                  Specifies the timeout for DIMSE operations
        *  @param opt_acse_timeoutv                   Specifies the timeout for ACSE operations
-       *  @param opt_forkedChild                     Indicates, whether this process was "forked" from a parent process, default: false
+       *  @param opt_forkedChildv                    Indicates, whether this process was "forked" from a parent process, default: false
        *  @param argcv                               Number of commandline arguments given
        *  @param argvv                               Complete command line
        */
@@ -219,7 +236,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
 
       /** destructor
        */
-    ~WlmActivityManager();
+    virtual ~WlmActivityManager();
 
       /** Starts providing the implemented service for calling SCUs.
        *  After having created an instance of this class, this function
@@ -243,6 +260,23 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        *  @return       OFTrue if path is accepted, OFFalse otherwise
        */
     OFBool setRequestFilePath(const OFString& path="", const OFString& format="#t.dump");
+
+    /** Set connection timeout in seconds. If this timeout is > 0, the application will
+     *  stop waiting for a client connection after the specified time has elapsed and check
+     *  whether a stop was requested (see RequestStop()). If the timeout is 0,
+     *  the application will wait indefinitely for a client connection.
+     *  @param seconds The connection timeout in seconds. If set to 0, the
+     *                 application will wait indefinitely for a client connection.
+     *                 The default value is 60 seconds.
+     */
+    virtual void SetConnectionTimeout(int seconds);
+
+    /** Request stopping the service, i.e. makes sure that StartProvidingService()
+     *  returns after the current client connection has been handled (or the connection timeout
+     *  has been reached, see SetConnectionTimeout()). This function is thread safe and can be
+     *  called from a different thread than the one running StartProvidingService().
+     */
+    virtual void RequestStop();
 };
 
 #endif

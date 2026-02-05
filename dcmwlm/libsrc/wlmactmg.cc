@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -144,7 +144,8 @@ WlmActivityManager::WlmActivityManager(
     cmd_argv( argvv ), opt_maxAssociations( opt_maxAssociationsv ),
     opt_blockMode(opt_blockModev), opt_dimse_timeout(opt_dimse_timeoutv), opt_acse_timeout(opt_acse_timeoutv),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
-    processTable( )
+    processTable( ), opt_requestFilePath(), opt_requestFileFormat(), stopRequested(OFFalse), stopRequestedMutex(),
+    connectionTimeout(60)
 {
   // initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
@@ -214,6 +215,22 @@ OFBool WlmActivityManager::setRequestFilePath(const OFString& path, const OFStri
 }
 
 
+void WlmActivityManager::SetConnectionTimeout(int seconds)
+// Date         : Feb 05, 2026
+// Author       : Michael Onken
+// Task         : Set connection timeout in seconds. If this timeout is > 0, the application will
+//                stop waiting for a client connection after the specified time has elapsed and check
+//                whether a stop was requested (see RequestStop()). If the timeout is 0,
+//                the application will wait indefinitely for a client connection.
+// Parameters   : seconds - [in] The connection timeout in seconds. If set to 0, the
+//                          application will wait indefinitely for a client connection.
+//                          The default value is 60 seconds.
+// Return Value : none.
+{
+    connectionTimeout = seconds;
+}
+
+
 // ----------------------------------------------------------------------------
 
 OFCondition WlmActivityManager::StartProvidingService()
@@ -273,7 +290,8 @@ OFCondition WlmActivityManager::StartProvidingService()
   // successfully. Now, we want to start handling all incoming requests. Since
   // this activity is supposed to represent a server process, we do not want to
   // terminate this activity. Hence, create an endless while-loop.
-  while( cond.good() )
+  OFBool userRequestedStop = OFFalse;
+  while( cond.good() && !userRequestedStop)
   {
     // Wait for an association and handle the requests of
     // the calling applications correspondingly.
@@ -290,6 +308,14 @@ OFCondition WlmActivityManager::StartProvidingService()
     // for unix, this is done in WaitForAssociation() with exit()
     if (DUL_processIsForkedChild()) break;
 #endif
+    // check if stop was requested
+    stopRequestedMutex.lock();
+    userRequestedStop = stopRequested;
+    if (userRequestedStop)
+    {
+      DCMWLM_DEBUG("WlmActivityManager: Detected stop request, terminating service loop");
+    }
+    stopRequestedMutex.unlock();
   }
   // Drop the network, i.e. free memory of T_ASC_Network* structure. This call
   // is the counterpart of ASC_initializeNetwork(...) which was called above.
@@ -385,13 +411,13 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   // or not we need to set the timeout value correspondingly.
   // for WIN32, child processes cannot be counted (always 0) -> timeout=1000
   if( opt_singleProcess )
-    timeout = 1000;
+    timeout = connectionTimeout;
   else
   {
     if( processTable.size() > 0 )
       timeout = 1;
     else
-      timeout = 1000;
+      timeout = connectionTimeout;
   }
 
   // Listen to a socket for timeout seconds and wait for an association request.
@@ -401,7 +427,14 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   // or (WIN32) if dcmnet has started a child for us, to handle this
   // association (signaled by "DULC_FORKEDCHILD") -> return to "event loop"
   if ( ( cond.code() == DULC_FORKEDCHILD ) || ( cond == DUL_NOASSOCIATIONREQUEST ) )
+  {
+    if (cond == DUL_NOASSOCIATIONREQUEST)
+    {
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
+    }
     return EC_Normal;
+  }
 
   // if error occurs and we're not in single process mode, close association and return
   if( cond.bad() && !opt_singleProcess )
@@ -1039,6 +1072,15 @@ static OFString AddStatusDetail( DcmDataset **statusDetail, const DcmElement *el
   log << OFStringStream_ends;
   OFSTRINGSTREAM_GETOFSTRING(log, ret)
   return ret;
+}
+
+
+void WlmActivityManager::RequestStop()
+{
+  DCMWLM_DEBUG("WlmActivityManager: Stop requested");
+  stopRequestedMutex.lock();
+  stopRequested = OFTrue;
+  stopRequestedMutex.unlock();
 }
 
 // ----------------------------------------------------------------------------
