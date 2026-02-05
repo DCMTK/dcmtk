@@ -138,7 +138,7 @@ LogLevelMatchFilter::decide(const InternalLoggingEvent& event) const
     }
 
     bool matchOccurred = (logLevelToMatch == event.getLogLevel());
-       
+
     if(matchOccurred) {
         return (acceptOnMatch ? ACCEPT : DENY);
     }
@@ -259,6 +259,48 @@ StringMatchFilter::decide(const InternalLoggingEvent& event) const
     else {  // we've got a match
         return (acceptOnMatch ? ACCEPT : DENY);
     }
+}
+
+//
+// MDC Match filter
+//
+MDCMatchFilter::MDCMatchFilter()
+{
+    init();
+}
+
+MDCMatchFilter::MDCMatchFilter(const helpers::Properties& properties)
+{
+    init();
+
+    properties.getBool (acceptOnMatch,DCMTK_LOG4CPLUS_TEXT("AcceptOnMatch"));
+    properties.getBool (neutralOnEmpty,DCMTK_LOG4CPLUS_TEXT("NeutralOnEmpty"));
+    mdcValueToMatch = properties.getProperty(DCMTK_LOG4CPLUS_TEXT("MDCValueToMatch"));
+    mdcKeyToMatch = properties.getProperty(DCMTK_LOG4CPLUS_TEXT("MDCKeyToMatch"));
+}
+
+
+void MDCMatchFilter::init()
+{
+    acceptOnMatch = true;
+    neutralOnEmpty = true;
+}
+
+
+FilterResult MDCMatchFilter::decide(const InternalLoggingEvent& event) const
+{
+    if(neutralOnEmpty && (mdcKeyToMatch.empty() || mdcValueToMatch.empty()))
+        return NEUTRAL;
+
+    const tstring mdcStr = event.getMDC(mdcKeyToMatch);
+
+    if(neutralOnEmpty && mdcStr.empty())
+        return NEUTRAL;
+
+    if(mdcStr.compare(mdcValueToMatch) == 0)
+        return (acceptOnMatch ? ACCEPT : DENY);
+
+    return (acceptOnMatch ? DENY : ACCEPT);
 }
 
 

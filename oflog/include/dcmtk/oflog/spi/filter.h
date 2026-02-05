@@ -281,6 +281,58 @@ namespace log4cplus {
             log4cplus::tstring stringToMatch;
         };
 
+        /**
+         * This is a simple filter based on the key/value pair stored in MDC.
+         *
+         * The filter admits four options <b>NeutralOnEmpty</b>, <b>MDCKeyToMatch</b>
+         * <b>MDCValueToMatch</b> and <b>AcceptOnMatch</b>.
+         *
+         * If <code>NeutralOnEmpty</code> is true and <code>MDCKeyToMatch</code> or <code>MDCValueToMatch</code>
+         * is empty then {@link #NEUTRAL} is returned.
+         *
+         * If <code>NeutralOnEmpty</code> is true and the string returned by event.getMDC(MDCKeyToMatch) is empty
+         * then {@link #NEUTRAL} is returned.
+         *
+         * If the string returned by event.getMDC(MDCKeyToMatch) matches <code>MDCValueToMatch</code>, then if
+         * <b>AcceptOnMatch</b> is true, {@link #ACCEPT} is returned, and if
+         * <b>AcceptOnMatch</b> is false, {@link #DENY} is returned.
+         *
+         * If the string returned by event.getMDC(MDCKeyToMatch) does not match <code>MDCValueToMatch</code>, then if
+         * <b>AcceptOnMatch</b> is true, {@link #DENY} is returned, and if
+         * <b>AcceptOnMatch</b> is false, {@link #ACCEPT} is returned.
+         *
+         * This class has been backported from log4plus version 2.1.2.
+         *
+         */
+
+        class DCMTK_LOG4CPLUS_EXPORT MDCMatchFilter : public Filter
+        {
+            public:
+              // ctors
+                MDCMatchFilter();
+                MDCMatchFilter(const log4cplus::helpers::Properties& p);
+
+                /**
+                 * Returns {@link #NEUTRAL} is there is no string match.
+                 */
+                virtual FilterResult decide(const InternalLoggingEvent& event) const;
+
+            private:
+              // Methods
+                DCMTK_LOG4CPLUS_PRIVATE void init();
+
+              // Data
+                /** Do we return ACCEPT when a match occurs. Default is <code>true</code>. */
+                bool acceptOnMatch;
+                /** return NEUTRAL if mdcKeyToMatch is empty or event::getMDC(mdcKeyValue) is empty or mdcValueToMatch is empty. Default is <code>true</code>. */
+                bool neutralOnEmpty;
+                /** The MDC key to retrieve **/
+                log4cplus::tstring mdcKeyToMatch;
+                /** the MDC value to match **/
+                log4cplus::tstring mdcValueToMatch;
+        };
+
+
     } // end namespace spi
 } // end namespace log4cplus
 } // end namespace dcmtk
