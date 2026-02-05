@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -149,7 +149,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  'formattedTime' is cleared automatically. Please note that if the "Timezone Offset
      *  From UTC" attribute (0008,0201) is present, it applies to all TM attributes in the
      *  object. However, the time zone is not taken into account for the creation of the
-     *  ISO formatted time. See also "getTimeZoneFromString()" below.
+     *  ISO formatted time. See also getTimeZoneFromString() below.
      *  @param formattedTime reference to string variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param seconds add optional seconds (":SS") if OFTrue

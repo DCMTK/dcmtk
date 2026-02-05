@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -76,7 +76,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
                const unsigned int hour,
                const unsigned int minute,
                const double second,
-               const double timeZone = 0);
+               const double timeZone = OFTime::unspecifiedTimeZone);
 
     /** destructor
      */
@@ -174,7 +174,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
                        const unsigned int hour,
                        const unsigned int minute,
                        const double second,
-                       const double timeZone = 0);
+                       const double timeZone = OFTime::unspecifiedTimeZone);
 
     /** set the date component to the specified date.
      *  Before the new value is set it is checked using the "isValid()" routine.

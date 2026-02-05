@@ -63,6 +63,7 @@ OFTEST(ofstd_OFTime)
     OFCHECK(time1.isValid());
     OFCHECK(!time1.setTime(24, 0, 0));
     OFCHECK(time1.setTime(12, 15, 30));
+    OFCHECK(!time1.hasTimeZone());
     OFCHECK_EQUAL(time1.getHour(), 12);
     OFCHECK_EQUAL(time1.getMinute(), 15);
     OFCHECK_EQUAL(time1.getSecond(), 30);
@@ -72,10 +73,17 @@ OFTEST(ofstd_OFTime)
     OFCHECK(!(time1 != time2));
     time2.clear();
     OFCHECK(time2.isValid());
+    OFCHECK(!time2.hasTimeZone());
     OFCHECK(time1.setTime(12, 15, 30, -1));
     OFCHECK(time1 > OFTime(10, 0, 0, -1));
     OFCHECK(time1.setTimeZone(2));
+    OFCHECK(time1.hasTimeZone());
     OFCHECK(!time1.setTimeZone(-20));
+    OFCHECK(time1.hasTimeZone());
+    time1.clearTimeZone();
+    OFCHECK(!time1.hasTimeZone());
+    OFCHECK(time1 > OFTime(10, 0, 0, -1));
+    OFCHECK(time1.setTimeZone(2));
     OFCHECK(time1 < OFTime(10, 0, 0, -1));
     OFCHECK_EQUAL(time1, OFTime(9, 15, 30, -1));
     OFCHECK_EQUAL(time1.getTimeZone(), 2);

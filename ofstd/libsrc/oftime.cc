@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2024, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,8 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oflimits.h"
+#include "dcmtk/ofstd/ofmath.h"
 #include <ctime>
 
 
@@ -48,6 +50,18 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 
 
+/*------------------------*
+ *  constant definitions  *
+ *------------------------*/
+
+// use "Not a Number" (NaN) if available, an invalid value otherwise
+#ifdef HAVE_CXX11
+const double OFTime::unspecifiedTimeZone = OFnumeric_limits<double>::quiet_NaN();
+#else
+const double OFTime::unspecifiedTimeZone = OFnumeric_limits<double>::max();
+#endif
+
+
 /*------------------*
  *  implementation  *
  *------------------*/
@@ -56,7 +70,7 @@ OFTime::OFTime()
   : Hour(0),
     Minute(0),
     Second(0),
-    TimeZone(0)
+    TimeZone(unspecifiedTimeZone)
 {
 }
 
@@ -174,7 +188,13 @@ void OFTime::clear()
     Hour = 0;
     Minute = 0;
     Second = 0;
-    TimeZone = 0;
+    clearTimeZone();
+}
+
+
+void OFTime::clearTimeZone()
+{
+    TimeZone = unspecifiedTimeZone;
 }
 
 
@@ -191,7 +211,13 @@ OFBool OFTime::isTimeValid(const unsigned int hour,
                            const double timeZone)
 {
     /* check whether given time is valid (also support leap second) */
-    return (hour < 24) && (minute < 60) && (second >= 0) && (second <= 60) && (timeZone >= -12) && (timeZone <= 14);
+    return (hour < 24) && (minute < 60) && (second >= 0) && (second <= 60) && isTimeZoneValid(timeZone, OFTrue /*acceptUnspecified*/);
+}
+
+
+OFBool OFTime::hasTimeZone() const
+{
+    return isTimeZoneSpecified(TimeZone);
 }
 
 
@@ -261,7 +287,7 @@ OFBool OFTime::setTimeZone(const double timeZone)
 {
     OFBool status = OFFalse;
     /* only change the currently stored value if the new time zone is valid */
-    if (isTimeValid(Hour, Minute, Second, timeZone))
+    if (isTimeZoneValid(timeZone, OFFalse /*acceptUnspecified*/))
     {
         TimeZone = timeZone;
         /* report that a new time zone has been set */
@@ -278,6 +304,13 @@ OFBool OFTime::setTimeZone(const signed int hour,
     const double timeZone = (hour < 0) ? OFstatic_cast(double, hour) - OFstatic_cast(double, minute) / 60 : OFstatic_cast(double, hour) + OFstatic_cast(double, minute) / 60;
     /* only change the currently stored value if the new time zone is valid */
     return setTimeZone(timeZone);
+}
+
+
+OFBool OFTime::setLocalTimeZone()
+{
+    /* set local time zone (if available) */
+    return setTimeZone(getLocalTimeZone());
 }
 
 
@@ -367,7 +400,7 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
                 TimeZone -= 24;
         } else {
             /* could not retrieve the time zone */
-            TimeZone = 0;
+            TimeZone = unspecifiedTimeZone;
         }
 #ifdef HAVE_WINDOWS_H
         /* Windows: no microseconds available, use milliseconds instead */
@@ -501,21 +534,43 @@ unsigned int OFTime::getMicroSecond() const
 
 double OFTime::getTimeZone() const
 {
+    // tbc: check for valid value?
     return TimeZone;
+}
+
+
+// -- static helper functions --
+
+OFBool OFTime::isTimeZoneValid(const double timeZone,
+                               const OFBool acceptUnspecified)
+{
+    const OFBool timeZoneSpecified = isTimeZoneSpecified(timeZone);
+    /* check whether given time zone is unspecified and/or within the valid range */
+    return (acceptUnspecified && !timeZoneSpecified) || (timeZoneSpecified && (timeZone >= -12) && (timeZone <= 14));
+}
+
+
+OFBool OFTime::isTimeZoneSpecified(const double timeZone)
+{
+#ifdef HAVE_CXX11
+    return !OFMath::isnan(timeZone);
+#else
+    return (timeZone != unspecifiedTimeZone);
+#endif
 }
 
 
 double OFTime::getTimeInSeconds(const OFBool useTimeZone,
                                 const OFBool normalize) const
 {
-    return getTimeInSeconds(Hour, Minute, Second, (useTimeZone) ? TimeZone : 0, normalize);
+    return getTimeInSeconds(Hour, Minute, Second, (useTimeZone) ? TimeZone : unspecifiedTimeZone, normalize);
 }
 
 
 double OFTime::getTimeInHours(const OFBool useTimeZone,
                               const OFBool normalize) const
 {
-    return getTimeInHours(Hour, Minute, Second, (useTimeZone) ? TimeZone : 0, normalize);
+    return getTimeInHours(Hour, Minute, Second, (useTimeZone) ? TimeZone : unspecifiedTimeZone, normalize);
 }
 
 
@@ -525,8 +580,9 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
                                 const double timeZone,
                                 const OFBool normalize)
 {
+    const double timeZoneOffset = isTimeZoneSpecified(timeZone) ? timeZone : 0;
     /* compute number of seconds since 00:00:00 */
-    double result = ((OFstatic_cast(double, hour) - timeZone) * 60 + OFstatic_cast(double, minute)) * 60 + second;
+    double result = ((OFstatic_cast(double, hour) - timeZoneOffset) * 60 + OFstatic_cast(double, minute)) * 60 + second;
     /* normalize the result to the range [0.0,86400.0[ */
     if (normalize)
         result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 86400) * 86400);
@@ -540,8 +596,9 @@ double OFTime::getTimeInHours(const unsigned int hour,
                               const double timeZone,
                               const OFBool normalize)
 {
+    const double timeZoneOffset = isTimeZoneSpecified(timeZone) ? timeZone : 0;
     /* compute number of hours since 00:00:00 (incl. fraction of hours) */
-    double result = OFstatic_cast(double, hour) - timeZone + (OFstatic_cast(double, minute) + second / 60) / 60;
+    double result = OFstatic_cast(double, hour) - timeZoneOffset + (OFstatic_cast(double, minute) + second / 60) / 60;
     /* normalize the result to the range [0.0,24.0[ */
     if (normalize)
         result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 24) * 24);
@@ -620,7 +677,8 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         }
         /* copy converted part so far to the result variable */
         formattedTime = buf;
-        if (showTimeZone)
+        /* only add the time zone if request _and_ a value is specified */
+        if (showTimeZone && hasTimeZone())
         {
             /* convert time zone from hours and fraction of hours to hours and minutes */
             const char zoneSign = (TimeZone < 0) ? '-' : '+';
@@ -658,7 +716,7 @@ OFTime OFTime::getCurrentTime()
 
 double OFTime::getLocalTimeZone()
 {
-    double result = 0;
+    double result = unspecifiedTimeZone;
     /* determine local time zone */
     OFTime timeVal;
     if (timeVal.setCurrentTime())
@@ -667,7 +725,8 @@ double OFTime::getLocalTimeZone()
 }
 
 
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &timeVal)
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                  const OFTime &timeVal)
 {
     OFString tmpString;
     /* print the given time in ISO format to the stream */
