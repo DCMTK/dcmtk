@@ -21,12 +21,13 @@
 
 
 #include "dcmtk/config/osconfig.h"
+
+#include "dcmtk/ofstd/oftime.h"
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oflimits.h"
 #include "dcmtk/ofstd/ofmath.h"
 #include <ctime>
-
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
@@ -45,9 +46,6 @@ END_EXTERN_C
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>      /* for Windows time functions */
 #endif
-
-#include "dcmtk/ofstd/oftime.h"
-#include "dcmtk/ofstd/ofstd.h"
 
 
 /*------------------------*
@@ -553,7 +551,7 @@ OFBool OFTime::isTimeZoneValid(const double timeZone,
 OFBool OFTime::isTimeZoneSpecified(const double timeZone)
 {
 #ifdef HAVE_CXX11
-    return !OFMath::isnan(timeZone);
+    return !(OFMath::isnan)(timeZone);
 #else
     return (timeZone != unspecifiedTimeZone);
 #endif
