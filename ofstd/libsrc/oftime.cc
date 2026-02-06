@@ -203,16 +203,6 @@ OFBool OFTime::isValid() const
 }
 
 
-OFBool OFTime::isTimeValid(const unsigned int hour,
-                           const unsigned int minute,
-                           const double second,
-                           const double timeZone)
-{
-    /* check whether given time is valid (also support leap second) */
-    return (hour < 24) && (minute < 60) && (second >= 0) && (second <= 60) && isTimeZoneValid(timeZone, OFTrue /*acceptUnspecified*/);
-}
-
-
 OFBool OFTime::hasTimeZone() const
 {
     return isTimeZoneSpecified(TimeZone);
@@ -537,27 +527,6 @@ double OFTime::getTimeZone() const
 }
 
 
-// -- static helper functions --
-
-OFBool OFTime::isTimeZoneValid(const double timeZone,
-                               const OFBool acceptUnspecified)
-{
-    const OFBool timeZoneSpecified = isTimeZoneSpecified(timeZone);
-    /* check whether given time zone is unspecified and/or within the valid range */
-    return (acceptUnspecified && !timeZoneSpecified) || (timeZoneSpecified && (timeZone >= -12) && (timeZone <= 14));
-}
-
-
-OFBool OFTime::isTimeZoneSpecified(const double timeZone)
-{
-#ifdef HAVE_CXX11
-    return !(OFMath::isnan)(timeZone);
-#else
-    return (timeZone != unspecifiedTimeZone);
-#endif
-}
-
-
 double OFTime::getTimeInSeconds(const OFBool useTimeZone,
                                 const OFBool normalize) const
 {
@@ -729,6 +698,8 @@ OFBool OFTime::getISOFormattedTimeZone(OFString &formattedTimeZone,
 }
 
 
+// -- static helper functions --
+
 OFTime OFTime::getCurrentTime()
 {
     /* create a time object with the current system time set */
@@ -750,6 +721,37 @@ double OFTime::getLocalTimeZone()
     return result;
 }
 
+
+OFBool OFTime::isTimeValid(const unsigned int hour,
+                           const unsigned int minute,
+                           const double second,
+                           const double timeZone)
+{
+    /* check whether given time is valid (also support leap second) */
+    return (hour < 24) && (minute < 60) && (second >= 0) && (second <= 60) && isTimeZoneValid(timeZone, OFTrue /*acceptUnspecified*/);
+}
+
+
+OFBool OFTime::isTimeZoneValid(const double timeZone,
+                               const OFBool acceptUnspecified)
+{
+    const OFBool timeZoneSpecified = isTimeZoneSpecified(timeZone);
+    /* check whether given time zone is unspecified and/or within the valid range */
+    return (acceptUnspecified && !timeZoneSpecified) || (timeZoneSpecified && (timeZone >= -12) && (timeZone <= 14));
+}
+
+
+OFBool OFTime::isTimeZoneSpecified(const double timeZone)
+{
+#ifdef HAVE_CXX11
+    return !(OFMath::isnan)(timeZone);
+#else
+    return (timeZone != unspecifiedTimeZone);
+#endif
+}
+
+
+// -- output operator --
 
 STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
                                   const OFTime &timeVal)
