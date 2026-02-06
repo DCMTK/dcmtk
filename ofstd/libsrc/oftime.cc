@@ -656,8 +656,7 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             if (showFraction)
             {
                 char buf2[12];
-                OFStandard::ftoa(buf2, sizeof(buf2), Second,
-                  OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
+                OFStandard::ftoa(buf2, sizeof(buf2), Second, OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
                 /* format: HH:MM:SS.FFFFFF */
                 if (showDelimiter)
                     OFStandard::strlcat(buf, ":", sizeof(buf));
@@ -675,9 +674,38 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         }
         /* copy converted part so far to the result variable */
         formattedTime = buf;
-        /* only add the time zone if request _and_ a value is specified */
-        if (showTimeZone && hasTimeZone())
+        /* only add the time zone if requested _and_ a value is specified */
+        if (showTimeZone)
         {
+            OFString formattedTimeZone;
+            if (getISOFormattedTimeZone(formattedTimeZone, showDelimiter))
+            {
+                if (!formattedTimeZone.empty())
+                {
+                    if (showDelimiter)
+                        formattedTime += timeZoneSeparator;
+                    /* append time zone part to the result variable */
+                    formattedTime += formattedTimeZone;
+                }
+            }
+        }
+        status = OFTrue;
+    }
+    return status;
+}
+
+
+OFBool OFTime::getISOFormattedTimeZone(OFString &formattedTimeZone,
+                                       const OFBool showDelimiter) const
+{
+    OFBool status = OFFalse;
+    /* first, check for valid time zone (either specified or unspecified) */
+    if (isTimeZoneValid(TimeZone, OFTrue /*acceptUnspecified*/))
+    {
+        /* check whether time zone is specified */
+        if (isTimeZoneSpecified(TimeZone))
+        {
+            char buf[32];
             /* convert time zone from hours and fraction of hours to hours and minutes */
             const char zoneSign = (TimeZone < 0) ? '-' : '+';
             const double zoneAbs = (TimeZone < 0) ? -TimeZone : TimeZone;
@@ -685,15 +713,15 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             const unsigned int zoneMinute = OFstatic_cast(unsigned int, (zoneAbs - zoneHour) * 60);
             /* format: ...+HH:MM or -HH:MM */
             if (showDelimiter)
-            {
-                formattedTime += timeZoneSeparator;
                 OFStandard::snprintf(buf, sizeof(buf), "%c%02u:%02u", zoneSign, zoneHour, zoneMinute);
-            }
             /* format: ...+HHMM or -HHMM */
             else
                 OFStandard::snprintf(buf, sizeof(buf), "%c%02u%02u",  zoneSign, zoneHour, zoneMinute);
             /* append time zone part to the result variable */
-            formattedTime += buf;
+            formattedTimeZone = buf;
+        } else {
+            /* clear output variable if time zone is unspecified */
+            formattedTimeZone.clear();
         }
         status = OFTrue;
     }

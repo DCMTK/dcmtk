@@ -67,7 +67,7 @@ class DCMTK_OFSTD_EXPORT OFTime
     /** constructor with init values
      *  @param hour hour value to be set
      *  @param minute minute value to be set
-     *  @param second second value to be set (incl. fraction of seconds)
+     *  @param second second value to be set (including fraction of seconds)
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      */
     OFTime(const unsigned int hour,
@@ -161,7 +161,7 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  Before the new value is set it is checked using the isTimeValid() method.
      *  @param hour new hour value to be set
      *  @param minute new minute value to be set
-     *  @param second new second value to be set (incl. fraction of seconds)
+     *  @param second new second value to be set (including fraction of seconds)
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
@@ -186,7 +186,7 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** set the time value to the specified second.
      *  Before the new value is set, it is checked using the isTimeValid() method.
-     *  @param second new second value to be set (incl. fraction of seconds)
+     *  @param second new second value to be set (including fraction of seconds)
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setSecond(const double second);
@@ -240,7 +240,7 @@ class DCMTK_OFSTD_EXPORT OFTime
                           const double timeZone = unspecifiedTimeZone,
                           const OFBool normalize = OFTrue);
 
-    /** set the time value to the current system time.
+    /** set the time value to the current system time, including the local time zone.
      *  This function uses operating system dependent routines. If they are unavailable
      *  for some reason the current value is not modified.
      *  @return OFTrue if the current system time has been set, OFFalse otherwise
@@ -312,7 +312,7 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @param useTimeZone use the currently set time zone to correct the result
      *  @param normalize if OFTrue results larger than or equal 24.0 (hours) are
      *     normalized to a valid range
-     *  @return number of hours since "00:00:00" (incl. fraction of hours)
+     *  @return number of hours since "00:00:00" (including fraction of hours)
      */
     double getTimeInHours(const OFBool useTimeZone = OFFalse,
                           const OFBool normalize = OFTrue) const;
@@ -348,7 +348,7 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @param showDelimiter flag, indicating whether to use delimiters (":") or not
      *  @param timeZoneSeparator separator between ISO time value and time zone. Only used if
      *    'showDelimiter' is true.
-     *  @return OFTrue if result variable has been set, OFFalse otherwise
+     *  @return OFTrue if result variable has been set, i.e. the time is valid, OFFalse otherwise
      */
     OFBool getISOFormattedTime(OFString &formattedTime,
                                const OFBool showSeconds = OFTrue,
@@ -356,6 +356,20 @@ class DCMTK_OFSTD_EXPORT OFTime
                                const OFBool showTimeZone = OFFalse,
                                const OFBool showDelimiter = OFTrue,
                                const OFString &timeZoneSeparator = " ") const;
+
+    /** get the current time zone value in ISO format.
+     *  The two ISO time zone formats supported by this function are
+     *  - "&HH:MM" (with delimiter) and
+     *  - "&HHMM" (without delimiter, useful for DICOM attribute TimezoneOffsetFromUTC).
+     *
+     *  @note If no time zone is specified, the output parameter 'formattedTimeZone' is cleared.
+     *  @param formattedTimeZone reference to string variable where the result is stored
+     *  @param showDelimiter flag, indicating whether to use a delimiter (":") or not
+     *  @return OFTrue if result variable has been set, i.e. the time zone is valid, OFFalse
+     *    otherwise
+     */
+    OFBool getISOFormattedTimeZone(OFString &formattedTimeZone,
+                                   const OFBool showDelimiter = OFTrue) const;
 
     /* --- static helper functions --- */
 
@@ -438,7 +452,7 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @param normalize if OFTrue results larger than or equal 24.0 (hours)
      *    are normalized to a valid range
-     *  @return number of hours since "00:00:00" (incl. fraction of hours)
+     *  @return number of hours since "00:00:00" (including fraction of hours)
      */
     static double getTimeInHours(const unsigned int hour,
                                  const unsigned int minute,
@@ -455,7 +469,7 @@ class DCMTK_OFSTD_EXPORT OFTime
     /// currently stored minute value
     unsigned int Minute;
 
-    /// currently stored second value (incl. fraction of seconds)
+    /// currently stored second value (including fraction of seconds)
     double Second;
 
     /// currently stored time zone value, i.e. time difference to UTC in hours

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2020, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -58,6 +58,7 @@ OFTEST(ofstd_OFDate)
 OFTEST(ofstd_OFTime)
 {
     OFTime time1, time2;
+    OFString tmpString;
 
     /* test OFTime */
     OFCHECK(time1.isValid());
@@ -117,6 +118,18 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time1.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 13599);
     OFCHECK(time1.setTimeInHours(99, 0, OFTrue /*normalized*/));
     OFCHECK_EQUAL(time1.getTimeInHours(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 3);
+    /* check ISO formatted time/time zone */
+    OFCHECK(time2.setTimeZone(+1.0));
+    OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFFalse /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
+    OFCHECK_EQUAL(tmpString, "12:15:30 +01:00");
+    OFCHECK(time2.getISOFormattedTimeZone(tmpString, OFFalse /*showDelimiter*/));
+    OFCHECK_EQUAL(tmpString, "+0100");
+    /* do the same tests, but without a time zone */
+    time2.clearTimeZone();
+    OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFFalse /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
+    OFCHECK_EQUAL(tmpString, "12:15:30");
+    OFCHECK(time2.getISOFormattedTimeZone(tmpString, OFFalse /*showDelimiter*/));
+    OFCHECK_EQUAL(tmpString, "");
 }
 
 
