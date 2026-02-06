@@ -267,7 +267,7 @@ namespace log4cplus {
             StringMatchFilter(const log4cplus::helpers::Properties& p);
 
             /**
-             * Returns {@link #NEUTRAL} is there is no string match.
+             * Returns {@link #NEUTRAL} if there is no string match.
              */
             virtual FilterResult decide(const InternalLoggingEvent& event) const;
 
@@ -313,7 +313,7 @@ namespace log4cplus {
                 MDCMatchFilter(const log4cplus::helpers::Properties& p);
 
                 /**
-                 * Returns {@link #NEUTRAL} is there is no string match.
+                 * Returns {@link #NEUTRAL} if there is no string match.
                  */
                 virtual FilterResult decide(const InternalLoggingEvent& event) const;
 
@@ -338,5 +338,3 @@ namespace log4cplus {
 } // end namespace dcmtk
 
 #endif /* DCMTK_LOG4CPLUS_SPI_FILTER_HEADER_ */
-
-
