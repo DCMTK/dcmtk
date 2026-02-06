@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,11 +29,17 @@
 #include "wlcefs.h"
 #include "dcmtk/dcmwlm/wlds.h"
 #include "dcmtk/dcmwlm/wldsfs.h"
+#include "dcmtk/dcmtls/tlslayer.h"    /* for DcmTLSTransportLayer */
 
 #define OFFIS_CONSOLE_APPLICATION "wlmscpfs"
 
 int main( int argc, char *argv[] )
 {
+
+#ifdef WITH_OPENSSL
+  DcmTLSTransportLayer::initializeOpenSSL();
+#endif
+
   // Initialize object which provides a connection to the data source
   WlmDataSourceFileSystem *dataSource = new WlmDataSourceFileSystem();
 

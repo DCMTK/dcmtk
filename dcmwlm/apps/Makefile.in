@@ -37,10 +37,15 @@ dcmnetinc = -I$(dcmnetdir)/include
 dcmnetlibdir = -L$(dcmnetdir)/libsrc
 dcmnetlib = -ldcmnet
 
-LOCALINCLUDES = $(dcmnetinc) $(dcmdatainc) $(ofloginc) $(ofstdinc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) \
+dcmtlsdir = $(top_srcdir)/../dcmtls
+dcmtlsinc = -I$(dcmtlsdir)/include
+dcmtlslibdir = -L$(dcmtlsdir)/libsrc
+dcmtlslib = -ldcmtls
+
+LOCALINCLUDES = $(dcmtlsinc) $(dcmnetinc) $(dcmdatainc) $(ofloginc) $(ofstdinc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmtlslibdir) $(dcmnetlibdir) $(dcmdatalibdir) \
 	$(ofloglibdir) $(ofstdlibdir) $(oficonvlibdir)
-LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
+LOCALLIBS = -ldcmwlm $(dcmtlslib) $(dcmnetlib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
 	$(oficonvlib) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 objs = wlcefs.o wlmscpfs.o

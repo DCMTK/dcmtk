@@ -40,6 +40,8 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
   protected:
     /// data source connection object
     WlmDataSource *dataSource;
+    /// TLS layer responsible for all encryption/authentication stuff
+    DcmTransportLayer *transportLayer;
     /// port on which the application is listening
     OFCmdUnsignedInt opt_port;
     /// indicates if the application shall refuse any association
@@ -216,6 +218,7 @@ class DCMTK_DCMWLM_EXPORT WlmActivityManager
        */
     WlmActivityManager(
         WlmDataSource *dataSourcev,
+        DcmTransportLayer *transportLayerv,
         OFCmdUnsignedInt opt_portv,
         OFBool opt_refuseAssociationv,
         OFBool opt_rejectWithoutImplementationUIDv,
