@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2025-11-21 11:54:35
+**   Date: 2026-02-06 11:29:29
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -490,6 +490,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x001c, 0x0008, 0x001c,
       EVR_CS, "SyntheticData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x001d, 0x0008, 0x001d,
+      EVR_SQ, "SensitiveContentCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0020, 0x0008, 0x0020,
@@ -27594,6 +27598,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3004, 0x0016, 0x3004, 0x0016,
       EVR_SQ, "RecommendedIsodoseLevelSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0020, 0x3004, 0x0020,
+      EVR_SQ, "DoseUnitCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0021, 0x3004, 0x0021,
+      EVR_SQ, "RTDoseInterpretedTypeCodeSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0022, 0x3004, 0x0022,
+      EVR_SQ, "RTDoseInterpretedTypeCodeModifierSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0023, 0x3004, 0x0023,
+      EVR_SQ, "DoseRadiobiologicalInterpretationSequence", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x0024, 0x3004, 0x0024,
+      EVR_SQ, "RTDoseIntentCodeSequence", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0040, 0x3004, 0x0040,

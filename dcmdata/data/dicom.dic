@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2025, OFFIS e.V.
+#  Copyright (C) 1994-2026, OFFIS e.V.
 #  All rights reserved.  See COPYRIGHT file for details.
 #
 #  This software and supporting documentation were developed by
@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2025e and PS 3.7-2025e.
-# File created on 2025-11-21 11:51:05 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2026a and PS 3.7-2026a.
+# File created on 2026-02-06 11:28:35 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -123,6 +123,7 @@
 (0008,001A)	UI	RelatedGeneralSOPClassUID	1-n	DICOM
 (0008,001B)	UI	OriginalSpecializedSOPClassUID	1	DICOM
 (0008,001C)	CS	SyntheticData	1	DICOM
+(0008,001D)	SQ	SensitiveContentCodeSequence	1	DICOM
 (0008,0020)	DA	StudyDate	1	DICOM
 (0008,0021)	DA	SeriesDate	1	DICOM
 (0008,0022)	DA	AcquisitionDate	1	DICOM
@@ -3788,6 +3789,11 @@
 (3004,0012)	DS	DoseValue	1	DICOM
 (3004,0014)	CS	TissueHeterogeneityCorrection	1-3	DICOM
 (3004,0016)	SQ	RecommendedIsodoseLevelSequence	1	DICOM
+(3004,0020)	SQ	DoseUnitCodeSequence	1	DICOM
+(3004,0021)	SQ	RTDoseInterpretedTypeCodeSequence	1	DICOM
+(3004,0022)	SQ	RTDoseInterpretedTypeCodeModifierSequence	1	DICOM
+(3004,0023)	SQ	DoseRadiobiologicalInterpretationSequence	1	DICOM
+(3004,0024)	SQ	RTDoseIntentCodeSequence	1	DICOM
 (3004,0040)	DS	DVHNormalizationPoint	3	DICOM
 (3004,0042)	DS	DVHNormalizationDoseValue	1	DICOM
 (3004,0050)	SQ	DVHSequence	1	DICOM

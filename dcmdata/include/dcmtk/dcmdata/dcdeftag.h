@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2025-11-21 11:54:35
+**   Date: 2026-02-06 11:29:28
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2025-11-21 11:54:35"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2026-02-06 11:29:28"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5266
+** Number of entries: 5272
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -129,6 +129,7 @@
 #define DCM_RelatedGeneralSOPClassUID            DcmTagKey(0x0008, 0x001a)
 #define DCM_OriginalSpecializedSOPClassUID       DcmTagKey(0x0008, 0x001b)
 #define DCM_SyntheticData                        DcmTagKey(0x0008, 0x001c)
+#define DCM_SensitiveContentCodeSequence         DcmTagKey(0x0008, 0x001d)
 #define DCM_StudyDate                            DcmTagKey(0x0008, 0x0020)
 #define DCM_SeriesDate                           DcmTagKey(0x0008, 0x0021)
 #define DCM_AcquisitionDate                      DcmTagKey(0x0008, 0x0022)
@@ -4150,6 +4151,11 @@
 #define DCM_DoseValue                            DcmTagKey(0x3004, 0x0012)
 #define DCM_TissueHeterogeneityCorrection        DcmTagKey(0x3004, 0x0014)
 #define DCM_RecommendedIsodoseLevelSequence      DcmTagKey(0x3004, 0x0016)
+#define DCM_DoseUnitCodeSequence                 DcmTagKey(0x3004, 0x0020)
+#define DCM_RTDoseInterpretedTypeCodeSequence    DcmTagKey(0x3004, 0x0021)
+#define DCM_RTDoseInterpretedTypeCodeModifierSequence DcmTagKey(0x3004, 0x0022)
+#define DCM_DoseRadiobiologicalInterpretationSequence DcmTagKey(0x3004, 0x0023)
+#define DCM_RTDoseIntentCodeSequence             DcmTagKey(0x3004, 0x0024)
 #define DCM_DVHNormalizationPoint                DcmTagKey(0x3004, 0x0040)
 #define DCM_DVHNormalizationDoseValue            DcmTagKey(0x3004, 0x0042)
 #define DCM_DVHSequence                          DcmTagKey(0x3004, 0x0050)
