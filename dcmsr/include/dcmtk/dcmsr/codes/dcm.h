@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 11:52:18 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026a
+ *  File created on 2026-02-06 11:37:28 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 5092
-// - retired: 208
+// total number of codes: 5116
+// - retired: 209
 // - no name: 27
 // - not unique: 17
 
@@ -442,7 +442,7 @@
 #define CODE_DCM_StudiesImported                                           DSRBasicCodedEntry("110027", "DCM", "Studies Imported")
 #define CODE_DCM_InstancesImported                                         DSRBasicCodedEntry("110028", "DCM", "Instances Imported")
 #define CODE_DCM_USBDiskEmulation                                          DSRBasicCodedEntry("110030", "DCM", "USB Disk Emulation")
-#define CODE_DCM_Email                                                     DSRBasicCodedEntry("110031", "DCM", "Email")
+#define CODE_DCM_RETIRED_Email                                             DSRBasicCodedEntry("110031", "DCM", "Email")
 #define CODE_DCM_CD                                                        DSRBasicCodedEntry("110032", "DCM", "CD")
 #define CODE_DCM_DVD                                                       DSRBasicCodedEntry("110033", "DCM", "DVD")
 #define CODE_DCM_CompactFlash                                              DSRBasicCodedEntry("110034", "DCM", "Compact Flash")
@@ -500,6 +500,10 @@
 #define CODE_DCM_SourceRoleID                                              DSRBasicCodedEntry("110153", "DCM", "Source Role ID")
 #define CODE_DCM_DestinationMedia                                          DSRBasicCodedEntry("110154", "DCM", "Destination Media")
 #define CODE_DCM_SourceMedia                                               DSRBasicCodedEntry("110155", "DCM", "Source Media")
+#define CODE_DCM_InitiatorRoleID                                           DSRBasicCodedEntry("110156", "DCM", "Initiator Role ID")
+#define CODE_DCM_EmailMessage                                              DSRBasicCodedEntry("110157", "DCM", "Email Message")
+#define CODE_DCM_ClipboardManager                                          DSRBasicCodedEntry("110158", "DCM", "Clipboard Manager")
+#define CODE_DCM_MessagingSystem                                           DSRBasicCodedEntry("110159", "DCM", "Messaging System")
 #define CODE_DCM_StudyInstanceUID                                          DSRBasicCodedEntry("110180", "DCM", "Study Instance UID")
 #define CODE_DCM_SOPClassUID                                               DSRBasicCodedEntry("110181", "DCM", "SOP Class UID")
 #define CODE_DCM_NodeID                                                    DSRBasicCodedEntry("110182", "DCM", "Node ID")
@@ -2192,6 +2196,11 @@
 #define CODE_DCM_ValueOutOfRange                                           DSRBasicCodedEntry("114009", "DCM", "Value out of range")
 #define CODE_DCM_ValueUnknown                                              DSRBasicCodedEntry("114010", "DCM", "Value unknown")
 #define CODE_DCM_ValueIndeterminate                                        DSRBasicCodedEntry("114011", "DCM", "Value indeterminate")
+#define CODE_DCM_NoModulation                                              DSRBasicCodedEntry("114100", "DCM", "No modulation")
+#define CODE_DCM_AngularModulation                                         DSRBasicCodedEntry("114101", "DCM", "Angular modulation")
+#define CODE_DCM_LongitudinalModulation                                    DSRBasicCodedEntry("114102", "DCM", "Longitudinal modulation")
+#define CODE_DCM_ECGBasedModulation                                        DSRBasicCodedEntry("114103", "DCM", "ECG-based modulation")
+#define CODE_DCM_OrganBasedModulation                                      DSRBasicCodedEntry("114104", "DCM", "Organ-based modulation")
 #define CODE_DCM_TimeOfFlight                                              DSRBasicCodedEntry("114201", "DCM", "Time of flight")
 #define CODE_DCM_Interferometry                                            DSRBasicCodedEntry("114202", "DCM", "Interferometry")
 #define CODE_DCM_LaserScanning                                             DSRBasicCodedEntry("114203", "DCM", "Laser scanning")
@@ -5140,5 +5149,20 @@
 #define CODE_DCM_ISUOG3rdTrimester2024                                     DSRBasicCodedEntry("131382", "DCM", "ISUOG 3rd Trimester 2024")
 #define CODE_DCM_JSUMFetalMorphology2021                                   DSRBasicCodedEntry("131383", "DCM", "JSUM Fetal Morphology 2021")
 #define CODE_DCM_JDMSFetalAnatomy2014                                      DSRBasicCodedEntry("131384", "DCM", "JDMS Fetal Anatomy 2014")
+#define CODE_DCM_NoSensitiveContentIdentified                              DSRBasicCodedEntry("131390", "DCM", "No Sensitive Content Identified")
+#define CODE_DCM_NudityContent                                             DSRBasicCodedEntry("131391", "DCM", "Nudity Content")
+#define CODE_DCM_PersonalContent                                           DSRBasicCodedEntry("131392", "DCM", "Personal Content")
+#define CODE_DCM_IdentifyingContent                                        DSRBasicCodedEntry("131393", "DCM", "Identifying Content")
+#define CODE_DCM_GruesomeContent                                           DSRBasicCodedEntry("131394", "DCM", "Gruesome Content")
+#define CODE_DCM_SensitiveContent                                          DSRBasicCodedEntry("131395", "DCM", "Sensitive Content")
+#define CODE_DCM_ExcisedTissue                                             DSRBasicCodedEntry("131396", "DCM", "Excised Tissue")
+#define CODE_DCM_RadiationDose                                             DSRBasicCodedEntry("131400", "DCM", "Radiation Dose")
+#define CODE_DCM_DoseRate                                                  DSRBasicCodedEntry("131401", "DCM", "Dose Rate")
+#define CODE_DCM_SpecificAbsorptionRate                                    DSRBasicCodedEntry("131402", "DCM", "Specific Absorption Rate")
+#define CODE_DCM_ForTreatmentDelivery                                      DSRBasicCodedEntry("131403", "DCM", "For treatment delivery")
+#define CODE_DCM_ForEvaluation                                             DSRBasicCodedEntry("131404", "DCM", "For evaluation")
+#define CODE_DCM_ForVerification                                           DSRBasicCodedEntry("131405", "DCM", "For verification")
+#define CODE_DCM_SpatiallyTransformedDose                                  DSRBasicCodedEntry("131406", "DCM", "Spatially Transformed Dose")
+#define CODE_DCM_DerivedDose                                               DSRBasicCodedEntry("131407", "DCM", "Derived Dose")
 
 #endif
