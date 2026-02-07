@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2025, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -266,6 +266,8 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
 }
 
 
+// -- static helper functions --
+
 OFDateTime OFDateTime::getCurrentDateTime()
 {
     /* create a date/time object with the current system date/time set */
@@ -277,7 +279,10 @@ OFDateTime OFDateTime::getCurrentDateTime()
 }
 
 
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTime &dateTime)
+// -- output operator --
+
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                  const OFDateTime &dateTime)
 {
     OFString string;
     /* print the given date and time in ISO format to the stream */

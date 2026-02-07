@@ -158,7 +158,7 @@ class DCMTK_OFSTD_EXPORT OFTime
     virtual OFBool hasTimeZone() const;
 
     /** set the time value to the specified time.
-     *  Before the new value is set it is checked using the isTimeValid() method.
+     *  Before the new value is set, it is checked using the isTimeValid() method.
      *  @param hour new hour value to be set
      *  @param minute new minute value to be set
      *  @param second new second value to be set (including fraction of seconds)

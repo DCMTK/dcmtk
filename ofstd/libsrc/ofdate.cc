@@ -123,14 +123,6 @@ OFBool OFDate::isValid() const
 }
 
 
-OFBool OFDate::isDateValid(const unsigned int /*year*/,
-                           const unsigned int month,
-                           const unsigned int day)
-{
-    /* this very simple validity check might be enhanced in the future */
-    return (month >= 1) && (month <= 12) && (day >= 1) && (day <= 31);
-}
-
 
 OFBool OFDate::setDate(const unsigned int year,
                        const unsigned int month,
@@ -192,12 +184,6 @@ OFBool OFDate::setDay(const unsigned int day)
 }
 
 
-OFBool OFDate::setCurrentDate()
-{
-    /* get the current system date and call the "real" function */
-    return setCurrentDate(time(NULL));
-}
-
 
 OFBool OFDate::setCurrentDate(const time_t &tt)
 {
@@ -231,7 +217,7 @@ OFBool OFDate::setISOFormattedDate(const OFString &formattedDate)
     /* we expect the following formats: YYYY-MM-DD with arbitrary delimiters ... */
     if (length == 10)
     {
-        /* extract components from date string */
+        /* extract components from date string (ignore delimiters "%c") */
         if (sscanf(formattedDate.c_str(), "%04u%*c%02u%*c%02u", &year, &month, &day) == 3)
             status = setDate(year, month, day);
     }
@@ -285,6 +271,8 @@ OFBool OFDate::getISOFormattedDate(OFString &formattedDate,
 }
 
 
+// -- static helper functions --
+
 OFDate OFDate::getCurrentDate()
 {
     /* create a date object with the current system date set */
@@ -296,7 +284,26 @@ OFDate OFDate::getCurrentDate()
 }
 
 
-STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDate &dateVal)
+OFBool OFDate::isDateValid(const unsigned int /*year*/,
+                           const unsigned int month,
+                           const unsigned int day)
+{
+    /* this very simple validity check might be enhanced in the future */
+    return (month >= 1) && (month <= 12) && (day >= 1) && (day <= 31);
+}
+
+
+OFBool OFDate::setCurrentDate()
+{
+    /* get the current system date and call the "real" function */
+    return setCurrentDate(time(NULL));
+}
+
+
+// -- output operator --
+
+STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                  const OFDate &dateVal)
 {
     OFString string;
     /* print the given date in ISO format to the stream */

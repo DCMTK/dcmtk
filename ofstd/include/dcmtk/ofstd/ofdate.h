@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2025, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -117,7 +117,7 @@ class DCMTK_OFSTD_EXPORT OFDate
     virtual OFBool operator>(const OFDate &dateVal) const;
 
     /** reset the date value.
-     *  Sets the year, month and day to "0". NB: Date becomes invalid.
+     *  Sets the year, month and day to "0". Please note that the date becomes invalid.
      */
     virtual void clear();
 
@@ -130,7 +130,7 @@ class DCMTK_OFSTD_EXPORT OFDate
     virtual OFBool isValid() const;
 
     /** set the date value to the specified date.
-     *  Before the new value is set it is checked using the "isValid()" routine.
+     *  Before the new value is set, it is checked using the isValid() method.
      *  @param year new year value to be set
      *  @param month new month value to be set
      *  @param day new day value to be set
@@ -141,21 +141,21 @@ class DCMTK_OFSTD_EXPORT OFDate
                    const unsigned int day);
 
     /** set the date value to the specified year.
-     *  Before the new value is set it is checked using the "isValid()" routine.
+     *  Before the new value is set, it is checked using the isValid() method.
      *  @param year new year value to be set
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setYear(const unsigned int year);
 
     /** set the date value to the specified month.
-     *  Before the new value is set it is checked using the "isValid()" routine.
+     *  Before the new value is set, it is checked using the isValid() method.
      *  @param month new month value to be set
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setMonth(const unsigned int month);
 
     /** set the date value to the specified day.
-     *  Before the new value is set it is checked using the "isValid()" routine.
+     *  Before the new value is set, it is checked using the isValid() method.
      *  @param day new day value to be set
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
@@ -208,23 +208,10 @@ class DCMTK_OFSTD_EXPORT OFDate
      */
     static OFDate getCurrentDate();
 
-
- protected:
-
-    /** set the date value to the current system date.
-     *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason the current value is not modified.
-     *  @param tt current system time (as returned by the time() function )
-     *  @return OFTrue if the current system date has been set, OFFalse otherwise
-     */
-    OFBool setCurrentDate(const time_t &tt);
-
-    /* --- static helper functions --- */
-
     /** check whether the given date is valid.
      *  Currently, this method only checks whether the month is within the range of 1 to 12
-     *  and the day is within the range of 1 to 31. In the future this routine might be
-     *  enhanced.
+     *  and the day is within the range of 1 to 31. The year is never checked.
+     *  In the future, this method might be enhanced.
      *  @param year year value to be checked
      *  @param month month value to be checked
      *  @param day day value to be checked
@@ -233,6 +220,17 @@ class DCMTK_OFSTD_EXPORT OFDate
     static OFBool isDateValid(const unsigned int year,
                               const unsigned int month,
                               const unsigned int day);
+
+
+ protected:
+
+    /** set the date value to the current system date.
+     *  This function uses operating system dependent routines. If they are unavailable
+     *  for some reason the current value is not modified.
+     *  @param tt current system time (as returned by the time() function)
+     *  @return OFTrue if the current system date has been set, OFFalse otherwise
+     */
+    OFBool setCurrentDate(const time_t &tt);
 
 
  private:
@@ -254,7 +252,8 @@ class DCMTK_OFSTD_EXPORT OFDate
  *  @param dateVal OFDate object to print
  *  @return reference to the output stream
  */
-DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDate &dateVal);
+DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
+                                                     const OFDate &dateVal);
 
 
 #endif
