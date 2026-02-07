@@ -55,7 +55,7 @@ progs = wlmscpfs
 all: $(progs)
 
 wlmscpfs: $(objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(OPENSSLLIBS) $(LIBS)
 
 
 install: all
