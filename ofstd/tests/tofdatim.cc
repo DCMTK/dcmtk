@@ -94,6 +94,7 @@ OFTEST(ofstd_OFTime)
     OFCHECK(time2.setSecond(30.1234));
     OFCHECK_EQUAL(time2.getSecond(), 30.1234);
     OFCHECK_EQUAL(time2.getIntSecond(), 30);
+    /* check setting ISO formatted time */
     OFCHECK(time1.setISOFormattedTime("1215"));
     OFCHECK(time1.setISOFormattedTime("12:15"));
     OFCHECK(time1.setISOFormattedTime("121530"));
@@ -106,6 +107,17 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time1.getTimeZone(), -9.75);
     OFCHECK(time1.setISOFormattedTime("12:15:30 +09:15"));
     OFCHECK_EQUAL(time1.getTimeZone(), +9.25);
+    /* check setting ISO formatted time zone only */
+    OFCHECK(time1.setISOFormattedTimeZone("-0230"));
+    OFCHECK_EQUAL(time1.getTimeZone(), -2.5);
+    OFCHECK(time2.setISOFormattedTimeZone("+02:30"));
+    OFCHECK_EQUAL(time2.getTimeZone(), +2.5);
+    OFCHECK(!time2.setISOFormattedTimeZone("02:30"));
+    OFCHECK(!time2.setISOFormattedTimeZone("+000"));
+    OFCHECK(!time2.setISOFormattedTimeZone("+1:00"));
+    OFCHECK(time2.setISOFormattedTimeZone("+1234"));
+    OFCHECK(time2.setISOFormattedTimeZone(""));
+    OFCHECK(!time2.hasTimeZone());
     /* check support for leap second */
     OFCHECK(time1.setTime(23, 59, 59));
     OFCHECK(time1.setTime(23, 59, 60));
@@ -118,7 +130,7 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time1.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 13599);
     OFCHECK(time1.setTimeInHours(99, 0, OFTrue /*normalized*/));
     OFCHECK_EQUAL(time1.getTimeInHours(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 3);
-    /* check ISO formatted time/time zone */
+    /* check getting ISO formatted time/time zone */
     OFCHECK(time2.setTimeZone(+1.0));
     OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFFalse /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
     OFCHECK_EQUAL(tmpString, "12:15:30 +01:00");

@@ -251,12 +251,28 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  The two ISO time formats supported by this function are
      *  - "HH:MM[:SS [&ZZ:ZZ]]" (with arbitrary delimiters) and
      *  - "HHMM[SS[&ZZZZ]]" (without delimiters)
-     *  where the brackets enclose optional parts. Please note that the optional fractional
-     *  part of a second ".FFFFFF" (see getISOFormattedTime()) is not yet supported.
+     *
+     *  where the brackets enclose optional parts and the "&" is a placeholder for the
+     *  sign symbol ("+" or "-").
+     *  @note Please note that the optional fractional part of a second ".FFFFFF" (see
+     *    getISOFormattedTime()) is not yet supported.
      *  @param formattedTime ISO formatted time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */
     OFBool setISOFormattedTime(const OFString &formattedTime);
+
+    /** set the time zone value to the given ISO formatted time zone string.
+     *  The two ISO time zone formats supported by this function are
+     *  - "&HH:MM" (with arbitrary delimiter) and
+     *  - "&HHMM" (without delimiter, useful for DICOM attribute TimezoneOffsetFromUTC).
+     *
+     *  where the "&" is a placeholder for the sign symbol ("+" or "-").
+     *  @note If the parameter 'formattedTimeZone' is an empty string, the time zone value
+     *    is set to "unspecified".
+     *  @param formattedTimeZone ISO formatted time zone value to be set, or an empty string
+     *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
+     */
+    OFBool setISOFormattedTimeZone(const OFString &formattedTimeZone);
 
     /** get the currently stored hour value
      *  @return hour value (might be invalid, i.e. out of range)
@@ -334,17 +350,18 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  The two ISO time formats supported by this function are
      *  - "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with delimiters) and
      *  - "HHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM time type)
-     *  where the brackets enclose optional parts.
      *
-     *  @note If no time zone is specified, but the output of the time zone is requested, it is
-     *    not added to the output parameter 'formattedTime'.
+     *  where the brackets enclose optional parts and the "&" is a placeholder for the sign
+     *  symbol ("+" or "-").
+     *  @note If no time zone is specified, but the output of the time zone is requested,
+     *    it is not added to the output parameter 'formattedTime'.
      *  @param formattedTime reference to string variable where the result is stored
      *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue
      *  @param showFraction add optional fractional part of a second (".FFFFFF") if OFTrue.
      *    Requires parameter 'seconds' to be also OFTrue.
      *  @param showTimeZone add optional time zone ("&ZZ:ZZ" or "&ZZZZ") to the resulting string
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
-     *    in hours and minutes. The "&" is a placeholder for the sign symbol ("+" or "-").
+     *    in hours and minutes.
      *  @param showDelimiter flag, indicating whether to use delimiters (":") or not
      *  @param timeZoneSeparator separator between ISO time value and time zone. Only used if
      *    'showDelimiter' is true.
@@ -360,8 +377,9 @@ class DCMTK_OFSTD_EXPORT OFTime
     /** get the current time zone value in ISO format.
      *  The two ISO time zone formats supported by this function are
      *  - "&HH:MM" (with delimiter) and
-     *  - "&HHMM" (without delimiter, useful for DICOM attribute TimezoneOffsetFromUTC).
+     *  - "&HHMM" (without delimiter, useful for DICOM attribute TimezoneOffsetFromUTC)
      *
+     *  where the "&" is a placeholder for the sign symbol ("+" or "-").
      *  @note If no time zone is specified, the output parameter 'formattedTimeZone' is cleared.
      *  @param formattedTimeZone reference to string variable where the result is stored
      *  @param showDelimiter flag, indicating whether to use a delimiter (":") or not
@@ -423,7 +441,7 @@ class DCMTK_OFSTD_EXPORT OFTime
     /** set the time value to the current system time.
      *  This function uses operating system dependent routines. If they are unavailable
      *  for some reason the current value is not modified.
-     *  @param tt current system time (as returned by the time() function )
+     *  @param tt current system time (as returned by the time() function)
      *  @return OFTrue if the current system time has been set, OFFalse otherwise
      */
     OFBool setCurrentTime(const time_t &tt);

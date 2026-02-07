@@ -411,39 +411,39 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 {
     OFBool status = OFFalse;
     const size_t length = formattedTime.length();
-    const size_t firstSep = formattedTime.find_first_not_of("0123456789");
-    const OFBool separators = (firstSep != OFString_npos);
+    const size_t firstDelimiter = formattedTime.find_first_not_of("0123456789");
+    const OFBool hasDelimiters = (firstDelimiter != OFString_npos);
     unsigned int hours, minutes, seconds;
     /* check for supported formats: HHMM */
-    if ((length == 4) && !separators)
+    if ((length == 4) && !hasDelimiters)
     {
         /* extract "HH" and "MM" components from time string */
         if (sscanf(formattedTime.c_str(), "%02u%02u", &hours, &minutes) == 2)
             status = setTime(hours, minutes, 0 /*seconds*/);
     }
     /* HH:MM */
-    else if ((length == 5) && separators)
+    else if ((length == 5) && hasDelimiters)
     {
-        /* extract "HH" and "MM" components from time string */
+        /* extract "HH" and "MM" components from time string (ignore delimiter) */
         if (sscanf(formattedTime.c_str(), "%02u%*c%02u", &hours, &minutes) == 2)
             status = setTime(hours, minutes, 0 /*seconds*/);
     }
     /* HHMMSS */
-    else if ((length == 6) && !separators)
+    else if ((length == 6) && !hasDelimiters)
     {
         /* extract "HH", "MM" and "SS" components from time string */
         if (sscanf(formattedTime.c_str(), "%02u%02u%02u", &hours, &minutes, &seconds) == 3)
             status = setTime(hours, minutes, seconds);
     }
     /* HH:MM:SS */
-    else if ((length == 8) && separators)
+    else if ((length == 8) && hasDelimiters)
     {
-        /* extract "HH", "MM" and "SS" components from time string */
+        /* extract "HH", "MM" and "SS" components from time string (ignore delimiters) */
         if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
             status = setTime(hours, minutes, seconds);
     }
     /* HHMMSS&ZZZZ */
-    else if ((length == 11) && (firstSep == 6) && ((formattedTime[6] == '+') || (formattedTime[6] == '-')))
+    else if ((length == 11) && (firstDelimiter == 6) && ((formattedTime[6] == '+') || (formattedTime[6] == '-')))
     {
         int tzHours;
         unsigned int tzMinutes;
@@ -456,13 +456,13 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
         }
     }
     /* HH:MM:SS &ZZ:ZZ */
-    else if ((length >= 14) && separators)
+    else if ((length >= 14) && hasDelimiters)
     {
-        /* first, extract "HH", "MM" and "SS" components from time string */
+        /* first, extract "HH", "MM" and "SS" components from time string (ignore delimiters) */
         if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
         {
             size_t pos = 8;
-            /* then search for the first digit of the time zone value (skip arbitrary separators) */
+            /* then search for the first digit of the time zone value (skip arbitrary delimiters) */
             while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedTime.at(pos))))
                 ++pos;
             if (pos < length)
@@ -470,6 +470,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
                 /* and finally, extract the time zone component from the time string */
                 int tzHours;
                 unsigned int tzMinutes;
+                /* ignore the delimiter "%c" */
                 if (sscanf(formattedTime.c_str() + pos - 1, "%03d%*c%02u", &tzHours, &tzMinutes) == 2)
                 {
                     const double timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
@@ -478,6 +479,39 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
                 }
             }
         }
+    }
+    return status;
+}
+
+
+OFBool OFTime::setISOFormattedTimeZone(const OFString &formattedTimeZone)
+{
+    OFBool status = OFFalse;
+    const size_t length = formattedTimeZone.length();
+    const OFBool hasDelimiter = (formattedTimeZone.find_first_not_of("0123456789", 1) != OFString_npos);
+    /* format: ...+HHMM or -HHMM */
+    if ((length == 5) && ((formattedTimeZone[0] == '+') || (formattedTimeZone[0] == '-')))
+    {
+        int tzHours;
+        unsigned int tzMinutes;
+        /* extract "HH", "MM" from time zone string */
+        if (sscanf(formattedTimeZone.c_str(), "%03d%02u", &tzHours, &tzMinutes) == 2)
+            status = setTimeZone(tzHours, tzMinutes);
+    }
+    /* format: ...+HH:MM or -HH:MM */
+    else if ((length == 6) && hasDelimiter && ((formattedTimeZone[0] == '+') || (formattedTimeZone[0] == '-')))
+    {
+       int tzHours;
+       unsigned int tzMinutes;
+       /* ignore the delimiter "%c" */
+       if (sscanf(formattedTimeZone.c_str(), "%03d%*c%02u", &tzHours, &tzMinutes) == 2)
+          status = setTimeZone(tzHours, tzMinutes);
+    }
+    /* empty value */
+    else if (length == 0)
+    {
+        TimeZone = unspecifiedTimeZone;
+        status = OFTrue;
     }
     return status;
 }
@@ -632,7 +666,7 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
                 OFStandard::strlcat(buf, buf2, sizeof(buf));
             } else {
                 char buf2[12];
-                /* format: HH:MM:SS*/
+                /* format: HH:MM:SS */
                 if (showDelimiter)
                     OFStandard::snprintf(buf2, sizeof(buf2), ":%02u", OFstatic_cast(unsigned int, Second));
                 /* format: HHMMSS */
@@ -642,7 +676,7 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
             }
         }
         /* copy converted part so far to the result variable */
-        formattedTime = buf;
+        formattedTime.assign(buf);
         /* only add the time zone if requested _and_ a value is specified */
         if (showTimeZone)
         {
@@ -676,20 +710,20 @@ OFBool OFTime::getISOFormattedTimeZone(OFString &formattedTimeZone,
         {
             char buf[32];
             /* convert time zone from hours and fraction of hours to hours and minutes */
-            const char zoneSign = (TimeZone < 0) ? '-' : '+';
-            const double zoneAbs = (TimeZone < 0) ? -TimeZone : TimeZone;
-            const unsigned int zoneHour = OFstatic_cast(unsigned int, zoneAbs);
-            const unsigned int zoneMinute = OFstatic_cast(unsigned int, (zoneAbs - zoneHour) * 60);
-            /* format: ...+HH:MM or -HH:MM */
+            const char tzSign = (TimeZone < 0) ? '-' : '+';
+            const double tzAbs = (TimeZone < 0) ? -TimeZone : TimeZone;
+            const unsigned int tzHours = OFstatic_cast(unsigned int, tzAbs);
+            const unsigned int tzMinutes = OFstatic_cast(unsigned int, (tzAbs - tzHours) * 60);
+            /* format: +HH:MM or -HH:MM */
             if (showDelimiter)
-                OFStandard::snprintf(buf, sizeof(buf), "%c%02u:%02u", zoneSign, zoneHour, zoneMinute);
-            /* format: ...+HHMM or -HHMM */
+                OFStandard::snprintf(buf, sizeof(buf), "%c%02u:%02u", tzSign, tzHours, tzMinutes);
+            /* format: +HHMM or -HHMM */
             else
-                OFStandard::snprintf(buf, sizeof(buf), "%c%02u%02u",  zoneSign, zoneHour, zoneMinute);
-            /* append time zone part to the result variable */
-            formattedTimeZone = buf;
+                OFStandard::snprintf(buf, sizeof(buf), "%c%02u%02u", tzSign, tzHours, tzMinutes);
+            /* assign value to the result variable */
+            formattedTimeZone.assign(buf);
         } else {
-            /* clear output variable if time zone is unspecified */
+            /* clear result variable if time zone is unspecified */
             formattedTimeZone.clear();
         }
         status = OFTrue;
