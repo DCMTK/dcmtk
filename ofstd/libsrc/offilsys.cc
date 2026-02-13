@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2021-2025, OFFIS e.V.
+ *  Copyright (C) 2021-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -26,10 +26,14 @@
 #include <climits>
 
 #include "dcmtk/ofstd/offilsys.h"
+#include "dcmtk/ofstd/ofstd.h"  /* for READDIR_IS_THREADSAFE */
 
 #ifdef _WIN32
+
 #include <io.h>
+
 #else // _WIN32
+
 BEGIN_EXTERN_C
 #include <sys/types.h>
 #ifdef HAVE_SYS_FILE_H
@@ -39,14 +43,7 @@ BEGIN_EXTERN_C
 #include <dirent.h>    // for struct DIR, opendir()
 #endif
 END_EXTERN_C
-/* Check if we are using glibc in a version where readdir() is known to be
- * thread-safe and where readdir_r() is deprecated.
- * Android uses a different libc implementation but also guarantees that
- * readdir() is thread-safe and marks readdir_r() as deprecated.
- */
-#if (defined(__GLIBC__) && (((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)) || (__GLIBC__ >= 3))) || defined(__ANDROID__)
-#define READDIR_IS_THREADSAFE
-#endif
+
 #endif // _WIN32
 
 OFpath::OFpath()

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2025, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -53,7 +53,7 @@ END_EXTERN_C
  * Android uses a different libc implementation but also guarantees that
  * readdir() is thread-safe and marks readdir_r() as deprecated.
  */
-#if (defined(__GLIBC__) && (((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)) || (__GLIBC__ >= 3))) || defined(__ANDROID__)
+#if (defined(__GLIBC__) && (((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)) || (__GLIBC__ >= 3))) || defined(__ANDROID__) || (defined(__FreeBSD_version) && (__FreeBSD_version >= 1200000))
 #define READDIR_IS_THREADSAFE
 #endif
 
