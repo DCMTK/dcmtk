@@ -38,14 +38,15 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
-#ifdef HAVE_UNISTD_H
-BEGIN_EXTERN_C
-#include <unistd.h>
-END_EXTERN_C
-#endif
 
 BEGIN_EXTERN_C
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <sys/types.h>  /* for size_t */
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>  /* for __FreeBSD_version macro on FreeBSD */
+#endif
 END_EXTERN_C
 
 /* Check if we are using glibc in a version where readdir() is known to be
