@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2025, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -509,7 +509,8 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
         }
       }
     }
-    else if( key == DCM_ScheduledProtocolCodeSequence || key == DCM_RequestedProcedureCodeSequence )
+    else if( key == DCM_ScheduledProtocolCodeSequence || key == DCM_RequestedProcedureCodeSequence ||
+             key == DCM_InstitutionCodeSequence || key == DCM_InstitutionalDepartmentTypeCodeSequence )
     {
       newElement = new DcmShortString( DcmTag( DCM_CodeValue ) );               if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmShortString( DcmTag( DCM_CodingSchemeVersion ) );     if( item->insert( newElement ) != EC_Normal ) delete newElement;
@@ -1049,7 +1050,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
 //                   DCM_ReferringPhysicianAddress                         (0008,0092)  ST  O  3  (from the Visit Admission Module)
-//                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
+//                   DCM_AdmissionID                                       (0038,0010)  LO  O  2  (from the Visit Identification Module)
 //                   DCM_CurrentPatientLocation                            (0038,0300)  LO  O  2
 //                   DCM_ReferencedPatientSequence                         (0008,1120)  SQ  O  2
 //                    > DCM_ReferencedSOPClassUID                          (0008,1150)  UI  O  2
@@ -1108,6 +1109,16 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
 //                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
 //                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
+//                   DCM_InstitutionCodeSequence                           (0008,0082)  SQ  O  3  (from the Visit Identification Module)
+//                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
+//                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
+//                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
+//                   DCM_InstitutionalDepartmentTypeCodeSequence           (0008,1041)  SQ  O  3  (from the Visit Identification Module)
+//                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
+//                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
+//                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1159,6 +1170,16 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
             elementKey == DCM_CodingSchemeDesignator                     ||
             elementKey == DCM_CodeMeaning ) )                            ||
         ( supSequenceElementKey == DCM_RequestedProcedureCodeSequence &&
+          ( elementKey == DCM_CodeValue                                  ||
+            elementKey == DCM_CodingSchemeVersion                        ||
+            elementKey == DCM_CodingSchemeDesignator                     ||
+            elementKey == DCM_CodeMeaning ) )                            ||
+        ( supSequenceElementKey == DCM_InstitutionCodeSequence        &&
+          ( elementKey == DCM_CodeValue                                  ||
+            elementKey == DCM_CodingSchemeVersion                        ||
+            elementKey == DCM_CodingSchemeDesignator                     ||
+            elementKey == DCM_CodeMeaning ) )                            ||
+        ( supSequenceElementKey == DCM_InstitutionalDepartmentTypeCodeSequence &&
           ( elementKey == DCM_CodeValue                                  ||
             elementKey == DCM_CodingSchemeVersion                        ||
             elementKey == DCM_CodingSchemeDesignator                     ||
@@ -1233,7 +1254,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_PlacerOrderNumberImagingServiceRequest            ||
         elementKey == DCM_FillerOrderNumberImagingServiceRequest            ||
         elementKey == DCM_ImagingServiceRequestComments                     ||
-        elementKey == DCM_RequestedProcedureCodeSequence )
+        elementKey == DCM_RequestedProcedureCodeSequence                    ||
+        elementKey == DCM_InstitutionCodeSequence                           ||
+        elementKey == DCM_InstitutionalDepartmentTypeCodeSequence )
       isSupportedReturnKeyAttribute = OFTrue;
   }
 

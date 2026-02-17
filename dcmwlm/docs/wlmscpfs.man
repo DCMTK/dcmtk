@@ -497,6 +497,16 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0008,1040) InstitutionalDepartmentName
 (0008,0090) ReferringPhysicianName
 (0008,0092) ReferringPhysicianAddress
+(0008,0082)​ InstitutionCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0008,1041) InstitutionalDepartmentTypeCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
 (0008,1080) AdmittingDiagnosesDescription
 (0008,1110) ReferencedStudySequence
   (0008,1150) > ReferencedSOPClassUID
