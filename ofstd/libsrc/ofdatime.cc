@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Harald Roesen
  *
  *  Purpose: Class for date and time functions (Source)
  *
@@ -198,31 +198,74 @@ OFBool OFDateTime::setCurrentDateTime()
 
 OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
 {
-    OFBool result = OFFalse;
+    /* try to split 'formattedDateTime' into a 'formattedDate' and a 'formattedTime' */
     const size_t length = formattedDateTime.length();
-    const size_t firstSep = formattedDateTime.find_first_not_of("0123456789");
-    const OFBool separators = (firstSep != OFString_npos);
-    /* check for supported formats: "YYYYMMDDHHMM[SS]" or "YYYYMMDDHHMMSS&ZZZZ" */
-    if (((((length == 12) || (length == 14)) && !separators) ||
-        ((length == 19) && (firstSep == 14) && ((formattedDateTime[14] == '+') || (formattedDateTime[14] == '-')))))
+
+    /* a 'formattedDate' is at least eight characters long: YYYYMMDD */
+    if (length < 8)
     {
-        if (Date.setISOFormattedDate(formattedDateTime.substr(0, 8)) && Time.setISOFormattedTime(formattedDateTime.substr(8)))
-            result = OFTrue;
+        return OFFalse;
     }
-    /* "YYYY-MM-DD HH:MM[:SS]" or "YYYY-MM-DD HH:MM:SS &ZZ:ZZ" */
-    else if ((length >= 16) && separators)
+
+    /* (Weak) check if a delimiter is used. If so, we'll assert that it
+     * is always the same one, i.e. 'delim'.
+     */
+    const char delim = formattedDateTime.at(4);
+    const OFBool delimsUsed = !isdigit(delim);
+
+    /* where will 'formattedTime' start within 'formattedDateTime'? */
+    size_t pos = 0;
+    if (delimsUsed && (length >= 10))
     {
-        if (Date.setISOFormattedDate(formattedDateTime.substr(0, 10)))
+        /* a 'formattedDate' with delimiters is at least ten characters long: YYYY-MM-DD */
+        pos = 10;
+    }
+    else if (!delimsUsed && (length >= 8))
+    {
+        /* a 'formattedDate' without delimiters is at least eight characters long: YYYYMMDD */
+        pos = 8;
+    }
+    else
+    {
+        return OFFalse;
+    }
+
+    /* remember the current date in case setting the formatted time will fail */
+    const OFDate preDate = getDate();
+
+    /* try to set the formatted date */
+    const OFString formattedDate = formattedDateTime.substr(0, pos);
+    const OFBool setDateStatus = Date.setISOFormattedDate(formattedDate);
+    /* setting the formatted date failed, time to return */
+    if (!setDateStatus)
+    {
+        return OFFalse;
+    }
+
+    /* skip non digits in case delimiter character has been used */
+    if (delimsUsed)
+    {
+        while ((pos < length) && !isdigit(formattedDateTime.at(pos)))
         {
-            size_t pos = 10;
-            /* search for first digit of the time value (skip arbitrary separators) */
-            while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedDateTime.at(pos))))
-                ++pos;
-            if ((pos < length) && Time.setISOFormattedTime(formattedDateTime.substr(pos)))
-                result = OFTrue;
+            ++pos;
         }
     }
-    return result;
+    const OFString formattedTime = formattedDateTime.substr(pos);
+    const OFBool setTimeStatus = Time.setISOFormattedTime(formattedTime);
+    if (!setTimeStatus)
+    {
+        /* setting the time failed, restore the former date */
+        if (preDate.isValid())
+        {
+            setDate(preDate);
+        }
+        else
+        {
+            Date.clear();
+        }
+    }
+
+    return setTimeStatus;
 }
 
 

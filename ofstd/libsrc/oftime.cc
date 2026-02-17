@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Harald Roesen
  *
  *  Purpose: Class for time functions (Source)
  *
@@ -406,81 +406,154 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
     return status;
 }
 
-
 OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 {
-    OFBool status = OFFalse;
     const size_t length = formattedTime.length();
-    const size_t firstDelimiter = formattedTime.find_first_not_of("0123456789");
-    const OFBool hasDelimiters = (firstDelimiter != OFString_npos);
-    unsigned int hours, minutes, seconds;
-    /* check for supported formats: HHMM */
-    if ((length == 4) && !hasDelimiters)
-    {
-        /* extract "HH" and "MM" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%02u", &hours, &minutes) == 2)
-            status = setTime(hours, minutes, 0 /*seconds*/);
+    if (length < 3) {
+        /* not enough input to scan */
+        return OFFalse;
     }
-    /* HH:MM */
-    else if ((length == 5) && hasDelimiters)
+
+    size_t pos = 0;
+    const char delim = formattedTime.at(pos + 2);
+    const OFBool delimsUsed = !isdigit(delim);
+
+    unsigned int hours = 0;
+    unsigned int minutes = 0;
+    unsigned int seconds = 0;
+    double fractionalSeconds = 0.0;
+    double timeZone = OFTime::unspecifiedTimeZone;
+
     {
-        /* extract "HH" and "MM" components from time string (ignore delimiter) */
-        if (sscanf(formattedTime.c_str(), "%02u%*c%02u", &hours, &minutes) == 2)
-            status = setTime(hours, minutes, 0 /*seconds*/);
-    }
-    /* HHMMSS */
-    else if ((length == 6) && !hasDelimiters)
-    {
-        /* extract "HH", "MM" and "SS" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%02u%02u", &hours, &minutes, &seconds) == 3)
-            status = setTime(hours, minutes, seconds);
-    }
-    /* HH:MM:SS */
-    else if ((length == 8) && hasDelimiters)
-    {
-        /* extract "HH", "MM" and "SS" components from time string (ignore delimiters) */
-        if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
-            status = setTime(hours, minutes, seconds);
-    }
-    /* HHMMSS&ZZZZ */
-    else if ((length == 11) && (firstDelimiter == 6) && ((formattedTime[6] == '+') || (formattedTime[6] == '-')))
-    {
-        int tzHours;
-        unsigned int tzMinutes;
-        /* extract "HH", "MM", "SS" and "&ZZZZ" components from time string */
-        if (sscanf(formattedTime.c_str(), "%02u%02u%02u%03d%02u", &hours, &minutes, &seconds, &tzHours, &tzMinutes) == 5)
+        /* scan for HHMM or HH:MM - hours and minutes */
+        OFString hhmmFormat("%2u");
+        if (delimsUsed)
         {
-            const double timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
-                                                  : tzHours + OFstatic_cast(double, tzMinutes) / 60;
-            status = setTime(hours, minutes, seconds, timeZone);
+            hhmmFormat += delim;
+        }
+        hhmmFormat += "%2u%n";
+
+        const int nCharactersExpected = (delimsUsed ? 5 : 4);
+        int nCharactersRead = 0;
+        const int nReceivedArgs =
+            sscanf(formattedTime.c_str() + pos, hhmmFormat.c_str(), &hours, &minutes, &nCharactersRead);
+        if ((nReceivedArgs == 2) && (nCharactersRead == nCharactersExpected))
+        {
+            pos += nCharactersRead;
+        }
+        else
+        {
+            /* found no valid HH[:]MM 'pattern' */
+            return OFFalse;
         }
     }
-    /* HH:MM:SS &ZZ:ZZ */
-    else if ((length >= 14) && hasDelimiters)
+
+    /* is still input available? */
+    if (pos < length)
     {
-        /* first, extract "HH", "MM" and "SS" components from time string (ignore delimiters) */
-        if (sscanf(formattedTime.c_str(), "%02u%*c%02u%*c%02u", &hours, &minutes, &seconds) == 3)
+        /* scan for SS or :SS - seconds */
+        OFString ssFormat;
+        if (delimsUsed)
         {
-            size_t pos = 8;
-            /* then search for the first digit of the time zone value (skip arbitrary delimiters) */
-            while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedTime.at(pos))))
-                ++pos;
-            if (pos < length)
-            {
-                /* and finally, extract the time zone component from the time string */
-                int tzHours;
-                unsigned int tzMinutes;
-                /* ignore the delimiter "%c" */
-                if (sscanf(formattedTime.c_str() + pos - 1, "%03d%*c%02u", &tzHours, &tzMinutes) == 2)
-                {
-                    const double timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
-                                                          : tzHours + OFstatic_cast(double, tzMinutes) / 60;
-                    status = setTime(hours, minutes, seconds, timeZone);
-                }
-            }
+            ssFormat += delim;
+        }
+        ssFormat += "%2u%n";
+
+        const int nCharactersExpected = (delimsUsed ? 3 : 2);
+        int nCharactersRead = 0;
+        const int nReceivedArgs =
+            sscanf(formattedTime.c_str() + pos, ssFormat.c_str(), &seconds, &nCharactersRead);
+        if ((nReceivedArgs == 1) && (nCharactersRead == nCharactersExpected))
+        {
+            pos += nCharactersRead;
+        }
+        else
+        {
+            /* found no valid [:]SS 'pattern' */
+            return OFFalse;
         }
     }
-    return status;
+
+    /* is still input available that also starts with a dot ('.') character? */
+    if ((pos < length) && (formattedTime.at(pos) == '.'))
+    {
+        /* scan for .FFFFFF - fractional seconds */
+        char buffer[8] = {'\0'};
+        buffer[0] = '.';
+        ++pos; /* overread the dot ('.') character at front */
+        int nCharactersRead = 0;
+        const int nReceivedArgs =
+            sscanf(formattedTime.c_str() + pos, "%6[0123456789]%n", (buffer + 1), &nCharactersRead);
+        OFBool fsSuccess = OFFalse;
+        fractionalSeconds = OFStandard::atof(buffer, &fsSuccess);
+        if ((nReceivedArgs == 1) && fsSuccess)
+        {
+            pos += nCharactersRead;
+        }
+        else
+        {
+            /* found no valid .FFFFFF 'pattern' */
+            return OFFalse;
+        }
+    }
+
+    /* skip whitespaces in case delimiter character has been used */
+    if ((pos < length) && delimsUsed)
+    {
+        const OFBool hasSpaceBeenSkipped = isspace(formattedTime.at(pos));
+        while ((pos < length) && isspace(formattedTime.at(pos)))
+        {
+           ++pos;
+        }
+        if ((pos == length) && hasSpaceBeenSkipped)
+        {
+          /* we have skipped trailing spaces but reached end of input,
+           * this means that the input is/was malformed in the first place
+           */
+          return OFFalse;
+        }
+    }
+
+    /* is still input available that also starts with a plus ('+') or minus ('-')
+     * character?
+     */
+    if ((pos < length) && ((formattedTime.at(pos) == '+') || (formattedTime.at(pos) == '-')))
+    {
+      /* scan for &ZZZZ or &ZZ:ZZ - time zone */
+      OFString tzFormat("%3d");
+      if (delimsUsed)
+      {
+          tzFormat += delim;
+      }
+      tzFormat += "%2u%n";
+
+      int tzHours;
+      unsigned int tzMinutes;
+      int nCharactersRead = 0;
+      const int nReceivedArgs =
+          sscanf(formattedTime.c_str() + pos, tzFormat.c_str(), &tzHours, &tzMinutes, &nCharactersRead);
+      if (nReceivedArgs == 2)
+      {
+          timeZone = (tzHours < 0) ? tzHours - static_cast<double>(tzMinutes) / 60
+                                   : tzHours + static_cast<double>(tzMinutes) / 60;
+          pos += nCharactersRead;
+      }
+      else
+      {
+          /* found no valid &ZZ[:]ZZ 'pattern' */
+          return OFFalse;
+      }
+    }
+
+    /* is still input available? */
+    if (pos < length)
+    {
+        /* too much input */
+        return OFFalse;
+    }
+
+    /* all 'eaten up' */
+    return setTime(hours, minutes, seconds + fractionalSeconds, timeZone);
 }
 
 

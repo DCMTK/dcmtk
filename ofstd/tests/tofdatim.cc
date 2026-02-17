@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Harald Roesen
  *
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
@@ -95,10 +95,36 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(time2.getSecond(), 30.1234);
     OFCHECK_EQUAL(time2.getIntSecond(), 30);
     /* check setting ISO formatted time */
-    OFCHECK(time1.setISOFormattedTime("1215"));
-    OFCHECK(time1.setISOFormattedTime("12:15"));
-    OFCHECK(time1.setISOFormattedTime("121530"));
-    OFCHECK(time1.setISOFormattedTime("12:15:30"));
+    OFCHECK( time1.setISOFormattedTime("1215"));
+    OFCHECK(!time1.setISOFormattedTime("1215."));
+    OFCHECK(!time1.setISOFormattedTime("1215.1"));
+    OFCHECK(!time1.setISOFormattedTime("1215.123456"));
+    OFCHECK(!time1.setISOFormattedTime("1215.1234567"));
+
+    OFCHECK( time1.setISOFormattedTime("12:15"));
+    OFCHECK(!time1.setISOFormattedTime("12:15."));
+    OFCHECK(!time1.setISOFormattedTime("12:15.1"));
+    OFCHECK(!time1.setISOFormattedTime("12:15.123456"));
+    OFCHECK(!time1.setISOFormattedTime("12:15.1234567"));
+
+    OFCHECK( time1.setISOFormattedTime("121530"));
+    OFCHECK(!time1.setISOFormattedTime("121530."));
+    OFCHECK( time1.setISOFormattedTime("121530.1"));
+    OFCHECK( time1.setISOFormattedTime("121530.123456"));
+    OFCHECK(!time1.setISOFormattedTime("121530.1234567"));
+
+    OFCHECK( time1.setISOFormattedTime("12:15:30"));
+    OFCHECK(!time1.setISOFormattedTime("12:15:30."));
+    OFCHECK( time1.setISOFormattedTime("12:15:30.1"));
+    OFCHECK( time1.setISOFormattedTime("12:15:30.123456"));
+    OFCHECK(!time1.setISOFormattedTime("12:15:30.1234567"));
+
+    OFCHECK( time1.setISOFormattedTime("121530+0100"));
+    OFCHECK(!time1.setISOFormattedTime("121530.+0100"));
+    OFCHECK( time1.setISOFormattedTime("121530.1+0100"));
+    OFCHECK( time1.setISOFormattedTime("121530.123456+0100"));
+    OFCHECK(!time1.setISOFormattedTime("121530.1234567+0100"));
+
     OFCHECK(time1.setISOFormattedTime("121530+0100"));
     OFCHECK_EQUAL(time1.getTimeZone(), 1.0);
     OFCHECK(time1.setISOFormattedTime("12:15:30 -02:30"));
@@ -189,6 +215,40 @@ OFTEST(ofstd_OFDateTime)
     /* the "seconds" part is mandatory if time zone is present */
     OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15 -02:30"));
     OFCHECK(!dateTime2.setISOFormattedDateTime("200012311015+0100"));
+
+    OFCHECK( dateTime2.setISOFormattedDateTime("20001231101530-0230"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("20001231101530.-0230"));
+    OFCHECK( dateTime2.setISOFormattedDateTime("20001231101530.1-0230"));
+    OFCHECK( dateTime2.setISOFormattedDateTime("20001231101530.123456-0230"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("20001231101530.1234567-0230"));
+
+    OFCHECK( dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 -02:30"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30. -02:30"));
+    OFCHECK( dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30.1 -02:30"));
+    OFCHECK( dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30.123456 -02:30"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30.1234567 -02:30"));
+
+    /* check if date is restored in case setting time failed */
+    OFCHECK( dateTime2.setISOFormattedDateTime("2345-12-31 10:15:30 -02:30"));
+    const OFDate preDate = dateTime2.getDate();
+    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 -0230"));
+    const OFDate postDate = dateTime2.getDate();
+    OFCHECK_EQUAL(preDate, postDate);
+
+    /* check handling of beginning and/or trailing spaces */
+    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30  "));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  2000-12-31 10:15:30"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  2000-12-31 10:15:30  "));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("20001231101530  "));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  20001231101530"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  20001231101530  "));
+
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  2000-12-31 10:15:30 -02:30"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  2000-12-31 10:15:30 -02:30  "));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30 -02:30  "));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  20001231101530-0230"));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("  20001231101530-0230  "));
+    OFCHECK(!dateTime2.setISOFormattedDateTime("20001231101530-0230  "));
 }
 
 

@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Harald Roesen
  *
  *  Purpose: Class for time functions
  *
@@ -249,13 +249,12 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** set the time value to the given ISO formatted time string.
      *  The two ISO time formats supported by this function are
-     *  - "HH:MM[:SS [&ZZ:ZZ]]" (with arbitrary delimiters) and
-     *  - "HHMM[SS[&ZZZZ]]" (without delimiters)
+     *  - "HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  - "HHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters)
      *
      *  where the brackets enclose optional parts and the "&" is a placeholder for the
-     *  sign symbol ("+" or "-").
-     *  @note Please note that the optional fractional part of a second ".FFFFFF" (see
-     *    getISOFormattedTime()) is not yet supported.
+     *  sign symbol ("+" or "-"). The pattern "FFFFFF" contains a fractional part of a second.
+     *  If specified, it shall contain one to six digits representing a range from 0 to 999999.
      *  @param formattedTime ISO formatted time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */

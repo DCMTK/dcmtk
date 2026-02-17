@@ -13,7 +13,7 @@
  *
  *  Module:  ofstd
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Harald Roesen
  *
  *  Purpose: Combined class for date and time functions
  *
@@ -209,13 +209,13 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
     /** set the date/time value to the given ISO formatted date/time string.
      *  The two ISO date/time formats supported by this function are
-     *  - "YYYY-MM-DD HH:MM[:SS [&ZZ:ZZ]]" (with arbitrary delimiters) and
-     *  - "YYYYMMDDHHMM[SS[&ZZZZ]]" (without delimiters, useful for DICOM datetime type)
+     *  - "YYYY-MM-DD [T]HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  - "YYYYMMDDHHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters, useful for DICOM datetime type)
      *
-     *  where the brackets enclose optional parts and the "&" is a placeholder for the sign
-     *  symbol ("+" or "-").
-     *  @note Please note that the optional fractional part of a second ".FFFFFF" (see
-     *    getISOFormattedDateTime()) is not yet supported.
+     *  where the brackets enclose optional parts, the "T" stands for the literal symbol "T", and
+     *  the "&" is a placeholder for the sign symbol ("+" or "-"). The pattern "FFFFFF" contains a
+     *  fractional part of a second. If specified, it shall contain one to six digits representing a
+     *  range from 0 to 999999.
      *  @param formattedDateTime ISO formatted date/time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */
