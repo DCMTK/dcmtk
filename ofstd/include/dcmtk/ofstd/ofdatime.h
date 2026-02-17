@@ -208,14 +208,17 @@ class DCMTK_OFSTD_EXPORT OFDateTime
     OFBool setCurrentDateTime();
 
     /** set the date/time value to the given ISO formatted date/time string.
-     *  The two ISO date/time formats supported by this function are
-     *  - "YYYY-MM-DD [T]HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  The most common ISO date/time formats supported by this function are
+     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters),
+     *  - "YYYY-MM-DD'T'HH:MM[:SS[.FFFFFF][&ZZ:ZZ]]" (according to ISO 8601) and
      *  - "YYYYMMDDHHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters, useful for DICOM datetime type)
      *
-     *  where the brackets enclose optional parts, the "T" stands for the literal symbol "T", and
+     *  where the brackets enclose optional parts, the 'T' stands for the literal symbol "T", and
      *  the "&" is a placeholder for the sign symbol ("+" or "-"). The pattern "FFFFFF" contains a
-     *  fractional part of a second. If specified, it shall contain one to six digits representing a
-     *  range from 0 to 999999.
+     *  fractional part of a second. If specified, it shall contain one to six digits representing
+     *  a range from 0 to 999999.
+     *  In the first two formats listed, spaces between date, time and time zone components are
+     *  accepted. Leading or trailing spaces are never accepted.
      *  @param formattedDateTime ISO formatted date/time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */
@@ -232,12 +235,13 @@ class DCMTK_OFSTD_EXPORT OFDateTime
     const OFTime &getTime() const;
 
     /** get the current date/time value in ISO format.
-     *  The two ISO time formats supported by this function are
-     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with delimiters) and
+     *  The ISO time formats supported by this function are
+     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with delimiters),
+     *  - "YYYY-MM-DD'T'HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]" (according to ISO 8601) and
      *  - "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM datetime type)
      *
-     *  where the brackets enclose optional parts and the "&" is a placeholder for the sign
-     *  symbol ("+" or "-").
+     *  where the brackets enclose optional parts, the 'T' stands for the literal symbol "T", and
+     *  the "&" is a placeholder for the sign symbol ("+" or "-").
      *  @param formattedDateTime reference to string variable where the result is stored
      *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue
      *  @param showFraction add optional fractional part of a second (".FFFFFF") if OFTrue.
@@ -246,10 +250,10 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes.
      *  @param showDelimiter flag, indicating whether to use delimiters ("-", ":" and " ") or not
-     *  @param dateTimeSeparator separator between ISO date and time value. Only used if
-     *    'showDelimiter' is true.
-     *  @param timeZoneSeparator separator between ISO time value and time zone. Only used if
-     *    'showDelimiter' is true.
+     *  @param dateTimeSeparator separator between ISO date and time value, e.g. " " (default) or
+     *    "T" (for ISO 8601 format). Only used if 'showDelimiter' is true.
+     *  @param timeZoneSeparator separator between ISO time value and time zone, e.g. " " (default)
+     *    or "" (for ISO 8601 format). Only used if 'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, OFFalse otherwise
      */
     OFBool getISOFormattedDateTime(OFString &formattedDateTime,

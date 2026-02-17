@@ -170,7 +170,8 @@ class DCMTK_OFSTD_EXPORT OFDate
 
     /** set the date value to the given ISO formatted date string.
      *  The two ISO date formats supported by this function are "YYYY-MM-DD" (with arbitrary
-     *  delimiters) and "YYYYMMDD" (without delimiters, useful for DICOM date type).
+     *  delimiters) and "YYYYMMDD" (without delimiters, useful for DICOM date type). Leading
+     *  or trailing spaces are not accepted.
      *  @param formattedDate ISO formatted date value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */

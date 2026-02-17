@@ -248,13 +248,16 @@ class DCMTK_OFSTD_EXPORT OFTime
     OFBool setCurrentTime();
 
     /** set the time value to the given ISO formatted time string.
-     *  The two ISO time formats supported by this function are
-     *  - "HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters) and
+     *  The most common ISO time formats supported by this function are
+     *  - "HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters),
+     *  - "HH:MM[:SS[.FFFFFF][&ZZ:ZZ]]" (according to ISO 8601) and
      *  - "HHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters)
      *
      *  where the brackets enclose optional parts and the "&" is a placeholder for the
      *  sign symbol ("+" or "-"). The pattern "FFFFFF" contains a fractional part of a second.
      *  If specified, it shall contain one to six digits representing a range from 0 to 999999.
+     *  In the first two formats listed, spaces between time and time zone components are
+     *  accepted. Leading or trailing spaces are never accepted.
      *  @param formattedTime ISO formatted time value to be set
      *  @return OFTrue if input is valid and result variable has been set, OFFalse otherwise
      */
@@ -262,7 +265,7 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** set the time zone value to the given ISO formatted time zone string.
      *  The two ISO time zone formats supported by this function are
-     *  - "&HH:MM" (with arbitrary delimiter) and
+     *  - "&HH:MM" (with arbitrary delimiter, e.g. for ISO 8601 format) and
      *  - "&HHMM" (without delimiter, useful for DICOM attribute TimezoneOffsetFromUTC).
      *
      *  where the "&" is a placeholder for the sign symbol ("+" or "-").
@@ -346,8 +349,9 @@ class DCMTK_OFSTD_EXPORT OFTime
     OFTime getLocalTime() const;
 
     /** get the current time value in ISO format.
-     *  The two ISO time formats supported by this function are
-     *  - "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with delimiters) and
+     *  The ISO time formats supported by this function are
+     *  - "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with delimiters),
+     *  - "HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]" (according to ISO 8601) and
      *  - "HHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM time type)
      *
      *  where the brackets enclose optional parts and the "&" is a placeholder for the sign
@@ -361,9 +365,9 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @param showTimeZone add optional time zone ("&ZZ:ZZ" or "&ZZZZ") to the resulting string
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes.
-     *  @param showDelimiter flag, indicating whether to use delimiters (":") or not
-     *  @param timeZoneSeparator separator between ISO time value and time zone. Only used if
-     *    'showDelimiter' is true.
+     *  @param showDelimiter flag, indicating whether to use delimiters (":" and " ") or not
+     *  @param timeZoneSeparator separator between ISO time value and time zone, e.g. " " (default)
+     *    or "" (for ISO 8601 format). Only used if 'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, i.e. the time is valid, OFFalse otherwise
      */
     OFBool getISOFormattedTime(OFString &formattedTime,
@@ -375,7 +379,7 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** get the current time zone value in ISO format.
      *  The two ISO time zone formats supported by this function are
-     *  - "&HH:MM" (with delimiter) and
+     *  - "&HH:MM" (with delimiter, e.g. for ISO 8601 format) and
      *  - "&HHMM" (without delimiter, useful for DICOM attribute TimezoneOffsetFromUTC)
      *
      *  where the "&" is a placeholder for the sign symbol ("+" or "-").
