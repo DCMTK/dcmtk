@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1080,8 +1080,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         {
             OFOStringStream oss;
             oss << "DcmItem: " << (vr.isInvalid() ? "Invalid" : "Non-standard") << " VR '"
-                << ((OFstatic_cast(unsigned char, vrstr[0]) < 32) ? ' ' : vrstr[0])
-                << ((OFstatic_cast(unsigned char, vrstr[1]) < 32) ? ' ' : vrstr[1]) << "' ("
+                << ((OFstatic_cast(unsigned char, vrstr[0]) < 32 || OFstatic_cast(unsigned char, vrstr[0]) > 127) ? ' ' : vrstr[0])
+                << ((OFstatic_cast(unsigned char, vrstr[1]) < 32 || OFstatic_cast(unsigned char, vrstr[1]) > 127) ? ' ' : vrstr[1]) << "' ("
                 << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                 << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0] & 0xff) << "\\"
                 << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1] & 0xff)
