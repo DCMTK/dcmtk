@@ -1,21 +1,21 @@
 /*
- *  This code is derived from the "whereami" library, 
+ *  This code is derived from the "whereami" library,
  *  https://github.com/gpakosz/whereami,
  *  dual licensed under the WTFPL v2 and MIT licenses without any warranty.
  *  The MIT license is reproduced below.
  *
  *  Copyright (c) 2024 Gregory Pakosz
- * 
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining
  *  a copy of this software and associated documentation files (the “Software”),
  *  to deal in the Software without restriction, including without limitation
  *  the rights to use, copy, modify, merge, publish, distribute, sublicense,
  *  and/or sell copies of the Software, and to permit persons to whom the
  *  Software is furnished to do so, subject to the following conditions:
- * 
+ *
  *  The above copyright notice and this permission notice shall be
  *  included in all copies or substantial portions of the Software.
- * 
+ *
  *  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
  *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -30,6 +30,7 @@
 
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
 #include "dcmtk/ofstd/ofwhere.h"
+#include "dcmtk/ofstd/ofdiag.h"        /* for DCMTK_DIAGNOSTIC_PUSH etc. */
 
 #if defined(__linux__) || defined(__CYGWIN__)
 #undef _DEFAULT_SOURCE
@@ -159,7 +160,7 @@ static int OFgetModulePath_(HMODULE module, char* out, int capacity, int* dirnam
   return ok ? length : -1;
 }
 
-WAI_NOINLINE 
+WAI_NOINLINE
 int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
 {
   return OFgetModulePath_(NULL, out, capacity, dirname_length);
@@ -253,7 +254,11 @@ int OFgetExecutablePath(char* out, int capacity, int* dirname_length)
 
 #elif defined(__APPLE__)
 
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS
+/* GCC on MacOS 26 prints several warnings when we include this header */
 #include <mach-o/dyld.h>
+#include DCMTK_DIAGNOSTIC_POP
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>

@@ -253,6 +253,12 @@
  */
 #define DCMTK_DIAGNOSTIC_IGNORE_FORMAT_TRUNCATION <unspecified>
 
+/*! @brief A macro to disable warnings deprecated declarations
+ *  @note The macro may only be used in conjunction with <i>#include</i>!
+ *  @see DCMTK_DIAGNOSTIC_PUSH for an example.
+ */
+#define DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS <unspecified>
+
 #else // DOXYGEN
 
 #define DCMTK_DIAGNOSTIC_PUSH "dcmtk/ofstd/diag/push.def"
@@ -284,6 +290,7 @@
 #define DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC "dcmtk/ofstd/diag/clangprg.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_VISUAL_STUDIO_CONSTANT_EXPRESSION_WARNING "dcmtk/ofstd/diag/vsconstexp.def"
 #define DCMTK_DIAGNOSTIC_IGNORE_FORMAT_TRUNCATION "dcmtk/ofstd/diag/formtrnc.def"
+#define DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS "dcmtk/ofstd/diag/deprecat.def"
 
 // readable shorthands for compiler version checks
 #define DCMTK_DIAGNOSTIC_MIN_GCC_VERSION(MAJOR, MINOR, PATCH)\
