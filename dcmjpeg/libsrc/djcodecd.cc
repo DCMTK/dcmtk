@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2026, OFFIS e.V.
+ *  Copyright (C) 2001-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -580,6 +580,20 @@ OFCondition DJCodecDecoder::decodeFrame(
                       if (precision > 8)
                         result = createPlanarConfigurationWord(OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
                       else result = createPlanarConfigurationByte(OFreinterpret_cast(Uint8*, buffer), imageColumns, imageRows);
+                    }
+                  }
+
+                  if (result.good())
+                  {
+                    // decompression is complete, finally adjust byte order if necessary
+                    if (jpeg->bytesPerSample() == 1) // we're writing bytes into words
+                    {
+                      if ((gLocalByteOrder == EBO_BigEndian) && (frameSize & 1))
+                      {
+                        DCMJPEG_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
+                      }
+
+                      result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, OFreinterpret_cast(Uint16*, buffer), OFstatic_cast(Uint32, frameSize), sizeof(Uint16));
                     }
                   }
 

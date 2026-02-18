@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2026, OFFIS e.V.
+ *  Copyright (C) 2002-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -603,6 +603,7 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     // pointers for buffer copy operations
     Uint8 *outputBuffer = NULL;
     Uint8 *pixelPointer = NULL;
+    Uint16 *imageData16 = OFreinterpret_cast(Uint16 *, buffer);
     Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, buffer);
 
     // byte offset for first sample in frame
@@ -747,6 +748,13 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
       startFragment = currentItem + 1;
       decompressedColorModel = photometricInterpretation;
     }
+
+    // adjust byte order for uncompressed image to little endian
+    if ((gLocalByteOrder == EBO_BigEndian) && (frameSize & 1))
+    {
+      DCMDATA_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
+    }
+    swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, frameSize, sizeof(Uint16));
 
     return result;
 }

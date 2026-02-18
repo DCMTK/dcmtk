@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2025, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -563,27 +563,27 @@ void DiImage::convertPixelData()
                 << "'BitsStored' (" << BitsStored << ") and 'HighBit' (" << HighBit << ")");
             return;
         }
-        else if ((evr == EVR_OB) && (BitsStored <= 8))
+        else if ((evr == EVR_OB) && (!compressed) && (BitsStored <= 8))
         {
             // report a warning message on this standard violation
-            if (!compressed && (BitsAllocated > 8))
+            if (BitsAllocated > 8)
                 DCMIMGLE_WARN("invalid value for 'BitsAllocated' (" << BitsAllocated << "), > 8 for OB encoded uncompressed 'PixelData'");
             if (hasSignedRepresentation)
                 InputData = new DiInputPixelTemplate<Uint8, Sint8>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
             else
                 InputData = new DiInputPixelTemplate<Uint8, Uint8>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
         }
-        else if ((evr == EVR_OB) && (BitsStored <= 16))
+        else if ((evr == EVR_OB) && (!compressed) && (BitsStored <= 16))
         {
             // report a warning message on this standard violation
-            if (!compressed && (BitsAllocated > 8))
+            if (BitsAllocated > 8)
                 DCMIMGLE_WARN("invalid value for 'BitsAllocated' (" << BitsAllocated << "), > 8 for OB encoded uncompressed 'PixelData'");
             if (hasSignedRepresentation)
                 InputData = new DiInputPixelTemplate<Uint8, Sint16>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
             else
                 InputData = new DiInputPixelTemplate<Uint8, Uint16>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);
         }
-        else if ((evr == EVR_OB) && compressed && (BitsStored <= 32))
+        else if ((evr == EVR_OB) && (!compressed) && (BitsStored <= 32))
         {
             if (hasSignedRepresentation)
                 InputData = new DiInputPixelTemplate<Uint8, Sint32>(Document, BitsAllocated, BitsStored, HighBit, FirstFrame, NumberOfFrames, fsize, &FileCache, CurrentFragment);

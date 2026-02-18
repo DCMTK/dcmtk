@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2026, OFFIS e.V.
+ *  Copyright (C) 2007-2025, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -524,7 +524,20 @@ OFCondition DJLSDecoderBase::decodeFrame(
     Uint16 imageSamplesPerPixel,
     Uint16 bytesPerSample)
 {
-    return decodeFrameNoSwap(fromPixSeq, cp, dataset, frameNo, currentItem, buffer, bufSize, imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
+    OFCondition result = decodeFrameNoSwap(fromPixSeq, cp, dataset, frameNo, currentItem, buffer, bufSize, imageFrames, imageColumns, imageRows, imageSamplesPerPixel, bytesPerSample);
+    if (result.good())
+    {
+        // decompression is complete, finally adjust byte order if necessary
+        if (bytesPerSample == 1) // we're writing bytes into words
+        {
+            if ((gLocalByteOrder == EBO_BigEndian) && (bufSize & 1))
+            {
+              DCMJPLS_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
+            }
+            result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buffer, bufSize, sizeof(Uint16));
+        }
+    }
+    return result;
 }
 
 OFCondition DJLSDecoderBase::encode(
