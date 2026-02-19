@@ -781,7 +781,8 @@ OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
         } else {
             // ignore the pixel data provider URL since the source transfer syntax
             // does not allow it (not one of the JPIP referenced transfer syntaxes)
-            DCMDATA_WARN("DcmDataset: Ignoring pixel data provider URL in a data set with transfer syntax " << fromrep.getXferName());
+            DCMDATA_WARN("DcmDataset: Ignoring pixel data provider URL in a data set with transfer syntax \""
+                << fromrep.getXferName() << "\"");
         }
     }
 

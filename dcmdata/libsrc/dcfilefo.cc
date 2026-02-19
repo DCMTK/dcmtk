@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -348,12 +348,12 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(
                 if (((currVers[0] & version[0] & 0xff) == version[0]) &&
                     ((currVers[1] & version[1] & 0xff) == version[1]))
                 {
-                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() Version of MetaHeader is ok: 0x"
+                    DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() Version of File Meta Information Header is ok: 0x"
                         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1]));
                 } else {
-                    DCMDATA_WARN ("DcmFileFormat: Unknown Version of MetaHeader detected: 0x"
+                    DCMDATA_WARN ("DcmFileFormat: Unknown Version of File Meta Information Header detected: 0x"
                         << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
@@ -362,7 +362,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(
                         << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1]));
                 }
             } else {
-                DCMDATA_ERROR("DcmFileFormat: Cannot determine Version of MetaHeader");
+                DCMDATA_ERROR("DcmFileFormat: Cannot determine Version of File Meta Information Header");
             }
         }
         else if (tag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
@@ -399,7 +399,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(
                         OFstatic_cast(DcmUniqueIdentifier *, elem)->getOFStringArray(uidMetaHeader);
                         if (uidDataset != uidMetaHeader)
                         {
-                            DCMDATA_WARN("DcmFileFormat: Value of SOPClassUID in MetaHeader and Dataset is different");
+                            DCMDATA_WARN("DcmFileFormat: Value of SOPClassUID in File Meta Information Header and Dataset is different");
                             DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of MediaStorageSOPClassUID (MetaHeader) [" << uidMetaHeader << "]");
                             DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of SOPClassUID (Dataset) [" << uidDataset << "]");
                         }
@@ -443,7 +443,7 @@ OFCondition DcmFileFormat::checkMetaHeaderValue(
                         OFstatic_cast(DcmUniqueIdentifier *, elem)->getOFStringArray(uidMetaHeader);
                         if (uidDataset != uidMetaHeader)
                         {
-                            DCMDATA_WARN("DcmFileFormat: Value of SOPInstanceUID in MetaHeader and Dataset is different");
+                            DCMDATA_WARN("DcmFileFormat: Value of SOPInstanceUID in File Meta Information Header and Dataset is different");
                             DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of MediaStorageSOPInstanceUID (MetaHeader) [" << uidMetaHeader << "]");
                             DCMDATA_DEBUG("DcmFileFormat::checkMetaHeaderValue() value of SOPInstanceUID (Dataset) [" << uidDataset << "]");
                         }
@@ -635,7 +635,7 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
             if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
                 META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
             {
-                DCMDATA_ERROR("DcmFileFormat: Group length of Meta Information Header not adapted");
+                DCMDATA_ERROR("DcmFileFormat: Group length of File Meta Information Header not adapted");
             }
         }
     } else {
@@ -673,7 +673,7 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
             }
         } else {
             /* there is no transfer syntax UID element in the meta header */
-            DCMDATA_DEBUG("DcmFileFormat::lookForXfer() no TransferSyntax in MetaInfo");
+            DCMDATA_DEBUG("DcmFileFormat::lookForXfer() no TransferSyntaxUID in MetaInfo");
         }
     } else {
         /* no meta header present at all (or it is empty, i.e. contains no elements) */
@@ -717,7 +717,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                                 const E_GrpLenEncoding glenc,
                                 const Uint32 maxReadLength)
 {
-  return DcmFileFormat::readUntilTag(inStream,xfer,glenc,maxReadLength,DCM_UndefinedTagKey);
+  return DcmFileFormat::readUntilTag(inStream, xfer, glenc, maxReadLength, DCM_UndefinedTagKey);
 }
 
 OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
@@ -783,6 +783,19 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                     }
                 }
 
+                // check whether transfer syntax could be read from meta header
+                if (newxfer == EXS_Unknown)
+                {
+                    DCMDATA_WARN("DcmFileFormat: Could not determine Transfer Syntax from File Meta Information Header");
+                    // if not, use the one that was passed as a parameter
+                    if (xfer != EXS_Unknown)
+                    {
+                        DCMDATA_DEBUG("DcmFileFormat::readUntilTag() Using transfer syntax \"" << DcmXfer(xfer).getXferName()
+                            << "\" passed as a parameter to this function");
+                        newxfer = xfer;
+                    }
+                }
+
                 // initialize dataset transfer syntax members
                 // to make sure the values are correct even if the dataset is empty
                 dataset->initializeXfer(newxfer);
@@ -791,9 +804,7 @@ OFCondition DcmFileFormat::readUntilTag(DcmInputStream &inStream,
                 if (FileReadMode != ERM_metaOnly)
                 {
                     if (dataset && dataset->transferState() != ERW_ready)
-                    {
                         errorFlag = dataset->readUntilTag(inStream, newxfer, glenc, maxReadLength, stopParsingAtElement);
-                    }
                 }
             }
         }
@@ -1232,7 +1243,7 @@ void DcmFileFormat::setImplementationVersionName(const OFString& implementationV
     ImplementationVersionName = implementationVersionName;
     if (ImplementationVersionName.length() > 16)
     {
-        DCMDATA_WARN("DcmFileFormat: implementation version name too long");
+        DCMDATA_WARN("DcmFileFormat: Implementation version name too long");
         ImplementationVersionName.erase(16);
     }
 }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -301,7 +301,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             // use determined transfer syntax
             newxfer = tmpXferSyn.getXfer();
             if (xferSyn != EXS_Unknown)
-                DCMDATA_WARN("DcmMetaInfo: TransferSyntax of MetaInfo is other than expected");
+                DCMDATA_WARN("DcmMetaInfo: Transfer Syntax of File Meta Information Header is other than expected");
         } else
             newxfer = xferSyn.getXfer();
     }
@@ -376,9 +376,9 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             if (l_error.good() && newTag == xtag && elementList->get() != NULL && newValueLength > 0)
             {
                 l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
-                DCMDATA_TRACE("DcmMetaInfo::readGroupLength() Group Length of File Meta Header = " << headerLen + bytesRead);
+                DCMDATA_TRACE("DcmMetaInfo::readGroupLength() Group Length of File Meta Information Header = " << headerLen + bytesRead);
             } else {
-                DCMDATA_WARN("DcmMetaInfo: No Group Length available in Meta Information Header");
+                DCMDATA_WARN("DcmMetaInfo: No Group Length available in File Meta Information Header");
                 /* missing group length could be ignored (if no other error occurred) */
                 if (l_error == EC_StreamNotifyClient)
                     l_error = EC_InvalidStream;
@@ -449,7 +449,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                         /* FileMetaInformationGroupLength (0002,0000) is present but should be ignored  */
                         if (dcmIgnoreFileMetaInformationGroupLength.get())
                         {
-                            DCMDATA_WARN("DcmMetaInfo: Ignoring Group Length of Meta Information Header");
+                            DCMDATA_WARN("DcmMetaInfo: Ignoring Group Length of File Meta Information Header");
                             setLengthField(DCM_UndefinedLength);
                         } else
                             setLengthField(headerLength + getTransferredBytes());
@@ -491,7 +491,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                             lastElementComplete = OFTrue;
                         /* check for valid meta-header elements */
                         if (newTag.getGroup() != 0x0002)
-                            DCMDATA_WARN("DcmMetaInfo: Invalid Element " << newTag << " found in Meta Information Header");
+                            DCMDATA_WARN("DcmMetaInfo: Invalid Element " << newTag << " found in File Meta Information Header");
                     } else {
                         errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
                         if (errorFlag.good())
@@ -508,13 +508,13 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                 errorFlag = EC_Normal;      // there is no meta header
                 Xfer = EXS_Unknown;
                 if (preambleUsed)           // ... but a preamble!
-                    DCMDATA_WARN("DcmMetaInfo: Found Preamble but no Meta Information Header");
+                    DCMDATA_WARN("DcmMetaInfo: Found Preamble but no File Meta Information Header");
             } else if (errorFlag == EC_ItemEnd)
                 errorFlag = EC_Normal;
             if (errorFlag.good())
             {
                 if (getLengthField() != DCM_UndefinedLength && getTransferredBytes() != getLengthField())
-                    DCMDATA_WARN("DcmMetaInfo: Group Length of Meta Information Header has incorrect value");
+                    DCMDATA_WARN("DcmMetaInfo: Group Length of File Meta Information Header has incorrect value");
                 setTransferState(ERW_ready);          // MetaInfo is complete
             }
         }
