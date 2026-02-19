@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -165,7 +165,8 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
 
     /** read object from a stream.
      *  @param inStream DICOM input stream
-     *  @param xfer transfer syntax to use when parsing
+     *  @param xfer transfer syntax to use when parsing (if not specified in the
+     *    meta header)
      *  @param glenc handling of group length parameters
      *  @param maxReadLength attribute values larger than this value are skipped
      *    while parsing and read later upon first access if the stream type supports
@@ -179,7 +180,8 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
 
     /** read object from a stream, up to the attribute tag stopParsingAtElement.
      *  @param inStream DICOM input stream
-     *  @param xfer transfer syntax to use when parsing
+     *  @param xfer transfer syntax to use when parsing (if not specified in the
+     *    meta header)
      *  @param glenc handling of group length parameters
      *  @param maxReadLength attribute values larger than this value are skipped
      *    while parsing and read later upon first access if the stream type supports
@@ -260,7 +262,9 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param fileName name of the file to load (may contain wide chars if support enabled).
      *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
      *    or "wchar_t *" can also be passed directly to this parameter.
-     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown).
+     *    Please note that the given transfer syntax is not used for DICOM files, as the meta
+     *    header already specifies the transfer syntax of the dataset (unless it is ignored).
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
@@ -282,7 +286,9 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param fileName name of the file to load (may contain wide chars if support enabled).
      *    Since there are various constructors for the OFFilename class, a "char *", "OFString"
      *    or "wchar_t *" can also be passed directly to this parameter.
-     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown).
+     *    Please note that the given transfer syntax is not used for DICOM files, as the meta
+     *    header already specifies the transfer syntax of the dataset (unless it is ignored).
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
