@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2024, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -97,7 +97,11 @@ public:
    *    but may fail if frames are decompressed in random order, multiple fragments
    *    per frame and multiple frames are present in the dataset, and the offset
    *    table is empty.
-   *  @param buffer pointer to buffer where frame is to be stored
+   *  @param buffer pointer to buffer where frame is to be stored.
+   *    The frame will be stored in the same format that is also produced
+   *    by decode(), i.e. pixel data arranged in 16-bit words (corresponding
+   *    to the OW value representation for uncompressed pixel data),
+   *    byte-swapped to the local endianness of the machine.
    *  @param bufSize size of buffer in bytes
    *  @param decompressedColorModel upon successful return, the color model
    *    of the decompressed image (which may be different from the one used

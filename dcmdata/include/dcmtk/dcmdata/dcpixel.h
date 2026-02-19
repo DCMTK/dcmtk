@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -665,6 +665,10 @@ public:
      *    table is empty.
      *  @param buffer pointer to buffer allocated by the caller. The buffer
      *    must be large enough for one frame of this image.
+     *    The frame will be stored in the same format that is also produced
+     *    by decode(), i.e. pixel data arranged in 16-bit words (corresponding
+     *    to the OW value representation for uncompressed pixel data),
+     *    byte-swapped to the local endianness of the machine.
      *  @param bufSize size of buffer, in bytes. This number must be even so
      *    that the data can properly be converted to a different endianness.
      *  @param decompressedColorModel upon successful return, the color model
