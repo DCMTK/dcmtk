@@ -142,7 +142,6 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
 
   char buf[64];
   unsigned int counter;
-  OFBool found;
   const char *key = NULL;
   const char *value = NULL;
   OFString abstractSyntaxUID;
@@ -150,6 +149,7 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
   size_t separator = 0;
   size_t i;
   size_t len;
+  size_t max_state_count = 512;
   unsigned char c;
   OFCondition result = EC_Normal;
 
@@ -158,8 +158,8 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
   {
     key = config.get_keyword(1);
     counter = 0;
-    found = OFTrue;
-    while (found)
+
+    while (counter < max_state_count) 
     {
       OFStandard::snprintf(buf, sizeof(buf), "%s%u", L0_PRESENTATIONCONTEXT_X, ++counter);
       value = config.get_entry(buf);
@@ -190,9 +190,11 @@ OFCondition DcmAssociationConfigurationFile::parsePresentationContexts(
         abstractSyntaxUID.erase(separator);
 
         result = cfg.addPresentationContext(key, abstractSyntaxUID.c_str(), transferSyntaxKey.c_str(), scuMode);
-        if (result.bad()) return result;
-
-      } else found = OFFalse;
+        if (result.bad())
+        {
+          return result;
+        }
+      }
     }
     config.next_section(1);
   }
