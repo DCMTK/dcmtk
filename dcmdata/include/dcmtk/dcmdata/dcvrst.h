@@ -115,13 +115,6 @@ class DCMTK_DCMDATA_EXPORT DcmShortText
     virtual OFCondition checkValue(const OFString &vm = "",
                                    const OFBool oldFormat = OFFalse);
 
-    /** get the value multiplicity.
-     *  Since the backslash "\" is not regarded as a separator the value
-     *  multiplicity is always 1.
-     *  @return value multiplicity of the currently stored value
-     */
-    virtual unsigned long getVM();
-
     /** get a copy of a particular string component
      *  @param stringVal variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -152,6 +145,13 @@ class DCMTK_DCMDATA_EXPORT DcmShortText
      */
     static OFCondition checkStringValue(const OFString &value,
                                         const OFString &charset = "");
+protected:
+  /** check if the VR supports more than one value.
+   *  Since the backslash "\" is not regarded as a separator,
+   *  multiple values cannot be encoded.
+   *  @return OFFalse
+   */
+  virtual OFBool supportsMultiValue() const { return OFFalse; };
 };
 
 
