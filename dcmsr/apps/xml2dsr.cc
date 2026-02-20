@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2025, OFFIS e.V.
+ *  Copyright (C) 2003-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -61,6 +61,8 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // Suppress warnings caused by these pragmas when compiling with GCC.
 #include DCMTK_DIAGNOSTIC_PUSH
 #include DCMTK_DIAGNOSTIC_IGNORE_CLANG_PRAGMAS_ON_GCC
+// GCC on MacOS 26 prints warnings about deprecated declarations.
+#include DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS
 #include <libxml/parser.h>
 #include DCMTK_DIAGNOSTIC_POP
 
