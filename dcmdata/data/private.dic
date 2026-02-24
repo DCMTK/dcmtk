@@ -138,8 +138,8 @@
 (0021,"CARDIO-D.R. 1.0",13)	IS	ImageSequenceNumber	1	PrivateTag
 (0029,"CARDIO-D.R. 1.0",00)	SQ	EdgeEnhancementSequence	1	PrivateTag
 (0029,"CARDIO-D.R. 1.0",01)	US	ConvolutionKernelSize	2	PrivateTag
-(0029,"CARDIO-D.R. 1.0",02)	DS	ConvolutionKernelCoefficients	1-n	PrivateTag
-(0029,"CARDIO-D.R. 1.0",03)	DS	EdgeEnhancementGain	1	PrivateTag
+(0029,"CARDIO-D.R. 1.0",02)	US	ConvolutionKernelCoefficients	1-n	PrivateTag
+(0029,"CARDIO-D.R. 1.0",03)	FL	EdgeEnhancementGain	1	PrivateTag
 
 (0025,"CMR42 CIRCLECVI",1010)	LO	WorkspaceID	1	PrivateTag
 (0025,"CMR42 CIRCLECVI",1020)	LO	WorkspaceTimeString	1	PrivateTag
