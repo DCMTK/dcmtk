@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -215,18 +215,6 @@ OFCondition DcmTime::getDicomTimeFromOFTime(const OFTime &timeValue,
     return l_error;
 }
 
-OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
-                                         OFTime &timeValue)
-{
-    return getOFTimeFromString(dicomTime.c_str(), dicomTime.size(), timeValue, OFTrue);
-}
-
-OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
-                                         OFTime &timeValue,
-                                         const OFBool supportOldFormat)
-{
-    return getOFTimeFromString(dicomTime.c_str(), dicomTime.size(), timeValue, supportOldFormat);
-}
 
 OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
                                          OFTime &timeValue,
@@ -236,6 +224,7 @@ OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
     return getOFTimeFromString(dicomTime.c_str(), dicomTime.size(), timeValue, supportOldFormat, timeZone);
 }
 
+
 OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
                                          const size_t dicomTimeSize,
                                          OFTime &timeValue)
@@ -243,13 +232,6 @@ OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
     return getOFTimeFromString(dicomTime, dicomTimeSize, timeValue, OFTrue);
 }
 
-OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
-                                         const size_t dicomTimeSize,
-                                         OFTime &timeValue,
-                                         const OFBool supportOldFormat)
-{
-    return getOFTimeFromString(dicomTime, dicomTimeSize, timeValue, supportOldFormat, OFTime::getLocalTimeZone());
-}
 
 OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
                                          const size_t dicomTimeSize,

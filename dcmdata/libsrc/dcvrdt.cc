@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -222,11 +222,13 @@ OFCondition DcmDateTime::getDicomDateTimeFromOFDateTime(const OFDateTime &dateTi
     return l_error;
 }
 
+
 OFCondition DcmDateTime::getOFDateTimeFromString(const OFString &dicomDateTime,
                                                  OFDateTime &dateTimeValue)
 {
     return getOFDateTimeFromString(dicomDateTime.c_str(), dicomDateTime.size(), dateTimeValue);
 }
+
 
 OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
                                                  size_t dicomDateTimeSize,
@@ -244,7 +246,7 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
     if (dicomDateTimeSize >= 9 && DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
         dicomDateTimeSize -= 5;
     else
-        timeZone = OFTime::getLocalTimeZone();
+        timeZone = OFTime::unspecifiedTimeZone;
     switch(dicomDateTimeSize)
     {
     default:

@@ -131,7 +131,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     /** get the current element value in OFDateTime format.
      *  Please note that the element value is expected to be in the DICOM DT format
      *  "YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]". If the optional time zone ("&ZZZZ") is
-     *  missing the local time zone is used.
+     *  missing, it is set to "unspecified".
      *  If this function fails the result variable 'dateTimeValue' is cleared automatically.
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
@@ -221,12 +221,12 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
                                                       const OFBool timeZone = OFFalse);
 
     /** get the specified DICOM date and time value in OFDateTime format.
-     *  Please note that the element value is expected to be in valid DICOM DT format
-     *  ("YYYY[MM[DD[HH[MM[SS[.FFFFFF]]]]]][&ZZZZ]"). If the "MM" and/or "DD" component from
+     *  Please note that the element value is expected to be in valid DICOM DT format (i.e.
+     *  "YYYY[MM[DD[HH[MM[SS[.FFFFFF]]]]]][&ZZZZ]"). If the "MM" and/or "DD" component from
      *  the date part is missing, a value of "1" is used for each of them. If the "HH" or "MM"
      *  component of the time part is missing, a value of "0" is used for each of them (the
      *  "SS" component is set to "unspecified"). If the optional time zone ("&ZZZZ") is missing,
-     *  the local time zone is used.
+     *  it is set to "unspecified".
      *  If this function fails, the result variable 'dateTimeValue' is cleared automatically.
      *  @param dicomDateTime string value in DICOM DT format to be converted to OFDateTime.
      *    An empty string is not regarded as valid input, since the date/time would be unknown.
@@ -237,12 +237,12 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
                                                OFDateTime &dateTimeValue);
 
     /** get the specified DICOM date and time value in OFDateTime format.
-     *  Please note that the element value is expected to be in valid DICOM DT format
-     *  ("YYYY[MM[DD[HH[MM[SS[.FFFFFF]]]]]][&ZZZZ]"). If the "MM" and/or "DD" component from
+     *  Please note that the element value is expected to be in valid DICOM DT format (i.e.
+     *  "YYYY[MM[DD[HH[MM[SS[.FFFFFF]]]]]][&ZZZZ]"). If the "MM" and/or "DD" component from
      *  the date part is missing, a value of "1" is used for each of them. If the "HH" or "MM"
      *  component of the time part is missing, a value of "0" is used for each of them (the
      *  "SS" component is set to "unspecified"). If the optional time zone ("&ZZZZ") is missing,
-     *  the local time zone is used.
+     *  it is set to "unspecified".
      *  If this function fails, the result variable 'dateTimeValue' is cleared automatically.
      *  @param dicomDateTime string value in DICOM DT format to be converted to OFDateTime.
      *    An empty string is not regarded as valid input, since the date/time would be unknown.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2021, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -193,11 +193,6 @@ OFCondition DcmDate::getDicomDateFromOFDate(const OFDate &dateValue,
     return l_error;
 }
 
-OFCondition DcmDate::getOFDateFromString(const OFString &dicomDate,
-                                         OFDate &dateValue)
-{
-    return getOFDateFromString(dicomDate.c_str(), dicomDate.size(), dateValue, OFTrue);
-}
 
 OFCondition DcmDate::getOFDateFromString(const OFString &dicomDate,
                                          OFDate &dateValue,
@@ -206,12 +201,14 @@ OFCondition DcmDate::getOFDateFromString(const OFString &dicomDate,
     return getOFDateFromString(dicomDate.c_str(), dicomDate.size(), dateValue, supportOldFormat);
 }
 
+
 OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
                                          const size_t dicomDateSize,
                                          OFDate &dateValue)
 {
     return getOFDateFromString(dicomDate, dicomDateSize, dateValue, OFTrue);
 }
+
 
 OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
                                          const size_t dicomDateSize,

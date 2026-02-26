@@ -62,12 +62,8 @@ OFTEST(dcmdata_dateTime)
     DcmDateTime dcmDateTime(DCM_DateTime);
     OFOStringStream strstream;
 
-    // Determine the local time zone, needed because setOFTime loses the timezone
-    timeVal.setCurrentTime();
-    const double localTimeZone = timeVal.getTimeZone();
-
     OFDate curDateVal(2011, 5, 9);
-    OFTime curTimeVal(10, 35, 20, localTimeZone);
+    OFTime curTimeVal(10, 35, 20);
     OFDateTime curDateTimeVal(curDateVal, curTimeVal);
 
     dcmDate.setOFDate(curDateVal);

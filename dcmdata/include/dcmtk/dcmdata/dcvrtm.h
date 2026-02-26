@@ -210,63 +210,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
                                               const OFBool fraction = OFFalse);
 
     /** get the specified DICOM time value in OFTime format.
-     *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
-     *  of backward compatibility). Since there is no time zone for the DICOM TM format
-     *  local time is assumed (the time zone of 'timeValue' is set automatically).
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
-     *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param timeValue reference to OFTime variable where the result is stored
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    static OFCondition getOFTimeFromString(const OFString &dicomTime,
-                                           OFTime &timeValue);
-
-    /** get the specified DICOM time value in OFTime format.
-     *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
-     *  of backward compatibility). Since there is no time zone for the DICOM TM format
-     *  local time is assumed (the time zone of 'timeValue' is set automatically).
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
-     *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param timeValue reference to OFTime variable where the result is stored
-     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
-     *    format (see above).
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    static OFCondition getOFTimeFromString(const OFString &dicomTime,
-                                           OFTime &timeValue,
-                                           const OFBool supportOldFormat);
-
-    /** get the specified DICOM time value in OFTime format.
-     *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons of
-     *  backward compatibility). This overload of the function will set the time zone of
-     *  'timeValue' to the value given via the 'timeZone' parameter.
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
-     *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param timeValue reference to OFTime variable where the result is stored
-     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
-     *    format (see above).
-     *  @param timeZone the time zone to set for 'timeValue'.
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    static OFCondition getOFTimeFromString(const OFString &dicomTime,
-                                           OFTime &timeValue,
-                                           const OFBool supportOldFormat,
-                                           const double timeZone);
-
-    /** get the specified DICOM time value in OFTime format.
-     *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
-     *  of backward compatibility). Since there is no time zone for the DICOM TM format
-     *  local time is assumed (the time zone of 'timeValue' is set automatically).
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
-     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @note This method is only needed for the incomprehensible DcmAttributeMatching
+     *    "magic". It is a candidate for removal.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format
      *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
@@ -276,10 +222,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
                                            OFTime &timeValue);
 
     /** get the specified DICOM time value in OFTime format.
-     *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons
-     *  of backward compatibility). Since there is no time zone for the DICOM TM format
-     *  local time is assumed (the time zone of 'timeValue' is set automatically).
+     *  Please note that the element value is expected to be in valid DICOM TM format (i.e.
+     *  "HH[MM[SS[.FFFFFF]]]"). If enabled, the old format from ACR-NEMA
+     *  ("HH[:MM[:SS[.FFFFFF]]]") is also supported for reasons of backward compatibility.
      *  If this function fails the result variable 'timeValue' is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
@@ -287,41 +232,41 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
      *    format (see above).
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    static OFCondition getOFTimeFromString(const char *dicomTime,
-                                           const size_t dicomTimeSize,
-                                           OFTime &timeValue,
-                                           const OFBool supportOldFormat);
-
-    /** get the specified DICOM time value in OFTime format.
-     *  Please note that the element value is expected to be in valid DICOM TM format
-     *  ("HH[MM[SS[.FFFFFF]]]", "HH[:MM[:SS[.FFFFFF]]]" is also supported for reasons of
-     *  backward compatibility). This overload of the function will set the time zone of
-     *  'timeValue' to the value given via the 'timeZone' parameter.
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
-     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
-     *    An empty string is not regarded as valid input, since the time would be unknown.
-     *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
-     *  @param timeValue reference to OFTime variable where the result is stored
-     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
-     *    format (see above).
-     *  @param timeZone the time zone to set for 'timeValue'.
+     *  @param timeZone optional time zone to set for 'timeValue' (default: unspecified)
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getOFTimeFromString(const char *dicomTime,
                                            const size_t dicomTimeSize,
                                            OFTime &timeValue,
                                            const OFBool supportOldFormat,
-                                           const double timeZone);
+                                           const double timeZone = OFTime::unspecifiedTimeZone);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format (i.e.
+     *  "HH[MM[SS[.FFFFFF]]]"). If enabled, the old format from ACR-NEMA
+     *  ("HH[:MM[:SS[.FFFFFF]]]") is also supported for reasons of backward compatibility.
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
+     *    An empty string is not regarded as valid input, since the time would be unknown.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
+     *    format (see above).
+     *  @param timeZone optional time zone to set for 'timeValue' (default: unspecified)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(const OFString &dicomTime,
+                                           OFTime &timeValue,
+                                           const OFBool supportOldFormat = OFTrue,
+                                           const double timeZone = OFTime::unspecifiedTimeZone);
 
     /** get the specified DICOM time value in ISO format.
      *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]" where the
      *  brackets enclose optional parts. Please note that the specified value is expected
-     *  to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]"
-     *  is also supported for reasons of backward compatibility). If this function fails
-     *  or the specified DICOM time value is empty, the result variable 'formattedTime'
-     *  is cleared automatically.
+     *  to be in valid DICOM TM format (i.e. "[HH[MM[SS[.FFFFFF]]]]"). If enabled, the old
+     *  format from ACR-NEMA ("[HH[:MM[:SS[.FFFFFF]]]]") is also supported for reasons of
+     *  backward compatibility.
+     *  If this function fails or the specified DICOM time value is empty, the result
+     *  variable 'formattedTime' is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to ISO format
      *  @param formattedTime reference to string variable where the result is stored
      *  @param seconds add optional seconds (":SS") if OFTrue

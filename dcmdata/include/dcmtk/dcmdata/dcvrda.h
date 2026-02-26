@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -183,19 +183,8 @@ class DCMTK_DCMDATA_EXPORT DcmDate
 
     /** get the specified DICOM date value in OFDate format.
      *  Please note that the specified value is expected to be in valid DICOM DA format
-     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
-     *  If this function fails, the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
-     *    An empty string is not regarded as valid input, since the date would be unknown.
-     *  @param dateValue reference to OFDate variable where the result is stored
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    static OFCondition getOFDateFromString(const OFString &dicomDate,
-                                           OFDate &dateValue);
-
-    /** get the specified DICOM date value in OFDate format.
-     *  Please note that the specified value is expected to be in valid DICOM DA format
-     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
+     *  (i.e. "YYYYMMDD"). If enabled, the old format from ACR-NEMA ("YYYY.MM.DD") is also
+     *  supported for reasons of backward compatibility.
      *  If this function fails, the result variable 'dateValue' is cleared automatically.
      *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
@@ -206,14 +195,12 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      */
     static OFCondition getOFDateFromString(const OFString &dicomDate,
                                            OFDate &dateValue,
-                                           const OFBool supportOldFormat);
+                                           const OFBool supportOldFormat = OFTrue);
 
     /** get the specified DICOM date value in OFDate format.
-     *  Please note that the specified value is expected to be in valid DICOM DA format
-     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
-     *  If this function fails, the result variable 'dateValue' is cleared automatically.
-     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
-     *    An empty string is not regarded as valid input, since the date would be unknown.
+     *  @note This method is only needed for the incomprehensible DcmAttributeMatching
+     *    "magic". It is a candidate for removal.
+     *  @param dicomDate string value in DICOM DA format to be converted to OFDate format
      *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
      *  @param dateValue reference to OFDate variable where the result is stored
      *  @return EC_Normal upon success, an error code otherwise
@@ -224,7 +211,8 @@ class DCMTK_DCMDATA_EXPORT DcmDate
 
     /** get the specified DICOM date value in OFDate format.
      *  Please note that the specified value is expected to be in valid DICOM DA format
-     *  ("YYYYMMDD", "YYYY.MM.DD" is also supported for reasons of backward compatibility).
+     *  (i.e. "YYYYMMDD"). If enabled, the old format from ACR-NEMA ("YYYY.MM.DD") is also
+     *  supported for reasons of backward compatibility.
      *  If this function fails, the result variable 'dateValue' is cleared automatically.
      *  @param dicomDate string value in DICOM DA format to be converted to OFDate format.
      *    An empty string is not regarded as valid input, since the date would be unknown.
@@ -241,8 +229,9 @@ class DCMTK_DCMDATA_EXPORT DcmDate
 
     /** get the specified DICOM date value in ISO format.
      *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
-     *  that the specified value is expected to be in valid DICOM DA format ("YYYYMMDD",
-     *  "YYYY.MM.DD" is also supported for reasons of backward compatibility).
+     *  that the specified value is expected to be in valid DICOM DA format (i.e.
+     *  "YYYYMMDD"). If enabled, the old format from ACR-NEMA ("YYYY.MM.DD") is also
+     *  supported for reasons of backward compatibility.
      *  If this function fails or the specified DICOM date value is empty, the result
      *  variable 'formattedDate' is cleared automatically.
      *  @param dicomDate string value in DICOM DA format to be converted to ISO format
