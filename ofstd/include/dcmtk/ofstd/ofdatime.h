@@ -209,9 +209,9 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
     /** set the date/time value to the given ISO formatted date/time string.
      *  The most common ISO date/time formats supported by this function are
-     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters),
-     *  - "YYYY-MM-DD'T'HH:MM[:SS[.FFFFFF][&ZZ:ZZ]]" (according to ISO 8601) and
-     *  - "YYYYMMDDHHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters, useful for DICOM datetime type)
+     *  - "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with arbitrary delimiters),
+     *  - "YYYY-MM-DD'T'HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]" (according to ISO 8601) and
+     *  - "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters, useful for DICOM datetime type)
      *
      *  where the brackets enclose optional parts, the 'T' stands for the literal symbol "T", and
      *  the "&" is a placeholder for the sign symbol ("+" or "-"). The pattern "FFFFFF" contains a

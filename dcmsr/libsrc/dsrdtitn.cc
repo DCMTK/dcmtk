@@ -190,7 +190,7 @@ OFString &DSRDateTimeTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &
             {
                 /* example of XML date/time format with timezone: 2010-12-31T15:30:00.3333333+01:00 */
                 DcmDateTime::getDicomDateTimeFromOFDateTime(tmpDateTime, dateTimeValue,
-                    OFTrue /*seconds*/, OFTrue /*fraction*/, tmpDateTime.getTime().hasTimeZone());
+                    tmpDateTime.getTime().hasSecond() /*seconds*/, OFTrue /*fraction*/, tmpDateTime.getTime().hasTimeZone());
             }
         }
     }

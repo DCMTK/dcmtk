@@ -146,17 +146,21 @@ OFTEST(ofstd_OFTime)
     OFCHECK(!time2.hasTimeZone());
     /* check support for leap second */
     OFCHECK(time1.setTime(23, 59, 59));
+    OFCHECK(time1.hasSecond());
     OFCHECK(time1.setTime(23, 59, 60));
+    OFCHECK(time1.hasSecond());
     OFCHECK(!time1.setTime(23, 59, 61));
-    /* the "seconds" part is mandatory if time zone is present */
-    OFCHECK(!time2.setISOFormattedTime("10:15 -02:30"));
-    OFCHECK(!time2.setISOFormattedTime("1015+0100"));
+    /* the "seconds" part is optional, also if time zone is present */
+    OFCHECK(time2.setISOFormattedTime("10:15 -02:30"));
+    OFCHECK(time2.setISOFormattedTime("1015+0100"));
+    OFCHECK(!time2.hasSecond());
     /* check setting normalized time values */
     OFCHECK(time1.setTimeInSeconds(99999, 0, OFTrue /*normalized*/));
     OFCHECK_EQUAL(time1.getTimeInSeconds(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 13599);
     OFCHECK(time1.setTimeInHours(99, 0, OFTrue /*normalized*/));
     OFCHECK_EQUAL(time1.getTimeInHours(OFTrue /*useTimeZone*/, OFFalse /*normalize*/), 3);
     /* check getting ISO formatted time/time zone */
+    OFCHECK(time2.setISOFormattedTime("12:15:30"));
     OFCHECK(time2.setTimeZone(+1.0));
     OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFFalse /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
     OFCHECK_EQUAL(tmpString, "12:15:30 +01:00");
@@ -168,6 +172,10 @@ OFTEST(ofstd_OFTime)
     OFCHECK_EQUAL(tmpString, "12:15:30");
     OFCHECK(time2.getISOFormattedTimeZone(tmpString, OFFalse /*showDelimiter*/));
     OFCHECK_EQUAL(tmpString, "");
+    /* do the same tests, but also without a second value */
+    time2.clearSecond();
+    OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
+    OFCHECK_EQUAL(tmpString, "12:15");
 }
 
 
@@ -212,9 +220,9 @@ OFTEST(ofstd_OFDateTime)
     OFCHECK(dateTime1.setISOFormattedDateTime("2000-12-31T10:15:30+01:00"));
     OFCHECK(dateTime2.setISOFormattedDateTime("20001231101530+0100"));
     OFCHECK_EQUAL(dateTime1, dateTime2);
-    /* the "seconds" part is mandatory if time zone is present */
-    OFCHECK(!dateTime2.setISOFormattedDateTime("2000-12-31 10:15 -02:30"));
-    OFCHECK(!dateTime2.setISOFormattedDateTime("200012311015+0100"));
+    /* the "seconds" part is optional, also if time zone is present */
+    OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15 -02:30"));
+    OFCHECK(dateTime2.setISOFormattedDateTime("200012311015+0100"));
 
     OFCHECK( dateTime2.setISOFormattedDateTime("20001231101530-0230"));
     OFCHECK(!dateTime2.setISOFormattedDateTime("20001231101530.-0230"));

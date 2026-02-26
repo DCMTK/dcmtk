@@ -49,6 +49,11 @@ class DCMTK_OFSTD_EXPORT OFTime
 
  public:
 
+    /** constant value that denotes an unspecified second.
+     *  @note Do not use this value for comparison purposes.
+     */
+    static const double unspecifiedSecond;
+
     /** constant value that denotes an unspecified time zone.
      *  @note Do not use this value for comparison purposes.
      */
@@ -67,12 +72,12 @@ class DCMTK_OFSTD_EXPORT OFTime
     /** constructor with init values
      *  @param hour hour value to be set
      *  @param minute minute value to be set
-     *  @param second second value to be set (including fraction of seconds)
+     *  @param second optional second value to be set (including fraction of seconds)
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      */
     OFTime(const unsigned int hour,
            const unsigned int minute,
-           const double second,
+           const double second = unspecifiedSecond,
            const double timeZone = unspecifiedTimeZone);
 
     /** destructor
@@ -136,9 +141,13 @@ class DCMTK_OFSTD_EXPORT OFTime
     virtual OFBool operator>(const OFTime &timeVal) const;
 
     /** reset the time value.
-     *  Sets the hour, minute, second to 0, and time zone to "unspecified".
+     *  Sets the hour and minute to 0, and second as well as time zone to "unspecified".
      */
     virtual void clear();
+
+    /** clear the second value, i.e.\ set it to "unspecified".
+     */
+    void clearSecond();
 
     /** clear the time zone value, i.e.\ set it to "unspecified".
      */
@@ -151,6 +160,11 @@ class DCMTK_OFSTD_EXPORT OFTime
      */
     virtual OFBool isValid() const;
 
+    /** check whether a second value is specified
+     *  @return OFTrue if a second value is specified, OFFalse otherwise
+     */
+    virtual OFBool hasSecond() const;
+
     /** check whether a time zone value is specified, i.e.\ an offset to
      *  Coordinated Universal Time (UTC)
      *  @return OFTrue if a time zone value is specified, OFFalse otherwise
@@ -161,13 +175,13 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  Before the new value is set, it is checked using the isTimeValid() method.
      *  @param hour new hour value to be set
      *  @param minute new minute value to be set
-     *  @param second new second value to be set (including fraction of seconds)
+     *  @param second optional second value to be set (including fraction of seconds)
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setTime(const unsigned int hour,
                    const unsigned int minute,
-                   const double second,
+                   const double second = unspecifiedSecond,
                    const double timeZone = unspecifiedTimeZone);
 
     /** set the time value to the specified hour.
@@ -249,9 +263,9 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** set the time value to the given ISO formatted time string.
      *  The most common ISO time formats supported by this function are
-     *  - "HH:MM[:SS[.FFFFFF] [&ZZ:ZZ]]" (with arbitrary delimiters),
-     *  - "HH:MM[:SS[.FFFFFF][&ZZ:ZZ]]" (according to ISO 8601) and
-     *  - "HHMM[SS[.FFFFFF][&ZZZZ]]" (without delimiters)
+     *  - "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" (with arbitrary delimiters),
+     *  - "HH:MM[:SS[.FFFFFF]][&ZZ:ZZ]" (according to ISO 8601) and
+     *  - "HHMM[SS[.FFFFFF]][&ZZZZ]" (without delimiters)
      *
      *  where the brackets enclose optional parts and the "&" is a placeholder for the
      *  sign symbol ("+" or "-"). The pattern "FFFFFF" contains a fractional part of a second.
@@ -287,22 +301,22 @@ class DCMTK_OFSTD_EXPORT OFTime
     unsigned int getMinute() const;
 
     /** get the currently stored second value
-     *  @return second value (might be invalid, i.e. out of range)
+     *  @return second value (might be unspecified or invalid, i.e. out of range)
      */
     double getSecond() const;
 
     /** get the integral part of the currently stored second value
-     *  @return second value (might be invalid, i.e. out of range)
+     *  @return second value (might be invalid, i.e. out of range), 0 if unspecified
      */
     unsigned int getIntSecond() const;
 
     /** get the milli second part of the currently stored second value
-     *  @return milli second part (0..999)
+     *  @return milli second part (0..999), 0 if unspecified
      */
     unsigned int getMilliSecond() const;
 
     /** get the micro second part of the currently stored second value
-     *  @return micro second part (0..999999)
+     *  @return micro second part (0..999999), 0 if unspecified
      */
     unsigned int getMicroSecond() const;
 
@@ -359,12 +373,13 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @note If no time zone is specified, but the output of the time zone is requested,
      *    it is not added to the output parameter 'formattedTime'.
      *  @param formattedTime reference to string variable where the result is stored
-     *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue
+     *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue.
+     *    The seconds are only added if a value is specified.
      *  @param showFraction add optional fractional part of a second (".FFFFFF") if OFTrue.
      *    Requires parameter 'seconds' to be also OFTrue.
      *  @param showTimeZone add optional time zone ("&ZZ:ZZ" or "&ZZZZ") to the resulting string
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
-     *    in hours and minutes.
+     *    in hours and minutes. The time zone is only added if a value is specified.
      *  @param showDelimiter flag, indicating whether to use delimiters (":" and " ") or not
      *  @param timeZoneSeparator separator between ISO time value and time zone, e.g. " " (default)
      *    or "" (for ISO 8601 format). Only used if 'showDelimiter' is true.
@@ -413,14 +428,20 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  and [-12.0,+14.0] for 'timeZone' (if specified)
      *  @param hour hour value to be checked
      *  @param minute minute value to be checked
-     *  @param second second value to be checked
+     *  @param second optional second value to be checked
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @return OFTrue if the given time is valid, OFFalse otherwise
      */
     static OFBool isTimeValid(const unsigned int hour,
                               const unsigned int minute,
-                              const double second,
+                              const double second = unspecifiedSecond,
                               const double timeZone = unspecifiedTimeZone);
+
+    /** check whether the given second value is specified
+     *  @param second second value to be checked
+     *  @return OFTrue if the given second value is specified, OFFalse otherwise
+     */
+    static OFBool isSecondSpecified(const double second);
 
     /** check whether the given time zone is valid, i.e.\ within the valid range,
      *  or unspecified if explicitly accepted.

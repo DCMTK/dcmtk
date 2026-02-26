@@ -977,7 +977,7 @@
   <xsd:simpleType name="DateTime">
     <!-- cannot use xsd:dateTime here since this would make the "seconds" part mandatory -->
     <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]{1,6})?([\-+][0-9]{2}:[0-9]{2})?)?"/>
+      <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]{1,6})?)?([\-+][0-9]{2}:[0-9]{2})?"/>
     </xsd:restriction>
   </xsd:simpleType>
 

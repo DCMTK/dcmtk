@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2025, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -94,13 +94,13 @@ OFTEST(dcmdata_dateTime)
     dcmTime.print(strstream);
     CHECK_EQUAL("(0008,0030) TM [12]                                     #   2, 1 StudyTime\n");
     OFCHECK(dcmTime.getOFTime(timeVal).good());
-    CHECK_STREAM_EQUAL(timeVal, "12:00:00");
+    CHECK_STREAM_EQUAL(timeVal, "12:00");
 
     dcmTime.putString("1203");
     dcmTime.print(strstream);
     CHECK_EQUAL("(0008,0030) TM [1203]                                   #   4, 1 StudyTime\n");
     OFCHECK(dcmTime.getOFTime(timeVal).good());
-    CHECK_STREAM_EQUAL(timeVal, "12:03:00");
+    CHECK_STREAM_EQUAL(timeVal, "12:03");
 
     dcmTime.putString("120315");
     dcmTime.print(strstream);
@@ -118,12 +118,12 @@ OFTEST(dcmdata_dateTime)
     dcmTime.print(strstream);
     CHECK_EQUAL("(0008,0030) TM [12:03]                                  #   6, 1 StudyTime\n");
     OFCHECK(dcmTime.getOFTime(timeVal).good());
-    CHECK_STREAM_EQUAL(timeVal, "12:03:00");
-    dcmTime.putString("12:03:15");
+    CHECK_STREAM_EQUAL(timeVal, "12:03");
+    dcmTime.putString("12:03:00");
     dcmTime.print(strstream);
-    CHECK_EQUAL("(0008,0030) TM [12:03:15]                               #   8, 1 StudyTime\n");
+    CHECK_EQUAL("(0008,0030) TM [12:03:00]                               #   8, 1 StudyTime\n");
     OFCHECK(dcmTime.getOFTime(timeVal).good());
-    CHECK_STREAM_EQUAL(timeVal, "12:03:15");
+    CHECK_STREAM_EQUAL(timeVal, "12:03:00");
 
     OFCHECK(DcmTime::getTimeZoneFromString("+0030", timeZone).good());
     OFCHECK_EQUAL(timeZone, 0.5);
@@ -141,12 +141,12 @@ OFTEST(dcmdata_dateTime)
     dcmDateTime.print(strstream);
     CHECK_EQUAL("(0040,a120) DT [200204101203+0500]                      #  18, 1 DateTime\n");
     OFCHECK(dcmDateTime.getOFDateTime(dateTime).good());
-    CHECK_STREAM_EQUAL(dateTime, "2002-04-10 12:03:00");
+    CHECK_STREAM_EQUAL(dateTime, "2002-04-10 12:03");
 
     dcmDateTime.putString("20020410");
     dcmDateTime.print(strstream);
     CHECK_EQUAL("(0040,a120) DT [20020410]                               #   8, 1 DateTime\n");
     OFCHECK(dcmDateTime.getOFDateTime(dateTime).good());
     dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/);
-    OFCHECK_EQUAL(string, "2002-04-10 00:00:00");
+    OFCHECK_EQUAL(string, "2002-04-10 00:00");
 }

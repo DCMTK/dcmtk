@@ -187,7 +187,7 @@ OFString &DSRTimeTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &doc,
             OFTime tmpTime;
             /* convert ISO to DICOM format */
             if (tmpTime.setISOFormattedTime(tmpString))
-                DcmTime::getDicomTimeFromOFTime(tmpTime, timeValue, OFTrue /*seconds*/, OFTrue /*fraction*/);
+                DcmTime::getDicomTimeFromOFTime(tmpTime, timeValue, tmpTime.hasSecond() /*seconds*/, OFTrue /*fraction*/);
         }
     }
     return timeValue;

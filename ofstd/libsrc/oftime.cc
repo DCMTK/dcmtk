@@ -54,8 +54,10 @@ END_EXTERN_C
 
 // use "Not a Number" (NaN) if available, an invalid value otherwise
 #ifdef HAVE_CXX11
+const double OFTime::unspecifiedSecond = OFnumeric_limits<double>::quiet_NaN();
 const double OFTime::unspecifiedTimeZone = OFnumeric_limits<double>::quiet_NaN();
 #else
+const double OFTime::unspecifiedSecond = OFnumeric_limits<double>::max();
 const double OFTime::unspecifiedTimeZone = OFnumeric_limits<double>::max();
 #endif
 
@@ -67,7 +69,7 @@ const double OFTime::unspecifiedTimeZone = OFnumeric_limits<double>::max();
 OFTime::OFTime()
   : Hour(0),
     Minute(0),
-    Second(0),
+    Second(unspecifiedSecond),
     TimeZone(unspecifiedTimeZone)
 {
 }
@@ -185,8 +187,14 @@ void OFTime::clear()
 {
     Hour = 0;
     Minute = 0;
-    Second = 0;
+    clearSecond();
     clearTimeZone();
+}
+
+
+void OFTime::clearSecond()
+{
+    Second = unspecifiedSecond;
 }
 
 
@@ -200,6 +208,12 @@ OFBool OFTime::isValid() const
 {
     /* check current time settings */
     return isTimeValid(Hour, Minute, Second, TimeZone);
+}
+
+
+OFBool OFTime::hasSecond() const
+{
+    return isSecondSpecified(Second);
 }
 
 
@@ -406,6 +420,7 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
     return status;
 }
 
+
 OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 {
     const size_t length = formattedTime.length();
@@ -420,8 +435,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 
     unsigned int hours = 0;
     unsigned int minutes = 0;
-    unsigned int seconds = 0;
-    double fractionalSeconds = 0.0;
+    double seconds = OFTime::unspecifiedSecond;
     double timeZone = OFTime::unspecifiedTimeZone;
 
     {
@@ -435,8 +449,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 
         const int nCharactersExpected = (delimsUsed ? 5 : 4);
         int nCharactersRead = 0;
-        const int nReceivedArgs =
-            sscanf(formattedTime.c_str() + pos, hhmmFormat.c_str(), &hours, &minutes, &nCharactersRead);
+        const int nReceivedArgs = sscanf(formattedTime.c_str() + pos, hhmmFormat.c_str(), &hours, &minutes, &nCharactersRead);
         if ((nReceivedArgs == 2) && (nCharactersRead == nCharactersExpected))
         {
             pos += nCharactersRead;
@@ -448,8 +461,8 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
         }
     }
 
-    /* is still input available? */
-    if (pos < length)
+    /* is there still input available that starts with a digit or a delimiter (if used)? */
+    if ((pos < length) && (isdigit(formattedTime.at(pos)) || (delimsUsed && (formattedTime.at(pos) == delim))))
     {
         /* scan for SS or :SS - seconds */
         OFString ssFormat;
@@ -459,13 +472,14 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
         }
         ssFormat += "%2u%n";
 
+        unsigned int secondsInt = 0;
         const int nCharactersExpected = (delimsUsed ? 3 : 2);
         int nCharactersRead = 0;
-        const int nReceivedArgs =
-            sscanf(formattedTime.c_str() + pos, ssFormat.c_str(), &seconds, &nCharactersRead);
+        const int nReceivedArgs = sscanf(formattedTime.c_str() + pos, ssFormat.c_str(), &secondsInt, &nCharactersRead);
         if ((nReceivedArgs == 1) && (nCharactersRead == nCharactersExpected))
         {
             pos += nCharactersRead;
+            seconds = secondsInt;
         }
         else
         {
@@ -474,21 +488,21 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
         }
     }
 
-    /* is still input available that also starts with a dot ('.') character? */
-    if ((pos < length) && (formattedTime.at(pos) == '.'))
+    /* if seconds are used, is there still input available that starts with a dot ('.') character? */
+    if (isSecondSpecified(seconds) && (pos < length) && (formattedTime.at(pos) == '.'))
     {
         /* scan for .FFFFFF - fractional seconds */
         char buffer[8] = {'\0'};
         buffer[0] = '.';
         ++pos; /* overread the dot ('.') character at front */
         int nCharactersRead = 0;
-        const int nReceivedArgs =
-            sscanf(formattedTime.c_str() + pos, "%6[0123456789]%n", (buffer + 1), &nCharactersRead);
+        const int nReceivedArgs = sscanf(formattedTime.c_str() + pos, "%6[0123456789]%n", (buffer + 1), &nCharactersRead);
         OFBool fsSuccess = OFFalse;
-        fractionalSeconds = OFStandard::atof(buffer, &fsSuccess);
+        const double fractionalSeconds = OFStandard::atof(buffer, &fsSuccess);
         if ((nReceivedArgs == 1) && fsSuccess)
         {
             pos += nCharactersRead;
+            seconds += fractionalSeconds;
         }
         else
         {
@@ -514,38 +528,36 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
         }
     }
 
-    /* is still input available that also starts with a plus ('+') or minus ('-')
-     * character?
+    /* is there still input available that also starts with a plus ('+') or minus ('-') character?
      */
     if ((pos < length) && ((formattedTime.at(pos) == '+') || (formattedTime.at(pos) == '-')))
     {
-      /* scan for &ZZZZ or &ZZ:ZZ - time zone */
-      OFString tzFormat("%3d");
-      if (delimsUsed)
-      {
-          tzFormat += delim;
-      }
-      tzFormat += "%2u%n";
+        /* scan for &ZZZZ or &ZZ:ZZ - time zone */
+        OFString tzFormat("%3d");
+        if (delimsUsed)
+        {
+            tzFormat += delim;
+        }
+        tzFormat += "%2u%n";
 
-      int tzHours;
-      unsigned int tzMinutes;
-      int nCharactersRead = 0;
-      const int nReceivedArgs =
-          sscanf(formattedTime.c_str() + pos, tzFormat.c_str(), &tzHours, &tzMinutes, &nCharactersRead);
-      if (nReceivedArgs == 2)
-      {
-          timeZone = (tzHours < 0) ? tzHours - static_cast<double>(tzMinutes) / 60
-                                   : tzHours + static_cast<double>(tzMinutes) / 60;
-          pos += nCharactersRead;
-      }
-      else
-      {
-          /* found no valid &ZZ[:]ZZ 'pattern' */
-          return OFFalse;
-      }
+        int tzHours;
+        unsigned int tzMinutes;
+        int nCharactersRead = 0;
+        const int nReceivedArgs = sscanf(formattedTime.c_str() + pos, tzFormat.c_str(), &tzHours, &tzMinutes, &nCharactersRead);
+        if (nReceivedArgs == 2)
+        {
+            timeZone = (tzHours < 0) ? tzHours - OFstatic_cast(double, tzMinutes) / 60
+                                     : tzHours + OFstatic_cast(double, tzMinutes) / 60;
+            pos += nCharactersRead;
+        }
+        else
+        {
+            /* found no valid &ZZ[:]ZZ 'pattern' */
+            return OFFalse;
+        }
     }
 
-    /* is still input available? */
+    /* is there still input available? */
     if (pos < length)
     {
         /* too much input */
@@ -553,7 +565,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
     }
 
     /* all 'eaten up' */
-    return setTime(hours, minutes, seconds + fractionalSeconds, timeZone);
+    return setTime(hours, minutes, seconds, timeZone);
 }
 
 
@@ -611,19 +623,19 @@ double OFTime::getSecond() const
 unsigned int OFTime::getIntSecond() const
 {
     /* return integral value of seconds */
-    return OFstatic_cast(unsigned int, Second);
+    return (hasSecond() ? OFstatic_cast(unsigned int, Second) : 0);
 }
 
 
 unsigned int OFTime::getMilliSecond() const
 {
-    return OFstatic_cast(unsigned int, (Second - OFstatic_cast(unsigned int, Second)) * 1000);
+    return (hasSecond() ? OFstatic_cast(unsigned int, (Second - OFstatic_cast(unsigned int, Second)) * 1000) : 0);
 }
 
 
 unsigned int OFTime::getMicroSecond() const
 {
-    return OFstatic_cast(unsigned int, (Second - OFstatic_cast(unsigned int, Second)) * 1000000);
+    return (hasSecond() ? OFstatic_cast(unsigned int, (Second - OFstatic_cast(unsigned int, Second)) * 1000000) : 0);
 }
 
 
@@ -654,9 +666,10 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
                                 const double timeZone,
                                 const OFBool normalize)
 {
+    const double secondValue = isSecondSpecified(second) ? second : 0;
     const double timeZoneOffset = isTimeZoneSpecified(timeZone) ? timeZone : 0;
     /* compute number of seconds since 00:00:00 */
-    double result = ((OFstatic_cast(double, hour) - timeZoneOffset) * 60 + OFstatic_cast(double, minute)) * 60 + second;
+    double result = ((OFstatic_cast(double, hour) - timeZoneOffset) * 60 + OFstatic_cast(double, minute)) * 60 + secondValue;
     /* normalize the result to the range [0.0,86400.0[ */
     if (normalize)
         result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 86400) * 86400);
@@ -670,9 +683,10 @@ double OFTime::getTimeInHours(const unsigned int hour,
                               const double timeZone,
                               const OFBool normalize)
 {
+    const double secondValue = isSecondSpecified(second) ? second : 0;
     const double timeZoneOffset = isTimeZoneSpecified(timeZone) ? timeZone : 0;
     /* compute number of hours since 00:00:00 (incl. fraction of hours) */
-    double result = OFstatic_cast(double, hour) - timeZoneOffset + (OFstatic_cast(double, minute) + second / 60) / 60;
+    double result = OFstatic_cast(double, hour) - timeZoneOffset + (OFstatic_cast(double, minute) + secondValue / 60) / 60;
     /* normalize the result to the range [0.0,24.0[ */
     if (normalize)
         result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 24) * 24);
@@ -727,7 +741,8 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         /* format: HHMM */
         else
             OFStandard::snprintf(buf, sizeof(buf), "%02u%02u", Hour, Minute);
-        if (showSeconds)
+        /* only show seconds if requested _and_ a value is specified */
+        if (showSeconds && hasSecond())
         {
             if (showFraction)
             {
@@ -835,7 +850,18 @@ OFBool OFTime::isTimeValid(const unsigned int hour,
                            const double timeZone)
 {
     /* check whether given time is valid (also support leap second) */
-    return (hour < 24) && (minute < 60) && (second >= 0) && (second <= 60) && isTimeZoneValid(timeZone, OFTrue /*acceptUnspecified*/);
+    return (hour < 24) && (minute < 60) && (!isSecondSpecified(second) || ((second >= 0) &&  (second <= 60))) &&
+        isTimeZoneValid(timeZone, OFTrue /*acceptUnspecified*/);
+}
+
+
+OFBool OFTime::isSecondSpecified(const double second)
+{
+#ifdef HAVE_CXX11
+    return !(OFMath::isnan)(second);
+#else
+    return (second != unspecifiedSecond);
+#endif
 }
 
 

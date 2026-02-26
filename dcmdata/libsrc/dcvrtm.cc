@@ -263,7 +263,7 @@ OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
     if (dicomTimeSize < 2 || !OFStandard::checkDigits<2>(dicomTime))
         return EC_IllegalParameter;
     unsigned int minutes = 0;
-    double seconds = 0;
+    double seconds = OFTime::unspecifiedSecond;
     // test for HH[MM[SS[.FFFFFF]]] format
     switch (dicomTimeSize)
     {
@@ -272,7 +272,7 @@ OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
             break;
     case 6:
         if (OFStandard::checkDigits<2>(dicomTime + 4))
-            seconds += OFStandard::extractDigits<unsigned int,2>(dicomTime + 4);
+            seconds = (OFTime::isSecondSpecified(seconds) ? seconds : 0) + OFStandard::extractDigits<unsigned int,2>(dicomTime + 4);
         else
             break;
     case 4:
@@ -289,7 +289,7 @@ OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
     // test for legacy time format HH[:MM[:SS[.FFFFFF]]], if enabled
     if (supportOldFormat && dicomTimeSize >= 5 && dicomTime[2] == ':' && OFStandard::checkDigits<2>(dicomTime + 3))
     {
-        seconds = 0;
+        seconds = OFTime::unspecifiedSecond;
         switch (dicomTimeSize)
         {
         default:
@@ -297,7 +297,7 @@ OFCondition DcmTime::getOFTimeFromString(const char *dicomTime,
                 break;
         case 8:
             if (dicomTime[5] == ':' && OFStandard::checkDigits<2>(dicomTime + 6))
-                seconds += OFStandard::extractDigits<unsigned int,2>(dicomTime + 6);
+                seconds = (OFTime::isSecondSpecified(seconds) ? seconds : 0) + OFStandard::extractDigits<unsigned int,2>(dicomTime + 6);
             else
                 break;
         case 5:
