@@ -1281,7 +1281,11 @@ const OFString &DSRTypes::localTimezone(OFString &timezoneString)
 const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
                                               OFString &readableDate)
 {
-    DcmDate::getISOFormattedDateFromString(dicomDate, readableDate);
+    if (DcmDate::getISOFormattedDateFromString(dicomDate, readableDate).bad())
+    {
+        DCMSR_WARN("Cannot convert DICOM date value \"" << dicomDate << "\" to readable format");
+        readableDate = dicomDate;
+    }
     return readableDate;
 }
 
@@ -1289,7 +1293,11 @@ const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
 const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
                                               OFString &readableTime)
 {
-    DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/);
+    if (DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*createMissingPart*/).bad())
+    {
+        DCMSR_WARN("Cannot convert DICOM time value \"" << dicomTime << "\" to readable format");
+        readableTime = dicomTime;
+    }
     return readableTime;
 }
 
@@ -1297,8 +1305,12 @@ const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
 const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
                                                   OFString &readableDateTime)
 {
-    DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFTrue /*fraction*/,
-        OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, " " /*dateTimeSeparator*/, " " /*timeZoneSeparator*/);
+    if (DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFTrue /*fraction*/,
+        OFTrue /*timeZone*/, OFFalse /*createMissingPart*/, " " /*dateTimeSeparator*/, " " /*timeZoneSeparator*/).bad())
+    {
+        DCMSR_WARN("Cannot convert DICOM date/time value \"" << dicomDateTime << "\" to readable format");
+        readableDateTime = dicomDateTime;
+    }
     return readableDateTime;
 }
 
@@ -1307,7 +1319,10 @@ const OFString &DSRTypes::dicomToReadablePersonName(const OFString &dicomPersonN
                                                     OFString &readablePersonName)
 {
     if (DcmPersonName::getFormattedNameFromString(dicomPersonName, readablePersonName, 0 /*componentGroup*/).bad())
+    {
+        DCMSR_WARN("Cannot convert DICOM person name value \"" << dicomPersonName << "\" to readable format");
         readablePersonName = dicomPersonName;
+    }
     return readablePersonName;
 }
 

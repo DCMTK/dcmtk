@@ -1200,6 +1200,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** convert DICOM date string to readable format.
      *  The ISO format "YYYY-MM-DD" is used for the readable format.
+     *  If conversion fails, the original value in DICOM DA format is returned.
      ** @param  dicomDate     date in DICOM DA format (YYYYMMDD)
      *  @param  readableDate  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
@@ -1209,6 +1210,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** convert DICOM time string to readable format.
      *  The ISO format "HH:MM[:SS[.FFFFFF]]" is used for the readable format.
+     *  If conversion fails, the original value in DICOM TM format is returned.
      ** @param  dicomTime     time in DICOM TM format (HHMM[SS[.FFFFFF]])
      *  @param  readableTime  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
@@ -1218,6 +1220,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** convert DICOM date time string to readable format.
      *  The format "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]" is used for the readable format.
+     *  If conversion fails, the original value in DICOM DT format is returned.
      ** @param  dicomDateTime     time in DICOM DT format (YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]).
      *  @param  readableDateTime  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
@@ -1227,7 +1230,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** convert DICOM person name to readable format.
      *  The format "<prefix> <first_name> <middle_name> <last_name>, <suffix>" is used for the
-     *  readable format.
+     *  readable format.  If conversion fails, the original value in DICOM PN format is returned.
      *  Please note that only the first component group (characters before the first '=') of
      *  the DICOM person name is used - see DcmPersonName::getNameComponents() for details.
      ** @param  dicomPersonName     person name in DICOM PN format (ln^fn^mn^p^s)
