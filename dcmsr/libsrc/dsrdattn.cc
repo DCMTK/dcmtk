@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -186,8 +186,11 @@ OFString &DSRDateTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &doc,
         {
             OFDate tmpDate;
             /* convert ISO to DICOM format */
-            if (tmpDate.setISOFormattedDate(tmpString))
-                DcmDate::getDicomDateFromOFDate(tmpDate, dateValue);
+            if (!tmpDate.setISOFormattedDate(tmpString) || DcmDate::getDicomDateFromOFDate(tmpDate, dateValue).bad())
+            {
+                /* just report a warning, as we cannot return an error status */
+                DCMSR_WARN("Cannot convert ISO formatted date value \"" << tmpString << "\" to DICOM format");
+            }
         }
     }
     return dateValue;
