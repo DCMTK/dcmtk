@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2025, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -233,7 +233,7 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotProcessIncludedTemp
  *---------------------*/
 
 /** General purpose class hiding global functions, constants and types from the
- *  global namespace.  Some of them might be moved to 'ofstd' later on.
+ *  global namespace.  Some of them might be moved to "ofstd" later on.
  *  All functions and constants are static and can, therefore, be accessed without
  *  creating an instance of this class.
  */
@@ -246,7 +246,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** @name read() flags
      *  These flags can be combined and passed to the read() methods.
-     *  The 'shortcut' flags can be used for common combinations.
+     *  The "shortcut" flags can be used for common combinations.
      */
     ///@{
 
@@ -275,8 +275,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** @name renderHTML() flags
      *  These flags can be combined and passed to the renderHMTL() methods.
-     *  Please note that only the 'external' flags can be used from outside
-     *  this library.  The 'shortcut' flags can be used for common combinations.
+     *  Please note that only the "external" flags can be used from outside
+     *  this library.  The "shortcut" flags can be used for common combinations.
      */
     ///@{
 
@@ -356,7 +356,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** @name read/writeXML() flags
      *  These flags can be combined and passed to the read/writeXML() methods.
-     *  The 'shortcut' flags can be used for common combinations.
+     *  The "shortcut" flags can be used for common combinations.
      */
     ///@{
 
@@ -406,7 +406,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** @name print() flags
      *  These flags can be combined and passed to the print() methods.
-     *  The 'shortcut' flags can be used for common combinations.
+     *  The "shortcut" flags can be used for common combinations.
      */
     ///@{
 
@@ -1163,37 +1163,41 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      */
     static OFBool isDocumentTypeSupported(const E_DocumentType documentType);
 
-    /** get current date in DICOM 'DA' format. (YYYYMMDD)
+    /** get current date in DICOM "DA" format. (YYYYMMDD)
      ** @param  dateString  string used to store the current date.
-     *                      ('19000101' if current date could not be retrieved)
+     *                      ("19000101" if current date could not be retrieved)
      ** @return resulting character string (see 'dateString')
      */
     static const OFString &currentDate(OFString &dateString);
 
-    /** get current time in DICOM 'TM' format. (HHMMSS[.FFFFFF])
+    /** get current time in DICOM "TM" format. (HHMM[SS[.FFFFFF]])
      ** @param  timeString  string used to store the current time.
-     *                      ('000000[.000000]' if current time could not be retrieved)
+     *                      ("0000" if current time could not be retrieved, i.e. "HHMM")
+     *  @param  seconds     optional flag indicating whether to add seconds (default)
      *  @param  fraction    optional flag indicating whether to add fraction of seconds
      ** @return resulting character string (see 'timeString')
      */
     static const OFString &currentTime(OFString &timeString,
+                                       const OFBool seconds = OFTrue,
                                        const OFBool fraction = OFFalse);
 
-    /** get current date and time in DICOM 'DT' format. (YYYYMMDDHHMMSS[.FFFFFF][&ZZZZ])
+    /** get current date and time in DICOM "DT" format. (YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ])
      ** @param  dateTimeString  string used to store the current date and time.
-     *                          ('19000101000000[.000000][+0000]' if current date/time could
-     *                           not be retrieved)
+     *                          ("190001010000" if current date/time could not be retrieved,
+     *                           i.e. "YYYYMMDDHHMM")
+     *  @param  seconds         optional flag indicating whether to add seconds (default)
      *  @param  fraction        optional flag indicating whether to add fraction of seconds
      *  @param  timeZone        optional flag indicating whether to add the time zone
      ** @return resulting character string (see 'dateTimeString')
      */
     static const OFString &currentDateTime(OFString &dateTimeString,
+                                           const OFBool seconds = OFTrue,
                                            const OFBool fraction = OFFalse,
                                            const OFBool timeZone = OFFalse);
 
-    /** get local timezone in DICOM format. (&ZZXX)
+    /** get local timezone in DICOM format. (&ZZZZ)
      ** @param  timezoneString  string used to store the local timezone.
-     *                          ('+0000' if timezone could not be retrieved)
+     *                          ("+0000" if timezone could not be retrieved)
      ** @return resulting character string (see 'timezoneString')
      */
     static const OFString &localTimezone(OFString &timezoneString);
@@ -1231,7 +1235,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /** convert DICOM person name to readable format.
      *  The format "<prefix> <first_name> <middle_name> <last_name>, <suffix>" is used for the
      *  readable format.  If conversion fails, the original value in DICOM PN format is returned.
-     *  Please note that only the first component group (characters before the first '=') of
+     *  Please note that only the first component group (characters before the first "=") of
      *  the DICOM person name is used - see DcmPersonName::getNameComponents() for details.
      ** @param  dicomPersonName     person name in DICOM PN format (ln^fn^mn^p^s)
      *  @param  readablePersonName  reference to variable where the resulting string is stored
@@ -1244,7 +1248,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
      *  The tags \<prefix\>, \<first\>, \<middle\>, \<last\> and \<suffix\> are used for the XML
      *  format of a person name.  The string is automatically converted to the markup notation
      *  (see convertToMarkupString()).  Two tags are separated by a newline.
-     *  Please note that only the first component group (characters before the first '=') of
+     *  Please note that only the first component group (characters before the first "=") of
      *  the DICOM person name is used - see DcmPersonName::getNameComponents() for details.
      ** @param  dicomPersonName  person name in DICOM PN format (ln^fn^mn^p^s)
      *  @param  xmlPersonName    reference to variable where the resulting string is stored
@@ -1283,7 +1287,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                 OFString &printString);
 
     /** convert character string to HTML mnenonic string.
-     *  Characters with special meaning for HTML (e.g. '<' and '&') are replace by the corresponding
+     *  Characters with special meaning for HTML (e.g. "<" and "&") are replace by the corresponding
      *  mnenonics (e.g. "&lt;" and "&amp;").
      *  If flag DSRTypes::HF_convertNonASCIICharacters is set, all characters > #127 are also converted
      *  (useful if only HTML 3.2 is supported which does not allow to specify the character set).
@@ -1302,8 +1306,8 @@ class DCMTK_DCMSR_EXPORT DSRTypes
                                                const OFBool newlineAllowed = OFFalse);
 
     /** convert character string to XML mnenonic string.
-     *  Characters with special meaning for XML (e.g. '<' and '&') are replace by the
-     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").
+     *  Characters with special meaning for XML (e.g. "<" and "&") are replace by the corresponding
+     *  mnenonics (e.g. "&lt;" and "&amp;").
      ** @param  sourceString  source string to be converted
      *  @param  markupString  reference to variable where the result should be stored
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
@@ -1369,7 +1373,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** get element from dataset
      ** @param  dataset  reference to DICOM dataset from which the element should be retrieved.
-     *                   (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
+     *                   (Would be "const" if the methods from "dcmdata" would also be "const".)
      *  @param  delem    reference to DICOM element which should be retrieved.  The return value
      *                   is also stored in this parameter.
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -1425,7 +1429,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** get string value from dataset
      ** @param  dataset      DICOM dataset from which the string should be retrieved.
-     *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
+     *                       (Would be "const" if the methods from "dcmdata" would also be "const".)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
      *  @param  stringValue  reference to variable in which the result should be stored
      *                       (This parameter is automatically cleared if the tag could not be found.)
@@ -1492,7 +1496,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** get element from dataset and check it for correct value multiplicity and type.
      ** @param  dataset          DICOM dataset from which the element should be retrieved.  (Would be
-     *                           'const' if the methods from 'dcmdata' would also be 'const'.)
+     *                           "const" if the methods from "dcmdata" would also be "const".)
      *  @param  delem            DICOM element used to store the value (always creates a copy!)
      *  @param  vm               value multiplicity (according to the data dictionary) to be checked
      *                           for.  (See DcmElement::checkVM() for a list of valid values.)
@@ -1514,7 +1518,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** get string value from dataset and check it for correct value multiplicity and type.
      ** @param  dataset          DICOM dataset from which the element should be retrieved.  (Would be
-     *                           'const' if the methods from 'dcmdata' would also be 'const'.)
+     *                           "const" if the methods from "dcmdata" would also be "const".)
      *  @param  tagKey           DICOM tag specifying the attribute from which the string should be
      *                           retrieved
      *  @param  stringValue      reference to variable in which the result should be stored.
@@ -1544,9 +1548,9 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** print the warning message that the current content item is invalid/incomplete.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
-     *  @param  action    text describing the current action (e.g. 'Reading'), 'Processing' if NULL
+     *  @param  action    text describing the current action (e.g. "Reading"), "Processing" if NULL
      *  @param  node      pointer to document tree node for which the message should be printed
-     *  @param  location  position of the affected content item (e.g. '1.2.3', not printed if NULL)
+     *  @param  location  position of the affected content item (e.g. "1.2.3", not printed if NULL)
      */
     static void printInvalidContentItemMessage(const char *action,
                                                const DSRDocumentTreeNode *node,
@@ -1554,10 +1558,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** print an error message for the current content item.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
-     *  @param  action    text describing the current action (e.g. 'Reading'), 'Processing' if NULL
+     *  @param  action    text describing the current action (e.g. "Reading"), "Processing" if NULL
      *  @param  result    status used to print more information on the error (no message if EC_Normal)
      *  @param  node      pointer to document tree node for which the message should be printed
-     *  @param  location  position of the affected content item (e.g. '1.2.3', not printed if NULL)
+     *  @param  location  position of the affected content item (e.g. "1.2.3", not printed if NULL)
      */
     static void printContentItemErrorMessage(const char *action,
                                              const OFCondition &result,
@@ -1567,7 +1571,7 @@ class DCMTK_DCMSR_EXPORT DSRTypes
     /** print a warning message that an unknown/unsupported value has been determined
      *  @param  valueName  name of the unknown/unsupported value
      *  @param  readValue  value that has been read (optional)
-     *  @param  action     text describing the current action (default: 'Reading'), 'Processing' if NULL
+     *  @param  action     text describing the current action (default: "Reading"), "Processing" if NULL
      */
     static void printUnknownValueWarningMessage(const char *valueName,
                                                 const char *readValue = NULL,
@@ -1602,10 +1606,10 @@ class DCMTK_DCMSR_EXPORT DSRTypes
 
     /** create an HTML annex entry with hyperlinks.
      *  A reference text is added to the main document and a new annex entry to the document annex
-     *  with HTML hyperlinks between both.  Example for a reference: '[for details see Annex 1]'
+     *  with HTML hyperlinks between both.  Example for a reference: "[for details see Annex 1]"
      ** @param  docStream      output stream used for the main document
      *  @param  annexStream    output stream used for the document annex
-     *  @param  referenceText  optional text added to the main document (e.g. 'for details see')
+     *  @param  referenceText  optional text added to the main document (e.g. "for details see")
      *  @param  annexNumber    reference to the variable where the current annex number is stored.
      *                         Value is increased automatically by 1 after the new entry has been added.
      *  @param  flags          optional flag used to customize the output (see DSRTypes::HF_xxx)

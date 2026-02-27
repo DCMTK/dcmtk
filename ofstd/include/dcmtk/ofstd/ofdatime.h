@@ -243,13 +243,17 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      *  where the brackets enclose optional parts, the 'T' stands for the literal symbol "T", and
      *  the "&" is a placeholder for the sign symbol ("+" or "-").
      *  @param formattedDateTime reference to string variable where the result is stored
-     *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue
+     *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue.
+     *    By default, the seconds are only added if a value is specified.
      *  @param showFraction add optional fractional part of a second (".FFFFFF") if OFTrue.
-     *    Requires parameter 'seconds' to be also OFTrue.
+     *    Requires parameter 'seconds' to be also OFTrue. By default, the fractional part is only
+     *    added if the second value is not an integer (see OFTime::hasFractionOfSecond()).
      *  @param showTimeZone add optional time zone ("&ZZ:ZZ" or "&ZZZZ") to the resulting string
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
-     *    in hours and minutes.
+     *    in hours and minutes. The time zone is only added if a value is specified.
      *  @param showDelimiter flag, indicating whether to use delimiters ("-", ":" and " ") or not
+     *  @param createMissingPart if OFTrue create optional parts (seconds and fractional part of a
+     *    second) even if not specified (see OFTime::hasSecond() and OFTime::hasFractionOfSecond())
      *  @param dateTimeSeparator separator between ISO date and time value, e.g. " " (default) or
      *    "T" (for ISO 8601 format). Only used if 'showDelimiter' is true.
      *  @param timeZoneSeparator separator between ISO time value and time zone, e.g. " " (default)
@@ -261,6 +265,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
                                    const OFBool showFraction = OFFalse,
                                    const OFBool showTimeZone = OFFalse,
                                    const OFBool showDelimiter = OFTrue,
+                                   const OFBool createMissingPart = OFFalse,
                                    const OFString &dateTimeSeparator = " ",
                                    const OFString &timeZoneSeparator = " ") const;
 

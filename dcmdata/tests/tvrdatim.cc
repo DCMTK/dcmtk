@@ -83,8 +83,9 @@ OFTEST(dcmdata_dateTime)
     CHECK_EQUAL("(0040,a120) DT [20110509103520]                         #  14, 1 DateTime\n");
     OFCHECK(dcmDateTime.getOFDateTime(dateTime).good());
     OFCHECK_EQUAL(dateTime, curDateTimeVal);
-    OFCHECK(dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*timeZone*/, OFFalse /*delimiter*/));
-    OFCHECK_EQUAL(string, "20110509103520.000000");
+    OFCHECK(dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*timeZone*/,
+                                             OFFalse /*delimiter*/, OFFalse /*createMissingPart*/));
+    OFCHECK_EQUAL(string, "20110509103520");
 
     dcmTime.putString("12");
     dcmTime.print(strstream);
@@ -97,6 +98,9 @@ OFTEST(dcmdata_dateTime)
     CHECK_EQUAL("(0008,0030) TM [1203]                                   #   4, 1 StudyTime\n");
     OFCHECK(dcmTime.getOFTime(timeVal).good());
     CHECK_STREAM_EQUAL(timeVal, "12:03");
+    OFCHECK(timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/,
+                                        OFTrue /*delimiter*/, OFTrue /*createMissingPart*/));
+    OFCHECK_EQUAL(string, "12:03:00.000000");
 
     dcmTime.putString("120315");
     dcmTime.print(strstream);
@@ -107,7 +111,7 @@ OFTEST(dcmdata_dateTime)
     dcmTime.print(strstream);
     CHECK_EQUAL("(0008,0030) TM [120301.99]                              #  10, 1 StudyTime\n");
     OFCHECK(dcmTime.getOFTime(timeVal).good());
-    timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*timeZone*/);
+    OFCHECK(timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/));
     OFCHECK_EQUAL(string, "12:03:01.990000");
 
     dcmTime.putString("12:03");
@@ -143,6 +147,6 @@ OFTEST(dcmdata_dateTime)
     dcmDateTime.print(strstream);
     CHECK_EQUAL("(0040,a120) DT [20020410]                               #   8, 1 DateTime\n");
     OFCHECK(dcmDateTime.getOFDateTime(dateTime).good());
-    dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/);
+    OFCHECK(dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/));
     OFCHECK_EQUAL(string, "2002-04-10 00:00");
 }

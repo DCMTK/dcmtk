@@ -286,6 +286,7 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                            const OFBool showFraction,
                                            const OFBool showTimeZone,
                                            const OFBool showDelimiter,
+                                           const OFBool createMissingPart,
                                            const OFString &dateTimeSeparator,
                                            const OFString &timeZoneSeparator) const
 {
@@ -295,7 +296,7 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
     {
         /* ... then get the formatted time component */
         OFString timeString;
-        if (Time.getISOFormattedTime(timeString, showSeconds, showFraction, showTimeZone, showDelimiter, timeZoneSeparator))
+        if (Time.getISOFormattedTime(timeString, showSeconds, showFraction, showTimeZone, showDelimiter, createMissingPart, timeZoneSeparator))
         {
             if (showDelimiter)
                 formattedDateTime += dateTimeSeparator;

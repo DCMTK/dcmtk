@@ -79,7 +79,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);
+    virtual OFCondition copyFrom(const DcmObject &rhs);
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_DT)
@@ -112,10 +112,10 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  returned - in fact, the date is set to "19000101" if unavailable.
      *  @param seconds add optional seconds ("SS") if OFTrue
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (requires parameter 'seconds' to be also OFTrue)
      *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
-     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-     *   Time (UTC).
+     *    The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *    Time (UTC).
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition setCurrentDateTime(const OFBool seconds = OFTrue,
@@ -148,15 +148,14 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  'formattedDateTime' is cleared automatically.
      *  @param formattedDateTime reference to string variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
-     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param seconds add optional seconds (":SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue.
      *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
-     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-     *   Time (UTC). Please note that the formatted time output is not adapted to the local
-     *   time if the time zone is omitted.
-     *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
-     *   a seconds and/or time zone) if absent in the element value
+     *    The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *    Time (UTC). The time zone is only added if a value is specified.
+     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
+     *    part of a second) if absent in the element value
      *  @param dateTimeSeparator separator between ISO date and time value
      *  @param timeZoneSeparator separator between ISO time value and time zone
      *  @return EC_Normal upon success, an error code otherwise
@@ -174,8 +173,8 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     using DcmByteString::matches;
 
     /// @copydoc DcmByteString::matches(const OFString&,const OFString&,const OFBool) const
-    virtual OFBool matches(const OFString& key,
-                           const OFString& candidate,
+    virtual OFBool matches(const OFString &key,
+                           const OFString &candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
     /* --- static helper functions --- */
@@ -186,18 +185,21 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  of it are unavailable the corresponding values are set to "0" and an error code is
      *  returned - in fact, the date is set to "19000101" if unavailable.
      *  @param dicomDateTime reference to string variable where the result is stored
-     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param seconds add optional seconds ("SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue.
      *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
-     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-     *   Time (UTC).
+     *    The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *    Time (UTC). The time zone is only added if a value is specified.
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and fractional
+     *    part of a second) if no value is specified
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getCurrentDateTime(OFString &dicomDateTime,
                                           const OFBool seconds = OFTrue,
                                           const OFBool fraction = OFFalse,
-                                          const OFBool timeZone = OFFalse);
+                                          const OFBool timeZone = OFFalse,
+                                          const OFBool createMissingPart = OFFalse);
 
     /** get the specified OFDateTime value in DICOM format.
      *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
@@ -206,19 +208,22 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  returned - in fact, the date is set to "19000101" if unavailable.
      *  @param dateTimeValue date and time to be converted to DICOM format
      *  @param dicomDateTime reference to string variable where the result is stored
-     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param seconds add optional seconds ("SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue.
      *  @param timeZone add optional time zone ("&ZZZZ" where "&" is "+" or "-") if OFTrue.
-     *   The time zone is given as the offset (hours and minutes) from Coordinated Universal
-     *   Time (UTC).
+     *    The time zone is given as the offset (hours and minutes) from Coordinated Universal
+     *    Time (UTC). The time zone is only added if a value is specified.
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and fractional
+     *    part of a second) if no value is specified
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getDicomDateTimeFromOFDateTime(const OFDateTime &dateTimeValue,
                                                       OFString &dicomDateTime,
                                                       const OFBool seconds = OFTrue,
                                                       const OFBool fraction = OFFalse,
-                                                      const OFBool timeZone = OFFalse);
+                                                      const OFBool timeZone = OFFalse,
+                                                      const OFBool createMissingPart = OFFalse);
 
     /** get the specified DICOM date and time value in OFDateTime format.
      *  Please note that the element value is expected to be in valid DICOM DT format (i.e.
@@ -262,15 +267,14 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  variable 'formattedDateTime' is cleared automatically.
      *  @param dicomDateTime string value in DICOM DT format to be converted to ISO format
      *  @param formattedDateTime reference to string variable where the result is stored
-     *  @param seconds add optional seconds (":SS") if OFTrue
-     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
-     *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
-     *   The time zone is given as the offset (hours and minutes) from the Coordinated Universal
-     *   Time (UTC). Please note that the formatted time output is not adapted to the local time
-     *   if the time zone is omitted.
-     *  @param createMissingPart if OFTrue create optional parts (seconds, fractional part of
-     *   a seconds and/or time zone) if absent in the element value
+     *  @param seconds add optional seconds (":SS") if OFTrue (and a value is specified)
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue (and a
+     *    value is specified). Requires parameter 'seconds' to be also OFTrue.
+     *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue
+     *    (and a value is specified). The time zone is given as the offset (hours and minutes)
+     *    from the Coordinated Universal Time (UTC).
+     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional part
+     *    of a second) if absent in the element value
      *  @param dateTimeSeparator separator between ISO date and time value
      *  @param timeZoneSeparator separator between ISO time value and time zone
      *  @return EC_Normal upon success, an error code otherwise

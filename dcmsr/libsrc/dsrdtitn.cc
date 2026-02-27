@@ -188,8 +188,7 @@ OFString &DSRDateTimeTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &
             /* convert ISO to DICOM format */
             /* (example of XML date/time format with timezone: 2010-12-31T15:30:00.3333333+01:00) */
             if (!tmpDateTime.setISOFormattedDateTime(tmpString) ||
-                DcmDateTime::getDicomDateTimeFromOFDateTime(tmpDateTime, dateTimeValue, tmpDateTime.getTime().hasSecond() /*seconds*/,
-                                                            OFTrue /*fraction*/, tmpDateTime.getTime().hasTimeZone()).bad())
+                DcmDateTime::getDicomDateTimeFromOFDateTime(tmpDateTime, dateTimeValue, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/).bad())
             {
                 /* just report a warning, as we cannot return an error status */
                 DCMSR_WARN("Cannot convert ISO formatted date/time value \"" << tmpString << "\" to DICOM format");

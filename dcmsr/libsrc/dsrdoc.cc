@@ -3076,6 +3076,7 @@ OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                         if (dateTime.empty())
                         {
                             OFString tmpString;
+                            /* format: YYYYMMDDHHMMSS */
                             currentDateTime(tmpString);
                             putStringValueToDataset(*ditem, DCM_VerificationDateTime, tmpString);
                         } else

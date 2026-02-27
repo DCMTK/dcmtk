@@ -165,6 +165,12 @@ class DCMTK_OFSTD_EXPORT OFTime
      */
     virtual OFBool hasSecond() const;
 
+    /** check whether the second value has a fractional part, i.e.\ it is not
+     *  an integer
+     *  @return OFTrue if fraction of seconds is specified, OFFalse otherwise
+     */
+    virtual OFBool hasFractionOfSecond() const;
+
     /** check whether a time zone value is specified, i.e.\ an offset to
      *  Coordinated Universal Time (UTC)
      *  @return OFTrue if a time zone value is specified, OFFalse otherwise
@@ -374,13 +380,16 @@ class DCMTK_OFSTD_EXPORT OFTime
      *    it is not added to the output parameter 'formattedTime'.
      *  @param formattedTime reference to string variable where the result is stored
      *  @param showSeconds add optional seconds (":SS" or "SS") to the resulting string if OFTrue.
-     *    The seconds are only added if a value is specified.
+     *    By default, the seconds are only added if a value is specified.
      *  @param showFraction add optional fractional part of a second (".FFFFFF") if OFTrue.
-     *    Requires parameter 'seconds' to be also OFTrue.
+     *    Requires parameter 'seconds' to be also OFTrue. By default, the fractional part is only
+     *    added if the second value is not an integer (see hasFractionOfSecond()).
      *  @param showTimeZone add optional time zone ("&ZZ:ZZ" or "&ZZZZ") to the resulting string
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes. The time zone is only added if a value is specified.
      *  @param showDelimiter flag, indicating whether to use delimiters (":" and " ") or not
+     *  @param createMissingPart if OFTrue create optional parts (seconds and fractional part of a
+     *    second) even if not specified (see hasSecond() and hasFractionOfSecond())
      *  @param timeZoneSeparator separator between ISO time value and time zone, e.g. " " (default)
      *    or "" (for ISO 8601 format). Only used if 'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, i.e. the time is valid, OFFalse otherwise
@@ -390,6 +399,7 @@ class DCMTK_OFSTD_EXPORT OFTime
                                const OFBool showFraction = OFFalse,
                                const OFBool showTimeZone = OFFalse,
                                const OFBool showDelimiter = OFTrue,
+                               const OFBool createMissingPart = OFFalse,
                                const OFString &timeZoneSeparator = " ") const;
 
     /** get the current time zone value in ISO format.

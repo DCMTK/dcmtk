@@ -79,7 +79,7 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);
+    virtual OFCondition copyFrom(const DcmObject &rhs);
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_DA)
@@ -151,14 +151,14 @@ class DCMTK_DCMDATA_EXPORT DcmDate
     using DcmByteString::matches;
 
     /// @copydoc DcmByteString::matches(const OFString&,const OFString&,const OFBool) const
-    virtual OFBool matches(const OFString& key,
-                           const OFString& candidate,
+    virtual OFBool matches(const OFString &key,
+                           const OFString &candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
     /// @copydoc DcmByteString::combinationMatches()
-    virtual OFBool combinationMatches(const DcmElement& keySecond,
-                                      const DcmElement& candidateFirst,
-                                      const DcmElement& candidateSecond) const;
+    virtual OFBool combinationMatches(const DcmElement &keySecond,
+                                      const DcmElement &candidateFirst,
+                                      const DcmElement &candidateSecond) const;
 
     /* --- static helper functions --- */
 
@@ -250,7 +250,8 @@ class DCMTK_DCMDATA_EXPORT DcmDate
      *  @param dicomDateSize the size (in bytes) of the string 'dicomDate' refers to
      *  @return OFTrue if the given string conforms to the Date format, OFFalse otherwise
      */
-    static OFBool check(const char *dicomDate, const size_t dicomDateSize);
+    static OFBool check(const char *dicomDate,
+                        const size_t dicomDateSize);
 
     /** check whether the given string conforms to a single value of VR "DA" (Date).
      *  @param dicomDate string value to be checked. An empty string is not regarded as valid

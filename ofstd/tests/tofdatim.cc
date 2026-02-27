@@ -208,9 +208,9 @@ OFTEST(ofstd_OFDateTime)
     OFCHECK(dateTime1 >= dateTime1 /* should be greater or equal */);
     OFCHECK(dateTime1.getISOFormattedDateTime(tmpString));
     OFCHECK_EQUAL(tmpString, "2000-12-31 12:15:30");
-    OFCHECK(dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/,
-        OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/));
-    OFCHECK_EQUAL(tmpString, "20001231121530.000000+0200");
+    OFCHECK(dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/,
+        OFFalse /*showDelimiter*/, OFFalse /*createMissingPart*/, "" /*dateTimeSeparator*/, "" /*timeZoneSeparator*/));
+    OFCHECK_EQUAL(tmpString, "20001231121530+0200");
     OFCHECK(dateTime2.setISOFormattedDateTime("2000-12-31 10:15:30" /*timeZone: 0*/));
     OFCHECK_EQUAL(dateTime1, dateTime2);
     OFCHECK(dateTime2.setISOFormattedDateTime("2000.12.31  10-15-30" /*timeZone: 0*/));
@@ -309,6 +309,6 @@ OFTEST(ofstd_OFDateTime)
     COUT << "current date/time (default): " << dateTime1 << OFendl;
     dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFFalse /*showFraction*/, OFTrue /*showTimeZone*/);
     COUT << "current date/time (YYYY-MM-DD HH:MM:SS&ZZ:ZZ): " << tmpString << OFendl;
-    dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/);
+    dateTime1.getISOFormattedDateTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFFalse /*showDelimiter*/, OFFalse /*showDelimiter*/, "" /*dateTimeSeparator*/);
     COUT << "current date/time (YYYYMMDDHHMMSS.FFFFFF&ZZZZ): " << tmpString << OFendl;
 #endif

@@ -27,7 +27,9 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oflimits.h"
 #include "dcmtk/ofstd/ofmath.h"
+
 #include <ctime>
+#include <cmath>
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
@@ -214,6 +216,12 @@ OFBool OFTime::isValid() const
 OFBool OFTime::hasSecond() const
 {
     return isSecondSpecified(Second);
+}
+
+
+OFBool OFTime::hasFractionOfSecond() const
+{
+    return hasSecond() && (floor(Second) != Second);
 }
 
 
@@ -728,6 +736,7 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
                                    const OFBool showFraction,
                                    const OFBool showTimeZone,
                                    const OFBool showDelimiter,
+                                   const OFBool createMissingPart,
                                    const OFString &timeZoneSeparator) const
 {
     OFBool status = OFFalse;
@@ -741,13 +750,15 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         /* format: HHMM */
         else
             OFStandard::snprintf(buf, sizeof(buf), "%02u%02u", Hour, Minute);
-        /* only show seconds if requested _and_ a value is specified */
-        if (showSeconds && hasSecond())
+        /* only show seconds if requested and a value is specified (or a value is created) */
+        if (showSeconds && (hasSecond() || createMissingPart))
         {
-            if (showFraction)
+            const double secondValue = isSecondSpecified(Second) ? Second : 0;
+            /* only show fractional part of a second if requested and a value is specified (or a value is created) */
+            if (showFraction && (hasFractionOfSecond() || createMissingPart))
             {
                 char buf2[12];
-                OFStandard::ftoa(buf2, sizeof(buf2), Second, OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
+                OFStandard::ftoa(buf2, sizeof(buf2), secondValue, OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
                 /* format: HH:MM:SS.FFFFFF */
                 if (showDelimiter)
                     OFStandard::strlcat(buf, ":", sizeof(buf));
@@ -756,10 +767,10 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
                 char buf2[12];
                 /* format: HH:MM:SS */
                 if (showDelimiter)
-                    OFStandard::snprintf(buf2, sizeof(buf2), ":%02u", OFstatic_cast(unsigned int, Second));
+                    OFStandard::snprintf(buf2, sizeof(buf2), ":%02u", OFstatic_cast(unsigned int, secondValue));
                 /* format: HHMMSS */
                 else
-                    OFStandard::snprintf(buf2, sizeof(buf2), "%02u", OFstatic_cast(unsigned int, Second));
+                    OFStandard::snprintf(buf2, sizeof(buf2), "%02u", OFstatic_cast(unsigned int, secondValue));
                 OFStandard::strlcat(buf, buf2, sizeof(buf));
             }
         }

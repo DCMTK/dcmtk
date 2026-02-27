@@ -80,7 +80,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);
+    virtual OFCondition copyFrom(const DcmObject &rhs);
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_TM)
@@ -152,11 +152,11 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  ISO formatted time. See also getTimeZoneFromString() below.
      *  @param formattedTime reference to string variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
-     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param seconds add optional seconds (":SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue.
      *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
-     *   part of a seconds) if absent in the element value
+     *    part of a second) if absent in the element value
      *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -171,8 +171,8 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     using DcmByteString::matches;
 
     /// @copydoc DcmByteString::matches(const OFString&,const OFString&,const OFBool) const
-    virtual OFBool matches(const OFString& key,
-                           const OFString& candidate,
+    virtual OFBool matches(const OFString &key,
+                           const OFString &candidate,
                            const OFBool enableWildCardMatching = OFTrue) const;
 
     /* --- static helper functions --- */
@@ -183,14 +183,17 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  are unavailable the corresponding values are set to "0" and an error code is
      *  returned.
      *  @param dicomTime reference to string variable where the result is stored
-     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param seconds add optional seconds ("SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue.
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and fractional
+     *    part of a second) if no value is specified
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getCurrentTime(OFString &dicomTime,
                                       const OFBool seconds = OFTrue,
-                                      const OFBool fraction = OFFalse);
+                                      const OFBool fraction = OFFalse,
+                                      const OFBool createMissingPart = OFFalse);
 
     /** get the specified OFTime value in DICOM format.
      *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
@@ -199,15 +202,18 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  returned.
      *  @param timeValue time to be converted to DICOM format
      *  @param dicomTime reference to string variable where the result is stored
-     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param seconds add optional seconds ("SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue,
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and fractional
+     *    part of a second) if no value is specified
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getDicomTimeFromOFTime(const OFTime &timeValue,
                                               OFString &dicomTime,
                                               const OFBool seconds = OFTrue,
-                                              const OFBool fraction = OFFalse);
+                                              const OFBool fraction = OFFalse,
+                                              const OFBool createMissingPart = OFFalse);
 
     /** get the specified DICOM time value in OFTime format.
      *  @note This method is only needed for the incomprehensible DcmAttributeMatching
@@ -271,9 +277,9 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param formattedTime reference to string variable where the result is stored
      *  @param seconds add optional seconds (":SS") if OFTrue
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-     *   (requires parameter 'seconds' to be also OFTrue)
+     *    (requires parameter 'seconds' to be also OFTrue)
      *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
-     *   part of a seconds) if absent in the DICOM TM value
+     *    part of a second) if absent in the DICOM TM value
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
      *    format (see above).
      *  @return EC_Normal upon success, an error code otherwise
@@ -323,7 +329,8 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
      */
-    static OFBool check(const char* dicomTime, const size_t dicomTimeSize);
+    static OFBool check(const char *dicomTime,
+                        const size_t dicomTimeSize);
 
     /** check whether given string conforms to a single value of VR "TM" (Time).
      *  @param dicomTime string value to be checked
@@ -333,7 +340,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *    Defaults to OFFalse, disabling it by default.
      *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
      */
-    static OFBool check(const char* dicomTime, /* STOP: DICOM time!! */
+    static OFBool check(const char *dicomTime, /* STOP: DICOM time!! */
                         const size_t dicomTimeSize,
                         const OFBool supportOldFormat);
 
@@ -360,7 +367,9 @@ private:
      *  @param result a reference to a double value that will receive the result.
      *  @return OFTrue if the fragment was parsed successfully, OFFalse otherwise.
      */
-    static OFBool parseFragment(const char* string, const size_t size, double& result);
+    static OFBool parseFragment(const char *string,
+                                const size_t size,
+                                double &result);
 };
 
 

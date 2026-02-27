@@ -1249,19 +1249,21 @@ const OFString &DSRTypes::currentDate(OFString &dateString)
 
 
 const OFString &DSRTypes::currentTime(OFString &timeString,
+                                      const OFBool seconds,
                                       const OFBool fraction)
 {
-    if (DcmTime::getCurrentTime(timeString, OFTrue /*seconds*/, fraction).bad())
+    if (DcmTime::getCurrentTime(timeString, seconds, fraction).bad())
         DCMSR_WARN("Cannot determine current time, using \"" << timeString << "\" instead");
     return timeString;
 }
 
 
 const OFString &DSRTypes::currentDateTime(OFString &dateTimeString,
+                                          const OFBool seconds,
                                           const OFBool fraction,
                                           const OFBool timeZone)
 {
-    if (DcmDateTime::getCurrentDateTime(dateTimeString, OFTrue /*seconds*/, fraction, timeZone).bad())
+    if (DcmDateTime::getCurrentDateTime(dateTimeString, seconds, fraction, timeZone).bad())
         DCMSR_WARN("Cannot determine current date/time, using \"" << dateTimeString << "\" instead");
     return dateTimeString;
 }

@@ -57,16 +57,15 @@ DcmDate &DcmDate::operator=(const DcmDate &obj)
 }
 
 
-OFCondition DcmDate::copyFrom(const DcmObject& rhs)
+OFCondition DcmDate::copyFrom(const DcmObject &rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmDate &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmDate &, rhs);
+    }
+    return EC_Normal;
 }
-
 
 
 // ********************************
@@ -218,7 +217,7 @@ OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
     // clear result variable
     dateValue.clear();
     // fixed length 8 bytes required by DICOM part 5: YYYYMMDD
-    if (dicomDateSize == 8 && OFStandard::checkDigits<8>(dicomDate))
+    if ((dicomDateSize == 8) && OFStandard::checkDigits<8>(dicomDate))
     {
         // extract components from date string
         if
@@ -237,7 +236,7 @@ OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
     // old prior V3.0 version of VR=DA with fixed length 10 bytes: YYYY.MM.DD
     else if
     (
-        supportOldFormat && dicomDateSize == 10 && dicomDate[4] == '.' && dicomDate[7] == '.' &&
+        supportOldFormat && (dicomDateSize == 10) && (dicomDate[4] == '.') && (dicomDate[7] == '.') &&
         OFStandard::checkDigits<4>(dicomDate) &&
         OFStandard::checkDigits<2>(dicomDate + 5) &&
         OFStandard::checkDigits<2>(dicomDate + 8)
@@ -248,9 +247,9 @@ OFCondition DcmDate::getOFDateFromString(const char* dicomDate,
         (
             dateValue.setDate
             (
-                OFStandard::extractDigits<unsigned int,4>(dicomDate),
-                OFStandard::extractDigits<unsigned int,2>(dicomDate + 5),
-                OFStandard::extractDigits<unsigned int,2>(dicomDate + 8)
+                OFStandard::extractDigits<unsigned int, 4>(dicomDate),
+                OFStandard::extractDigits<unsigned int, 2>(dicomDate + 5),
+                OFStandard::extractDigits<unsigned int, 2>(dicomDate + 8)
             )
         )
         {
@@ -290,11 +289,13 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
 
 // ********************************
 
+
 OFBool DcmDate::check(const char* dicomDate,
                       const size_t dicomDateSize)
 {
     return check(dicomDate, dicomDateSize, OFFalse);
 }
+
 
 OFBool DcmDate::check(const char* dicomDate,
                       const size_t dicomDateSize,
@@ -302,15 +303,16 @@ OFBool DcmDate::check(const char* dicomDate,
 {
     switch (DcmElement::scanValue("da", dicomDate, dicomDateSize))
     {
-    case  2 /* DA */:
-    case 17 /* dubious DA (pre 1850 or post 2049) */:
-        return OFTrue;
-    case  3 /* old style DA */:
-        return supportOldFormat;
-    default:
-        return OFFalse;
+        case  2 /* DA */:
+        case 17 /* dubious DA (pre 1850 or post 2049) */:
+            return OFTrue;
+        case  3 /* old style DA */:
+            return supportOldFormat;
+        default:
+            return OFFalse;
     }
 }
+
 
 OFCondition DcmDate::checkStringValue(const OFString &value,
                                       const OFString &vm,
@@ -349,33 +351,35 @@ OFCondition DcmDate::checkStringValue(const OFString &value,
     return result;
 }
 
-OFBool DcmDate::matches(const OFString& key,
-                        const OFString& candidate,
+
+OFBool DcmDate::matches(const OFString &key,
+                        const OFString &candidate,
                         const OFBool enableWildCardMatching) const
 {
-  OFstatic_cast(void,enableWildCardMatching);
-  return DcmAttributeMatching::rangeMatchingDate(key.c_str(), key.length(), candidate.c_str(), candidate.length());
+    OFstatic_cast(void, enableWildCardMatching);
+    return DcmAttributeMatching::rangeMatchingDate(key.c_str(), key.length(), candidate.c_str(), candidate.length());
 }
 
-OFBool DcmDate::combinationMatches(const DcmElement& keySecond,
-                                   const DcmElement& candidateFirst,
-                                   const DcmElement& candidateSecond) const
+
+OFBool DcmDate::combinationMatches(const DcmElement &keySecond,
+                                   const DcmElement &candidateFirst,
+                                   const DcmElement &candidateSecond) const
 {
-  if (keySecond.ident() == EVR_TM && candidateFirst.ident() == EVR_DA && candidateSecond.ident() == EVR_TM)
-  {
-    // do many const casts, but we do not modify the value, I promise...
-    DcmDate& queryDate = OFconst_cast(DcmDate&, *this);
-    DcmDate& candidateDate = OFconst_cast(DcmDate&, OFstatic_cast(const DcmDate&, candidateFirst));
-    DcmTime& queryTime = OFconst_cast(DcmTime&, OFstatic_cast(const DcmTime&, keySecond));
-    DcmTime& candidateTime = OFconst_cast(DcmTime&, OFstatic_cast(const DcmTime&, candidateSecond));
-    OFString a0, a1, b0, b1;
-    // no support for VM>1 so far!
-    return queryDate.getOFString( a0, 0, OFTrue ).good() && queryTime.getOFString( a1, 0, OFTrue ).good() &&
-        candidateDate.getOFString( b0, 0, OFTrue ).good() && candidateTime.getOFString( b1, 0, OFTrue ).good() &&
-        DcmAttributeMatching::rangeMatchingDateTime
-    (
-      a0.c_str(), a0.length(), a1.c_str(), a1.length(), b0.c_str(), b0.length(), b1.c_str(), b1.length()
-    );
-  }
-  return OFFalse;
+    if ((keySecond.ident() == EVR_TM) && (candidateFirst.ident() == EVR_DA) && (candidateSecond.ident() == EVR_TM))
+    {
+        // do many const casts, but we do not modify the value, I promise...
+        DcmDate &queryDate = OFconst_cast(DcmDate &, *this);
+        DcmDate &candidateDate = OFconst_cast(DcmDate &, OFstatic_cast(const DcmDate &, candidateFirst));
+        DcmTime &queryTime = OFconst_cast(DcmTime &, OFstatic_cast(const DcmTime &, keySecond));
+        DcmTime &candidateTime = OFconst_cast(DcmTime &, OFstatic_cast(const DcmTime &, candidateSecond));
+        OFString a0, a1, b0, b1;
+        // no support for VM>1 so far!
+        return queryDate.getOFString(a0, 0, OFTrue).good() && queryTime.getOFString( a1, 0, OFTrue).good() &&
+            candidateDate.getOFString(b0, 0, OFTrue).good() && candidateTime.getOFString( b1, 0, OFTrue).good() &&
+            DcmAttributeMatching::rangeMatchingDateTime
+            (
+                a0.c_str(), a0.length(), a1.c_str(), a1.length(), b0.c_str(), b0.length(), b1.c_str(), b1.length()
+            );
+    }
+    return OFFalse;
 }

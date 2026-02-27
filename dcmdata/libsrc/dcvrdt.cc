@@ -60,15 +60,16 @@ DcmDateTime &DcmDateTime::operator=(const DcmDateTime &obj)
 }
 
 
-OFCondition DcmDateTime::copyFrom(const DcmObject& rhs)
+OFCondition DcmDateTime::copyFrom(const DcmObject &rhs)
 {
-  if (this != &rhs)
-  {
-    if (rhs.ident() != ident()) return EC_IllegalCall;
-    *this = OFstatic_cast(const DcmDateTime &, rhs);
-  }
-  return EC_Normal;
+    if (this != &rhs)
+    {
+        if (rhs.ident() != ident()) return EC_IllegalCall;
+        *this = OFstatic_cast(const DcmDateTime &, rhs);
+    }
+    return EC_Normal;
 }
+
 
 // ********************************
 
@@ -173,15 +174,16 @@ OFCondition DcmDateTime::setOFDateTime(const OFDateTime &dateTimeValue)
 OFCondition DcmDateTime::getCurrentDateTime(OFString &dicomDateTime,
                                             const OFBool seconds,
                                             const OFBool fraction,
-                                            const OFBool timeZone)
+                                            const OFBool timeZone,
+                                            const OFBool createMissingPart)
 {
     OFCondition l_error = EC_IllegalCall;
     OFDateTime dateTimeValue;
     /* get the current system time */
     if (dateTimeValue.setCurrentDateTime())
     {
-        /* format: YYYYMMDDHHMM[SS[.FFFFFF]] */
-        if (dateTimeValue.getISOFormattedDateTime(dicomDateTime, seconds, fraction, timeZone, OFFalse /*showDelimiter*/))
+        /* format: YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ] */
+        if (dateTimeValue.getISOFormattedDateTime(dicomDateTime, seconds, fraction, timeZone, OFFalse /*showDelimiter*/, createMissingPart))
             l_error = EC_Normal;
     }
     /* set default date/time if an error occurred */
@@ -189,21 +191,17 @@ OFCondition DcmDateTime::getCurrentDateTime(OFString &dicomDateTime,
     {
         /* format: YYYYMMDDHHMM */
         dicomDateTime = "190001010000";
-        if (seconds)
+        if (seconds && createMissingPart)
         {
             /* format: SS */
             dicomDateTime += "00";
-            if (fraction)
+            if (fraction && createMissingPart)
             {
                 /* format: .FFFFFF */
                 dicomDateTime += ".000000";
             }
         }
-        if (timeZone)
-        {
-            /* format: CHHMM */
-            dicomDateTime += "+0000";
-        }
+        /* a missing time zone is never created */
     }
     return l_error;
 }
@@ -213,11 +211,12 @@ OFCondition DcmDateTime::getDicomDateTimeFromOFDateTime(const OFDateTime &dateTi
                                                         OFString &dicomDateTime,
                                                         const OFBool seconds,
                                                         const OFBool fraction,
-                                                        const OFBool timeZone)
+                                                        const OFBool timeZone,
+                                                        const OFBool createMissingPart)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* convert OFDateTime value to DICOM DT format */
-    if (dateTimeValue.getISOFormattedDateTime(dicomDateTime, seconds, fraction, timeZone, OFFalse /*showDelimiter*/))
+    if (dateTimeValue.getISOFormattedDateTime(dicomDateTime, seconds, fraction, timeZone, OFFalse /*showDelimiter*/, createMissingPart))
         l_error = EC_Normal;
     return l_error;
 }
@@ -237,51 +236,51 @@ OFCondition DcmDateTime::getOFDateTimeFromString(const char *dicomDateTime,
     // clear result variable
     dateTimeValue.clear();
     /* minimal check for valid format: YYYY */
-    if (dicomDateTimeSize < 4 || !OFStandard::checkDigits<4>(dicomDateTime))
+    if ((dicomDateTimeSize < 4) || !OFStandard::checkDigits<4>(dicomDateTime))
         return EC_IllegalParameter;
     unsigned int month = 1;
     unsigned int day = 1;
     double timeZone = 0.0;
     // check for/extract time zone
-    if (dicomDateTimeSize >= 9 && DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
+    if ((dicomDateTimeSize >= 9) && DcmTime::getTimeZoneFromString(dicomDateTime + dicomDateTimeSize - 5, 5, timeZone).good())
         dicomDateTimeSize -= 5;
     else
         timeZone = OFTime::unspecifiedTimeZone;
     switch(dicomDateTimeSize)
     {
-    default:
-        // check whether a time value is contained or it is simply an error
-        if (dicomDateTimeSize >= 10)
-        {
-            OFCondition status = DcmTime::getOFTimeFromString(dicomDateTime + 8,
-                                                              dicomDateTimeSize - 8,
-                                                              dateTimeValue.Time,
-                                                              OFFalse, // no support for HH:MM:SS in VR=DT
-                                                              timeZone);
-            if (status.bad())
-                return status;
-        }
-        else break;
+        default:
+            // check whether a time value is contained or it is simply an error
+            if (dicomDateTimeSize >= 10)
+            {
+                OFCondition status = DcmTime::getOFTimeFromString(dicomDateTime + 8,
+                                                                  dicomDateTimeSize - 8,
+                                                                  dateTimeValue.Time,
+                                                                  OFFalse, // no support for HH:MM:SS in VR=DT
+                                                                  timeZone);
+                if (status.bad())
+                    return status;
+            }
+            else break;
 
-    case 8:
-        if (OFStandard::checkDigits<2>(dicomDateTime + 6))
-            day = OFStandard::extractDigits<unsigned int,2>(dicomDateTime + 6);
-        else
+        case 8:
+            if (OFStandard::checkDigits<2>(dicomDateTime + 6))
+                day = OFStandard::extractDigits<unsigned int, 2>(dicomDateTime + 6);
+            else
+                break;
+        case 6:
+            if (OFStandard::checkDigits<2>(dicomDateTime + 4))
+                month = OFStandard::extractDigits<unsigned int, 2>(dicomDateTime + 4);
+            else
+                break;
+        case 4:
+            if (dateTimeValue.Date.setDate(OFStandard::extractDigits<unsigned int, 4>(dicomDateTime), month, day))
+            {
+                // set timezone if it hasn't been set
+                if (dicomDateTimeSize <= 8)
+                    dateTimeValue.Time.setTimeZone(timeZone);
+                return EC_Normal;
+            }
             break;
-    case 6:
-        if (OFStandard::checkDigits<2>(dicomDateTime + 4))
-            month = OFStandard::extractDigits<unsigned int,2>(dicomDateTime + 4);
-        else
-            break;
-    case 4:
-        if (dateTimeValue.Date.setDate(OFStandard::extractDigits<unsigned int,4>(dicomDateTime), month, day))
-        {
-            // set timezone if it hasn't been set
-            if (dicomDateTimeSize <= 8)
-                dateTimeValue.Time.setTimeZone(timeZone);
-            return EC_Normal;
-        }
-        break;
     }
     return EC_IllegalParameter;
 }
@@ -329,11 +328,7 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
                         formattedDateTime += ":";
                         formattedDateTime += dicomDateTime.substr(posSign + 3, 2);
                     }
-                    else if (createMissingPart)
-                    {
-                        formattedDateTime += timeZoneSeparator;
-                        formattedDateTime += "+00:00";
-                    }
+                    /* a missing time zone is never created */
                 }
             }
         }
@@ -356,12 +351,13 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 // ********************************
 
 
-OFBool DcmDateTime::check(const char* dicomDateTime,
-                               const size_t dicomDateTimeSize)
+OFBool DcmDateTime::check(const char *dicomDateTime,
+                          const size_t dicomDateTimeSize)
 {
     const int vrID = DcmElement::scanValue("dt", dicomDateTime, dicomDateTimeSize);
     return vrID == 7 /* DT */ || vrID == 18 /* dubious DT (pre 1850 or post 2049) */;
 }
+
 
 OFCondition DcmDateTime::checkStringValue(const OFString &value,
                                           const OFString &vm)
@@ -406,10 +402,10 @@ OFCondition DcmDateTime::checkStringValue(const OFString &value,
 }
 
 
-OFBool DcmDateTime::matches(const OFString& key,
-                            const OFString& candidate,
+OFBool DcmDateTime::matches(const OFString &key,
+                            const OFString &candidate,
                             const OFBool enableWildCardMatching) const
 {
-  OFstatic_cast(void,enableWildCardMatching);
-  return DcmAttributeMatching::rangeMatchingDateTime(key.c_str(), key.length(), candidate.c_str(), candidate.length());
+    OFstatic_cast(void, enableWildCardMatching);
+    return DcmAttributeMatching::rangeMatchingDateTime(key.c_str(), key.length(), candidate.c_str(), candidate.length());
 }
