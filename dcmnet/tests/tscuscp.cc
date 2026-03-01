@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2023, OFFIS e.V.
+ *  Copyright (C) 2017-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -650,13 +650,13 @@ OFTEST_FLAGS(dcmnet_scp_role_selection, EF_Slow)
 }
 
 /** Test SCP that supports N-CREATE requests */
-struct TestSCPWithNCreateSupport : TestSCP
+struct TestSCPWithMPPSSupport : TestSCP
 {
-    TestSCPWithNCreateSupport()
+    TestSCPWithMPPSSupport()
         : TestSCP()
     {
         DcmSCPConfig& config = getConfig();
-        config.setAETitle("NCREATE_SCP");
+        config.setAETitle("MPPS_SCP");
         config.setConnectionBlockingMode(DUL_NOBLOCK);
         config.setConnectionTimeout(10);
         config.setHostLookupEnabled(OFFalse);
@@ -666,9 +666,10 @@ struct TestSCPWithNCreateSupport : TestSCP
         OFList<OFString> xfers;
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(getConfig().addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+        OFCHECK(getConfig().addPresentationContext(UID_ModalityPerformedProcedureStepRetrieveSOPClass, xfers).good());
     }
 
-    virtual ~TestSCPWithNCreateSupport()
+    virtual ~TestSCPWithMPPSSupport()
     {
     }
 
@@ -680,6 +681,9 @@ struct TestSCPWithNCreateSupport : TestSCP
 
         if (incomingMsg->CommandField == DIMSE_N_SET_RQ)
             return OnNSETRequest(incomingMsg->msg.NSetRQ, presInfo.presentationContextID);
+
+        if (incomingMsg->CommandField == DIMSE_N_GET_RQ)
+            return OnNGETRequest(incomingMsg->msg.NGetRQ, presInfo.presentationContextID);
 
         return DcmSCP::handleIncomingCommand(incomingMsg, presInfo);
     }
@@ -900,6 +904,46 @@ struct TestSCPWithNCreateSupport : TestSCP
         return EC_Normal;
     }
 
+    /** Called when client sends an N-GET request */
+    OFCondition OnNGETRequest(T_DIMSE_N_GetRQ& getRq, const T_ASC_PresentationContextID presID)
+    {
+        OFList<DcmTagKey> requestedTags;
+        OFCondition result = receiveNGETRequest(getRq, presID, requestedTags);
+        if (result.bad())
+            return result;
+
+        const OFString requestedSOPClassUID    = getRq.RequestedSOPClassUID;
+        const OFString requestedSOPInstanceUID = getRq.RequestedSOPInstanceUID;
+        Uint16 responseStatus = STATUS_N_Success;
+        DcmDataset filteredDataset;
+
+        const OFMap<OFString, DcmDataset>::iterator instanceIt = m_managedSopInstances.find(requestedSOPInstanceUID);
+        if (instanceIt == m_managedSopInstances.end())
+        {
+            responseStatus = STATUS_N_InvalidSOPInstance;
+        }
+        else if (requestedTags.empty())
+        {
+            // No Attribute Identifier List specified; all attributes are assumed (PS3.7 §10.1.2.1.5)
+            filteredDataset = instanceIt->second;
+        }
+        else
+        {
+            // Return only the specifically requested attributes
+            OFListConstIterator(DcmTagKey) tagIt = requestedTags.begin();
+            for (; tagIt != requestedTags.end(); ++tagIt)
+            {
+                DcmElement* elem = OFnullptr;
+                if (instanceIt->second.findAndGetElement(*tagIt, elem).good())
+                    filteredDataset.insert(dynamic_cast<DcmElement*>(elem->clone()));
+            }
+        }
+
+        DcmDataset* responseDataset = (responseStatus == STATUS_N_Success) ? &filteredDataset : OFnullptr;
+        return sendNGETResponse(presID, getRq.MessageID, requestedSOPClassUID, requestedSOPInstanceUID,
+                                responseStatus, responseDataset);
+    }
+
     OFMap<OFString, DcmDataset> m_managedSopInstances;
     Uint16 m_portNum;
 };
@@ -915,7 +959,8 @@ struct NCREATEFixture
         reqDataset(),
         createdInstance(NULL),
         presIDVerification(0),
-        presIDMpps(0)
+        presIDMpps(0),
+        presIDRetrieve(0)
     {
         scp.start();
         OFCHECK_MSG(scp.m_listen_result == EC_NotYetImplemented, OFString("SCP does not seem to listen and returns: ") + scp.m_listen_result.text());
@@ -931,13 +976,16 @@ struct NCREATEFixture
         xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(mppsSCU.addPresentationContext(UID_VerificationSOPClass, xfers).good());
         OFCHECK(mppsSCU.addPresentationContext(UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+        OFCHECK(mppsSCU.addPresentationContext(UID_ModalityPerformedProcedureStepRetrieveSOPClass, xfers).good());
         OFCondition result;
         OFCHECK_MSG((result = mppsSCU.initNetwork()).good(), result.text());
         OFCHECK_MSG((result = mppsSCU.negotiateAssociation()).good(), result.text());
         presIDVerification = mppsSCU.findPresentationContextID(UID_VerificationSOPClass, UID_LittleEndianImplicitTransferSyntax);
         presIDMpps = mppsSCU.findPresentationContextID(UID_ModalityPerformedProcedureStepSOPClass, UID_LittleEndianImplicitTransferSyntax);
+        presIDRetrieve = mppsSCU.findPresentationContextID(UID_ModalityPerformedProcedureStepRetrieveSOPClass, UID_LittleEndianImplicitTransferSyntax);
         OFCHECK(presIDVerification != 0);
         OFCHECK(presIDMpps != 0);
+        OFCHECK(presIDRetrieve != 0);
     }
 
     virtual ~NCREATEFixture()
@@ -948,7 +996,7 @@ struct NCREATEFixture
         OFStandard::forceSleep(2);
     }
 
-    TestSCPWithNCreateSupport scp;
+    TestSCPWithMPPSSupport scp;
     DcmSCU mppsSCU;
 
     OFString affectedSopInstanceUid;
@@ -956,6 +1004,7 @@ struct NCREATEFixture
     DcmDataset* createdInstance;
     T_ASC_PresentationContextID presIDVerification;
     T_ASC_PresentationContextID presIDMpps;
+    T_ASC_PresentationContextID presIDRetrieve;
 };
 
 OFTEST_FLAGS(dcmnet_scu_sendNCREATERequest_succeeds_when_optional_createdinstance_is_null, EF_Slow)
@@ -1106,6 +1155,112 @@ OFTEST_FLAGS(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_fro
     Uint16 rspStatusCode = 0;
     OFCondition result = fixture.mppsSCU.sendNSETRequest(fixture.presIDMpps, "1.2.3.4", &fixture.modificationList, fixture.modifiedAttributes, rspStatusCode);
     OFCHECK(result.good());
+    OFCHECK(rspStatusCode == STATUS_N_InvalidSOPInstance);
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
+
+
+/// Fixture for N-GET tests: Re-use N-CREATE fixture to pre-created managed instance on the SCP.
+struct NGETFixture : NCREATEFixture
+{
+    NGETFixture()
+        : retrievedAttributes(OFnullptr)
+    {
+        mppsSCU.Logger.setEnabled(DcmSCU::TLogger::LOGGER_N_GET_RQ_IDENTIFIER_LIST, OFTrue);
+        mppsSCU.Logger.setEnabled(DcmSCU::TLogger::LOGGER_N_GET_RSP_DATASET, OFTrue);
+
+        // Pre-create an instance so the SCP has something to retrieve
+        Uint16 rspStatusCode = 0;
+        OFCondition result = mppsSCU.sendNCREATERequest(presIDRetrieve, affectedSopInstanceUid,
+                                                        &reqDataset, createdInstance, rspStatusCode);
+        OFCHECK_MSG(result.good(), result.text());
+        OFCHECK(rspStatusCode == STATUS_N_Success);
+    }
+
+    ~NGETFixture()
+    {
+        delete retrievedAttributes;
+    }
+
+    DcmDataset* retrievedAttributes;
+};
+
+OFTEST_FLAGS(dcmnet_scu_sendNGETRequest_fails_when_requestedsopinstance_is_empty, EF_Slow)
+{
+    NGETFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFList<DcmTagKey> tagList;
+    OFCondition result = fixture.mppsSCU.sendNGETRequest(fixture.presIDRetrieve, "", tagList,
+                                                         fixture.retrievedAttributes, rspStatusCode);
+    OFCHECK(result.bad());
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
+
+OFTEST_FLAGS(dcmnet_scu_sendNGETRequest_retrieves_all_attributes_when_list_is_empty, EF_Slow)
+{
+    NGETFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFList<DcmTagKey> tagList; // no Attribute Identifier List sent; all attributes assumed per PS3.7 10.1.2.1.5
+    OFCondition result = fixture.mppsSCU.sendNGETRequest(fixture.presIDRetrieve, fixture.affectedSopInstanceUid,
+                                                         tagList, fixture.retrievedAttributes, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
+    OFCHECK_MSG(rspStatusCode == STATUS_N_Success, OFString("Status code is: ") + DU_ngetStatusString(rspStatusCode));
+    OFCHECK(fixture.retrievedAttributes != OFnullptr);
+
+    OFString retrievedSopInstanceUid;
+    OFCHECK(fixture.retrievedAttributes->findAndGetOFString(DCM_SOPInstanceUID, retrievedSopInstanceUid).good());
+    OFCHECK(retrievedSopInstanceUid == fixture.affectedSopInstanceUid);
+
+    OFString retrievedStudyUid;
+    OFCHECK(fixture.retrievedAttributes->findAndGetOFString(DCM_StudyInstanceUID, retrievedStudyUid).good());
+    OFCHECK(retrievedStudyUid == "3.3.3.3");
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
+
+OFTEST_FLAGS(dcmnet_scu_sendNGETRequest_retrieves_only_requested_attributes, EF_Slow)
+{
+    NGETFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFList<DcmTagKey> tagList;
+    tagList.push_back(DCM_StudyInstanceUID); // request only this attribute
+
+    OFCondition result = fixture.mppsSCU.sendNGETRequest(fixture.presIDRetrieve, fixture.affectedSopInstanceUid,
+                                                         tagList, fixture.retrievedAttributes, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
+    OFCHECK_MSG(rspStatusCode == STATUS_N_Success, OFString("Status code is: ") + DU_ngetStatusString(rspStatusCode));
+    OFCHECK(fixture.retrievedAttributes != OFnullptr);
+
+    // The requested attribute must be present
+    OFString retrievedStudyUid;
+    OFCHECK(fixture.retrievedAttributes->findAndGetOFString(DCM_StudyInstanceUID, retrievedStudyUid).good());
+    OFCHECK(retrievedStudyUid == "3.3.3.3");
+
+    // An attribute that was not requested must be absent
+    OFString retrievedSopInstanceUid;
+    OFCHECK(fixture.retrievedAttributes->findAndGetOFString(DCM_SOPInstanceUID, retrievedSopInstanceUid).bad());
+
+    fixture.scp.m_set_stop_after_assoc = OFTrue;
+    OFCHECK_MSG((result = fixture.mppsSCU.releaseAssociation()).good(), result.text());
+}
+
+OFTEST_FLAGS(dcmnet_scu_sendNGETRequest_sets_error_status_for_nonexistent_instance, EF_Slow)
+{
+    NGETFixture fixture;
+
+    Uint16 rspStatusCode = 0;
+    OFList<DcmTagKey> tagList;
+    OFCondition result = fixture.mppsSCU.sendNGETRequest(fixture.presIDMpps, "9.9.9.9",
+                                                         tagList, fixture.retrievedAttributes, rspStatusCode);
+    OFCHECK_MSG(result.good(), result.text());
     OFCHECK(rspStatusCode == STATUS_N_InvalidSOPInstance);
 
     fixture.scp.m_set_stop_after_assoc = OFTrue;

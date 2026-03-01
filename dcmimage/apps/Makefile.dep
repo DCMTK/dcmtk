@@ -2,7 +2,9 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofstub.h \
  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
- ../../ofstd/include/dcmtk/ofstd/ofexport.h
+ ../../ofstd/include/dcmtk/ofstd/ofexport.h \
+ ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+ ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
 dcmicmp.o: dcmicmp.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmimage/dcmicmph.h \
  ../include/dcmtk/dcmimage/dicdefin.h \

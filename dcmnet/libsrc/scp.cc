@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2025, OFFIS e.V.
+ *  Copyright (C) 2009-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1249,6 +1249,88 @@ OFCondition DcmSCP::sendACTIONResponse(const T_ASC_PresentationContextID presID,
     if (cond.bad())
     {
         DCMNET_ERROR("Failed sending N-ACTION response: " << DimseCondition::dump(tempStr, cond));
+    }
+
+    return cond;
+}
+
+// ----------------------------------------------------------------------------
+
+// -- N-GET --
+
+OFCondition DcmSCP::receiveNGETRequest(T_DIMSE_N_GetRQ& reqMessage,
+                                       const T_ASC_PresentationContextID presID,
+                                       OFList<DcmTagKey>& attributeIdentifierList)
+{
+    // Do some basic validity checks
+    if (m_assoc == NULL)
+        return DIMSE_ILLEGALASSOCIATION;
+
+    OFString tempStr;
+
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        DCMNET_INFO("Received N-GET Request");
+    else
+        DCMNET_INFO("Received N-GET Request (MsgID " << reqMessage.MessageID << ")");
+
+    // N-GET carries no separate dataset (PS3.7 §10.3.4): the Attribute Identifier List
+    // is encoded inside the command set and has already been parsed by DIMSE_receiveCommand.
+    DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, reqMessage, DIMSE_INCOMING, NULL, presID));
+
+    // Convert the flat (group, element) DIC_US array to a list of DcmTagKey.
+    // ListCount holds the total number of DIC_US values, i.e. 2 per tag.
+    attributeIdentifierList.clear();
+    const int count = reqMessage.ListCount;
+    const DIC_US* list = reqMessage.AttributeIdentifierList;
+    if (list != NULL && count > 0)
+    {
+        for (int i = 0; i + 1 < count; i += 2)
+            attributeIdentifierList.push_back(DcmTagKey(list[i], list[i + 1]));
+    }
+    // An empty list means no Attribute Identifier List was specified; per PS3.7 §10.1.2.1.5
+    // all attributes are assumed in that case.
+
+    return EC_Normal;
+}
+
+OFCondition DcmSCP::sendNGETResponse(const T_ASC_PresentationContextID presID,
+                                     const Uint16 messageID,
+                                     const OFString& sopClassUID,
+                                     const OFString& sopInstanceUID,
+                                     const Uint16 rspStatusCode,
+                                     DcmDataset* attributeList)
+{
+    OFCondition cond;
+    OFString tempStr;
+
+    T_DIMSE_Message response;
+    memset((char*)&response, 0, sizeof(response));
+    T_DIMSE_N_GetRSP& getRsp              = response.msg.NGetRSP;
+    response.CommandField                 = DIMSE_N_GET_RSP;
+    getRsp.MessageIDBeingRespondedTo      = messageID;
+    getRsp.DimseStatus                    = rspStatusCode;
+    // Include optional fields AffectedSOPClassUID and AffectedSOPInstanceUID (PS3.7 Table 10.3-5)
+    getRsp.opts = O_NGET_AFFECTEDSOPCLASSUID | O_NGET_AFFECTEDSOPINSTANCEUID;
+    OFStandard::strlcpy(getRsp.AffectedSOPClassUID, sopClassUID.c_str(), sizeof(getRsp.AffectedSOPClassUID));
+    OFStandard::strlcpy(
+        getRsp.AffectedSOPInstanceUID, sopInstanceUID.c_str(), sizeof(getRsp.AffectedSOPInstanceUID));
+    // The Attribute List dataset is conditional (PS3.7 §10.3.5): include it when provided
+    getRsp.DataSetType = (attributeList != NULL) ? DIMSE_DATASET_PRESENT : DIMSE_DATASET_NULL;
+
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        DCMNET_INFO("Sending N-GET Response");
+        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_OUTGOING, NULL, presID));
+    }
+    else
+    {
+        DCMNET_INFO("Sending N-GET Response (" << DU_ngetStatusString(rspStatusCode) << ")");
+    }
+
+    cond = sendDIMSEMessage(presID, &response, attributeList);
+    if (cond.bad())
+    {
+        DCMNET_ERROR("Failed sending N-GET response: " << DimseCondition::dump(tempStr, cond));
     }
 
     return cond;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2025, OFFIS e.V.
+ *  Copyright (C) 2009-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -932,6 +932,43 @@ protected:
                                            const OFString& sopClassUID,
                                            const OFString& sopInstanceUID,
                                            const Uint16 rspStatusCode);
+
+    // -- N-GET --
+
+    /** Receive N-GET request on the currently opened association.
+     *  N-GET carries no separate dataset: the Attribute Identifier List is encoded
+     *  inside the command set and is already parsed when this method is called.
+     *  @param reqMessage              [in]  The N-GET request message that was received
+     *  @param presID                  [in]  The presentation context used by the request
+     *  @param attributeIdentifierList [out] List of attribute tags requested by the SCU.
+     *                                       An empty list means no Attribute Identifier List
+     *                                       was specified; all attributes are then assumed
+     *                                       per PS3.7 §10.1.2.1.5.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition receiveNGETRequest(T_DIMSE_N_GetRQ& reqMessage,
+                                           const T_ASC_PresentationContextID presID,
+                                           OFList<DcmTagKey>& attributeIdentifierList);
+
+    /** Send N-GET response on the currently opened association.
+     *  @param presID         [in] The presentation context ID to respond on
+     *  @param messageID      [in] The message ID being responded to
+     *  @param sopClassUID    [in] The affected SOP Class UID (sent as optional field)
+     *  @param sopInstanceUID [in] The affected SOP Instance UID (sent as optional field)
+     *  @param rspStatusCode  [in] The response status code. 0 means success,
+     *                             others can be found in the DICOM standard.
+     *  @param attributeList  [in] Optional attribute list dataset to return to the SCU.
+     *                             Pass NULL if no attribute list should be included.
+     *                             Ownership is NOT transferred; the caller is responsible
+     *                             for memory management.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition sendNGETResponse(const T_ASC_PresentationContextID presID,
+                                         const Uint16 messageID,
+                                         const OFString& sopClassUID,
+                                         const OFString& sopInstanceUID,
+                                         const Uint16 rspStatusCode,
+                                         DcmDataset* attributeList);
 
     // -- N-EVENT-REPORT --
 

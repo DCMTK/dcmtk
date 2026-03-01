@@ -205,6 +205,10 @@ private:
  *     (default level: OFF, i.e. not logged by default)
  *  - "dcmtk.dcmnet.scu.cstorerq.dataset": Logs C-STORE request datasets to DEBUG level
  *     (default level: OFF, i.e. not logged by default)
+ *  - "dcmtk.dcmnet.scu.ngetrq.identifierlist": Logs N-GET request attribute identifier lists to DEBUG level
+ *     (default level: enabled, i.e. logged by default)
+ *  - "dcmtk.dcmnet.scu.ngetrsp.dataset": Logs N-GET response attribute list datasets to DEBUG level
+ *     (default level: OFF, i.e. not logged by default)
  *
  *  These loggers can be enabled or disabled individually via the DcmSCU::Logger member,
  *  e.g. `scu.Logger.setEnabled(DcmSCU::TLogger::LOGGER_C_STORE_RQ_DATASET, OFTrue);`
@@ -233,9 +237,13 @@ public:
                 LOGGER_C_FIND_RSP_DATASET = 1,
                 /// Logger for C-STORE-RQ dataset, disabled per default
                 LOGGER_C_STORE_RQ_DATASET = 2,
+                /// Logger for N-GET-RQ attribute identifier list, enabled per default
+                LOGGER_N_GET_RQ_IDENTIFIER_LIST = 3,
+                /// Logger for N-GET-RSP attribute list dataset, disabled per default
+                LOGGER_N_GET_RSP_DATASET = 4,
                 /// Number of loggers; provides number of loggers and can be
                 /// used a a placeholder to enable/disable all loggers at once
-                LOGGER_NUM_LOGGERS = 3
+                LOGGER_NUM_LOGGERS = 5
             };
 
             /// Default constructor, initializes logger names and sets defaults
@@ -276,11 +284,13 @@ public:
     };
 
     /// Member holding information to extra loggers utilized by DcmSCU.
-    /// | Logger Enum                         | Logger Name                        | Description                                  | Default State |
-    /// |-------------------------------------|------------------------------------|--------------------------------------- ------|---------------|
-    /// | LOGGER_C_FIND_RQ_DATASET            | dcmtk.dcmnet.scu.cfindrq.dataset   | Logs C-FIND request datasets to DEBUG level  | Enabled       |
-    /// | LOGGER_C_FIND_RSP_DATASET           | dcmtk.dcmnet.scu.cfindrsp.dataset  | Logs C-FIND response datasets to DEBUG level | Disabled      |
-    /// | LOGGER_C_STORE_RQ_DATASET           | dcmtk.dcmnet.scu.cstorerq.dataset  | Logs C-STORE request datasets to DEBUG level | Disabled      |
+    /// | Logger Enum                         | Logger Name                               | Description                                               | Default State |
+    /// |-------------------------------------|-------------------------------------------|-----------------------------------------------------------|---------------|
+    /// | LOGGER_C_FIND_RQ_DATASET            | dcmtk.dcmnet.scu.cfindrq.dataset          | Logs C-FIND request datasets to DEBUG level               | Enabled       |
+    /// | LOGGER_C_FIND_RSP_DATASET           | dcmtk.dcmnet.scu.cfindrsp.dataset         | Logs C-FIND response datasets to DEBUG level              | Disabled      |
+    /// | LOGGER_C_STORE_RQ_DATASET           | dcmtk.dcmnet.scu.cstorerq.dataset         | Logs C-STORE request datasets to DEBUG level              | Disabled      |
+    /// | LOGGER_N_GET_RQ_IDENTIFIER_LIST     | dcmtk.dcmnet.scu.ngetrq.identifierlist    | Logs N-GET request attribute identifier lists to DEBUG level | Enabled    |
+    /// | LOGGER_N_GET_RSP_DATASET            | dcmtk.dcmnet.scu.ngetrsp.dataset          | Logs N-GET response attribute list datasets to DEBUG level | Disabled     |
     TLogger Logger;
 
     /** Constructor, just initializes internal class members
@@ -684,6 +694,28 @@ public:
     virtual OFCondition sendNSETRequest(const T_ASC_PresentationContextID presID,
                                         const OFString& requestedSopInstanceUID,
                                         DcmDataset* modificationList,
+                                        DcmDataset*& attributeList,
+                                        Uint16& rspStatusCode);
+
+    /** This function sends N-GET request and receives the corresponding response.
+     *  @param presID                   [in]  The ID of the presentation context to be used for sending
+     *                                        the request message. Should not be 0.
+     *  @param requestedSopInstanceUID  [in]  The requested SOP Instance UID
+     *  @param attributeIdentifierList  [in]  List of attribute tags to retrieve. If empty, no
+     *                                        Attribute Identifier List is sent and all attributes
+     *                                        are assumed per PS3.7 §10.1.2.1.5.
+     *  @param attributeList            [out] Pointer to the attribute list returned by the SCP.
+     *                                        May be NULL if the SCP returns no dataset.
+     *                                        The caller is responsible for deleting the returned object.
+     *  @param rspStatusCode            [out] The response status code received. 0 means success,
+     *                                        others can be found in the DICOM standard.
+     *  @return EC_Normal if request could be issued and response was received successfully,
+     *          an error code otherwise. If a code different from EC_Normal is returned, other
+     *          output like rspStatusCode may be invalid.
+     */
+    virtual OFCondition sendNGETRequest(const T_ASC_PresentationContextID presID,
+                                        const OFString& requestedSopInstanceUID,
+                                        const OFList<DcmTagKey>& attributeIdentifierList,
                                         DcmDataset*& attributeList,
                                         Uint16& rspStatusCode);
 

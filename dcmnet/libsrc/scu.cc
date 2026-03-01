@@ -37,8 +37,9 @@
 OFString DcmSCU::TLogger::m_loggerName[DcmSCU::TLogger::LOGGER_NUM_LOGGERS] = {
     "dcmtk.dcmnet.scu.cfindrq.dataset",
     "dcmtk.dcmnet.scu.cfindrsp.dataset",
-    "dcmtk.dcmnet.scu.cstorerq.dataset"
-    // Add more if your enum has more entries
+    "dcmtk.dcmnet.scu.cstorerq.dataset",
+    "dcmtk.dcmnet.scu.ngetrq.identifierlist",
+    "dcmtk.dcmnet.scu.ngetrsp.dataset"
 };
 
 
@@ -2279,6 +2280,7 @@ OFCondition DcmSCU::sendNSETRequest(const T_ASC_PresentationContextID presID,
     if (abstractSyntax.empty() || transferSyntax.empty())
         return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
+    // Make sure, everything is zeroed (especially options)
     T_DIMSE_Message request;
     memset((char*)&request, 0, sizeof(request));
     request.CommandField = DIMSE_N_SET_RQ;
@@ -2387,6 +2389,175 @@ OFCondition DcmSCU::sendNSETRequest(const T_ASC_PresentationContextID presID,
 
         // Provide user with copy of result dataset if desired
         attributeList = respDataset;
+    }
+
+    return EC_Normal;
+}
+
+OFCondition DcmSCU::sendNGETRequest(const T_ASC_PresentationContextID presID,
+                                    const OFString& requestedSopInstanceUID,
+                                    const OFList<DcmTagKey>& attributeIdentifierList,
+                                    DcmDataset*& attributeList,
+                                    Uint16& rspStatusCode)
+{
+    if (!isConnected())
+        return DIMSE_ILLEGALASSOCIATION;
+
+    if (requestedSopInstanceUID.empty())
+        return DIMSE_NULLKEY;
+
+    OFString abstractSyntax, transferSyntax;
+    findPresentationContext(presID, abstractSyntax, transferSyntax);
+    if (abstractSyntax.empty() || transferSyntax.empty())
+        return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+
+    // Build the AttributeIdentifierList as a flat array of (group, element) DIC_US pairs.
+    // The DIMSE layer expects ListCount to be the total number of DIC_US values (2 per tag).
+    OFVector<DIC_US> attrList;
+    for (OFListConstIterator(DcmTagKey) it = attributeIdentifierList.begin();
+         it != attributeIdentifierList.end(); ++it)
+    {
+        attrList.push_back(OFstatic_cast(DIC_US, it->getGroup()));
+        attrList.push_back(OFstatic_cast(DIC_US, it->getElement()));
+    }
+
+    T_DIMSE_Message request;
+    memset((char*)&request, 0, sizeof(request));
+    request.CommandField                      = DIMSE_N_GET_RQ;
+    T_DIMSE_N_GetRQ& rqmsg                    = request.msg.NGetRQ;
+    rqmsg.MessageID                           = nextMessageID();
+    rqmsg.DataSetType                         = DIMSE_DATASET_NULL;
+    rqmsg.AttributeIdentifierList             = attrList.empty() ? OFnullptr : &attrList[0];
+    rqmsg.ListCount                           = OFstatic_cast(int, attrList.size());
+
+    OFStandard::strlcpy(rqmsg.RequestedSOPClassUID, abstractSyntax.c_str(), sizeof(rqmsg.RequestedSOPClassUID));
+    OFStandard::strlcpy(rqmsg.RequestedSOPInstanceUID, requestedSopInstanceUID.c_str(), sizeof(rqmsg.RequestedSOPInstanceUID));
+
+    OFString tempStr;
+    if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    {
+        DCMNET_INFO("Sending N-GET Request");
+        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, request, DIMSE_OUTGOING, OFnullptr, presID));
+    }
+    else
+    {
+        DCMNET_INFO("Sending N-GET Request (MsgID " << rqmsg.MessageID << ")");
+    }
+    // Log attribute identifier list if the related logger is enabled
+    if (Logger.isEnabled(TLogger::LOGGER_N_GET_RQ_IDENTIFIER_LIST))
+    {
+        if (attributeIdentifierList.empty())
+        {
+            OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_N_GET_RQ_IDENTIFIER_LIST],
+                        "N-GET request attribute identifier list: none");
+        }
+        else
+        {
+            OFOStringStream oss;
+            oss << "N-GET request attribute identifier list:";
+            OFListConstIterator(DcmTagKey) it = attributeIdentifierList.begin();
+            for (; it != attributeIdentifierList.end(); ++it)
+                oss << OFendl << "  " << *it << " " << DcmTag(*it).getTagName();
+            OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_N_GET_RQ_IDENTIFIER_LIST], oss.str().c_str());
+        }
+    }
+
+    OFCondition result = sendDIMSEMessage(presID, &request, OFnullptr);
+    if (result.bad())
+    {
+        DCMNET_ERROR("Failed sending N-GET request: " << DimseCondition::dump(tempStr, result));
+        return result;
+    }
+
+    T_DIMSE_Message response;
+    memset((char*)&response, 0, sizeof(response));
+    DcmDataset* statusDetail = OFnullptr;
+
+    T_ASC_PresentationContextID pcid = presID;
+    result = receiveDIMSECommand(&pcid, &response, &statusDetail, OFnullptr);
+
+    rspStatusCode = response.msg.NGetRSP.DimseStatus;
+
+    if (result.bad())
+    {
+        delete statusDetail;
+        DCMNET_ERROR("Failed receiving DIMSE response: " << DimseCondition::dump(tempStr, result));
+        return result;
+    }
+
+    if (response.CommandField == DIMSE_N_GET_RSP)
+    {
+        if (DCM_dcmnetLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        {
+            DCMNET_INFO("Received N-GET Response");
+            DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
+        }
+        else
+        {
+            DCMNET_INFO("Received N-GET Response (" << DU_ngetStatusString(rspStatusCode) << ")");
+        }
+    }
+    else
+    {
+        DCMNET_ERROR("Expected N-GET response but received DIMSE command 0x"
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+            << OFstatic_cast(unsigned int, response.CommandField));
+        DCMNET_DEBUG(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
+        delete statusDetail;
+        return DIMSE_BADCOMMANDTYPE;
+    }
+
+    if (statusDetail != OFnullptr)
+    {
+        DCMNET_DEBUG("Response has status detail:" << OFendl << DcmObject::PrintHelper(*statusDetail));
+        delete statusDetail;
+    }
+
+    if (pcid != presID)
+    {
+        DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID) << ") and data set ("
+            << OFstatic_cast(unsigned int, pcid) << ") differ");
+        return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+            OF_error,
+            "DIMSE: Presentation Contexts of Command and Data Set differ");
+    }
+
+    if (response.msg.NGetRSP.DataSetType != DIMSE_DATASET_NULL)
+    {
+        DcmDataset* respDataset = OFnullptr;
+        result = receiveDIMSEDataset(&pcid, &respDataset);
+        if (result.bad())
+        {
+            delete respDataset;
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            return DIMSE_BADDATA;
+        }
+
+        if (presID != pcid)
+        {
+            delete respDataset;
+            DCMNET_ERROR("Presentation Context ID of command (" << OFstatic_cast(unsigned int, presID) << ") and data set ("
+                << OFstatic_cast(unsigned int, pcid) << ") differ");
+            return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID,
+                OF_error,
+                "DIMSE: Presentation Contexts of Command and Data Set differ");
+        }
+
+        attributeList = respDataset;
+        // Print response dataset if related logger is enabled
+        if (Logger.isEnabled(TLogger::LOGGER_N_GET_RSP_DATASET))
+        {
+            if (attributeList->isEmpty())
+            {
+                OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_N_GET_RSP_DATASET],
+                            "N-GET response attribute list: none");
+            }
+            else
+            {
+                OFLOG_DEBUG(DcmSCU::Logger[TLogger::LOGGER_N_GET_RSP_DATASET], "N-GET response attribute list:" << OFendl
+                        << DcmObject::PrintHelper(*attributeList));
+            }
+        }
     }
 
     return EC_Normal;
@@ -2780,10 +2951,11 @@ void RetrieveResponse::print()
 // Default constructor, initializes logger names and sets defaults for enabled states
 DcmSCU::TLogger::TLogger()
 {
-    // By default, only the C-FIND-RQ logger is enabled
-    m_loggerEnabled[LOGGER_C_FIND_RQ_DATASET] = OFTrue;
-    m_loggerEnabled[LOGGER_C_FIND_RSP_DATASET] = OFFalse;
-    m_loggerEnabled[LOGGER_C_STORE_RQ_DATASET] = OFFalse;
+    m_loggerEnabled[LOGGER_C_FIND_RQ_DATASET]         = OFTrue;
+    m_loggerEnabled[LOGGER_C_FIND_RSP_DATASET]        = OFFalse;
+    m_loggerEnabled[LOGGER_C_STORE_RQ_DATASET]        = OFFalse;
+    m_loggerEnabled[LOGGER_N_GET_RQ_IDENTIFIER_LIST]  = OFTrue;
+    m_loggerEnabled[LOGGER_N_GET_RSP_DATASET]         = OFFalse;
 }
 
 // Access logger names by enum value

@@ -42,6 +42,7 @@ overlaputil.o: overlaputil.cc ../include/dcmtk/dcmseg/overlaputil.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
  ../../ofstd/include/dcmtk/ofstd/diag/vsconstexp.def \
+ ../include/dcmtk/dcmseg/segdef.h \
  ../../dcmfg/include/dcmtk/dcmfg/framesorter.h \
  ../../ofstd/include/dcmtk/ofstd/ofmath.h \
  ../../dcmfg/include/dcmtk/dcmfg/fginterface.h \
@@ -116,8 +117,7 @@ overlaputil.o: overlaputil.cc ../include/dcmtk/dcmseg/overlaputil.h \
  ../../dcmiod/include/dcmtk/dcmiod/modmultiframefg.h \
  ../../dcmiod/include/dcmtk/dcmiod/modsegmentationseries.h \
  ../../dcmiod/include/dcmtk/dcmiod/modpalettecolorlut.h \
- ../include/dcmtk/dcmseg/segdef.h ../include/dcmtk/dcmseg/segment.h \
- ../include/dcmtk/dcmseg/segtypes.h \
+ ../include/dcmtk/dcmseg/segment.h ../include/dcmtk/dcmseg/segtypes.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \

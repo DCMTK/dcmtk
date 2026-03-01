@@ -88,7 +88,12 @@ wlcefs.o: wlcefs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlfsim.h \
  ../include/dcmtk/dcmwlm/wlmactmg.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcostrmz.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h wlcefs.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h wlcefs.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h
 wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
@@ -168,5 +173,10 @@ wlmscpfs.o: wlmscpfs.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsopt.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+ ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsdefin.h \
+ ../../dcmtls/include/dcmtk/dcmtls/tlsciphr.h \
  ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wldsfs.h \
  ../include/dcmtk/dcmwlm/wlfsim.h

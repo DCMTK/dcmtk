@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2012-2022, OFFIS e.V.
+ *  Copyright (C) 2012-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -50,6 +50,11 @@ OFTEST_REGISTER(dcmnet_scu_sendNCREATERequest_succeeds_and_sets_responsestatusco
 OFTEST_REGISTER(dcmnet_scu_sendNSETRequest_fails_when_requestedsopinstance_is_empty);
 OFTEST_REGISTER(dcmnet_scu_sendNSETRequest_succeeds_and_modifies_instance_when_scp_has_instance);
 OFTEST_REGISTER(dcmnet_scu_sendNSETRequest_succeeds_and_sets_responsestatuscode_from_scp_when_scp_sets_error_status);
+
+OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_fails_when_requestedsopinstance_is_empty);
+OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_retrieves_all_attributes_when_list_is_empty);
+OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_retrieves_only_requested_attributes);
+OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_sets_error_status_for_nonexistent_instance);
 
 #endif // WITH_THREADS
 
