@@ -1309,6 +1309,7 @@
 (2005,"Philips MR Imaging DD 001",b2)	FL	DiffusionDirectionFH	1	PrivateTag
 
 (2005,"Philips MR Imaging DD 005",02)	SQ	Unknown	1	PrivateTag
+(2005,"Philips MR Imaging DD 005",45)	CS	AttenuationCorrection	1	PrivateTag
 
 # Note: Some Philips devices use these private tags with reservation value
 # "Philips MR Imaging DD 001", others use "PHILIPS MR IMAGING DD 001". All attributes
@@ -2954,7 +2955,7 @@
 (0019,"SVISION",78)	DS	FilterThickness1	1	PrivateTag
 (0019,"SVISION",79)	DS	FilterThickness2	1	PrivateTag
 (0019,"SVISION",80)	IS	BuckyFormat	1	PrivateTag
-(0019,"SVISION",81)	IS	ObjectPosition	1	PrivateTag
+(0019,"SVISION",81)	ST	ObjectPosition	1	PrivateTag
 (0019,"SVISION",90)	LO	DeskCommand	1	PrivateTag
 (0019,"SVISION",A0)	DS	ExtendedExposureTime	1	PrivateTag
 (0019,"SVISION",A1)	DS	ActualExposureTime	1	PrivateTag
