@@ -224,7 +224,7 @@ public:
      *  also be enabled or disabled at once via the special enum value
      *  LOGGER_NUM_LOGGERS.
      */
-    struct TLogger
+    struct DCMTK_DCMNET_EXPORT TLogger
     {
         public:
 
