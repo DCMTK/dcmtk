@@ -582,7 +582,7 @@ OFBool OFTime::setISOFormattedTimeZone(const OFString &formattedTimeZone)
     OFBool status = OFFalse;
     const size_t length = formattedTimeZone.length();
     const OFBool hasDelimiter = (formattedTimeZone.find_first_not_of("0123456789", 1) != OFString_npos);
-    /* format: ...+HHMM or -HHMM */
+    /* format: +HHMM or -HHMM */
     if ((length == 5) && ((formattedTimeZone[0] == '+') || (formattedTimeZone[0] == '-')))
     {
         int tzHours;
@@ -591,7 +591,7 @@ OFBool OFTime::setISOFormattedTimeZone(const OFString &formattedTimeZone)
         if (sscanf(formattedTimeZone.c_str(), "%03d%02u", &tzHours, &tzMinutes) == 2)
             status = setTimeZone(tzHours, tzMinutes);
     }
-    /* format: ...+HH:MM or -HH:MM */
+    /* format: +HH:MM or -HH:MM */
     else if ((length == 6) && hasDelimiter && ((formattedTimeZone[0] == '+') || (formattedTimeZone[0] == '-')))
     {
        int tzHours;
