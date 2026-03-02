@@ -750,11 +750,11 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         /* format: HHMM */
         else
             OFStandard::snprintf(buf, sizeof(buf), "%02u%02u", Hour, Minute);
-        /* only show seconds if requested and a value is specified (or a value is created) */
+        /* only show seconds if requested and a value is specified (or should be created) */
         if (showSeconds && (hasSecond() || createMissingPart))
         {
             const double secondValue = isSecondSpecified(Second) ? Second : 0;
-            /* only show fractional part of a second if requested and a value is specified (or a value is created) */
+            /* only show fractional part of a second if requested and a value is specified (or should be created) */
             if (showFraction && (hasFractionOfSecond() || createMissingPart))
             {
                 char buf2[12];
@@ -902,7 +902,7 @@ STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
 {
     OFString tmpString;
     /* print the given time in ISO format to the stream */
-    if (timeVal.getISOFormattedTime(tmpString))
+    if (timeVal.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/))
         stream << tmpString;
     return stream;
 }

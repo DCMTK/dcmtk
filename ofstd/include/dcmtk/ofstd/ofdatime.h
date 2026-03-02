@@ -252,7 +252,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes. The time zone is only added if a value is specified.
      *  @param showDelimiter flag, indicating whether to use delimiters ("-", ":" and " ") or not
-     *  @param createMissingPart if OFTrue create optional parts (seconds and fractional part of a
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and fractional part of a
      *    second) even if not specified (see OFTime::hasSecond() and OFTime::hasFractionOfSecond())
      *  @param dateTimeSeparator separator between ISO date and time value, e.g. " " (default) or
      *    "T" (for ISO 8601 format). Only used if 'showDelimiter' is true.
@@ -293,7 +293,8 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
 
 /** put the given date/time in ISO format on the output stream.
- *  If an error occurs nothing is printed.
+ *  The output format is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]". Optional parts are not
+ *  created if missing. If an error occurs nothing is printed.
  *  @param stream output stream
  *  @param time OFDateTime object to print
  *  @return reference to the output stream

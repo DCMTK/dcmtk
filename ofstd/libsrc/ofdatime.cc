@@ -330,7 +330,7 @@ STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream,
 {
     OFString string;
     /* print the given date and time in ISO format to the stream */
-    if (dateTime.getISOFormattedDateTime(string))
+    if (dateTime.getISOFormattedDateTime(string, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/))
         stream << string;
     return stream;
 }

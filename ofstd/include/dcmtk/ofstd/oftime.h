@@ -145,11 +145,11 @@ class DCMTK_OFSTD_EXPORT OFTime
      */
     virtual void clear();
 
-    /** clear the second value, i.e.\ set it to "unspecified".
+    /** clear the second value, i.e.\ set it to "unspecified"
      */
     void clearSecond();
 
-    /** clear the time zone value, i.e.\ set it to "unspecified".
+    /** clear the time zone value, i.e.\ set it to "unspecified"
      */
     void clearTimeZone();
 
@@ -241,7 +241,7 @@ class DCMTK_OFSTD_EXPORT OFTime
     /** set the time to the specified number of seconds
      *  @param seconds number of seconds since "00:00:00" specifying time to set
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
-     *  @param normalize if OFTrue the 'seconds' value is normalized to the valid range
+     *  @param normalize if OFTrue, the 'seconds' value is normalized to the valid range
      *    [0.0,86400.0[ otherwise the value is checked as is
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
@@ -252,7 +252,7 @@ class DCMTK_OFSTD_EXPORT OFTime
     /** set the time to the specified number of hours
      *  @param hours number of hours since "00:00:00" specifying time to set
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
-     *  @param normalize if OFTrue the 'hours' value is normalized to the valid range
+     *  @param normalize if OFTrue, the 'hours' value is normalized to the valid range
      *    [0.0,24.0[ otherwise the value is checked as is
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
@@ -339,7 +339,7 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** get the currently stored time in seconds
      *  @param useTimeZone use the currently set time zone to correct the result
-     *  @param normalize if OFTrue results larger than or equal 86400.0 (seconds)
+     *  @param normalize if OFTrue, results larger than or equal 86400.0 (seconds)
      *    are normalized to a valid range
      *  @return number of seconds since "00:00:00"
      */
@@ -348,7 +348,7 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** get the currently stored time in hours.
      *  @param useTimeZone use the currently set time zone to correct the result
-     *  @param normalize if OFTrue results larger than or equal 24.0 (hours) are
+     *  @param normalize if OFTrue, results larger than or equal 24.0 (hours) are
      *     normalized to a valid range
      *  @return number of hours since "00:00:00" (including fraction of hours)
      */
@@ -388,8 +388,8 @@ class DCMTK_OFSTD_EXPORT OFTime
      *    if OFTrue. The time zone indicates the offset from the Coordinated Universal Time (UTC)
      *    in hours and minutes. The time zone is only added if a value is specified.
      *  @param showDelimiter flag, indicating whether to use delimiters (":" and " ") or not
-     *  @param createMissingPart if OFTrue create optional parts (seconds and fractional part of a
-     *    second) even if not specified (see hasSecond() and hasFractionOfSecond())
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and fractional part of
+     *    a second) even if not specified (see hasSecond() and hasFractionOfSecond())
      *  @param timeZoneSeparator separator between ISO time value and time zone, e.g. " " (default)
      *    or "" (for ISO 8601 format). Only used if 'showDelimiter' is true.
      *  @return OFTrue if result variable has been set, i.e. the time is valid, OFFalse otherwise
@@ -487,7 +487,7 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @param minute minute value of the given time
      *  @param second second value of the given time
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
-     *  @param normalize if OFTrue results larger than or equal 86400.0 (seconds)
+     *  @param normalize if OFTrue, results larger than or equal 86400.0 (seconds)
      *    are normalized to a valid range
      *  @return number of seconds since "00:00:00"
      */
@@ -502,7 +502,7 @@ class DCMTK_OFSTD_EXPORT OFTime
      *  @param minute minute value of the given time
      *  @param second second value of the given time
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
-     *  @param normalize if OFTrue results larger than or equal 24.0 (hours)
+     *  @param normalize if OFTrue, results larger than or equal 24.0 (hours)
      *    are normalized to a valid range
      *  @return number of hours since "00:00:00" (including fraction of hours)
      */
@@ -530,7 +530,8 @@ class DCMTK_OFSTD_EXPORT OFTime
 
 
 /** put the given time in ISO format on the output stream.
- *  If an error occurs, nothing is printed.
+ *  The output format is "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]". Optional parts are not created
+ *  if missing. If an error occurs nothing is printed.
  *  @param stream output stream
  *  @param timeVal OFTime object to print
  *  @return reference to the output stream

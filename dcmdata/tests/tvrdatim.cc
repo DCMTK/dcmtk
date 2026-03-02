@@ -137,11 +137,11 @@ OFTEST(dcmdata_dateTime)
     OFCHECK(DcmTime::getTimeZoneFromString("+100", timeZone).bad());
     OFCHECK(DcmTime::getTimeZoneFromString("UTC+1", timeZone).bad());
 
-    dcmDateTime.putString("200204101203+0500");
+    dcmDateTime.putString("20020410120315+0500");
     dcmDateTime.print(strstream);
-    CHECK_EQUAL("(0040,a120) DT [200204101203+0500]                      #  18, 1 DateTime\n");
+    CHECK_EQUAL("(0040,a120) DT [20020410120315+0500]                    #  20, 1 DateTime\n");
     OFCHECK(dcmDateTime.getOFDateTime(dateTime).good());
-    CHECK_STREAM_EQUAL(dateTime, "2002-04-10 12:03");
+    CHECK_STREAM_EQUAL(dateTime, "2002-04-10 12:03:15 +05:00");
 
     dcmDateTime.putString("20020410");
     dcmDateTime.print(strstream);
