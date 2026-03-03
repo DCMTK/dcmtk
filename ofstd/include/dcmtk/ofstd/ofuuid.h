@@ -32,7 +32,7 @@
 
 
 /**
- *  A OFUUID represents a Universally Unique Identifier (UUID) as described in
+ *  An OFUUID represents a Universally Unique Identifier (UUID) as described in
  *  <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>. The constants
  *  @ref OFUUID::nil and @ref OFUUID::max do not comply to
  *  <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a> but may be
@@ -47,7 +47,7 @@ public:
   friend class OFUUIDGenerator;
 
   /**
-   *  Writes a OFUUID to a stream in canonical notation.
+   *  Writes an OFUUID to a stream in canonical notation.
    *  @param os The stream to write to.
    *  @param uuid The OFUUID to write.
    *
@@ -109,7 +109,7 @@ public:
    */
   friend DCMTK_OFSTD_EXPORT OFBool operator>=(OFUUID const & lhs, OFUUID const & rhs);
 
-  /** The possible notations of a OFUUID. */
+  /** The possible notations of an OFUUID. */
   typedef enum {
     /** The OFUUID is represented as one, long (unsigned) integer in base 10 (up to 39 digits long). */
     NotationInteger,
@@ -194,7 +194,7 @@ private:
    *  Constructor.
    *  @param fill Value to be assigned to each array member of @ref data_.
    *
-   *  To create a OFUUID use OFUUIDGenerator::create().
+   *  To create an OFUUID use OFUUIDGenerator::create().
    */
   OFUUID(Uint8 const fill = 0);
 
