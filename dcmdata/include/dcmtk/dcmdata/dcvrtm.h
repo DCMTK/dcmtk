@@ -90,7 +90,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     /** check whether stored value conforms to the VR and to the specified VM
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
-     *  @param oldFormat support old ACR/NEMA format if OFTrue (':' as a separator)
+     *  @param oldFormat support old ACR-NEMA format if OFTrue (':' as a separator)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     virtual OFCondition checkValue(const OFString &vm = "1-n",
@@ -109,7 +109,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     /** set the element value to the current system time.
      *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
      *  the brackets enclose optional parts. If the current system time or parts of it
-     *  are unavailable the corresponding values are set to "0" and an error code is
+     *  are unavailable, the corresponding values are set to "0" and an error code is
      *  returned.
      *  @param seconds add optional seconds ("SS") if OFTrue
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
@@ -130,10 +130,11 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
      *  of backward compatibility). Since there is no time zone for the DICOM TM format
      *  local time is assumed (the time zone of 'timeValue' is set automatically).
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  If this function fails, the result variable 'timeValue' is cleared automatically.
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
-     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0)
+     *    time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getOFTime(OFTime &timeValue,
@@ -155,9 +156,10 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param seconds add optional seconds (":SS") if OFTrue (and a value is specified)
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
      *    (and a value is specified). Requires parameter 'seconds' to be also OFTrue.
-     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and/or fractional
      *    part of a second) if absent in the element value
-     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0)
+     *    time format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getISOFormattedTime(OFString &formattedTime,
@@ -180,7 +182,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     /** get the current system time.
      *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
      *  the brackets enclose optional parts. If the current system time or parts of it
-     *  are unavailable the corresponding values are set to "0" and an error code is
+     *  are unavailable, the corresponding values are set to "0" and an error code is
      *  returned.
      *  @param dicomTime reference to string variable where the result is stored
      *  @param seconds add optional seconds ("SS") if OFTrue (and a value is specified)
@@ -198,7 +200,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     /** get the specified OFTime value in DICOM format.
      *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
      *  the brackets enclose optional parts. If the current system time or parts of it
-     *  are unavailable the corresponding values are set to "0" and an error code is
+     *  are unavailable, the corresponding values are set to "0" and an error code is
      *  returned.
      *  @param timeValue time to be converted to DICOM format
      *  @param dicomTime reference to string variable where the result is stored
@@ -231,13 +233,13 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  Please note that the element value is expected to be in valid DICOM TM format (i.e.
      *  "HH[MM[SS[.FFFFFF]]]"). If enabled, the old format from ACR-NEMA
      *  ("HH[:MM[:SS[.FFFFFF]]]") is also supported for reasons of backward compatibility.
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  If this function fails, the result variable 'timeValue' is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
-     *    format (see above).
+     *    format (see above)
      *  @param timeZone optional time zone to set for 'timeValue' (default: unspecified)
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -251,12 +253,12 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  Please note that the element value is expected to be in valid DICOM TM format (i.e.
      *  "HH[MM[SS[.FFFFFF]]]"). If enabled, the old format from ACR-NEMA
      *  ("HH[:MM[:SS[.FFFFFF]]]") is also supported for reasons of backward compatibility.
-     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  If this function fails, the result variable 'timeValue' is cleared automatically.
      *  @param dicomTime string value in DICOM TM format to be converted to OFTime format.
      *    An empty string is not regarded as valid input, since the time would be unknown.
      *  @param timeValue reference to OFTime variable where the result is stored
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
-     *    format (see above).
+     *    format (see above)
      *  @param timeZone optional time zone to set for 'timeValue' (default: unspecified)
      *  @return EC_Normal upon success, an error code otherwise
      */
@@ -278,10 +280,10 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param seconds add optional seconds (":SS") if OFTrue
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
      *    (requires parameter 'seconds' to be also OFTrue)
-     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and/or fractional
      *    part of a second) if absent in the DICOM TM value
      *  @param supportOldFormat set to OFFalse to disable support for old (prior V3.0) time
-     *    format (see above).
+     *    format (see above)
      *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getISOFormattedTimeFromString(const OFString &dicomTime,
@@ -324,7 +326,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
                                              double &timeZone);
 
     /** check whether given string conforms to a single value of VR "TM" (Time).
-     *  The old ACR/NEMA time format is considered invalid.
+     *  The old ACR-NEMA time format is considered invalid.
      *  @param dicomTime string value to be checked
      *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
      *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
@@ -335,7 +337,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
     /** check whether given string conforms to a single value of VR "TM" (Time).
      *  @param dicomTime string value to be checked
      *  @param dicomTimeSize the size (in bytes) of the string 'dicomTime' refers to
-     *  @param supportOldFormat whether to accept the old ACR/NEMA time format.
+     *  @param supportOldFormat whether to accept the old ACR-NEMA time format.
      *    Set to OFTrue for enabling support for (HH:MM:SS in addition to HHMMSS...).
      *    Defaults to OFFalse, disabling it by default.
      *  @return OFTrue if the given string conforms to the Time format, OFFalse otherwise
@@ -349,7 +351,7 @@ class DCMTK_DCMDATA_EXPORT DcmTime
      *  @param value string value to be checked (possibly multi-valued)
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
-     *  @param oldFormat support old ACR/NEMA time format if OFTrue (i.e. with ":" and "." delimiters)
+     *  @param oldFormat support old ACR-NEMA time format if OFTrue (i.e. with ":" and "." delimiters)
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     static OFCondition checkStringValue(const OFString &value,

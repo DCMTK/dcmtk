@@ -531,7 +531,7 @@ class DCMTK_OFSTD_EXPORT OFTime
 
 /** put the given time in ISO format on the output stream.
  *  The output format is "HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]". Optional parts are not created
- *  if missing. If an error occurs nothing is printed.
+ *  if missing. If an error occurs, nothing is printed.
  *  @param stream output stream
  *  @param timeVal OFTime object to print
  *  @return reference to the output stream

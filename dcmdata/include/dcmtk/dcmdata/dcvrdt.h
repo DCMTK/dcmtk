@@ -108,7 +108,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     /** set the element value to the current system date and time.
      *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
      *  where the brackets enclose optional parts. If the current system date/time or parts
-     *  of it are unavailable the corresponding values are set to "0" and an error code is
+     *  of it are unavailable, the corresponding values are set to "0" and an error code is
      *  returned - in fact, the date is set to "19000101" if unavailable.
      *  @param seconds add optional seconds ("SS") if OFTrue
      *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
@@ -132,7 +132,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  Please note that the element value is expected to be in the DICOM DT format
      *  "YYYYMMDD[HH[MM[SS[.FFFFFF]]]][&ZZZZ]". If the optional time zone ("&ZZZZ") is
      *  missing, it is set to "unspecified".
-     *  If this function fails the result variable 'dateTimeValue' is cleared automatically.
+     *  If this function fails, the result variable 'dateTimeValue' is cleared automatically.
      *  @param dateTimeValue reference to OFDateTime variable where the result is stored
      *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @return EC_Normal upon success, an error code otherwise
@@ -154,7 +154,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue.
      *    The time zone is given as the offset (hours and minutes) from Coordinated Universal
      *    Time (UTC). The time zone is only added if a value is specified.
-     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and/or fractional
      *    part of a second) if absent in the element value
      *  @param dateTimeSeparator separator between ISO date and time value
      *  @param timeZoneSeparator separator between ISO time value and time zone
@@ -182,7 +182,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     /** get the current system date and time.
      *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
      *  where the brackets enclose optional parts. If the current system date/time or parts
-     *  of it are unavailable the corresponding values are set to "0" and an error code is
+     *  of it are unavailable, the corresponding values are set to "0" and an error code is
      *  returned - in fact, the date is set to "19000101" if unavailable.
      *  @param dicomDateTime reference to string variable where the result is stored
      *  @param seconds add optional seconds ("SS") if OFTrue (and a value is specified)
@@ -204,7 +204,7 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
     /** get the specified OFDateTime value in DICOM format.
      *  The DICOM DT format supported by this function is "YYYYMMDDHHMM[SS[.FFFFFF]][&ZZZZ]"
      *  where the brackets enclose optional parts. If the current system date/time or parts
-     *  of it are unavailable the corresponding values are set to "0" and an error code is
+     *  of it are unavailable, the corresponding values are set to "0" and an error code is
      *  returned - in fact, the date is set to "19000101" if unavailable.
      *  @param dateTimeValue date and time to be converted to DICOM format
      *  @param dicomDateTime reference to string variable where the result is stored
@@ -273,8 +273,8 @@ class DCMTK_DCMDATA_EXPORT DcmDateTime
      *  @param timeZone add optional time zone ("&HH:MM" where "&" is "+" or "-") if OFTrue
      *    (and a value is specified). The time zone is given as the offset (hours and minutes)
      *    from the Coordinated Universal Time (UTC).
-     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional part
-     *    of a second) if absent in the element value
+     *  @param createMissingPart if OFTrue, create optional parts (seconds and/or fractional
+     *    part of a second) if absent in the element value
      *  @param dateTimeSeparator separator between ISO date and time value
      *  @param timeZoneSeparator separator between ISO time value and time zone
      *  @return EC_Normal upon success, an error code otherwise

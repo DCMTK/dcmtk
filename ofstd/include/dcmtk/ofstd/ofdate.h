@@ -163,7 +163,7 @@ class DCMTK_OFSTD_EXPORT OFDate
 
     /** set the date value to the current system date.
      *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason the current value is not modified.
+     *  for some reason, the current value is not modified.
      *  @return OFTrue if the current system date has been set, OFFalse otherwise
      */
     OFBool setCurrentDate();
@@ -227,7 +227,7 @@ class DCMTK_OFSTD_EXPORT OFDate
 
     /** set the date value to the current system date.
      *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason the current value is not modified.
+     *  for some reason, the current value is not modified.
      *  @param tt current system time (as returned by the time() function)
      *  @return OFTrue if the current system date has been set, OFFalse otherwise
      */
@@ -248,7 +248,7 @@ class DCMTK_OFSTD_EXPORT OFDate
 
 
 /** put the given date in ISO format on the output stream.
- *  If an error occurs nothing is printed.
+ *  If an error occurs, nothing is printed.
  *  @param stream output stream
  *  @param dateVal OFDate object to print
  *  @return reference to the output stream

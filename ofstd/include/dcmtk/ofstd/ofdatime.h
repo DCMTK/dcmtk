@@ -202,7 +202,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
     /** set the date and time value to the current system date and time.
      *  This function uses operating system dependent routines. If the date or time function
-     *  (or both) are unavailable for some reason the corresponding value is not modified.
+     *  (or both) are unavailable for some reason, the corresponding value is not modified.
      *  @return OFTrue if the current system date and time has been set, OFFalse otherwise
      */
     OFBool setCurrentDateTime();
@@ -294,7 +294,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
 
 /** put the given date/time in ISO format on the output stream.
  *  The output format is "YYYY-MM-DD HH:MM[:SS[.FFFFFF]] [&ZZ:ZZ]". Optional parts are not
- *  created if missing. If an error occurs nothing is printed.
+ *  created if missing. If an error occurs, nothing is printed.
  *  @param stream output stream
  *  @param time OFDateTime object to print
  *  @return reference to the output stream

@@ -251,7 +251,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @param vm value multiplicity (according to the data dictionary) to be checked for.
      *    (See DcmElement::checkVM() for a list of valid values.)
      *    Interpreted as cardinality (number of items) for sequence attributes.
-     *  @param oldFormat support old ACR/NEMA format for certain VRs (DA, TM, PN) if OFTrue
+     *  @param oldFormat support old ACR-NEMA format for certain VRs (DA, TM, PN) if OFTrue
      *  @return status of the check, EC_Normal if value is correct, an error code otherwise
      */
     virtual OFCondition checkValue(const OFString &vm = "1-n",
