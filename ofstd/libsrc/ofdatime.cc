@@ -211,7 +211,7 @@ OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
      * is always the same one, i.e. 'delim'.
      */
     const char delim = formattedDateTime.at(4);
-    const OFBool delimsUsed = !isdigit(delim);
+    const OFBool delimsUsed = !isdigit(OFstatic_cast(unsigned char, delim));
 
     /* where will 'formattedTime' start within 'formattedDateTime'? */
     size_t pos = 0;
@@ -245,7 +245,7 @@ OFBool OFDateTime::setISOFormattedDateTime(const OFString &formattedDateTime)
     /* skip non digits in case delimiter character has been used */
     if (delimsUsed)
     {
-        while ((pos < length) && !isdigit(formattedDateTime.at(pos)))
+        while ((pos < length) && !isdigit(OFstatic_cast(unsigned char, formattedDateTime.at(pos))))
         {
             ++pos;
         }

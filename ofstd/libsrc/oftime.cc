@@ -439,7 +439,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
 
     size_t pos = 0;
     const char delim = formattedTime.at(pos + 2);
-    const OFBool delimsUsed = !isdigit(delim);
+    const OFBool delimsUsed = !isdigit(OFstatic_cast(unsigned char, delim));
 
     unsigned int hours = 0;
     unsigned int minutes = 0;
@@ -470,7 +470,7 @@ OFBool OFTime::setISOFormattedTime(const OFString &formattedTime)
     }
 
     /* is there still input available that starts with a digit or a delimiter (if used)? */
-    if ((pos < length) && (isdigit(formattedTime.at(pos)) || (delimsUsed && (formattedTime.at(pos) == delim))))
+    if ((pos < length) && (isdigit(OFstatic_cast(unsigned char, formattedTime.at(pos))) || (delimsUsed && (formattedTime.at(pos) == delim))))
     {
         /* scan for SS or :SS - seconds */
         OFString ssFormat;
