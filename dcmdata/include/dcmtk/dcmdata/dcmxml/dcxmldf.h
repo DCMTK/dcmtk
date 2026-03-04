@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2022, OFFIS e.V.
+ *  Copyright (C) 2022-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -31,4 +31,4 @@
 #define DCMTK_DCMXML_EXPORT DCMTK_DECL_IMPORT
 #endif
 
-#endif // DCDEFINE_H
+#endif // DCXMLDEF_H

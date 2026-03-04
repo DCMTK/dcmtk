@@ -13,7 +13,7 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Joerg Riesmeier
+ *  Author:  Joerg Riesmeier, Marco Eichelberg
  *
  *  Purpose: Helper class for converting an XML document to DICOM file or data set
  *
