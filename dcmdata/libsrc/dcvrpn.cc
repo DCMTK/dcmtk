@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2022, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -232,8 +232,8 @@ OFCondition DcmPersonName::writeJson(STD_NAMESPACE ostream &out,
             }
             else
             {
-                DCMDATA_ERROR("DcmPersonName::writeJson(): omitting invalid "
-                    "component group (more than three component groups present)");
+                DCMDATA_WARN("DcmPersonName: Omitting invalid component group "
+                    << "(more than three component groups present)");
                 // seek to the end of the current component group - 1, since
                 // the iterator will be incremented in the calling code
                 while (++it != end && *it != '\\' && *it != '=');
