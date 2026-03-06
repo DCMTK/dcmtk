@@ -467,9 +467,8 @@ OFCondition DcmByteString::putString(const char *stringVal,
     return errorFlag;
 }
 
-
-OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
-                                            const unsigned long pos)
+OFCondition DcmByteString::putOFStringAtPosWithCharset(const OFString& stringVal, const unsigned long pos,
+    const OFString& charSet)
 {
     OFCondition result;
     // Get old value
@@ -505,8 +504,8 @@ OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
             // First value is set: Replace old value with new value
             else
             {
-                rightPos = str.find_first_of('\\', 0);
-                str = str.replace(0, rightPos, stringVal);
+                rightPos = findNextValuePosition(str.c_str(), str.length(), 0, charSet);
+                str = str.replace(0, rightPos - 1, stringVal);
             }
             return putOFStringArray(str);
         }
@@ -514,29 +513,25 @@ OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
         // 3rd case: New value should be inserted somewhere in the middle
         size_t leftPos = 0;
         size_t vmPos = 0;
+        size_t strLen = str.length();
         // First, find the correct position, and then insert / replace new value
         do
         {
             // Step from value to value by looking for delimiters.
-            // Special handling first search (start looking at position 0 instead of 1)
-            if (vmPos == 0) leftPos = str.find('\\', 0);
-            else leftPos = str.find('\\', leftPos + 1 );
-            // leftPos = str.find('\\', leftPos == 0 ? 0 : leftPos +1);
+            leftPos = findNextValuePosition(str.c_str(), strLen, leftPos, charSet);
             if (leftPos != OFString_npos)
-            {
                 vmPos++;
-            }
         }
         while ( (leftPos != OFString_npos) && (vmPos != pos) );
-        rightPos = str.find_first_of('\\', leftPos+1);
-        if (rightPos == OFString_npos) rightPos = str.length();
+        rightPos = findNextValuePosition(str.c_str(), strLen, leftPos, charSet);
+        if (rightPos == OFString_npos) rightPos = strLen + 1;
 
         // If we do not have an old value of size 1 or we have an empty value
         if (rightPos - leftPos == 1)
         {
             // Empty value
             if (str.at(leftPos) == '\\')
-                str = str.insert(rightPos, stringVal);
+                str = str.insert(leftPos, stringVal);
             // Old value (length 1)
             else
                 str = str.replace(leftPos, 1, stringVal);
@@ -544,7 +539,7 @@ OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
         // Otherwise replace existing old value (length > 1)
         else
         {
-            str = str.replace(leftPos+1, rightPos - leftPos - 1, stringVal);
+            str = str.replace(leftPos, rightPos - leftPos - 1, stringVal);
         }
         // Finally re-insert all values include new value
         result = putOFStringArray( str );
@@ -552,6 +547,28 @@ OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
     return result;
 }
 
+
+
+OFCondition DcmByteString::putOFStringAtPos(const OFString& stringVal,
+                                            const unsigned long pos)
+{
+    return putOFStringAtPosWithCharset(stringVal, pos, "");
+}
+
+
+// ********************************
+
+
+size_t DcmByteString::findNextValuePosition(const char* str, size_t len, size_t start, const OFString& /*charSet*/) const
+{
+    const char *p = str + start;
+    for (size_t i = start; i < len; ++i)
+    {
+        if (*p++ == '\\')
+            return i + 1;
+    }
+    return OFString_npos;
+}
 
 // ********************************
 
@@ -770,7 +787,7 @@ OFBool DcmByteString::containsExtendedCharacters(const OFBool checkAllStrings)
     OFBool result = OFFalse;
     /* only check if parameter is true since derived VRs are not affected
        by the attribute SpecificCharacterSet (0008,0005) */
-    if (checkAllStrings)
+    if (checkAllStrings || isAffectedBySpecificCharacterSet())
     {
         char *str = NULL;
         Uint32 len = 0;
@@ -876,10 +893,10 @@ OFBool DcmByteString::containsExtendedCharacters(const char *stringVal,
 {
     if (stringVal != NULL)
     {
-        for (size_t i = stringLen; i != 0; --i)
+        for (size_t i = stringLen; i != 0; --i, ++stringVal)
         {
-            /* check for 8 bit characters */
-            if (OFstatic_cast(unsigned char, *stringVal++) > 127)
+            /* check for 8 bit and Escape characters */
+            if ((*stringVal & 0x80) != 0 || (*stringVal == 0x1b))
                 return OFTrue;
         }
     }
