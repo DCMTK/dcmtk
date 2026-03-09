@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2014-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -40,6 +40,7 @@ OFTEST(dcmsr_addContentItem_1)
     /* first, create an SR document to get an empty SR tree */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     DSRDocumentTree &tree = doc.getTree();
+    OFCHECK(tree.hasConstraintChecker());
     /* then, try to add some content items */
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
     /* add content item with given pointer */
@@ -70,6 +71,7 @@ OFTEST(dcmsr_addContentItem_2)
 {
     /* first, create an empty document subtree */
     DSRDocumentSubTree tree;
+    OFCHECK(!tree.hasConstraintChecker());
     /* then, try to add some invalid content items */
     OFCHECK(tree.addContentItem(DSRTypes::createDocumentTreeNode(DSRTypes::RT_hasProperties, DSRTypes::VT_byReference), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
     OFCHECK(tree.addContentItem(new DSRIncludedTemplateTreeNode(DSRSharedSubTemplate(NULL), DSRTypes::RT_contains), DSRTypes::AM_afterCurrent, OFTrue /*deleteIfFail*/).bad());
@@ -80,6 +82,7 @@ OFTEST(dcmsr_addContentItem_3)
 {
     /* first, create an empty document subtree */
     DSRDocumentSubTree tree;
+    OFCHECK(!tree.hasConstraintChecker());
     /* then, try to add some content items */
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
     const size_t refTarget = tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
@@ -95,6 +98,7 @@ OFTEST(dcmsr_copyContentItem)
     /* first, create a new SR document */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     DSRDocumentTree &tree = doc.getTree();
+    OFCHECK(tree.hasConstraintChecker());
     /* then add some content items */
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container));
     OFCHECK(tree.addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent));
@@ -134,6 +138,7 @@ OFTEST(dcmsr_getCurrentNode)
     /* first, create a new SR document */
     DSRDocument doc(DSRTypes::DT_ComprehensiveSR);
     DSRDocumentTree &tree = doc.getTree();
+    OFCHECK(tree.hasConstraintChecker());
     /* then add some content items */
     OFCHECK(tree.addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container, DSRCodedEntryValue("121111", "DCM", "Summary")).good());
     OFCHECK(tree.addChildContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num, DSRCodedEntryValue("121206", "DCM", "Distance")).good());

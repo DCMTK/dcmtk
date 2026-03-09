@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -144,6 +144,13 @@ OFBool DSRDocumentSubTree::isExpandedDocumentTree() const
         } while (result && cursor.iterate());
     }
     return result;
+}
+
+
+OFBool DSRDocumentSubTree::hasConstraintChecker() const
+{
+    /* make at least sure that the pointer is not NULL */
+    return (ConstraintChecker != NULL);
 }
 
 
@@ -483,7 +490,7 @@ OFBool DSRDocumentSubTree::canAddContentItem(const E_RelationshipType relationsh
             if (node != NULL)
             {
                 /* do we have an IOD constraint checker? */
-                if (ConstraintChecker != NULL)
+                if (hasConstraintChecker())
                 {
                     if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
                     {
@@ -518,7 +525,7 @@ OFBool DSRDocumentSubTree::canAddByReferenceRelationship(const E_RelationshipTyp
     if ((relationshipType != RT_invalid) && (targetValueType != VT_invalid))
     {
         /* do we have an IOD constraint checker? */
-        if (ConstraintChecker != NULL)
+        if (hasConstraintChecker())
         {
             const DSRDocumentTreeNode *node = getNode();
             if (node != NULL)
@@ -1116,7 +1123,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
     if (!((mode & CM_updatePositionString) && (mode & CM_updateNodeID)))
     {
         /* by-reference relationships are only allowed for particular IODs */
-        if ((ConstraintChecker == NULL) || ConstraintChecker->isByReferenceAllowed())
+        if (!hasConstraintChecker() || ConstraintChecker->isByReferenceAllowed())
         {
             /* specify for all content items not to be the target of a by-reference relationship */
             if (mode & CM_resetReferenceTargetFlag)
@@ -1183,7 +1190,7 @@ OFCondition DSRDocumentSubTree::checkByReferenceRelationships(const size_t mode,
                                             (!(flags & RF_acceptUnknownRelationshipType) || (relationshipType != RT_unknown)))
                                         {
                                             /* check whether relationship is valid */
-                                            if ((ConstraintChecker != NULL) &&
+                                            if (hasConstraintChecker() &&
                                                 !ConstraintChecker->checkContentRelationship(parentNode->getValueType(), relationshipType,
                                                                                              targetNode->getValueType(), OFTrue /*byReference*/))
                                             {

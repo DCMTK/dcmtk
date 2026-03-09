@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2019, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -141,6 +141,13 @@ class DCMTK_DCMSR_EXPORT DSRDocumentSubTree
      ** @return OFTrue if subtree is an expanded document tree, OFFalse otherwise
      */
     virtual OFBool isExpandedDocumentTree() const;
+
+    /** check whether a constraint checker is defined, which ensures that the relationship
+     *  content constraints are respected, e.g.\ according to DICOM PS3.3.  See classes derived
+     *  from DSRIODConstraintChecker for a list of supported constraint checkers.
+     ** @return OFTrue if a constraint checker is defined, OFFalse otherwise
+     */
+    virtual OFBool hasConstraintChecker() const;
 
     /** check whether template identification is set
      ** @return OFTrue if template identification is set, OFFalse otherwise
