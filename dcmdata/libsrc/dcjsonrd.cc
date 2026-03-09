@@ -746,10 +746,11 @@ OFCondition DcmJSONReader::parseElement(
         const size_t length = OFStandard::decodeBase64(value, data);
         DCMDATA_TRACE("parsing inline binary (" << length << "): " << value << " | " << data);
         if (length > 0)
+        {
             result = storeInlineBinaryValue(*newElem, data, length);
-
-        /* delete buffer since data is copied into the element */
-        delete[] data;
+            /* delete buffer since data is copied into the element */
+            delete[] data;
+        }
         if (result.bad())
         {
             if (stopOnErrorPolicy_) return result; else result = EC_Normal;
