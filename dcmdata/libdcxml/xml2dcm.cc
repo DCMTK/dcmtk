@@ -284,7 +284,7 @@ OFCondition DcmXMLParseHelper::putElementContent(
             if (element->getGTag() != 0x0002)
                 result = EC_MissingValue;
         }
-        /* check whether node content is base64 encoded */
+        /* check whether node content is Base64 encoded */
         else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
         {
             Uint8 *data = NULL;
@@ -299,6 +299,11 @@ OFCondition DcmXMLParseHelper::putElementContent(
                 result = element->putUint8Array(data, OFstatic_cast(Uint32, length));
                 /* delete buffer since data is copied into the element */
                 delete[] data;
+            }
+            else if (xmlStrlen(elemVal) > 0)
+            {
+                DCMDATA_WARN("DcmXMLParseHelper: cannot decode Base64 data of node " << element->getTag());
+                result = EC_CorruptedData;
             }
         }
         /* check whether node content is stored in a file */

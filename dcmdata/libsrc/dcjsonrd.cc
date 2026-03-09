@@ -729,10 +729,10 @@ OFCondition DcmJSONReader::parseElement(
         }
     }
 
-    // inlinebinary - content is base64 encoded
+    // inlinebinary - content is Base64 encoded
     else if (valueType == "inlinebinary")
     {
-        // the base64 value has to be a JSON string
+        // the Base64 value has to be a JSON string
         if (valueToken->type != JSMN_STRING)
         {
             DCMDATA_ERROR("not a valid DICOM JSON dataset: InlineBinary value must be a JSON string");
@@ -750,6 +750,11 @@ OFCondition DcmJSONReader::parseElement(
             result = storeInlineBinaryValue(*newElem, data, length);
             /* delete buffer since data is copied into the element */
             delete[] data;
+        }
+        else if (!value.empty())
+        {
+            DCMDATA_ERROR("invalid InlineBinary value: cannot decode Base64 data");
+            result = EC_InvalidJSONContent;
         }
         if (result.bad())
         {
