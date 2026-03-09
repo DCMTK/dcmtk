@@ -758,7 +758,15 @@ OFCondition DcmJSONReader::parseElement(
         }
         if (result.bad())
         {
-            if (stopOnErrorPolicy_) return result; else result = EC_Normal;
+            if (stopOnErrorPolicy_)
+            {
+                delete newElem;
+                return result;
+            }
+            else
+            {
+                result = EC_Normal;
+            }
         }
     }
     else if (valueType == "value")
@@ -791,7 +799,15 @@ OFCondition DcmJSONReader::parseElement(
         }
         if (result.bad())
         {
-            if (stopOnErrorPolicy_) return result; else result = EC_Normal;
+            if (stopOnErrorPolicy_)
+            {
+                delete newElem;
+                return result;
+            }
+            else
+            {
+                result = EC_Normal;
+            }
         }
     }
     else
