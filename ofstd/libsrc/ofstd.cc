@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2025, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1809,7 +1809,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
                                          const size_t width)
 {
     OFStringStream stream;
-    /* call stream variant of base64 encoder */
+    /* call stream variant of Base64 encoder */
     if (OFStandard::encodeBase64(stream, data, length, width).good())
     {
         stream << OFStringStream_ends;
@@ -1889,7 +1889,10 @@ size_t OFStandard::decodeBase64(const OFString &data,
             }
             /* delete buffer if no data has been written to the output */
             if (count == 0)
+            {
                 delete[] result;
+                result = NULL;
+            }
         }
     } else
         result = NULL;

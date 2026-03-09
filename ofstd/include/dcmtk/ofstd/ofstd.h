@@ -720,7 +720,7 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *  even multiple of 3.  A special character ('=') is used to denote padding so that the output
      *  can be decoded back to its exact size.
      *  If the input data is NULL an error code (EC_IllegalParameter) is returned.
-     ** @param out output stream used for the base64 encoded data
+     ** @param out output stream used for the Base64 encoded data
      *  @param data buffer with binary data to be encoded
      *  @param length length of the input data buffer (in bytes)
      *  @param width maximum number of characters per line in the output stream
@@ -759,7 +759,8 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *      and has to to be freed (using "delete[]") by the caller!  Do not pass a pointer to an
      *      already allocated buffer to this function, the caller does not know the exact size anyway.
      ** @param data Base64 encoded input data (possibly padded with '=' at the end)
-     *  @param result receives pointer to resulting buffer with binary data
+     *  @param result receives pointer to resulting buffer with binary data. Set to NULL if an error
+     *    occurred or the input data is empty.
      ** @return length of the resulting binary data (0 if an error occurred, in this case the buffer
      *    is deleted internally)
      */
