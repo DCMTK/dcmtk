@@ -631,7 +631,7 @@ OFCondition DcmJSONReader::parseElement(
                 return EC_InvalidJSONContent;
             }
         }
-        // find the next token in the current hierarchie
+        // find the next token in the current hierarchy
         OFJsmnTokenPtr tmpToken = current;
         while (current->start < tmpToken->end)
             current++;
