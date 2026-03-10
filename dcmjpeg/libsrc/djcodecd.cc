@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2025, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -849,7 +849,8 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
       case 0xffff: // fill byte 0xff (skip one byte only)
         offset += 1;
         break;
-      case 0xff01: // TEM
+      case 0xff01: // TEM: temporary marker
+        offset += 2;
         break;
       default:
         if ((data[offset]==0xff) && (data[offset+1]>2) && (data[offset+1] <= 0xbf)) // RES reserved markers
