@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -375,10 +375,15 @@ DCMTK_DCMDATA_EXPORT unsigned long dcmGuessModalityBytes(const char *sopClassUID
 #define OFFIS_CODING_SCHEME_UID                 OFFIS_CODING_SCHEME_UID_ROOT "." OFFIS_CODING_SCHEME_VERSION
 
 /*
-** Each site should define its own SITE_UID_ROOT
+** Each site should define its own SITE_UID_ROOT.
+**
+** DCMTK may add a maximum of 44 characters to the UID root when generating UIDs.
+** Therefore, the root must not be longer than 20 characters in order to avoid
+** UID truncation.  See "config/docs/macros.txt" for further details.
 */
 #ifndef SITE_UID_ROOT
-/// UID root to be used when generating UIDs. By default uses the DCMTK root, but can be replaced at compile time.
+/// UID root to be used when generating UIDs.
+/// (By default, the DCMTK root is used, but this can be replaced at compile time.)
 #define SITE_UID_ROOT                           OFFIS_UID_ROOT  /* default */
 #endif
 
