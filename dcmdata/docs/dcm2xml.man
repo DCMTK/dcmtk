@@ -255,6 +255,9 @@ length e.g. because of non-significant padding that has been removed.  If this
 attribute is missing in "sequence" or "item" start tags, the corresponding
 DICOM element has been stored with undefined length.
 
+Please note that in contrast to the Native DICOM Model (see next section), the
+byte ordering of Base64 encoded data is big endian.
+
 \section dcm2xml_native_format Native DICOM Model Format
 
 The description of the Native DICOM Model format can be found in the DICOM
@@ -276,7 +279,7 @@ In addition, Supplement 163 (Store Over the Web by Representational State
 Transfer Services) introduces a new \<InlineBinary\> XML element that allows
 for encoding binary data as Base64.  Currently, the command line option
 \e --encode-base64 enables this encoding for the following VRs: OB, OD, OF, OL,
-OV, OW and UN.
+OV, OW and UN.  The byte ordering of Base64 encoded data is little endian.
 
 \subsection dcm2xml_known_issues Known Issues
 
@@ -405,6 +408,6 @@ replace any built-in tables.
 
 \section dcm2xml_copyright COPYRIGHT
 
-Copyright (C) 2002-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -752,16 +752,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
             /* encode binary data as Base64 */
             if (flags & DCMTypes::XF_encodeBase64)
             {
-                const DcmEVR evr = getTag().getEVR();
                 out << "<InlineBinary>";
-                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-                if ((evr == EVR_OW) || (evr == EVR_lt))
-                {
-                    /* Base64 encoder requires big endian input data */
-                    swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint16));
-                    /* update the byte order indicator variable correspondingly */
-                    setByteOrder(EBO_BigEndian);
-                }
+                /* the Native DICOM Model requires little endian byte ordering */
+                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
                 OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
                 out << "</InlineBinary>" << OFendl;
             } else {
@@ -793,14 +786,8 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
             /* encode binary data as Base64 */
             if (flags & DCMTypes::XF_encodeBase64)
             {
-                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-                if ((evr == EVR_OW) || (evr == EVR_lt))
-                {
-                    /* Base64 encoder requires big endian input data */
-                    swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint16));
-                    /* update the byte order indicator variable correspondingly */
-                    setByteOrder(EBO_BigEndian);
-                }
+                /* for Base64 data, we use big endian byte ordering */
+                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_BigEndian));
                 OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
             } else {
                 if ((evr == EVR_OW) || (evr == EVR_lt))

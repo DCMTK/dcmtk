@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -523,7 +523,7 @@ OFCondition DcmElement::getFloat64Array(Float64 * & /*val*/)
 void *DcmElement::getValue(const E_ByteOrder newByteOrder)
 {
     /* initialize return value */
-    Uint8 * value = NULL;
+    Uint8 *value = NULL;
     /* if the byte ordering is unknown, this is an illegal call */
     if (newByteOrder == EBO_unknown)
         errorFlag = EC_IllegalCall;

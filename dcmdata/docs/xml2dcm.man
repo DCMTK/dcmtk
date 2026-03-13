@@ -261,7 +261,8 @@ be specified as the element value, e.g.
 Please note that the contents of the file will be read as is.  OW data is
 expected to be little endian ordered and will be swapped if necessary.  No
 checks will be made to ensure that the amount of data is reasonable in terms
-of other attributes such as Rows or Columns.
+of other attributes such as Rows or Columns.  Base64 encoded data is expected
+to use big endian byte ordering.
 
 (*) Please note that currently only OB and OW data is supported, i.e. element
 values with a VR of OD, OF, OL and OV are not regarded as "binary data" and
@@ -351,6 +352,6 @@ It is an error if no data dictionary can be loaded.
 
 \section xml2dcm_copyright COPYRIGHT
 
-Copyright (C) 2003-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -965,7 +965,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
   protected:
 
     /** This function returns this element's value. The returned value corresponds to the
-     *   byte ordering (little or big endian) that was passed.
+     *  byte ordering (little or big endian) that was passed.
      *  @param newByteOrder The byte ordering that shall be accounted
      *                      for (little or big endian).
      */

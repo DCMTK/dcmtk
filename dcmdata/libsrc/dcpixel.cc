@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2025, OFFIS e.V.
+ *  Copyright (C) 1997-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -410,6 +410,7 @@ OFCondition DcmPixelData::copyFrom(const DcmObject& rhs)
   return EC_Normal;
 }
 
+
 void DcmPixelData::clearRepresentationList(
     DcmRepresentationListIterator leaveInList)
 {
@@ -434,6 +435,7 @@ void DcmPixelData::clearRepresentationList(
             ++it;
     }
 }
+
 
 OFCondition
 DcmPixelData::decode(
@@ -465,7 +467,6 @@ DcmPixelData::decode(
     }
     return l_error;
 }
-
 
 
 OFCondition
@@ -1198,7 +1199,7 @@ OFCondition DcmPixelData::getUncompressedFrame(
 
     // determine the minimum buffer size, which may be frame size plus one pad byte if frame size is odd.
     // We need this extra byte, because the image might be in a different
-    // endianness than our host cpu. In this case the decoder will swap
+    // endianness than our host CPU. In this case the decoder will swap
     // the data to the host byte order which could overflow the buffer.
     Uint32 minBufSize = frameSize;
     if (minBufSize & 1) ++minBufSize;
@@ -1378,25 +1379,25 @@ OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
     // check the current pixel data representation
     if ((current == repListEnd) && existUnencapsulated)
     {
-      // current pixel data representation is uncompressed (and available).
+        // current pixel data representation is uncompressed (and available).
 
-      /* write JSON Opener */
-      writeJsonOpener(out, format);
+        /* write JSON Opener */
+        writeJsonOpener(out, format);
 
-      /* for an empty value field, we do not need to do anything */
-      if (getLengthField() > 0)
-      {
-         /* encode binary data as Base64 */
-         format.printInlineBinaryPrefix(out);
-         out << "\"";
-         /* adjust byte order to little endian */
-         Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
-         OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
-         out << "\"";
-      }
-      /* write JSON Closer */
-      writeJsonCloser(out, format);
-      return EC_Normal;
+        /* for an empty value field, we do not need to do anything */
+        if (getLengthField() > 0)
+        {
+            /* encode binary data as Base64 */
+            format.printInlineBinaryPrefix(out);
+            out << "\"";
+            /* adjust byte order to little endian */
+            Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
+            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
+            out << "\"";
+        }
+        /* write JSON Closer */
+        writeJsonCloser(out, format);
+        return EC_Normal;
     }
 
     /* write JSON Opener and Closer, because otherwise the output is not valid JSON */
@@ -1423,4 +1424,3 @@ Uint16 DcmPixelData::decodedBitsAllocated(
        return DcmCodecList::decodedBitsAllocated((*original)->repType, bitsAllocated, bitsStored);
     }
 }
-

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2025, OFFIS e.V.
+ *  Copyright (C) 2019-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -118,11 +118,8 @@ OFCondition DcmOther64bitVeryLong::writeXML(STD_NAMESPACE ostream &out,
             if (flags & DCMTypes::XF_encodeBase64)
             {
                 out << "<InlineBinary>";
-                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-                /* Base64 encoder requires big endian input data */
-                swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint64));
-                /* update the byte order indicator variable correspondingly */
-                setByteOrder(EBO_BigEndian);
+                /* the Native DICOM Model requires little endian byte ordering */
+                Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue(EBO_LittleEndian));
                 OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
                 out << "</InlineBinary>" << OFendl;
             } else {
