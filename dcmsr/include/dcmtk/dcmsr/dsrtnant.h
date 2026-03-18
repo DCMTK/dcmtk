@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -70,7 +70,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeAnnotation
     }
 
     /** check whether annotations are "equal".
-     *  Two annotations are equal, if the internally stored character strings (text)
+     *  Two annotations are equal, if the internally stored character string (text)
      *  have the same value.
      ** @param  annotation  annotation that should be compared to the current one
      ** @return OFTrue if both annotations are equal, OFFalse otherwise
@@ -81,7 +81,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeAnnotation
     }
 
     /** check whether annotations are "not equal".
-     *  Two annotations are not equal, if the internally stored character strings
+     *  Two annotations are not equal, if the internally stored character string
      *  (text) have different values.
      ** @param  annotation  annotation that should be compared to the current one
      ** @return OFTrue if both annotations are not equal, OFFalse otherwise
@@ -120,7 +120,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeAnnotation
 
   private:
 
-    /// internally stored character strings (text)
+    /// internally stored character string (text)
     OFString Text;
 };
 
