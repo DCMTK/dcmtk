@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2025, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -175,7 +175,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                      selected source character set)
      *  @param  toString    reference to variable where the converted string
      *                      (using the currently selected destination character
-     *                      set) is stored
+     *                      set) is stored.  If an error occurs, the portion of
+     *                      the string that has already been converted is stored.
      *  @param  delimiters  optional string of characters that are regarded as
      *                      delimiters, i.e.\ when found the character set is
      *                      switched back to the default.  CR, LF, FF and HT are
@@ -201,7 +202,8 @@ class DCMTK_DCMDATA_EXPORT DcmSpecificCharacterSet
      *                      the trailing NULL byte)
      *  @param  toString    reference to variable where the converted string
      *                      (using the currently selected destination character
-     *                      set) is stored
+     *                      set) is stored.  If an error occurs, the portion of
+     *                      the string that has already been converted is stored.
      *  @param  delimiters  optional string of characters that are regarded as
      *                      delimiters, i.e.\ when found the character set is
      *                      switched back to the default.  CR, LF, FF and HT are
