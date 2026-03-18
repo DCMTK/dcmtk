@@ -70,7 +70,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeAnnotation
     }
 
     /** check whether annotations are "equal".
-     *  Two annotations are equal, if the internally stored character string (text)
+     *  Two annotations are equal, if the internally stored character strings (text)
      *  have the same value.
      ** @param  annotation  annotation that should be compared to the current one
      ** @return OFTrue if both annotations are equal, OFFalse otherwise
@@ -81,7 +81,7 @@ class DCMTK_DCMSR_EXPORT DSRTreeNodeAnnotation
     }
 
     /** check whether annotations are "not equal".
-     *  Two annotations are not equal, if the internally stored character string
+     *  Two annotations are not equal, if the internally stored character strings
      *  (text) have different values.
      ** @param  annotation  annotation that should be compared to the current one
      ** @return OFTrue if both annotations are not equal, OFFalse otherwise
