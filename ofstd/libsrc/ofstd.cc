@@ -3405,16 +3405,26 @@ void OFStandard::forceSleep(Uint32 seconds)
 }
 
 
+static const char sanitized_filename_charset[] =
+{
+  ' ', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '-', '.', '_',
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '_', '_', '_', '_', '_',
+  '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+  'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '_', '_', '_', '_',
+  '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+  'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', '_', '_', '_', '_'
+};
+
+
 void OFStandard::sanitizeFilename(OFString& fname)
 {
     const size_t len = fname.length();
+    char c;
     for (size_t i = 0; i < len; ++i)
     {
-#ifdef _WIN32
-        if ((fname[i] == PATH_SEPARATOR) || (fname[i] == '/')) fname[i] = '_';
-#else
-        if (fname[i] == PATH_SEPARATOR) fname[i] = '_';
-#endif
+        c = fname[i];
+        if (c != 0 && (c < 32 || c >= 127)) c = '_'; else c = sanitized_filename_charset[c-32];
+        fname[i] = c;
     }
 }
 
@@ -3426,11 +3436,7 @@ void OFStandard::sanitizeFilename(char *fname)
         char *c = fname;
         while (*c)
         {
-#ifdef _WIN32
-            if ((*c == PATH_SEPARATOR) || (*c == '/')) *c = '_';
-#else
-            if (*c == PATH_SEPARATOR) *c = '_';
-#endif
+            if (*c < 32 || *c >= 127) *c = '_'; else *c = sanitized_filename_charset[*c-32];
             ++c;
         }
     }
