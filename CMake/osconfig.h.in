@@ -773,8 +773,12 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* Define if we have OpenSSL with the OSSL_PROVIDER_load() function */
 #cmakedefine HAVE_OPENSSL_PROTOTYPE_OSSL_PROVIDER_LOAD @HAVE_OPENSSL_PROTOTYPE_OSSL_PROVIDER_LOAD@
 
+/* Define if we have OpenSSL with the X509_check_certificate_times() function */
+#cmakedefine HAVE_OPENSSL_PROTOTYPE_X509_CHECK_CERTIFICATE_TIMES @HAVE_OPENSSL_PROTOTYPE_X509_CHECK_CERTIFICATE_TIMES@
+
 /* Define if we have the <openssl/provider.h> header file*/
 #cmakedefine HAVE_OPENSSL_PROVIDER_H @HAVE_OPENSSL_PROVIDER_H@
+
 
 /* Historical C/C++ language features and APIs that are guaranteed by C++98,
  * C99, or POSIX.1-2001 for Posix platforms, or are not used anywhere in DCMTK,
