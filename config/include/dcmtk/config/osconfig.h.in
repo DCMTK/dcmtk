@@ -405,6 +405,10 @@ typedef unsigned short ushort;
    <openssl/ts.h>. */
 #undef HAVE_OPENSSL_PROTOTYPE_TS_VERIFY_CTX_SET0_STORE
 
+/* Define if OpenSSL provides a prototype for X509_CHECK_CERTIFICATE_TIMES in
+   <openssl/x509.h>. */
+#undef HAVE_OPENSSL_PROTOTYPE_X509_CHECK_CERTIFICATE_TIMES
+
 /* Define to 1 if you have the <openssl/provider.h> header file. */
 #undef HAVE_OPENSSL_PROVIDER_H
 
