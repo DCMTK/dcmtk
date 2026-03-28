@@ -217,6 +217,14 @@ void DcmJSONReader::getTokenContent(OFString& value, OFJsmnTokenPtr t)
 {
     int size = t->end - t->start;
 
+    // prevent out-of bounds access
+    if (t->start < 0 || t->end < 0 || t->start + size < 0 ||
+        OFstatic_cast(size_t, (t->start + size)) >= jsonDatasetLen_)
+    {
+        value = "";
+        return;
+    }
+
     // remember the character immediately following the token
     char c = jsonDataset_[t->start+size];
 
