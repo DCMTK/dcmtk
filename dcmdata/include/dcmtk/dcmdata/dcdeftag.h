@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2026-02-06 11:29:28
+**   Date: 2026-03-28 10:30:01
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2026-02-06 11:29:28"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2026-03-28 10:30:01"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5272
+** Number of entries: 5275
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1574,6 +1574,9 @@
 #define DCM_MaterialAttenuationSequence          DcmTagKey(0x0018, 0x9382)
 #define DCM_PhotonEnergy                         DcmTagKey(0x0018, 0x9383)
 #define DCM_XRayMassAttenuationCoefficient       DcmTagKey(0x0018, 0x9384)
+#define DCM_MetalArtifactReductionSequence       DcmTagKey(0x0018, 0x9390)
+#define DCM_MetalArtifactReductionApplied        DcmTagKey(0x0018, 0x9391)
+#define DCM_MetalArtifactReductionAlgorithmIdentificationSequence DcmTagKey(0x0018, 0x9392)
 #define DCM_ProjectionPixelCalibrationSequence   DcmTagKey(0x0018, 0x9401)
 #define DCM_DistanceSourceToIsocenter            DcmTagKey(0x0018, 0x9402)
 #define DCM_DistanceObjectToTableTop             DcmTagKey(0x0018, 0x9403)
