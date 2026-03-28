@@ -5,8 +5,8 @@
  *
  *  Header file with NCI Thesaurus Code Definitions (Coding Scheme "NCIt")
  *
- *  Generated automatically from DICOM PS 3.16-2026a
- *  File created on 2026-02-06 11:37:31 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026b
+ *  File created on 2026-03-28 10:26:39 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 61
+// total number of codes: 63
 // - retired: 0
 // - no name: 0
 // - not unique: 0
@@ -60,6 +60,8 @@
 #define CODE_NCIt_Pembrolizumab_89Zr                                       DSRBasicCodedEntry("C148167", "NCIt", "Pembrolizumab ^89^Zr")
 #define CODE_NCIt_SoftTissueSarcoma_excludingRhabdomyosarcoma              DSRBasicCodedEntry("C148457", "NCIt", "Soft tissue sarcoma, excluding rhabdomyosarcoma")
 #define CODE_NCIt_Cryoablation                                             DSRBasicCodedEntry("C15215", "NCIt", "Cryoablation")
+#define CODE_NCIt_NonTumorTissue                                           DSRBasicCodedEntry("C166238", "NCIt", "Non-tumor tissue")
+#define CODE_NCIt_TumorTissue                                              DSRBasicCodedEntry("C166240", "NCIt", "Tumor tissue")
 #define CODE_NCIt_PAXgeneTissueSystem                                      DSRBasicCodedEntry("C185113", "NCIt", "PAXgene Tissue System")
 #define CODE_NCIt_166Holmium                                               DSRBasicCodedEntry("C1943", "NCIt", "^166^Holmium")
 #define CODE_NCIt_MouseMammaryFatPad                                       DSRBasicCodedEntry("C22550", "NCIt", "Mouse mammary fat pad")
