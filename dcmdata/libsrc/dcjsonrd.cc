@@ -197,7 +197,7 @@ OFCondition DcmJSONReader::reserveTokens()
     }
 
     // initialize token array with zeroes
-    memset(tokenArray_, 0, tokenNum * sizeof(OFJsmnToken));
+    memset(tokenArray_, 0, (tokenNum+1) * sizeof(OFJsmnToken));
 
     // fill dummy token at the end of the array with values
     // that allow the loop in parseElement() to reliably terminate
