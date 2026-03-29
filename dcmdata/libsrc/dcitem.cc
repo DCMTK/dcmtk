@@ -3265,6 +3265,46 @@ OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
     return status;
 }
 
+OFCondition DcmItem::findAndDeletePrivateElement(const DcmTag &privTag,
+                                                 const OFBool allOccurrences,
+                                                 const OFBool searchIntoSub)
+{
+    OFCondition status = EC_TagNotFound;
+    DcmStack stack;
+    DcmObject *object = NULL;
+    OFBool intoSub = OFTrue;
+    /* make sure private tag */
+    if( !privTag.isPrivate() || privTag.getPrivateCreator() == NULL || privTag.getElement() >= 0x1000)
+      return status;
+    DcmTagKey curTag;
+    /* iterate over all elements */
+    while (nextObject(stack, intoSub).good())
+    {
+        /* get element */
+        object = stack.top();
+        curTag = object->getTag();
+        if (curTag.getGroup() == privTag.getGroup() && (curTag.getElement() > 0 && curTag.getElement() <= 0xff)) {
+          DcmElement *elem;
+          elem = OFstatic_cast(DcmElement *, stack.top());
+          OFString value;
+          if (elem->getOFStringArray(value).good()) {
+            if (value.compare(privTag.getPrivateCreator()) == 0) {
+              const Uint16 actualElement = OFstatic_cast(
+                  Uint16, (curTag.getElement() << 8) | privTag.getElement());
+              const DcmTagKey tagKey(curTag.getGroup(), actualElement);
+              status = findAndDeleteElement(tagKey, allOccurrences, searchIntoSub);
+              /* delete only the first element? */
+              if (!allOccurrences)
+                  break;
+            }
+          }
+        }
+        intoSub = searchIntoSub || allOccurrences;
+    }
+    return status;
+}
+
+
 
 OFCondition DcmItem::findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
                                                const signed long itemNum)
