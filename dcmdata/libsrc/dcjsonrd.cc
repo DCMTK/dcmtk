@@ -36,6 +36,11 @@
 #include <windows.h>
 #endif
 
+BEGIN_EXTERN_C
+#include <sys/stat.h>
+#include <fcntl.h>
+END_EXTERN_C
+
 // Private creator identification string for files
 // containing a list of datasets as a private sequence
 #define JSON2DCM_PRIVATE_RESERVATION "JSON2DCM_LIST_OF_DATASETS"
@@ -1590,7 +1595,23 @@ OFCondition DcmJSONReader::loadBulkdataFile(
 {
     // open file for reading
     OFFile file;
+#ifdef _WIN32
     if (! file.fopen(filepath, "rb"))
+#else
+    // On Posix systems, use O_NOFOLLOW to prevent a race condition
+    // between the call to realpath() and this call that might allow
+    // a malicious attacker to replace the input directory with
+    // a symbolic link pointing somewhere else, thus causing a file
+    // outside the permitted path to be read. Since realpath()
+    // resolves all symbolic links, an error caused by O_NOFOLLOW
+    // can only occur in this situation.
+    int fd = open(filepath.c_str(), O_RDONLY | O_NOFOLLOW);
+    if (fd < 0)
+    {
+        return EC_InvalidFilename;
+    }
+    if (! file.fdopen(fd, "rb"))
+#endif
     {
         OFString s("(unknown error code)");
         file.getLastErrorString(s);
