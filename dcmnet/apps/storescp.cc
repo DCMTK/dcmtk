@@ -1051,8 +1051,8 @@ int main(int argc, char *argv[])
      */
     if (numChildren == opt_maxChildren)
     {
-        OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for child process to terminate");
-        while (numChildren == opt_maxChildren)
+        OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for current batch of child processes to terminate");
+        for (size_t i = 0; i < opt_maxChildren; i++)
         {
             cleanChildren(-1, OFTrue);
         }
@@ -2619,7 +2619,7 @@ static void executeCommand( const OFString &cmd )
      * and then clean up the process to avoid interference with the
      * counter that counts the number of child process in the main process
      */
-    cleanChildren(pid, opt_execSync || opt_forkMode);
+    cleanChildren(pid, opt_execSync);
   }
   else // in case we are the child process, execute the command etc.
   {
