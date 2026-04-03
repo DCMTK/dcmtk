@@ -21,6 +21,16 @@ set(DCMTK_MODULES ofstd oflog oficonv dcmdata dcmimgle
   dcmseg dcmtract dcmpmap dcmect dcmapps
   CACHE STRING "List of modules that should be built.")
 
+set(DCMTK_EXTERNAL_MODULES "" CACHE STRING
+  "List of external modules to build alongside DCMTK. Each entry must be an \
+absolute path to a directory that follows the standard DCMTK module layout: \
+it must contain a CMakeLists.txt at its root and an include/ subdirectory. \
+The module is added to the build via add_subdirectory() and its include/ \
+directory is appended to DCMTK_INCLUDE_DIRS, both in the build tree and in \
+the generated DCMTKConfig.cmake. Unlike DCMTK_MODULES, these paths are not \
+relative to the DCMTK source tree, so the module source can reside anywhere \
+on the filesystem.")
+
 # Provide an interface target to elegantly include the config directory
 add_library(config INTERFACE)
 target_include_directories(config INTERFACE
@@ -33,6 +43,9 @@ install(TARGETS config EXPORT DCMTKTargets)
 set(DCMTK_INCLUDE_DIR "${DCMTK_BINARY_DIR}/config/include")
 foreach(inc ${DCMTK_MODULES})
   list(APPEND DCMTK_INCLUDE_DIR "${DCMTK_SOURCE_DIR}/${inc}/include")
+endforeach()
+foreach(inc ${DCMTK_EXTERNAL_MODULES})
+  list(APPEND DCMTK_INCLUDE_DIR "${inc}/include")
 endforeach()
 
 include_directories(${DCMTK_INCLUDE_DIR})
@@ -80,6 +93,10 @@ add_custom_target("test-exhaustive"
 # Recurse into subdirectories
 foreach(module config doxygen ${DCMTK_MODULES})
   add_subdirectory(${module})
+endforeach()
+foreach(module ${DCMTK_EXTERNAL_MODULES})
+  get_filename_component(_module_name "${module}" NAME)
+  add_subdirectory("${module}" "${CMAKE_CURRENT_BINARY_DIR}/${_module_name}")
 endforeach()
 include(CMake/dcmtkAfterModules.cmake NO_POLICY_SCOPE)
 
