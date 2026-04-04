@@ -248,13 +248,13 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
         return ((bits < 1) || (bits > MAX_BITS)) ? BitsPerSample : bits;
     }
 
-    /** gets the pixel representation (signed or unsigned)
+    /** check whether the pixel representation is signed or unsigned
      *
-     ** @return true if pixel representation is signed
+     ** @return true if the pixel representation is signed, false otherwise
      */
-    virtual int getSignedRepresentation() const
+    virtual int hasSignedRepresentation() const
     {
-        return hasSignedRepresentation;
+        return hasSignedPixelRepresentation;
     }
 
     /** get color model of internal pixel representation.
@@ -654,7 +654,7 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
     EP_Polarity Polarity;
 
     /// is 'true' if pixel data is signed
-    int hasSignedRepresentation;
+    int hasSignedPixelRepresentation;
     /// is 'true' if attribute 'PixelSpacing' is present
     int hasPixelSpacing;
     /// is 'true' if attribute 'ImagerPixelSpacing' is present

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2024, OFFIS e.V.
+ *  Copyright (C) 2024-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -171,7 +171,7 @@ static int compressJPEGLSLossless(
     }
 
     // reject signed pixel values since JPEG-LS only supports unsigned
-    if (dimage->getSignedRepresentation())
+    if (dimage->hasSignedRepresentation())
     {
         DCMJPLS_WARN("cannot compress image with signed representation using the 'true lossless' JPEG-LS encoder");
         return 0;
