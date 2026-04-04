@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2021, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -246,6 +246,15 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
     virtual int getBits(const int bits = 0) const
     {
         return ((bits < 1) || (bits > MAX_BITS)) ? BitsPerSample : bits;
+    }
+
+    /** gets the pixel representation (signed or unsigned)
+     *
+     ** @return true if pixel representation is signed
+     */
+    virtual int getSignedRepresentation() const
+    {
+        return hasSignedRepresentation;
     }
 
     /** get color model of internal pixel representation.
@@ -525,7 +534,6 @@ class DCMTK_DCMIMGLE_EXPORT DiImage
     virtual int writeBMP(FILE *stream,
                          const unsigned long frame,
                          const int bits);
-
 
  protected:
 

@@ -143,7 +143,7 @@ static int compressJPEGLSRendered(
         return 0;
     }
 
-    int result = createAndWriteJPLS(dimage->getRows(), dimage->getColumns(), 
+    int result = createAndWriteJPLS(dimage->getRows(), dimage->getColumns(),
         out_depth, samplesPerPixel, data_size, data, stream);
     dimage->deleteOutputData();
     return result;
@@ -164,9 +164,16 @@ static int compressJPEGLSLossless(
     int width = dimage->getColumns();
     int height = dimage->getRows();
     int depth = dimage->getBits();
-    if ((depth < 1) || (depth > 16)) 
+    if ((depth < 1) || (depth > 16))
     {
         DCMJPLS_WARN("cannot compress image with " << depth << " bits/sample: JPEG-LS supports max. 16 bits");
+        return 0;
+    }
+
+    // reject signed pixel values since JPEG-LS only supports unsigned
+    if (dimage->getSignedRepresentation())
+    {
+        DCMJPLS_WARN("cannot compress image with signed representation using the 'true lossless' JPEG-LS encoder");
         return 0;
     }
 
@@ -207,32 +214,41 @@ static int compressJPEGLSLossless(
         case EPR_Uint8:
         case EPR_Sint8:
           {
+              Uint8 mask = 0xFF >> (8-depth);
               // image representation is 8 bit signed or unsigned
               if (samplesPerPixel == 1)
               {
                   const Uint8 *yv = OFreinterpret_cast(const Uint8 *, planes[0]) + framesize * frame;
                   buffer_size = framesize;
                   buffer = new Uint8[buffer_size];
-                  memcpy(buffer, yv, framesize);
+                  size_t i = 0;
+                  for (int row=height; row; --row)
+                  {
+                      for (int col=width; col; --col)
+                      {
+                          buffer[i++] = *yv & mask;
+                          yv++;
+                      }
+                  }
               }
               else
               {
                   const Uint8 *rv = OFreinterpret_cast(const Uint8 *, planes[0]) + framesize * frame;
                   const Uint8 *gv = OFreinterpret_cast(const Uint8 *, planes[1]) + framesize * frame;
                   const Uint8 *bv = OFreinterpret_cast(const Uint8 *, planes[2]) + framesize * frame;
-                
+
                   buffer_size = framesize * 3;
                   buffer = new Uint8[buffer_size];
-                
+
                   size_t i = 0;
                   for (int row=height; row; --row)
                   {
                       for (int col=width; col; --col)
                       {
-                          buffer[i++] = *rv;
-                          buffer[i++] = *gv;
-                          buffer[i++] = *bv;
-                        
+                          buffer[i++] = *rv & mask;
+                          buffer[i++] = *gv & mask;
+                          buffer[i++] = *bv & mask;
+
                           rv++;
                           gv++;
                           bv++;
@@ -245,35 +261,49 @@ static int compressJPEGLSLossless(
         case EPR_Sint16:
           {
               // image representation is 16 bit signed or unsigned
+              Uint16 mask = 0xFFFF >> (16-depth);
               if (samplesPerPixel == 1)
               {
                   const Uint16 *yv = OFreinterpret_cast(const Uint16 *, planes[0]) + framesize * frame;
-                  buffer_size = framesize*sizeof(Uint16);
-                  buffer = new Uint8[buffer_size];
-                  memcpy(buffer, yv, buffer_size);
+                  buffer_size = framesize;
+                  Uint16 *buffer16 = new Uint16[buffer_size];
+                  buffer = OFreinterpret_cast(Uint8 *, buffer16);
+
+                  // Convert to byte count
+                  buffer_size *= 2;
+
+                  size_t i = 0;
+                  for (int row=height; row; --row)
+                  {
+                      for (int col=width; col; --col)
+                      {
+                          buffer16[i++] = *yv & mask;
+                          yv++;
+                      }
+                  }
               }
               else
               {
                   const Uint16 *rv = OFreinterpret_cast(const Uint16 *, planes[0]) + framesize * frame;
                   const Uint16 *gv = OFreinterpret_cast(const Uint16 *, planes[1]) + framesize * frame;
                   const Uint16 *bv = OFreinterpret_cast(const Uint16 *, planes[2]) + framesize * frame;
-              
+
                   buffer_size = framesize * 3;
                   Uint16 *buffer16 = new Uint16[buffer_size];
                   buffer = OFreinterpret_cast(Uint8 *, buffer16);
-              
+
                   // Convert to byte count
                   buffer_size *= 2;
-              
+
                   size_t i = 0;
                   for (int row=height; row; --row)
                   {
                       for (int col=width; col; --col)
                       {
-                          buffer16[i++] = *rv;
-                          buffer16[i++] = *gv;
-                          buffer16[i++] = *bv;
-                        
+                          buffer16[i++] = *rv & mask;
+                          buffer16[i++] = *gv & mask;
+                          buffer16[i++] = *bv & mask;
+
                           rv++;
                           gv++;
                           bv++;
