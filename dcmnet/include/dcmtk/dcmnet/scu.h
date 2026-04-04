@@ -860,6 +860,17 @@ public:
      */
     void setProgressNotificationMode(const OFBool mode);
 
+    /** Set the maximum permitted sequence nesting depth for parsing
+     *  datasets received over the network. This limit is applied to
+     *  each dataset received via receiveDIMSEDataset().
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_SEQUENCE_NESTING)
+     *  - Value -1: disable the check (allow unlimited nesting)
+     *  - Value > 0: use this value as the maximum nesting depth
+     *  @param maxDepth maximum nesting depth setting
+     */
+    void setMaxNestingDepth(const Sint32 maxDepth);
+
     /* Get methods */
 
     /** Get current connection status
@@ -951,6 +962,14 @@ public:
      *  @return The current progress notification mode, enabled if OFTrue
      */
     OFBool getProgressNotificationMode() const;
+
+    /** Return the maximum permitted sequence nesting depth for
+     *  parsing datasets received over the network.
+     *  @return maximum nesting depth setting
+     *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING,
+     *    -1 = unlimited)
+     */
+    Sint32 getMaxNestingDepth() const;
 
     /** Returns whether SCU is configured to create a TLS connection with the SCP
      *  @return OFTrue if TLS mode has been enabled, OFFalse otherwise
@@ -1256,6 +1275,11 @@ private:
 
     /// Progress notification mode (default: enabled)
     OFBool m_progressNotificationMode;
+
+    /// Maximum sequence nesting depth for parsing received datasets
+    /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING,
+    /// -1 = unlimited)
+    Sint32 m_maxNestingDepth;
 
     /// Flag indicating whether secure mode has been enabled (default: disabled)
     OFBool m_secureConnectionEnabled;

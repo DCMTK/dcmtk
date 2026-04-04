@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2010, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,8 @@ DcmInputStream::DcmInputStream(DcmProducer *initial)
 , compressionFilter_(NULL)
 , tell_(0)
 , mark_(0)
+, nestingDepth_(0)
+, maxNestingDepth_(0)
 {
 }
 
@@ -92,6 +94,32 @@ void DcmInputStream::putback()
 const DcmProducer *DcmInputStream::currentProducer() const
 {
   return current_;
+}
+
+Uint32 DcmInputStream::nestingDepth() const
+{
+  return nestingDepth_;
+}
+
+Uint32 DcmInputStream::incrementNestingDepth()
+{
+  return ++nestingDepth_;
+}
+
+void DcmInputStream::decrementNestingDepth()
+{
+  if (nestingDepth_ > 0)
+    --nestingDepth_;
+}
+
+Sint32 DcmInputStream::maxNestingDepth() const
+{
+  return maxNestingDepth_;
+}
+
+void DcmInputStream::setMaxNestingDepth(Sint32 maxDepth)
+{
+  maxNestingDepth_ = maxDepth;
 }
 
 OFCondition DcmInputStream::installCompressionFilter(E_StreamCompression filterType)

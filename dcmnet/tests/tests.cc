@@ -56,6 +56,11 @@ OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_retrieves_all_attributes_when_list_is
 OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_retrieves_only_requested_attributes);
 OFTEST_REGISTER(dcmnet_scu_sendNGETRequest_sets_error_status_for_nonexistent_instance);
 
+OFTEST_REGISTER(dcmnet_scp_maxNestingDepth_getset);
+OFTEST_REGISTER(dcmnet_scu_maxNestingDepth_getset);
+OFTEST_REGISTER(dcmnet_scp_maxNestingDepth_rejects_deep);
+OFTEST_REGISTER(dcmnet_scp_maxNestingDepth_accepts_shallow);
+
 #endif // WITH_THREADS
 
 OFTEST_MAIN("dcmnet")

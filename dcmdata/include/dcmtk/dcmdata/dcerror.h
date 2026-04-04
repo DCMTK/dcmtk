@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -200,6 +200,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_BulkDataURINotSupported;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnsupportedURIType;
 /// Execution of command line failed
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CommandLineFailed;
+/// Maximum sequence nesting depth exceeded (stack overflow protection)
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_NestingDepthLimitExceeded;
 
 ///@}
 

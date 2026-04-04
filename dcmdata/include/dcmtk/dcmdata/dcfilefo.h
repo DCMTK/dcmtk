@@ -520,6 +520,35 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
 
     /// implementation version name to write in the meta-header
     OFString ImplementationVersionName;
+
+    /// maximum sequence nesting depth for parsing
+    /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
+    Sint32 MaxNestingDepth;
+
+  public:
+
+    /** set the maximum permitted sequence nesting depth for parsing.
+     *  Applied to the input stream in loadFile() and read(), and also
+     *  forwarded to the contained dataset.
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_SEQUENCE_NESTING, default is 64)
+     *  - Value -1: disable the check (allow unlimited nesting)
+     *  - Value > 0: use this value as the maximum permitted nesting depth
+     *  @param maxDepth maximum nesting depth setting
+     */
+    void setMaxNestingDepth(Sint32 maxDepth)
+    {
+        MaxNestingDepth = maxDepth;
+        DcmDataset* dset = getDataset();
+        if (dset)
+            dset->setMaxNestingDepth(maxDepth);
+    }
+
+    /** return the maximum permitted sequence nesting depth for parsing.
+     *  @return maximum nesting depth setting
+     *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
+     */
+    Sint32 getMaxNestingDepth() const { return MaxNestingDepth; }
 };
 
 

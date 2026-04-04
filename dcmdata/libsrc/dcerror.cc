@@ -91,6 +91,7 @@ makeOFConditionConst(EC_InvalidJSONContent,              OFM_dcmdata, 65, OF_err
 makeOFConditionConst(EC_BulkDataURINotSupported,         OFM_dcmdata, 66, OF_error, "BulkDataURI not yet supported"              );
 makeOFConditionConst(EC_UnsupportedURIType,              OFM_dcmdata, 67, OF_error, "Unsupported URI type"                       );
 makeOFConditionConst(EC_CommandLineFailed,               OFM_dcmdata, 68, OF_error, "Execution of command line failed"           );
+makeOFConditionConst(EC_NestingDepthLimitExceeded,       OFM_dcmdata, 69, OF_error, "Maximum sequence nesting depth exceeded"    );
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;
 const unsigned short EC_CODE_CannotConvertCharacterSet    = 36;

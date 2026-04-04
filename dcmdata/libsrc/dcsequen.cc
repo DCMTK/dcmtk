@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2023, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -710,6 +710,23 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
         errorFlag = EC_IllegalCall;
     else
     {
+        const Uint32 depth = inStream.incrementNestingDepth();
+        const Sint32 maxDepthSetting = inStream.maxNestingDepth();
+        /* -1 = unlimited; 0 = use built-in default (DCMTK_MAX_SEQUENCE_NESTING); > 0 = custom limit */
+        const Uint32 effectiveMax = (maxDepthSetting == 0) ? DCMTK_MAX_SEQUENCE_NESTING
+                                  : (maxDepthSetting < 0)  ? 0   /* unlimited */
+                                  : OFstatic_cast(Uint32, maxDepthSetting);
+        if (effectiveMax > 0 && depth > effectiveMax)
+        {
+            DCMDATA_ERROR("DcmSequenceOfItems: Maximum nesting depth (" << effectiveMax
+                << ") exceeded while parsing sequence " << getTagName() << " " << getTag());
+            inStream.decrementNestingDepth();
+            errorFlag = EC_NestingDepthLimitExceeded;
+            // dump information if required
+            DCMDATA_TRACE("DcmSequenceOfItems::read() returns error = " << errorFlag.text());
+            return errorFlag;
+        }
+
         errorFlag = inStream.status();
 
         if (errorFlag.good() && inStream.eos())
@@ -779,6 +796,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
             errorFlag = EC_Normal;
         if (errorFlag.good())
             setTransferState(ERW_ready);      // sequence is complete
+        inStream.decrementNestingDepth();
     }
     // dump information if required
     DCMDATA_TRACE("DcmSequenceOfItems::read() returns error = " << errorFlag.text());

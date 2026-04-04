@@ -54,7 +54,8 @@ DcmFileFormat::DcmFileFormat()
   : DcmSequenceOfItems(DCM_InternalUseTag),
     FileReadMode(ERM_autoDetect),
     ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
-    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
+    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME),
+    MaxNestingDepth(0)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -71,7 +72,8 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
   : DcmSequenceOfItems(DCM_InternalUseTag),
     FileReadMode(ERM_autoDetect),
     ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
-    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME)
+    ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME),
+    MaxNestingDepth(0)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     if (DcmSequenceOfItems::itemList->insert(MetaInfo))
@@ -105,7 +107,8 @@ DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
   : DcmSequenceOfItems(old),
     FileReadMode(old.FileReadMode),
     ImplementationClassUID(old.ImplementationClassUID),
-    ImplementationVersionName(old.ImplementationVersionName)
+    ImplementationVersionName(old.ImplementationVersionName),
+    MaxNestingDepth(old.MaxNestingDepth)
 {
 }
 
@@ -134,6 +137,7 @@ DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
         FileReadMode = obj.FileReadMode;
         ImplementationClassUID = obj.ImplementationClassUID;
         ImplementationVersionName = obj.ImplementationVersionName;
+        MaxNestingDepth = obj.MaxNestingDepth;
     }
     return *this;
 }
@@ -962,6 +966,9 @@ OFCondition DcmFileFormat::loadFileUntilTag(
         {
             /* use stdin stream */
             DcmStdinStream inStream;
+            /* apply configured nesting depth limit */
+            if (MaxNestingDepth != 0)
+                inStream.setMaxNestingDepth(MaxNestingDepth);
 
             /* clear this object */
             l_error = clear();
@@ -992,6 +999,9 @@ OFCondition DcmFileFormat::loadFileUntilTag(
         } else {
             /* open file for output */
             DcmInputFileStream fileStream(fileName);
+            /* apply configured nesting depth limit */
+            if (MaxNestingDepth > 0)
+                fileStream.setMaxNestingDepth(MaxNestingDepth);
 
             /* check stream status */
             l_error = fileStream.status();

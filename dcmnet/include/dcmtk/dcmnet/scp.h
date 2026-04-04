@@ -360,6 +360,17 @@ public:
      */
     void setAlwaysAcceptDefaultRole(const OFBool enabled);
 
+    /** Set the maximum permitted sequence nesting depth for parsing
+     *  datasets received over the network. This limit is applied to
+     *  each dataset received via receiveDIMSEDataset().
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_SEQUENCE_NESTING)
+     *  - Value -1: disable the check (allow unlimited nesting)
+     *  - Value > 0: use this value as the maximum nesting depth
+     *  @param maxDepth maximum nesting depth setting
+     */
+    void setMaxNestingDepth(const Sint32 maxDepth);
+
     /* Get methods for SCP settings */
 
     /** Returns TCP/IP port number SCP listens for new connection requests
@@ -433,6 +444,14 @@ public:
      *  @return The current progress notification mode, enabled if OFTrue
      */
     OFBool getProgressNotificationMode() const;
+
+    /** Return the maximum permitted sequence nesting depth for
+     *  parsing datasets received over the network.
+     *  @return maximum nesting depth setting
+     *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING,
+     *    -1 = unlimited)
+     */
+    Sint32 getMaxNestingDepth() const;
 
     /** Get access to the configuration of the SCP. Note that the functionality
      *  on the configuration object is shadowed by other API functions of DcmSCP.
@@ -1193,6 +1212,11 @@ private:
     /// might like to share a single configuration instance with multiple SCPs without copying
     /// it, e.g. in the context of the DcmSCPPool class.
     DcmSharedSCPConfig m_cfg;
+
+    /// Maximum sequence nesting depth for parsing received datasets
+    /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING,
+    /// -1 = unlimited)
+    Sint32 m_maxNestingDepth;
 
     /** Drops association and clears internal structures to free memory
      */

@@ -32,6 +32,7 @@ DcmSCP::DcmSCP()
 : m_network(NULL)
 , m_assoc(NULL)
 , m_cfg()
+, m_maxNestingDepth(0)
 {
     OFStandard::initializeNetwork();
 }
@@ -1672,6 +1673,19 @@ OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID* presID, Dcm
     if (m_assoc == NULL)
         return DIMSE_ILLEGALASSOCIATION;
 
+    /* if a custom nesting depth limit is configured, pre-allocate
+     * the dataset and apply the setting before parsing starts.
+     * DIMSE_receiveDataSetInMemory() will use this dataset instead
+     * of creating a new one internally. */
+    OFBool weAllocated = OFFalse;
+    if (dataObject != NULL && *dataObject == NULL
+        && m_maxNestingDepth != 0)
+    {
+        *dataObject = new DcmDataset();
+        (*dataObject)->setMaxNestingDepth(m_maxNestingDepth);
+        weAllocated = OFTrue;
+    }
+
     OFCondition cond;
     /* call the corresponding DIMSE function to receive the dataset */
     if (m_cfg->getProgressNotificationMode())
@@ -1701,6 +1715,14 @@ OFCondition DcmSCP::receiveDIMSEDataset(T_ASC_PresentationContextID* presID, Dcm
     }
     else
     {
+        /* if we pre-allocated the dataset, clean up on error since
+         * DIMSE_receiveDataSetInMemory() won't delete a dataset
+         * that was passed in by the caller */
+        if (weAllocated && dataObject != NULL)
+        {
+            delete *dataObject;
+            *dataObject = NULL;
+        }
         OFString tempStr;
         DCMNET_ERROR("Unable to receive dataset on presentation context "
                      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
@@ -1992,6 +2014,13 @@ void DcmSCP::setAlwaysAcceptDefaultRole(const OFBool enabled)
 
 // ----------------------------------------------------------------------------
 
+void DcmSCP::setMaxNestingDepth(const Sint32 maxDepth)
+{
+    m_maxNestingDepth = maxDepth;
+}
+
+// ----------------------------------------------------------------------------
+
 /* Get methods for SCP settings and current association information */
 
 OFBool DcmSCP::getRefuseAssociation() const
@@ -2081,6 +2110,13 @@ OFBool DcmSCP::getHostLookupEnabled() const
 OFBool DcmSCP::getProgressNotificationMode() const
 {
     return m_cfg->getProgressNotificationMode();
+}
+
+// ----------------------------------------------------------------------------
+
+Sint32 DcmSCP::getMaxNestingDepth() const
+{
+    return m_maxNestingDepth;
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2025 OFFIS e.V.
+ *  Copyright (C) 2011-2026 OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -127,5 +127,12 @@ OFTEST_REGISTER(dcmdata_xferLookup_3);
 OFTEST_REGISTER(dcmdata_xferLookup_4);
 OFTEST_REGISTER(dcmdata_putOFStringAtPos);
 OFTEST_REGISTER(dcmdata_uncompressedFrameSize);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_exceeded);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_atLimit);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_wellBelow);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_customLimit);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_disabled);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_datasetAPI);
+OFTEST_REGISTER(dcmdata_nestingDepthLimit_fileFormatAPI);
 
 OFTEST_MAIN("dcmdata")

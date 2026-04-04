@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1536,7 +1536,8 @@ DIMSE_receiveDataSetInMemory(
         dset = *dataObject;
     }
 
-    /* check if there is still no DcmDataset object which can be used to store the data set. */
+    /* check if there is still no DcmDataset object (i.e. if allocation fails) */
+    /* which can be used to store the data set. */
     if (dset == NULL)
     {
         /* if this is the case, just go ahead an receive data, but do not store it anywhere */

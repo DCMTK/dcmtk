@@ -109,6 +109,21 @@ DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
     dcmtk::log4cplus::threadCleanup() should be called by the user code in
     order to clean-up oflog's thread local storage.
 
+DCMTK_MAX_SEQUENCE_NESTING
+  Affected: dcmdata
+  Type of modification: Compile-time tunable
+  Explanation: Defines the default maximum permitted sequence nesting depth
+    during DICOM parsing.  Deeply nested sequences can cause a stack overflow
+    by exhausting the call stack through unbounded recursion.  When this macro
+    is not defined, the default limit of 64 nested sequence levels is used.
+    Real-world DICOM data rarely exceeds 5-10 nesting levels.  The limit can
+    be changed at runtime per parse operation via
+    DcmInputStream::setMaxNestingDepth(), DcmItem::setMaxNestingDepth(), or
+    DcmFileFormat::setMaxNestingDepth().  Setting the runtime value to -1
+    disables the check entirely.
+    Minimum value: 1.  Values less than 1 cause a compile-time error.
+    Maximum value: 2147483647 (aligned to 32-bit signed integer runtime API).
+
 DCMTK_MERGE_STDERR_TO_STDOUT
   Affected: dcmdata
   Type of modification: Activates feature

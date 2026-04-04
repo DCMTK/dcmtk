@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1573,6 +1573,29 @@ class DCMTK_DCMDATA_EXPORT DcmItem
 
     /// cache for private creator tags and identifiers
     DcmPrivateTagCache privateCreatorCache;
+
+    /// maximum sequence nesting depth for parsing
+    /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
+    Sint32 maxNestingDepth;
+
+  public:
+
+    /** set the maximum permitted sequence nesting depth for parsing.
+     *  This limit is applied to the input stream before parsing in
+     *  loadFile() and read().
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_SEQUENCE_NESTING, default is 64)
+     *  - Value -1: disable the check (allow unlimited nesting)
+     *  - Value > 0: use this value as the maximum permitted nesting depth
+     *  @param maxDepth maximum nesting depth setting
+     */
+    void setMaxNestingDepth(Sint32 maxDepth) { maxNestingDepth = maxDepth; }
+
+    /** return the maximum permitted sequence nesting depth for parsing.
+     *  @return maximum nesting depth setting
+     *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
+     */
+    Sint32 getMaxNestingDepth() const { return maxNestingDepth; }
 };
 
 /** Checks whether left hand side item is smaller than right hand side

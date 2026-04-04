@@ -67,6 +67,7 @@ DcmSCU::DcmSCU()
     , m_verbosePCMode(OFFalse)
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
+    , m_maxNestingDepth(0)
     , m_secureConnectionEnabled(OFFalse)
     , m_protocolVersion(ASC_AF_Default)
 {
@@ -2693,6 +2694,19 @@ OFCondition DcmSCU::receiveDIMSEDataset(T_ASC_PresentationContextID* presID, Dcm
     if (!isConnected())
         return DIMSE_ILLEGALASSOCIATION;
 
+    /* if a custom nesting depth limit is configured, pre-allocate
+     * the dataset and apply the setting before parsing starts.
+     * DIMSE_receiveDataSetInMemory() will use this dataset instead
+     * of creating a new one internally. */
+    OFBool weAllocated = OFFalse;
+    if (dataObject != NULL && *dataObject == NULL
+        && m_maxNestingDepth != 0)
+    {
+        *dataObject = new DcmDataset();
+        (*dataObject)->setMaxNestingDepth(m_maxNestingDepth);
+        weAllocated = OFTrue;
+    }
+
     OFCondition cond;
     /* call the corresponding DIMSE function to receive the dataset */
     if (m_progressNotificationMode)
@@ -2712,6 +2726,14 @@ OFCondition DcmSCU::receiveDIMSEDataset(T_ASC_PresentationContextID* presID, Dcm
     }
     else
     {
+        /* if we pre-allocated the dataset, clean up on error since
+         * DIMSE_receiveDataSetInMemory() won't delete a dataset
+         * that was passed in by the caller */
+        if (weAllocated && dataObject != NULL)
+        {
+            delete *dataObject;
+            *dataObject = NULL;
+        }
         OFString tempStr;
         DCMNET_ERROR("Unable to receive dataset on presentation context "
                      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
@@ -2800,6 +2822,11 @@ void DcmSCU::setProgressNotificationMode(const OFBool mode)
     m_progressNotificationMode = mode;
 }
 
+void DcmSCU::setMaxNestingDepth(const Sint32 maxDepth)
+{
+    m_maxNestingDepth = maxDepth;
+}
+
 void DcmSCU::setProtocolVersion(T_ASC_ProtocolFamily protocolVersion)
 {
     m_protocolVersion = protocolVersion;
@@ -2885,6 +2912,11 @@ OFBool DcmSCU::getDatasetConversionMode() const
 OFBool DcmSCU::getProgressNotificationMode() const
 {
     return m_progressNotificationMode;
+}
+
+Sint32 DcmSCU::getMaxNestingDepth() const
+{
+    return m_maxNestingDepth;
 }
 
 OFCondition DcmSCU::getDatasetInfo(DcmDataset* dataset,

@@ -11,6 +11,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   ti2dbmp.cc
   titem.cc
   tmatch.cc
+  tnesting.cc
   tnewdcme.cc
   tparent.cc
   tparser.cc

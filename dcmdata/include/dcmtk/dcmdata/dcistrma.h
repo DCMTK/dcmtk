@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2018, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -224,6 +224,40 @@ public:
    */
   virtual DcmInputStreamFactory *newFactory() const = 0;
 
+  /** returns the current sequence nesting depth.
+   *  This counter is used to prevent stack overflow from deeply nested
+   *  DICOM sequences in malicious input files.
+   *  @return current nesting depth
+   */
+  Uint32 nestingDepth() const;
+
+  /** increments the sequence nesting depth counter.
+   *  @return the new nesting depth after incrementing
+   */
+  Uint32 incrementNestingDepth();
+
+  /** decrements the sequence nesting depth counter.
+   *  Does nothing if the counter is already zero.
+   */
+  void decrementNestingDepth();
+
+  /** returns the maximum permitted sequence nesting depth for this stream.
+   *  A value of 0 means the compile-time default (DCMTK_MAX_SEQUENCE_NESTING) applies.
+   *  A value of -1 means the check is disabled (unlimited nesting).
+   *  @return maximum nesting depth setting
+   */
+  Sint32 maxNestingDepth() const;
+
+  /** sets the maximum permitted sequence nesting depth for this stream.
+   *  Must be called before parsing begins.
+   *  - Value 0 (default): apply the compile-time default
+   *    (DCMTK_MAX_SEQUENCE_NESTING, default is 64)
+   *  - Value -1: disable the check (allow unlimited nesting)
+   *  - Value > 0: use this value as the maximum permitted nesting depth
+   *  @param maxDepth maximum nesting depth setting
+   */
+  void setMaxNestingDepth(Sint32 maxDepth);
+
   /** marks the current stream position for a later putback operation,
    *  overwriting a possibly existing prior putback mark.
    *  The DcmObject read methods rely on the possibility to putback
@@ -272,6 +306,12 @@ private:
 
   /// putback marker
   offile_off_t mark_;
+
+  /// current sequence nesting depth (for stack overflow protection)
+  Uint32 nestingDepth_;
+
+  /// maximum permitted sequence nesting depth (0 = default 64, -1 = unlimited)
+  Sint32 maxNestingDepth_;
 };
 
 

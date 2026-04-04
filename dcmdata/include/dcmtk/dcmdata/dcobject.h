@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -49,6 +49,18 @@ class DcmSpecificCharacterSet;
  */
 
 // Undefined Length Identifier now defined in dctypes.h
+
+// Default maximum sequence nesting depth (can be overridden at compile time).
+// Must be in the range [1, 2147483647].
+#ifndef DCMTK_MAX_SEQUENCE_NESTING
+#define DCMTK_MAX_SEQUENCE_NESTING 64
+#endif
+#if DCMTK_MAX_SEQUENCE_NESTING < 1
+#error "DCMTK_MAX_SEQUENCE_NESTING must be >= 1"
+#endif
+#if DCMTK_MAX_SEQUENCE_NESTING > 2147483647
+#error "DCMTK_MAX_SEQUENCE_NESTING must be <= 2147483647"
+#endif
 
 // Maximum number of read bytes for a Value Element
 const Uint32 DCM_MaxReadLength = 4096;

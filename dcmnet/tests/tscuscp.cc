@@ -1268,4 +1268,209 @@ OFTEST_FLAGS(dcmnet_scu_sendNGETRequest_sets_error_status_for_nonexistent_instan
 }
 
 
+// Test that setMaxNestingDepth/getMaxNestingDepth work on DcmSCP
+OFTEST(dcmnet_scp_maxNestingDepth_getset)
+{
+    DcmSCP scp;
+    // Default must be 0 (use compile-time default)
+    OFCHECK_EQUAL(scp.getMaxNestingDepth(), 0);
+    scp.setMaxNestingDepth(10);
+    OFCHECK_EQUAL(scp.getMaxNestingDepth(), 10);
+    scp.setMaxNestingDepth(-1);
+    OFCHECK_EQUAL(scp.getMaxNestingDepth(), -1);
+    scp.setMaxNestingDepth(0);
+    OFCHECK_EQUAL(scp.getMaxNestingDepth(), 0);
+}
+
+
+// Test that setMaxNestingDepth/getMaxNestingDepth work on DcmSCU
+OFTEST(dcmnet_scu_maxNestingDepth_getset)
+{
+    DcmSCU scu;
+    // Default must be 0 (use compile-time default)
+    OFCHECK_EQUAL(scu.getMaxNestingDepth(), 0);
+    scu.setMaxNestingDepth(5);
+    OFCHECK_EQUAL(scu.getMaxNestingDepth(), 5);
+    scu.setMaxNestingDepth(-1);
+    OFCHECK_EQUAL(scu.getMaxNestingDepth(), -1);
+    scu.setMaxNestingDepth(0);
+    OFCHECK_EQUAL(scu.getMaxNestingDepth(), 0);
+}
+
+
+/** Helper: build a DcmDataset with nested sequences to a given depth.
+ *  @param depth number of nesting levels
+ *  @param dset  output dataset (cleared before use)
+ */
+static void buildNestedDataset(Uint32 depth, DcmDataset& dset)
+{
+    dset.clear();
+    DcmItem* currentItem = &dset;
+    for (Uint32 i = 0; i < depth; ++i)
+    {
+        DcmSequenceOfItems* sq =
+            new DcmSequenceOfItems(DCM_ReferencedSeriesSequence);
+        currentItem->insert(sq);
+        DcmItem* item = new DcmItem();
+        sq->insert(item);
+        currentItem = item;
+    }
+}
+
+
+/** SCP that applies a nesting depth limit and records whether
+ *  receiving the dataset succeeded or failed.
+ */
+struct NestingTestSCP : TestSCP
+{
+    NestingTestSCP(Sint32 maxNesting)
+        : TestSCP()
+        , m_receiveResult(EC_NotYetImplemented)
+    {
+        setMaxNestingDepth(maxNesting);
+        DcmSCPConfig& config = getConfig();
+        config.setAETitle("NESTING_SCP");
+        config.setConnectionBlockingMode(DUL_NOBLOCK);
+        config.setConnectionTimeout(10);
+        config.setHostLookupEnabled(OFFalse);
+        config.setPort(0);
+        OFList<OFString> xfers;
+        xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+        OFCHECK(config.addPresentationContext(
+            UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+        OFCHECK(openListenPort().good());
+        m_portNum = config.getPort();
+    }
+
+    OFCondition handleIncomingCommand(
+        T_DIMSE_Message* incomingMsg,
+        const DcmPresentationContextInfo& presInfo)
+    {
+        if (incomingMsg->CommandField == DIMSE_N_CREATE_RQ)
+        {
+            T_DIMSE_N_CreateRQ& req = incomingMsg->msg.NCreateRQ;
+            if (req.DataSetType != DIMSE_DATASET_NULL)
+            {
+                DcmDataset* dataset = OFnullptr;
+                T_ASC_PresentationContextID presIDdset;
+                m_receiveResult =
+                    receiveDIMSEDataset(&presIDdset, &dataset);
+                /* send a response regardless of receive outcome */
+                T_DIMSE_Message rsp;
+                memset(&rsp, 0, sizeof(rsp));
+                rsp.CommandField = DIMSE_N_CREATE_RSP;
+                T_DIMSE_N_CreateRSP& createRsp = rsp.msg.NCreateRSP;
+                createRsp.MessageIDBeingRespondedTo = req.MessageID;
+                createRsp.DimseStatus = m_receiveResult.good()
+                    ? STATUS_N_Success
+                    : STATUS_N_ProcessingFailure;
+                createRsp.DataSetType = DIMSE_DATASET_NULL;
+                OFStandard::strlcpy(
+                    createRsp.AffectedSOPClassUID,
+                    req.AffectedSOPClassUID,
+                    sizeof(createRsp.AffectedSOPClassUID));
+                createRsp.opts = O_NCREATE_AFFECTEDSOPCLASSUID;
+                sendDIMSEMessage(
+                    presInfo.presentationContextID, &rsp, NULL);
+                delete dataset;
+            }
+            return EC_Normal;
+        }
+        return DcmSCP::handleIncomingCommand(incomingMsg, presInfo);
+    }
+
+    /// Result of receiveDIMSEDataset() for the last request
+    OFCondition m_receiveResult;
+    /// Port the SCP is listening on
+    Uint16 m_portNum;
+};
+
+
+// Test that SCP's nesting depth limit rejects deeply nested data
+// received over the network
+OFTEST_FLAGS(dcmnet_scp_maxNestingDepth_rejects_deep, EF_Slow)
+{
+    NestingTestSCP scp(3);
+    scp.m_set_stop_after_assoc = OFTrue;
+    scp.start();
+    OFStandard::forceSleep(1);
+
+    // SCU sends a dataset with 4 levels of nesting (exceeds limit 3)
+    DcmSCU scu;
+    scu.setAETitle("NESTING_SCU");
+    scu.setPeerAETitle("NESTING_SCP");
+    scu.setPeerHostName("localhost");
+    scu.setPeerPort(scp.m_portNum);
+    OFList<OFString> xfers;
+    xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(scu.addPresentationContext(
+        UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+    OFCHECK(scu.initNetwork().good());
+    OFCHECK(scu.negotiateAssociation().good());
+
+    DcmDataset reqDataset;
+    buildNestedDataset(4, reqDataset);
+    T_ASC_PresentationContextID presID = scu.findPresentationContextID(
+        UID_ModalityPerformedProcedureStepSOPClass,
+        UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(presID != 0);
+    Uint16 rspStatus = 0;
+    DcmDataset* rspDataset = NULL;
+    scu.sendNCREATERequest(presID, "1.2.3.4.5",
+        &reqDataset, rspDataset, rspStatus);
+    delete rspDataset;
+    if (scu.isConnected())
+        scu.releaseAssociation();
+    OFStandard::forceSleep(2);
+    scp.join();
+
+    // Verify SCP saw the nesting depth error
+    OFCHECK(scp.m_receiveResult == DIMSE_RECEIVEFAILED);
+}
+
+
+// Test that SCP's nesting depth limit accepts data within the limit
+OFTEST_FLAGS(dcmnet_scp_maxNestingDepth_accepts_shallow, EF_Slow)
+{
+    NestingTestSCP scp(3);
+    scp.m_set_stop_after_assoc = OFTrue;
+    scp.start();
+    OFStandard::forceSleep(1);
+
+    // SCU sends a dataset with 3 levels of nesting (at the limit)
+    DcmSCU scu;
+    scu.setAETitle("NESTING_SCU");
+    scu.setPeerAETitle("NESTING_SCP");
+    scu.setPeerHostName("localhost");
+    scu.setPeerPort(scp.m_portNum);
+    OFList<OFString> xfers;
+    xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(scu.addPresentationContext(
+        UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+    OFCHECK(scu.initNetwork().good());
+    OFCHECK(scu.negotiateAssociation().good());
+
+    DcmDataset reqDataset;
+    buildNestedDataset(3, reqDataset);
+    T_ASC_PresentationContextID presID = scu.findPresentationContextID(
+        UID_ModalityPerformedProcedureStepSOPClass,
+        UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(presID != 0);
+    Uint16 rspStatus = 0;
+    DcmDataset* rspDataset = NULL;
+    OFCondition result = scu.sendNCREATERequest(presID, "1.2.3.4.5",
+        &reqDataset, rspDataset, rspStatus);
+    OFCHECK_MSG(result.good(), result.text());
+    OFCHECK(rspStatus == STATUS_N_Success);
+    delete rspDataset;
+    if (scu.isConnected())
+        OFCHECK(scu.releaseAssociation().good());
+    OFStandard::forceSleep(2);
+    scp.join();
+
+    // Verify SCP successfully received the dataset
+    OFCHECK(scp.m_receiveResult.good());
+}
+
+
 #endif // WITH_THREADS
