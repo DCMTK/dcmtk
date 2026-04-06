@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2025, OFFIS e.V.
+ *  Copyright (C) 2007-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,9 @@ BEGIN_EXTERN_C
 #include <fcntl.h>                       /*  for O_BINARY */
 #ifdef HAVE_IO_H
 #include <io.h>                          /* for setmode() on Windows */
+#endif
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>                    /*  for waitpid() on Posix */
 #endif
 END_EXTERN_C
 
@@ -239,7 +242,61 @@ OFCondition DcmDocumentDecapsulator::executeCommand()
         OFString cmdStr = replaceChars(execString_, OFString(FILENAME_PLACEHOLDER), outputFname_);
 
         // Execute command and return result
-        if (system(cmdStr.c_str()) != 0) return EC_CommandLineFailed;
+#ifdef HAVE_FORK
+        pid_t pid = fork();
+        if (pid < 0)
+        {
+            // in case fork failed, dump an error message
+            DCMDATA_ERROR("cannot execute command '" << cmdStr << "' (fork failed)");
+            return EC_CommandLineFailed;
+        }
+        else if (pid > 0)
+        {
+            /* we are the parent process. Wait for the child process to terminate
+             * and then clean up the process
+             */
+            if (waitpid(pid, NULL, 0) < 0)
+            {
+                char buf[256];
+                DCMDATA_WARN("wait for child failed: " << OFStandard::strerror(errno, buf, sizeof(buf)));
+            }
+        }
+        else // in case we are the child process, execute the command.
+        {
+            // executing the command through execl will terminate the child process.
+            // Since we only have a single command string and not a list of arguments,
+            // we 'emulate' a call to system() by passing the command to /bin/sh
+            // which hopefully exists on all Posix systems.
+
+            if (execl( "/bin/sh", "/bin/sh", "-c", cmdStr.c_str(), OFreinterpret_cast(char *, 0) ) < 0)
+              DCMDATA_ERROR("cannot execute /bin/sh");
+
+            // if execl succeeds, this part will not get executed.
+            // if execl fails, there is not much we can do except bailing out.
+            abort();
+        }
+#else
+        PROCESS_INFORMATION procinfo;
+        STARTUPINFOA sinfo;
+        OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+        sinfo.cb = sizeof(sinfo);
+
+        // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
+        // called function because in such a case the execution of batch-files is not going to work.)
+        if( !CreateProcessA(NULL, OFconst_cast(char *, cmdStr.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
+        {
+            DCMDATA_ERROR("cannot execute command '" << cmdStr << "'");
+            return EC_CommandLineFailed;
+        }
+
+        // Wait until child process exits (makes execution synchronous)
+        WaitForSingleObject(procinfo.hProcess, INFINITE);
+
+        // Close process and thread handles to avoid resource leak
+        CloseHandle(procinfo.hProcess);
+        CloseHandle(procinfo.hThread);
+#endif
+
     }
     return EC_Normal;
 }
