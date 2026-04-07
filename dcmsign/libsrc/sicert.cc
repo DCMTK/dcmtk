@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -38,6 +38,8 @@ BEGIN_EXTERN_C
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
+#include <openssl/asn1.h>
+#include <openssl/x509_vfy.h>
 END_EXTERN_C
 
 
@@ -352,6 +354,22 @@ OFBool SiCertificate::isCertExpiredNow() const
   OFBool result = OFTrue;
   if (x509)
   {
+#ifdef HAVE_OPENSSL_PROTOTYPE_X509_CHECK_CERTIFICATE_TIMES
+    /* X509_check_certificate_times() was introduced in OpenSSL 4.0.0 */
+    int error = 0;
+    X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+    if (param)
+    {
+        // return false if the certificate is valid, or if it invalid for a reason
+        // not related to the expiry date
+        if (X509_check_certificate_times(param, x509, &error)
+           || ((error != X509_V_ERR_CERT_HAS_EXPIRED)
+           && (error != X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD)))
+           result = OFFalse;
+        X509_VERIFY_PARAM_free(param);
+    }
+#else
+
     const ASN1_TIME *certexpiry = X509_get0_notAfter(x509);
     if (certexpiry)
     {
@@ -359,6 +377,7 @@ OFBool SiCertificate::isCertExpiredNow() const
       // and zero if there is an error. In both cases we treat the certificate as expired.
       if (X509_cmp_current_time(certexpiry) > 0) result = OFFalse;
     }
+#endif
   }
   return result;
 }
@@ -369,6 +388,21 @@ OFBool SiCertificate::isCertNotYetValidNow() const
   OFBool result = OFTrue;
   if (x509)
   {
+#ifdef HAVE_OPENSSL_PROTOTYPE_X509_CHECK_CERTIFICATE_TIMES
+    /* X509_check_certificate_times() was introduced in OpenSSL 4.0.0 */
+    int error = 0;
+    X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
+    if (param)
+    {
+        // return false if the certificate is valid, or if it invalid for a reason
+        // not related to the expiry date
+        if (X509_check_certificate_times(param, x509, &error)
+           || ((error != X509_V_ERR_CERT_NOT_YET_VALID)
+           && (error != X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD)))
+           result = OFFalse;
+        X509_VERIFY_PARAM_free(param);
+    }
+#else
     const ASN1_TIME *certstart = X509_get0_notBefore(x509);
     if (certstart)
     {
@@ -376,6 +410,7 @@ OFBool SiCertificate::isCertNotYetValidNow() const
       // and zero if there is an error. In both cases we treat the certificate as invalid.
       if (X509_cmp_current_time(certstart) < 0) result = OFFalse;
     }
+#endif
   }
   return result;
 }
@@ -511,9 +546,9 @@ OFCondition SiCertificate::convertGeneralizedTime(const ASN1_GENERALIZEDTIME *d,
     int n, i, l, o;
 
     if (d == NULL) return EC_IllegalCall;
-    if (d->type != V_ASN1_GENERALIZEDTIME) return EC_IllegalCall;
-    l = d->length;
-    a = (char *)d->data;
+    if (ASN1_STRING_type(d) != V_ASN1_GENERALIZEDTIME) return EC_IllegalCall;
+    l = ASN1_STRING_length(d);
+    a = (char *)ASN1_STRING_get0_data(d);
     o = 0;
     /*
      * GENERALIZEDTIME is similar to UTCTIME except the year is represented

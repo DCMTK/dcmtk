@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2026a
- *  File created on 2026-02-06 11:37:28 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026b
+ *  File created on 2026-03-28 10:26:32 by J. Riesmeier
  *
  */
 
@@ -34,8 +34,8 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 5116
-// - retired: 209
+// total number of codes: 5146
+// - retired: 212
 // - no name: 27
 // - not unique: 17
 
@@ -405,9 +405,9 @@
 #define CODE_DCM_BN16Pattern                                               DSRBasicCodedEntry("109919", "DCM", "BN16 Pattern")
 #define CODE_DCM_BN17Pattern                                               DSRBasicCodedEntry("109920", "DCM", "BN17 Pattern")
 #define CODE_DCM_BN18Pattern                                               DSRBasicCodedEntry("109921", "DCM", "BN18 Pattern")
-#define CODE_DCM_DINGrayscalePattern                                       DSRBasicCodedEntry("109931", "DCM", "DIN Grayscale Pattern")
-#define CODE_DCM_DINGeometryPattern                                        DSRBasicCodedEntry("109932", "DCM", "DIN Geometry Pattern")
-#define CODE_DCM_DINResolutionPattern                                      DSRBasicCodedEntry("109933", "DCM", "DIN Resolution Pattern")
+#define CODE_DCM_RETIRED_DINGrayscalePattern                               DSRBasicCodedEntry("109931", "DCM", "DIN Grayscale Pattern")
+#define CODE_DCM_RETIRED_DINGeometryPattern                                DSRBasicCodedEntry("109932", "DCM", "DIN Geometry Pattern")
+#define CODE_DCM_RETIRED_DINResolutionPattern                              DSRBasicCodedEntry("109933", "DCM", "DIN Resolution Pattern")
 #define CODE_DCM_WhitePattern                                              DSRBasicCodedEntry("109941", "DCM", "White Pattern")
 #define CODE_DCM_SMPTEPattern                                              DSRBasicCodedEntry("109943", "DCM", "SMPTE Pattern")
 #define CODE_DCM_CRTDisplay                                                DSRBasicCodedEntry("109991", "DCM", "CRT Display")
@@ -2512,6 +2512,7 @@
 #define CODE_DCM_PercentileRankingOfMeasurement                            DSRBasicCodedEntry("121415", "DCM", "Percentile Ranking of measurement")
 #define CODE_DCM_ZScoreOfMeasurement                                       DSRBasicCodedEntry("121416", "DCM", "Z-Score of measurement")
 #define CODE_DCM_2SigmaDeviationOfPopulation                               DSRBasicCodedEntry("121417", "DCM", "2 Sigma deviation of population")
+#define CODE_DCM_PopulationIndex                                           DSRBasicCodedEntry("121418", "DCM", "Population Index")
 #define CODE_DCM_Equation                                                  DSRBasicCodedEntry("121420", "DCM", "Equation")
 #define CODE_DCM_EquationCitation                                          DSRBasicCodedEntry("121421", "DCM", "Equation Citation")
 #define CODE_DCM_TableOfValuesCitation                                     DSRBasicCodedEntry("121422", "DCM", "Table of Values Citation")
@@ -5164,5 +5165,34 @@
 #define CODE_DCM_ForVerification                                           DSRBasicCodedEntry("131405", "DCM", "For verification")
 #define CODE_DCM_SpatiallyTransformedDose                                  DSRBasicCodedEntry("131406", "DCM", "Spatially Transformed Dose")
 #define CODE_DCM_DerivedDose                                               DSRBasicCodedEntry("131407", "DCM", "Derived Dose")
+#define CODE_DCM_UsableTissue                                              DSRBasicCodedEntry("131501", "DCM", "Usable tissue")
+#define CODE_DCM_UnusableTissue                                            DSRBasicCodedEntry("131502", "DCM", "Unusable tissue")
+#define CODE_DCM_InFocus                                                   DSRBasicCodedEntry("131503", "DCM", "In focus")
+#define CODE_DCM_OutOfFocus                                                DSRBasicCodedEntry("131504", "DCM", "Out of focus")
+#define CODE_DCM_CoverSlipDefect                                           DSRBasicCodedEntry("131505", "DCM", "Cover slip defect")
+#define CODE_DCM_FoldedTissue                                              DSRBasicCodedEntry("131506", "DCM", "Folded tissue")
+#define CODE_DCM_AdequatelyStained                                         DSRBasicCodedEntry("131507", "DCM", "Adequately stained")
+#define CODE_DCM_InadequatelyStained                                       DSRBasicCodedEntry("131508", "DCM", "Inadequately stained")
+#define CODE_DCM_CutOffTissue                                              DSRBasicCodedEntry("131509", "DCM", "Cut off tissue")
+#define CODE_DCM_CoverslipEdge                                             DSRBasicCodedEntry("131510", "DCM", "Coverslip edge")
+#define CODE_DCM_SlideMarking                                              DSRBasicCodedEntry("131511", "DCM", "Slide marking")
+#define CODE_DCM_Stitching                                                 DSRBasicCodedEntry("131512", "DCM", "Stitching")
+#define CODE_DCM_Stripes                                                   DSRBasicCodedEntry("131513", "DCM", "Stripes")
+#define CODE_DCM_ForeignMaterial                                           DSRBasicCodedEntry("131514", "DCM", "Foreign material")
+#define CODE_DCM_Scratch                                                   DSRBasicCodedEntry("131515", "DCM", "Scratch")
+#define CODE_DCM_TissueMarking                                             DSRBasicCodedEntry("131516", "DCM", "Tissue marking")
+#define CODE_DCM_UnscannedTissue                                           DSRBasicCodedEntry("131517", "DCM", "Unscanned tissue")
+#define CODE_DCM_InternalOsDistance                                        DSRBasicCodedEntry("131530", "DCM", "Internal Os Distance")
+#define CODE_DCM_Schneider2005                                             DSRBasicCodedEntry("131531", "DCM", "Schneider 2005")
+#define CODE_DCM_Vigneswaran2018                                           DSRBasicCodedEntry("131532", "DCM", "Vigneswaran 2018")
+#define CODE_DCM_Zidere2021                                                DSRBasicCodedEntry("131533", "DCM", "Zidere 2021")
+#define CODE_DCM_Krishnan2016                                              DSRBasicCodedEntry("131534", "DCM", "Krishnan 2016")
+#define CODE_DCM_Pasquini2007                                              DSRBasicCodedEntry("131535", "DCM", "Pasquini 2007")
+#define CODE_DCM_BostonChildrensZscoreData                                 DSRBasicCodedEntry("131536", "DCM", "Boston Childrens Zscore Data")
+#define CODE_DCM_IterativeMAR                                              DSRBasicCodedEntry("131540", "DCM", "Iterative MAR")
+#define CODE_DCM_ImageSpaceMAR                                             DSRBasicCodedEntry("131541", "DCM", "Image-Space MAR")
+#define CODE_DCM_ProjectionSpaceMAR                                        DSRBasicCodedEntry("131542", "DCM", "Projection-Space MAR")
+#define CODE_DCM_MultiEnergyMAR                                            DSRBasicCodedEntry("131543", "DCM", "Multi-Energy MAR")
+#define CODE_DCM_AIBasedMAR                                                DSRBasicCodedEntry("131544", "DCM", "AI-Based MAR")
 
 #endif

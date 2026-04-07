@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2026a and PS 3.7-2026a.
-# File created on 2026-02-06 11:28:35 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2026b and PS 3.7-2026b.
+# File created on 2026-03-28 10:26:30 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -1502,6 +1502,9 @@
 (0018,9382)	SQ	MaterialAttenuationSequence	1	DICOM
 (0018,9383)	DS	PhotonEnergy	1	DICOM
 (0018,9384)	DS	XRayMassAttenuationCoefficient	1	DICOM
+(0018,9390)	SQ	MetalArtifactReductionSequence	1	DICOM
+(0018,9391)	CS	MetalArtifactReductionApplied	1	DICOM
+(0018,9392)	SQ	MetalArtifactReductionAlgorithmIdentificationSequence	1	DICOM
 (0018,9401)	SQ	ProjectionPixelCalibrationSequence	1	DICOM
 (0018,9402)	FL	DistanceSourceToIsocenter	1	DICOM
 (0018,9403)	FL	DistanceObjectToTableTop	1	DICOM
