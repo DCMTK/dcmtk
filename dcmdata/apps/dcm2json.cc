@@ -497,12 +497,21 @@ int main(int argc, char *argv[])
                     STD_NAMESPACE ofstream stream(ofname);
                     if (stream.good())
                     {
-                        /* write content in JSON format to file */
-                        status = writeFile(stream, &dfile, opt_readMode, opt_format, opt_addMetaInformation,
-                            opt_encode_extended, opt_ns_policy, opt_min_bulk_size, bulkURIPrefixWithSubdir.c_str(), bulkDir.c_str());
-                        if (status.bad())
+                        /* check if the file is uncompressed or bulk data is enabled */
+                        if ((opt_min_bulk_size >= 0 ) || dfile.canWriteXfer(EXS_LittleEndianExplicit))
                         {
-                            OFLOG_FATAL(dcm2jsonLogger, status.text() << ": " << ifname);
+                            /* write content in JSON format to file */
+                            status = writeFile(stream, &dfile, opt_readMode, opt_format, opt_addMetaInformation,
+                                opt_encode_extended, opt_ns_policy, opt_min_bulk_size, bulkURIPrefixWithSubdir.c_str(), bulkDir.c_str());
+                            if (status.bad())
+                            {
+                                OFLOG_FATAL(dcm2jsonLogger, status.text() << ": " << ifname);
+                                result = EXITCODE_CANNOT_WRITE_VALID_JSON;
+                            }
+                        }
+                        else
+                        {
+                            OFLOG_FATAL(dcm2jsonLogger, "JSON encoding not supported for encapsulated pixel data: " << ifname);
                             result = EXITCODE_CANNOT_WRITE_VALID_JSON;
                         }
                     }
@@ -511,12 +520,21 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    /* write content in JSON format to standard output */
-                    status = writeFile(COUT, &dfile, opt_readMode, opt_format, opt_addMetaInformation,
-                        opt_encode_extended, opt_ns_policy, opt_min_bulk_size, bulkURIPrefixWithSubdir.c_str(), bulkDir.c_str());
-                    if (status.bad())
+                    /* check if the file is uncompressed or bulk data is enabled */
+                    if ((opt_min_bulk_size >= 0 ) || dfile.canWriteXfer(EXS_LittleEndianExplicit))
                     {
-                        OFLOG_FATAL(dcm2jsonLogger, status.text() << ": " << ifname);
+                        /* write content in JSON format to standard output */
+                        status = writeFile(COUT, &dfile, opt_readMode, opt_format, opt_addMetaInformation,
+                            opt_encode_extended, opt_ns_policy, opt_min_bulk_size, bulkURIPrefixWithSubdir.c_str(), bulkDir.c_str());
+                        if (status.bad())
+                        {
+                            OFLOG_FATAL(dcm2jsonLogger, status.text() << ": " << ifname);
+                            result = EXITCODE_CANNOT_WRITE_VALID_JSON;
+                        }
+                    }
+                    else
+                    {
+                        OFLOG_FATAL(dcm2jsonLogger, "JSON encoding not supported for encapsulated pixel data: " << ifname);
                         result = EXITCODE_CANNOT_WRITE_VALID_JSON;
                     }
                 }

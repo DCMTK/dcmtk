@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1601,7 +1601,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     calledAETitle.clear();
   }
   // store calling presentation address (i.e. remote hostname)
-  callingPresentationAddress = OFSTRING_GUARD(assoc->params->DULparams.callingPresentationAddress);
+  callingPresentationAddress = "\"";
+  callingPresentationAddress += OFSTRING_GUARD(assoc->params->DULparams.callingPresentationAddress);
+  callingPresentationAddress += "\"";
 
   /* now do the real work, i.e. receive DIMSE commands over the network connection */
   /* which was established and handle these commands correspondingly. In case of */
@@ -1976,6 +1978,7 @@ storeSCPCallback(
             dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
 
           OFString subdirectoryName;
+          OFString s;
           switch (opt_sortStudyMode)
           {
             case ESM_Timestamp:
@@ -1990,15 +1993,27 @@ storeSCPCallback(
               subdirectoryName = opt_sortStudyDirPrefix;
               if (!subdirectoryName.empty())
                 subdirectoryName += '_';
-              subdirectoryName += currentStudyInstanceUID;
-              OFStandard::sanitizeFilename(subdirectoryName);
+              s = currentStudyInstanceUID;
+              OFStandard::sanitizeFilename(s);
+              if (s != currentStudyInstanceUID)
+              {
+                OFLOG_WARN(storescpLogger, "Sanitized unusual characters in Study Instance UID, converted from \"" << currentStudyInstanceUID << "\" to \"" << s << "\".");
+              }
+              subdirectoryName += s;
               break;
             case ESM_PatientName:
               // pattern: "[Patient's Name]_[YYYYMMDD]_[HHMMSSMMM]"
               subdirectoryName = currentPatientName;
+              OFStandard::sanitizeFilename(subdirectoryName);
+              if (subdirectoryName != currentPatientName)
+              {
+                // It is quite normal that we need to sanitize characters in PatientName.
+                // Therefore, this is only a debug message and not a warning, unlike the other
+                // messages about sanitized fields, which are normally not expected.
+                OFLOG_DEBUG(storescpLogger, "Sanitized characters in Patient Name, converted from \"" << currentPatientName << "\" to \"" << subdirectoryName << "\".");
+              }
               subdirectoryName += '_';
               subdirectoryName += timestamp;
-              OFStandard::sanitizeFilename(subdirectoryName);
               break;
             case ESM_None:
               break;
@@ -2207,8 +2222,13 @@ static OFCondition storeSCP(
     else
     {
       // Use the SOP instance UID as found in the C-STORE request message as part of the filename
-      OFString uid(OFSTRING_GUARD(req->AffectedSOPInstanceUID));
+      OFString s(OFSTRING_GUARD(req->AffectedSOPInstanceUID));
+      OFString uid = s;
       OFStandard::sanitizeFilename(uid);
+      if (uid != s)
+      {
+        OFLOG_WARN(storescpLogger, "Sanitized unusual characters in SOP Instance UID, converted from \"" << s << "\" to \"" << uid << "\".");
+      }
       OFStandard::snprintf(imageFileName, sizeof(imageFileName), "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
         uid.c_str(), opt_fileNameExtension.c_str());
     }
@@ -2378,16 +2398,19 @@ static void executeOnReception()
   if( !opt_ignore )
   {
     // perform substitution for placeholder #p (depending on presence of any --sort-xxx option)
+    // Note: We do not enclose this in quotes because it may be used as part of a path expression.
     OFString dir = (opt_sortStudyMode == ESM_None) ? opt_outputDirectory : subdirectoryPathAndName;
     cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
 
     // perform substitution for placeholder #f; note that outputFileNameArray.back()
     // always contains the name of the file (without path) which was written last.
+    // Note: We do not enclose this in quotes because it may be used as part of a path expression.
     OFString outputFileName = outputFileNameArray.back();
     cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
   }
 
-  // perform substitution for placeholder #a
+  // perform substitution for placeholder #a.
+  // Note that this string is already enclosed in double quotes at this point
   s = callingAETitle;
   sanitizeAETitle(s);
   if (s != callingAETitle)
@@ -2396,7 +2419,8 @@ static void executeOnReception()
   }
   cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), s );
 
-  // perform substitution for placeholder #c
+  // perform substitution for placeholder #c.
+  // Note that this string is already enclosed in double quotes at this point
   s = calledAETitle;
   sanitizeAETitle(s);
   if (s != calledAETitle)
@@ -2405,8 +2429,15 @@ static void executeOnReception()
   }
   cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), s );
 
-  // perform substitution for placeholder #r
-  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
+  // perform substitution for placeholder #r.
+  // Note that this string is already enclosed in double quotes at this point
+  s = callingPresentationAddress;
+  sanitizeAETitle(s);
+  if (s != callingPresentationAddress)
+  {
+    OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling presentation address, converted from " << callingPresentationAddress << " to " << s << ".");
+  }
+  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), s );
 
   // Execute command in a new process
   executeCommand( cmd );
@@ -2511,20 +2542,38 @@ static void executeOnEndOfStudy()
   OFString s;
 
   // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
+  // Note: We do not enclose this in quotes because it may be used as part of a path expression.
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
 
-  // perform substitution for placeholder #a
+  // perform substitution for placeholder #a.
+  // Note that this string is already enclosed in double quotes at this point
   s = callingAETitle;
   sanitizeAETitle(s);
+  if (s != callingAETitle)
+  {
+    OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling aetitle, converted from " << callingAETitle << " to " << s << ".");
+  }
   cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), s );
 
-  // perform substitution for placeholder #c
+  // perform substitution for placeholder #c.
+  // Note that this string is already enclosed in double quotes at this point
   s = calledAETitle;
   sanitizeAETitle(s);
+  if (s != calledAETitle)
+  {
+    OFLOG_WARN(storescpLogger, "Sanitized unusual characters in called aetitle, converted from " << calledAETitle << " to " << s << ".");
+  }
   cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), s );
 
-  // perform substitution for placeholder #r
-  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), callingPresentationAddress );
+  // perform substitution for placeholder #r.
+  // Note that this string is already enclosed in double quotes at this point
+  s = callingPresentationAddress;
+  sanitizeAETitle(s);
+  if (s != callingPresentationAddress)
+  {
+    OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling presentation address, converted from " << callingPresentationAddress << " to " << s << ".");
+  }
+  cmd = replaceChars( cmd, OFString(CALLING_PRESENTATION_ADDRESS_PLACEHOLDER), s );
 
   // Execute command in a new process
   executeCommand( cmd );

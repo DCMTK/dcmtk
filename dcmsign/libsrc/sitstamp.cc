@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, OFFIS e.V.
+ *  Copyright (C) 2019-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -274,24 +274,14 @@ OFCondition SiTimeStamp::create_ts_query(
 
         if (nonce_asn1)
         {
-          // free memory buffer of nonce_asn1 (we will create a new one)
-          OPENSSL_free(nonce_asn1->data);
 
           // Find the first non-zero byte in the buffer
           int i = 0;
           for (i = 0; i < NONCE_LENGTH && !nonce_buf[i]; ++i)
             continue;
 
-          // create a new memory buffer for nonce_asn1
-          nonce_asn1->length = NONCE_LENGTH - i;
-          nonce_asn1->data = OFreinterpret_cast(unsigned char *, OPENSSL_malloc(nonce_asn1->length + 1));
-          if (NULL != nonce_asn1->data)
-          {
-              // copy random data into nonce. The first byte is guaranteed to be nonzero,
-              // which is necessary because otherwise the field might violate DER encoding.
-              memcpy(nonce_asn1->data, nonce_buf + i, nonce_asn1->length);
-          }
-          else result = EC_MemoryExhausted;
+          if (0 == ASN1_STRING_set(nonce_asn1, nonce_buf + i, NONCE_LENGTH - i))
+              result = EC_MemoryExhausted;
 
           if (result.good())
           {
@@ -1071,7 +1061,8 @@ void SiTimeStamp::get_tsinfo_extension(OFString& ext, int idx) const
     }
     else
     {
-      X509_EXTENSION *x509ext = TS_TST_INFO_get_ext(tsinfo_, idx);
+      // need to cast the const qualifier away for 1.x OpenSSL versions
+      X509_EXTENSION *x509ext = OFconst_cast(X509_EXTENSION *, TS_TST_INFO_get_ext(tsinfo_, idx));
       if (x509ext == NULL)
       {
         DCMSIGN_WARN("timestamp extension " << idx << " cannot be accessed");
