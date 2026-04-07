@@ -172,14 +172,17 @@ OFTEST(dcmdata_nestingDepthLimit_customLimit)
 OFTEST(dcmdata_nestingDepthLimit_disabled)
 {
     /* Test that setMaxNestingDepth(-1) disables the limit entirely.
-     * Even 200 levels of nesting must succeed. */
+     * Even 70 levels of nesting (above the default limit of 64)
+     * must succeed.  We avoid going much higher because the
+     * recursive read() call chain can overflow the 1 MB default
+     * stack on Windows. */
     DcmDataset srcDset, dstDset;
-    buildNestedDataset(200, srcDset);
+    buildNestedDataset(70, srcDset);
 
     OFCondition cond = serializeAndParse(srcDset, dstDset, -1);
     if (cond.bad())
     {
-        OFCHECK_FAIL("Parsing 200 levels with maxNestingDepth=-1 (unlimited) should succeed, but got: " << cond.text());
+        OFCHECK_FAIL("Parsing 70 levels with maxNestingDepth=-1 (unlimited) should succeed, but got: " << cond.text());
     }
 }
 
