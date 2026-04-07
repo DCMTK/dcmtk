@@ -101,6 +101,7 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          const char* transferSyntaxes[],
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
+static size_t cleanChildrenBatch(const size_t count, const size_t max);
 
 /* sort study mode */
 enum E_SortStudyMode
@@ -1051,11 +1052,10 @@ int main(int argc, char *argv[])
      */
     if (numChildren == opt_maxChildren)
     {
-        OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for child process to terminate");
-        while (numChildren == opt_maxChildren)
-        {
-            cleanChildren(-1, OFTrue);
-        }
+      OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for child process to terminate");
+      while (numChildren == opt_maxChildren) {
+        cleanChildren(-1, OFTrue);
+      }
     }
 #endif
 
@@ -1663,6 +1663,9 @@ processCommands(T_ASC_Association * assoc)
   T_ASC_PresentationContextID presID = 0;
   DcmDataset *statusDetail = NULL;
 
+  // track how many children we have spawn. This indicates the count of incoming slices that are being processed asynchronously
+  size_t pendingChildren = 0;
+
   // start a loop to be able to receive more than one DIMSE command
   while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE || cond == DIMSE_OUTOFRESOURCES )
   {
@@ -1729,6 +1732,7 @@ processCommands(T_ASC_Association * assoc)
         case DIMSE_C_STORE_RQ:
           // process C-STORE-Request
           cond = storeSCP(assoc, &msg, presID);
+          pendingChildren++;
           break;
         default:
           OFString tempStr;
@@ -1740,8 +1744,15 @@ processCommands(T_ASC_Association * assoc)
           OFLOG_DEBUG(storescpLogger, DIMSE_dumpMessage(tempStr, msg, DIMSE_INCOMING, NULL, presID));
           break;
       }
+
+      // Check and cleanup current batch to avoid resource exhaustion if the children count is hit.
+      pendingChildren = cleanChildrenBatch(pendingChildren, opt_maxChildren);
     }
   }
+
+  // Make sure that we cleanup any pending remaining processes.
+  cleanChildrenBatch(pendingChildren, 0);
+
   return cond;
 }
 
@@ -2619,7 +2630,7 @@ static void executeCommand( const OFString &cmd )
      * and then clean up the process to avoid interference with the
      * counter that counts the number of child process in the main process
      */
-    cleanChildren(pid, opt_execSync || opt_forkMode);
+    cleanChildren(pid, opt_execSync);
   }
   else // in case we are the child process, execute the command etc.
   {
@@ -2723,6 +2734,20 @@ static void cleanChildren(pid_t /* pid */, OFBool synch)
 #endif
 }
 
+static size_t cleanChildrenBatch(const size_t count, const size_t max)
+/*
+ * Waits for a batch of children to complete. Use this when awaiting a set of processors to complete before accepting
+ * other connections or associations.
+ */
+{
+  if (count >= max) {
+    for (size_t i = 0; i < count; i++) {
+      cleanChildren(-1, OFTrue);
+    }
+    return 0;
+  }
+  return count;
+}
 
 static
 DUL_PRESENTATIONCONTEXT *
