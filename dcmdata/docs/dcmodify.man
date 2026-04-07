@@ -60,6 +60,26 @@ However, if specifying an item number like '5', all 6 items (counted from zero)
 can be (and are) automatically generated in insert mode.  If already 2 items
 would exist, the rest (4) would be inserted.
 
+\b dcmodify can be instructed to execute the specified element modifications
+only under certain conditions that can be provided by specifying one or more \e
+-iff (\e --process-if) options.  Each condition specifies a path to an element
+and a comparison operator plus value if needed.  Available conditions are
+checking for the existence of an element tag (e.g. 'PatientName' and
+'!PatientName') but also comparisons against the value of an element are
+possible as in 'Rows<513', 'Rows<=512', '(0028,0010)>512' and '(0028,0010)>=513'
+(\e -iff omitted for brevity).  The tag syntax follows the same rules as for
+other dcmodify options (tag path).
+
+One extension is that for elements with multiple values, i.e. with a Value
+Multiplicity (VM) greater than 1, the tag of the target (leaf) element can be
+followed by an index in square brackets, similar to the item index syntax used
+for sequences, e.g. ImageType[2], in order to address the 3rd value of the
+ImageType element.
+
+All conditions specified with the \e --process-if option are combined using a
+logical \b "AND", i.e. if at least one condition is not true, dcmodify will not
+perform any modifications on the specified DICOM file(s).
+
 \b dcmodify does not work on directories, i.e. the parameter \e dcmfile-in...
 must not include directory names.
 
@@ -169,6 +189,12 @@ backup input files:
 
   -nb   --no-backup
           don't backup files (DANGEROUS)
+
+conditional execution:
+
+  -iff  --process-if  "[c]ondition"
+          only perform modification(s)
+          if condition c holds true
 
 insert mode:
 
@@ -396,7 +422,7 @@ automatic padding is performed.
 
 \b dcmodify also permits the usage of a wildcard character "*" for item numbers
 in path expressions, e.g. "ContentSequence[*].CodeValue" selects all "Code
-Value" attributes in all items of the ContentSequence.  Using a wildcard is
+Value" elements in all items of the ContentSequence.  Using a wildcard is
 possible for all basic operations, i.e. modifying \e -m, inserting \e -i and
 \e -e options which makes it, together with the automatic creation of
 intermediate path nodes a powerful tool for construction and processing complex
@@ -405,6 +431,57 @@ datasets.
 The options \e -ma and \e -ea for modifying or deleting all occurrences of a
 DICOM element based on its tag do not accept any wildcards but only work on
 single elements (i.e. a single dictionary name or tag key).
+
+\section dcmodify_processing_conditions PROCESSING CONDITIONS
+
+Simple conditions can be provided with the option \e --process-if. All
+conditions specified with the \e --process-if option are combined using the
+logical \b "AND".
+
+Available condition syntax and its meaning are as listed below:
+  - Existence conditions: checks whether tag exists in DICOM file
+     - [t]ag:                true if tag t exists
+     - ![t]ag:               true if tag t does not exist
+  - Comparison conditions: checks value of given tag
+     - [t]ag=[v]alue:        true if v equals the given value
+     - [t]ag!=[v]alue:       true if v does not equal the given value
+     - [t]ag<[v]alue:        true if v is lesser than the given value
+     - [t]ag<=[v]alue:       true if v is lesser or equals the given value
+     - [t]ag>[v]alue:        true if v is greater the given value
+     - [t]ag>=[v]alue:       true if v is greater or equals the given value
+
+All tags are specified in the same way as for the other options, i.e. using
+the tag path syntax (including potential use of "*" for item indices).
+
+Tags not ending in a leaf (items, sequences) are possible for existence checks,
+but not for comparison checks.  The comparison checks fail if the specified tag
+does not exist at the specified tag path in the file.  Dedicated element values
+of elements with VM > 1 can be accessed as \e element[index] in condition
+checks.  If an element has VM > 1 but no index is specified, the full content
+(all values) of the element are handled as single string with values separated
+by backslash (\\).
+
+Comparisons on element values that use string-based VRs are only recommended for
+equality checks, since using them for conditions <,<=,> and >= must be
+considered well.  As a basis for the comparison, the compare() method defined on
+the related VR class is used; it uses memcmp() to compare the strings value by
+value (maximally the VM of the one with less values) and returns on the first
+difference.  If both strings are equal up to the length (VM) of the
+shorter one, the one with less values is considered less than other one.  For
+example:
+  - '10' is considered less than '2', because the first character (code for) '1'
+     is less than the one for '2'.
+  - '1\2\2' is considered less than '1\2\3' (memcmp on all values, on the third
+     value the strings differ and char code of 2 is less than that of 3).
+  - '1\2\3' is considered less than '1\2\3\4' (memcmp on all values up to the
+    third, and then, since equal until that point, the string with less values
+    is considered less.
+
+Note that currently also DS and IS values are compared as strings, i.e. '10' is
+considered less than '2' for DS and IS.
+
+For UID fields like \e SOPClassUID well-known UID names as specified in
+the standard (and DCMTK) can be used, e.g. \e SOPClassUID=CTImageStorage .
 
 \section dcmodify_examples EXAMPLES
 
@@ -513,6 +590,35 @@ single elements (i.e. a single dictionary name or tag key).
        This will modify the SOPInstanceUID to the given [UID], but -nmu
        avoids, that dcmodify adjusts the MediaStorageSOPInstanceUID in
        the metaheader, too.
+
+-iff --process-if:
+       dcmodify -iff "(0010,0010)" -m "(0010,0010)=A Name" file.dcm
+       If the tag (0010,0010) exists in the file, make the modification.
+
+       dcmodify -iff "!(0010,0010)" -i "(0010,0010)=A Name" file.dcm
+       If the tag (0010,0010) does not already exist in the file,
+       make the insertion.
+
+       dcmodify -iff "(0010,0010)=Wrong Name" -m "(0010,0010)=A Name" file.dcm
+       If the tag (0010,0010) has the specific value "Wrong Name", make the
+       modification.
+
+       dcmodify -iff "(0010,0010)" -iff "(0010,0010)!=A Name" -e "(0010,0010)"
+       file.dcm
+       Remove the tag (0010,0010) if the tag exists and does not contain the
+       value "A Name". Multiple conditions are combined with a logical AND.
+
+       dcmodify -iff "(0008,1111)[*].PatientName=A Name"
+       -m "(0010,0010)=Another Name" file.dcm
+       If PatientName in all items of the sequence (0008,1111) are "A Name",
+       make the modification.
+
+       dcmodify -iff "SOPInstanceUID=[UID]" -m "(0010,0010)=A Name" file.dcm
+       If the SOPInstanceUID equals [UID], make the modification. [UID] can
+       also contain the UID keyword instead of the string of numbers.
+
+       This option also allows longer tag paths as demonstrated
+       above for -i.
 \endverbatim
 
 \section dcmodify_error_handling ERROR HANDLING
@@ -589,6 +695,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmodify_copyright COPYRIGHT
 
-Copyright (C) 2003-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

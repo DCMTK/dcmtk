@@ -202,6 +202,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_UnsupportedURIType;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CommandLineFailed;
 /// Maximum sequence nesting depth exceeded (stack overflow protection)
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_NestingDepthLimitExceeded;
+/// Path condition not met
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PathConditionNotMet;
 
 ///@}
 

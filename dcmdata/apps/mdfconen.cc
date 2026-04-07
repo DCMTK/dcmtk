@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -19,14 +19,17 @@
  *
  */
 
-#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+#include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
 
+#include "dcmtk/dcmdata/dcistrmz.h" /* for dcmZlibExpectRFC1950Encoding */
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "mdfconen.h"
 #include "mdfdsman.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #define SHORTCOL 4
 #define LONGCOL 21
@@ -39,36 +42,137 @@ END_EXTERN_C
 
 static OFLogger dcmodifyLogger = OFLog::getLogger("dcmtk.apps.dcmodify");
 
-MdfJob::MdfJob(const MdfJob& other)
-: option(other.option), path(other.path), value(other.value)
+MdfJob::MdfJob()
+    : option()
+    , path()
+    , value()
 {
 }
 
-OFBool MdfJob::operator==(const MdfJob &j) const
+MdfJob::~MdfJob()
+{
+}
+
+MdfJob::MdfJob(const MdfJob& other)
+    : option(other.option)
+    , path(other.path)
+    , value(other.value)
+{
+}
+
+OFBool MdfJob::operator==(const MdfJob& j) const
 {
     return (option == j.option) && (path == j.path) && (value == j.value);
 }
 
-MdfJob &MdfJob::operator=(const MdfJob &j)
+MdfJob& MdfJob::operator=(const MdfJob& j)
 {
+    if (*this == j)
+        return *this;
     option = j.option;
-    path = j.path;
-    value = j.value;
+    path   = j.path;
+    value  = j.value;
     return *this;
 }
 
 
-MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
-                                   const char *application_name)
-  : app(NULL), cmd(NULL), ds_man(NULL), ignore_errors_option(OFFalse),
-    update_metaheader_uids_option(OFTrue), no_backup_option(OFFalse),
-    read_mode_option(ERM_autoDetect), input_xfer_option(EXS_Unknown),
-    output_dataset_option(OFFalse), output_xfer_option(EXS_Unknown),
-    glenc_option(EGL_recalcGL), enctype_option(EET_ExplicitLength),
-    padenc_option(EPD_withoutPadding), filepad_option(0),
-    itempad_option(0), ignore_missing_tags_option(OFFalse),
-    no_reservation_checks(OFFalse), ignore_un_modifies(OFFalse),
-    create_if_necessary(OFFalse), was_created(OFFalse), jobs(NULL), files(NULL)
+MdfCondition::MdfCondition()
+    : option()
+    , path()
+    , operation()
+    , value()
+{
+}
+
+MdfCondition::MdfCondition(const MdfCondition& other)
+    : option(other.option)
+    , path(other.path)
+    , operation(other.operation)
+    , value(other.value)
+{
+}
+
+OFBool MdfCondition::operator==(const MdfCondition& c) const
+{
+    return (option == c.option) && (path == c.path) && (operation == c.operation) && (value == c.value);
+}
+
+MdfCondition& MdfCondition::operator=(const MdfCondition& c)
+{
+    if (*this == c)
+        return *this;
+    option    = c.option;
+    path      = c.path;
+    operation = c.operation;
+    value     = c.value;
+    return *this;
+}
+
+OFBool MdfCondition::isExistenceCheck(OFBool group) const
+{
+    if (group)
+        return operation == "E" || operation == "!";
+    return operation == "E";
+}
+
+OFBool MdfCondition::isEqualityCheck(OFBool group) const
+{
+    if (group)
+        return operation == "=" || operation == "!=";
+    return operation == "=";
+}
+OFBool MdfCondition::isLesserCheck(OFBool equal) const
+{
+    if (equal)
+        return operation == "<=";
+    return operation == "<";
+}
+OFBool MdfCondition::isGreaterCheck(OFBool equal) const
+{
+    if (equal)
+        return operation == ">=";
+    return operation == ">";
+}
+
+OFString MdfCondition::toString() const
+{
+    OFString result = path;
+    result += "|";
+    result += operation;
+    // only add value if it is not empty
+    if (!value.empty())
+    {
+        result += "|";
+        result += value;
+    }
+    return result;
+}
+
+
+MdfConsoleEngine::MdfConsoleEngine(int argc, char* argv[], const char* application_name)
+    : app(NULL)
+    , cmd(NULL)
+    , ds_man(NULL)
+    , ignore_errors_option(OFFalse)
+    , update_metaheader_uids_option(OFTrue)
+    , no_backup_option(OFFalse)
+    , read_mode_option(ERM_autoDetect)
+    , input_xfer_option(EXS_Unknown)
+    , output_dataset_option(OFFalse)
+    , output_xfer_option(EXS_Unknown)
+    , glenc_option(EGL_recalcGL)
+    , enctype_option(EET_ExplicitLength)
+    , padenc_option(EPD_withoutPadding)
+    , filepad_option(0)
+    , itempad_option(0)
+    , ignore_missing_tags_option(OFFalse)
+    , no_reservation_checks(OFFalse)
+    , ignore_un_modifies(OFFalse)
+    , create_if_necessary(OFFalse)
+    , was_created(OFFalse)
+    , conditions()
+    , jobs(NULL)
+    , files(NULL)
 {
     char rcsid[200];
     // print application header
@@ -81,93 +185,125 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     cmd->setOptionColumns(LONGCOL, SHORTCOL);
     cmd->setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd->addParam("dcmfile-in", "DICOM input filename to be modified\n(\"-\" for stdin/stdout)", OFCmdParam::PM_MultiMandatory);
+    cmd->addParam(
+        "dcmfile-in", "DICOM input filename to be modified\n(\"-\" for stdin/stdout)", OFCmdParam::PM_MultiMandatory);
 
     // add options to commandline application
     cmd->addGroup("general options:", LONGCOL, SHORTCOL + 2);
-        cmd->addOption("--help",                    "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
-        cmd->addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
-        OFLog::addOptions(*cmd);
+    cmd->addOption("--help", "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd->addOption("--version", "print version information and exit", OFCommandLine::AF_Exclusive);
+    OFLog::addOptions(*cmd);
     cmd->addGroup("input options:");
-        cmd->addSubGroup("input file format:");
-            cmd->addOption("--read-file",           "+f",      "read file format or data set (default)");
-            cmd->addOption("--read-file-only",      "+fo",     "read file format only");
-            cmd->addOption("--read-dataset",        "-f",      "read data set without file meta information");
-            cmd->addOption("--create-file",         "+fc",     "create file format if file does not exist");
-        cmd->addSubGroup("input transfer syntax:");
-            cmd->addOption("--read-xfer-auto",      "-t=",     "use TS recognition (default)");
-            cmd->addOption("--read-xfer-detect",    "-td",     "ignore TS specified in the file meta header");
-            cmd->addOption("--read-xfer-little",    "-te",     "read with explicit VR little endian TS");
-            cmd->addOption("--read-xfer-big",       "-tb",     "read with explicit VR big endian TS");
-            cmd->addOption("--read-xfer-implicit",  "-ti",     "read with implicit VR little endian TS");
-        cmd->addSubGroup("parsing of odd-length attributes:");
-            cmd->addOption("--accept-odd-length",   "+ao",     "accept odd length attributes (default)");
-            cmd->addOption("--assume-even-length",  "+ae",     "assume real length is one byte larger");
-        cmd->addSubGroup("automatic data correction:");
-            cmd->addOption("--enable-correction",   "+dc",     "enable automatic data correction (default)");
-            cmd->addOption("--disable-correction",  "-dc",     "disable automatic data correction");
+    cmd->addSubGroup("input file format:");
+    cmd->addOption("--read-file", "+f", "read file format or data set (default)");
+    cmd->addOption("--read-file-only", "+fo", "read file format only");
+    cmd->addOption("--read-dataset", "-f", "read data set without file meta information");
+    cmd->addOption("--create-file", "+fc", "create file format if file does not exist");
+    cmd->addSubGroup("input transfer syntax:");
+    cmd->addOption("--read-xfer-auto", "-t=", "use TS recognition (default)");
+    cmd->addOption("--read-xfer-detect", "-td", "ignore TS specified in the file meta header");
+    cmd->addOption("--read-xfer-little", "-te", "read with explicit VR little endian TS");
+    cmd->addOption("--read-xfer-big", "-tb", "read with explicit VR big endian TS");
+    cmd->addOption("--read-xfer-implicit", "-ti", "read with implicit VR little endian TS");
+    cmd->addSubGroup("parsing of odd-length attributes:");
+    cmd->addOption("--accept-odd-length", "+ao", "accept odd length attributes (default)");
+    cmd->addOption("--assume-even-length", "+ae", "assume real length is one byte larger");
+    cmd->addSubGroup("automatic data correction:");
+    cmd->addOption("--enable-correction", "+dc", "enable automatic data correction (default)");
+    cmd->addOption("--disable-correction", "-dc", "disable automatic data correction");
 #ifdef WITH_ZLIB
-        cmd->addSubGroup("bitstream format of deflated input:");
-            cmd->addOption("--bitstream-deflated",  "+bd",     "expect deflated bitstream (default)");
-            cmd->addOption("--bitstream-zlib",      "+bz",     "expect deflated zlib bitstream");
+    cmd->addSubGroup("bitstream format of deflated input:");
+    cmd->addOption("--bitstream-deflated", "+bd", "expect deflated bitstream (default)");
+    cmd->addOption("--bitstream-zlib", "+bz", "expect deflated zlib bitstream");
 #endif
 
     cmd->addGroup("processing options:");
-        cmd->addSubGroup("backup input files:");
-            cmd->addOption("--backup",                         "backup files before modifying (default)");
-            cmd->addOption("--no-backup",           "-nb",     "don't backup files (DANGEROUS)");
-        cmd->addSubGroup("insert mode:");
-            cmd->addOption("--insert",              "-i",   1, "\"[t]ag-path=[v]alue\"",
-                                                               "insert (or overwrite) path at position t\nwith value v", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--insert-from-file",    "-if",  1, "\"[t]ag-path=[f]ilename\"",
-                                                               "insert (or overwrite) path at position t\nwith value from file f", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--no-reserv-check",     "-nrc",    "do not check private reservations\nwhen inserting private tags");
-        cmd->addSubGroup("modify mode:");
-            cmd->addOption("--modify",              "-m",   1, "\"[t]ag-path=[v]alue\"",
-                                                               "modify tag at position t to value v", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--modify-from-file",    "-mf",  1, "\"[t]ag-path=[f]ilename\"",
-                                                               "modify tag at position t to value from file f", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--modify-all",          "-ma",  1, "\"[t]ag=[v]alue\"",
-                                                               "modify ALL matching tags t in file to value v", OFCommandLine::AF_NoWarning);
-        cmd->addSubGroup("erase mode:");
-            cmd->addOption("--erase",               "-e",   1, "\"[t]ag-path\"",
-                                                               "erase tag/item at position t", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--erase-all",           "-ea",  1, "\"[t]ag\"",
-                                                               "erase ALL matching tags t in file", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--erase-private",       "-ep",     "erase ALL private data from file", OFCommandLine::AF_NoWarning);
-        cmd->addSubGroup("unique identifier:");
-            cmd->addOption("--gen-stud-uid",        "-gst",    "generate new Study Instance UID", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--gen-ser-uid",         "-gse",    "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--gen-inst-uid",        "-gin",    "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
-            cmd->addOption("--no-meta-uid",         "-nmu",    "do not update metaheader UIDs if related\nUIDs in the dataset are modified");
-        cmd->addSubGroup("error handling:");
-            cmd->addOption("--ignore-errors",       "-ie",     "continue with file, if modify error occurs");
-            cmd->addOption("--ignore-missing-tags", "-imt",    "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
-            cmd->addOption("--ignore-un-values",    "-iun",    "do not try writing any values to elements\nhaving a VR of UN");
+    cmd->addSubGroup("backup input files:");
+    cmd->addOption("--backup", "backup files before modifying (default)");
+    cmd->addOption("--no-backup", "-nb", "don't backup files (DANGEROUS)");
+    cmd->addSubGroup("insert mode:");
+    cmd->addOption("--insert",
+                   "-i",
+                   1,
+                   "\"[t]ag-path=[v]alue\"",
+                   "insert (or overwrite) path at position t\nwith value v",
+                   OFCommandLine::AF_NoWarning);
+    cmd->addOption("--insert-from-file",
+                   "-if",
+                   1,
+                   "\"[t]ag-path=[f]ilename\"",
+                   "insert (or overwrite) path at position t\nwith value from file f",
+                   OFCommandLine::AF_NoWarning);
+    cmd->addOption("--no-reserv-check", "-nrc", "do not check private reservations\nwhen inserting private tags");
+    cmd->addSubGroup("modify mode:");
+    cmd->addOption("--modify",
+                   "-m",
+                   1,
+                   "\"[t]ag-path=[v]alue\"",
+                   "modify tag at position t to value v",
+                   OFCommandLine::AF_NoWarning);
+    cmd->addOption("--modify-from-file",
+                   "-mf",
+                   1,
+                   "\"[t]ag-path=[f]ilename\"",
+                   "modify tag at position t to value from file f",
+                   OFCommandLine::AF_NoWarning);
+    cmd->addOption("--modify-all",
+                   "-ma",
+                   1,
+                   "\"[t]ag=[v]alue\"",
+                   "modify ALL matching tags t in file to value v",
+                   OFCommandLine::AF_NoWarning);
+    cmd->addSubGroup("erase mode:");
+    cmd->addOption("--erase", "-e", 1, "\"[t]ag-path\"", "erase tag/item at position t", OFCommandLine::AF_NoWarning);
+    cmd->addOption(
+        "--erase-all", "-ea", 1, "\"[t]ag\"", "erase ALL matching tags t in file", OFCommandLine::AF_NoWarning);
+    cmd->addOption("--erase-private", "-ep", "erase ALL private data from file", OFCommandLine::AF_NoWarning);
+    cmd->addSubGroup("unique identifier:");
+    cmd->addOption("--gen-stud-uid", "-gst", "generate new Study Instance UID", OFCommandLine::AF_NoWarning);
+    cmd->addOption("--gen-ser-uid", "-gse", "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
+    cmd->addOption("--gen-inst-uid", "-gin", "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
+    cmd->addOption(
+        "--no-meta-uid", "-nmu", "do not update metaheader UIDs if related\nUIDs in the dataset are modified");
+    cmd->addSubGroup("conditional execution:");
+    cmd->addOption("--process-if",
+                   "-iff",
+                   1,
+                   "\"[c]ondition\"",
+                   "only perform modification(s)\nif condition c holds true",
+                   OFCommandLine::AF_NoWarning);
+    cmd->addSubGroup("error handling:");
+    cmd->addOption("--ignore-errors", "-ie", "continue with file, if modify error occurs");
+    cmd->addOption(
+        "--ignore-missing-tags", "-imt", "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
+    cmd->addOption("--ignore-un-values", "-iun", "do not try writing any values to elements\nhaving a VR of UN");
     cmd->addGroup("output options:");
-        cmd->addSubGroup("output file format:");
-            cmd->addOption("--write-file",          "+F",      "write file format (default)");
-            cmd->addOption("--write-dataset",       "-F",      "write data set without file meta information");
-        cmd->addSubGroup("output transfer syntax:");
-            cmd->addOption("--write-xfer-same",     "+t=",     "write with same TS as input (default)");
-            cmd->addOption("--write-xfer-little",   "+te",     "write with explicit VR little endian TS");
-            cmd->addOption("--write-xfer-big",      "+tb",     "write with explicit VR big endian TS");
-            cmd->addOption("--write-xfer-implicit", "+ti",     "write with implicit VR little endian TS");
-        cmd->addSubGroup("post-1993 value representations:");
-            cmd->addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
-            cmd->addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
-        cmd->addSubGroup("group length encoding:");
-            cmd->addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
-            cmd->addOption("--group-length-create", "+g",      "always write with group length elements");
-            cmd->addOption("--group-length-remove", "-g",      "always write without group length elements");
-        cmd->addSubGroup("length encoding in sequences and items:");
-            cmd->addOption("--length-explicit",     "+le",     "write with explicit lengths (default)");
-            cmd->addOption("--length-undefined",    "-le",     "write with undefined lengths");
-        cmd->addSubGroup("data set trailing padding (not with --write-dataset):");
-            cmd->addOption("--padding-retain",      "-p=",     "do not change padding\n(default if not --write-dataset)");
-            cmd->addOption("--padding-off",         "-p",      "no padding (implicit if --write-dataset)");
-            cmd->addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad: integer",
-                                                               "align file on multiple of f bytes\nand items on multiple of i bytes");
+    cmd->addSubGroup("output file format:");
+    cmd->addOption("--write-file", "+F", "write file format (default)");
+    cmd->addOption("--write-dataset", "-F", "write data set without file meta information");
+    cmd->addSubGroup("output transfer syntax:");
+    cmd->addOption("--write-xfer-same", "+t=", "write with same TS as input (default)");
+    cmd->addOption("--write-xfer-little", "+te", "write with explicit VR little endian TS");
+    cmd->addOption("--write-xfer-big", "+tb", "write with explicit VR big endian TS");
+    cmd->addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
+    cmd->addSubGroup("post-1993 value representations:");
+    cmd->addOption("--enable-new-vr", "+u", "enable support for new VRs (UN/UT) (default)");
+    cmd->addOption("--disable-new-vr", "-u", "disable support for new VRs, convert to OB");
+    cmd->addSubGroup("group length encoding:");
+    cmd->addOption("--group-length-recalc", "+g=", "recalculate group lengths if present (default)");
+    cmd->addOption("--group-length-create", "+g", "always write with group length elements");
+    cmd->addOption("--group-length-remove", "-g", "always write without group length elements");
+    cmd->addSubGroup("length encoding in sequences and items:");
+    cmd->addOption("--length-explicit", "+le", "write with explicit lengths (default)");
+    cmd->addOption("--length-undefined", "-le", "write with undefined lengths");
+    cmd->addSubGroup("data set trailing padding (not with --write-dataset):");
+    cmd->addOption("--padding-retain", "-p=", "do not change padding\n(default if not --write-dataset)");
+    cmd->addOption("--padding-off", "-p", "no padding (implicit if --write-dataset)");
+    cmd->addOption("--padding-create",
+                   "+p",
+                   2,
+                   "[f]ile-pad [i]tem-pad: integer",
+                   "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     // evaluate commandline
     prepareCmdLineArgs(argc, argv, application_name);
@@ -201,7 +337,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         OFString current_file;
         for (int i = 1; i <= cmd->getParamCount(); i++)
         {
-            cmd->getParam(i,current_file);
+            cmd->getParam(i, current_file);
             files->push_back(current_file);
         }
         // if no files are given: return with error message
@@ -215,14 +351,14 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 
         // make sure data dictionary is loaded
         if (!dcmDataDict.isDictionaryLoaded())
-            OFLOG_WARN(dcmodifyLogger, "no data dictionary loaded, "
-                << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+            OFLOG_WARN(dcmodifyLogger,
+                       "no data dictionary loaded, "
+                           << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* print resource identifier */
     OFLOG_DEBUG(dcmodifyLogger, rcsid << OFendl);
 }
-
 
 void MdfConsoleEngine::parseNonJobOptions()
 {
@@ -371,7 +507,6 @@ void MdfConsoleEngine::parseNonJobOptions()
     cmd->endOptionBlock();
 }
 
-
 void MdfConsoleEngine::parseCommandLine()
 {
     jobs = new OFList<MdfJob>;
@@ -381,11 +516,14 @@ void MdfConsoleEngine::parseCommandLine()
 
     cmd->gotoFirstOption();
     // iterate over commandline arguments from first to last
-    do {
+    do
+    {
         if (cmd->getCurrentOption(option_string))
         {
             MdfJob aJob;
+            MdfCondition condition;
             OFString option_value, tag_path, tag_value;
+            OFString operation;
             if (option_string == "--insert")
                 aJob.option = "i";
             else if (option_string == "--insert-from-file")
@@ -408,6 +546,23 @@ void MdfConsoleEngine::parseCommandLine()
                 aJob.option = "gse";
             else if (option_string == "--gen-inst-uid")
                 aJob.option = "gin";
+            // if this is a condition option
+            else if (option_string == "--process-if")
+            {
+                // get parameters
+                cmd->getValue(option_value);
+
+                condition.option = "iff";
+
+                splitConditionPathAndValue(option_value, tag_path, operation, tag_value);
+                condition.path      = tag_path;
+                condition.operation = operation;
+                condition.value     = tag_value;
+
+                conditions.push_back(condition);
+                continue;
+            }
+
             // else this is a non job option, e.g. -v, -d, -f, ...
             else
                 continue;
@@ -416,7 +571,7 @@ void MdfConsoleEngine::parseCommandLine()
             {
                 cmd->getValue(option_value);
                 splitPathAndValue(option_value, tag_path, tag_value);
-                aJob.path = tag_path;
+                aJob.path  = tag_path;
                 aJob.value = tag_value;
             }
             // finally, and schedule job
@@ -425,46 +580,104 @@ void MdfConsoleEngine::parseCommandLine()
     } while (cmd->gotoNextOption());
 }
 
+void MdfConsoleEngine::splitConditionPathAndValue(const OFString& whole,
+                                                  OFString& path,
+                                                  OFString& operation,
+                                                  OFString& value)
+{
+    size_t pos = OFString_npos, op_len = 1;
 
-OFBool MdfConsoleEngine::jobOptionExpectsParameters(const OFString &job)
+    const OFString op_list[] = { "<=", "<", ">=", ">", "!=", "=" };
+    size_t op_list_len = 6, op_list_it = 0;
+
+    while (op_list_it < op_list_len)
+    {
+        operation = op_list[op_list_it];
+        pos       = whole.find(operation);
+        if (pos != OFString_npos)
+        {
+            path   = whole.substr(0, pos);
+            op_len = operation.length();
+            value  = whole.substr(pos + op_len, value.length() - 1);
+            OFLOG_TRACE(dcmodifyLogger,
+                "condition operation found: " << operation << " at " << pos);
+            break;
+        }
+        op_list_it++;
+    }
+
+    // no operation from op_list found, so it must be existence check
+    if (pos == OFString_npos)
+    {
+        pos = whole.find("!");
+        if (pos == 0) // not existence
+        {
+            path      = whole.substr(1);
+            operation = "!";
+        }
+        else // existence -- catch all
+        {
+            path      = whole;
+            operation = "E";
+        }
+    }
+}
+
+OFBool MdfConsoleEngine::jobOptionExpectsParameters(const OFString& job)
 {
     return (job != "ep") && (job != "gst") && (job != "gse") && (job != "gin");
 }
 
-
-void MdfConsoleEngine::splitPathAndValue(const OFString &whole,
-                                         OFString &path,
-                                         OFString &value)
+void MdfConsoleEngine::splitPathAndValue(const OFString& whole, OFString& path, OFString& value)
 {
     size_t pos = whole.find("=");
     if (pos != OFString_npos)
     {
-        path = whole.substr(0, pos);
+        path  = whole.substr(0, pos);
         value = whole.substr(pos + 1, value.length() - 1);
     }
-    else path = whole;
+    else
+        path = whole;
 }
 
-
-int MdfConsoleEngine::executeJob(const MdfJob &job,
-                                 const char *filename)
+int MdfConsoleEngine::executeJob(const MdfJob& job, const char* filename)
 {
     OFCondition result;
-    int count = 0;
+    int count       = 0;
     int error_count = 0;
-    OFLOG_INFO(dcmodifyLogger, "Executing (option|path|value): "
-        << job.option << "|" << job.path << "|" << job.value);
+    OFLOG_INFO(dcmodifyLogger, "Executing (option|path|value): " << job.option << "|" << job.path << "|" << job.value);
     // start modify operation based on job option
-    if (job.option=="i")
-        result = ds_man->modifyOrInsertPath(job.path, job.value, OFFalse, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
+    if (job.option == "i")
+        result = ds_man->modifyOrInsertPath(job.path,
+                                            job.value,
+                                            OFFalse,
+                                            update_metaheader_uids_option,
+                                            ignore_missing_tags_option,
+                                            no_reservation_checks);
     else if (job.option == "if")
-        result = ds_man->modifyOrInsertFromFile(job.path, job.value /*filename*/, OFFalse, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
+        result = ds_man->modifyOrInsertFromFile(job.path,
+                                                job.value /*filename*/,
+                                                OFFalse,
+                                                update_metaheader_uids_option,
+                                                ignore_missing_tags_option,
+                                                no_reservation_checks);
     else if (job.option == "m")
-        result = ds_man->modifyOrInsertPath(job.path, job.value, OFTrue, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
+        result = ds_man->modifyOrInsertPath(job.path,
+                                            job.value,
+                                            OFTrue,
+                                            update_metaheader_uids_option,
+                                            ignore_missing_tags_option,
+                                            no_reservation_checks);
     else if (job.option == "mf")
-        result = ds_man->modifyOrInsertFromFile(job.path, job.value /*filename*/, OFTrue, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
+        result = ds_man->modifyOrInsertFromFile(job.path,
+                                                job.value /*filename*/,
+                                                OFTrue,
+                                                update_metaheader_uids_option,
+                                                ignore_missing_tags_option,
+                                                no_reservation_checks);
     else if (job.option == "ma")
-        result = ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count, ignore_missing_tags_option);
+        result = ds_man->modifyAllTags(
+            job.path, job.value, update_metaheader_uids_option, count, ignore_missing_tags_option);
     else if (job.option == "e")
         result = ds_man->deleteTag(job.path, OFFalse, ignore_missing_tags_option);
     else if (job.option == "ea")
@@ -495,71 +708,126 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
     return error_count;
 }
 
+OFCondition MdfConsoleEngine::checkCondition(const MdfCondition& condition)
+{
+    OFCondition result;
+    OFLOG_INFO(dcmodifyLogger,
+               "Checking condition (option|operation|path|value): " << condition.option << "|" << condition.operation
+                                                                    << "|" << condition.path << "|" << condition.value);
+    result = ds_man->checkCondition(condition);
+
+    if (result.bad())
+    {
+        OFLOG_ERROR(dcmodifyLogger, "condition check " << condition.toString() << " failed: " << result.text());
+    }
+
+    return result;
+}
 
 int MdfConsoleEngine::startProvidingService()
 {
     OFCondition result;
-    const char *filename;
+    const char* filename;
     // return value of this function
     int errors = 0;
     // parse command line into file and job list
     parseCommandLine();
-    // iterators for job and file loops
+    // iterators for job, conditions and file loops
+    OFListIterator(MdfCondition) cond_it;
+    OFListIterator(MdfCondition) cond_last = conditions.end();
     OFListIterator(MdfJob) job_it;
-    OFListIterator(MdfJob) job_last = jobs->end();;
-    OFListIterator(OFString) file_it = files->begin();
-    OFListIterator(OFString) file_last = files->end();;
+    OFListIterator(MdfJob) job_last = jobs->end();
+    OFListIterator(OFString) file_it   = files->begin();
+    OFListIterator(OFString) file_last = files->end();
     // outer loop: iterate over all files
     while (file_it != file_last)
     {
         filename = (*file_it).c_str();
-        result = loadFile(filename);
+        result   = loadFile(filename);
 
         // if file could be loaded:
         if (result.good())
         {
-            // for each file, set job iterator back to first entry
-            job_it = jobs->begin();
-            // inner loop: iterate over jobs, execute all jobs for current file
-            while (job_it != job_last)
+            OFLOG_INFO(dcmodifyLogger, "Checking " << conditions.size() << " conditions");
+
+            // before performing any operations, check conditions and
+            // skip the current file with error if at least one of them is not met.
+            cond_it = conditions.begin();
+
+            // while conditions are met, continue, else interrupt, go to next file.
+            while (cond_it != cond_last && result.good())
             {
-                errors += executeJob(*job_it, filename);
-                job_it++;
+                result = checkCondition(*cond_it);
+                cond_it++;
             }
-            // if there were no errors or user wants to override them, save:
-            if (errors == 0 || ignore_errors_option)
+            // if the conditions are met, continue execution
+            if (result.good())
             {
-                if (was_created && (output_xfer_option == EXS_Unknown))
+                if (conditions.size() > 0)
+                    OFLOG_INFO(dcmodifyLogger, "All conditions met; starting jobs");
+                else
+                    OFLOG_INFO(dcmodifyLogger, "Starting jobs");
+
+                // execute jobs
+                // for each file, set job iterator back to first entry
+                job_it = jobs->begin();
+                // inner loop: iterate over jobs, execute all jobs for current file
+                while (job_it != job_last)
                 {
-                  output_xfer_option = EXS_LittleEndianExplicit;
+                    errors += executeJob(*job_it, filename);
+                    job_it++;
                 }
-                result = ds_man->saveFile(filename, output_xfer_option,
-                                          enctype_option, glenc_option,
-                                          padenc_option, filepad_option,
-                                          itempad_option, output_dataset_option);
-                if (result.bad())
+                // if there were no errors or user wants to override them, save:
+                if (errors == 0 || ignore_errors_option)
                 {
-                    OFLOG_ERROR(dcmodifyLogger, "couldn't save file: " << result.text());
-                    errors++;
-                    if (!no_backup_option && !was_created && strcmp(filename, "-"))
+                    if (was_created && (output_xfer_option == EXS_Unknown))
                     {
-                        result = restoreFile(filename);
-                        if (result.bad())
+                        output_xfer_option = EXS_LittleEndianExplicit;
+                    }
+                    result = ds_man->saveFile(filename,
+                                              output_xfer_option,
+                                              enctype_option,
+                                              glenc_option,
+                                              padenc_option,
+                                              filepad_option,
+                                              itempad_option,
+                                              output_dataset_option);
+                    if (result.bad())
+                    {
+                        OFLOG_ERROR(dcmodifyLogger, "couldn't save file " << filename <<": " << result.text());
+                        errors++;
+                        if (!no_backup_option && !was_created && strcmp(filename, "-"))
                         {
-                            OFLOG_ERROR(dcmodifyLogger, "couldn't restore file: " << result.text());
-                            errors++;
+                            result = restoreFile(filename);
+                            if (result.bad())
+                            {
+                                OFLOG_ERROR(dcmodifyLogger, "couldn't restore file " << filename << ": " << result.text());
+                                errors++;
+                            }
                         }
                     }
                 }
-            }
-            // errors occurred and user doesn't want to ignore them:
-            else if (!no_backup_option && !was_created && strcmp(filename, "-"))
-            {
-                result = restoreFile(filename);
-                if (result.bad())
+                // errors occurred and user doesn't want to ignore them:
+                else if (!no_backup_option && !was_created && strcmp(filename, "-"))
                 {
-                    OFLOG_ERROR(dcmodifyLogger, "couldn't restore file!");
-                    errors++;
+                    result = restoreFile(filename);
+                    if (result.bad())
+                    {
+                        OFLOG_ERROR(dcmodifyLogger, "couldn't restore file " << filename << "!");
+                        errors++;
+                    }
+                }
+            }
+            // if at least one of the conditions from '-iff' is not met
+            else
+            {
+                OFLOG_ERROR(dcmodifyLogger, "'-iff' condition not met, no modifications made to file " << filename);
+
+                if (!no_backup_option) // rename the file back from backup
+                {
+                    OFString backup = filename;
+                    backup += ".bak";
+                    rename(backup.c_str(), filename);
                 }
             }
         }
@@ -567,18 +835,17 @@ int MdfConsoleEngine::startProvidingService()
         else
         {
             errors++;
-            OFLOG_ERROR(dcmodifyLogger, "unable to load file " << filename <<": " << result.text());
+            OFLOG_ERROR(dcmodifyLogger, "unable to load file " << filename << ": " << result.text());
         }
         file_it++;
         // output separator line if required
         if ((file_it != file_last) || (errors > 0))
-          OFLOG_INFO(dcmodifyLogger, "------------------------------------");
+            OFLOG_INFO(dcmodifyLogger, "------------------------------------");
     }
     return errors;
 }
 
-
-OFCondition MdfConsoleEngine::loadFile(const char *filename)
+OFCondition MdfConsoleEngine::loadFile(const char* filename)
 {
     OFCondition result;
     // free memory
@@ -588,14 +855,13 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     OFLOG_INFO(dcmodifyLogger, "Processing file: " << filename);
     // load file into dataset manager
     was_created = !OFStandard::fileExists(filename);
-    result = ds_man->loadFile(filename, read_mode_option, input_xfer_option, create_if_necessary);
+    result      = ds_man->loadFile(filename, read_mode_option, input_xfer_option, create_if_necessary);
     if (result.good() && !no_backup_option && !was_created && strcmp(filename, "-"))
         result = backupFile(filename);
     return result;
 }
 
-
-OFCondition MdfConsoleEngine::backupFile(const char *filename)
+OFCondition MdfConsoleEngine::backupFile(const char* filename)
 {
     int result;
     OFString backup = filename;
@@ -623,8 +889,7 @@ OFCondition MdfConsoleEngine::backupFile(const char *filename)
     return EC_Normal;
 }
 
-
-OFCondition MdfConsoleEngine::restoreFile(const char *filename)
+OFCondition MdfConsoleEngine::restoreFile(const char* filename)
 {
     int result;
     OFString backup = filename;
@@ -651,7 +916,6 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
     // you only get to this point, if restoring was completely successful
     return EC_Normal;
 }
-
 
 MdfConsoleEngine::~MdfConsoleEngine()
 {
