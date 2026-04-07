@@ -2692,7 +2692,6 @@ static size_t cleanChildrenBatch(const size_t count, const size_t max)
  */
 {
   if (count >= max) {
-    OFLOG_WARN(storescpLogger, "wait for children batch to finish: " << count);
     for (size_t i = 0; i < count; i++) {
       cleanChildren(-1, OFTrue);
     }
