@@ -24,6 +24,7 @@
 #include "dcmtk/dcmdata/dcdocdec.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/ofbmanip.h"       /* for OFBitmanipTemplate */
 
 BEGIN_EXTERN_C
 #include <fcntl.h>                       /*  for O_BINARY */
