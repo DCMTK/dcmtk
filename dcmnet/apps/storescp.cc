@@ -1051,11 +1051,10 @@ int main(int argc, char *argv[])
      */
     if (numChildren == opt_maxChildren)
     {
-        OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for current batch of child processes to terminate");
-        for (size_t i = 0; i < opt_maxChildren; i++)
-        {
-            cleanChildren(-1, OFTrue);
-        }
+      OFLOG_INFO(storescpLogger, "Maximum number of associations reached, waiting for child process to terminate");
+      while (numChildren == opt_maxChildren) {
+        cleanChildren(-1, OFTrue);
+      }
     }
 #endif
 
