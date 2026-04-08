@@ -695,7 +695,13 @@ OFCondition MdfDatasetManager::checkIntegerValidity(OFString& cmpValue, const in
         }
 
         Uint64 ullValue = 0, limitValue = 0;
+#ifdef PRIu64
+        if (1 != sscanf(cmpValue.c_str(), "%" PRIu64, &ullValue))
+#elif SIZEOF_LONG == 8
         if (1 != sscanf(cmpValue.c_str(), "%lu", &ullValue))
+#else // assume "long long" is 64 bits
+        if (1 != sscanf(cmpValue.c_str(), "%llu", &ullValue))
+#endif
         {
             OFLOG_ERROR(mdfdsmanLogger, "the value could not be parsed as to Uint64");
             return EC_InvalidValue;
@@ -716,7 +722,13 @@ OFCondition MdfDatasetManager::checkIntegerValidity(OFString& cmpValue, const in
     }
 
     Sint64 sllValue = 0, limitValue = 0;
+#ifdef PRId64
+    if (1 != sscanf(cmpValue.c_str(), "%" PRId64, &sllValue))
+#elif SIZEOF_LONG == 8
     if (1 != sscanf(cmpValue.c_str(), "%ld", &sllValue))
+#else // assume "long long" is 64 bits
+    if (1 != sscanf(cmpValue.c_str(), "%lld", &sllValue))
+#endif
     {
         OFLOG_ERROR(mdfdsmanLogger, "the value could not be parsed as a Sint64");
         return EC_InvalidValue;
