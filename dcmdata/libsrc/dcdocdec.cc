@@ -36,6 +36,10 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+#endif
+
 
 DcmDocumentDecapsulator::DcmDocumentDecapsulator()
 : readMode_(ERM_autoDetect)
