@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2025, Open Connections GmbH
+ *  Copyright (C) 2019-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -179,16 +179,28 @@ OFCondition ConcatenationCreator::writeNextInstance(DcmItem& dstDataset)
         return EC_MemoryExhausted;
     }
 
-    Uint8* dstData = NULL;
+    void* dstData = NULL;
     size_t numTotalBytesInstance = (m_numBitsFrame * numFramesThisInstance) / 8;
     // Cast is safe, checked in configureCommon()
-    dstPixelData->createUint8Array(OFstatic_cast(Uint32, numTotalBytesInstance), dstData);
+    if (m_VRPixelData == EVR_OW)
+    {
+        // For 16 bit pixel data, use createUint16Array to ensure that the
+        // internal current VR is set to OW. Using createUint8Array would set
+        // it to OB, which causes byte order issues on big endian platforms.
+        Uint16* dstData16 = NULL;
+        dstPixelData->createUint16Array(OFstatic_cast(Uint32, numTotalBytesInstance / 2), dstData16);
+        dstData = dstData16;
+    }
+    else
+    {
+        Uint8* dstData8 = NULL;
+        dstPixelData->createUint8Array(OFstatic_cast(Uint32, numTotalBytesInstance), dstData8);
+        dstData = dstData8;
+    }
     if (!dstData)
     {
         return EC_MemoryExhausted;
     }
-    // Setting VR is necessary if Pixel Data is actually 16 bit
-    dstPixelData->setVR(m_VRPixelData);
     size_t srcPos = (m_numBitsFrame * m_currentSrcFrame) / 8;
     memcpy(dstData, &(OFstatic_cast(Uint8*, m_srcPixelData->getPixelData())[srcPos]), numTotalBytesInstance);
     result = dstDataset.insert(dstPixelData.release());
