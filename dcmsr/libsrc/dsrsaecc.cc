@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrsaecc.h"
+#include "dcmtk/dcmsr/codes/dcm.h"
 
 
 DSRSimplifiedAdultEchoSRConstraintChecker::DSRSimplifiedAdultEchoSRConstraintChecker()
@@ -130,4 +131,11 @@ OFBool DSRSimplifiedAdultEchoSRConstraintChecker::checkContentRelationship(const
         }
     }
     return result;
+}
+
+
+OFCondition DSRSimplifiedAdultEchoSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    return (conceptName != CODE_DCM_AdultEchocardiographyProcedureReport) ? SR_EC_InvalidRootConceptName
+                                                                          : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

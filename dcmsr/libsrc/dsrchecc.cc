@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrchecc.h"
+#include "dcmtk/dcmsr/codes/dcm.h"
 
 
 DSRChestCadSRConstraintChecker::DSRChestCadSRConstraintChecker()
@@ -136,4 +137,11 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         result = (targetValueType == VT_SCoord) || (targetValueType == VT_Image) || (targetValueType == VT_Waveform);
     }
     return result;
+}
+
+
+OFCondition DSRChestCadSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    return (conceptName != CODE_DCM_ChestCADReport) ? SR_EC_InvalidRootConceptName
+                                                    : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

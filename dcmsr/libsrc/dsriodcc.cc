@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2014, OFFIS e.V.
+ *  Copyright (C) 2003-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,4 +33,11 @@ DSRIODConstraintChecker::DSRIODConstraintChecker()
 
 DSRIODConstraintChecker::~DSRIODConstraintChecker()
 {
+}
+
+
+OFCondition DSRIODConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    /* the root concept name should never be empty */
+    return conceptName.isEmpty() ? SR_EC_InvalidRootConceptName : EC_Normal;
 }

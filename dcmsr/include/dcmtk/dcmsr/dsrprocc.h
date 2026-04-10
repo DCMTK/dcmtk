@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2015, OFFIS e.V.
+ *  Copyright (C) 2003-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -75,7 +75,7 @@ class DCMTK_DCMSR_EXPORT DSRProcedureLogConstraintChecker
      */
     virtual E_DocumentType getDocumentType() const;
 
-    /** check whether specified content relationship is allowed for this IOD
+    /** check whether the specified content relationship is allowed for this IOD
      ** @param  sourceValueType   value type of the source content item to be checked
      *  @param  relationshipType  type of relationship between source and target item
      *  @param  targetValueType   value type of the target content item to be checked

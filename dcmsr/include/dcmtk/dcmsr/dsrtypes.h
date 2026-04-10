@@ -177,6 +177,12 @@ extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotAddContentItem;
 /// error: an invalid concept name code has been passed or is used
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidConceptName;
 
+/// error: the specified root concept name is invalid, e.g. not allowed for this IOD
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_InvalidRootConceptName;
+
+/// error: the specified root concept name is not supported by this implementation
+extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_UnsupportedRootConceptName;
+
 /// error: a given subtree could not be inserted at the current node
 extern DCMTK_DCMSR_EXPORT const OFConditionConst SR_EC_CannotInsertSubTree;
 

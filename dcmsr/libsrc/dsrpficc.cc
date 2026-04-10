@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2019-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrpficc.h"
+#include "dcmtk/dcmsr/codes/dcm.h"
 
 
 DSRPerformedImagingAgentAdministrationSRConstraintChecker::DSRPerformedImagingAgentAdministrationSRConstraintChecker()
@@ -137,4 +138,11 @@ OFBool DSRPerformedImagingAgentAdministrationSRConstraintChecker::checkContentRe
         }
     }
     return result;
+}
+
+
+OFCondition DSRPerformedImagingAgentAdministrationSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    return (conceptName != CODE_DCM_PerformedImagingAgentAdministration) ? SR_EC_InvalidRootConceptName
+                                                                         : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

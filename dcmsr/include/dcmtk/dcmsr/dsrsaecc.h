@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -75,7 +75,7 @@ class DCMTK_DCMSR_EXPORT DSRSimplifiedAdultEchoSRConstraintChecker
      */
     virtual E_DocumentType getDocumentType() const;
 
-    /** check whether specified content relationship is allowed for this IOD
+    /** check whether the specified content relationship is allowed for this IOD
      ** @param  sourceValueType   value type of the source content item to be checked
      *  @param  relationshipType  type of relationship between source and target item
      *  @param  targetValueType   value type of the target content item to be checked
@@ -87,6 +87,14 @@ class DCMTK_DCMSR_EXPORT DSRSimplifiedAdultEchoSRConstraintChecker
                                             const E_RelationshipType relationshipType,
                                             const E_ValueType targetValueType,
                                             const OFBool byReference = OFFalse) const;
+
+    /** check whether the specified root concept name is allowed/supported for this IOD
+     ** @param  conceptName  coded entry specifying the concept name of the root content
+     *                       item to be checked
+     ** @return status, EC_Normal if the root concept name is valid and supported,
+     *          an error code otherwise
+     */
+    virtual OFCondition checkRootConceptName(const DSRCodedEntryValue &conceptName) const;
 };
 
 

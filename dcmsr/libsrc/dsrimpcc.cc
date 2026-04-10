@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2024, OFFIS e.V.
+ *  Copyright (C) 2010-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrimpcc.h"
+#include "dcmtk/dcmsr/codes/dcm.h"
 
 
 DSRImplantationPlanSRDocumentConstraintChecker::DSRImplantationPlanSRDocumentConstraintChecker()
@@ -102,4 +103,11 @@ OFBool DSRImplantationPlanSRDocumentConstraintChecker::checkContentRelationship(
         }
     }
     return result;
+}
+
+
+OFCondition DSRImplantationPlanSRDocumentConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    return (conceptName != CODE_DCM_ImplantationPlan) ? SR_EC_InvalidRootConceptName
+                                                      : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

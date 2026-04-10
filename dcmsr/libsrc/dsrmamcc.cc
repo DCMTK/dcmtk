@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2024, OFFIS e.V.
+ *  Copyright (C) 2003-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrmamcc.h"
+#include "dcmtk/dcmsr/codes/dcm.h"
 
 
 DSRMammographyCadSRConstraintChecker::DSRMammographyCadSRConstraintChecker()
@@ -129,4 +130,11 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
         result = (targetValueType == VT_Image);
     }
     return result;
+}
+
+
+OFCondition DSRMammographyCadSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    return (conceptName != CODE_DCM_MammographyCADReport) ? SR_EC_InvalidRootConceptName
+                                                          : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

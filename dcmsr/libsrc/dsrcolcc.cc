@@ -24,6 +24,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrcolcc.h"
+#include "dcmtk/dcmsr/codes/dcm.h"
 
 
 DSRColonCadSRConstraintChecker::DSRColonCadSRConstraintChecker()
@@ -133,4 +134,11 @@ OFBool DSRColonCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         result = (targetValueType == VT_SCoord) || (targetValueType == VT_SCoord3D) || (targetValueType == VT_Image);
     }
     return result;
+}
+
+
+OFCondition DSRColonCadSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
+{
+    return (conceptName != CODE_DCM_ColonCADReport) ? SR_EC_InvalidRootConceptName
+                                                    : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

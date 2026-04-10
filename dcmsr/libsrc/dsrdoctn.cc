@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2025, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -696,7 +696,7 @@ OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
     result = readDocumentRelationshipMacro(dataset, constraintChecker, "1" /*posString*/, flags);
     /* read Document Content Macro */
     if (result.good())
-        result = readDocumentContentMacro(dataset, "1" /*posString*/, flags);
+        result = readDocumentContentMacro(dataset, constraintChecker, "1" /*posString*/, flags);
     return result;
 }
 
@@ -843,7 +843,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
             }
         }
     }
-    /* write ContentSequence */
+    /* write Content Sequence */
     if (result.good())
         result = writeContentSequence(dataset, markedItems);
     return result;
@@ -851,6 +851,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
 
 
 OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
+                                                          const DSRIODConstraintChecker *constraintChecker,
                                                           const OFString &posString,
                                                           const size_t flags)
 {
@@ -862,6 +863,21 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
     {
         /* the concept name is required for the root container */
         result = ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1" /*type*/, flags);
+        if (result.good())
+        {
+            /* check whether the root concept name (i.e. the document title) is valid/supported */
+            if (constraintChecker != NULL)
+            {
+                result = constraintChecker->checkRootConceptName(ConceptName);
+                if (result == SR_EC_UnsupportedRootConceptName)
+                {
+                    DCMSR_WARN("Found unsupported root concept name " << ConceptName);
+                    /* just warn, ignore the unsupported value */
+                    result = EC_Normal;
+                }
+            }
+        } else
+            result = SR_EC_InvalidRootConceptName;
     } else {
         /* the concept name might be empty for all other content items */
         ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/, flags);
@@ -1039,7 +1055,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags);
                                 /* read Document Content Macro */
                                 if (result.good())
-                                    result = node->readDocumentContentMacro(*ditem, location.c_str(), flags);
+                                    result = node->readDocumentContentMacro(*ditem, constraintChecker, location, flags);
                             } else {
                                 /* create new node failed */
 

@@ -102,7 +102,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
         if (!hasConstraintChecker())
             DCMSR_WARN("Check for relationship content constraints not yet supported");
         else if (ConstraintChecker->isTemplateSupportRequired())
-            DCMSR_WARN("Check for template constraints not yet supported");
+            DCMSR_WARN("Check for template constraints not yet fully supported");
         if (flags & RF_showCurrentlyProcessedItem)
             DCMSR_INFO("Processing content item 1");
         /* first try to read value type */
