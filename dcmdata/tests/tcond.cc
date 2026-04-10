@@ -145,10 +145,9 @@ static OFCondition createTestFile(OFString& tmpFile)
     ulElem->putUint32(100000);
     dset->insert(ulElem, OFTrue);
     // UV: FileOffsetInContainer (0008,040C) — 64-bit unsigned
-    // Uses a value within 32-bit range for portability (checkIntegerValidity
-    // uses sscanf which may truncate values > 2^32 on 32-bit platforms).
+    // Uses a value larger than 32-bit to test full 64-bit range.
     DcmUnsigned64bitVeryLong* uvElem = new DcmUnsigned64bitVeryLong(DCM_FileOffsetInContainer);
-    uvElem->putUint64(3000000000ULL); // fits in 32-bit unsigned
+    uvElem->putUint64(4294967296ULL); // 2^32
     dset->insert(uvElem, OFTrue);
 
     // --- Signed integer VRs ---
@@ -161,10 +160,9 @@ static OFCondition createTestFile(OFString& tmpFile)
     slElem->putSint32(-100000);
     dset->insert(slElem, OFTrue);
     // SV: SelectorSVValue (0072,0082) — 64-bit signed
-    // Uses a value within 32-bit range for portability (checkIntegerValidity
-    // uses sscanf which may truncate values > 2^31 on 32-bit platforms).
+    // Uses a value larger than 32-bit to test full 64-bit range.
     DcmSigned64bitVeryLong* svElem = new DcmSigned64bitVeryLong(DCM_SelectorSVValue);
-    svElem->putSint64(-2000000000LL); // fits in 32-bit signed
+    svElem->putSint64(-4294967296LL); // -(2^32)
     dset->insert(svElem, OFTrue);
 
     // --- Float VRs ---
@@ -200,10 +198,9 @@ static OFCondition createTestFile(OFString& tmpFile)
     olElem->putUint32(70000);
     dset->insert(olElem, OFTrue);
     // OV: SelectorOVValue (0072,0081) — decimal format via DcmUnsigned64bitVeryLong parent
-    // Uses a value within 32-bit range for portability (sscanf on 32-bit platforms).
-    // 64-bit range is already covered by the UV test.
+    // Uses a value larger than 32-bit to test full 64-bit range.
     DcmOther64bitVeryLong* ovElem = new DcmOther64bitVeryLong(DCM_SelectorOVValue);
-    ovElem->putUint64(70000);
+    ovElem->putUint64(5000000000ULL);
     dset->insert(ovElem, OFTrue);
     // OF: SelectorOFValue (0072,0067) — decimal float via DcmFloatingPointSingle parent
     DcmOtherFloat* ofElem = new DcmOtherFloat(DCM_SelectorOFValue);
@@ -435,6 +432,7 @@ OFTEST(dcmdata_condition_SL)
 // ============================================================
 // Test: UV (Unsigned Very Long, 64-bit) — numeric comparison
 // Tag: FileOffsetInContainer (0008,040C), value: 4294967296 (2^32)
+// Note: Tests full 64-bit range with values exceeding 32-bit.
 // ============================================================
 
 OFTEST(dcmdata_condition_UV)
@@ -444,7 +442,7 @@ OFTEST(dcmdata_condition_UV)
     MdfDatasetManager mgr;
     OFCHECK(loadTestFile(mgr, tmpFile).good());
 
-    checkAllOperators(mgr, "(0008,040c)", "3000000000", "1000000000", "4000000000");
+    checkAllOperators(mgr, "(0008,040c)", "4294967296", "1000", "9999999999");
 
     OFStandard::deleteFile(tmpFile);
 }
@@ -453,6 +451,7 @@ OFTEST(dcmdata_condition_UV)
 // ============================================================
 // Test: SV (Signed Very Long, 64-bit) — numeric comparison
 // Tag: SelectorSVValue (0072,0082), value: -4294967296 (-(2^32))
+// Note: Tests full 64-bit range with values exceeding 32-bit.
 // ============================================================
 
 OFTEST(dcmdata_condition_SV)
@@ -462,7 +461,7 @@ OFTEST(dcmdata_condition_SV)
     MdfDatasetManager mgr;
     OFCHECK(loadTestFile(mgr, tmpFile).good());
 
-    checkAllOperators(mgr, "(0072,0082)", "-2000000000", "-2100000000", "0");
+    checkAllOperators(mgr, "(0072,0082)", "-4294967296", "-9999999999", "0");
 
     OFStandard::deleteFile(tmpFile);
 }
@@ -566,6 +565,7 @@ OFTEST(dcmdata_condition_OL)
 // Test: OV (Other 64-bit Very Long, unsigned) — numeric comparison
 // Tag: SelectorOVValue (0072,0081), value: 5000000000
 // OV inherits from DcmUnsigned64bitVeryLong; uses decimal putString/compare.
+// Note: Tests full 64-bit range with values exceeding 32-bit.
 // ============================================================
 
 OFTEST(dcmdata_condition_OV)
@@ -575,7 +575,7 @@ OFTEST(dcmdata_condition_OV)
     MdfDatasetManager mgr;
     OFCHECK(loadTestFile(mgr, tmpFile).good());
 
-    checkAllOperators(mgr, "(0072,0081)", "70000", "50000", "90000");
+    checkAllOperators(mgr, "(0072,0081)", "5000000000", "1000000000", "9000000000");
 
     OFStandard::deleteFile(tmpFile);
 }

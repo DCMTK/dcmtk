@@ -20,6 +20,9 @@
  */
 
 #include "dcmtk/config/osconfig.h" // make sure OS specific configuration is included first
+
+#include "dcmtk/ofstd/ofstream.h"   /* for OFIStringStream */
+
 #include "dcmtk/dcmdata/dcistrmf.h" /* for class DcmInputFileStream */
 #include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
@@ -695,23 +698,22 @@ OFCondition MdfDatasetManager::checkIntegerValidity(OFString& cmpValue, const in
         }
 
         Uint64 ullValue = 0, limitValue = 0;
-#ifdef PRIu64
-        if (1 != sscanf(cmpValue.c_str(), "%" PRIu64, &ullValue))
-#elif SIZEOF_LONG == 8
-        if (1 != sscanf(cmpValue.c_str(), "%lu", &ullValue))
-#else // assume "long long" is 64 bits
-        if (1 != sscanf(cmpValue.c_str(), "%llu", &ullValue))
-#endif
+        // Use OFIStringStream for portable C++98-compatible 64-bit parsing
         {
-            OFLOG_ERROR(mdfdsmanLogger, "the value could not be parsed as to Uint64");
-            return EC_InvalidValue;
+            OFIStringStream iss(cmpValue.c_str());
+            iss >> ullValue;
+            if (iss.fail())
+            {
+                OFLOG_ERROR(mdfdsmanLogger, "the value could not be parsed as Uint64");
+                return EC_InvalidValue;
+            }
         }
         if (vr.getValueWidth() == sizeof(Uint16)) // Short, OW, OB
-            limitValue = (Uint64)OFnumeric_limits<Uint16>::max;
+            limitValue = (Uint64)OFnumeric_limits<Uint16>::max();
         else if (vr.getValueWidth() == sizeof(Uint32)) // Long, OL
-            limitValue = (Uint64)OFnumeric_limits<Uint32>::max;
+            limitValue = (Uint64)OFnumeric_limits<Uint32>::max();
         else if (vr.getValueWidth() == sizeof(Uint64)) // Long Long, OV
-            limitValue = (Uint64)OFnumeric_limits<Uint64>::max;
+            limitValue = (Uint64)OFnumeric_limits<Uint64>::max();
         if (ullValue > limitValue)
         {
             OFLOG_ERROR(mdfdsmanLogger,
@@ -722,30 +724,40 @@ OFCondition MdfDatasetManager::checkIntegerValidity(OFString& cmpValue, const in
     }
 
     Sint64 sllValue = 0, limitValue = 0;
-#ifdef PRId64
-    if (1 != sscanf(cmpValue.c_str(), "%" PRId64, &sllValue))
-#elif SIZEOF_LONG == 8
-    if (1 != sscanf(cmpValue.c_str(), "%ld", &sllValue))
-#else // assume "long long" is 64 bits
-    if (1 != sscanf(cmpValue.c_str(), "%lld", &sllValue))
-#endif
+    // Use OFIStringStream for portable C++98-compatible 64-bit parsing
     {
-        OFLOG_ERROR(mdfdsmanLogger, "the value could not be parsed as a Sint64");
-        return EC_InvalidValue;
+        OFIStringStream iss(cmpValue.c_str());
+        iss >> sllValue;
+        if (iss.fail())
+        {
+            OFLOG_ERROR(mdfdsmanLogger, "the value could not be parsed as Sint64");
+            return EC_InvalidValue;
+        }
     }
+    Sint64 minValue = 0;
     if (vr.getValueWidth() == sizeof(Sint16)) // Short
-        limitValue = (Sint64)OFnumeric_limits<Sint16>::max;
+    {
+        limitValue = (Sint64)OFnumeric_limits<Sint16>::max();
+        minValue = (Sint64)OFnumeric_limits<Sint16>::min();
+    }
     else if (vr.getValueWidth() == sizeof(Sint32)) // Long
-        limitValue = (Sint64)OFnumeric_limits<Sint32>::max;
+    {
+        limitValue = (Sint64)OFnumeric_limits<Sint32>::max();
+        minValue = (Sint64)OFnumeric_limits<Sint32>::min();
+    }
     else if (vr.getValueWidth() == sizeof(Sint64)) // Long Long
-        limitValue = (Sint64)OFnumeric_limits<Sint64>::max;
+    {
+        limitValue = (Sint64)OFnumeric_limits<Sint64>::max();
+        minValue = (Sint64)OFnumeric_limits<Sint64>::min();
+    }
     else
+    {
         // IS (Integer String) has sizeof(char) value width but stores
         // integers in the range of Sint32 per DICOM standard
-        limitValue = (Sint64)OFnumeric_limits<Sint32>::max;
-    if (sign < 0)
-        limitValue++;
-    if (sllValue > limitValue)
+        limitValue = (Sint64)OFnumeric_limits<Sint32>::max();
+        minValue = (Sint64)OFnumeric_limits<Sint32>::min();
+    }
+    if (sllValue < minValue || sllValue > limitValue)
     {
         OFLOG_ERROR(mdfdsmanLogger,
             "the given value \"" << sllValue << "\" is out of bound in VR " << vr.getVRName());
