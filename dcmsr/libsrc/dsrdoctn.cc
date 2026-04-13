@@ -868,6 +868,16 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
             /* check whether the root concept name (i.e. the document title) is valid/supported */
             if (constraintChecker != NULL)
             {
+                if (DCM_dcmsrLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+                {
+                    OFString templateIdentifier;
+                    OFString mappingResource;
+                    if (constraintChecker->getRootTemplateIdentification(templateIdentifier, mappingResource).good())
+                        DCMSR_DEBUG("Checking root concept name for TID " << templateIdentifier << " (" << mappingResource << ")");
+                    else
+                        DCMSR_DEBUG("Checking root concept name for " << documentTypeToReadableName(constraintChecker->getDocumentType()));
+                }
+                /* perform the actual check */
                 result = constraintChecker->checkRootConceptName(ConceptName);
                 if (result == SR_EC_UnsupportedRootConceptName)
                 {
@@ -875,6 +885,8 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
                     /* just warn, ignore the unsupported value */
                     result = EC_Normal;
                 }
+                else if (result == SR_EC_InvalidRootConceptName)
+                    DCMSR_WARN("Found invalid root concept name " << ConceptName);
             }
         } else
             result = SR_EC_InvalidRootConceptName;
