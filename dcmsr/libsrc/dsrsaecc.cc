@@ -136,6 +136,6 @@ OFBool DSRSimplifiedAdultEchoSRConstraintChecker::checkContentRelationship(const
 
 OFCondition DSRSimplifiedAdultEchoSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
 {
-    return (conceptName != CODE_DCM_AdultEchocardiographyProcedureReport) ? SR_EC_InvalidRootConceptName
-                                                                          : DSRIODConstraintChecker::checkRootConceptName(conceptName);
+    return conceptName.isNotEqual(CODE_DCM_AdultEchocardiographyProcedureReport, "01" /*defaultCodingSchemeVersion*/) ?
+        SR_EC_InvalidRootConceptName : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

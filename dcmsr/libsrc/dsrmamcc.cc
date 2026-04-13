@@ -135,6 +135,6 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 
 OFCondition DSRMammographyCadSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
 {
-    return (conceptName != CODE_DCM_MammographyCADReport) ? SR_EC_InvalidRootConceptName
-                                                          : DSRIODConstraintChecker::checkRootConceptName(conceptName);
+    return conceptName.isNotEqual(CODE_DCM_MammographyCADReport, "01" /*defaultCodingSchemeVersion*/) ?
+        SR_EC_InvalidRootConceptName : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

@@ -88,6 +88,6 @@ OFBool DSRSpectaclePrescriptionReportConstraintChecker::checkContentRelationship
 
 OFCondition DSRSpectaclePrescriptionReportConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
 {
-    return (conceptName != CODE_DCM_SpectaclePrescriptionReport) ? SR_EC_InvalidRootConceptName
-                                                                 : DSRIODConstraintChecker::checkRootConceptName(conceptName);
+    return conceptName.isNotEqual(CODE_DCM_SpectaclePrescriptionReport, "01" /*defaultCodingSchemeVersion*/) ?
+        SR_EC_InvalidRootConceptName : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

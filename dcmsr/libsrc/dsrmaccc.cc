@@ -110,6 +110,6 @@ OFBool DSRMacularGridThicknessAndVolumeReportConstraintChecker::checkContentRela
 
 OFCondition DSRMacularGridThicknessAndVolumeReportConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
 {
-    return (conceptName != CODE_DCM_MacularGridThicknessAndVolumeReport) ? SR_EC_InvalidRootConceptName
-                                                                         : DSRIODConstraintChecker::checkRootConceptName(conceptName);
+    return conceptName.isNotEqual(CODE_DCM_MacularGridThicknessAndVolumeReport, "01" /*defaultCodingSchemeVersion*/) ?
+        SR_EC_InvalidRootConceptName : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

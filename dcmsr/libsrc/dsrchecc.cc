@@ -142,6 +142,6 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 
 OFCondition DSRChestCadSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
 {
-    return (conceptName != CODE_DCM_ChestCADReport) ? SR_EC_InvalidRootConceptName
-                                                    : DSRIODConstraintChecker::checkRootConceptName(conceptName);
+    return conceptName.isNotEqual(CODE_DCM_ChestCADReport, "01" /*defaultCodingSchemeVersion*/) ?
+        SR_EC_InvalidRootConceptName : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }

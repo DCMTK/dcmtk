@@ -139,6 +139,6 @@ OFBool DSRPlannedImagingAgentAdministrationSRConstraintChecker::checkContentRela
 
 OFCondition DSRPlannedImagingAgentAdministrationSRConstraintChecker::checkRootConceptName(const DSRCodedEntryValue &conceptName) const
 {
-    return (conceptName != CODE_DCM_PlannedImagingAgentAdministration) ? SR_EC_InvalidRootConceptName
-                                                                       : DSRIODConstraintChecker::checkRootConceptName(conceptName);
+    return conceptName.isNotEqual(CODE_DCM_PlannedImagingAgentAdministration, "01" /*defaultCodingSchemeVersion*/) ?
+        SR_EC_InvalidRootConceptName : DSRIODConstraintChecker::checkRootConceptName(conceptName);
 }
