@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -230,19 +230,27 @@ class DCMTK_DCMSR_EXPORT DSRCodedEntryValue
     /** check whether codes are "equal".
      *  Two codes are equal if the code value, the coding scheme designator and the (optional)
      *  coding scheme version are equal.  The code meaning is not used for this check.
-     ** @param  basicCodedEntry  code that should be compared to the current one
+     ** @param  basicCodedEntry             code that should be compared to the current one
+     *  @param  defaultCodingSchemeVersion  optional default coding scheme version that is used
+     *                                      if unspecified in 'basicCodedEntry'.  Only used for
+     *                                      comparison if also present in this code.
      ** @return OFTrue if both codes are equal, OFFalse otherwise
      */
-    OFBool isEqual(const DSRBasicCodedEntry &basicCodedEntry) const;
+    OFBool isEqual(const DSRBasicCodedEntry &basicCodedEntry,
+                   const OFString &defaultCodingSchemeVersion = "") const;
 
     /** check whether codes are "not equal".
      *  Two codes are not equal if either the code value or the coding scheme designator
      *  or the (optional) coding scheme version are not equal.  The code meaning is not
      *  used for this check.
-     ** @param  basicCodedEntry  code that should be compared to the current one
+     ** @param  basicCodedEntry             code that should be compared to the current one
+     *  @param  defaultCodingSchemeVersion  optional default coding scheme version that is used
+     *                                      if unspecified in 'basicCodedEntry'.  Only used for
+     *                                      comparison if also present in this code.
      ** @return OFTrue if both codes are not equal, OFFalse otherwise
      */
-    OFBool isNotEqual(const DSRBasicCodedEntry &basicCodedEntry) const;
+    OFBool isNotEqual(const DSRBasicCodedEntry &basicCodedEntry,
+                      const OFString &defaultCodingSchemeVersion = "") const;
 
     /** check whether the current code is valid.  This check only covers the "Basic Coded Entry
      *  Attributes".  An empty code is not valid.  See checkCode() for details.

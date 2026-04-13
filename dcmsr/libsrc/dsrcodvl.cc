@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2024, OFFIS e.V.
+ *  Copyright (C) 2000-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -223,21 +223,29 @@ OFBool DSRCodedEntryValue::isNotEqual(const DSRCodedEntryValue &codedEntryValue)
 }
 
 
-OFBool DSRCodedEntryValue::isEqual(const DSRBasicCodedEntry &basicCodedEntry) const
+OFBool DSRCodedEntryValue::isEqual(const DSRBasicCodedEntry &basicCodedEntry,
+                                   const OFString &defaultCodingSchemeVersion) const
 {
+    /* check whether to use the default coding scheme version (if specified) */
+    const OFString codingSchemeVersion = (!CodingSchemeVersion.empty() && basicCodedEntry.CodingSchemeVersion.empty()) ?
+                                         defaultCodingSchemeVersion : basicCodedEntry.CodingSchemeVersion;
     /* Code Meaning is not used for comparing the two codes */
     return (CodeValue == basicCodedEntry.CodeValue) &&
            (CodingSchemeDesignator == basicCodedEntry.CodingSchemeDesignator) &&
-           (CodingSchemeVersion == basicCodedEntry.CodingSchemeVersion);
+           (CodingSchemeVersion == codingSchemeVersion);
 }
 
 
-OFBool DSRCodedEntryValue::isNotEqual(const DSRBasicCodedEntry &basicCodedEntry) const
+OFBool DSRCodedEntryValue::isNotEqual(const DSRBasicCodedEntry &basicCodedEntry,
+                                      const OFString &defaultCodingSchemeVersion) const
 {
+    /* check whether to use the default coding scheme version (if specified) */
+    const OFString codingSchemeVersion = (!CodingSchemeVersion.empty() && basicCodedEntry.CodingSchemeVersion.empty()) ?
+                                         defaultCodingSchemeVersion : basicCodedEntry.CodingSchemeVersion;
     /* Code Meaning is not used for comparing the two codes */
     return (CodeValue != basicCodedEntry.CodeValue) ||
            (CodingSchemeDesignator != basicCodedEntry.CodingSchemeDesignator) ||
-           (CodingSchemeVersion != basicCodedEntry.CodingSchemeVersion);
+           (CodingSchemeVersion != codingSchemeVersion);
 }
 
 
