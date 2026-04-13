@@ -78,6 +78,9 @@ add_custom_target("test-exhaustive"
 #-----------------------------------------------------------------------------
 
 # Recurse into subdirectories
+if(DCMTK_WITH_GROK AND WITH_GROK)
+  list(APPEND DCMTK_MODULES dcmgrok)
+endif()
 foreach(module config doxygen ${DCMTK_MODULES})
   add_subdirectory(${module})
 endforeach()
