@@ -421,7 +421,8 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
         {
             DCMSR_ERROR("Unsupported SOP Class UID (not yet implemented)");
             result = SR_EC_UnsupportedValue;
-        }
+        } else
+            DCMSR_DEBUG("Type of SR document: " << documentTypeToReadableName(documentType));
     } else {
         /* no SOP Class UID means no document type */
         documentType = DT_invalid;
