@@ -55,6 +55,9 @@ set(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}list(APPEND DCMTK_INCLUDE_DIRS \"${DC
 foreach(module ${DCMTK_MODULES})
     set(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}list(APPEND DCMTK_INCLUDE_DIRS \"${DCMTK_SOURCE_DIR}/${module}/include\")\n")
 endforeach()
+foreach(module ${DCMTK_EXTERNAL_MODULES})
+    set(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}list(APPEND DCMTK_INCLUDE_DIRS \"${module}/include\")\n")
+endforeach()
 set(DCMTK_CONFIG_CODE "${DCMTK_CONFIG_CODE}##################################################")
 set(dcmtk_config "${CMAKE_BINARY_DIR}/DCMTKConfig.cmake")
 # Actually configure file and write it to build's main directory
