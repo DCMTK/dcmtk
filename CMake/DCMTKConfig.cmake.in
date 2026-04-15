@@ -109,6 +109,11 @@ SET_AND_CHECK(DCMTK_TARGETS "@PACKAGE_DCMTK_CMKDIR_CONFIG@/DCMTKTargets.cmake")
 # Compatibility: This variable is deprecated
 set(DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIRS})
 
+include(CMakeFindDependencyMacro)
+if(DCMTK_WITH_OPENJPEG)
+  find_dependency(OpenJPEG)
+endif()
+
 if(NOT DCMTK_TARGETS_IMPORTED)
   set(DCMTK_TARGETS_IMPORTED 1)
   include(${DCMTK_TARGETS})
