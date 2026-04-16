@@ -208,7 +208,7 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
             if (dcmEnableAutomaticInputDataCorrection.get())
             {
                 /*
-                ** Remove any leading, embedded, or trailing white space.
+                ** Remove any leading, embedded, or trailing invalid characters.
                 ** This manipulation attempts to correct problems with
                 ** incorrectly encoded UIDs which have been observed in
                 ** some images.
@@ -216,14 +216,14 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString(const Uint32 length)
                 size_t curPos = 0;
                 for (size_t i = 0; i < len; i++)
                 {
-                   if (!OFStandard::isspace(value[i]))
+                   if ((value[i] >= '0' && value[i] <= '9') || value[i] == '\\' || value[i] == '.' || (value[i] == 0 && i == len - 1))
                       value[curPos++] = value[i];
                 }
-                /* there was at least one space character in the string */
+                /* there was at least one invalid character in the string */
                 if (curPos < len)
                 {
                     DCMDATA_WARN("DcmUniqueIdentifier: Element " << getTagName() << " " << getTag()
-                        << " contains one or more space characters, which were removed");
+                        << " contains one or more invalid characters, which were removed");
                     /* remember new length */
                     const Uint32 newLen = OFstatic_cast(Uint32, curPos);
                     /* blank out all trailing characters */

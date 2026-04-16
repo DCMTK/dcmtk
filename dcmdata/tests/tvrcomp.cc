@@ -122,8 +122,8 @@ static void checkStringBased(
     OFCHECK(obj2 >= obj1);
 
     // Check same number of values (1), same length, but different content
-    obj1.putOFStringArray("A");
-    obj2.putOFStringArray("B");
+    obj1.putOFStringArray("0");
+    obj2.putOFStringArray("1");
     OFCHECK(obj1.compare(obj2) < 0);
     OFCHECK(obj1 < obj2);
     OFCHECK(obj1 <= obj2);
