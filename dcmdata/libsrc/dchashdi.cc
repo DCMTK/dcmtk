@@ -266,9 +266,11 @@ DcmHashDict::hash(const DcmTagKey* key, const char *privCreator) const
     int i = 0;
     Uint32 h = key->hash();
 
-    // If there is a private creator, hash that in, too
+    // If there is a private creator, hash that in, too. Cast through
+    // unsigned char first: a plain "char" is signed on most targets, and
+    // shifting a negative int is undefined behavior per the C/C++ standard.
     for (; privCreator != NULL && *privCreator != '\0'; privCreator++) {
-        h ^= *privCreator << ((++i & 3) << 3);
+        h ^= OFstatic_cast(Uint32, OFstatic_cast(unsigned char, *privCreator)) << ((++i & 3) << 3);
     }
 
     // This 'hash function' only works well if hashTabLength is prime
