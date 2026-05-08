@@ -43,11 +43,11 @@
 
 static OFLogger mdfdsmanLogger = OFLog::getLogger("dcmtk.dcmdata.mdfdsman");
 
-MdfDatasetManager::MdfDatasetManager()
-    : current_file("")
-    , dfile(NULL)
-    , dset(NULL)
-    , ignore_un_modifies(OFFalse)
+MdfDatasetManager::MdfDatasetManager():
+    current_file(""),
+    dfile(NULL),
+    dset(NULL),
+    ignore_un_modifies(OFFalse)
 {
 }
 

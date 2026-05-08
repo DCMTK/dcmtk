@@ -42,10 +42,10 @@ END_EXTERN_C
 
 static OFLogger dcmodifyLogger = OFLog::getLogger("dcmtk.apps.dcmodify");
 
-MdfJob::MdfJob()
-    : option()
-    , path()
-    , value()
+MdfJob::MdfJob() :
+    option(),
+    path(),
+    value()
 {
 }
 
@@ -53,10 +53,10 @@ MdfJob::~MdfJob()
 {
 }
 
-MdfJob::MdfJob(const MdfJob& other)
-    : option(other.option)
-    , path(other.path)
-    , value(other.value)
+MdfJob::MdfJob(const MdfJob& other):
+    option(other.option),
+    path(other.path),
+    value(other.value)
 {
 }
 
@@ -76,19 +76,19 @@ MdfJob& MdfJob::operator=(const MdfJob& j)
 }
 
 
-MdfCondition::MdfCondition()
-    : option()
-    , path()
-    , operation()
-    , value()
+MdfCondition::MdfCondition():
+    option(),
+    path(),
+    operation(),
+    value()
 {
 }
 
-MdfCondition::MdfCondition(const MdfCondition& other)
-    : option(other.option)
-    , path(other.path)
-    , operation(other.operation)
-    , value(other.value)
+MdfCondition::MdfCondition(const MdfCondition& other):
+    option(other.option),
+    path(other.path),
+    operation(other.operation),
+    value(other.value)
 {
 }
 
@@ -149,30 +149,30 @@ OFString MdfCondition::toString() const
 }
 
 
-MdfConsoleEngine::MdfConsoleEngine(int argc, char* argv[], const char* application_name)
-    : app(NULL)
-    , cmd(NULL)
-    , ds_man(NULL)
-    , ignore_errors_option(OFFalse)
-    , update_metaheader_uids_option(OFTrue)
-    , no_backup_option(OFFalse)
-    , read_mode_option(ERM_autoDetect)
-    , input_xfer_option(EXS_Unknown)
-    , output_dataset_option(OFFalse)
-    , output_xfer_option(EXS_Unknown)
-    , glenc_option(EGL_recalcGL)
-    , enctype_option(EET_ExplicitLength)
-    , padenc_option(EPD_withoutPadding)
-    , filepad_option(0)
-    , itempad_option(0)
-    , ignore_missing_tags_option(OFFalse)
-    , no_reservation_checks(OFFalse)
-    , ignore_un_modifies(OFFalse)
-    , create_if_necessary(OFFalse)
-    , was_created(OFFalse)
-    , conditions()
-    , jobs(NULL)
-    , files(NULL)
+MdfConsoleEngine::MdfConsoleEngine(int argc, char* argv[], const char* application_name):
+    app(NULL),
+    cmd(NULL),
+    ds_man(NULL),
+    ignore_errors_option(OFFalse),
+    update_metaheader_uids_option(OFTrue),
+    no_backup_option(OFFalse),
+    read_mode_option(ERM_autoDetect),
+    input_xfer_option(EXS_Unknown),
+    output_dataset_option(OFFalse),
+    output_xfer_option(EXS_Unknown),
+    glenc_option(EGL_recalcGL),
+    enctype_option(EET_ExplicitLength),
+    padenc_option(EPD_withoutPadding),
+    filepad_option(0),
+    itempad_option(0),
+    ignore_missing_tags_option(OFFalse),
+    no_reservation_checks(OFFalse),
+    ignore_un_modifies(OFFalse),
+    create_if_necessary(OFFalse),
+    was_created(OFFalse),
+    conditions(),
+    jobs(NULL),
+    files(NULL)
 {
     char rcsid[200];
     // print application header
@@ -185,125 +185,98 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char* argv[], const char* applicati
     cmd->setOptionColumns(LONGCOL, SHORTCOL);
     cmd->setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd->addParam(
-        "dcmfile-in", "DICOM input filename to be modified\n(\"-\" for stdin/stdout)", OFCmdParam::PM_MultiMandatory);
+    cmd->addParam("dcmfile-in", "DICOM input filename to be modified\n(\"-\" for stdin/stdout)", OFCmdParam::PM_MultiMandatory);
 
     // add options to commandline application
     cmd->addGroup("general options:", LONGCOL, SHORTCOL + 2);
-    cmd->addOption("--help", "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-    cmd->addOption("--version", "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd->addOption("--help",          "-h",  "print this help text and exit",        OFCommandLine::AF_Exclusive);
+      cmd->addOption("--version",              "print version information and exit",   OFCommandLine::AF_Exclusive);
     OFLog::addOptions(*cmd);
     cmd->addGroup("input options:");
-    cmd->addSubGroup("input file format:");
-    cmd->addOption("--read-file", "+f", "read file format or data set (default)");
-    cmd->addOption("--read-file-only", "+fo", "read file format only");
-    cmd->addOption("--read-dataset", "-f", "read data set without file meta information");
-    cmd->addOption("--create-file", "+fc", "create file format if file does not exist");
-    cmd->addSubGroup("input transfer syntax:");
-    cmd->addOption("--read-xfer-auto", "-t=", "use TS recognition (default)");
-    cmd->addOption("--read-xfer-detect", "-td", "ignore TS specified in the file meta header");
-    cmd->addOption("--read-xfer-little", "-te", "read with explicit VR little endian TS");
-    cmd->addOption("--read-xfer-big", "-tb", "read with explicit VR big endian TS");
-    cmd->addOption("--read-xfer-implicit", "-ti", "read with implicit VR little endian TS");
-    cmd->addSubGroup("parsing of odd-length attributes:");
-    cmd->addOption("--accept-odd-length", "+ao", "accept odd length attributes (default)");
-    cmd->addOption("--assume-even-length", "+ae", "assume real length is one byte larger");
-    cmd->addSubGroup("automatic data correction:");
-    cmd->addOption("--enable-correction", "+dc", "enable automatic data correction (default)");
-    cmd->addOption("--disable-correction", "-dc", "disable automatic data correction");
+      cmd->addSubGroup("input file format:");
+        cmd->addOption("--read-file",           "+f",     "read file format or data set (default)");
+        cmd->addOption("--read-file-only",      "+fo",    "read file format only");
+        cmd->addOption("--read-dataset",        "-f",     "read data set without file meta information");
+        cmd->addOption("--create-file",         "+fc",    "create file format if file does not exist");
+      cmd->addSubGroup("input transfer syntax:");
+        cmd->addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+        cmd->addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
+        cmd->addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+        cmd->addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+        cmd->addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
+      cmd->addSubGroup("parsing of odd-length attributes:");
+        cmd->addOption("--accept-odd-length",   "+ao",    "accept odd length attributes (default)");
+        cmd->addOption("--assume-even-length",  "+ae",    "assume real length is one byte larger");
+      cmd->addSubGroup("automatic data correction:");
+        cmd->addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
+        cmd->addOption("--disable-correction",  "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
-    cmd->addSubGroup("bitstream format of deflated input:");
-    cmd->addOption("--bitstream-deflated", "+bd", "expect deflated bitstream (default)");
-    cmd->addOption("--bitstream-zlib", "+bz", "expect deflated zlib bitstream");
+      cmd->addSubGroup("bitstream format of deflated input:");
+        cmd->addOption("--bitstream-deflated",  "+bd",    "expect deflated bitstream (default)");
+        cmd->addOption("--bitstream-zlib",      "+bz",    "expect deflated zlib bitstream");
 #endif
 
     cmd->addGroup("processing options:");
-    cmd->addSubGroup("backup input files:");
-    cmd->addOption("--backup", "backup files before modifying (default)");
-    cmd->addOption("--no-backup", "-nb", "don't backup files (DANGEROUS)");
-    cmd->addSubGroup("insert mode:");
-    cmd->addOption("--insert",
-                   "-i",
-                   1,
-                   "\"[t]ag-path=[v]alue\"",
-                   "insert (or overwrite) path at position t\nwith value v",
-                   OFCommandLine::AF_NoWarning);
-    cmd->addOption("--insert-from-file",
-                   "-if",
-                   1,
-                   "\"[t]ag-path=[f]ilename\"",
-                   "insert (or overwrite) path at position t\nwith value from file f",
-                   OFCommandLine::AF_NoWarning);
-    cmd->addOption("--no-reserv-check", "-nrc", "do not check private reservations\nwhen inserting private tags");
-    cmd->addSubGroup("modify mode:");
-    cmd->addOption("--modify",
-                   "-m",
-                   1,
-                   "\"[t]ag-path=[v]alue\"",
-                   "modify tag at position t to value v",
-                   OFCommandLine::AF_NoWarning);
-    cmd->addOption("--modify-from-file",
-                   "-mf",
-                   1,
-                   "\"[t]ag-path=[f]ilename\"",
-                   "modify tag at position t to value from file f",
-                   OFCommandLine::AF_NoWarning);
-    cmd->addOption("--modify-all",
-                   "-ma",
-                   1,
-                   "\"[t]ag=[v]alue\"",
-                   "modify ALL matching tags t in file to value v",
-                   OFCommandLine::AF_NoWarning);
-    cmd->addSubGroup("erase mode:");
-    cmd->addOption("--erase", "-e", 1, "\"[t]ag-path\"", "erase tag/item at position t", OFCommandLine::AF_NoWarning);
-    cmd->addOption(
-        "--erase-all", "-ea", 1, "\"[t]ag\"", "erase ALL matching tags t in file", OFCommandLine::AF_NoWarning);
-    cmd->addOption("--erase-private", "-ep", "erase ALL private data from file", OFCommandLine::AF_NoWarning);
-    cmd->addSubGroup("unique identifier:");
-    cmd->addOption("--gen-stud-uid", "-gst", "generate new Study Instance UID", OFCommandLine::AF_NoWarning);
-    cmd->addOption("--gen-ser-uid", "-gse", "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
-    cmd->addOption("--gen-inst-uid", "-gin", "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
-    cmd->addOption(
-        "--no-meta-uid", "-nmu", "do not update metaheader UIDs if related\nUIDs in the dataset are modified");
-    cmd->addSubGroup("conditional execution:");
-    cmd->addOption("--process-if",
-                   "-iff",
-                   1,
-                   "\"[c]ondition\"",
-                   "only perform modification(s)\nif condition c holds true",
-                   OFCommandLine::AF_NoWarning);
-    cmd->addSubGroup("error handling:");
-    cmd->addOption("--ignore-errors", "-ie", "continue with file, if modify error occurs");
-    cmd->addOption(
-        "--ignore-missing-tags", "-imt", "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
-    cmd->addOption("--ignore-un-values", "-iun", "do not try writing any values to elements\nhaving a VR of UN");
+      cmd->addSubGroup("backup input files:");
+        cmd->addOption("--backup",                        "backup files before modifying (default)");
+        cmd->addOption("--no-backup",           "-nb",    "don't backup files (DANGEROUS)");
+      cmd->addSubGroup("insert mode:");
+        cmd->addOption("--insert",              "-i",  1, "\"[t]ag-path=[v]alue\"",
+                                                          "insert (or overwrite) path at position t\nwith value v",
+                                                          OFCommandLine::AF_NoWarning);
+        cmd->addOption("--insert-from-file",    "-if", 1, "\"[t]ag-path=[f]ilename\"",
+                                                          "insert (or overwrite) path at position t\nwith value from file f",
+                                                          OFCommandLine::AF_NoWarning);
+        cmd->addOption("--no-reserv-check",     "-nrc",   "do not check private reservations\nwhen inserting private tags");
+      cmd->addSubGroup("modify mode:");
+        cmd->addOption("--modify",              "-m",  1, "\"[t]ag-path=[v]alue\"",
+                                                          "modify tag at position t to value v", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--modify-from-file",    "-mf", 1, "\"[t]ag-path=[f]ilename\"",
+                                                          "modify tag at position t to value from file f", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--modify-all",          "-ma", 1, "\"[t]ag=[v]alue\"",
+                                                          "modify ALL matching tags t in file to value v", OFCommandLine::AF_NoWarning);
+      cmd->addSubGroup("erase mode:");
+        cmd->addOption("--erase",               "-e",  1, "\"[t]ag-path\"",
+                                                          "erase tag/item at position t", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--erase-all",           "-ea", 1, "\"[t]ag\"",
+                                                          "erase ALL matching tags t in file", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--erase-private",       "-ep",    "erase ALL private data from file", OFCommandLine::AF_NoWarning);
+      cmd->addSubGroup("unique identifier:");
+        cmd->addOption("--gen-stud-uid",        "-gst",   "generate new Study Instance UID", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--gen-ser-uid",         "-gse",   "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--gen-inst-uid",        "-gin",   "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
+        cmd->addOption("--no-meta-uid",         "-nmu",   "do not update metaheader UIDs if related\nUIDs in the dataset are modified");
+      cmd->addSubGroup("conditional execution:");
+        cmd->addOption("--process-if",          "-iff",1, "\"[c]ondition\"",
+                                                          "only perform modification(s)\nif condition c holds true", OFCommandLine::AF_NoWarning);
+      cmd->addSubGroup("error handling:");
+        cmd->addOption("--ignore-errors",       "-ie",    "continue with file, if modify error occurs");
+        cmd->addOption("--ignore-missing-tags", "-imt",   "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
+        cmd->addOption("--ignore-un-values",    "-iun",   "do not try writing any values to elements\nhaving a VR of UN");
     cmd->addGroup("output options:");
-    cmd->addSubGroup("output file format:");
-    cmd->addOption("--write-file", "+F", "write file format (default)");
-    cmd->addOption("--write-dataset", "-F", "write data set without file meta information");
-    cmd->addSubGroup("output transfer syntax:");
-    cmd->addOption("--write-xfer-same", "+t=", "write with same TS as input (default)");
-    cmd->addOption("--write-xfer-little", "+te", "write with explicit VR little endian TS");
-    cmd->addOption("--write-xfer-big", "+tb", "write with explicit VR big endian TS");
-    cmd->addOption("--write-xfer-implicit", "+ti", "write with implicit VR little endian TS");
-    cmd->addSubGroup("post-1993 value representations:");
-    cmd->addOption("--enable-new-vr", "+u", "enable support for new VRs (UN/UT) (default)");
-    cmd->addOption("--disable-new-vr", "-u", "disable support for new VRs, convert to OB");
-    cmd->addSubGroup("group length encoding:");
-    cmd->addOption("--group-length-recalc", "+g=", "recalculate group lengths if present (default)");
-    cmd->addOption("--group-length-create", "+g", "always write with group length elements");
-    cmd->addOption("--group-length-remove", "-g", "always write without group length elements");
-    cmd->addSubGroup("length encoding in sequences and items:");
-    cmd->addOption("--length-explicit", "+le", "write with explicit lengths (default)");
-    cmd->addOption("--length-undefined", "-le", "write with undefined lengths");
-    cmd->addSubGroup("data set trailing padding (not with --write-dataset):");
-    cmd->addOption("--padding-retain", "-p=", "do not change padding\n(default if not --write-dataset)");
-    cmd->addOption("--padding-off", "-p", "no padding (implicit if --write-dataset)");
-    cmd->addOption("--padding-create",
-                   "+p",
-                   2,
-                   "[f]ile-pad [i]tem-pad: integer",
-                   "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd->addSubGroup("output file format:");
+        cmd->addOption("--write-file",          "+F",     "write file format (default)");
+        cmd->addOption("--write-dataset",       "-F",     "write data set without file meta information");
+      cmd->addSubGroup("output transfer syntax:");
+        cmd->addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
+        cmd->addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
+        cmd->addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+        cmd->addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
+      cmd->addSubGroup("post-1993 value representations:");
+        cmd->addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+        cmd->addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
+      cmd->addSubGroup("group length encoding:");
+        cmd->addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+        cmd->addOption("--group-length-create", "+g",     "always write with group length elements");
+        cmd->addOption("--group-length-remove", "-g",     "always write without group length elements");
+      cmd->addSubGroup("length encoding in sequences and items:");
+        cmd->addOption("--length-explicit",     "+le",    "write with explicit lengths (default)");
+        cmd->addOption("--length-undefined",    "-le",    "write with undefined lengths");
+      cmd->addSubGroup("data set trailing padding (not with --write-dataset):");
+        cmd->addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+        cmd->addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+        cmd->addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                          "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     // evaluate commandline
     prepareCmdLineArgs(argc, argv, application_name);
@@ -351,9 +324,8 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char* argv[], const char* applicati
 
         // make sure data dictionary is loaded
         if (!dcmDataDict.isDictionaryLoaded())
-            OFLOG_WARN(dcmodifyLogger,
-                       "no data dictionary loaded, "
-                           << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+            OFLOG_WARN(dcmodifyLogger, "no data dictionary loaded, "
+                                      << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* print resource identifier */
@@ -367,68 +339,68 @@ void MdfConsoleEngine::parseNonJobOptions()
 
     // input options
     cmd->beginOptionBlock();
-    if (cmd->findOption("--read-file"))
-        read_mode_option = ERM_autoDetect;
-    if (cmd->findOption("--read-file-only"))
-        read_mode_option = ERM_fileOnly;
-    if (cmd->findOption("--read-dataset"))
-        read_mode_option = ERM_dataset;
+      if (cmd->findOption("--read-file"))
+          read_mode_option = ERM_autoDetect;
+      if (cmd->findOption("--read-file-only"))
+          read_mode_option = ERM_fileOnly;
+      if (cmd->findOption("--read-dataset"))
+          read_mode_option = ERM_dataset;
     cmd->endOptionBlock();
 
     if (cmd->findOption("--create-file"))
         create_if_necessary = OFTrue;
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--read-xfer-auto"))
-        input_xfer_option = EXS_Unknown;
-    if (cmd->findOption("--read-xfer-detect"))
-        dcmAutoDetectDatasetXfer.set(OFTrue);
-    if (cmd->findOption("--read-xfer-little"))
-    {
-        app->checkDependence("--read-xfer-little", "--read-dataset", read_mode_option == ERM_dataset);
-        input_xfer_option = EXS_LittleEndianExplicit;
-    }
-    if (cmd->findOption("--read-xfer-big"))
-    {
-        app->checkDependence("--read-xfer-big", "--read-dataset", read_mode_option == ERM_dataset);
-        input_xfer_option = EXS_BigEndianExplicit;
-    }
-    if (cmd->findOption("--read-xfer-implicit"))
-    {
-        app->checkDependence("--read-xfer-implicit", "--read-dataset", read_mode_option == ERM_dataset);
-        input_xfer_option = EXS_LittleEndianImplicit;
-    }
+      if (cmd->findOption("--read-xfer-auto"))
+          input_xfer_option = EXS_Unknown;
+      if (cmd->findOption("--read-xfer-detect"))
+          dcmAutoDetectDatasetXfer.set(OFTrue);
+      if (cmd->findOption("--read-xfer-little"))
+      {
+          app->checkDependence("--read-xfer-little", "--read-dataset", read_mode_option == ERM_dataset);
+          input_xfer_option = EXS_LittleEndianExplicit;
+      }
+      if (cmd->findOption("--read-xfer-big"))
+      {
+          app->checkDependence("--read-xfer-big", "--read-dataset", read_mode_option == ERM_dataset);
+          input_xfer_option = EXS_BigEndianExplicit;
+      }
+      if (cmd->findOption("--read-xfer-implicit"))
+      {
+          app->checkDependence("--read-xfer-implicit", "--read-dataset", read_mode_option == ERM_dataset);
+          input_xfer_option = EXS_LittleEndianImplicit;
+      }
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--accept-odd-length"))
-        dcmAcceptOddAttributeLength.set(OFTrue);
-    if (cmd->findOption("--assume-even-length"))
-        dcmAcceptOddAttributeLength.set(OFFalse);
+      if (cmd->findOption("--accept-odd-length"))
+          dcmAcceptOddAttributeLength.set(OFTrue);
+      if (cmd->findOption("--assume-even-length"))
+          dcmAcceptOddAttributeLength.set(OFFalse);
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--enable-correction"))
-        dcmEnableAutomaticInputDataCorrection.set(OFTrue);
-    if (cmd->findOption("--disable-correction"))
-        dcmEnableAutomaticInputDataCorrection.set(OFFalse);
+      if (cmd->findOption("--enable-correction"))
+          dcmEnableAutomaticInputDataCorrection.set(OFTrue);
+      if (cmd->findOption("--disable-correction"))
+          dcmEnableAutomaticInputDataCorrection.set(OFFalse);
     cmd->endOptionBlock();
 
 #ifdef WITH_ZLIB
     cmd->beginOptionBlock();
-    if (cmd->findOption("--bitstream-deflated"))
-        dcmZlibExpectRFC1950Encoding.set(OFFalse);
-    if (cmd->findOption("--bitstream-zlib"))
-        dcmZlibExpectRFC1950Encoding.set(OFTrue);
+      if (cmd->findOption("--bitstream-deflated"))
+          dcmZlibExpectRFC1950Encoding.set(OFFalse);
+      if (cmd->findOption("--bitstream-zlib"))
+          dcmZlibExpectRFC1950Encoding.set(OFTrue);
     cmd->endOptionBlock();
 #endif
 
     // processing options
     cmd->beginOptionBlock();
-    if (cmd->findOption("--backup"))
-        no_backup_option = OFFalse;
-    if (cmd->findOption("--no-backup"))
-        no_backup_option = OFTrue;
+      if (cmd->findOption("--backup"))
+          no_backup_option = OFFalse;
+      if (cmd->findOption("--no-backup"))
+          no_backup_option = OFTrue;
     cmd->endOptionBlock();
 
     if (cmd->findOption("--no-reserv-check"))
@@ -446,64 +418,64 @@ void MdfConsoleEngine::parseNonJobOptions()
 
     // output options
     cmd->beginOptionBlock();
-    if (cmd->findOption("--write-file"))
-        output_dataset_option = OFFalse;
-    if (cmd->findOption("--write-dataset"))
-    {
-        output_dataset_option = OFTrue;
-        app->checkConflict("--write-dataset", "--create-file", create_if_necessary);
-    }
+      if (cmd->findOption("--write-file"))
+          output_dataset_option = OFFalse;
+      if (cmd->findOption("--write-dataset"))
+      {
+          output_dataset_option = OFTrue;
+          app->checkConflict("--write-dataset", "--create-file", create_if_necessary);
+      }
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--write-xfer-same"))
-        output_xfer_option = EXS_Unknown;
-    if (cmd->findOption("--write-xfer-little"))
-        output_xfer_option = EXS_LittleEndianExplicit;
-    if (cmd->findOption("--write-xfer-big"))
-        output_xfer_option = EXS_BigEndianExplicit;
-    if (cmd->findOption("--write-xfer-implicit"))
-        output_xfer_option = EXS_LittleEndianImplicit;
+      if (cmd->findOption("--write-xfer-same"))
+          output_xfer_option = EXS_Unknown;
+      if (cmd->findOption("--write-xfer-little"))
+          output_xfer_option = EXS_LittleEndianExplicit;
+      if (cmd->findOption("--write-xfer-big"))
+          output_xfer_option = EXS_BigEndianExplicit;
+      if (cmd->findOption("--write-xfer-implicit"))
+          output_xfer_option = EXS_LittleEndianImplicit;
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--enable-new-vr"))
-        dcmEnableGenerationOfNewVRs();
-    if (cmd->findOption("--disable-new-vr"))
-        dcmDisableGenerationOfNewVRs();
+      if (cmd->findOption("--enable-new-vr"))
+          dcmEnableGenerationOfNewVRs();
+      if (cmd->findOption("--disable-new-vr"))
+          dcmDisableGenerationOfNewVRs();
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--group-length-recalc"))
-        glenc_option = EGL_recalcGL;
-    if (cmd->findOption("--group-length-create"))
-        glenc_option = EGL_withGL;
-    if (cmd->findOption("--group-length-remove"))
-        glenc_option = EGL_withoutGL;
+      if (cmd->findOption("--group-length-recalc"))
+          glenc_option = EGL_recalcGL;
+      if (cmd->findOption("--group-length-create"))
+          glenc_option = EGL_withGL;
+      if (cmd->findOption("--group-length-remove"))
+          glenc_option = EGL_withoutGL;
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--length-explicit"))
-        enctype_option = EET_ExplicitLength;
-    if (cmd->findOption("--length-undefined"))
-        enctype_option = EET_UndefinedLength;
+      if (cmd->findOption("--length-explicit"))
+          enctype_option = EET_ExplicitLength;
+      if (cmd->findOption("--length-undefined"))
+          enctype_option = EET_UndefinedLength;
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
-    if (cmd->findOption("--padding-retain"))
-    {
-        app->checkConflict("--padding-retain", "--write-dataset", output_dataset_option);
-        padenc_option = EPD_noChange;
-    }
-    if (cmd->findOption("--padding-off"))
-        padenc_option = EPD_withoutPadding;
-    if (cmd->findOption("--padding-create"))
-    {
-        app->checkConflict("--padding-create", "--write-dataset", output_dataset_option);
-        app->checkValue(cmd->getValueAndCheckMin(filepad_option, 0));
-        app->checkValue(cmd->getValueAndCheckMin(itempad_option, 0));
-        padenc_option = EPD_withPadding;
-    }
+      if (cmd->findOption("--padding-retain"))
+      {
+          app->checkConflict("--padding-retain", "--write-dataset", output_dataset_option);
+          padenc_option = EPD_noChange;
+      }
+      if (cmd->findOption("--padding-off"))
+          padenc_option = EPD_withoutPadding;
+      if (cmd->findOption("--padding-create"))
+      {
+          app->checkConflict("--padding-create", "--write-dataset", output_dataset_option);
+          app->checkValue(cmd->getValueAndCheckMin(filepad_option, 0));
+          app->checkValue(cmd->getValueAndCheckMin(itempad_option, 0));
+          padenc_option = EPD_withPadding;
+      }
     cmd->endOptionBlock();
 }
 
