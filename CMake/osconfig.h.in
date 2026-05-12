@@ -351,9 +351,6 @@
 /* Define to 1 if you have the <thread.h> header file. */
 #cmakedefine HAVE_THREAD_H @HAVE_THREAD_H@
 
-/* Define to 1 if you have the C++11 <type_traits> header file. */
-#cmakedefine HAVE_TYPE_TRAITS @HAVE_TYPE_TRAITS@
-
 /* Define to 1 if you have the `uname' function. */
 #cmakedefine HAVE_UNAME @HAVE_UNAME@
 
@@ -702,16 +699,16 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* The path on the Android device that should be used for temporary files */
 #cmakedefine ANDROID_TEMPORARY_FILES_LOCATION "@ANDROID_TEMPORARY_FILES_LOCATION@"
 
-/* Define if we are supposed to use STL's vector */
-#cmakedefine HAVE_STL_VECTOR @HAVE_STL_VECTOR@
-
 /* Define if we are supposed to use STL's algorithms */
 #cmakedefine HAVE_STL_ALGORITHM @HAVE_STL_ALGORITHM@
+
+/* Define if we are supposed to use STL's atomic */
+#cmakedefine HAVE_STL_ATOMIC @HAVE_STL_ATOMIC@
 
 /* Define if we are supposed to use STL's list */
 #cmakedefine HAVE_STL_LIST @HAVE_STL_LIST@
 
-/* Define if we are supposed to use STL's list */
+/* Define if we are supposed to use STL's map */
 #cmakedefine HAVE_STL_MAP @HAVE_STL_MAP@
 
 /* Define if we are supposed to use STL's memory */
@@ -723,17 +720,18 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* Define if we are supposed to use STL's string */
 #cmakedefine HAVE_STL_STRING @HAVE_STL_STRING@
 
-/* Define if we are supposed to use STL's type_traits */
-#cmakedefine HAVE_STL_TYPE_TRAITS @HAVE_STL_TYPE_TRAITS@
+/* Define if we are supposed to use STL's system_error */
+#cmakedefine HAVE_STL_VECTOR @HAVE_STL_SYSTEM_ERROR@
 
 /* Define if we are supposed to use STL's tuple */
 #cmakedefine HAVE_STL_TUPLE @HAVE_STL_TUPLE@
 
-/* Define if we are supposed to use STL's system_error */
-#cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
+/* Define if we are supposed to use STL's type_traits */
+#cmakedefine HAVE_STL_TYPE_TRAITS @HAVE_STL_TYPE_TRAITS@
 
-/* Define if we are supposed to use STL's atomic */
-#cmakedefine HAVE_STL_ATOMIC @HAVE_STL_ATOMIC@
+/* Define if we are supposed to use STL's vector */
+#cmakedefine HAVE_STL_VECTOR @HAVE_STL_VECTOR@
+
 
 /* Feature Tests for the OpenSSL Library */
 
@@ -788,6 +786,7 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #if defined(POISON_DEPRECATED_FEATURE_MACROS) && defined(__GNUC__)
 #pragma GCC poison HAVE_ACCESS
 #pragma GCC poison HAVE_ASSERT_H
+#pragma GCC poison HAVE_ATOMIC
 #pragma GCC poison HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY
 #pragma GCC poison HAVE_CLASS_TEMPLATE
 #pragma GCC poison HAVE_CLIMITS
@@ -861,12 +860,15 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #pragma GCC poison HAVE_STRSTR
 #pragma GCC poison HAVE_STRSTREAM
 #pragma GCC poison HAVE_STRTOUL
+#pragma GCC poison HAVE_SYSTEM_ERROR
 #pragma GCC poison HAVE_SYS_STAT_H
 /* #pragma GCC poison HAVE_SYS_TYPES_H */  /* this macro is used in some Linux system header files. */
 #pragma GCC poison HAVE_TEMPNAM
 #pragma GCC poison HAVE_TIME_H
 #pragma GCC poison HAVE_TMPNAM
+#pragma GCC poison HAVE_TUPLE
 #pragma GCC poison HAVE_TYPENAME
+#pragma GCC poison HAVE_TYPE_TRAITS
 #pragma GCC poison HAVE_VPRINTF
 #pragma GCC poison HAVE_VSNPRINTF
 #pragma GCC poison HAVE_WCHAR_H
@@ -882,6 +884,7 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #if !defined(POISON_DEPRECATED_FEATURE_MACROS) || !defined(__GNUC__)
 #define HAVE_ACCESS 1
 #define HAVE_ASSERT_H 1
+#define HAVE_ATOMIC 1
 #define HAVE_BIDIRECTIONAL_ITERATOR_CATEGORY 1
 #define HAVE_CLASS_TEMPLATE 1
 #define HAVE_CLIMITS 1
@@ -955,12 +958,15 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #define HAVE_STRSTR 1
 #define HAVE_STRSTREAM 1
 #define HAVE_STRTOUL 1
+#define HAVE_SYSTEM_ERROR 1
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_TEMPNAM 1
 #define HAVE_TIME_H 1
 #define HAVE_TMPNAM 1
+#define HAVE_TUPLE 1
 #define HAVE_TYPENAME 1
+#define HAVE_TYPE_TRAITS 1
 #define HAVE_VPRINTF 1
 #define HAVE_VSNPRINTF 1
 #define HAVE_WCHAR_H 1
@@ -1017,10 +1023,8 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #pragma GCC poison HAVE_STREAMBUF_H
 #pragma GCC poison HAVE_STRSTREAM_H
 #pragma GCC poison HAVE_STRSTREA_H
-#pragma GCC poison HAVE_SYSTEM_ERROR
 #pragma GCC poison HAVE_SYS_ERRNO_H
 #pragma GCC poison HAVE_SYS_NDIR_H
-#pragma GCC poison HAVE_TUPLE
 #pragma GCC poison HAVE_UCHAR_TYPEDEF
 #pragma GCC poison HAVE_UINT_TYPEDEF
 #pragma GCC poison HAVE_ULONGLONG
@@ -1076,10 +1080,8 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 /* #undef HAVE_STREAMBUF_H */
 /* #undef HAVE_STRSTREAM_H */
 /* #undef HAVE_STRSTREA_H */
-/* #undef HAVE_SYSTEM_ERROR */
 /* #undef HAVE_SYS_ERRNO_H */
 /* #undef HAVE_SYS_NDIR_H */
-/* #undef HAVE_TUPLE */
 /* #undef HAVE_UCHAR_TYPEDEF */
 /* #undef HAVE_UINT_TYPEDEF */
 /* #undef HAVE_ULONGLONG */

@@ -339,8 +339,6 @@ endif()
   CHECK_INCLUDE_FILE_CXX("unistd.h" HAVE_UNISTD_H)
   CHECK_INCLUDE_FILE_CXX("unix.h" HAVE_UNIX_H)
   CHECK_INCLUDE_FILE_CXX("utime.h" HAVE_UTIME_H)
-  CHECK_INCLUDE_FILE_CXX("type_traits" HAVE_TYPE_TRAITS)
-  CHECK_INCLUDE_FILE_CXX("atomic" HAVE_ATOMIC)
 
 if(NOT APPLE)
   # poll on macOS is unreliable, it first did not exist, then was broken until
@@ -1159,7 +1157,11 @@ function(DCMTK_TEST_LATEST_CXX_STANDARD)
   endforeach()
 endfunction()
 
-function(DCMTK_ENABLE_STL98_FEATURE NAME)
+# Enable a certain STL feature without checking whether or
+# not the related header file is present. We use this for
+# STL features that are guaranteed to be present in the
+# oldest C++ language version supported by DCMTK.
+function(DCMTK_ENABLE_BASELINE_STL_FEATURE NAME)
   string(TOUPPER "${NAME}" FEATURE)
   if(DCMTK_ENABLE_STL_${FEATURE} STREQUAL "INFERRED")
     set(DCMTK_ENABLE_STL_${FEATURE} ${DCMTK_ENABLE_STL})
@@ -1175,7 +1177,15 @@ function(DCMTK_ENABLE_STL98_FEATURE NAME)
   message(STATUS "Info: STL ${NAME} support ${TEXT_RESULT}")
 endfunction()
 
-function(DCMTK_ENABLE_STL11_FEATURE NAME)
+# Enable a certain STL feature if and only if
+# the related header file is present. We use this for
+# STL features that are not guaranteed to be present in the
+# oldest C++ language version supported by DCMTK.
+#
+# Note that a CHECK_INCLUDE_FILE_CXX() test for the related
+# header file MUST  be present above, otherwise the feature
+# will never be enabled.
+function(DCMTK_ENABLE_OPTIONAL_STL_FEATURE NAME)
   string(TOUPPER "${NAME}" FEATURE)
   string(TOUPPER "HAVE_${NAME}" HEADER_PRESENT)
   if(DCMTK_ENABLE_STL_${FEATURE} STREQUAL "INFERRED")
@@ -1207,18 +1217,17 @@ endif()
 
 # Check which modern C++ standards can be enabled
 DCMTK_TEST_LATEST_CXX_STANDARD()
-DCMTK_ENABLE_STL98_FEATURE("algorithm")
-DCMTK_ENABLE_STL98_FEATURE("list")
-DCMTK_ENABLE_STL98_FEATURE("map")
-DCMTK_ENABLE_STL98_FEATURE("memory")
-DCMTK_ENABLE_STL98_FEATURE("stack")
-DCMTK_ENABLE_STL98_FEATURE("string")
-DCMTK_ENABLE_STL98_FEATURE("vector")
-
-DCMTK_ENABLE_STL11_FEATURE("type_traits")
-DCMTK_ENABLE_STL11_FEATURE("tuple")
-DCMTK_ENABLE_STL11_FEATURE("system_error")
-DCMTK_ENABLE_STL11_FEATURE("atomic")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("algorithm")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("atomic")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("list")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("map")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("memory")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("stack")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("string")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("system_error")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("tuple")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("type_traits")
+DCMTK_ENABLE_BASELINE_STL_FEATURE("vector")
 
 # if at least one modern C++ standard should be supported,
 # enforce setting of __cplusplus macro in VS 2017 and above
@@ -1232,11 +1241,8 @@ if(MSVC)
   endforeach()
 endif()
 
-if(NOT HAVE_CXX11 AND NOT DCMTK_PERMIT_CXX98)
-  # Since the situation where the user has explicitly requested CMAKE_CXX_STANDARD=98
-  # has already been handled in dcmtkPrepare.cmake, we are apparently using a compiler
-  # that uses C++98 by default, and the user has not requested anything specific.
-  message(FATAL_ERROR "DCMTK will require C++11 or later in the future (which is apparently not supported by this compiler). Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now).")
+if(NOT HAVE_CXX11)
+  message(FATAL_ERROR "DCMTK requires C++11 or later, which is apparently not supported by this compiler.")
 endif()
 
 if(CMAKE_CROSSCOMPILING)

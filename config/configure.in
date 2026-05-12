@@ -427,7 +427,6 @@ AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_TCP_H
 AC_CHECK_HEADERS(alloca.h)
-AC_CHECK_HEADERS(atomic)
 AC_CHECK_HEADERS(arpa/inet.h)
 AC_CHECK_HEADERS(fnmatch.h)
 AC_CHECK_HEADERS(grp.h)
@@ -1359,46 +1358,20 @@ AC_ARG_ENABLE(builtin-oficonv,
 
 
 dnl -------------------------------------------------------
-dnl Enable/Disable C++11 support
+dnl C++11 support
 dnl -------------------------------------------------------
 
-ac_enable_cxx11="yes"
-AC_MSG_CHECKING(whether to enable C++11 support)
-AC_ARG_ENABLE(cxx11,
-[  --enable-cxx11          use C++11 (default)
-  --disable-cxx11         do not use C++11],
-[ case "$enableval" in
-  yes)
-   ac_enable_cxx11="yes"
-   ;;
-
-  *)
-   ac_enable_cxx11="no"
-   ;;
-  esac ]
-)
-
-if test "$ac_enable_cxx11" = "yes"; then
-   AC_MSG_RESULT()
-   AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
-   if test "$HAVE_CXX11" != 1; then
-     ac_enable_cxx11="no"
-   fi
-   AC_MSG_CHECKING(whether to enable C++11 support)
-fi
-
-AC_MSG_RESULT($ac_enable_cxx11)
-
+AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
 
 dnl -------------------------------------------------------
 dnl Enable/Disable STL support
 dnl -------------------------------------------------------
 
-ac_enable_stl="no"
+ac_enable_stl="yes"
 AC_MSG_CHECKING(whether to enable STL support)
 AC_ARG_ENABLE(stl,
-[  --enable-stl            use C++ STL
-  --disable-stl           do not use C++ STL (default)],
+[  --enable-stl            use C++ STL (default)
+  --disable-stl           do not use C++ STL],
 [ case "$enableval" in
   yes)
    ac_enable_stl="yes"
@@ -1430,7 +1403,7 @@ if test "$ac_enable_stl_vector" = "auto"; then
   ac_enable_stl_vector="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_vector" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/vector.cc"]])], [AC_DEFINE(HAVE_STL_VECTOR, 1, [Define if STL's vector should be used.])], [ac_enable_stl_vector="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_VECTOR, 1, [Define if STL's vector should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_vector)
 
@@ -1453,7 +1426,7 @@ if test "$ac_enable_stl_algorithm" = "auto"; then
   ac_enable_stl_algorithm="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_algorithm" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/algo.cc"]])], [AC_DEFINE(HAVE_STL_ALGORITHM, 1, [Define if STL's algorithm should be used.])], [ac_enable_stl_algorithm="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_ALGORITHM, 1, [Define if STL's algorithm should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_algorithm)
 
@@ -1476,7 +1449,7 @@ if test "$ac_enable_stl_list" = "auto"; then
   ac_enable_stl_list="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_list" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/list.cc"]])], [AC_DEFINE(HAVE_STL_LIST, 1, [Define if STL's list should be used.])], [ac_enable_stl_list="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_LIST, 1, [Define if STL's list should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_list)
 
@@ -1499,7 +1472,7 @@ if test "$ac_enable_stl_map" = "auto"; then
   ac_enable_stl_map="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_map" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/map.cc"]])], [AC_DEFINE(HAVE_STL_MAP, 1, [Define if STL's map should be used.])], [ac_enable_stl_map="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_MAP, 1, [Define if STL's map should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_map)
 
@@ -1522,7 +1495,7 @@ if test "$ac_enable_stl_memory" = "auto"; then
   ac_enable_stl_memory="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_memory" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/memory.cc"]])], [AC_DEFINE(HAVE_STL_MEMORY, 1, [Define if STL's memory should be used.])], [ac_enable_stl_memory="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_MEMORY, 1, [Define if STL's memory should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_memory)
 
@@ -1545,7 +1518,7 @@ if test "$ac_enable_stl_stack" = "auto"; then
   ac_enable_stl_stack="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_stack" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/stack.cc"]])], [AC_DEFINE(HAVE_STL_STACK, 1, [Define if STL's stack should be used.])], []ac_enable_stl_stack="unsupported -> no")
+  AC_DEFINE(HAVE_STL_STACK, 1, [Define if STL's stack should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_stack)
 
@@ -1568,7 +1541,7 @@ if test "$ac_enable_stl_string" = "auto"; then
   ac_enable_stl_string="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_string" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/string.cc"]])], [AC_DEFINE(HAVE_STL_STRING, 1, [Define if STL's string should be used.])], [ac_enable_stl_string="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_STRING, 1, [Define if STL's string should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_string)
 
@@ -1593,7 +1566,7 @@ if test "$ac_enable_stl_type_traits" = "auto"; then
   ac_enable_stl_type_traits="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_type_traits" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/ttraits.cc"]])], [AC_DEFINE(HAVE_STL_TYPE_TRAITS, 1, [Define if STL's type traits should be used.])], [ac_enable_stl_type_traits="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_TYPE_TRAITS, 1, [Define if STL's type traits should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_type_traits)
 
@@ -1616,7 +1589,7 @@ if test "$ac_enable_stl_tuple" = "auto"; then
   ac_enable_stl_tuple="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_tuple" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/tuple.cc"]])], [AC_DEFINE(HAVE_STL_TUPLE, 1, [Define if STL's tuple should be used.])], [ac_enable_stl_tuple="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_TUPLE, 1, [Define if STL's tuple should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_tuple)
 
@@ -1641,7 +1614,7 @@ if test "$ac_enable_stl_system_error" = "auto"; then
   ac_enable_stl_system_error="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_system_error" = "yes"; then
-  AC_RUN_IFELSE([AC_LANG_SOURCE([[#include "tests/syserr.cc"]])], [AC_DEFINE(HAVE_STL_SYSTEM_ERROR, 1, [Define if STL's system_error should be used.])], [ac_enable_stl_system_error="unsupported -> no"])
+  AC_DEFINE(HAVE_STL_SYSTEM_ERROR, 1, [Define if STL's system_error should be used.])
 fi
 AC_MSG_RESULT($ac_enable_stl_system_error)
 
@@ -1666,11 +1639,7 @@ if test "$ac_enable_stl_atomic" = "auto"; then
   ac_enable_stl_atomic="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_atomic" = "yes"; then
-  if test $ac_cv_header_atomic = yes ; then
     AC_DEFINE(HAVE_STL_ATOMIC, 1, [Define if STL's atomic should be used.])
-  else
-    ac_enable_stl_atomic="unsupported -> no"
-  fi
 fi
 AC_MSG_RESULT($ac_enable_stl_atomic)
 

@@ -743,7 +743,6 @@ with_libiconvinc
 with_libiconv
 enable_charconv
 enable_builtin_oficonv
-enable_cxx11
 enable_stl
 enable_stl_vector
 enable_stl_algorithm
@@ -1405,10 +1404,8 @@ Optional Features:
                           enable builtin oficonv data files
   --disable-builtin-oficonv
                           disable builtin oficonv data files (default)
-  --enable-cxx11          use C++11 (default)
-  --disable-cxx11         do not use C++11
-  --enable-stl            use C++ STL
-  --disable-stl           do not use C++ STL (default)
+  --enable-stl            use C++ STL (default)
+  --disable-stl           do not use C++ STL
   --enable-stl-vector     use C++ STL vector
   --disable-stl-vector    do not use C++ STL vector
   --enable-stl-algorithm  use C++ STL algorithm
@@ -6908,18 +6905,6 @@ fi
 
 done
 
-for ac_header in atomic
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "atomic" "ac_cv_header_atomic" "$ac_includes_default"
-if test "x$ac_cv_header_atomic" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_ATOMIC 1
-_ACEOF
-
-fi
-
-done
-
 for ac_header in arpa/inet.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "arpa/inet.h" "ac_cv_header_arpa_inet_h" "$ac_includes_default"
@@ -11278,28 +11263,7 @@ fi
 
 
 
-ac_enable_cxx11="yes"
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable C++11 support" >&5
-$as_echo_n "checking whether to enable C++11 support... " >&6; }
-# Check whether --enable-cxx11 was given.
-if test "${enable_cxx11+set}" = set; then :
-  enableval=$enable_cxx11;  case "$enableval" in
-  yes)
-   ac_enable_cxx11="yes"
-   ;;
-
-  *)
-   ac_enable_cxx11="no"
-   ;;
-  esac
-
-fi
-
-
-if test "$ac_enable_cxx11" = "yes"; then
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-     ax_cxx_compile_alternatives="11 0x"    ax_cxx_compile_cxx11_required=true
+  ax_cxx_compile_alternatives="11 0x"    ax_cxx_compile_cxx11_required=true
   ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -11670,19 +11634,9 @@ $as_echo "#define HAVE_CXX11 1" >>confdefs.h
   fi
 
 
-   if test "$HAVE_CXX11" != 1; then
-     ac_enable_cxx11="no"
-   fi
-   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable C++11 support" >&5
-$as_echo_n "checking whether to enable C++11 support... " >&6; }
-fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_cxx11" >&5
-$as_echo "$ac_enable_cxx11" >&6; }
 
 
-
-ac_enable_stl="no"
+ac_enable_stl="yes"
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable STL support" >&5
 $as_echo_n "checking whether to enable STL support... " >&6; }
 # Check whether --enable-stl was given.
@@ -11723,26 +11677,8 @@ if test "$ac_enable_stl_vector" = "auto"; then
   ac_enable_stl_vector="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_vector" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/vector.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_VECTOR 1" >>confdefs.h
-
-else
-  ac_enable_stl_vector="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_vector" >&5
@@ -11769,26 +11705,8 @@ if test "$ac_enable_stl_algorithm" = "auto"; then
   ac_enable_stl_algorithm="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_algorithm" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/algo.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_ALGORITHM 1" >>confdefs.h
-
-else
-  ac_enable_stl_algorithm="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_algorithm" >&5
@@ -11815,26 +11733,8 @@ if test "$ac_enable_stl_list" = "auto"; then
   ac_enable_stl_list="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_list" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/list.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_LIST 1" >>confdefs.h
-
-else
-  ac_enable_stl_list="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_list" >&5
@@ -11861,26 +11761,8 @@ if test "$ac_enable_stl_map" = "auto"; then
   ac_enable_stl_map="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_map" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/map.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_MAP 1" >>confdefs.h
-
-else
-  ac_enable_stl_map="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_map" >&5
@@ -11907,26 +11789,8 @@ if test "$ac_enable_stl_memory" = "auto"; then
   ac_enable_stl_memory="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_memory" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/memory.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_MEMORY 1" >>confdefs.h
-
-else
-  ac_enable_stl_memory="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_memory" >&5
@@ -11953,26 +11817,8 @@ if test "$ac_enable_stl_stack" = "auto"; then
   ac_enable_stl_stack="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_stack" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/stack.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_STACK 1" >>confdefs.h
-
-else
-  ac_enable_stl_stack="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_stack" >&5
@@ -11999,26 +11845,8 @@ if test "$ac_enable_stl_string" = "auto"; then
   ac_enable_stl_string="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_string" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/string.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_STRING 1" >>confdefs.h
-
-else
-  ac_enable_stl_string="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_string" >&5
@@ -12045,26 +11873,8 @@ if test "$ac_enable_stl_type_traits" = "auto"; then
   ac_enable_stl_type_traits="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_type_traits" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/ttraits.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_TYPE_TRAITS 1" >>confdefs.h
-
-else
-  ac_enable_stl_type_traits="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_type_traits" >&5
@@ -12091,26 +11901,8 @@ if test "$ac_enable_stl_tuple" = "auto"; then
   ac_enable_stl_tuple="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_tuple" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/tuple.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_TUPLE 1" >>confdefs.h
-
-else
-  ac_enable_stl_tuple="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_tuple" >&5
@@ -12137,26 +11929,8 @@ if test "$ac_enable_stl_system_error" = "auto"; then
   ac_enable_stl_system_error="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_system_error" = "yes"; then
-  if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "tests/syserr.cc"
-_ACEOF
-if ac_fn_cxx_try_run "$LINENO"; then :
 
 $as_echo "#define HAVE_STL_SYSTEM_ERROR 1" >>confdefs.h
-
-else
-  ac_enable_stl_system_error="unsupported -> no"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_system_error" >&5
@@ -12183,13 +11957,9 @@ if test "$ac_enable_stl_atomic" = "auto"; then
   ac_enable_stl_atomic="$ac_enable_stl"
 fi
 if test "$ac_enable_stl_atomic" = "yes"; then
-  if test $ac_cv_header_atomic = yes ; then
 
 $as_echo "#define HAVE_STL_ATOMIC 1" >>confdefs.h
 
-  else
-    ac_enable_stl_atomic="unsupported -> no"
-  fi
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_enable_stl_atomic" >&5
 $as_echo "$ac_enable_stl_atomic" >&6; }

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2019, OFFIS e.V.
+ *  Copyright (C) 2014-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,8 +27,7 @@
 
 #include "dcmtk/ofstd/oftypes.h"
 
-// use native classes if C++11 is supported
-#ifdef HAVE_TYPE_TRAITS
+#ifdef HAVE_STL_TYPE_TRAITS
 #include <type_traits>
 
 template<bool B,typename... ARGS>

@@ -205,7 +205,7 @@ option(DCMTK_WITH_DOXYGEN "Build API documentation with DOXYGEN." ON)
 option(DCMTK_GENERATE_DOXYGEN_TAGFILE "Generate a tag file with DOXYGEN." OFF)
 option(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 option(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
-option(DCMTK_ENABLE_STL "Enable use of native STL classes and algorithms instead of DCMTK's own implementations." OFF)
+option(DCMTK_ENABLE_STL "Enable use of native STL classes and algorithms instead of DCMTK's own implementations." ON)
 
 macro(DCMTK_INFERABLE_OPTION OPTION DESCRIPTION)
   set("${OPTION}" INFERRED CACHE STRING "${DESCRIPTION}")
@@ -214,17 +214,17 @@ macro(DCMTK_INFERABLE_OPTION OPTION DESCRIPTION)
   mark_as_advanced("${OPTION}")
 endmacro()
 
-DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_VECTOR "Enable use of STL vector.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_ALGORITHM "Enable use of STL algorithm.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_ATOMIC "Enable use of STL atomic.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_LIST "Enable use of STL list.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_MAP "Enable use of STL map.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_MEMORY "Enable use of STL memory.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STACK "Enable use of STL stack.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_STRING "Enable use of STL string.")
-DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TYPE_TRAITS "Enable use of STL type traits.")
-DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
 DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_SYSTEM_ERROR "Enable use of STL system_error.")
-DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_ATOMIC "Enable use of STL atomic.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TUPLE "Enable use of STL tuple.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_TYPE_TRAITS "Enable use of STL type traits.")
+DCMTK_INFERABLE_OPTION(DCMTK_ENABLE_STL_VECTOR "Enable use of STL vector.")
 
 # On Windows, the built-in dictionary is default, on Unix the external one.
 # It is not possible to use both, built-in plus external default dictionary.
@@ -567,8 +567,6 @@ endif()
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
-option(DCMTK_PERMIT_CXX98 "Permit (deprecated) compilation with C++98 language standard. This will cease to function in a future DCMTK release." OFF)
-
 # If desired C++ standard is at least C++11, set DCMTK_MODERN_CXX_STANDARD to true
 # and remember it in global property DCMTK_MODERN_CXX_STANDARD.
 # This is later evaluated in GenerateDCMTKConfigure.cmake in order to check
@@ -578,11 +576,8 @@ option(DCMTK_PERMIT_CXX98 "Permit (deprecated) compilation with C++98 language s
 if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 11)
   set(DCMTK_MODERN_CXX_STANDARD TRUE)
-elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$" AND NOT DCMTK_PERMIT_CXX98)
-  message(FATAL_ERROR "DCMTK will require C++11 or later in the future. Use cmake option -DDCMTK_PERMIT_CXX98=ON to override this error (for now)")
 elseif(CMAKE_CXX_STANDARD MATCHES "^9[0-9]?$")
-  set(DCMTK_MODERN_CXX_STANDARD FALSE)
-  message(WARNING "DCMTK will require C++11 or later in the future, continuing for now.")
+  message(FATAL_ERROR "DCMTK requires C++11 or later.")
 elseif(CMAKE_CXX_STANDARD GREATER 20)
   MESSAGE(WARNING "DCMTK is only known to compile for C++ versions <= 20 (C++${CMAKE_CXX_STANDARD} requested).")
   set(DCMTK_MODERN_CXX_STANDARD TRUE)

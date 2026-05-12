@@ -2,19 +2,10 @@
 
 \page modern_cxx_support Modern C++ Support in DCMTK
 
-Per default, DCMTK is compiled with C++11 support enabled (via
-<kbd>CMAKE_CXX_STANDARD</kbd> set to 11). This usually increases performance
-since some operations can be performed in a more efficient manner, e.g.
-utilizing <a
-href="http://en.cppreference.com/w/cpp/language/move_constructor">move
-semantics</a>.
-
+Starting from release 3.7.1, DCMTK requires compilation with C++11 support enabled.
 Later C++ standards can be enabled using the <kbd>CMAKE_CXX_STANDARD</kbd>
 setting. DCMTK's INSTALL file describes the available C++ standard versions that
 are known to work for the given DCMTK version.
-
-DCMTK can still be compiled using a C++98 compiler. However, C++98 support will
-be be dropped in the future.
 
 <h1> C++11 STL Classes </h1>
 
@@ -22,11 +13,11 @@ While some features like move semantics are automatically enabled in legacy code
 when compiling with C++11 enabled, modern C++ STL classes like std::unique_ptr
 must be used explicitly.
 
-Since DCMTK does not require a C++11-aware compiler (yet), the toolkit comes
-with some wrapper classes for some of these STL features. Each wrapper class
-either directly maps to the respective C++11 feature (if made available, see
-below) or otherwise implements a C++98 fallback solution. For example, the
-following C++11 STL classes are implemented that way:
+DCMTK comes with some wrapper classes for some of STL features that in
+previous releases were not required to be provided by the compiled.
+Each wrapper class either directly maps to the respective C++ feature
+or otherwise implements a fallback solution that works with a C++98 compiler.
+For example, the following C++11 STL classes are implemented that way:
 
 \li std::unique_ptr (OFunique_ptr in DCMTK)
 \li std::shared_ptr (OFshared_ptr in DCMTK)
@@ -34,13 +25,13 @@ following C++11 STL classes are implemented that way:
 \li std::tuple (OFtuple in DCMTK)
 \li std::error_code (OFerror_code in DCMTK)
 
-If you want to ensure that DCMTK uses the STL versions of these classes, there
-is an additional flag (besides enabling the related C++ version) to be set
-during CMake configuration:
-
 Enabling the flag <kbd>DCMTK_ENABLE_STL</kbd> will ensure that whenever possible
 (i.e. supported correctly by the compiler) the STL version of a class is
-preferred over the fallback implementation.
+preferred over the fallback implementation. Starting with DCMTK 3.7.1,
+this is the default.
+
+Explicitly setting the flag <kbd>DCMTK_ENABLE_STL</kbd> to "OFF" will
+enable DCMTK's own, now deprecated, implementations.
 
 There are several other flags in order to fine-tune this behavior:
 
@@ -55,89 +46,14 @@ setting of <kbd>DCMTK_ENABLE_STL</kbd>. However, if you just want to enable or
 disable certain features (i.e. deviate from <kbd>DCMTK_ENABLE_STL</kbd>), you
 can set each of them explicitly to "ON" or "OFF".
 
-<h1>Using DCMTK with C++11</h1>
+<h1>GNU Autoconf</h1>
 
-By compiling with C++11 or later and enabling the STL, you gain the following
-advantages:
-
-\li DCMTK can use available C++11 features instead of its only legacy
-    implementations.  These are probably more efficient and complete.
-\li The enabling of C++11 becomes part of DCMTK's configuration, which allows
-    DCMTK to assist you when checking for API/ABI (in-)compatibility between
-    C++11 and non C++11 builds.
-
-Trying to include a DCMTK build with C++11-enabled from a non C++11
-environment will give you the following error message:
+When using the GNU Autoconf toolchain, there are switches that enable or disable
+STL features, comparable to the CMake configuration described above:
 
 @verbatim
-DCMTK was configured to use C++11 features, but your compiler does not or was
-not configured to provide them.
-@endverbatim
-
-To reduce DCMTK's implementation complexity, C++11 shall only be used if your
-compiler <i>conforms closely</i> to the C++11 standard.  As far as we know,
-this is currently true for the following compilers:
-
-\li GNU C++ Compiler (g++) Version 4.8.1 or later.
-\li Clang (clang++) Version 3.3 or later.
-\li According to <a href="https://learn.microsoft.com/en-us/cpp/overview/install-c17-support?view=msvc-170">
-Microsoft documentation</a>, Visual Studio 2019 Version 16.8 (or higher)
-with Windows SDK 10.0.20348.0 Version 2104 (or higher). DCMTK already allows
-enabling C++11 for VS 2017 which reportedly also works well.
-
-When compiling with C++11 or later, CMake will then perform basic checks to
-ensure the compiler is configured correctly and conforms closely enough to all
-modern C++ standards up to the selected standard version.
-
-Below is a CMake output when (successfully) setting
-<kbd>CMAKE_CXX_STANDARD</kbd> to 14:
-
-@verbatim
-...
--- Checking whether the compiler supports C++11
--- Checking whether the compiler supports C++11 -- yes
--- Checking whether the compiler supports C++14
--- Checking whether the compiler supports C++14 -- yes
-...
-@endverbatim
-
-<h2>GNU Autoconf</h2>
-
-Our GNU Autoconf setup understands the switches <kbd>\--enable-cxx11</kbd>,
-and <kbd>\--disable-cxx11</kbd> that may be used to configure DCMTK to use
-C++11 features.  If you run
-
-@verbatim
-configure --enable-cxx11
-@endverbatim
-
-our Autoconf script will try to determine the required compiler flags for
-enabling C++11 features (if any) and perform configuration tests to ensure
-the compiler conforms closely enough to the C++11 standard.  If everything
-works it will give you an output similar to this one:
-
-@verbatim
-checking whether to enable C++11 support...
-checking whether c++ supports C++11 features by default... no
-checking whether c++ supports C++11 features with -std=c++11... yes
-checking whether to enable C++11 support... yes
-@endverbatim
-
-Otherwise, it will still disable C++11 features with an output like this:
-
-@verbatim
-checking whether to enable C++11 support...
-checking whether c++ supports C++11 features by default... no
-checking whether c++ supports C++11 features with -std=c++11... no
-checking whether to enable C++11 support... no
-@endverbatim
-
-There are further switches that enable STL features, comparable to the
-CMake configuration described above:
-
-@verbatim
---enable-stl            use C++ STL
---disable-stl           do not use C++ STL (default)
+--enable-stl            use C++ STL (default)
+--disable-stl           do not use C++ STL
 --enable-stl-vector     use C++ STL vector
 --disable-stl-vector    do not use C++ STL vector
 --enable-stl-algorithm  use C++ STL algorithm

@@ -378,16 +378,14 @@ test for it.
 USING THE NATIVE STL
 ====================
 
-DCMTK can be configured to use the STL (Standard Template Library) features
-provided by the compiler / runtime environment instead of its own fallback
-implementations that are used by default.
+Starting with DCMTK 3.7.1, DCMTK will by default use the STL
+(Standard Template Library) features provided by the compiler / runtime
+environment instead of its own fallback implementations that are still
+available, but will be removed in a future release.
 
-This can be achieved with the "--enable-stl" argument (Autoconf) or by setting
-"DCMTK_ENABLE_STL" to "ON" (CMake).  This will, however, not forcibly enable
-using the native STL features but instead trigger running several configuration
-tests for detecting whether the individual features work as expected/required
-by DCMTK.  It is for example known that "std::error_code" is not implemented
-correctly in some versions of Visual Studio.
+Building with the historic fallback implementations can be achieved
+with the "--disable-stl" argument (Autoconf) or by setting
+"DCMTK_ENABLE_STL" to "OFF" (CMake).
 
 It is furthermore possible to enable or disable individual STL features
 independently of the setting provided by "--enable-stl" or "DCMTK_ENABLE_STL"
@@ -413,24 +411,17 @@ The user can choose to build with a newer C++ standard by setting
 - 17 (CXX17)
 - 20 (CXX20)
 
-Compilation of DCMTK with C++98 is deprecated.  In this release, it can be
-enabled by setting "CMAKE_CXX_STANDARD=98" and "DCMTK_PERMIT_CXX98=ON", but
-support for C++ releases before C++11 will be removed in future versions
-of DCMTK.
+Starting with DCMTK 3.7.1, compilation of DCMTK with C++98 is not supported
+anymore. C++11 is the oldest supported language version.
 
-Using C++11 or later will change some parts of DCMTK's API, so a C++11 build of
-DCMTK is potentially incompatible with a classic (C++98) build of DCMTK.  This
-setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and
-verified when compiling DCMTK itself or any program that includes it.
+The choice of language version may affect some parts of DCMTK's API,
+making builds with different language versions potentially incompatible.
+This language setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h"
+and verified when compiling DCMTK itself or any program that includes it.
 
-Having "CMAKE_CXX_STANDARD" set to "11" (or some newer C++ standard) will not
-forcibly enable DCMTK to use the respective features but instead trigger running
-some configuration tests and only truly enable the features that are really
-supported (e.g. "std::error_code" is still not implemented as intended on newer
-versions of Visual Studio, so we keep using DCMTK's own implementation there).
-
-Please note that this setting does not depend on enabling the STL features, but
-not all combinations (e.g. enabling C++11 but disabling "std::string") may work.
+Please note that this setting does not require that the STL features are
+enabled, but not all combinations of language level and disabled STL feature
+are guaranteed to work.
 
 
 BUILDING
@@ -934,14 +925,14 @@ which OpenSSL is installed.  This is usually the directory that has been used as
 "--prefix" when compiling and installing OpenSSL.
 
 For example, if you wish to enable the security enhancements, and OpenSSL is
-installed in "/usr/local/apps/openssl-3.6.0", you should start configure as:
+installed in "/usr/local/apps/openssl-3.7.1", you should start configure as:
 
     ./configure --ignore-deprecation
-                --with-opensslinc=/usr/local/apps/openssl-3.6.0
+                --with-opensslinc=/usr/local/apps/openssl-3.7.1
 
 Configure will assume that the OpenSSL include files are installed in
-"/usr/local/apps/openssl-3.6.0/include" and will expect the library in
-"/usr/local/apps/openssl-3.6.0/lib".  Appropriate options will be passed to
+"/usr/local/apps/openssl-3.7.1/include" and will expect the library in
+"/usr/local/apps/openssl-3.7.1/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
 Support for zlib, libtiff, libpng, libxml2, libwrap, and/or libiconv can be
@@ -1054,4 +1045,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu, H. Roesen
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2025-12-31.
+Last revised: 2026-05-12.

@@ -97,9 +97,6 @@
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
 
-/* Define to 1 if you have the <atomic> header file. */
-#undef HAVE_ATOMIC
-
 /* Define if __attribute__((aligned)) is available. */
 #undef HAVE_ATTRIBUTE_ALIGNED
 
