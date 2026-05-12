@@ -1238,9 +1238,13 @@ OFCondition DcmSCU::handleCGETSession(const T_ASC_PresentationContextID /* presI
             // handle bit preserving storage mode, i.e. receive directly to disk
             else if (m_storageMode == DCMSCU_STORAGE_BIT_PRESERVING)
             {
+                // Sanitize SOP Instance UID before using it as part of a filename
+                // to prevent path traversal via malicious peers (see also CVE-2022-2120).
+                OFString uidForFilename = rsp.msg.CStoreRQ.AffectedSOPInstanceUID;
+                OFStandard::sanitizeFilename(uidForFilename);
                 OFString storageFilename;
                 OFStandard::combineDirAndFilename(
-                    storageFilename, m_storageDir, rsp.msg.CStoreRQ.AffectedSOPInstanceUID, OFTrue);
+                    storageFilename, m_storageDir, uidForFilename, OFTrue);
                 result = handleSTORERequestFile(&pcid, storageFilename, &(rsp.msg.CStoreRQ));
                 if (result.good())
                 {
