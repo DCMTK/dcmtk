@@ -471,8 +471,29 @@ matching keys:
 (0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
-(0010,2297) Responsible Person
-(0010,2298) Responsible Person Role
+(0010,2201) PatientSpeciesDescription
+(0010,2202) PatientSpeciesCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2203) PatientSexNeutered
+(0010,2292) PatientBreedDescription
+(0010,2293) PatientBreedCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2294) BreedRegistrationSequence
+  (0010,2295) > BreedRegistrationNumber
+  (0010,2296) > BreedRegistryCodeSequence
+    (0008,0100) > > CodeValue
+    (0008,0102) > > CodingSchemeDesignator
+    (0008,0103) > > CodingSchemeVersion
+    (0008,0104) > > CodeMeaning
+(0010,2297) ResponsiblePerson
+(0010,2298) ResponsiblePersonRole
+(0010,2299) ResponsibleOrganization
 (0032,1032) RequestingPhysician
 (0038,0010) AdmissionID
 (0040,0100) ScheduledProcedureStepSequence
@@ -525,8 +546,25 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0010,1020) PatientSize
 (0010,1030) PatientWeight
 (0010,2201) PatientSpeciesDescription
+(0010,2202) PatientSpeciesCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
 (0010,2203) PatientSexNeutered
 (0010,2292) PatientBreedDescription
+(0010,2293) PatientBreedCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2294) BreedRegistrationSequence
+  (0010,2295) > BreedRegistrationNumber
+  (0010,2296) > BreedRegistryCodeSequence
+    (0008,0100) > > CodeValue
+    (0008,0102) > > CodingSchemeDesignator
+    (0008,0103) > > CodingSchemeVersion
+    (0008,0104) > > CodeMeaning
 (0010,1040) PatientAddress
 (0010,1080) MilitaryRank
 (0010,2000) MedicalAlerts
@@ -538,6 +576,7 @@ As return keys the following attributes are currently supported by \b wlmscpfs:
 (0010,21d0) LastMenstrualDate
 (0010,2297) ResponsiblePerson
 (0010,2298) ResponsiblePersonRole
+(0010,2299) ResponsibleOrganization
 (0010,4000) PatientComments
 (0020,000d) StudyInstanceUID
 (0032,1032) RequestingPhysician

@@ -510,12 +510,38 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
       }
     }
     else if( key == DCM_ScheduledProtocolCodeSequence || key == DCM_RequestedProcedureCodeSequence ||
-             key == DCM_InstitutionCodeSequence || key == DCM_InstitutionalDepartmentTypeCodeSequence )
+             key == DCM_InstitutionCodeSequence || key == DCM_InstitutionalDepartmentTypeCodeSequence ||
+             key == DCM_PatientSpeciesCodeSequence || key == DCM_PatientBreedCodeSequence ||
+             key == DCM_BreedRegistryCodeSequence )
     {
       newElement = new DcmShortString( DcmTag( DCM_CodeValue ) );               if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmShortString( DcmTag( DCM_CodingSchemeVersion ) );     if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmShortString( DcmTag( DCM_CodingSchemeDesignator ) );  if( item->insert( newElement ) != EC_Normal ) delete newElement;
       newElement = new DcmLongString( DcmTag( DCM_CodeMeaning ) );              if( item->insert( newElement ) != EC_Normal ) delete newElement;
+    }
+    else if( key == DCM_BreedRegistrationSequence )
+    {
+      newElement = new DcmLongString( DcmTag( DCM_BreedRegistrationNumber ) );   if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmSequenceOfItems( DcmTag( DCM_BreedRegistryCodeSequence ) );
+      if( item->insert( newElement ) != EC_Normal )
+        delete newElement;
+      else
+      {
+        DcmItem *item2 = new DcmItem();
+        if( OFstatic_cast(DcmSequenceOfItems*, newElement)->insert( item2 ) != EC_Normal )
+        {
+          delete item2;
+          item2 = NULL;
+        }
+        else
+        {
+          DcmElement *newElement2 = NULL;
+          newElement2 = new DcmShortString( DcmTag( DCM_CodeValue ) );               if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+          newElement2 = new DcmShortString( DcmTag( DCM_CodingSchemeVersion ) );     if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+          newElement2 = new DcmShortString( DcmTag( DCM_CodingSchemeDesignator ) );  if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+          newElement2 = new DcmLongString( DcmTag( DCM_CodeMeaning ) );              if( item2->insert( newElement2 ) != EC_Normal ) delete newElement2;
+        }
+      }
     }
     else if( key == DCM_ReferencedStudySequence || key == DCM_ReferencedPatientSequence )
     {
@@ -623,11 +649,15 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
 //                   DCM_PatientName                                       (0010,0010)  PN  R  1
 //                   DCM_ResponsiblePerson                                 (0010,2297)  PN  O  3
 //                   DCM_ResponsiblePersonRole                             (0010,2298)  CS  O  3
+//                   DCM_ResponsibleOrganization                           (0010,2299)  LO  O  3
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
 //                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
 //                   DCM_ReferringPhysicianName                            (0008,0090)  PN  O  2
 //                   DCM_PatientSex                                        (0010,0040)  CS  O  2
+//                   DCM_PatientSpeciesDescription                         (0010,2201)  LO  O  3
+//                   DCM_PatientSexNeutered                                (0010,2203)  CS  O  3
+//                   DCM_PatientBreedDescription                           (0010,2292)  LO  O  3
 //                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
 //                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
 //                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
@@ -973,20 +1003,34 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
   // perform check, depending on if a superordinate sequence element is given or not
   if( supSequenceElement != NULL )
   {
-    if( supSequenceElementKey == DCM_ScheduledProcedureStepSequence &&
-        ( elementKey == DCM_ScheduledStationAETitle           ||
-          elementKey == DCM_ScheduledProcedureStepStartDate   ||
-          elementKey == DCM_ScheduledProcedureStepStartTime   ||
-          elementKey == DCM_Modality                          ||
-          elementKey == DCM_ScheduledPerformingPhysicianName ) )
+    if( ( supSequenceElementKey == DCM_ScheduledProcedureStepSequence &&
+          ( elementKey == DCM_ScheduledStationAETitle           ||
+            elementKey == DCM_ScheduledProcedureStepStartDate   ||
+            elementKey == DCM_ScheduledProcedureStepStartTime   ||
+            elementKey == DCM_Modality                          ||
+            elementKey == DCM_ScheduledPerformingPhysicianName ) ) ||
+        ( ( supSequenceElementKey == DCM_PatientSpeciesCodeSequence ||
+            supSequenceElementKey == DCM_PatientBreedCodeSequence   ||
+            supSequenceElementKey == DCM_BreedRegistryCodeSequence ) &&
+          ( elementKey == DCM_CodeValue                             ||
+            elementKey == DCM_CodingSchemeVersion                   ||
+            elementKey == DCM_CodingSchemeDesignator                ||
+            elementKey == DCM_CodeMeaning ) )                       ||
+        ( supSequenceElementKey == DCM_BreedRegistrationSequence &&
+          ( elementKey == DCM_BreedRegistrationNumber            ||
+            elementKey == DCM_BreedRegistryCodeSequence ) ) )
       isSupportedMatchingKeyAttribute = OFTrue;
   }
   else
   {
     if( elementKey == DCM_ScheduledProcedureStepSequence ||
+        elementKey == DCM_PatientSpeciesCodeSequence     ||
+        elementKey == DCM_PatientBreedCodeSequence       ||
+        elementKey == DCM_BreedRegistrationSequence      ||
         elementKey == DCM_PatientName                    ||
         elementKey == DCM_ResponsiblePerson              ||
         elementKey == DCM_ResponsiblePersonRole          ||
+        elementKey == DCM_ResponsibleOrganization        ||
         elementKey == DCM_PatientID                      ||
         elementKey == DCM_IssuerOfPatientID              ||
         elementKey == DCM_StudyDate                      ||
@@ -995,6 +1039,9 @@ OFBool WlmDataSource::IsSupportedMatchingKeyAttribute( DcmElement *element, DcmS
         elementKey == DCM_RequestedProcedureID           ||
         elementKey == DCM_ReferringPhysicianName         ||
         elementKey == DCM_PatientSex                     ||
+        elementKey == DCM_PatientSpeciesDescription      ||
+        elementKey == DCM_PatientSexNeutered             ||
+        elementKey == DCM_PatientBreedDescription        ||
         elementKey == DCM_RequestingPhysician            ||
         elementKey == DCM_AdmissionID                    ||
         elementKey == DCM_RequestedProcedurePriority     ||
@@ -1033,8 +1080,8 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_ScheduledProtocolCodeSequence                  (0040,0008)  SQ  O  1C
 //                    > > DCM_CodeValue                                    (0008,0100)  SH  O  1C
 //                    > > DCM_CodingSchemeVersion                          (0008,0103)  SH  O  3
-//                    > > DCM_CodingSchemeDesignator                       (0080,0102)  SH  O  1C
-//                    > > DCM_CodeMeaning                                  (0080,0104)  LO  O  3
+//                    > > DCM_CodingSchemeDesignator                       (0008,0102)  SH  O  1C
+//                    > > DCM_CodeMeaning                                  (0008,0104)  LO  O  3
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
 //                   DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
 //                   DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
@@ -1058,6 +1105,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_PatientName                                       (0010,0010)  PN  R  1
 //                   DCM_ResponsiblePerson                                 (0010,2297)  PN  O  3
 //                   DCM_ResponsiblePersonRole                             (0010,2298)  CS  O  3
+//                   DCM_ResponsibleOrganization                           (0010,2299)  LO  O  3  (from the Patient Demographic Module)
 //                   DCM_PatientID                                         (0010,0020)  LO  R  1
 //                   DCM_IssuerOfPatientID                                 (0010,0021)  LO  O  3  (from the Patient Identification Module)
 //                   DCM_PatientBirthDate                                  (0010,0030)  DA  O  2
@@ -1065,8 +1113,25 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_PatientSex                                        (0010,0040)  CS  O  2
 //                   DCM_PatientWeight                                     (0010,1030)  DS  O  2
 //                   DCM_PatientSpeciesDescription                         (0010,2201)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_PatientSpeciesCodeSequence                        (0010,2202)  SQ  O  3  (from the Patient Demographic Module)
+//                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
+//                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
+//                    > DCM_CodingSchemeDesignator                         (0008,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0008,0104)  LO  O  3
 //                   DCM_PatientSexNeutered                                (0010,2203)  CS  O  3  (from the Patient Demographic Module)
 //                   DCM_PatientBreedDescription                           (0010,2292)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_PatientBreedCodeSequence                          (0010,2293)  SQ  O  3  (from the Patient Demographic Module)
+//                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
+//                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
+//                    > DCM_CodingSchemeDesignator                         (0008,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0008,0104)  LO  O  3
+//                   DCM_BreedRegistrationSequence                         (0010,2294)  SQ  O  3  (from the Patient Demographic Module)
+//                    > DCM_BreedRegistrationNumber                        (0010,2295)  LO  O  3
+//                    > DCM_BreedRegistryCodeSequence                      (0010,2296)  SQ  O  3
+//                    > > DCM_CodeValue                                    (0008,0100)  SH  O  1C
+//                    > > DCM_CodingSchemeVersion                          (0008,0103)  SH  O  3
+//                    > > DCM_CodingSchemeDesignator                       (0008,0102)  SH  O  1C
+//                    > > DCM_CodeMeaning                                  (0008,0104)  LO  O  3
 //                   DCM_ConfidentialityConstraintOnPatientDataDescription (0040,3001)  LO  O  2  (from the Patient Medical Module)
 //                   DCM_PatientState                                      (0038,0500)  LO  O  2
 //                   DCM_PregnancyStatus                                   (0010,21c0)  US  O  2
@@ -1107,18 +1172,18 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_RequestedProcedureCodeSequence                    (0032,1064)  SQ  O  3  (from the Requested Procedure Module)
 //                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
 //                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
-//                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
-//                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
+//                    > DCM_CodingSchemeDesignator                         (0008,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0008,0104)  LO  O  3
 //                   DCM_InstitutionCodeSequence                           (0008,0082)  SQ  O  3  (from the Visit Identification Module)
 //                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
 //                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
-//                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
-//                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
+//                    > DCM_CodingSchemeDesignator                         (0008,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0008,0104)  LO  O  3
 //                   DCM_InstitutionalDepartmentTypeCodeSequence           (0008,1041)  SQ  O  3  (from the Visit Identification Module)
 //                    > DCM_CodeValue                                      (0008,0100)  SH  O  1C
 //                    > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
-//                    > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
-//                    > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
+//                    > DCM_CodingSchemeDesignator                         (0008,0102)  SH  O  1C
+//                    > DCM_CodeMeaning                                    (0008,0104)  LO  O  3
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1185,6 +1250,18 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
             elementKey == DCM_CodingSchemeDesignator                     ||
             elementKey == DCM_CodeMeaning ) ) )
       isSupportedReturnKeyAttribute = OFTrue;
+    else if( ( supSequenceElementKey == DCM_PatientSpeciesCodeSequence ||
+               supSequenceElementKey == DCM_PatientBreedCodeSequence   ||
+               supSequenceElementKey == DCM_BreedRegistryCodeSequence ) &&
+             ( elementKey == DCM_CodeValue                             ||
+               elementKey == DCM_CodingSchemeVersion                   ||
+               elementKey == DCM_CodingSchemeDesignator                ||
+               elementKey == DCM_CodeMeaning ) )
+      isSupportedReturnKeyAttribute = OFTrue;
+    else if( supSequenceElementKey == DCM_BreedRegistrationSequence &&
+             ( elementKey == DCM_BreedRegistrationNumber ||
+               elementKey == DCM_BreedRegistryCodeSequence ) )
+      isSupportedReturnKeyAttribute = OFTrue;
   }
   else
   {
@@ -1208,6 +1285,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_PatientName                                       ||
         elementKey == DCM_ResponsiblePerson                                 ||
         elementKey == DCM_ResponsiblePersonRole                             ||
+        elementKey == DCM_ResponsibleOrganization                           ||
         elementKey == DCM_PatientID                                         ||
         elementKey == DCM_IssuerOfPatientID                                 ||
         elementKey == DCM_PatientBirthDate                                  ||
@@ -1215,8 +1293,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_PatientSex                                        ||
         elementKey == DCM_PatientWeight                                     ||
         elementKey == DCM_PatientSpeciesDescription                         ||
+        elementKey == DCM_PatientSpeciesCodeSequence                        ||
         elementKey == DCM_PatientSexNeutered                                ||
         elementKey == DCM_PatientBreedDescription                           ||
+        elementKey == DCM_PatientBreedCodeSequence                          ||
+        elementKey == DCM_BreedRegistrationSequence                         ||
         elementKey == DCM_ConfidentialityConstraintOnPatientDataDescription ||
         elementKey == DCM_PatientState                                      ||
         elementKey == DCM_PregnancyStatus                                   ||
