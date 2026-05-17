@@ -1791,8 +1791,8 @@ OFCondition DcmSCP::receiveSTORERequestDataset(T_ASC_PresentationContextID* pres
         DCMNET_ERROR("Unable to receive dataset on presentation context "
                      << OFstatic_cast(unsigned int, *presID) << ": " << DimseCondition::dump(tempStr, cond));
         // Could not create the filestream, so ignore the dataset
-        DIC_UL bytesRead = 0;
-        DIC_UL pdvCount  = 0;
+        Uint64 bytesRead = 0;
+        Uint64 pdvCount  = 0;
         DCMNET_DEBUG("Ignoring incoming dataset and returning an error status to the SCU");
         cond = DIMSE_ignoreDataSet(
             m_assoc, m_cfg->getDIMSEBlockingMode(), m_cfg->getDIMSETimeout(), &bytesRead, &pdvCount);
@@ -2285,13 +2285,13 @@ OFBool DcmSCP::stopAfterConnectionTimeout()
 /*                            Callback functions                             */
 /* ************************************************************************* */
 
-void DcmSCP::callbackSENDProgress(void* callbackContext, const unsigned long byteCount)
+void DcmSCP::callbackSENDProgress(void* callbackContext, Uint64 byteCount)
 {
     if (callbackContext != NULL)
         OFreinterpret_cast(DcmSCP*, callbackContext)->notifySENDProgress(byteCount);
 }
 
-void DcmSCP::callbackRECEIVEProgress(void* callbackContext, const unsigned long byteCount)
+void DcmSCP::callbackRECEIVEProgress(void* callbackContext, Uint64 byteCount)
 {
     if (callbackContext != NULL)
         OFreinterpret_cast(DcmSCP*, callbackContext)->notifyRECEIVEProgress(byteCount);

@@ -1461,8 +1461,8 @@ OFCondition DcmSCU::ignoreSTORERequest(T_ASC_PresentationContextID presID, const
 
     /* We cannot create the filestream, so ignore the incoming dataset and return an out-of-resources error to the SCU
      */
-    DIC_UL bytesRead = 0;
-    DIC_UL pdvCount  = 0;
+    Uint64 bytesRead = 0;
+    Uint64 pdvCount  = 0;
     DCMNET_DEBUG("Ignoring incoming C-STORE dataset on presentation context "
                  << OFstatic_cast(unsigned int, presID)
                  << " with Affected SOP Instance UID: " << request.AffectedSOPInstanceUID);
@@ -2955,13 +2955,13 @@ OFCondition DcmSCU::getDatasetInfo(DcmDataset* dataset,
 /*                            Callback functions                             */
 /* ************************************************************************* */
 
-void DcmSCU::callbackSENDProgress(void* callbackContext, const unsigned long byteCount)
+void DcmSCU::callbackSENDProgress(void* callbackContext, Uint64 byteCount)
 {
     if (callbackContext != NULL)
         OFreinterpret_cast(DcmSCU*, callbackContext)->notifySENDProgress(byteCount);
 }
 
-void DcmSCU::callbackRECEIVEProgress(void* callbackContext, const unsigned long byteCount)
+void DcmSCU::callbackRECEIVEProgress(void* callbackContext, Uint64 byteCount)
 {
     if (callbackContext != NULL)
         OFreinterpret_cast(DcmSCU*, callbackContext)->notifyRECEIVEProgress(byteCount);

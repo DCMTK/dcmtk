@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2024, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -92,6 +92,7 @@
 #include "dcmtk/dcmnet/assoc.h"
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/ofstd/ofglobal.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 class DcmOutputFileStream;
 
@@ -809,9 +810,9 @@ typedef enum {
 
 struct DCMTK_DCMNET_EXPORT T_DIMSE_StoreProgress { /* progress structure for store callback routines */
     T_DIMSE_StoreProgressState state;   /* current state */
-    long callbackCount; /* callback execution count */
-    long progressBytes; /* sent/received so far */
-    long totalBytes;    /* total/estimated total to send/receive */
+    size_t callbackCount; /* callback execution count */
+    Uint64 progressBytes; /* sent/received so far */
+    Uint64 totalBytes;    /* total/estimated total to send/receive */
 } ;
 
 
@@ -1108,7 +1109,7 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
 
 
 typedef void (*DIMSE_ProgressCallback)(void *callbackContext,
-    unsigned long byteCount);
+    Uint64 byteCount);
 
 /** send a DIMSE command and possibly also instance data from a file via network to another
  *  DICOM application.
@@ -1273,8 +1274,8 @@ DCMTK_DCMNET_EXPORT OFCondition
 DIMSE_ignoreDataSet( T_ASC_Association * assoc,
                      T_DIMSE_BlockingMode blocking,
                      int timeout,
-                     DIC_UL * bytesRead,
-                     DIC_UL * pdvCount);
+                     Uint64 * bytesRead,
+                     Uint64 * pdvCount);
 
 /*
  * Misc functions

@@ -1412,8 +1412,8 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned long
         pduLength,
         pdvLength,
-        pdvCount,
         length;
+    Uint64 pdvCount;
     unsigned char
        *p;
 
@@ -1460,12 +1460,12 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     if (length != 0)
     {
        char buf[256];
-       OFStandard::snprintf(buf, sizeof(buf), "PDV lengths don't add up correctly: %d PDVs. This probably indicates a malformed P-DATA PDU. PDU type is %02x.", (int)pdvCount, (unsigned int) pduType);
+       OFStandard::snprintf(buf, sizeof(buf), "PDV lengths don't add up correctly: %llu PDVs. This probably indicates a malformed P-DATA PDU. PDU type is %02x.", pdvCount, (unsigned int) pduType);
        return makeDcmnetCondition(DULC_ILLEGALPDU, OF_error, buf);
     }
 
     /* let the the association indicate how many PDVs are contained in the PDU */
-    (*association)->pdvCount = (int)pdvCount;
+    (*association)->pdvCount = pdvCount;
 
     /* if at least one PDV is contained in the PDU, the association's pdvIndex has to be set to 0 */
     if (pdvCount > 0)

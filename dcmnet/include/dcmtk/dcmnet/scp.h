@@ -1193,13 +1193,13 @@ protected:
      *  @param callbackContext [in] The desired user callback data
      *  @param byteCount       [in] Progress bytes count
      */
-    static void callbackSENDProgress(void* callbackContext, unsigned long byteCount);
+    static void callbackSENDProgress(void* callbackContext, Uint64 byteCount);
 
     /** Callback function used for receiving DIMSE messages.
      *  @param callbackContext [in] The desired user callback data
      *  @param byteCount       [in] Progress bytes count
      */
-    static void callbackRECEIVEProgress(void* callbackContext, unsigned long byteCount);
+    static void callbackRECEIVEProgress(void* callbackContext, Uint64 byteCount);
 
 private:
     /// Network instance run by this SCP

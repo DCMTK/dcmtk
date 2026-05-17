@@ -141,8 +141,8 @@ typedef struct {
     unsigned char nextPDUReserved;
     unsigned long nextPDULength;
     unsigned long compatibilityMode;
-    int pdvCount;
-    int pdvIndex;
+    Sint64 pdvCount;
+    Sint64 pdvIndex;
     void *logHandle;
     int associatePDUFlag;
     void *associatePDU;

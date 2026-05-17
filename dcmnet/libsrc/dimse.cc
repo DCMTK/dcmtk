@@ -596,12 +596,12 @@ sendStraightFileData(
     FILE *f;
     long nbytes;
     OFBool last;
-    unsigned long bytesTransmitted = 0;
+    Uint64 bytesTransmitted = 0;
     OFCondition dulCond = EC_Normal;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
     /* the following variable is currently unused, leave it for future use */
-    unsigned long pdvCount = 0;
+    Uint64 pdvCount = 0;
 
     buf = assoc->sendPDVBuffer;
     bufLen = assoc->sendPDVLength;
@@ -682,13 +682,13 @@ sendDcmDataset(
     OFBool last = OFFalse;
     OFBool written = OFFalse;
     offile_off_t rtnLength;
-    Uint32 bytesTransmitted = 0;
+    Uint64 bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
 
 #if 0
     /* the following variable is currently unused, leave it for future use */
-    unsigned long pdvCount = 0;
+    Uint64 pdvCount = 0;
 #endif
     DcmWriteCache wcache;
 
@@ -1040,8 +1040,8 @@ OFCondition DIMSE_ignoreDataSet(
         T_ASC_Association *assoc,
         T_DIMSE_BlockingMode blocking,
         int timeout,
-        DIC_UL *bytesRead,
-        DIC_UL *pdvCount)
+        Uint64 *bytesRead,
+        Uint64 *pdvCount)
 {
     OFCondition cond = EC_Normal;
     DUL_PDV pdv;
@@ -1075,8 +1075,8 @@ DIMSE_receiveCommand(
         DcmDataset **commandSet)
 {
     OFCondition cond = EC_Normal;
-    unsigned long bytesRead;
-    unsigned long pdvCount;
+    Uint64 bytesRead;
+    Uint64 pdvCount;
 
     DUL_DATAPDV type;
     OFBool last;
@@ -1414,8 +1414,8 @@ DIMSE_receiveDataSetInFile(
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax;
     OFBool last = OFFalse;
-    DIC_UL pdvCount = 0;
-    DIC_UL bytesRead = 0;
+    Uint64 pdvCount = 0;
+    Uint64 bytesRead = 0;
 
     if ((assoc == NULL) || (presID==NULL) || (filestream==NULL)) return DIMSE_NULLKEY;
 
@@ -1519,8 +1519,8 @@ DIMSE_receiveDataSetInMemory(
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax = EXS_Unknown;
     OFBool last = OFFalse;
-    DIC_UL pdvCount = 0;
-    DIC_UL bytesRead = 0;
+    Uint64 pdvCount = 0;
+    Uint64 bytesRead = 0;
 
     /* check if the caller provided an address where the data set can be stored. If not return an error */
     if (dataObject == NULL) return DIMSE_NULLKEY;

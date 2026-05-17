@@ -113,7 +113,7 @@ typedef struct {
 
 
 static void
-privateUserCallback(void *callbackData, unsigned long bytes)
+privateUserCallback(void *callbackData, Uint64 bytes)
 {
     DIMSE_PrivateUserContext *ctx;
     ctx = (DIMSE_PrivateUserContext*)callbackData;
@@ -343,7 +343,7 @@ typedef struct {
 } DIMSE_PrivateProviderContext;
 
 static void
-privateProviderCallback(void *callbackData, unsigned long bytes)
+privateProviderCallback(void *callbackData, Uint64 bytes)
 {
     DIMSE_PrivateProviderContext *ctx;
     ctx = (DIMSE_PrivateProviderContext*)callbackData;
@@ -452,8 +452,8 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
         if (cond.bad())
         {
           /* We cannot create the filestream, so ignore the incoming dataset and return an out-of-resources error to the SCU */
-          DIC_UL bytesRead = 0;
-          DIC_UL pdvCount=0;
+          Uint64 bytesRead = 0;
+          Uint64 pdvCount=0;
           cond = DIMSE_ignoreDataSet(assoc, blockMode, timeout, &bytesRead, &pdvCount);
           if (cond.good())
           {
