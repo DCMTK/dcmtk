@@ -31,6 +31,7 @@
 #include "dcmtk/dcmnet/diutil.h" /* for DCMNET_WARN() */
 #include "dcmtk/dcmnet/scpcfg.h"
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/ofstd/oftypes.h"
 
 // include this file in doxygen documentation
 
@@ -640,7 +641,7 @@ protected:
      *  completely by calling setProgressNotificationMode().
      *  @param byteCount [in] Number of bytes sent so far
      */
-    virtual void notifySENDProgress(const unsigned long byteCount);
+    virtual void notifySENDProgress(const Uint64 byteCount);
 
     /** This function is called while receiving DIMSE messages, i.e.\ on each PDV of a dataset.
      *  The default implementation just prints a TRACE message on the number of bytes received
@@ -649,7 +650,7 @@ protected:
      *  completely by calling setProgressNotificationMode().
      *  @param byteCount [in] Number of bytes received so far
      */
-    virtual void notifyRECEIVEProgress(const unsigned long byteCount);
+    virtual void notifyRECEIVEProgress(const Uint64 byteCount);
 
     /** This method can be used to return from the listen() loop in a controlled way.
      *  In order to use it, it must be overwritten in a derived class. As long as no
