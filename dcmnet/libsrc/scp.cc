@@ -1586,12 +1586,12 @@ Uint16 DcmSCP::checkEVENTREPORTRequest(T_DIMSE_N_EventReportRQ& /*reqMessage*/, 
 /*                         General message handling                          */
 /* ************************************************************************* */
 
-void DcmSCP::notifySENDProgress(const unsigned long byteCount)
+void DcmSCP::notifySENDProgress(const Uint64 byteCount)
 {
     DCMNET_TRACE("Bytes sent: " << byteCount);
 }
 
-void DcmSCP::notifyRECEIVEProgress(const unsigned long byteCount)
+void DcmSCP::notifyRECEIVEProgress(const Uint64 byteCount)
 {
     DCMNET_TRACE("Bytes received: " << byteCount);
 }

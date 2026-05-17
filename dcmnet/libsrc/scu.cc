@@ -2602,12 +2602,12 @@ DcmSCU::handleSessionResponseDefault(const Uint16 dimseStatus, const OFString& m
 /*                         General message handling                          */
 /* ************************************************************************* */
 
-void DcmSCU::notifySENDProgress(const unsigned long byteCount)
+void DcmSCU::notifySENDProgress(const Uint64 byteCount)
 {
     DCMNET_TRACE("Bytes sent: " << byteCount);
 }
 
-void DcmSCU::notifyRECEIVEProgress(const unsigned long byteCount)
+void DcmSCU::notifyRECEIVEProgress(const Uint64 byteCount)
 {
     DCMNET_TRACE("Bytes received: " << byteCount);
 }
