@@ -25,19 +25,25 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(dcmdatadir)/libsrc \
 LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -loflog -lofstd -loficonv $(ZLIBLIBS) \
 	$(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-objs = wltest.o
-progs = wltest
+test_objs = tests.o twlaetval.o
+objs = wltest.o $(test_objs)
+progs = wltest dcmwlm_tests
 
 
 all: $(progs)
 
-wltest: $(objs)
-	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
+wltest: wltest.o
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ wltest.o $(LOCALLIBS) $(LIBS)
+
+dcmwlm_tests: $(test_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
 
-check:
+check: dcmwlm_tests
+	./dcmwlm_tests
 
-check-exhaustive:
+check-exhaustive: dcmwlm_tests
+	./dcmwlm_tests -x
 
 
 install: all

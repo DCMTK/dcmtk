@@ -366,6 +366,23 @@ which the SCP might have to return to an SCU in a C-FIND response message.
 Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding
 type 1 attributes (see column "Return Key Type").
 
+The called Application Entity Title from an incoming A-ASSOCIATE-RQ is used
+as a subdirectory name below the \e --data-file-path directory in order to
+look up the worklist files that this association may access.  The DICOM VR
+AE (see DICOM PS3.5 Section 6.1.3) permits the characters "/" (forward slash)
+and "." (full stop), so a conformant peer can send an AE title such as
+"../OTHER" that would resolve to a sibling directory of the configured
+worklist root.  To prevent this, \b wlmscpfs rejects any A-ASSOCIATE-RQ
+whose called AE title is not safe to use as a single filesystem path
+component.  The set of accepted characters is letters, digits, space and
+the characters "-", ":", "@" and "_"; any other byte (path separators
+"/" and "\\", NUL, control bytes, bytes outside the printable ASCII range,
+shell metacharacters as well as the dot character) causes the association
+to be rejected.  Dots are rejected outright (rather than only the
+standalone components "." and "..") because real-world AE titles never
+contain dots and rejecting the entire character avoids any need to reason
+about platform-specific path normalization corner cases.
+
 \subsection wlmscpfs_request_files Writing Request Files
 
 Providing option \e --request-file-path enables writing of the incoming C-FIND
@@ -423,6 +440,13 @@ It should be noted that the \#p placeholder uses the value of Patient ID
 characters, the file name computed by \b wlmscpfs might be broken and thus
 cannot be written successfully or will look broken once written.  Also, an empty
 Patient ID is used as such, i.e. the \#p will be replaced with an empty string.
+
+For security reasons, the values substituted for the placeholders \#a, \#c and
+\#p are sanitized before they are inserted into the resulting file name: path
+separators ("/", "\\") and other characters that are not safe in a file name
+component are replaced with the underscore character ("_").  This prevents
+attacker-controlled values transmitted over the network (called/calling AE
+title, Patient ID) from escaping the configured request file directory.
 
 \subsection wlmscpfs_dicom_conformance DICOM Conformance
 

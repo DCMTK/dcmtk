@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2022, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -371,6 +371,62 @@ OFTEST(ofstd_OFStandard_removeRootDirFromPathname)
     OFCHECK(OFStandard::removeRootDirFromPathname(result, "/root", nullPtr).bad());
     OFCHECK_EQUAL(result.getCharPointer(), nullPtr);
     OFCHECK(OFStandard::removeRootDirFromPathname(result, nullPtr, nullPtr).good());
+}
+
+OFTEST(ofstd_OFStandard_sanitizeAETitle)
+{
+    // Pure-ASCII alphanumeric is preserved.
+    OFString s = "MY_AE_42";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, "MY_AE_42");
+
+    // Dots, colons, dashes, '@' are part of the allow list.
+    s = "AE.TITLE:1@host-1";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, "AE.TITLE:1@host-1");
+
+    // Path separators map to underscores.
+    s = "../etc/passwd";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, ".._etc_passwd");
+
+    // Backslash is replaced (Windows path separator).
+    s = "..\\secret";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, ".._secret");
+
+    // Shell metacharacters are replaced.
+    s = "AE;rm -rf /";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, "AE_rm -rf _");
+
+    // Control characters (including NUL inside the string) are replaced.
+    OFString withNul;
+    withNul.append("AB", 2);
+    withNul.append(1, '\0');
+    withNul.append("CD", 2);
+    OFStandard::sanitizeAETitle(withNul);
+    OFCHECK_EQUAL(withNul, OFString("AB_CD"));
+
+    // High-range bytes (>= 0x7F) are replaced.
+    OFString withHigh;
+    withHigh.append("AE", 2);
+    withHigh.append(1, OFstatic_cast(char, 0xFF));
+    OFStandard::sanitizeAETitle(withHigh);
+    OFCHECK_EQUAL(withHigh, OFString("AE_"));
+
+    // A surrounding quotation-mark pair is preserved (storescp behaviour).
+    s = "\"../bad\"";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, "\".._bad\"");
+
+    // Empty string and length-1 string are handled without crashing.
+    s = "";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, "");
+    s = "/";
+    OFStandard::sanitizeAETitle(s);
+    OFCHECK_EQUAL(s, "_");
 }
 
 OFTEST(ofstd_safeSubtractAddMult)

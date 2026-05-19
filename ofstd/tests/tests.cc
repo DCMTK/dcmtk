@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2025, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,6 +48,7 @@ OFTEST_REGISTER(ofstd_OFStack);
 OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
 OFTEST_REGISTER(ofstd_OFStandard_appendFilenameExtension);
 OFTEST_REGISTER(ofstd_OFStandard_removeRootDirFromPathname);
+OFTEST_REGISTER(ofstd_OFStandard_sanitizeAETitle);
 OFTEST_REGISTER(ofstd_OFFile);
 OFTEST_REGISTER(ofstd_OFString_compare);
 OFTEST_REGISTER(ofstd_OFString_concatenate);

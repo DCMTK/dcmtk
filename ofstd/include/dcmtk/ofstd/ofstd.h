@@ -1183,6 +1183,44 @@ class DCMTK_OFSTD_EXPORT OFStandard
      */
     static void sanitizeFilename(char *fname);
 
+    /** sanitize a DICOM Application Entity Title for safe use as a
+     *  substitution value in a filename or in a command line that will
+     *  be passed to a shell.
+     *
+     *  This method maps each byte through an allow list: ASCII letters,
+     *  digits, space and the characters '-', '.', ':', '@', '_' are kept
+     *  unchanged; every other byte (including path separators '/' and
+     *  '\\', NUL, control characters, shell metacharacters and bytes
+     *  outside the printable ASCII range) is replaced by '_'.
+     *
+     *  The aetitle string is expected to be already trimmed (i.e. without
+     *  leading or trailing whitespace). Surrounding quotation marks, if
+     *  present, are preserved unchanged (the first and last byte are not
+     *  rewritten) so that quoted AE titles intended for shell command
+     *  substitution remain quoted.
+     *
+     *  This sanitization is sufficient for preventing shell injection in
+     *  contexts where the AE title is substituted into an already quoted
+     *  command-line argument, and for preventing path separators from
+     *  appearing in filenames. It is NOT sufficient to prevent path
+     *  traversal on its own, because the character '.' is kept and the
+     *  sequence "..", which is a path-relative parent reference on most
+     *  operating systems, is therefore not removed. Callers that
+     *  substitute the result into a filesystem path must reject or
+     *  collapse such sequences explicitly.
+     *
+     *  Note: this function is also used by the wlmscpfs application as
+     *  the basis of its filesystem-path-component validation (an AE title
+     *  is accepted only if sanitizeAETitle() would not change it, in
+     *  addition to an explicit dot rejection). Widening the allow list
+     *  below therefore widens the set of AE titles accepted as worklist
+     *  directory names; any change to it must consider that downstream
+     *  effect.
+     *
+     *  @param aetitle Application Entity Title to be sanitized in place.
+     */
+    static void sanitizeAETitle(OFString& aetitle);
+
     /** retrieve the name of the default directory for support data.
      *  On Windows, this method resolves environment variables such as
      *  \%PROGRAMDATA% in the path, on Posix platforms it just returns

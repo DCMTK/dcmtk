@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2024, OFFIS e.V.
+ *  Copyright (C) 1996-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -155,6 +155,32 @@ OFCondition WlmFileSystemInteractionManager::DisconnectFromFileSystem()
 
 // ----------------------------------------------------------------------------
 
+OFBool WlmFileSystemInteractionManager::IsValidAETitleForFilesystem( const OFString& aeTitle )
+{
+  // Length must be 1..16 (DICOM AE VR limit).
+  if( aeTitle.empty() || aeTitle.length() > 16 )
+    return OFFalse;
+
+  // OFStandard::sanitizeAETitle() keeps '.' in its allow list (the function
+  // is also used in shell-substitution contexts where dots are common in
+  // AE titles), so reject dots explicitly here. Rejecting the entire
+  // character avoids any need to reason about platform-specific path
+  // normalization corner cases (".", "..", trailing dots on Windows etc.).
+  if( aeTitle.find('.') != OFString_npos )
+    return OFFalse;
+
+  // Delegate the remaining character check to OFStandard::sanitizeAETitle().
+  // If the sanitizer would change any byte, the AE title contains characters
+  // that are not safe to use as a single filesystem path component (path
+  // separators, NUL, control bytes, bytes outside the printable ASCII range
+  // and shell metacharacters).
+  OFString sanitized = aeTitle;
+  OFStandard::sanitizeAETitle( sanitized );
+  return ( sanitized == aeTitle ) ? OFTrue : OFFalse;
+}
+
+// ----------------------------------------------------------------------------
+
 OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
@@ -167,6 +193,15 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 {
   // copy value
   calledApplicationEntityTitle = calledApplicationEntityTitlev;
+
+  // Reject AE titles that are not safe to use as a filesystem path component.
+  // This guards against path traversal via path separators or "../" segments
+  // smuggled in through the wire-side AE title.
+  if( !IsValidAETitleForFilesystem( calledApplicationEntityTitle ) )
+  {
+    DCMWLM_WARN( "Refusing called AE title because it is not safe to use as a directory name (contains path separators, control characters or is \".\"/\"..\"); rejecting association" );
+    return( OFFalse );
+  }
 
   // Determine complete path to the files that make up the data source.
   OFString fullPath( dfPath );

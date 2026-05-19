@@ -95,7 +95,6 @@ static void renameOnEndOfStudy();
 static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute );
 static void executeCommand( const OFString &cmd );
 static void cleanChildren(pid_t pid, OFBool synch);
-static void sanitizeAETitle(OFString& aet);
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          T_ASC_Parameters * params,
          const char* transferSyntaxes[],
@@ -2338,34 +2337,6 @@ static void executeEndOfStudyEvents()
   lastStudySubdirectoryPathAndName.clear();
 }
 
-/* replace all characters that might be interpreted by the shell with underscores
- */
-static void sanitizeAETitle(OFString& aet)
-{
-  static const char sanitized_aetitle_charset[] =
-  {
-    ' ', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '-', '.', '_',
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '_', '_', '_', '_', '_',
-    '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '_', '_', '_', '_',
-    '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', '_', '_', '_', '_'
-  };
-
-  // the aet string starts and ends with quotation marks. We ignore these.
-  size_t len = aet.length();
-  if (len < 3) return;
-
-  char c;
-  --len;
-  for (size_t i=1; i < len; ++i)
-  {
-    c = aet[i];
-    if (c != 0 && (c < 32 || c >= 127)) c = '_'; else c = sanitized_aetitle_charset[c-32];
-    aet[i] = c;
-  }
-}
-
 static void executeOnReception()
     /*
      * This function deals with the execution of the command line which was passed
@@ -2401,7 +2372,7 @@ static void executeOnReception()
   // perform substitution for placeholder #a.
   // Note that this string is already enclosed in double quotes at this point
   s = callingAETitle;
-  sanitizeAETitle(s);
+  OFStandard::sanitizeAETitle(s);
   if (s != callingAETitle)
   {
     OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling aetitle, converted from " << callingAETitle << " to " << s << ".");
@@ -2411,7 +2382,7 @@ static void executeOnReception()
   // perform substitution for placeholder #c.
   // Note that this string is already enclosed in double quotes at this point
   s = calledAETitle;
-  sanitizeAETitle(s);
+  OFStandard::sanitizeAETitle(s);
   if (s != calledAETitle)
   {
     OFLOG_WARN(storescpLogger, "Sanitized unusual characters in called aetitle, converted from " << calledAETitle << " to " << s << ".");
@@ -2421,7 +2392,7 @@ static void executeOnReception()
   // perform substitution for placeholder #r.
   // Note that this string is already enclosed in double quotes at this point
   s = callingPresentationAddress;
-  sanitizeAETitle(s);
+  OFStandard::sanitizeAETitle(s);
   if (s != callingPresentationAddress)
   {
     OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling presentation address, converted from " << callingPresentationAddress << " to " << s << ".");
@@ -2537,7 +2508,7 @@ static void executeOnEndOfStudy()
   // perform substitution for placeholder #a.
   // Note that this string is already enclosed in double quotes at this point
   s = callingAETitle;
-  sanitizeAETitle(s);
+  OFStandard::sanitizeAETitle(s);
   if (s != callingAETitle)
   {
     OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling aetitle, converted from " << callingAETitle << " to " << s << ".");
@@ -2547,7 +2518,7 @@ static void executeOnEndOfStudy()
   // perform substitution for placeholder #c.
   // Note that this string is already enclosed in double quotes at this point
   s = calledAETitle;
-  sanitizeAETitle(s);
+  OFStandard::sanitizeAETitle(s);
   if (s != calledAETitle)
   {
     OFLOG_WARN(storescpLogger, "Sanitized unusual characters in called aetitle, converted from " << calledAETitle << " to " << s << ".");
@@ -2557,7 +2528,7 @@ static void executeOnEndOfStudy()
   // perform substitution for placeholder #r.
   // Note that this string is already enclosed in double quotes at this point
   s = callingPresentationAddress;
-  sanitizeAETitle(s);
+  OFStandard::sanitizeAETitle(s);
   if (s != callingPresentationAddress)
   {
     OFLOG_WARN(storescpLogger, "Sanitized unusual characters in calling presentation address, converted from " << callingPresentationAddress << " to " << s << ".");

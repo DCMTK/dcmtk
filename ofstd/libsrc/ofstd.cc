@@ -3443,6 +3443,42 @@ void OFStandard::sanitizeFilename(char *fname)
 }
 
 
+// Allow list used by sanitizeAETitle(). Index is (byte - 32), so the
+// table covers the printable ASCII range 0x20..0x7E. Every entry either
+// repeats the input byte (kept) or is '_' (replaced). Kept characters:
+// space, '-', '.', ':', '@', '_' and ASCII letters/digits. All shell
+// metacharacters and path separators map to '_'.
+static const char sanitized_aetitle_charset[] =
+{
+  ' ', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '-', '.', '_',
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', '_', '_', '_', '_', '_',
+  '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+  'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '_', '_', '_', '_',
+  '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+  'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', '_', '_', '_', '_'
+};
+
+
+void OFStandard::sanitizeAETitle(OFString& aetitle)
+{
+    // Preserve a surrounding pair of quotation marks (used by callers
+    // that substitute the AE title into an already quoted shell argument).
+    size_t len = aetitle.length();
+    size_t start = 0;
+    if (len >= 2 && aetitle[0] == '"' && aetitle[len - 1] == '"')
+    {
+        start = 1;
+        --len;
+    }
+    for (size_t i = start; i < len; ++i)
+    {
+        unsigned char c = OFstatic_cast(unsigned char, aetitle[i]);
+        if (c < 32 || c >= 127) aetitle[i] = '_';
+        else aetitle[i] = sanitized_aetitle_charset[c - 32];
+    }
+}
+
+
 OFString OFStandard::getDefaultSupportDataDir()
 {
 #ifdef HAVE_WINDOWS_H

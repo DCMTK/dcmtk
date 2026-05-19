@@ -34,6 +34,7 @@ class DcmDataset;
 class DcmTagKey;
 class OFCondition;
 class DcmItem;
+class DcmSequenceOfItems;
 class OFdirectory_iterator;
 
 /** This class encapsulates data structures and operations for managing
@@ -201,12 +202,52 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
 
       /** Checks if the given called application entity title is supported. If this is the case,
        *  OFTrue will be returned, else OFFalse.
+       *
+       *  The check is performed in two stages. First, the AE title is validated against the
+       *  rules of IsValidAETitleForFilesystem(): titles that contain path separators, embedded
+       *  NUL or other control characters, or any dot character are rejected outright (returning
+       *  OFFalse). This prevents the wire-side AE title from escaping the worklist data file
+       *  path through path traversal. Second, the AE title is appended to the configured
+       *  worklist root path and the resulting directory must exist.
+       *
        *  @param calledApplicationEntityTitlev The application entity title which shall be checked
-       *                                       for support. Valid pointer expected.
+       *                                       for support.
        *  @return OFTrue, if the called application entity title is supported,
-       *          OFFalse, if the called application entity title is not supported or it is not given.
+       *          OFFalse, if the called application entity title is not supported, not given,
+       *          or rejected because it would not be safe to use as a filesystem path component.
        */
     OFBool IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev );
+
+      /** Determines whether the given DICOM Application Entity Title is safe to use as a single
+       *  directory or filename component below the worklist data file path.
+       *
+       *  An AE title is considered safe if and only if all of the following hold:
+       *  - it is not empty and not longer than 16 bytes (the DICOM AE VR length limit),
+       *  - it contains no dot ('.') at all,
+       *  - OFStandard::sanitizeAETitle() would not change any byte of it.
+       *
+       *  The third rule delegates the character-set check to OFStandard::sanitizeAETitle(),
+       *  which is the same allow list used by \b storescp for filename and shell-substitution
+       *  contexts: letters, digits, space and the characters '-', '.', ':', '@', '_' are kept,
+       *  every other byte (path separators '/' and '\\', NUL, control characters, bytes
+       *  outside the printable ASCII range and shell metacharacters) is replaced. If the
+       *  sanitized string differs from the input, the AE title contains at least one such
+       *  unsafe byte and is rejected.
+       *
+       *  Dots are rejected by the explicit second rule even though sanitizeAETitle() keeps
+       *  them. Real-world AE titles never contain dots, and rejecting the entire character
+       *  avoids any need to reason about path normalization corner cases (".", "..", trailing
+       *  dots on Windows etc.).
+       *
+       *  Note that this delegation couples the rule applied here to the allow list inside
+       *  OFStandard::sanitizeAETitle(). If that allow list is widened in the future, the set
+       *  of AE titles accepted as safe filesystem path components widens too, so any change
+       *  to it must consider downstream effects on \b wlmscpfs.
+       *
+       *  @param aeTitle Application Entity Title to validate.
+       *  @return OFTrue if the AE title is safe to use as a path component, OFFalse otherwise.
+       */
+    static OFBool IsValidAETitleForFilesystem( const OFString& aeTitle );
 
       /** This function determines the records from the Worklist files that match
        *  the given search mask and returns the number of matching records. Also,

@@ -1233,10 +1233,19 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, const OFString& calledAE, const OFString& reqFilePath, const OFString& reqFileFormat)
 {
   OFString fileName = reqFileFormat;
-  // Called Application Entity Title
-  OFStringUtil::replace_all(fileName, WLM_CALLED_AETITLE_PLACEHOLDER, calledAE);
-  // Calling Application Entity Title
-  OFStringUtil::replace_all(fileName, WLM_CALLING_AETITLE_PLACEHOLDER, callingAE);
+
+  // Each substituted value is sanitized before being inserted into the
+  // filename template. This prevents the calling/called AE title and the
+  // Patient ID (all originating on the wire) from injecting path
+  // separators or other unsafe characters into the resulting filename
+  // and thereby escaping the configured request file directory.
+  OFString safeCalledAE = calledAE;
+  OFStandard::sanitizeAETitle(safeCalledAE);
+  OFStringUtil::replace_all(fileName, WLM_CALLED_AETITLE_PLACEHOLDER, safeCalledAE);
+
+  OFString safeCallingAE = callingAE;
+  OFStandard::sanitizeAETitle(safeCallingAE);
+  OFStringUtil::replace_all(fileName, WLM_CALLING_AETITLE_PLACEHOLDER, safeCallingAE);
 
   // Process ID
   int processID = dcmtk::log4cplus::internal::get_process_id();
@@ -1258,7 +1267,14 @@ static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, c
   // Patient ID goes last since it might contain placeholders again (".#x...)"
   OFString patientID;
   request.findAndGetOFStringArray(DCM_PatientID, patientID);
+  OFStandard::sanitizeAETitle(patientID);
   OFStringUtil::replace_all(fileName, WLM_PATIENT_ID_PLACEHOLDER, patientID);
+
+  // Defense in depth: also sanitize the fully assembled filename so that
+  // any path separator that survived (for example through interaction
+  // between placeholder substitutions or via the user-supplied format
+  // string itself) is replaced before the file is opened.
+  OFStandard::sanitizeAETitle(fileName);
 
   // Finally store file
   STD_NAMESPACE ofstream outputStream;
