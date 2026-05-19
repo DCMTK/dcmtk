@@ -2007,6 +2007,24 @@ storeSCPCallback(
               break;
           }
 
+          // Refuse to use a subdirectory name that would resolve to ".",
+          // ".." or be empty. Such a name would cause the subsequent mkdir
+          // call to operate on the output directory itself or its parent,
+          // allowing a peer-supplied Study Instance UID or Patient Name
+          // value of "." or ".." to make incoming instances land outside
+          // the configured output directory. Names that merely contain
+          // dots ("1.2.3", "J.SMITH") are accepted as before: legitimate
+          // DICOM UIDs are dotted by design, and the embedded path
+          // separators that would be needed to form a parent reference
+          // have already been replaced by sanitizeFilename() above.
+          if (subdirectoryName.empty() || subdirectoryName == "." || subdirectoryName == "..")
+          {
+            OFLOG_ERROR(storescpLogger, "Refusing to use subdirectory name \"" << subdirectoryName
+                << "\" derived from received attributes (would resolve to the output directory itself or its parent)");
+            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
+            return;
+          }
+
           // create subdirectoryPathAndName (string with full path to new subdirectory)
           OFStandard::combineDirAndFilename(subdirectoryPathAndName, OFStandard::getDirNameFromPath(tmpStr, cbdata->imageFileName), subdirectoryName);
 

@@ -547,6 +547,16 @@ DICOM objects that belong to the same study, i.e. in contrast to the other
 \e --sort-xxx options there is no guarantee that a study directory is ever
 completed.
 
+For security reasons, \b storescp refuses to create a sort subdirectory whose
+name (after assembling prefix, sanitization and any timestamp suffix) is
+empty or equal to "." or "..".  Such a name would resolve to the output
+directory itself or its parent, allowing a peer to make incoming instances
+land outside the configured output directory through a Study Instance UID or
+Patient Name value of "." or "..".  In that case the affected C-STORE
+operation is rejected with status code "Cannot understand" and the offending
+name is logged.  Names that merely contain dots (such as a regular dotted
+DICOM UID, or a patient name containing initials) are accepted as before.
+
 Option \e --timenames creates filenames from timestamps corresponding to the
 time, \b storescp writes a file to disk.  The format is
 
