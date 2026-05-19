@@ -110,6 +110,7 @@ dcmsr/apps/dsrdump
 dcmsr/apps/xml2dsr
 dcmsr/tests/mkreport
 dcmwlm/apps/wlmscpfs
+dcmwlm/tests/dcmwlm_tests
 dcmwlm/tests/wltest
 oficonv/apps/mkcsmapper
 oficonv/apps/mkesdb
