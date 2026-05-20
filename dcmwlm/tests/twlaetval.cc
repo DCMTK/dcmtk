@@ -85,7 +85,7 @@ OFTEST(dcmwlm_aetitle_validation)
     {
         OFString withHigh;
         withHigh.append("AE", 2);
-        withHigh.append(1, OFstatic_cast(char, 0xFF));
+        withHigh.append(1, '\xff');
         OFCHECK(!WlmFileSystemInteractionManager::IsValidAETitleForFilesystem(withHigh));
     }
 

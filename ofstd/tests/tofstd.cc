@@ -411,7 +411,7 @@ OFTEST(ofstd_OFStandard_sanitizeAETitle)
     // High-range bytes (>= 0x7F) are replaced.
     OFString withHigh;
     withHigh.append("AE", 2);
-    withHigh.append(1, OFstatic_cast(char, 0xFF));
+    withHigh.append(1, '\xff');
     OFStandard::sanitizeAETitle(withHigh);
     OFCHECK_EQUAL(withHigh, OFString("AE_"));
 
