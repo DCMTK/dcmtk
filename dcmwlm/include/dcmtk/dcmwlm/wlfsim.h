@@ -227,7 +227,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  - OFStandard::sanitizeAETitle() would not change any byte of it.
        *
        *  The third rule delegates the character-set check to OFStandard::sanitizeAETitle(),
-       *  which is the same allow list used by \b storescp for filename and shell-substitution
+       *  which is the same allow list used by storescp for filename and shell-substitution
        *  contexts: letters, digits, space and the characters '-', '.', ':', '@', '_' are kept,
        *  every other byte (path separators '/' and '\\', NUL, control characters, bytes
        *  outside the printable ASCII range and shell metacharacters) is replaced. If the
@@ -242,7 +242,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  Note that this delegation couples the rule applied here to the allow list inside
        *  OFStandard::sanitizeAETitle(). If that allow list is widened in the future, the set
        *  of AE titles accepted as safe filesystem path components widens too, so any change
-       *  to it must consider downstream effects on \b wlmscpfs.
+       *  to it must consider downstream effects on wlmscpfs.
        *
        *  @param aeTitle Application Entity Title to validate.
        *  @return OFTrue if the AE title is safe to use as a path component, OFFalse otherwise.
