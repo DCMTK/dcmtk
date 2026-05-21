@@ -144,6 +144,17 @@ charset handling:
 
   -c   --charset-replace
          replace the original charset with UTF-8 in JSON
+
+specific character set:
+  +Cr  --charset-require
+         require declaration of extended charset (def.)
+
+  +Ca  --charset-assume  [c]harset: string
+         assume charset c if no extended charset declared
+
+  +Cc  --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST, UC and UT)
 \endverbatim
 
 \subsection dcm2json_output_options output options
@@ -393,6 +404,13 @@ Unicode UTF-8 encoding and converts DICOM data sets accordingly.  If this is
 not possible, for example because DCMTK has been compiled without character set
 conversion support, an error is returned.
 
+If the attribute (0008,0005) "Specific Character Set" is missing in the input file,
+although needed, option \e --charset-assume can be used to specify an appropriate
+character set manually (using one of the DICOM defined terms such as "ISO_IR 100").
+The following terms are also supported and mapped automatically to the
+associated DICOM defined terms: latin-1, latin-2, latin-3, latin-4, latin-5,
+latin-9, cyrillic, arabic, greek, hebrew.
+
 \section dcm2json_logging LOGGING
 
 The level of logging output of the various command line tools and underlying
@@ -494,6 +512,6 @@ replace any built-in tables.
 
 \section dcm2json_copyright COPYRIGHT
 
-Copyright (C) 2016-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2016-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
