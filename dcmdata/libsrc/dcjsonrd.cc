@@ -1204,6 +1204,7 @@ OFCondition DcmJSONReader::createElement(
     if (result.bad())
     {
         DCMDATA_ERROR("failed to create DICOM element "  << dcmTag << ": " << result.text());
+        return result;
     }
 
     // if this is pixel data, create an empty unencapsulated representation
