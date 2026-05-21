@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2022, OFFIS e.V.
+ *  Copyright (C) 2009-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -174,22 +174,26 @@ protected:
    *  @param row - [in] The row of data to parse.
    *  @param width - [in] The length in pixel of the row.
    *  @param bpp - [in] The number of bits per pixel.
+   *  @param isMonochrome - [in] true if a monochrome color palette was detected in the BMP data.
    *  @param pixData - [out] The buffer to write the data to (in "RGB" format).
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition parse24_32BppRow(const Uint8 *row,
                                const Uint16 width,
                                const int bpp,
+                               OFBool isMonochrome,
                                char *pixData /*out*/) const;
 
   /** Parse a single 16bpp row of BMP data.
    *  @param row - [in] The row of data to parse.
    *  @param width - [in] The length in pixel of the row.
+   *  @param isMonochrome - [in] true if a monochrome color palette was detected in the BMP data.
    *  @param pixData - [out] The buffer to write the data to (in "RGB" format).
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition parse16BppRow(const Uint8 *row,
                             const Uint16 width,
+                            OFBool isMonochrome,
                             char *pixData /*out*/) const;
 
   /** Parse a single 1, 4 or 8bpp row of BMP data.

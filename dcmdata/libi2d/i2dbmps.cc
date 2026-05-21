@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2009-2022, OFFIS e.V.
+ *  Copyright (C) 2009-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -417,11 +417,11 @@ OFCondition I2DBmpSource::readBitmapData(
         cond = parseIndexedColorRow(row_data, width, bpp, colors, palette, isMonochrome, &pixData[posData]);
         break;
       case 16:
-        cond = parse16BppRow(row_data, width, &pixData[posData]);
+        cond = parse16BppRow(row_data, width, isMonochrome, &pixData[posData]);
         break;
       case 24:
       case 32:
-        cond = parse24_32BppRow(row_data, width, bpp, &pixData[posData]);
+        cond = parse24_32BppRow(row_data, width, bpp, isMonochrome, &pixData[posData]);
         break;
       default:
         cond = makeOFCondition(OFM_dcmdata, 18, OF_error, "unsupported BMP file - invalid bpp");
@@ -446,8 +446,14 @@ OFCondition I2DBmpSource::readBitmapData(
 OFCondition I2DBmpSource::parse24_32BppRow(const Uint8 *row,
                                            const Uint16 width,
                                            const int bpp,
+                                           OFBool isMonochrome,
                                            char *pixData) const
 {
+  /* If isMonochrome is true, the BMP file is invalid
+   * because a (monochrome) color palette is not permitted for 24 or 32 bits/pixel
+   */
+  if (isMonochrome) return EC_CorruptedData;
+
   /* We now must convert this line of the bmp file into the kind of data that
    * our caller expects. Each pixel consists of three bytes: blue, green, red
    * (notice the order!) pixel value. We convert this into "standard" RGB.
@@ -482,8 +488,14 @@ OFCondition I2DBmpSource::parse24_32BppRow(const Uint8 *row,
 
 OFCondition I2DBmpSource::parse16BppRow(const Uint8 *row,
                                         const Uint16 width,
+                                        OFBool isMonochrome,
                                         char *pixData) const
 {
+  /* If isMonochrome is true, the BMP file is invalid
+   * because a (monochrome) color palette is not permitted for 16 bits/pixel
+   */
+  if (isMonochrome) return EC_CorruptedData;
+
   /* We now must convert this line of the bmp file into the kind of data that
    * our caller expects. Each pixel consists of three bytes: blue, green, red
    * (notice the order!) pixel value. We convert this into "standard" RGB.
