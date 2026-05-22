@@ -326,8 +326,12 @@ OFBool DcmMetaInfo::nextTagIsMeta(DcmInputStream &inStream)
 {
     char testbytes[2];
     inStream.mark();
-    inStream.read(testbytes, 2);
+    const offile_off_t bytesRead = inStream.read(testbytes, 2);
     inStream.putback();
+
+    if (bytesRead != 2)
+        return OFFalse;
+
     // check for group 0x0002 only
     return (testbytes[0] == 0x02 && testbytes[1] == 0x00) || (testbytes[0] == 0x00 && testbytes[1] == 0x02);
 }
