@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2025, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -328,6 +328,7 @@ char myIsTextWideChar(const void * /*b*/, int /*len*/) { return FALSE; }
         }
         static inline FILE *xfopen(XMLCSTR filename,XMLCSTR mode) { return fopen(filename,mode); }
         static inline int xstrlen(XMLCSTR c)   { return OFstatic_cast(int, strlen(c)); }
+        // DCMTK: use this macro for detecting a classic Borland compiler
         #ifdef HAVE_CLASSIC_BORLAND_COMPILER
             static inline int xstrnicmp(XMLCSTR c1, XMLCSTR c2, int l) { return strnicmp(c1,c2,l);}
             static inline int xstricmp(XMLCSTR c1, XMLCSTR c2) { return stricmp(c1,c2); }
@@ -1961,7 +1962,8 @@ XMLNode XMLNode::parseFile(XMLCSTR filename, XMLCSTR tag, XMLResults *pResults)
     if (f==NULL) { if (pResults) pResults->error=eXMLErrorFileNotFound; return emptyXMLNode; }
     fseek(f,0,SEEK_END);
     int l=OFstatic_cast(int, ftell(f)),headerSz=0;
-    if (!l) { if (pResults) pResults->error=eXMLErrorEmpty; fclose(f); return emptyXMLNode; }
+    // DCMTK: handle situation where ftell() returns -1
+    if (l <= 0) { if (pResults) pResults->error=eXMLErrorEmpty; fclose(f); return emptyXMLNode; }
     fseek(f,0,SEEK_SET);
     unsigned char *buf=OFreinterpret_cast(unsigned char*, malloc(l+4));
     l=OFstatic_cast(int, fread(buf,1,l,f));
@@ -2302,6 +2304,7 @@ int XMLNode::detachFromParent(XMLNodeData *d)
     int i=0;
     while ((OFreinterpret_cast(void*, pa[i].d))!=(OFreinterpret_cast(void*, d))) i++;
     d->pParent->nChild--;
+    // DCMTK: fixed minor Clang warning
     if (d->pParent->nChild) memmove(OFstatic_cast(void *, pa+i),pa+i+1,(d->pParent->nChild-i)*sizeof(XMLNode));
     else { free(pa); d->pParent->pChild=NULL; }
     return removeOrderElement(d->pParent,eNodeChild,i);
