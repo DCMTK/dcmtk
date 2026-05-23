@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2025, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -575,6 +575,12 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
        return result;
 
     fragmentLength = pixItem->getLength();
+    if (fragmentLength < 64)
+    {
+      DCMDATA_ERROR("Pixel item shorter than 64 bytes, RLE header incomplete.");
+      return EC_CannotChangeRepresentation;
+    }
+
     result = pixItem->getUint8Array(rleData);
     if (result.bad())
        return result;
