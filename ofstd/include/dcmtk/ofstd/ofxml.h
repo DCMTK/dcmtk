@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2022, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were slightly modified by
@@ -221,9 +221,14 @@ typedef enum XMLError
     eXMLErrorBase64DataSizeIsNotMultipleOf4,
     eXMLErrorBase64DecodeIllegalCharacter,
     eXMLErrorBase64DecodeTruncatedData,
-    eXMLErrorBase64DecodeBufferTooSmall
+    eXMLErrorBase64DecodeBufferTooSmall,
+
+    // DCMTK: additional error codes
+    eXMLErrorRecursionDepthExceeded
 } XMLError;
 
+// DCMTK: limit for supported recursion depth
+#define XMLMaxRecursionDepth 512
 
 /// Enumeration used to manage type of data. Use in conjunction with structure XMLNodeContents
 typedef enum XMLElementType
@@ -631,7 +636,9 @@ typedef struct XMLDLLENTRY XMLNode
 
       char parseClearTag(void *px, void *pa);
       char maybeAddTxT(void *pa, XMLCSTR tokenPStr);
-      int ParseXMLElement(void *pXML);
+
+      // DCMTK: added recursion depth counter to ParseXMLElement().
+      int ParseXMLElement(void *pXML, unsigned long depth);
       void *addToOrder(int memInc, int *_pos, int nc, void *p, int size, XMLElementType xtype);
       int indexText(XMLCSTR lpszValue) const;
       int indexClear(XMLCSTR lpszValue) const;
@@ -639,7 +646,9 @@ typedef struct XMLDLLENTRY XMLNode
       XMLAttribute *addAttribute_priv(int,XMLSTR,XMLSTR);
       XMLCSTR addText_priv(int,XMLSTR,int);
       XMLClear *addClear_priv(int,XMLSTR,XMLCSTR,XMLCSTR,int);
-      void emptyTheNode(char force);
+
+      // DCMTK: added recursion depth counter to emptyTheNode().
+      void emptyTheNode(char force, unsigned long depth);
       static inline XMLElementPosition findPosition(XMLNodeData *d, int index, XMLElementType xtype);
       static int CreateXMLStringR(XMLNodeData *pEntry, XMLSTR lpszMarker, int nFormat);
       static int removeOrderElement(XMLNodeData *d, XMLElementType t, int index);
