@@ -11,7 +11,7 @@ if(BUILD_SINGLE_SHARED_LIBRARY)
   # Build a single "everything-library".
   # The library dependencies are collected by DCMTK_TARGET_LINK_LIBRARIES().
   add_library(dcmtk SHARED ${LIBS})
-  target_link_libraries(dcmtk ${DCMTK_LIBRARY_DEPENDENCIES})
+  target_link_libraries(dcmtk PRIVATE ${DCMTK_LIBRARY_DEPENDENCIES})
   set_target_properties(dcmtk PROPERTIES ${DCMTK_LIBRARY_PROPERTIES})
 
   # Export target for build tree
