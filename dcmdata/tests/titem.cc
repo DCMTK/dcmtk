@@ -26,6 +26,7 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvrat.h"
 #include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 
 
@@ -47,4 +48,27 @@ OFTEST(dcmdata_findAndGetUint16Array)
     OFCHECK_EQUAL(numUints, 2);
     OFCHECK(item.findAndGetUint16Array(DCM_FrameIncrementPointer, uintVals, &numUints).good());
     OFCHECK_EQUAL(numUints, 2);
+}
+
+OFTEST(dcmdata_findAndDeletePrivateElement)
+{
+    DcmItem item;
+    const DcmTag privTag(0x0009,0x0042,"PRIVATE CREATOR");
+    /* create data elements with values */
+    const Uint16 reservationElem = 0x0070;
+    /* reservation */
+    const DcmTagKey reservationTag(privTag.getGroup(), reservationElem);
+    DcmLongString loValue( reservationTag );
+    loValue.putString(privTag.getPrivateCreator());
+    item.insert(new DcmLongString(loValue));
+
+    /* actual private element */
+    const DcmTagKey privTagKey( privTag.getGroup(), (reservationElem << 8) | privTag.getElement());
+    DcmUnsignedShort usValue(privTagKey);
+    usValue.putString("1");
+    item.insert(new DcmUnsignedShort(usValue));
+    OFCHECK(item.tagExists (privTagKey));
+    /* remove it */
+    item.findAndDeletePrivateElement(privTag);
+    OFCHECK(!item.tagExists (privTagKey));
 }
