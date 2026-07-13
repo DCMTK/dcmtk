@@ -14,19 +14,22 @@
 # DCMTKConfigVersion.cmake provides checking of DCMTK version compatibility
 # DCMTKConfig.cmake will contain options used to build this DCMTK package
 
-# Start with clean DCMTKTargets.cmake and fill it by appending
-file(WRITE "${CMAKE_BINARY_DIR}/DCMTKTargets.cmake" "")
-
-# Get and store all executable targets to DCMTKTargets.cmake within build's main dir
+# Get all targets to export into a single list so that export() runs without
+# APPEND. A single non-APPEND call allows CMake to resolve dependency targets
+# that live in other export sets (e.g. ITK codec targets) using those sets'
+# own namespaces, rather than blindly prepending the DCMTK:: namespace.
 get_property(DCMTK_EXECUTABLE_TARGETS GLOBAL PROPERTY DCMTK_EXECUTABLE_TARGETS)
-export(TARGETS ${DCMTK_EXECUTABLE_TARGETS} APPEND FILE "${CMAKE_BINARY_DIR}/DCMTKTargets.cmake" NAMESPACE DCMTK::)
-
-# Get and store libraries to DCMTKTargets.cmake within the build's main dir
 get_property(DCMTK_LIBRARY_TARGETS GLOBAL PROPERTY DCMTK_LIBRARY_TARGETS)
-export(TARGETS config ${DCMTK_LIBRARY_TARGETS} APPEND FILE "${CMAKE_BINARY_DIR}/DCMTKTargets.cmake" NAMESPACE DCMTK::)
-
-# Add interface library for conveniently linking to all libraries via DCMTK::DCMTK
-export(TARGETS DCMTK APPEND FILE "${CMAKE_BINARY_DIR}/DCMTKTargets.cmake" NAMESPACE DCMTK::)
+set(_dcmtk_all_export_targets
+    config
+    ${DCMTK_LIBRARY_TARGETS}
+    DCMTK
+    ${DCMTK_EXECUTABLE_TARGETS}
+)
+export(TARGETS ${_dcmtk_all_export_targets}
+    FILE "${CMAKE_BINARY_DIR}/DCMTKTargets.cmake"
+    NAMESPACE DCMTK::)
+unset(_dcmtk_all_export_targets)
 
 # Create DCMTKConfigVersion.cmake with basic DCMTK version information (build tree)
 set(DCMTK_CONFIG_VERSION "${CMAKE_BINARY_DIR}/DCMTKConfigVersion.cmake")
