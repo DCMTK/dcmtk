@@ -62,6 +62,22 @@ class DcmSpecificCharacterSet;
 #error "DCMTK_MAX_SEQUENCE_NESTING must be <= 2147483647"
 #endif
 
+// Default maximum element value length accepted by the parser (can be
+// overridden at compile time).  Elements declaring a larger value length
+// are rejected before a value buffer of that size is allocated (memory
+// exhaustion protection).  The default is the maximum defined value
+// length permitted in DICOM (0xFFFFFFFE), i.e. no additional restriction.
+// Must be in the range [1, 0xFFFFFFFE].
+#ifndef DCMTK_MAX_ELEMENT_LENGTH
+#define DCMTK_MAX_ELEMENT_LENGTH 0xFFFFFFFE
+#endif
+#if DCMTK_MAX_ELEMENT_LENGTH < 1
+#error "DCMTK_MAX_ELEMENT_LENGTH must be >= 1"
+#endif
+#if DCMTK_MAX_ELEMENT_LENGTH > 0xFFFFFFFE
+#error "DCMTK_MAX_ELEMENT_LENGTH must be <= 0xFFFFFFFE"
+#endif
+
 // Maximum number of read bytes for a Value Element
 const Uint32 DCM_MaxReadLength = 4096;
 

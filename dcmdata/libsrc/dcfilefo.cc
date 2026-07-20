@@ -55,7 +55,8 @@ DcmFileFormat::DcmFileFormat()
     FileReadMode(ERM_autoDetect),
     ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
     ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME),
-    MaxNestingDepth(0)
+    MaxNestingDepth(0),
+    MaxElementLength(0)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -73,7 +74,8 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
     FileReadMode(ERM_autoDetect),
     ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
     ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME),
-    MaxNestingDepth(0)
+    MaxNestingDepth(0),
+    MaxElementLength(0)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     if (DcmSequenceOfItems::itemList->insert(MetaInfo))
@@ -108,7 +110,8 @@ DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
     FileReadMode(old.FileReadMode),
     ImplementationClassUID(old.ImplementationClassUID),
     ImplementationVersionName(old.ImplementationVersionName),
-    MaxNestingDepth(old.MaxNestingDepth)
+    MaxNestingDepth(old.MaxNestingDepth),
+    MaxElementLength(old.MaxElementLength)
 {
 }
 
@@ -138,6 +141,7 @@ DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
         ImplementationClassUID = obj.ImplementationClassUID;
         ImplementationVersionName = obj.ImplementationVersionName;
         MaxNestingDepth = obj.MaxNestingDepth;
+        MaxElementLength = obj.MaxElementLength;
     }
     return *this;
 }
@@ -969,6 +973,9 @@ OFCondition DcmFileFormat::loadFileUntilTag(
             /* apply configured nesting depth limit */
             if (MaxNestingDepth != 0)
                 inStream.setMaxNestingDepth(MaxNestingDepth);
+            /* apply configured element length limit */
+            if (MaxElementLength != 0)
+                inStream.setMaxElementLength(MaxElementLength);
 
             /* clear this object */
             l_error = clear();
@@ -1002,6 +1009,9 @@ OFCondition DcmFileFormat::loadFileUntilTag(
             /* apply configured nesting depth limit */
             if (MaxNestingDepth > 0)
                 fileStream.setMaxNestingDepth(MaxNestingDepth);
+            /* apply configured element length limit */
+            if (MaxElementLength != 0)
+                fileStream.setMaxElementLength(MaxElementLength);
 
             /* check stream status */
             l_error = fileStream.status();

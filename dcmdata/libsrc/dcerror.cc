@@ -93,6 +93,7 @@ makeOFConditionConst(EC_UnsupportedURIType,              OFM_dcmdata, 67, OF_err
 makeOFConditionConst(EC_CommandLineFailed,               OFM_dcmdata, 68, OF_error, "Execution of command line failed"           );
 makeOFConditionConst(EC_NestingDepthLimitExceeded,       OFM_dcmdata, 69, OF_error, "Maximum sequence nesting depth exceeded"    );
 makeOFConditionConst(EC_PathConditionNotMet,             OFM_dcmdata, 70, OF_error, "Path condition not met"                     );
+makeOFConditionConst(EC_ElementLengthLimitExceeded,      OFM_dcmdata, 71, OF_error, "Maximum element value length exceeded"      );
 
 
 const unsigned short EC_CODE_CannotSelectCharacterSet     = 35;

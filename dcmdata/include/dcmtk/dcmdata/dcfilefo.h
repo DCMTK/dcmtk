@@ -525,6 +525,10 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
     /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
     Sint32 MaxNestingDepth;
 
+    /// maximum element value length for parsing
+    /// (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+    Uint32 MaxElementLength;
+
   public:
 
     /** set the maximum permitted sequence nesting depth for parsing.
@@ -549,6 +553,33 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
      */
     Sint32 getMaxNestingDepth() const { return MaxNestingDepth; }
+
+    /** set the maximum permitted element value length for parsing.
+     *  Applied to the input stream in loadFile() and read(), and also
+     *  forwarded to the contained dataset.  An element whose value length
+     *  field exceeds the limit is rejected with
+     *  EC_ElementLengthLimitExceeded before a value buffer of the declared
+     *  size is allocated (memory exhaustion protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+     *    defined value length permitted in DICOM, i.e. no additional
+     *    restriction)
+     *  - Value > 0: use this value as the maximum permitted element length
+     *  @param maxLength maximum element value length setting
+     */
+    void setMaxElementLength(Uint32 maxLength)
+    {
+        MaxElementLength = maxLength;
+        DcmDataset* dset = getDataset();
+        if (dset)
+            dset->setMaxElementLength(maxLength);
+    }
+
+    /** return the maximum permitted element value length for parsing.
+     *  @return maximum element value length setting
+     *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+     */
+    Uint32 getMaxElementLength() const { return MaxElementLength; }
 };
 
 

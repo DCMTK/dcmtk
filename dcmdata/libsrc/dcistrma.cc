@@ -31,6 +31,7 @@ DcmInputStream::DcmInputStream(DcmProducer *initial)
 , mark_(0)
 , nestingDepth_(0)
 , maxNestingDepth_(0)
+, maxElementLength_(0)
 {
 }
 
@@ -120,6 +121,16 @@ Sint32 DcmInputStream::maxNestingDepth() const
 void DcmInputStream::setMaxNestingDepth(Sint32 maxDepth)
 {
   maxNestingDepth_ = maxDepth;
+}
+
+Uint32 DcmInputStream::maxElementLength() const
+{
+  return maxElementLength_;
+}
+
+void DcmInputStream::setMaxElementLength(Uint32 maxLength)
+{
+  maxElementLength_ = maxLength;
 }
 
 OFCondition DcmInputStream::installCompressionFilter(E_StreamCompression filterType)

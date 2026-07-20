@@ -1578,6 +1578,10 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
     Sint32 maxNestingDepth;
 
+    /// maximum element value length for parsing
+    /// (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+    Uint32 maxElementLength;
+
   public:
 
     /** set the maximum permitted sequence nesting depth for parsing.
@@ -1596,6 +1600,27 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
      */
     Sint32 getMaxNestingDepth() const { return maxNestingDepth; }
+
+    /** set the maximum permitted element value length for parsing.
+     *  This limit is applied to the input stream before parsing in
+     *  loadFile() and read().  An element whose value length field exceeds
+     *  the limit is rejected with EC_ElementLengthLimitExceeded before a
+     *  value buffer of the declared size is allocated (memory exhaustion
+     *  protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+     *    defined value length permitted in DICOM, i.e. no additional
+     *    restriction)
+     *  - Value > 0: use this value as the maximum permitted element length
+     *  @param maxLength maximum element value length setting
+     */
+    void setMaxElementLength(Uint32 maxLength) { maxElementLength = maxLength; }
+
+    /** return the maximum permitted element value length for parsing.
+     *  @return maximum element value length setting
+     *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+     */
+    Uint32 getMaxElementLength() const { return maxElementLength; }
 };
 
 /** Checks whether left hand side item is smaller than right hand side

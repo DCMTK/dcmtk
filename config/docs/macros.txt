@@ -140,6 +140,25 @@ DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
     dcmtk::log4cplus::threadCleanup() should be called by the user code in
     order to clean-up oflog's thread local storage.
 
+DCMTK_MAX_ELEMENT_LENGTH
+  Affected: dcmdata
+  Type of modification: Compile-time tunable
+  Explanation: Defines the default maximum element value length accepted by
+    the DICOM parser.  An element whose value length field exceeds this
+    limit is rejected with EC_ElementLengthLimitExceeded before any value
+    data is read or buffered.  This complements the incremental value
+    allocation, which keeps memory proportional to the data actually
+    received: the limit additionally allows an application to reject
+    oversized elements outright, even if the peer really transmits that
+    much data.  When this macro is
+    not defined, the default of 4294967294 (0xFFFFFFFE) is used, which is
+    the maximum defined value length permitted in DICOM, i.e. no additional
+    restriction.  The limit can be changed at runtime per parse operation
+    via DcmInputStream::setMaxElementLength(),
+    DcmItem::setMaxElementLength(), or
+    DcmFileFormat::setMaxElementLength().
+    Minimum value: 1.  Maximum value: 4294967294 (0xFFFFFFFE).
+
 DCMTK_MAX_SEQUENCE_NESTING
   Affected: dcmdata
   Type of modification: Compile-time tunable

@@ -650,6 +650,9 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
             /* apply configured nesting depth limit */
             if (getMaxNestingDepth() > 0)
                 inStream.setMaxNestingDepth(getMaxNestingDepth());
+            /* apply configured element length limit */
+            if (getMaxElementLength() != 0)
+                inStream.setMaxElementLength(getMaxElementLength());
 
             /* clear this object */
             l_error = clear();
@@ -676,6 +679,9 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
             /* apply configured nesting depth limit */
             if (getMaxNestingDepth() > 0)
                 fileStream.setMaxNestingDepth(getMaxNestingDepth());
+            /* apply configured element length limit */
+            if (getMaxElementLength() != 0)
+                fileStream.setMaxElementLength(getMaxElementLength());
 
             /* check stream status */
             l_error = fileStream.status();

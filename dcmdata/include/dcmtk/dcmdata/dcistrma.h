@@ -258,6 +258,27 @@ public:
    */
   void setMaxNestingDepth(Sint32 maxDepth);
 
+  /** returns the maximum permitted element value length for parsing.
+   *  A value of 0 means the compile-time default (DCMTK_MAX_ELEMENT_LENGTH)
+   *  applies.
+   *  @return maximum element value length setting
+   */
+  Uint32 maxElementLength() const;
+
+  /** sets the maximum permitted element value length for parsing.
+   *  An element whose value length field exceeds this limit is rejected
+   *  with EC_ElementLengthLimitExceeded before a value buffer of the
+   *  declared size is allocated (memory exhaustion protection).
+   *  Must be called before parsing begins.
+   *  - Value 0 (default): apply the compile-time default
+   *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+   *    defined value length permitted in DICOM, i.e. no additional
+   *    restriction)
+   *  - Value > 0: use this value as the maximum permitted element length
+   *  @param maxLength maximum element value length setting
+   */
+  void setMaxElementLength(Uint32 maxLength);
+
   /** marks the current stream position for a later putback operation,
    *  overwriting a possibly existing prior putback mark.
    *  The DcmObject read methods rely on the possibility to putback
@@ -312,6 +333,9 @@ private:
 
   /// maximum permitted sequence nesting depth (0 = default 64, -1 = unlimited)
   Sint32 maxNestingDepth_;
+
+  /// maximum permitted element value length (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+  Uint32 maxElementLength_;
 };
 
 

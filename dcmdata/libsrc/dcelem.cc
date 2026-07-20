@@ -583,6 +583,20 @@ OFCondition DcmElement::loadAllDataIntoMemory()
 }
 
 
+/** returns the maximum permitted element value length for the given input
+ *  stream (memory exhaustion protection).
+ *  @param inStream the input stream the element is read from
+ *  @return the stream's setting, or the compile-time default
+ *    (DCMTK_MAX_ELEMENT_LENGTH) if no custom limit is set
+ */
+static Uint32 effectiveMaxElementLength(const DcmInputStream &inStream)
+{
+    const Uint32 maxLength = inStream.maxElementLength();
+    /* 0 = use built-in default (DCMTK_MAX_ELEMENT_LENGTH); > 0 = custom limit */
+    return (maxLength == 0) ? OFstatic_cast(Uint32, DCMTK_MAX_ELEMENT_LENGTH) : maxLength;
+}
+
+
 OFCondition DcmElement::loadValue(DcmInputStream *inStream)
 {
     /* initialize return value */
@@ -619,6 +633,19 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* if we did not encounter the end of the stream and no error occurred so far, go ahead */
             else if (errorFlag.good())
             {
+                /* If the declared element length exceeds the maximum
+                 * permitted element length (memory exhaustion protection,
+                 * see DcmInputStream::setMaxElementLength()), reject
+                 * before any value buffer is allocated. */
+                if (!fValue && getLengthField() != DCM_UndefinedLength
+                    && getLengthField() > effectiveMaxElementLength(*readStream))
+                {
+                    errorFlag = EC_ElementLengthLimitExceeded;
+                    DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                        << " length (" << getLengthField()
+                        << ") exceeds maximum permitted element length ("
+                        << effectiveMaxElementLength(*readStream) << ")");
+                }
                 /* if the value is not yet in memory and the stream cannot deliver all
                  * value bytes right away - or an incremental load is already in progress -
                  * read the value into a staging buffer that grows with the data that
@@ -628,13 +655,13 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                  * Defining DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION restores the historic
                  * behavior (full allocation of the declared length up front). */
 #ifndef DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
-                if (!fValue && ((fPartialValue != NULL) ||
+                else if (!fValue && ((fPartialValue != NULL) ||
                     (OFstatic_cast(Uint64, readStream->avail()) < OFstatic_cast(Uint64, getLengthField()))))
                 {
                     loadValueIncrementally(readStream); /* also sets errorFlag */
                 }
-                else
 #endif
+                else
                 {
                     /* if the object which holds this element's value does not yet exist, create it */
                     if (!fValue)
@@ -1321,12 +1348,27 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
             /* the reading of this element's value from the stream */
             if (getTransferState() == ERW_init)
             {
+                /* Reject an element whose declared value length exceeds the
+                 * maximum permitted element length before any allocation or
+                 * further processing takes place (memory exhaustion
+                 * protection, see DcmInputStream::setMaxElementLength()).
+                 * The default limit is the maximum defined value length
+                 * permitted in DICOM, i.e. no additional restriction. */
+                if (getLengthField() != DCM_UndefinedLength
+                    && getLengthField() > effectiveMaxElementLength(inStream))
+                {
+                    DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                        << " length (" << getLengthField()
+                        << ") exceeds maximum permitted element length ("
+                        << effectiveMaxElementLength(inStream) << ")");
+                    errorFlag = EC_ElementLengthLimitExceeded;
+                }
                 /* if the Length of this element's value is greater than the amount of bytes we */
                 /* can read from the stream and if the stream has random access, we want to create */
                 /* a DcmInputStreamFactory object that enables us to read this element's value later. */
                 /* This new object will be stored (together with the position where we have to start */
                 /* reading the value) in the member variable fLoadValue. */
-                if (getLengthField() > maxReadLength)
+                else if (getLengthField() > maxReadLength)
                 {
                     /* try to create a stream factory to read the value later */
                     delete fLoadValue;
