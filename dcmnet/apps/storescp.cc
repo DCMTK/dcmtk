@@ -174,6 +174,7 @@ OFBool             opt_rejectWithoutImplementationUID = OFFalse;
 OFCmdUnsignedInt   opt_sleepAfter = 0;
 OFCmdUnsignedInt   opt_sleepDuring = 0;
 OFCmdUnsignedInt   opt_maxPDU = ASC_DEFAULTMAXPDU;
+OFCmdUnsignedInt   opt_maxElementLength = 0;
 OFBool             opt_useMetaheader = OFTrue;
 OFBool             opt_acceptAllXfers = OFFalse;
 E_TransferSyntax   opt_networkTransferSyntax = EXS_Unknown;
@@ -346,6 +347,8 @@ int main(int argc, char *argv[])
       CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
       CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDU << ")", optString4);
       cmd.addOption("--max-pdu",                "-pdu", 1, optString3.c_str(), optString4.c_str());
+      cmd.addOption("--max-element-length",     "-mel", 1, "[n]umber of bytes: integer",
+                                                           "restrict max element length of received data\nto n bytes (default: unrestricted)");
 
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
@@ -612,6 +615,7 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingAETitle));
     if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+    if (cmd.findOption("--max-element-length")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
     if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
     if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
     if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
@@ -1136,6 +1140,11 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     numChildren = n;
     goto cleanup;
   }
+
+  // restrict the maximum element length accepted on this association if requested
+  // (memory exhaustion protection for command and data sets)
+  if (cond.good() && (opt_maxElementLength != 0))
+    ASC_setMaxIncomingElementLength(assoc, OFstatic_cast(Uint32, opt_maxElementLength));
 
   // if some kind of error occurred, take care of it
   if (cond.bad())

@@ -191,6 +191,10 @@ other network options:
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
+  -mel  --max-element-length  [n]umber of bytes: integer
+          restrict max element length of received data
+          to n bytes (default: unrestricted)
+
   -dhl  --disable-host-lookup
           disable hostname lookup
 

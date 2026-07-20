@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2025, OFFIS e.V.
+ *  Copyright (C) 2013-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_dimseTimeout = 0;
     OFCmdUnsignedInt opt_acseTimeout = 30;
     OFCmdUnsignedInt opt_maxPDULength = ASC_DEFAULTMAXPDU;
+    OFCmdUnsignedInt opt_maxElementLength = 0;
     T_DIMSE_BlockingMode opt_blockingMode = DIMSE_BLOCKING;
 
     OFBool opt_showPresentationContexts = OFFalse;  // default: do not show presentation contexts in verbose mode
@@ -130,6 +131,8 @@ int main(int argc, char *argv[])
         CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDULength << ")", optString3);
         cmd.addOption("--max-pdu",             "-pdu", 1, optString2.c_str(),
                                                           optString3.c_str());
+        cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer",
+                                                          "restrict max element length of received data\nto n bytes (default: unrestricted)");
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
     /* add TLS specific command line options if (and only if) we are compiling with OpenSSL */
@@ -233,6 +236,8 @@ int main(int argc, char *argv[])
         }
         if (cmd.findOption("--max-pdu"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+        if (cmd.findOption("--max-element-length"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
         if (cmd.findOption("--disable-host-lookup"))
             opt_HostnameLookup = OFFalse;
 
@@ -301,6 +306,8 @@ int main(int argc, char *argv[])
     if (opt_aeTitle != NULL)
         storageSCP.setAETitle(opt_aeTitle);
     storageSCP.setMaxReceivePDULength(OFstatic_cast(Uint32, opt_maxPDULength));
+    if (opt_maxElementLength != 0)
+        storageSCP.setMaxElementLength(OFstatic_cast(Uint32, opt_maxElementLength));
     storageSCP.setACSETimeout(OFstatic_cast(Uint32, opt_acseTimeout));
     storageSCP.setDIMSETimeout(OFstatic_cast(Uint32, opt_dimseTimeout));
     storageSCP.setDIMSEBlockingMode(opt_blockingMode);
