@@ -1648,4 +1648,180 @@ OFTEST_FLAGS(dcmnet_scp_maxNestingDepth_accepts_shallow, EF_Slow)
 }
 
 
+// Test that setMaxElementLength/getMaxElementLength work on DcmSCP
+OFTEST(dcmnet_scp_maxElementLength_getset)
+{
+    DcmSCP scp;
+    // Default must be 0 (use compile-time default)
+    OFCHECK_EQUAL(scp.getMaxElementLength(), 0);
+    scp.setMaxElementLength(1024);
+    OFCHECK_EQUAL(scp.getMaxElementLength(), 1024);
+    scp.setMaxElementLength(0);
+    OFCHECK_EQUAL(scp.getMaxElementLength(), 0);
+}
+
+
+// Test that setMaxElementLength/getMaxElementLength work on DcmSCU
+OFTEST(dcmnet_scu_maxElementLength_getset)
+{
+    DcmSCU scu;
+    // Default must be 0 (use compile-time default)
+    OFCHECK_EQUAL(scu.getMaxElementLength(), 0);
+    scu.setMaxElementLength(2048);
+    OFCHECK_EQUAL(scu.getMaxElementLength(), 2048);
+    scu.setMaxElementLength(0);
+    OFCHECK_EQUAL(scu.getMaxElementLength(), 0);
+}
+
+
+/** Helper: build a DcmDataset containing a single OB element of the
+ *  given length (filled with 'A').
+ *  @param length value length of the element in bytes
+ *  @param dset   output dataset (cleared before use)
+ */
+static void buildLargeElementDataset(Uint32 length, DcmDataset& dset)
+{
+    dset.clear();
+    Uint8* buf = new Uint8[length];
+    memset(buf, 'A', length);
+    OFCHECK(dset.putAndInsertUint8Array(DCM_EncapsulatedDocument, buf, length).good());
+    delete[] buf;
+}
+
+
+/** SCP that applies an element length limit and records whether
+ *  receiving the dataset succeeded or failed.
+ */
+struct ElementLengthTestSCP : TestSCP
+{
+    ElementLengthTestSCP(Uint32 maxElementLength)
+        : TestSCP()
+        , m_receiveResult(EC_NotYetImplemented)
+    {
+        setMaxElementLength(maxElementLength);
+        DcmSCPConfig& config = getConfig();
+        config.setAETitle("ELEMLEN_SCP");
+        config.setConnectionBlockingMode(DUL_NOBLOCK);
+        config.setConnectionTimeout(10);
+        config.setHostLookupEnabled(OFFalse);
+        config.setPort(0);
+        OFList<OFString> xfers;
+        xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+        OFCHECK(config.addPresentationContext(
+            UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+        OFCHECK(openListenPort().good());
+        m_portNum = config.getPort();
+    }
+
+    OFCondition handleIncomingCommand(
+        T_DIMSE_Message* incomingMsg,
+        const DcmPresentationContextInfo& presInfo)
+    {
+        if (incomingMsg->CommandField == DIMSE_N_CREATE_RQ)
+        {
+            T_DIMSE_N_CreateRQ& req = incomingMsg->msg.NCreateRQ;
+            if (req.DataSetType != DIMSE_DATASET_NULL)
+            {
+                DcmDataset* dataset = OFnullptr;
+                T_ASC_PresentationContextID presIDdset;
+                m_receiveResult =
+                    receiveDIMSEDataset(&presIDdset, &dataset);
+                /* send a response regardless of receive outcome */
+                T_DIMSE_Message rsp;
+                memset(&rsp, 0, sizeof(rsp));
+                rsp.CommandField = DIMSE_N_CREATE_RSP;
+                T_DIMSE_N_CreateRSP& createRsp = rsp.msg.NCreateRSP;
+                createRsp.MessageIDBeingRespondedTo = req.MessageID;
+                createRsp.DimseStatus = m_receiveResult.good()
+                    ? STATUS_N_Success
+                    : STATUS_N_ProcessingFailure;
+                createRsp.DataSetType = DIMSE_DATASET_NULL;
+                OFStandard::strlcpy(
+                    createRsp.AffectedSOPClassUID,
+                    req.AffectedSOPClassUID,
+                    sizeof(createRsp.AffectedSOPClassUID));
+                createRsp.opts = O_NCREATE_AFFECTEDSOPCLASSUID;
+                sendDIMSEMessage(
+                    presInfo.presentationContextID, &rsp, NULL);
+                delete dataset;
+            }
+            return EC_Normal;
+        }
+        return DcmSCP::handleIncomingCommand(incomingMsg, presInfo);
+    }
+
+    /// Result of receiveDIMSEDataset() for the last request
+    OFCondition m_receiveResult;
+    /// Port the SCP is listening on
+    Uint16 m_portNum;
+};
+
+
+/** Helper: run one N-CREATE against an ElementLengthTestSCP.
+ *  @param scp         the SCP under test (started by this helper)
+ *  @param elementLength value length of the OB element the SCU sends
+ */
+static void runElementLengthTransfer(ElementLengthTestSCP& scp, Uint32 elementLength)
+{
+    scp.m_set_stop_after_assoc = OFTrue;
+    scp.start();
+    OFStandard::forceSleep(1);
+
+    DcmSCU scu;
+    scu.setAETitle("ELEMLEN_SCU");
+    scu.setPeerAETitle("ELEMLEN_SCP");
+    scu.setPeerHostName("localhost");
+    scu.setPeerPort(scp.m_portNum);
+    OFList<OFString> xfers;
+    xfers.push_back(UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(scu.addPresentationContext(
+        UID_ModalityPerformedProcedureStepSOPClass, xfers).good());
+    OFCHECK(scu.initNetwork().good());
+    OFCHECK(scu.negotiateAssociation().good());
+
+    DcmDataset reqDataset;
+    buildLargeElementDataset(elementLength, reqDataset);
+    T_ASC_PresentationContextID presID = scu.findPresentationContextID(
+        UID_ModalityPerformedProcedureStepSOPClass,
+        UID_LittleEndianImplicitTransferSyntax);
+    OFCHECK(presID != 0);
+    Uint16 rspStatus = 0;
+    DcmDataset* rspDataset = NULL;
+    scu.sendNCREATERequest(presID, "1.2.3.4.5",
+        &reqDataset, rspDataset, rspStatus);
+    delete rspDataset;
+    if (scu.isConnected())
+        scu.releaseAssociation();
+    OFStandard::forceSleep(2);
+    scp.join();
+}
+
+
+// Test that SCP's element length limit rejects an element larger than
+// the limit received over the network
+OFTEST_FLAGS(dcmnet_scp_maxElementLength_rejects_large, EF_Slow)
+{
+    ElementLengthTestSCP scp(1024);
+
+    // SCU sends a dataset with a 2048 byte element (exceeds limit 1024)
+    runElementLengthTransfer(scp, 2048);
+
+    // Verify SCP saw the element length error
+    OFCHECK(scp.m_receiveResult == DIMSE_RECEIVEFAILED);
+}
+
+
+// Test that SCP's element length limit accepts an element within the limit
+OFTEST_FLAGS(dcmnet_scp_maxElementLength_accepts_within, EF_Slow)
+{
+    ElementLengthTestSCP scp(2048);
+
+    // SCU sends a dataset with a 2048 byte element (exactly at the limit)
+    runElementLengthTransfer(scp, 2048);
+
+    // Verify SCP successfully received the dataset
+    OFCHECK(scp.m_receiveResult.good());
+}
+
+
 #endif // WITH_THREADS

@@ -1115,6 +1115,11 @@ DIMSE_receiveCommand(
         return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE: receiveCommand: Failed to initialize cmdBuf");
     }
 
+    /* apply the association's element length limit (memory exhaustion
+     * protection, 0 = compile-time default) to the command set stream */
+    if (assoc->maxIncomingElementLength != 0)
+        cmdBuf.setMaxElementLength(assoc->maxIncomingElementLength);
+
     /* start a loop in which we want to read a DIMSE command from the incoming socket stream. */
     /* Since the command could stretch over more than one PDU, the use of a loop is mandatory. */
     for (last = OFFalse, bytesRead = 0, type = DUL_COMMANDPDV;
@@ -1556,6 +1561,12 @@ DIMSE_receiveDataSetInMemory(
 
     /* create a buffer variable which can be used to store the received information */
     DcmInputBufferStream dataBuf;
+
+    /* apply the association's element length limit (memory exhaustion
+     * protection, 0 = compile-time default) to the data set stream.
+     * A limit set on the dataset object itself takes precedence. */
+    if (assoc->maxIncomingElementLength != 0)
+        dataBuf.setMaxElementLength(assoc->maxIncomingElementLength);
 
     /* prepare the DcmDataset variable for transfer of data */
     dset->transferInit();

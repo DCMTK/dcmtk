@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -256,6 +256,11 @@ struct DCMTK_DCMNET_EXPORT T_ASC_Association
     unsigned short nextMsgID;     /* should be incremented by user */
     unsigned long sendPDVLength;  /* max length of PDV to send out */
     unsigned char *sendPDVBuffer; /* buffer of size sendPDVLength */
+
+    Uint32 maxIncomingElementLength; /* maximum element value length accepted
+                                      * when receiving DIMSE messages on this
+                                      * association (0 = compile-time default
+                                      * DCMTK_MAX_ELEMENT_LENGTH) */
 };
 
 /*
@@ -666,6 +671,31 @@ DCMTK_DCMNET_EXPORT OFString&
 ASC_dumpConnectionParameters(OFString& str, T_ASC_Association *association);
 
 DCMTK_DCMNET_EXPORT void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb);
+
+/** sets the maximum element value length accepted when receiving DIMSE
+ *  messages (command and data sets) on the given association.  An element
+ *  whose value length field exceeds the limit is rejected with
+ *  EC_ElementLengthLimitExceeded before a value buffer of the declared
+ *  size is allocated (memory exhaustion protection).
+ *  - Value 0 (default): apply the compile-time default
+ *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+ *    defined value length permitted in DICOM, i.e. no additional
+ *    restriction)
+ *  - Value > 0: use this value as the maximum permitted element length
+ *  @param assoc the association to configure, must not be NULL
+ *  @param maxLength maximum element value length setting
+ */
+DCMTK_DCMNET_EXPORT void
+ASC_setMaxIncomingElementLength(T_ASC_Association *assoc, Uint32 maxLength);
+
+/** returns the maximum element value length accepted when receiving DIMSE
+ *  messages on the given association.
+ *  @param assoc the association, must not be NULL
+ *  @return maximum element value length setting
+ *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+ */
+DCMTK_DCMNET_EXPORT Uint32
+ASC_getMaxIncomingElementLength(const T_ASC_Association *assoc);
 
 /*
  * Association Inquiries

@@ -900,6 +900,21 @@ public:
      */
     void setMaxNestingDepth(const Sint32 maxDepth);
 
+    /** Set the maximum permitted element value length for DIMSE messages
+     *  (command and data sets) received by this SCU.  The limit is applied
+     *  to each association once it has been established.  An element whose
+     *  value length field exceeds the limit is rejected with
+     *  EC_ElementLengthLimitExceeded before a value buffer of the declared
+     *  size is allocated (memory exhaustion protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+     *    defined value length permitted in DICOM, i.e. no additional
+     *    restriction)
+     *  - Value > 0: use this value as the maximum permitted element length
+     *  @param maxLength maximum element value length setting
+     */
+    void setMaxElementLength(const Uint32 maxLength);
+
     /* Get methods */
 
     /** Get current connection status
@@ -999,6 +1014,13 @@ public:
      *    -1 = unlimited)
      */
     Sint32 getMaxNestingDepth() const;
+
+    /** Return the maximum permitted element value length for DIMSE
+     *  messages received by this SCU.
+     *  @return maximum element value length setting
+     *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+     */
+    Uint32 getMaxElementLength() const;
 
     /** Returns whether SCU is configured to create a TLS connection with the SCP
      *  @return OFTrue if TLS mode has been enabled, OFFalse otherwise
@@ -1309,6 +1331,10 @@ private:
     /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING,
     /// -1 = unlimited)
     Sint32 m_maxNestingDepth;
+
+    /// Maximum element value length for received DIMSE messages
+    /// (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+    Uint32 m_maxElementLength;
 
     /// Flag indicating whether secure mode has been enabled (default: disabled)
     OFBool m_secureConnectionEnabled;

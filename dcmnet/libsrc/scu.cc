@@ -70,6 +70,7 @@ DcmSCU::DcmSCU()
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
     , m_maxNestingDepth(0)
+    , m_maxElementLength(0)
     , m_secureConnectionEnabled(OFFalse)
     , m_protocolVersion(ASC_AF_Default)
 {
@@ -310,6 +311,11 @@ OFCondition DcmSCU::negotiateAssociation()
             return cond;
         }
     }
+
+    /* apply the configured element length limit to this association
+     * (protects command and data set receive, 0 = compile-time default) */
+    if (m_maxElementLength != 0)
+        ASC_setMaxIncomingElementLength(m_assoc, m_maxElementLength);
 
     /* dump the presentation contexts which have been accepted/refused */
     if (m_verbosePCMode)
@@ -2860,6 +2866,11 @@ void DcmSCU::setMaxNestingDepth(const Sint32 maxDepth)
     m_maxNestingDepth = maxDepth;
 }
 
+void DcmSCU::setMaxElementLength(const Uint32 maxLength)
+{
+    m_maxElementLength = maxLength;
+}
+
 void DcmSCU::setProtocolVersion(T_ASC_ProtocolFamily protocolVersion)
 {
     m_protocolVersion = protocolVersion;
@@ -2950,6 +2961,11 @@ OFBool DcmSCU::getProgressNotificationMode() const
 Sint32 DcmSCU::getMaxNestingDepth() const
 {
     return m_maxNestingDepth;
+}
+
+Uint32 DcmSCU::getMaxElementLength() const
+{
+    return m_maxElementLength;
 }
 
 OFCondition DcmSCU::getDatasetInfo(DcmDataset* dataset,
