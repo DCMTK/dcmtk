@@ -1,0 +1,193 @@
+-----------------------------------------------------------------------------
+MEMORY ALLOCATION FOR ELEMENT VALUES IN DCMTK
+-----------------------------------------------------------------------------
+
+This document describes how the dcmdata parser allocates memory for
+element values, how it protects against memory exhaustion from crafted
+or corrupted input, and how this behavior can be configured.
+
+
+THE PROBLEM BEING ADDRESSED
+---------------------------
+
+A DICOM element announces the length of its value in a length field
+that, depending on the transfer syntax and the value representation, is
+16 or 32 bits wide.  Wherever a 32-bit length field is used lengths
+of up to almost 4 GB can be announced.
+Historically, DcmElement::loadValue() allocated a buffer of the full
+announced length before a single value byte was read from the input
+stream.
+
+For input streams with random access (i.e. reading from a file), the
+parser has always verified the announced length against the remaining
+file size before allocating, so plain file parsing was never at risk.
+For all other input streams, however, such verification is impossible:
+the data simply has not arrived yet.  A small crafted or truncated
+input announcing a huge element length therefore triggered a huge
+up-front allocation.  Affected were all parse paths that cannot look
+ahead:
+
+  - network receive (DcmInputBufferStream, fed to the parser fragment
+    by fragment by the dcmnet DIMSE layer) - the classic attack vector:
+    a DIMSE message of a few dozen bytes could make a Storage SCP
+    attempt a ~4 GB allocation (denial of service);
+  - reading from standard input (DcmStdinStream);
+  - deflated transfer syntax (the zlib filter only buffers a small
+    amount of decompressed data, so the total remaining data is
+    unknown even when reading from a file);
+  - deferred value loading from a file that has been truncated after
+    the initial parse;
+  - reading a complete in-memory buffer whose data ends early, e.g.
+    a non-DICOM file loaded through DcmInputBufferStream.
+
+Note that on typical systems such an allocation may even "succeed"
+without immediately consuming physical memory (lazy page allocation),
+which makes the problem easy to miss in testing: the damage occurs
+when the memory is touched, when memory overcommit is restricted, on
+32-bit systems, or when many such allocations happen in parallel.
+
+Two complementary mechanisms address this:
+
+  1. Incremental value loading removes the amplification: memory
+     consumption is always proportional to the data that actually
+     arrived, without any configuration.  A tiny input can no longer
+     cause a huge allocation.
+
+  2. The maximum element length limit adds an optional absolute
+     policy: an application (or a single network association) can
+     declare that it never expects element values larger than N bytes
+     and reject anything larger outright - even if the peer really
+     sends that much data.  Incremental loading cannot provide this:
+     if a peer genuinely transmits 4 GB, it is faithfully buffered.
+
+Incremental loading is enabled by default (it only changes behavior
+for input that could not be parsed successfully anyway); the length
+limit is inactive by default and strictly opt-in.
+
+
+INCREMENTAL VALUE LOADING
+-------------------------
+
+When an element value is to be loaded and the stream can already
+deliver all (remaining) value bytes - DcmInputStream::avail() reports
+at least the announced length - the classic code path is used: one
+buffer of the exact required size is allocated (via the virtual
+DcmElement::newValueField(), so string-specific allocation is
+honored), and the value is read into it.  This covers file parsing
+and fully buffered input; there is no change and no overhead in this
+case.
+
+Otherwise, DcmElement::loadValueIncrementally() reads the value into an
+internal staging buffer that grows with the data that actually
+arrives:
+
+  - the first allocation is max(currently available bytes, 64 KiB),
+    but never more than the value needs;
+  - when the staging buffer is full and more data is available, a new
+    buffer of max(4 * current size, received + available bytes) is
+    allocated, the received data is copied over, and the old buffer is
+    released;
+  - as soon as such a grown buffer would hold the complete value, the
+    final size is allocated directly;
+  - the buffer only grows when the stream actually has data to
+    deliver.
+
+The final buffer is sized "announced length rounded up to an even
+number of bytes, plus two zeroed trailing bytes", which uniformly
+covers the padding and string termination bytes that the
+newValueField() implementations otherwise provide.  Only when the
+value is complete is the buffer installed as the element's value and
+post-processing (odd length correction, byte swapping etc.) performed.
+While a value load is suspended waiting for more data (network reads
+spanning multiple fragments, condition EC_StreamNotifyClient), the
+element reports its value as "not loaded yet" - no caller can observe
+a buffer smaller than the announced length.
+
+Properties of this scheme:
+
+  - The total allocation never exceeds 4 times the data actually
+    received (plus the 64 KiB minimum).  An attacker must really
+    transmit on the order of N bytes to make the parser hold N bytes.
+  - The bytes copied while growing amount to a fraction of the value
+    length (between roughly 1/3 and 1.3 times, depending on how the
+    length falls onto the growth steps).  In practice the overhead is
+    not measurable for typical network receives; the worst case - a
+    single maximum-size element received over a loopback-speed link -
+    costs on the order of 25 % additional wall time.
+  - Peak physical memory is the same as with up-front allocation:
+    newly allocated pages only become resident when written, and the
+    released old buffer is returned to the operating system
+    immediately, so the transient overlap during a growth step costs
+    about twice the received-so-far bytes, not "old plus new" buffer
+    size.
+  - Sizes near the 4 GB maximum are computed in 64-bit arithmetic and
+    capped such that they cannot wrap on any platform.  On 32-bit
+    systems, values that exceed the address space fail cleanly with
+    EC_MemoryExhausted (as they always did).
+
+Behavioral differences compared to the historic up-front allocation
+(only in error situations):
+
+  - If the stream ends prematurely while a value is loaded
+    incrementally, the partially received data is discarded: the
+    element keeps its announced length field but reports the value as
+    not available (valueLoaded() returns OFFalse, value access
+    returns an error, writing the data set fails for this element).
+    Historically the element kept a buffer of the full announced
+    length whose tail beyond the received data was uninitialized
+    memory; applications that ignored the parse error could read - or
+    even write out - that uninitialized content.
+  - valueLoaded() returns OFFalse while a value read is suspended
+    waiting for more network data (historically OFTrue, with a
+    partially filled buffer).
+
+Incremental loading can be disabled at compile time by defining
+
+    DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
+
+which restores the historic behavior (full allocation of the announced
+length before reading) with a single, central switch in
+DcmElement::loadValue().  This is meant as an escape hatch for
+environments that depend on the historic error-case behavior described
+above; there is no reason to define it otherwise.
+
+
+MAXIMUM ELEMENT LENGTH LIMIT
+----------------------------
+
+Independently of how the value buffer is allocated, the parser can
+enforce an upper bound on the announced value length of a single
+element.  An element whose length field exceeds the limit is rejected
+with the condition EC_ElementLengthLimitExceeded before any value data
+is read or allocated.
+
+The limit exists on several levels:
+
+  - Compile-time default: the macro DCMTK_MAX_ELEMENT_LENGTH
+    (dcmdata/include/dcmtk/dcmdata/dcobject.h) defines the built-in
+    default.  It is set to 0xFFFFFFFE, the maximum defined value
+    length in DICOM, i.e. no restriction unless configured otherwise
+    (analogous to DCMTK_MAX_SEQUENCE_NESTING for the sequence nesting
+    depth).
+  - Runtime, per parse operation:
+    DcmInputStream::setMaxElementLength(),
+    DcmItem::setMaxElementLength() and
+    DcmFileFormat::setMaxElementLength() set the limit for a specific
+    read operation (0 selects the compile-time default).
+  - Per network association (dcmnet):
+    ASC_setMaxIncomingElementLength() restricts the element length
+    accepted in incoming DIMSE command and data sets of an
+    association; DcmSCP::setMaxElementLength() and
+    DcmSCU::setMaxElementLength() apply this to all associations
+    created by the respective object.
+  - Command line: the network receive tools storescp and dcmrecv
+    accept --max-element-length <n> (-mel) to restrict the maximum
+    element length of received data sets (default: unrestricted).
+
+Choosing a limit is a matter of application policy.  For example, a
+worklist server that never expects pixel data may safely restrict
+incoming elements to a few megabytes, while an archive receiving
+uncompressed multi-frame images may need multi-gigabyte elements.
+The two mechanisms compose: incremental loading ensures that memory
+follows the actually received data, and the length limit caps the
+total amount a peer may make the application buffer at all.

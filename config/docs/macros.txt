@@ -77,8 +77,8 @@ DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
     environments that depend on the historic behavior in error situations
     (a prematurely ending stream then leaves a partially filled full-size
     value buffer instead of discarding the incomplete value); there is no
-    reason to define it otherwise.  See the documentation of
-    DcmElement::loadValueIncremental() in dcmdata/dcelem.h for details.
+    reason to define it otherwise.  See memalloc.txt for a detailed
+    description of the element value memory allocation.
 
 DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
   Affected: dcmnet
@@ -156,7 +156,8 @@ DCMTK_MAX_ELEMENT_LENGTH
     restriction.  The limit can be changed at runtime per parse operation
     via DcmInputStream::setMaxElementLength(),
     DcmItem::setMaxElementLength(), or
-    DcmFileFormat::setMaxElementLength().
+    DcmFileFormat::setMaxElementLength().  See memalloc.txt for a
+    detailed description of the element value memory allocation.
     Minimum value: 1.  Maximum value: 4294967294 (0xFFFFFFFE).
 
 DCMTK_MAX_SEQUENCE_NESTING
