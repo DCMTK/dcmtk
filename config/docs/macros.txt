@@ -62,6 +62,24 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
+DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
+  Affected: dcmdata
+  Type of modification: Disables feature
+  Explanation: When an element value is parsed from a stream that cannot
+    deliver all value bytes right away (e.g. a network stream that is fed
+    fragment by fragment, stdin, or a deflated stream), the parser stages
+    the value in a buffer that grows with the data that actually arrives,
+    so that a small crafted or truncated input announcing a huge element
+    length cannot trigger a huge memory allocation.  Defining this macro
+    disables the incremental allocation and restores the historic
+    behavior, i.e. a buffer of the full announced value length is
+    allocated before reading begins.  It is meant as an escape hatch for
+    environments that depend on the historic behavior in error situations
+    (a prematurely ending stream then leaves a partially filled full-size
+    value buffer instead of discarding the incomplete value); there is no
+    reason to define it otherwise.  See the documentation of
+    DcmElement::loadValueIncremental() in dcmdata/dcelem.h for details.
+
 DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
   Affected: dcmnet
   Type of modification: Toolkit customization

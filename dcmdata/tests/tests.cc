@@ -112,6 +112,12 @@ OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_dictVR_defaultLen);
 OFTEST_REGISTER(dcmdata_parser_wrongExplicitVRinDataset_preferDataDict);
 OFTEST_REGISTER(dcmdata_parser_undefinedLengthUNSequence);
 OFTEST_REGISTER(dcmdata_parser_handleAmbiguousVR_fromDictionary);
+OFTEST_REGISTER(dcmdata_parser_implicitVR_hugeLengthInBufferStream);
+OFTEST_REGISTER(dcmdata_parser_incrementalBufferStreamRead);
+OFTEST_REGISTER(dcmdata_parser_manyFragmentsBufferStreamRead);
+#ifdef WITH_ZLIB
+OFTEST_REGISTER(dcmdata_parser_deflatedBufferStreamRead);
+#endif
 OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
