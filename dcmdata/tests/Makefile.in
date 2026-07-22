@@ -28,7 +28,7 @@ objs = tests.o tpread.o ti2dbmp.o tchval.o tpath.o tvrdatim.o telemlen.o tparser
 	tdict.o tvrds.o tvrfd.o tvrui.o tvrol.o tvrov.o tvrsv.o tvruv.o tstrval.o \
 	tspchrs.o tvrpn.o tparent.o tfilter.o tvrcomp.o tmatch.o tnesting.o tnewdcme.o \
 	tgenuid.o tsequen.o titem.o ttag.o txfer.o tbytestr.o tfrmsiz.o tcond.o tdicdir.o \
-	mdfdsman.o mdfconen.o
+	tmaxlen.o mdfdsman.o mdfconen.o
 
 progs = tests
 
