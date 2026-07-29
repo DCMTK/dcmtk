@@ -1,6 +1,7 @@
 # declare executables
 DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tbytestr.cc
+  tchrstr.cc
   tchval.cc
   tcond.cc
   tdict.cc

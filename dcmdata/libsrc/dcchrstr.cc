@@ -45,6 +45,85 @@
 
 #include "dcmtk/dcmdata/dcchrstr.h"
 
+static unsigned long getMaximumNumberOfValues(const OFString& s, Uint32 len)
+{
+    // a byte representing a backslash may also be part of a multi-byte character,
+    // so the found value may be higher than the real VM
+    unsigned long vm = 1;
+    const char *p = s.c_str();
+    for (size_t i = 0; i < len; i++)
+        if (*p++ == '\\')
+            ++vm;
+    return vm;
+}
+
+static OFCondition getOFStringAtIndex(
+    OFString& stringVal, const unsigned long pos, const char *str, Uint32 len)
+{
+    // works for single-byte encodings
+    const char *p = str;
+    const char *start = str;
+    unsigned long vm = 1;
+    for (size_t i = 0; i < len; i++)
+    {
+        if (*p++ == '\\')
+        {
+            if (pos == vm)
+                start = p;
+            else if (pos + 1 == vm)
+            {
+                stringVal.assign(start, p - 1);
+                return EC_Normal;
+            }
+            ++vm;
+        }
+    }
+    if (pos + 1 == vm)
+    {
+        stringVal.assign(start, str + len);
+        return EC_Normal;
+    }
+    if (pos > 0)
+        return EC_IllegalParameter;
+    stringVal.clear();
+    return EC_Normal;
+}
+
+
+// ********************************
+
+// helper functions dealing with specific character sets
+
+static OFBool isMultiValuedCharacterSet(const OFString& charset)
+{
+    return charset.find('\\') != OFString_npos;
+}
+
+static void skipMultiByteEscapeSequence(const char *&p, size_t &i, size_t len)
+{
+    if ((*p != 0x1b) || (i >= len - 2))
+        return;
+
+    // found an escape sequence, check if it is for a multi-byte encoding
+    ++i;
+    // The escape sequence for the following encodings starts with "$":
+    // ISO 2022 IR 87, ISO 2022 IR 159, ISO 2022 IR 149, ISO 2022 IR 58
+    bool isMultiByte = *++p == '$';
+    if (!isMultiByte && *p == '-')
+    {
+        ++i;
+        isMultiByte = *++p == 'T'; // ISO 2022 IR 166
+    }
+    if (!isMultiByte)
+        return;
+
+    // we are inside a part encoded using a multi-byte extension,
+    // skip until the next escape sequence or the end of the value
+    while (++i < len - 2 && *p++ != 0x1b) {}
+}
+
+// ********************************
+
 
 DcmCharString::DcmCharString(const DcmTag &tag, const Uint32 len)
   : DcmByteString(tag, len)
@@ -140,22 +219,134 @@ OFCondition DcmCharString::verify(const OFBool autocorrect)
 }
 
 
-OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
+// ********************************
+
+
+unsigned long DcmCharString::getVM()
 {
-    OFBool result = OFFalse;
+    // the vast majority of values have VM 0 or 1, so optimize for these
     char *str = NULL;
     Uint32 len = 0;
-    /* determine length in order to support possibly embedded NULL bytes */
-    if (getString(str, len).good())
-        result = DcmByteString::containsExtendedCharacters(str, len);
-    return result;
+    OFCondition result = getString(str, len);
+    if (!result.good() || (str == NULL) || (len == 0))
+        return 0;
+
+    if (!supportsMultiValue())
+        return 1;
+
+    unsigned long vm = getMaximumNumberOfValues(str, len);
+    if (vm == 1 || !containsExtendedCharacters())
+        return vm;
+
+    // We have a string containing extended characters and possibly backslashes -
+    // now we have to get the Specific Character Set to filter out bytes with the
+    // value for backslash (0x5C) that are part of a multi-byte character.
+    OFString charset;
+    result = getSpecificCharacterSet(charset);
+    if (!result.good() || charset.empty())
+        return vm;
+
+    if (isMultiValuedCharacterSet(charset) ||
+        DcmSpecificCharacterSet::isNonASCIIConformMultiByteSingleValueCharacterSet(charset))
+    {
+        vm = 1;
+        size_t startPos = 0;
+        size_t valuePos;
+        while ((valuePos = findNextValuePosition(str, len, startPos, charset)) != OFString_npos)
+        {
+            ++vm;
+            startPos += valuePos;
+        }
+    }
+
+    return vm;
 }
+
+
+// ********************************
+
+
+OFCondition DcmCharString::getOFString(OFString& stringVal, const unsigned long pos, OFBool /*normalize*/)
+{
+    char *str = NULL;
+    Uint32 len = 0;
+    OFCondition result = getString(str, len);
+    if (result.bad())
+        return result;
+
+    if ((str == NULL) || (len == 0))
+    {
+        if (pos > 0)
+            return EC_IllegalParameter;
+        stringVal.clear();
+        return EC_Normal;
+    }
+
+    if (!supportsMultiValue() || getMaximumNumberOfValues(str, len) == 0)
+    {
+        if (pos > 0)
+            return EC_IllegalParameter;
+        stringVal.assign(str, str + len);
+        return EC_Normal;
+    }
+
+    // only check for multi-byte character sets if the value contains any non-ASCII characters
+    // oe Escape sequences
+    if (containsExtendedCharacters())
+    {
+        // We have a string containing extended characters and possibly backslashes -
+        // now we have to get the Specific Character Set to filter out bytes with the
+        // value for backslash (0x5C) that are part of a multi-byte character.
+        OFString charset;
+        result = getSpecificCharacterSet(charset);
+        if (result.good() && !charset.empty() &&
+            (isMultiValuedCharacterSet(charset) ||
+                DcmSpecificCharacterSet::isNonASCIIConformMultiByteSingleValueCharacterSet(charset)))
+        {
+            unsigned long index = 0;
+            size_t valuePos = 0;
+            while (index < pos &&
+                (valuePos = findNextValuePosition(str, len, valuePos, charset)) != OFString_npos)
+                ++index;
+            if (valuePos == OFString_npos)
+                return EC_IllegalParameter;
+            if (valuePos == len)
+                stringVal.clear();
+            else
+            {
+                size_t valueEnd = findNextValuePosition(str, len, valuePos, charset);
+                if (valueEnd == OFString_npos)
+                    valueEnd = len + 1;
+                // account for the backslash before the end pointer
+                stringVal.assign(str + valuePos, str + valueEnd - 1);
+            }
+            return EC_Normal;
+        }
+    }
+    // single-byte, single-value encoding, or value without extended characters
+    return getOFStringAtIndex(stringVal, pos, str, len);
+}
+
+OFCondition DcmCharString::putOFStringAtPos(const OFString& stringVal, const unsigned long pos)
+{
+    OFString charset;
+    if (getSpecificCharacterSet(charset).bad())
+        charset.clear();
+
+    return putOFStringAtPosWithCharset(stringVal, pos, charset);
+}
+
+
+// ********************************
 
 
 OFBool DcmCharString::isAffectedBySpecificCharacterSet() const
 {
     return OFTrue;
 }
+
+
+// ********************************
 
 
 OFCondition DcmCharString::convertCharacterSet(DcmSpecificCharacterSet &converter)
@@ -274,6 +465,41 @@ const OFString& DcmCharString::getDelimiterChars() const
     return DcmVR(ident()).getDelimiterChars();
 }
 
+size_t DcmCharString::findNextValuePosition(const char* str, size_t len, size_t start, const OFString& charSet) const
+{
+    if (charSet.empty())
+        return DcmByteString::findNextValuePosition(str, len, start, charSet);
+
+    const char *p = str + start;
+    if (DcmSpecificCharacterSet::isNonASCIIConformMultiByteSingleValueCharacterSet(charSet))
+    {
+        // special handling to find real backslashes in chinese multi-bytes encodings;
+        // the first byte for 2-byte characters, and the first and third bytes of 4-byte
+        // characters are always > 0x80, so we can exclude these characters
+        for (size_t i = start; i < len; ++i, ++p)
+        {
+            if (*p == '\\')
+                return i + 1;
+            if ((*p & 0x80) != 0)
+            {
+                // this is a 2-byte character or the first or second part
+                // of a 4-byte character - skip the next byte
+                ++p;
+                ++i;
+            }
+        }
+        return OFString_npos;
+    }
+
+    for (size_t i = start; i < len; ++i, ++p)
+    {
+        if (*p == '\\')
+            return i + 1;
+        skipMultiByteEscapeSequence(p, i, len);
+    }
+
+    return OFString_npos;
+}
 
 OFBool DcmCharString::isUniversalMatch(const OFBool normalize,
                                        const OFBool enableWildCardMatching)

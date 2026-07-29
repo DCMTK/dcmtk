@@ -107,17 +107,31 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
-    /** check if this element contains non-ASCII characters. Please note that this check
-     *  is pretty simple and only works for single-byte character sets that do include
-     *  the 7-bit ASCII codes, e.g. for the ISO 8859 family. In other words: All character
-     *  codes below 128 are considered to be ASCII codes and all others are considered to
-     *  be non-ASCII.
-     *  @param checkAllStrings not used in this class
-     *  @return true if element contains non-ASCII characters, false otherwise
+    /** get value multiplicity
+     *  @return number of string components (separated by a backslash)
      */
-    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+    virtual unsigned long getVM();
 
-    /** check if this element is affected by SpecificCharacterSet
+    /** get a copy of a particular string component
+     *  @param stringVal variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize not used since string normalization depends on value representation
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &stringVal,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
+
+    /** set element value at specific VM position in the given character string.
+     *  @param stringVal input character string (possibly multi-valued)
+     *  @param pos position (0..vm) where the value should be inserted
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition putOFStringAtPos(const OFString& stringVal,
+                                         const unsigned long pos = 0);
+
+  /** check if this element is affected by SpecificCharacterSet
      *  @return always returns true since all derived VR classes are affected by the
      *    SpecificCharacterSet (0008,0005) element
      */
@@ -168,6 +182,15 @@ class DCMTK_DCMDATA_EXPORT DcmCharString
      *    OFString if no delimiter characters are defined for this VR.
      */
     virtual const OFString& getDelimiterChars() const;
+
+    /** find the start index of the next value in a multi-valued attribute.
+     * @param str pointer to the string value to be searched
+     * @param len the length of @a str
+     * @param start the start character index for the search
+     * @param charSet the value of Specific Character Set; if not set, single-byte encoding is assumed
+     * @return the index of the next value, or OFString_npos if none exists.
+     */
+    virtual size_t findNextValuePosition(const char* str, size_t len, size_t start, const OFString& charSet) const;
 
 };
 

@@ -126,13 +126,6 @@ OFCondition DcmShortText::checkValue(const OFString & /*vm*/,
 }
 
 
-unsigned long DcmShortText::getVM()
-{
-    /* value multiplicity is 1 for non-empty string, 0 otherwise */
-    return (getRealLength() > 0) ? 1 : 0;
-}
-
-
 // ********************************
 
 
