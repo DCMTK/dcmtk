@@ -37,6 +37,7 @@ OFTEST_REGISTER(dcmiod_codes);
 OFTEST_REGISTER(dcmiod_equipment_pixel_padding_value_vr);
 OFTEST_REGISTER(dcmiod_content_identification_macro);
 OFTEST_REGISTER(dcmiod_image_sop_instance_reference_macro);
+OFTEST_REGISTER(dcmiod_mandatory_view_and_slice_progression_direction_macro);
 OFTEST_REGISTER(dcmiod_icc_profile_module);
 OFTEST_REGISTER(dcmiod_imagepixel);
 OFTEST_REGISTER(dcmiod_tcielabutil);

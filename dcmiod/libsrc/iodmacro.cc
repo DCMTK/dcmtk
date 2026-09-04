@@ -1924,16 +1924,20 @@ void MandatoryViewAndSliceProgressionDirectionMacro::clearData()
 OFCondition MandatoryViewAndSliceProgressionDirectionMacro::read(DcmItem& source, const OFBool clearOldData)
 {
     if (clearOldData)
-    {
-        m_ViewCodeSequence.clearData();
-        DcmIODUtil::freeContainer(m_ViewModifierCode);
-    }
-    OFCondition result = EC_Normal;
+        clearData();
+
+    IODComponent::read(source, OFFalse /* data already cleared above */);
+
     DcmIODUtil::readSingleItem(
         source, DCM_ViewCodeSequence, m_ViewCodeSequence, m_Rules->getByTag(DCM_ViewCodeSequence));
-    DcmIODUtil::readSubSequence(
-        source, DCM_ViewCodeSequence, m_ViewModifierCode, m_Rules->getByTag(DCM_ViewCodeSequence));
-    IODComponent::read(source, clearOldData);
+
+    /* View Modifier Code Sequence is nested within the single item of the View Code Sequence */
+    DcmItem* viewCodeItem = NULL;
+    if (source.findAndGetSequenceItem(DCM_ViewCodeSequence, viewCodeItem).good())
+    {
+        DcmIODUtil::readSubSequence(
+            *viewCodeItem, DCM_ViewModifierCodeSequence, m_ViewModifierCode, m_Rules->getByTag(DCM_ViewModifierCodeSequence));
+    }
     return EC_Normal;
 }
 
@@ -1942,8 +1946,17 @@ OFCondition MandatoryViewAndSliceProgressionDirectionMacro::write(DcmItem& item)
     OFCondition result = EC_Normal;
     DcmIODUtil::writeSingleItem(
         result, DCM_ViewCodeSequence, m_ViewCodeSequence, *m_Item, m_Rules->getByTag(DCM_ViewCodeSequence));
-    DcmIODUtil::writeSubSequence(
-        result, DCM_ViewCodeSequence, m_ViewModifierCode, *m_Item, m_Rules->getByTag(DCM_ViewModifierCodeSequence));
+    if (result.good())
+    {
+        /* View Modifier Code Sequence is nested within the single item of the View Code Sequence */
+        DcmItem* viewCodeItem = NULL;
+        result = m_Item->findAndGetSequenceItem(DCM_ViewCodeSequence, viewCodeItem);
+        if (result.good())
+        {
+            DcmIODUtil::writeSubSequence(
+                result, DCM_ViewModifierCodeSequence, m_ViewModifierCode, *viewCodeItem, m_Rules->getByTag(DCM_ViewModifierCodeSequence));
+        }
+    }
     if (result.good())
         result = IODComponent::write(item);
     return result;
