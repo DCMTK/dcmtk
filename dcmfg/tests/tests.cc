@@ -26,6 +26,7 @@
 OFTEST_REGISTER(dcmfg_concatenation_creator);
 OFTEST_REGISTER(dcmfg_concatenation_creator_fail);
 OFTEST_REGISTER(dcmfg_concatenation_loader);
+OFTEST_REGISTER(dcmfg_concatenation_loader_short_pixdata);
 
 OFTEST_REGISTER(dcmfg_ct_image_frame_type);
 OFTEST_REGISTER(dcmfg_ct_acquisition_type);

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2025, Open Connections GmbH
+ *  Copyright (C) 2019-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -336,13 +336,18 @@ OFCondition ConcatenationLoader::extractFrames(DcmItem& item, Info& info, const 
     const Uint8* pixData8 = NULL;
     const Uint16* pixData16 = NULL;
     OFCondition result;
+    size_t numBytes = 0;
     if (info.m_BitsAlloc <= 8)
     {
-        result = item.findAndGetUint8Array(DCM_PixelData, pixData8);
+        unsigned long count = 0;
+        result              = item.findAndGetUint8Array(DCM_PixelData, pixData8, &count);
+        numBytes            = count;
     }
     else if (info.m_BitsAlloc == 16)
     {
-        result = item.findAndGetUint16Array(DCM_PixelData, pixData16);
+        unsigned long count = 0;
+        result              = item.findAndGetUint16Array(DCM_PixelData, pixData16, &count);
+        numBytes            = OFstatic_cast(size_t, count) * 2;
     }
     else
     {
@@ -355,6 +360,17 @@ OFCondition ConcatenationLoader::extractFrames(DcmItem& item, Info& info, const 
         result                 = computeBytesPerFrame(info.m_Rows, info.m_Cols, info.m_BitsAlloc, bytesPerFrame);
         if (result.good())
         {
+            // Make sure the Pixel Data element actually contains enough bytes for
+            // the announced number of frames, otherwise the frame-by-frame copy
+            // below would read past the end of the buffer (heap over-read).
+            size_t bytesRequired = 0;
+            if (!OFStandard::safeMult(bytesPerFrame, OFstatic_cast(size_t, numFrames), bytesRequired)
+                || (bytesRequired > numBytes))
+            {
+                DCMFG_ERROR("Pixel Data too short: " << numBytes << " bytes present but " << numFrames
+                                                     << " frames of " << bytesPerFrame << " bytes announced");
+                return FG_EC_PixelDataDimensionsInvalid;
+            }
             for (Uint32 f = 0; f < numFrames; f++)
             {
                 DcmIODTypes::FrameBase* frame = NULL;
@@ -405,7 +421,31 @@ OFCondition ConcatenationLoader::extractBinaryFrames(DcmItem& item, Info& info, 
         result = pixDataElem->getUint8Array(pixData);
     if (result.good() && pixData)
     {
-        result = DcmIODUtil::extractBinaryFrames(pixData, numFrames, info.m_Rows * info.m_Cols, m_Frames);
+        // Make sure the Pixel Data element actually contains enough bytes for the
+        // announced number of (1-bit) frames, otherwise extractBinaryFrames() would
+        // read past the end of the buffer (heap over-read). Binary frames are packed
+        // as a continuous bit stream, so the required size is the total number of
+        // 1-bit pixels rounded up to whole bytes (as in DcmSegmentation).
+        size_t totalBits = 0;
+        OFBool ok        = OFStandard::safeMult(OFstatic_cast(size_t, info.m_Rows), OFstatic_cast(size_t, info.m_Cols), totalBits);
+        if (ok)
+            ok = OFStandard::safeMult(totalBits, OFstatic_cast(size_t, numFrames), totalBits);
+        if (!ok)
+        {
+            DCMFG_ERROR("Cannot compute Pixel Data size for " << numFrames << " frames (value too large)");
+            return FG_EC_PixelDataDimensionsInvalid;
+        }
+        size_t bytesRequired = totalBits / 8;
+        if (totalBits % 8 != 0)
+            bytesRequired++;
+        if (bytesRequired > OFstatic_cast(size_t, pixDataElem->getLengthField()))
+        {
+            DCMFG_ERROR("Pixel Data too short: " << pixDataElem->getLengthField() << " bytes present but "
+                                                 << bytesRequired << " bytes required for " << numFrames << " frames");
+            return FG_EC_PixelDataDimensionsInvalid;
+        }
+        result = DcmIODUtil::extractBinaryFrames(
+            pixData, numFrames, OFstatic_cast(size_t, info.m_Rows) * info.m_Cols, m_Frames);
     }
     else
     {
@@ -424,7 +464,9 @@ OFCondition ConcatenationLoader::computeBytesPerFrame(const Uint16 rows,
     // for binary segmentations or black and white secondary capture objects
     // (second SC generation).
     // Other values than Bits Allocated 16, 8 or 1 are not supported.
-    bytes_per_frame = bitsAlloc * cols * rows;
+    // Compute in size_t (not the promoted int of three Uint16 operands) so the
+    // product cannot overflow, e.g. for bitsAlloc=16, cols=rows=65535.
+    bytes_per_frame = OFstatic_cast(size_t, bitsAlloc) * cols * rows;
     if ((bitsAlloc == 16) || (bitsAlloc == 8))
     {
         // result in rows * cols * bytes per frame

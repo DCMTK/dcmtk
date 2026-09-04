@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2025, OFFIS e.V.
+ *  Copyright (C) 2019-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -34,6 +34,8 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcvrui.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/oftempf.h"
 
 // Path to NEMA example data with trailing slash
 static OFString NEMA_ENHANCED_CT_DIR = "/home/michael/data/dcm/nema_mf/DISCIMG/IMAGES/";
@@ -112,6 +114,148 @@ OFTEST(dcmfg_concatenation_loader)
     }
 
     DcmIODUtil::freeContainer(frames);
+}
+
+
+// Build a single-instance concatenation whose declared geometry (Rows/Columns/
+// BitsAllocated/NumberOfFrames) requires far more pixel data than the Pixel Data
+// element actually holds, and write it to the given file. Used to exercise the
+// heap-over-read guard in ConcatenationLoader::extractFrames()/
+// extractBinaryFrames().
+static OFCondition writeShortConcatInstance(const OFString& filename,
+                                            const Uint16 rows,
+                                            const Uint16 cols,
+                                            const Uint16 bitsAlloc,
+                                            const Sint32 numFrames,
+                                            const size_t pixelDataBytes)
+{
+    DcmFileFormat ff;
+    DcmDataset* ds = ff.getDataset();
+    OFCondition result;
+    result = ds->putAndInsertOFStringArray(DCM_ConcatenationUID, "1.2.276.0.7230010.3.1.4.0.0.1");
+    if (result.good()) result = ds->putAndInsertOFStringArray(DCM_StudyInstanceUID, "1.2.276.0.7230010.3.1.2.0.0.1");
+    if (result.good()) result = ds->putAndInsertOFStringArray(DCM_SeriesInstanceUID, "1.2.276.0.7230010.3.1.3.0.0.1");
+    if (result.good()) result = ds->putAndInsertOFStringArray(DCM_SOPClassUID, UID_CTImageStorage);
+    if (result.good()) result = ds->putAndInsertOFStringArray(DCM_SOPInstanceUID, "1.2.276.0.7230010.3.1.4.0.0.2");
+    if (result.good()) result = ds->putAndInsertOFStringArray(DCM_SOPInstanceUIDOfConcatenationSource, "1.2.276.0.7230010.3.1.4.0.0.9");
+    if (result.good()) result = ds->putAndInsertUint16(DCM_InConcatenationTotalNumber, 1);
+    if (result.good()) result = ds->putAndInsertUint16(DCM_BitsAllocated, bitsAlloc);
+    if (result.good()) result = ds->putAndInsertUint16(DCM_Rows, rows);
+    if (result.good()) result = ds->putAndInsertUint16(DCM_Columns, cols);
+    if (result.good()) result = ds->putAndInsertUint16(DCM_InConcatenationNumber, 1);
+    if (result.good())
+    {
+        char buf[32];
+        OFStandard::snprintf(buf, sizeof(buf), "%ld", OFstatic_cast(long, numFrames));
+        result = ds->putAndInsertOFStringArray(DCM_NumberOfFrames, buf);
+    }
+    // A real concatenation instance always carries the Per-Frame Functional Groups
+    // Sequence; the loader expects it to be present.
+    if (result.good()) result = ds->insertEmptyElement(DCM_PerFrameFunctionalGroupsSequence);
+    // Deliberately short Pixel Data (all zeroes), inserted as OW for 16 bit and
+    // OB otherwise so that the value length matches pixelDataBytes exactly.
+    if (result.good())
+    {
+        if (bitsAlloc == 16)
+        {
+            OFVector<Uint16> pix(pixelDataBytes / 2, 0);
+            result = ds->putAndInsertUint16Array(DCM_PixelData, pix.empty() ? OFnullptr : &pix[0],
+                                                 OFstatic_cast(unsigned long, pix.size()));
+        }
+        else
+        {
+            OFVector<Uint8> pix(pixelDataBytes, 0);
+            result = ds->putAndInsertUint8Array(DCM_PixelData, pix.empty() ? OFnullptr : &pix[0],
+                                                OFstatic_cast(unsigned long, pix.size()));
+        }
+    }
+    if (result.good())
+        result = ff.saveFile(filename.c_str(), EXS_LittleEndianExplicit);
+    return result;
+}
+
+
+// Regression test for a heap over-read in ConcatenationLoader: a crafted instance
+// declaring more frames than the Pixel Data element can hold must be rejected
+// cleanly instead of reading (and copying) past the end of the pixel buffer.
+OFTEST(dcmfg_concatenation_loader_short_pixdata)
+{
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, check environment variable: " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
+    // Path 1: 8-bit pixel data. Rows=Cols=100, BitsAllocated=8 -> 10000 bytes/frame.
+    // NumberOfFrames=1000 announces ~10 MB, but only a single frame is present.
+    {
+        OFTempFile tf(O_RDWR, "", "", ".dcm");
+        OFCHECK(tf.getStatus().good());
+        OFCHECK(writeShortConcatInstance(tf.getFilename(), 100, 100, 8, 1000, 10000).good());
+
+        ConcatenationLoader cl;
+        cl.setIgnoreMissingSourceUID(OFTrue);
+        OFList<OFFilename> files;
+        files.push_back(OFFilename(tf.getFilename()));
+        OFCHECK(cl.scan(files).good());
+        const ConcatenationLoader::TScanResult& concats = cl.getInfo();
+        OFCHECK(concats.size() == 1);
+        if (concats.size() == 1)
+        {
+            DcmFileFormat dcmff;
+            OFVector<DcmIODTypes::FrameBase*> frames;
+            // Must fail cleanly, not over-read the buffer
+            OFCHECK(cl.load(concats.begin()->first, dcmff.getDataset(), frames).bad());
+            DcmIODUtil::freeContainer(frames);
+        }
+    }
+
+    // Path 2: binary (1-bit) pixel data. Rows=Cols=100 -> 1250 bytes/frame.
+    // NumberOfFrames=1000 announces ~1.25 MB, but only a single frame is present.
+    {
+        OFTempFile tf(O_RDWR, "", "", ".dcm");
+        OFCHECK(tf.getStatus().good());
+        OFCHECK(writeShortConcatInstance(tf.getFilename(), 100, 100, 1, 1000, 1250).good());
+
+        ConcatenationLoader cl;
+        cl.setIgnoreMissingSourceUID(OFTrue);
+        OFList<OFFilename> files;
+        files.push_back(OFFilename(tf.getFilename()));
+        OFCHECK(cl.scan(files).good());
+        const ConcatenationLoader::TScanResult& concats = cl.getInfo();
+        OFCHECK(concats.size() == 1);
+        if (concats.size() == 1)
+        {
+            DcmFileFormat dcmff;
+            OFVector<DcmIODTypes::FrameBase*> frames;
+            OFCHECK(cl.load(concats.begin()->first, dcmff.getDataset(), frames).bad());
+            DcmIODUtil::freeContainer(frames);
+        }
+    }
+
+    // A correctly sized instance must still load successfully. Rows=Cols=4,
+    // BitsAllocated=8 -> 16 bytes/frame, 2 frames -> 32 bytes of pixel data.
+    {
+        OFTempFile tf(O_RDWR, "", "", ".dcm");
+        OFCHECK(tf.getStatus().good());
+        OFCHECK(writeShortConcatInstance(tf.getFilename(), 4, 4, 8, 2, 32).good());
+
+        ConcatenationLoader cl;
+        cl.setIgnoreMissingSourceUID(OFTrue);
+        OFList<OFFilename> files;
+        files.push_back(OFFilename(tf.getFilename()));
+        OFCHECK(cl.scan(files).good());
+        const ConcatenationLoader::TScanResult& concats = cl.getInfo();
+        OFCHECK(concats.size() == 1);
+        if (concats.size() == 1)
+        {
+            DcmFileFormat dcmff;
+            OFVector<DcmIODTypes::FrameBase*> frames;
+            OFCHECK(cl.load(concats.begin()->first, dcmff.getDataset(), frames).good());
+            OFCHECK(frames.size() == 2);
+            DcmIODUtil::freeContainer(frames);
+        }
+    }
 }
 
 static void prepare_scan_dump()
