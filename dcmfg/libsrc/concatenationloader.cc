@@ -421,31 +421,14 @@ OFCondition ConcatenationLoader::extractBinaryFrames(DcmItem& item, Info& info, 
         result = pixDataElem->getUint8Array(pixData);
     if (result.good() && pixData)
     {
-        // Make sure the Pixel Data element actually contains enough bytes for the
-        // announced number of (1-bit) frames, otherwise extractBinaryFrames() would
-        // read past the end of the buffer (heap over-read). Binary frames are packed
-        // as a continuous bit stream, so the required size is the total number of
-        // 1-bit pixels rounded up to whole bytes (as in DcmSegmentation).
-        size_t totalBits = 0;
-        OFBool ok        = OFStandard::safeMult(OFstatic_cast(size_t, info.m_Rows), OFstatic_cast(size_t, info.m_Cols), totalBits);
-        if (ok)
-            ok = OFStandard::safeMult(totalBits, OFstatic_cast(size_t, numFrames), totalBits);
-        if (!ok)
-        {
-            DCMFG_ERROR("Cannot compute Pixel Data size for " << numFrames << " frames (value too large)");
-            return FG_EC_PixelDataDimensionsInvalid;
-        }
-        size_t bytesRequired = totalBits / 8;
-        if (totalBits % 8 != 0)
-            bytesRequired++;
-        if (bytesRequired > OFstatic_cast(size_t, pixDataElem->getLengthField()))
-        {
-            DCMFG_ERROR("Pixel Data too short: " << pixDataElem->getLengthField() << " bytes present but "
-                                                 << bytesRequired << " bytes required for " << numFrames << " frames");
-            return FG_EC_PixelDataDimensionsInvalid;
-        }
-        result = DcmIODUtil::extractBinaryFrames(
-            pixData, numFrames, OFstatic_cast(size_t, info.m_Rows) * info.m_Cols, m_Frames);
+        // DcmIODUtil::extractBinaryFrames() validates that the Pixel Data element
+        // holds enough bytes for the announced number of (1-bit) frames before
+        // copying, so an undersized buffer is rejected instead of over-read.
+        result = DcmIODUtil::extractBinaryFrames(pixData,
+                                                 pixDataElem->getLengthField(),
+                                                 numFrames,
+                                                 OFstatic_cast(size_t, info.m_Rows) * info.m_Cols,
+                                                 m_Frames);
     }
     else
     {

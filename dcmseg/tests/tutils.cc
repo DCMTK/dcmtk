@@ -315,7 +315,7 @@ OFTEST(dcmseg_extractBinaryFrames)
                     // Step 3: Extract frames from concatenated buffer
                     OFVector<DcmIODTypes::FrameBase*> extracted;
                     result = DcmIODUtil::extractBinaryFrames(
-                        pixData, numFrames, bitsPerFrame, extracted);
+                        pixData, totalBytes, numFrames, bitsPerFrame, extracted);
                     OFCHECK(result.good());
 
                     if (result.good())
@@ -362,5 +362,20 @@ OFTEST(dcmseg_extractBinaryFrames)
     }
     // Sanity check: we ran 200 * 20 = 4000 combinations
     OFCHECK(numTests == 4000);
+
+    // Undersized buffers must be rejected instead of over-read: request more
+    // frames (or larger frames) than the buffer can hold and expect an error.
+    {
+        Uint8 buffer[10];
+        memset(buffer, 0, sizeof(buffer));
+        OFVector<DcmIODTypes::FrameBase*> extracted;
+        // 10 bytes hold 5 frames of 16 bits; asking for 6 must fail.
+        OFCHECK(DcmIODUtil::extractBinaryFrames(buffer, sizeof(buffer), 6, 16, extracted).bad());
+        OFCHECK(extracted.empty());
+        // Exactly filling the buffer (5 frames of 16 bits = 10 bytes) must work.
+        OFCHECK(DcmIODUtil::extractBinaryFrames(buffer, sizeof(buffer), 5, 16, extracted).good());
+        for (size_t f = 0; f < extracted.size(); f++)
+            delete extracted[f];
+    }
 }
 
