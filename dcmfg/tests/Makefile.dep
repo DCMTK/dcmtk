@@ -160,7 +160,8 @@ t_concatenation_loader.o: t_concatenation_loader.cc \
  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
- ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+ ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+ ../../ofstd/include/dcmtk/ofstd/oftempf.h
 t_ct_acquisition_details.o: t_ct_acquisition_details.cc \
  ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmfg/fgctacquisitiondetails.h \
