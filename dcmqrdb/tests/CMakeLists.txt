@@ -3,6 +3,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmqrdb_tests
   tests.cc
   taccess.cc
   tqrlevel.cc
+  tdispatch.cc
 )
 
 # make sure executables are linked to the corresponding libraries

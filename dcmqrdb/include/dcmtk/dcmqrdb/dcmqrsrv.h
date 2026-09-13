@@ -94,6 +94,26 @@ public:
    */
   void cleanChildren();
 
+  /** check whether a DIMSE command is permitted for the given abstract syntax.
+   *  DICOM PS3.7 requires that a DIMSE message is only sent on a presentation
+   *  context whose abstract syntax supports the corresponding DIMSE service.
+   *  The DIMSE layer itself does not enforce this, i.e. the Service Class
+   *  Provider has to check the combination of command and abstract syntax
+   *  before acting upon a message. Otherwise a peer could, for example, send
+   *  a C-STORE request on a Verification presentation context and thus bypass
+   *  the access control that is implemented by refusing storage presentation
+   *  contexts during association negotiation.
+   *  @param command DIMSE command field of the received message
+   *  @param abstractSyntax abstract syntax (SOP Class UID) that was negotiated
+   *    for the presentation context on which the message was received.
+   *    May be NULL, in which case OFFalse is returned.
+   *  @return OFTrue if the command may be processed on the given abstract
+   *    syntax, OFFalse otherwise
+   */
+  static OFBool isCommandAllowedForAbstractSyntax(
+    T_DIMSE_Command command,
+    const char *abstractSyntax);
+
 private:
 
   /// private undefined copy constructor
@@ -149,6 +169,19 @@ private:
   OFCondition dispatch(
     T_ASC_Association *assoc,
     OFBool correctUIDPadding);
+
+  /** check whether the DIMSE command received on the given presentation
+   *  context may be processed, i.e. whether it matches the abstract syntax
+   *  that was negotiated for that presentation context.
+   *  @param assoc association on which the message was received
+   *  @param command DIMSE command field of the received message
+   *  @param presID presentation context ID on which the message was received
+   *  @return OFTrue if the command may be processed, OFFalse otherwise
+   */
+  static OFBool checkPresentationContextForCommand(
+    T_ASC_Association *assoc,
+    T_DIMSE_Command command,
+    T_ASC_PresentationContextID presID);
 
   static void refuseAnyStorageContexts(T_ASC_Association *assoc);
 

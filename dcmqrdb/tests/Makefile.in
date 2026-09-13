@@ -27,7 +27,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(dcmtlsdir)/libsrc \
 LOCALLIBS = -ldcmqrdb -ldcmnet -ldcmtls -ldcmdata -loflog -lofstd -loficonv \
 	$(OPENSSLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-objs = tests.o taccess.o tqrlevel.o
+objs = tests.o taccess.o tqrlevel.o tdispatch.o
 progs = tests
 
 

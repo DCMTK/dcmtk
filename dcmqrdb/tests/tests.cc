@@ -27,5 +27,7 @@ OFTEST_REGISTER(dcmqrdb_config_writableStorageArea);
 OFTEST_REGISTER(dcmqrdb_config_readableStorageArea);
 OFTEST_REGISTER(dcmqrdb_oversizedQueryRetrieveLevel);
 OFTEST_REGISTER(dcmqrdb_lowercaseQueryRetrieveLevel);
+OFTEST_REGISTER(dcmqrdb_commandAbstractSyntaxMatch);
+OFTEST_REGISTER(dcmqrdb_commandAbstractSyntaxMismatch);
 
 OFTEST_MAIN("dcmqrdb")
