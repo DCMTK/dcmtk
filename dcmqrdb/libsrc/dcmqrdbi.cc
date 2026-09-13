@@ -2406,7 +2406,6 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     int oldestStudy ;
     double OldestDate ;
     int s ;
-    size_t n ;
     int idx = 0 ;
     IdxRecord idxRec ;
 
@@ -2429,10 +2428,14 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     DCMQRDB_DEBUG("deleteOldestStudy oldestStudy = " << oldestStudy);
 #endif
 
-    n = strlen(pStudyDesc[oldestStudy].StudyInstanceUID) ;
     while ( DB_IdxRead (idx, &idxRec) == EC_Normal ) {
 
-    if ( ! ( strncmp(idxRec. StudyInstanceUID, pStudyDesc[oldestStudy].StudyInstanceUID, n) ) ) {
+    /* The Study Instance UID must match exactly. A prefix comparison would
+     * also remove all studies whose UID happens to start with the UID of the
+     * study selected for deletion, which is a common relation for UIDs that
+     * use an unpadded counter as their last component.
+     */
+    if ( 0 == strcmp(idxRec. StudyInstanceUID, pStudyDesc[oldestStudy].StudyInstanceUID) ) {
         DB_IdxRemove (idx) ;
         deleteImageFile(idxRec.filename);
     }
@@ -2457,13 +2460,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     ImagesofStudyArray *StudyArray ;
     IdxRecord idxRec ;
     int nbimages = 0 , s = 0;
-    size_t n ;
     long DeletedSize ;
 
 #ifdef DEBUG
     DCMQRDB_DEBUG("deleteOldestImages RequiredSize = " << RequiredSize);
 #endif
-    n = strlen(StudyUID) ;
     StudyArray = (ImagesofStudyArray *)malloc(MAX_NUMBER_OF_IMAGES * sizeof(ImagesofStudyArray)) ;
 
     if (StudyArray == NULL) {
@@ -2476,7 +2477,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
 
     DB_IdxInitLoop (&(handle_ -> idxCounter)) ;
     while ( DB_IdxGetNext(&(handle_ -> idxCounter), &idxRec) == EC_Normal ) {
-        if ( ! ( strncmp(idxRec. StudyInstanceUID, StudyUID, n) ) ) {
+        /* exact match, see the comment in deleteOldestStudy() */
+        if ( 0 == strcmp(idxRec. StudyInstanceUID, StudyUID) ) {
             StudyArray[nbimages]. idxCounter = handle_ -> idxCounter ;
             StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
             StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
