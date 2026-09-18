@@ -232,12 +232,15 @@ protected:
    */
   static void appendCompressionRatio(OFString& arg, double ratio);
 
-    /** toggles Planar Configuration of 8-bit pixel data from "by pixel" to
+  /** toggles Planar Configuration of 8-bit pixel data from "by pixel" to
    *  "by plane" and vice versa.
    *  @param pixelData - [in/out] Original pixel data (input), contains
    *                     pixel data with toggled Planar configuration after
    *                     returning (output).
    *  @param numValues - [in] The number of 8 bit values in pixelData
+   *  @param numberOfFrames - [in] The number of frames
+   *  @param columns - [in] Number of columns per frame
+   *  @param rows - [in] Number of rows per frame
    *  @param samplesPerPixel - [in] Number of components for one pixel
    *  @param oldPlanarConfig - [in] The old Planar Configuration, that should
    *                           be toggled. 0 means "by pixel", 1 "by color"
@@ -246,6 +249,9 @@ protected:
   static OFCondition togglePlanarConfiguration8(
     Uint8 *pixelData,
     const size_t numValues,
+    const size_t numberOfFrames,
+    const Uint16 columns,
+    const Uint16 rows,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 
@@ -255,6 +261,9 @@ protected:
    *                     pixel data with toggled Planar configuration after
    *                     returning (output).
    *  @param numValues - [in] The number of 16 bit values in pixelData
+   *  @param numberOfFrames - [in] The number of frames
+   *  @param columns - [in] Number of columns per frame
+   *  @param rows - [in] Number of rows per frame
    *  @param samplesPerPixel - [in] Number of components for one pixel
    *  @param oldPlanarConfig - [in] The old Planar Configuration, that should
    *                           be toggled. 0 means "by pixel", 1 "by color"
@@ -263,6 +272,9 @@ protected:
   static OFCondition togglePlanarConfiguration16(
     Uint16 *pixelData,
     const size_t numValues,
+    const size_t numberOfFrames,
+    const Uint16 columns,
+    const Uint16 rows,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 

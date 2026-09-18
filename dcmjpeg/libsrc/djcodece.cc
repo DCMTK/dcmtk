@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2024, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -589,9 +589,9 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       if (result.good() && (planarConfiguration == 1))
       {
         if (bytesAllocated == 1)
-          result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
+          result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
         else
-          result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
+          result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
         planConfSwitched = OFTrue;
       }
     }
@@ -730,9 +730,9 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     if (result.good() && planConfSwitched)
     {
       if (bytesAllocated == 1)
-        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
+        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 0) /* switch to "by plane" */);
       else
-        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
+        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
       if (result.good())
       {
         // update Planar Configuration in dataset
@@ -1488,6 +1488,9 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   Uint8 *pixelData,
   const size_t numValues,
+  const size_t numberOfFrames,
+  const Uint16 columns,
+  const Uint16 rows,
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
@@ -1497,22 +1500,47 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   Uint8* px8 = new Uint8[numValues];
   if (!px8)
     return EC_MemoryExhausted;
-  size_t numPixels = numValues / samplesPerPixel;
-  if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
+  size_t pxPerFrame = columns * rows;
+  size_t frameSize = pxPerFrame * samplesPerPixel;
+  Uint8 *inPtr = pixelData;
+  Uint8 *outPtr = px8;
+  size_t r_x_rows;
+  size_t off;
+
+  for (size_t f=0; f<numberOfFrames; ++f)
   {
-    for (size_t n=0; n < numPixels; n++)
+    if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px8[n*samplesPerPixel+s]   = pixelData[n+numPixels*s];
+      for (size_t r=0; r < rows; ++r)
+      {
+        r_x_rows = r * rows;
+        for (size_t c =0; c < columns; ++c)
+        {
+          size_t off = (r_x_rows + c) * samplesPerPixel;
+          for (size_t s=0; s < samplesPerPixel; ++s)
+          {
+            outPtr[off + s] = inPtr[(s * pxPerFrame) + r_x_rows + c];
+          }
+        }
+      }
     }
-  }
-  else  //change from "by pixel" to "by plane"
-  {
-    for (size_t n=0; n < numPixels; n++)
+    else  //change from "by pixel" to "by plane"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px8[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
+      for (size_t s=0; s < samplesPerPixel; ++s)
+      {
+        for (size_t r=0; r < rows; ++r)
+        {
+          r_x_rows = r * rows;
+          off = (s * pxPerFrame) + r_x_rows;
+          for (size_t c =0; c < columns; ++c)
+          {
+            outPtr[off + c] = inPtr[(r_x_rows + c) * samplesPerPixel + s];
+          }
+        }
+      }
     }
+    inPtr += frameSize;
+    outPtr += frameSize;
   }
   // copy filled buffer to pixel data and free memory
   memcpy(pixelData, px8, OFstatic_cast(size_t, numValues));
@@ -1524,6 +1552,9 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
 OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   Uint16 *pixelData,
   const size_t numValues, //number of 16-bit components
+  const size_t numberOfFrames,
+  const Uint16 columns,
+  const Uint16 rows,
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
@@ -1533,22 +1564,48 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   Uint16* px16 = new Uint16[numValues];
   if (!px16)
     return EC_MemoryExhausted;
-  size_t numPixels = numValues / samplesPerPixel;
-  if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
+
+  size_t pxPerFrame = columns * rows;
+  size_t frameSize = pxPerFrame * samplesPerPixel;
+  Uint16 *inPtr = pixelData;
+  Uint16 *outPtr = px16;
+  size_t r_x_rows;
+  size_t off;
+
+  for (size_t f=0; f<numberOfFrames; ++f)
   {
-    for (size_t n=0; n < numPixels; n++)
+    if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px16[n*samplesPerPixel+s]   = pixelData[n+numPixels*s];
+      for (size_t r=0; r < rows; ++r)
+      {
+        r_x_rows = r * rows;
+        for (size_t c =0; c < columns; ++c)
+        {
+          size_t off = (r_x_rows + c) * samplesPerPixel;
+          for (size_t s=0; s < samplesPerPixel; ++s)
+          {
+            outPtr[off + s] = inPtr[(s * pxPerFrame) + r_x_rows + c];
+          }
+        }
+      }
     }
-  }
-  else  //change from "by pixel" to "by plane"
-  {
-    for (size_t n=0; n < numPixels; n++)
+    else  //change from "by pixel" to "by plane"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px16[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
+      for (size_t s=0; s < samplesPerPixel; ++s)
+      {
+        for (size_t r=0; r < rows; ++r)
+        {
+          r_x_rows = r * rows;
+          off = (s * pxPerFrame) + r_x_rows;
+          for (size_t c =0; c < columns; ++c)
+          {
+            outPtr[off + c] = inPtr[(r_x_rows + c) * samplesPerPixel + s];
+          }
+        }
+      }
     }
+    inPtr += frameSize;
+    outPtr += frameSize;
   }
   // copy filled buffer to pixel data and free memory
   memcpy(pixelData, px16, OFstatic_cast(size_t, numValues*2));
