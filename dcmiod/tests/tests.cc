@@ -41,6 +41,7 @@ OFTEST_REGISTER(dcmiod_mandatory_view_and_slice_progression_direction_macro);
 OFTEST_REGISTER(dcmiod_icc_profile_module);
 OFTEST_REGISTER(dcmiod_imagepixel);
 OFTEST_REGISTER(dcmiod_tcielabutil);
+OFTEST_REGISTER(dcmiod_tcielabutil_roundtrip_exhaustive);
 OFTEST_REGISTER(dcmiod_palette_color_lut_module);
 OFTEST_REGISTER(dcmiod_palette_color_lut_module_segmented);
 OFTEST_REGISTER(dcmiod_palette_color_lut_module_extra_checks);
