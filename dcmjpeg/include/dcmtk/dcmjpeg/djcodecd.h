@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2024, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -295,6 +295,37 @@ private:
   static OFBool requiresPlanarConfiguration(
     const char *sopClassUID,
     EP_Interpretation photometricInterpretation);
+
+  /** reverses the incorrect modification of Planar Configuration of 8-bit pixel
+   *  data from "by plane" to "by pixel" as implemented in the
+   *  true lossless JPEG encoder in DCMTK versions up to 3.7.0
+   *  @param pixelData - [in/out] Original pixel data (input), contains
+   *                     pixel data with toggled Planar configuration after
+   *                     returning (output).
+   *  @param numValues - [in] The number of 8 bit values in pixelData
+   *  @param samplesPerPixel - [in] Number of components for one pixel
+   *  @return EC_Normal if conversion was successful; an error code otherwise
+   */
+  static OFCondition planarConfigWorkaroundToggle8(
+    Uint8 *pixelData,
+    const size_t numValues,
+    const Uint16 samplesPerPixel);
+
+  /** reverses the incorrect modification of Planar Configuration of 16-bit pixel
+   *  data from "by plane" to "by pixel" as implemented in the
+   *  true lossless JPEG encoder in DCMTK versions up to 3.7.0
+   *  @param pixelData - [in/out] Original pixel data (input), contains
+   *                     pixel data with toggled Planar configuration after
+   *                     returning (output).
+   *  @param numValues - [in] The number of 16 bit values in pixelData
+   *  @param samplesPerPixel - [in] Number of components for one pixel
+   *  @return EC_Normal if conversion was successful; an error code otherwise
+   */
+  static OFCondition planarConfigWorkaroundToggle16(
+    Uint16 *pixelData,
+    const size_t numValues,
+    const Uint16 samplesPerPixel);
+
 };
 
 #endif

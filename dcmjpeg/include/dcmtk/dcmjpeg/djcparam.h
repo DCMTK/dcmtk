@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2025, OFFIS e.V.
+ *  Copyright (C) 1997-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -42,6 +42,9 @@ public:
    *    overflow in predictor 6 for images with 16 bits/pixel
    *  @param cornellWorkaroundEnable enable workaround for buggy Cornell lossless compressed images with
    *    Huffman table overflow
+   *  @param planarConfigWorkaroundEnable enable workaround for buggy DCMTK lossless
+   *    compressed color multiframe images where an incorrect conversion from color-by-plane
+   *    to color-by-pixel had been applied prior to compression
    *  @param pForceSingleFragmentPerFrame while decompressing a multiframe image,
    *    assume one fragment per frame even if the JPEG data for some frame is incomplete
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
@@ -77,6 +80,7 @@ public:
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable = OFFalse,
     OFBool cornellWorkaroundEnable = OFFalse,
+    OFBool planarConfigWorkaroundEnable = OFFalse,
     OFBool pForceSingleFragmentPerFrame = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
@@ -317,6 +321,15 @@ public:
     return cornellWorkaroundEnabled_;
   }
 
+  /** returns flag indicating whether the workaround for buggy DCMTK lossless
+   *  compressed color multiframe images where an incorrect conversion from color-by-plane
+   *  to color-by-pixel had been applied prior to compression is enabled
+   */
+  OFBool planarConfigWorkaroundEnabled() const
+  {
+    return planarConfigWorkaroundEnabled_;
+  }
+
   /** returns flag indicating whether one fragment per frame should be enforced while decoding
    *  @return flag indicating whether one fragment per frame should be enforced while decoding
    */
@@ -432,6 +445,12 @@ private:
 
   /// flag indicating that the workaround for buggy Cornell JPEG lossless images with huffman table overflow is enabled
   OFBool cornellWorkaroundEnabled_;
+
+  /** flag indicating that the workaround for buggy DCMTK lossless
+   *  compressed color multiframe images where an incorrect conversion from color-by-plane
+   *  to color-by-pixel had been applied prior to compression is enabled
+   */
+  OFBool planarConfigWorkaroundEnabled_;
 
   /** flag indicating that while decompressing a multiframe image one fragment per frame
    *  should be assumed even if the JPEG data for some frame is incomplete

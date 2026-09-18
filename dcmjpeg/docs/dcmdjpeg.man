@@ -206,6 +206,18 @@ workaround options for incorrect JPEG encodings:
   # are compressed. This flag enables a workaround that permits such
   # images to be decoded correctly.
 
+  +wp   --workaround-planar
+          enable workaround for DCMTK color-by-plane bug
+
+  # DCMTK releases up to 3.7.0 incorrectly handled color multiframe
+  # images with color-by-plane planar configuration when encoding using
+  # the "true lossless" JPEG encoder. This workaround will decompress
+  # such images and correct the sort order of the color components,
+  # resulting in a correct uncompressed image. Unfortunately, it is not
+  # possible to automatically recognize affected images, so this option
+  # will also cause the color components in correctly encoded images
+  # to be mixed up. Use with care!
+
 \endverbatim
 
 \subsection dcmdjpeg_output_options output options
