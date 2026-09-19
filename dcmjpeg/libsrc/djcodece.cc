@@ -1516,7 +1516,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
         r_x_rows = r * rows;
         for (size_t c =0; c < columns; ++c)
         {
-          size_t off = (r_x_rows + c) * samplesPerPixel;
+          off = (r_x_rows + c) * samplesPerPixel;
           for (size_t s=0; s < samplesPerPixel; ++s)
           {
             outPtr[off + s] = inPtr[(s * pxPerFrame) + r_x_rows + c];
@@ -1581,7 +1581,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
         r_x_rows = r * rows;
         for (size_t c =0; c < columns; ++c)
         {
-          size_t off = (r_x_rows + c) * samplesPerPixel;
+          off = (r_x_rows + c) * samplesPerPixel;
           for (size_t s=0; s < samplesPerPixel; ++s)
           {
             outPtr[off + s] = inPtr[(s * pxPerFrame) + r_x_rows + c];
