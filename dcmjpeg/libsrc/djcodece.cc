@@ -586,15 +586,8 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     if (result.good() && (samplesPerPixel > 1))
     {
       result = datsetItem->findAndGetUint16(DCM_PlanarConfiguration, planarConfiguration);
-      if (result.good() && (planarConfiguration == 1))
-      {
-        if (bytesAllocated == 1)
-          result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
-        else
-          result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
-        planConfSwitched = OFTrue;
-      }
     }
+
     if (result.bad())
     {
         DCMJPEG_ERROR("True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding");
@@ -618,6 +611,16 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         return EC_CannotChangeRepresentation;
       }
       byteSwapped = OFTrue;
+    }
+
+    // adjust planar configuration to color-by-pixel
+    if (result.good() && (planarConfiguration == 1))
+    {
+      if (bytesAllocated == 1)
+        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
+      else
+        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
+      planConfSwitched = OFTrue;
     }
 
     // create initial pixel sequence with empty offset table
