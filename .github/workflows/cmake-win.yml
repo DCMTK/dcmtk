@@ -77,6 +77,10 @@
           run: |
             cd ${{ github.workspace }}\dcmtk-build
             cmake --build . --config Release --target INSTALL -- /m
+            # The support package provides OpenSSL as DLLs (plus import libraries).
+            # The INSTALL target only installs DCMTK's own targets, so copy the
+            # release DLLs into the install directory (skipping the _d debug variants).
+            Get-ChildItem c:\dcmtk_support\libs\openssl*\bin\*.dll | Where-Object { $_.Name -notlike '*_d.dll' } | Copy-Item -Destination ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}\bin
             Compress-Archive -Path ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }} -Destination ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}-win64.zip
             echo "Listing install dir: ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}"
             ls ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}
