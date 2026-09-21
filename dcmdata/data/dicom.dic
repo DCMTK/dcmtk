@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2026c and PS 3.7-2026c.
-# File created on 2026-06-21 21:03:39 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2026d and PS 3.7-2026d.
+# File created on 2026-09-21 14:02:36 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -3810,6 +3810,7 @@
 (3004,0070)	DS	DVHMinimumDose	1	DICOM
 (3004,0072)	DS	DVHMaximumDose	1	DICOM
 (3004,0074)	DS	DVHMeanDose	1	DICOM
+(3004,007F)	LO	DoseCalculationModelName	1	DICOM
 (3004,0080)	SQ	DoseCalculationModelSequence	1	DICOM
 (3004,0081)	SQ	DoseCalculationAlgorithmSequence	1	DICOM
 (3004,0082)	CS	CommissioningStatus	1	DICOM

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2026-06-21 21:05:05
+**   Date: 2026-09-21 14:16:30
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2026-06-21 21:05:05"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2026-09-21 14:16:30"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5276
+** Number of entries: 5277
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -4172,6 +4172,7 @@
 #define DCM_DVHMinimumDose                       DcmTagKey(0x3004, 0x0070)
 #define DCM_DVHMaximumDose                       DcmTagKey(0x3004, 0x0072)
 #define DCM_DVHMeanDose                          DcmTagKey(0x3004, 0x0074)
+#define DCM_DoseCalculationModelName             DcmTagKey(0x3004, 0x007f)
 #define DCM_DoseCalculationModelSequence         DcmTagKey(0x3004, 0x0080)
 #define DCM_DoseCalculationAlgorithmSequence     DcmTagKey(0x3004, 0x0081)
 #define DCM_CommissioningStatus                  DcmTagKey(0x3004, 0x0082)

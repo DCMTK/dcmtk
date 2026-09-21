@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2026-06-21 21:05:12
+**   Date: 2026-09-21 14:16:30
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -27686,6 +27686,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x3004, 0x0074, 0x3004, 0x0074,
       EVR_DS, "DVHMeanDose", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x3004, 0x007f, 0x3004, 0x007f,
+      EVR_LO, "DoseCalculationModelName", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x3004, 0x0080, 0x3004, 0x0080,
