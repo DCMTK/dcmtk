@@ -2499,9 +2499,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             if ((*association)->connection) delete (*association)->connection;
             (*association)->connection = NULL;
 
-            OFString msg = "TCP Initialization Error: ";
-            msg += OFStandard::getLastNetworkErrorCode().message();
-            msg += " (Timeout)";
+            // do not report the last network error code here: poll()/select()
+            // returning 0 means timeout, i.e. no error code has been set, so we
+            // would report a stale or bogus text such as "Success"/"No error"
+            OFString msg = "TCP Initialization Error: Timeout";
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
   }
 #ifndef HAVE_WINSOCK_H
