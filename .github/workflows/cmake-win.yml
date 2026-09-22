@@ -1,5 +1,17 @@
+  # GitHub Actions workflow: build, test and package DCMTK on Windows.
+  #
+  # Two jobs:
+  #   build-windows   - builds DCMTK with Visual Studio for x64 and Win32 (as a
+  #                     matrix, i.e. one job instance per architecture), runs the
+  #                     unit tests and produces a zip package per architecture.
+  #   publish-windows - collects both zip packages and attaches them to the
+  #                     "latest" pre-release on GitHub (only on the DCMTK repo,
+  #                     never for pull requests or forks).
+
   name: C/C++ CI Windows
 
+  # Run on every push to master, for pull requests against master, and on demand
+  # via the "Run workflow" button in the GitHub UI.
   on:
     push:
       branches: [ "master"]
@@ -11,13 +23,35 @@
 
     build-windows:
 
+      # Job name shown in the GitHub UI, e.g. "build-windows-win64"
+      name: build-windows-${{ matrix.suffix }}
       runs-on: windows-2025-vs2026
       timeout-minutes: 30
 
+      # Build matrix: every entry below results in a separate job instance
+      # running on its own runner. The values are available as ${{ matrix.* }}.
+      #   arch    - platform name passed to the Visual Studio generator (-A)
+      #   suffix  - architecture tag used in package, artifact and job names
+      #   support - name of the DCMTK support library package (zlib, OpenSSL,
+      #             libpng, libtiff, libxml2, OpenJPEG, ...) to download
+      strategy:
+        # keep building the other architecture if one of them fails
+        fail-fast: false
+        matrix:
+          include:
+            - arch: x64
+              suffix: win64
+              support: dcmtk-3.7.0-win64-support-MD-msvc-17.8
+            - arch: Win32
+              suffix: win32
+              support: dcmtk-3.7.0-win32-support-MD-msvc-17.8
+
       steps:
+        # Check out the commit that triggered the workflow into the workspace
         - uses: actions/checkout@v4
           with:
             fetch-tags: false
+        # Make MSBuild of Visual Studio 2026 (version 18) available
         - uses: microsoft/setup-msbuild@v2
           with:
             vs-version: '18'
@@ -26,10 +60,12 @@
           with:
             python-version: '3.8.0'
 
+        # Fetch the prebuilt support libraries matching the compiler and
+        # architecture from the DCMTK download server.
         - name: Download DCMTK Support libraries
           shell: pwsh
           run: |
-            C:\msys64\usr\bin\wget.exe -O dcmtk_support.zip https://dicom.offis.de/download/dcmtk/dcmtk370/support/dcmtk-3.7.0-win64-support-MD-msvc-17.8.zip
+            C:\msys64\usr\bin\wget.exe -O dcmtk_support.zip https://dicom.offis.de/download/dcmtk/dcmtk370/support/${{ matrix.support }}.zip
 
         # Uncompress support libraries into directory c:\dcmtk_support\libs.
         # We rename the original directory to libs so that the rest of the script
@@ -44,13 +80,27 @@
             echo "Content of c:\dcmtk_support\libs"
             ls c:\dcmtk_support\libs
 
+        # Define environment variables used by the following steps. Values
+        # written to $GITHUB_ENV are available as ${{ env.* }} in later steps.
+        #   NOW              - build date (yyyyMMdd)
+        #   COMMIT_SHORT_SHA - abbreviated hash of the commit being built
+        #   PACKAGE_NAME     - name of the install directory and of the zip
+        #                      package, e.g. dcmtk-20260922-1a2b3c4-win64
         - name: Prepare environment
           run: |
             $NOW=& Get-Date -format yyyyMMdd
             echo "NOW=$NOW" >> $env:GITHUB_ENV
             $git_hash=$(git.exe rev-parse --short ${{ github.sha }})
             echo "COMMIT_SHORT_SHA=$git_hash" >> $env:GITHUB_ENV
+            echo "PACKAGE_NAME=dcmtk-$NOW-$git_hash-${{ matrix.suffix }}" >> $env:GITHUB_ENV
 
+        # Run CMake in a separate build directory:
+        #   - Visual Studio 2026 generator, platform from the matrix (x64/Win32)
+        #   - explicit list of DCMTK modules to build
+        #   - shared libraries (DLLs)
+        #   - built-in oficonv data (no external data files at runtime)
+        #   - support libraries from the directory prepared above
+        #   - install prefix = package directory inside the workspace
         - name: Configure project
           run: |
             ls ${{ github.workspace }}
@@ -60,19 +110,25 @@
             echo "Step 2"
             cd ${{ github.workspace }}\dcmtk-build
             echo "Step 3"
-            cmake -G "Visual Studio 18 2026" -Ax64 -DDCMTK_MODULES:STR="ofstd;oflog;oficonv;dcmdata;dcmimgle;dcmimage;dcmjpeg;dcmjpls;dcmtls;dcmnet;dcmsr;dcmsign;dcmwlm;dcmqrdb;dcmpstat;dcmrt;dcmiod;dcmfg;dcmseg;dcmtract;dcmpmap;dcmect;dcmapps" -DDCMTK_ENABLE_BUILTIN_OFICONV_DATA:BOOL=On -DBUILD_SHARED_LIBS:BOOL=ON -DDCMTK_SUPPORT_LIBRARIES_DIR:PATH=c:\dcmtk_support\libs -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}  ${{ github.workspace }}
+            cmake -G "Visual Studio 18 2026" -A${{ matrix.arch }} -DDCMTK_MODULES:STR="ofstd;oflog;oficonv;dcmdata;dcmimgle;dcmimage;dcmjpeg;dcmjpls;dcmtls;dcmnet;dcmsr;dcmsign;dcmwlm;dcmqrdb;dcmpstat;dcmrt;dcmiod;dcmfg;dcmseg;dcmtract;dcmpmap;dcmect;dcmapps" -DDCMTK_ENABLE_BUILTIN_OFICONV_DATA:BOOL=On -DBUILD_SHARED_LIBS:BOOL=ON -DDCMTK_SUPPORT_LIBRARIES_DIR:PATH=c:\dcmtk_support\libs -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}\${{ env.PACKAGE_NAME }}  ${{ github.workspace }}
 
+        # Compile in Release configuration using all available cores (/m)
         - name: Build dcmtk
           run: |
             cd ${{ github.workspace }}\dcmtk-build/
             cmake --build . --config Release -- /m
 
+        # Run the unit tests. The OpenSSL DLLs from the support package must be
+        # next to the test executables, otherwise the tests using dcmtls fail
+        # to start.
         - name: Test dcmtk
           run: |
             cd ${{ github.workspace }}\dcmtk-build
             copy c:\dcmtk_support\libs\openssl*\bin\*.dll ${{ github.workspace }}\dcmtk-build\bin\Release
             ctest -VV -C Release --no-compress-output --output-on-failure
 
+        # Install into the package directory and create the zip package
+        # <PACKAGE_NAME>.zip inside it.
         - name: Install dcmtk
           run: |
             cd ${{ github.workspace }}\dcmtk-build
@@ -80,15 +136,18 @@
             # The support package provides OpenSSL as DLLs (plus import libraries).
             # The INSTALL target only installs DCMTK's own targets, so copy the
             # release DLLs into the install directory (skipping the _d debug variants).
-            Get-ChildItem c:\dcmtk_support\libs\openssl*\bin\*.dll | Where-Object { $_.Name -notlike '*_d.dll' } | Copy-Item -Destination ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}\bin
-            Compress-Archive -Path ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }} -Destination ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}-win64.zip
-            echo "Listing install dir: ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}"
-            ls ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}
+            Get-ChildItem c:\dcmtk_support\libs\openssl*\bin\*.dll | Where-Object { $_.Name -notlike '*_d.dll' } | Copy-Item -Destination ${{ github.workspace }}\${{ env.PACKAGE_NAME }}\bin
+            Compress-Archive -Path ${{ github.workspace }}\${{ env.PACKAGE_NAME }} -Destination ${{ github.workspace }}\${{ env.PACKAGE_NAME }}\${{ env.PACKAGE_NAME }}.zip
+            echo "Listing install dir: ${{ github.workspace }}\${{ env.PACKAGE_NAME }}"
+            ls ${{ github.workspace }}\${{ env.PACKAGE_NAME }}
 
+        # Hand the zip package over to the publish job as a workflow artifact.
+        # The artifact name carries the architecture so that both matrix
+        # instances can upload without overwriting each other.
         - uses: actions/upload-artifact@v4
           with:
-              name: dcmtk-install-zip-package
-              path: ${{ github.workspace }}\dcmtk-${{ env.NOW }}-${{ env.COMMIT_SHORT_SHA }}\dcmtk-*-win64.zip
+              name: dcmtk-install-zip-package-${{ matrix.suffix }}
+              path: ${{ github.workspace }}\${{ env.PACKAGE_NAME }}\${{ env.PACKAGE_NAME }}.zip
 
     publish-windows:
 
@@ -99,27 +158,43 @@
       # would have sufficient privileges.
       if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'DCMTK')}}
 
+      # Wait for all matrix instances of build-windows; if one of them fails,
+      # nothing is published.
       needs: build-windows
 
       steps:
         - uses: actions/checkout@v4
           with:
             fetch-tags: true
+        # Download the win64 and win32 packages into the same directory
         - uses: actions/download-artifact@v4
           with:
-            name: dcmtk-install-zip-package
+            pattern: dcmtk-install-zip-package-*
+            merge-multiple: true
             path: ${{ github.workspace }}\dcmtk-install
 
-        - name: Publish package
+        # Upload both packages with scikit-ci-addons' publish_github_release:
+        #   --release-packages     attach to a GitHub release if the commit is
+        #                          tagged (i.e. an official release)
+        #   --prerelease-packages  otherwise attach to the rolling "latest"
+        #                          pre-release that tracks master
+        #   --prerelease-packages-clear-pattern
+        #                          remove old Windows packages from "latest"
+        #                          before uploading, ...
+        #   --prerelease-packages-keep-pattern
+        #                          ... except those of the current commit
+        # The token is a repository secret; without it the step exits
+        # successfully without publishing anything.
+        - name: Publish packages
           run: |
             echo "Listing install dir: ${{ github.workspace }}\dcmtk-install"
             ls ${{ github.workspace }}\dcmtk-install
             pip install -U "scikit-ci-addons>=0.22.0"
             ci_addons publish_github_release DCMTK/dcmtk `
             --exit-success-if-missing-token `
-            --release-packages "${{ github.workspace }}\dcmtk-install\dcmtk-*-win64.zip" `
-            --prerelease-packages "${{ github.workspace }}\dcmtk-install\dcmtk-*-win64.zip" `
-            --prerelease-packages-clear-pattern "dcmtk-*-win64.zip" `
+            --release-packages "${{ github.workspace }}\dcmtk-install\dcmtk-*-win64.zip" "${{ github.workspace }}\dcmtk-install\dcmtk-*-win32.zip" `
+            --prerelease-packages "${{ github.workspace }}\dcmtk-install\dcmtk-*-win64.zip" "${{ github.workspace }}\dcmtk-install\dcmtk-*-win32.zip" `
+            --prerelease-packages-clear-pattern "dcmtk-*-win*.zip" `
             --prerelease-packages-keep-pattern "*<COMMIT_SHORT_SHA>*" `
             --prerelease-sha master `
             --token ${{ secrets.RELEASE_DCMTK_TOKEN }}
