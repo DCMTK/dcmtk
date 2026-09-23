@@ -193,7 +193,7 @@ public:
     theCondition.theStatus = aStatus;
     /* Be nice when someone dares to pass in NULL */
     if (aText != NULL) {
-      theCondition.theText = strdup(aText);
+      theCondition.theText = _strdup(aText);
       ownsText = OFTrue;
     } else {
       theCondition.theText = "";
@@ -220,7 +220,7 @@ public:
     // Do we need our own copy of the text?
     if (ownsText)
     {
-      theCondition.theText = strdup(theCondition.theText);
+      theCondition.theText = _strdup(theCondition.theText);
     }
   }
 
@@ -256,7 +256,7 @@ public:
       ownsText = arg.ownsText;
       if (ownsText)
       {
-        theCondition.theText = strdup(arg.theCondition.theText);
+        theCondition.theText = _strdup(arg.theCondition.theText);
       }
     }
     return *this;
