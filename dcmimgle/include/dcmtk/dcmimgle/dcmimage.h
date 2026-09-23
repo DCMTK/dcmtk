@@ -1151,8 +1151,10 @@ class DCMTK_DCMIMGLE_EXPORT DicomImage
      */
     inline int hideAllOverlays(const unsigned int idx = 0)
     {
-        return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
-            Image->getOverlayPtr(idx)->hideAllPlanes() : 0;
+        if (Image == NULL)
+            return 0;
+        DiOverlay *overlay = Image->getOverlayPtr(idx);
+        return (overlay != NULL) ? overlay->hideAllPlanes() : 2;
     }
 
     /** move origin of specified overlay plane to given position
