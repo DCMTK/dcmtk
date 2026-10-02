@@ -268,6 +268,11 @@ main(int argc, char *argv[])
       opt4 += ")";
       cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(),
                                                            "set max receive pdu to n bytes\n(default: use value from configuration file)");
+      cmd.addOption("--max-element-length",     "-mel", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
+                                                           "restrict max element length of received data\nto n bytes (default: unrestricted)");
+      cmd.addOption("--incr-load-threshold",    "-ilt", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
+                                                           "read element values larger than n bytes\nin growing chunks (default: 65536)");
+      cmd.addOption("--no-incr-load",           "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
       cmd.addOption("--reject",                            "reject association if no implement. class UID");
@@ -514,6 +519,21 @@ main(int argc, char *argv[])
       }
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(overrideMaxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--max-element-length"))
+      {
+        OFCmdUnsignedInt maxLength = 0;
+        app.checkValue(cmd.getSizeValueAndCheckMinMax(maxLength, 1, 4294967294u));
+        options.maxElementLength_ = OFstatic_cast(Uint32, maxLength);
+      }
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--incr-load-threshold"))
+      {
+        OFCmdUnsignedInt threshold = 0;
+        app.checkValue(cmd.getSizeValueAndCheckMinMax(threshold, 1, 2147483647));
+        options.incrementalLoadThreshold_ = OFstatic_cast(Sint32, threshold);
+      }
+      if (cmd.findOption("--no-incr-load")) options.incrementalLoadThreshold_ = -1;
+      cmd.endOptionBlock();
       if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
       if (cmd.findOption("--refuse")) options.refuse_ = OFTrue;
       if (cmd.findOption("--reject")) options.rejectWhenNoImplementationClassUID_ = OFTrue;

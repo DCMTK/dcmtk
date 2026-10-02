@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2025, OFFIS e.V.
+ *  Copyright (C) 1993-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -365,6 +365,12 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     }
 
     if (cond.good()) {
+        /* memory exhaustion protection for the DIMSE messages received on
+         * this sub-association: element length limit and incremental loading threshold */
+        if (options_.maxElementLength_ != 0)
+            ASC_setMaxIncomingElementLength(subAssoc, options_.maxElementLength_);
+        if (options_.incrementalLoadThreshold_ != 0)
+            ASC_setIncrementalLoadThreshold(subAssoc, options_.incrementalLoadThreshold_);
         assocStarted = OFTrue;
     }
 

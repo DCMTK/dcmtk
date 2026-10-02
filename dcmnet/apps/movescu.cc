@@ -85,6 +85,8 @@ typedef struct {
 OFCmdUnsignedInt  opt_sleepAfter = 0;
 OFCmdUnsignedInt  opt_sleepDuring = 0;
 OFCmdUnsignedInt  opt_maxPDU = ASC_DEFAULTMAXPDU;
+OFCmdUnsignedInt  opt_maxElementLength = 0;
+OFCmdSignedInt    opt_incrementalLoadThreshold = 0;
 OFBool            opt_useMetaheader = OFTrue;
 OFBool            opt_acceptAllXfers = OFFalse;
 E_TransferSyntax  opt_in_networkTransferSyntax = EXS_Unknown;
@@ -334,6 +336,11 @@ main(int argc, char *argv[])
       opt4 += tempstr;
       opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
+                                                        "restrict max element length of received data\nto n bytes (default: unrestricted)");
+      cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
+                                                        "read element values larger than n bytes\nin growing chunks (default: 65536)");
+      cmd.addOption("--no-incr-load",        "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
       cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
       cmd.addOption("--repeat",                      1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                          "abort association instead of releasing it");
@@ -543,6 +550,16 @@ main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--max-element-length")) app.checkValue(cmd.getSizeValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--incr-load-threshold"))
+      {
+        OFCmdUnsignedInt threshold = 0;
+        app.checkValue(cmd.getSizeValueAndCheckMinMax(threshold, 1, 2147483647));
+        opt_incrementalLoadThreshold = OFstatic_cast(OFCmdSignedInt, threshold);
+      }
+      if (cmd.findOption("--no-incr-load")) opt_incrementalLoadThreshold = -1;
+      cmd.endOptionBlock();
       if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
@@ -881,6 +898,13 @@ main(int argc, char *argv[])
 
     OFLOG_INFO(movescuLogger, "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")");
 
+    /* memory exhaustion protection for the DIMSE messages received on this
+     * association: element length limit and incremental loading threshold */
+    if (opt_maxElementLength != 0)
+        ASC_setMaxIncomingElementLength(assoc, OFstatic_cast(Uint32, opt_maxElementLength));
+    if (opt_incrementalLoadThreshold != 0)
+        ASC_setIncrementalLoadThreshold(assoc, OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
+
     /* do the real work */
     cond = EC_Normal;
     if (fileNameList.empty())
@@ -1063,6 +1087,13 @@ acceptSubAssoc(T_ASC_Network *aNet, T_ASC_Association **assoc, OFBool secureConn
     if (cond.good())
     {
       OFLOG_INFO(movescuLogger, "Sub-Association Received");
+
+      /* memory exhaustion protection for the DIMSE messages (in particular
+       * the C-STORE data sets) received on this sub-association */
+      if (opt_maxElementLength != 0)
+          ASC_setMaxIncomingElementLength(*assoc, OFstatic_cast(Uint32, opt_maxElementLength));
+      if (opt_incrementalLoadThreshold != 0)
+          ASC_setIncrementalLoadThreshold(*assoc, OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
       OFLOG_DEBUG(movescuLogger, "Parameters:" << OFendl << ASC_dumpParameters(temp_str, (*assoc)->params, ASC_ASSOC_RQ));
 
       switch (opt_in_networkTransferSyntax)

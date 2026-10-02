@@ -162,8 +162,9 @@ described in the next section:
     DcmSCP::setIncrementalLoadThreshold() and
     DcmSCU::setIncrementalLoadThreshold() apply this to all
     associations created by the respective object.
-  - Command line: the network receive tools storescp and dcmrecv
-    accept --incr-load-threshold <n> (-ilt) to set the threshold and
+  - Command line: the network tools that receive data sets (storescp,
+    dcmrecv, movescu, getscu and dcmqrscp) accept
+    --incr-load-threshold <n> (-ilt) to set the threshold and
     --no-incr-load (-nil) to disable incremental loading.
 
 The threshold value has the following meaning:
@@ -215,9 +216,10 @@ The limit exists on several levels:
     association; DcmSCP::setMaxElementLength() and
     DcmSCU::setMaxElementLength() apply this to all associations
     created by the respective object.
-  - Command line: the network receive tools storescp and dcmrecv
-    accept --max-element-length <n> (-mel) to restrict the maximum
-    element length of received data sets (default: unrestricted).
+  - Command line: the network tools that receive data sets (storescp,
+    dcmrecv, movescu, getscu and dcmqrscp) accept
+    --max-element-length <n> (-mel) to restrict the maximum element
+    length of received data sets (default: unrestricted).
     The number of bytes may carry one of the suffixes k, M or G
     (e.g. "512M" or "2G"); the same applies to --incr-load-threshold.
 

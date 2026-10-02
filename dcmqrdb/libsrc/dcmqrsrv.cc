@@ -1141,6 +1141,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
           DCMQRDB_INFO("Failed to receive association: " << DimseCondition::dump(temp_str, cond));
           go_cleanup = OFTrue;
         }
+        else
+        {
+          /* memory exhaustion protection for the DIMSE messages received on
+           * this association: element length limit and incremental loading threshold */
+          if (options_.maxElementLength_ != 0)
+            ASC_setMaxIncomingElementLength(assoc, options_.maxElementLength_);
+          if (options_.incrementalLoadThreshold_ != 0)
+            ASC_setIncrementalLoadThreshold(assoc, options_.incrementalLoadThreshold_);
+        }
     } else return EC_Normal;
 
     if (! go_cleanup)
