@@ -62,24 +62,6 @@ DCMTK_BUILD_IN_PROGRESS
     define this macro yourself since this is done automatically by the build
     system.
 
-DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
-  Affected: dcmdata
-  Type of modification: Disables feature
-  Explanation: When an element value is parsed from a stream that cannot
-    deliver all value bytes right away (e.g. a network stream that is fed
-    fragment by fragment, stdin, or a deflated stream), the parser stages
-    the value in a buffer that grows with the data that actually arrives,
-    so that a small crafted or truncated input announcing a huge element
-    length cannot trigger a huge memory allocation.  Defining this macro
-    disables the incremental allocation and restores the historic
-    behavior, i.e. a buffer of the full announced value length is
-    allocated before reading begins.  It is meant as an escape hatch for
-    environments that depend on the historic behavior in error situations
-    (a prematurely ending stream then leaves a partially filled full-size
-    value buffer instead of discarding the incomplete value); there is no
-    reason to define it otherwise.  See memalloc.txt for a detailed
-    description of the element value memory allocation.
-
 DCMTK_ENABLE_ACR_NEMA_DATASET_PRESENT_COMPATIBILITY
   Affected: dcmnet
   Type of modification: Toolkit customization
@@ -126,6 +108,29 @@ DCMTK_GUI
     allow a GUI based application to extract the messages and either present
     them to the user or store them in a log file.  See comments in
     ofstd/include/dcmtk/ofstd/ofconsol.h.
+
+DCMTK_INCREMENTAL_LOAD_THRESHOLD
+  Affected: dcmdata
+  Type of modification: Compile-time tunable
+  Explanation: Defines the default threshold for the incremental loading of
+    element values.  When an element value is parsed from a stream that
+    cannot deliver all value bytes right away (e.g. a network stream that
+    is fed fragment by fragment, stdin, or a deflated stream), the parser
+    stages the value in a buffer that grows with the data that actually
+    arrives, so that a small crafted or truncated input announcing a huge
+    element length cannot trigger a huge memory allocation.  Values up to
+    the threshold are read into a buffer of their final size right away;
+    the staging buffer for larger values starts at this size.  When this
+    macro is not defined, the default of 65536 bytes is used.  The special
+    value -1 disables incremental loading and restores the historic
+    behavior, i.e. a buffer of the full announced value length is
+    allocated before reading begins.  The threshold can be changed at
+    runtime per parse operation via
+    DcmInputStream::setIncrementalLoadThreshold(),
+    DcmItem::setIncrementalLoadThreshold(), or
+    DcmFileFormat::setIncrementalLoadThreshold().  See memalloc.txt for a
+    detailed description of the element value memory allocation.
+    Minimum value: 1 (or -1 to disable).  Maximum value: 2147483647.
 
 DCMTK_LOG4CPLUS_AVOID_WIN32_FLS
   Affected: oflog

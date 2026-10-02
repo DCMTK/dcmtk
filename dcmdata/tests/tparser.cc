@@ -544,27 +544,13 @@ OFTEST(dcmdata_parser_handleAmbiguousVR_fromDictionary)
     OFCHECK_EQUAL(numUints, 4);
 }
 
-OFTEST(dcmdata_parser_implicitVR_hugeLengthInBufferStream)
-{
-    /* Regression test for the memory exhaustion issue reported in DCMTK
-     * issues #148 and #1192: an element that declares a huge length while
-     * the stream only contains a few bytes of data must not cause a huge
-     * memory allocation.
-     *
-     * The test data is a 276-byte DICOM file whose meta-information header
-     * specifies Transfer Syntax 1.2.840.10008.1.2 (Implicit VR Little Endian).
-     * The dataset contains a single PatientName element with declared length
-     * 0xFFFFFFFE (~4 GB) but only 1 byte of actual value data.
-     *
-     * When parsed via DcmInputBufferStream (as DCMTK network services do),
-     * DcmInputBufferStream::newFactory() returns NULL, so DcmElement::read()
-     * proceeds to loadValue().  Since the stream cannot deliver the declared
-     * number of value bytes right away, the value is loaded incrementally
-     * into a staging buffer that only grows with the data that actually
-     * arrives.  The parser therefore allocates no more than a few kilobytes
-     * before it detects the premature end of the stream and rejects the
-     * data with EC_InvalidStream. */
-    static const Uint8 poc[] = {
+/* Test data for the memory exhaustion issue reported in DCMTK issues #148
+ * and #1192: a 276-byte DICOM file whose meta-information header specifies
+ * Transfer Syntax 1.2.840.10008.1.2 (Implicit VR Little Endian).  The dataset
+ * contains a single PatientName element with declared length 0xFFFFFFFE
+ * (~4 GB) but only 1 byte of actual value data.  The last five bytes are the
+ * length field and the single value byte. */
+static const Uint8 hugeLengthPoC[] = {
         /* 128-byte DICOM preamble */
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -603,10 +589,25 @@ OFTEST(dcmdata_parser_implicitVR_hugeLengthInBufferStream)
         /* Dataset (Implicit VR LE):
          * (0010,0010) PatientName, declared length 0xFFFFFFFE (~4 GB), value 'A' */
         0x10, 0x00, 0x10, 0x00, 0xfe, 0xff, 0xff, 0xff, 0x41
-    };
+};
 
+OFTEST(dcmdata_parser_implicitVR_hugeLengthInBufferStream)
+{
+    /* Regression test for the memory exhaustion issue reported in DCMTK
+     * issues #148 and #1192: an element that declares a huge length while
+     * the stream only contains a few bytes of data must not cause a huge
+     * memory allocation.
+     *
+     * When parsed via DcmInputBufferStream (as DCMTK network services do),
+     * DcmInputBufferStream::newFactory() returns NULL, so DcmElement::read()
+     * proceeds to loadValue().  Since the stream cannot deliver the declared
+     * number of value bytes right away, the value is loaded incrementally
+     * into a staging buffer that only grows with the data that actually
+     * arrives.  The parser therefore allocates no more than a few kilobytes
+     * before it detects the premature end of the stream and rejects the
+     * data with EC_InvalidStream. */
     DcmInputBufferStream bufstream;
-    bufstream.setBuffer(poc, sizeof(poc));
+    bufstream.setBuffer(hugeLengthPoC, sizeof(hugeLengthPoC));
     bufstream.setEos();
 
     DcmFileFormat fileformat;
@@ -622,15 +623,123 @@ OFTEST(dcmdata_parser_implicitVR_hugeLengthInBufferStream)
                      "but got: " << cond.text());
     }
 
-#ifndef DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
     /* The incompletely received value must have been discarded: the element
-     * must not expose a value buffer that is smaller than its declared length.
-     * (With incremental value loading disabled, the historic behavior keeps
-     * the full-length buffer, so this check does not apply.) */
+     * must not expose a value buffer that is smaller than its declared length. */
     DcmElement *elem = NULL;
     if (fileformat.getDataset()->findAndGetElement(DCM_PatientName, elem).good() && (elem != NULL))
         OFCHECK(!elem->valueLoaded());
-#endif
+}
+
+/** reads a truncated PatientName element (declared length 1 MiB, 4 bytes of
+ *  data) from a DcmInputBufferStream into the given dataset and checks the
+ *  outcome.  Reading must fail with EC_InvalidStream in any case; whether the
+ *  element keeps a (full-length, partially filled) value buffer depends on
+ *  whether the value was loaded incrementally (value discarded) or allocated
+ *  up front (historic behavior, value buffer kept).
+ *  @param dset dataset to read into (may carry an incremental load threshold)
+ *  @param streamThreshold incremental load threshold to set on the stream
+ *  @param expectValueLoaded expected result of DcmElement::valueLoaded()
+ */
+static void readTruncatedElement(DcmDataset &dset,
+                                 const Sint32 streamThreshold,
+                                 const OFBool expectValueLoaded)
+{
+    /* Implicit VR LE: (0010,0010) PatientName, declared length 0x00100000 (1 MiB), 4 bytes of data */
+    static const Uint8 data[] = {
+        0x10, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x00, 0x41, 0x42, 0x43, 0x44
+    };
+    DcmInputBufferStream bufstream;
+    bufstream.setIncrementalLoadThreshold(streamThreshold);
+    bufstream.setBuffer(data, sizeof(data));
+    bufstream.setEos();
+    dset.transferInit();
+    const OFCondition cond = dset.read(bufstream, EXS_LittleEndianImplicit);
+    dset.transferEnd();
+    if (cond != EC_InvalidStream)
+    {
+        OFCHECK_FAIL("Expected EC_InvalidStream (truncated element in buffer stream), but got: " << cond.text());
+        return;
+    }
+    DcmElement *elem = NULL;
+    if (dset.findAndGetElement(DCM_PatientName, elem).bad() || (elem == NULL))
+    {
+        OFCHECK_FAIL("PatientName element not found after truncated read");
+        return;
+    }
+    OFCHECK_EQUAL(elem->getLengthField(), 0x00100000u);
+    OFCHECK_EQUAL(elem->valueLoaded(), expectValueLoaded);
+}
+
+OFTEST(dcmdata_parser_incrementalLoadThreshold_disabled)
+{
+    /* Verify the runtime configuration of the incremental value loading:
+     * with the default threshold (and with any threshold >= 0) a truncated
+     * value is discarded, with a threshold of -1 the historic behavior is
+     * selected, i.e. a buffer of the full declared length is allocated up
+     * front and kept.  The setting can be made on the stream, on the dataset
+     * (forwarded to the stream) and on the file format object (forwarded to
+     * the dataset). */
+
+    /* default threshold: value discarded */
+    {
+        DcmDataset dset;
+        readTruncatedElement(dset, 0, OFFalse);
+    }
+    /* explicit (small) threshold on the stream: value discarded */
+    {
+        DcmDataset dset;
+        readTruncatedElement(dset, 16, OFFalse);
+    }
+    /* incremental loading disabled on the stream: historic behavior */
+    {
+        DcmDataset dset;
+        readTruncatedElement(dset, -1, OFTrue);
+    }
+    /* incremental loading disabled on the dataset: forwarded to the stream */
+    {
+        DcmDataset dset;
+        dset.setIncrementalLoadThreshold(-1);
+        OFCHECK_EQUAL(dset.getIncrementalLoadThreshold(), -1);
+        readTruncatedElement(dset, 0, OFTrue);
+    }
+    /* dataset setting overrides the stream setting */
+    {
+        DcmDataset dset;
+        dset.setIncrementalLoadThreshold(-1);
+        readTruncatedElement(dset, 16, OFTrue);
+    }
+    /* file format object: setting is forwarded to the dataset.  Use the
+     * PoC file with the declared length patched down to 1 MiB, so that the
+     * up-front allocation of the historic behavior stays small. */
+    {
+        Uint8 data[sizeof(hugeLengthPoC)];
+        memcpy(data, hugeLengthPoC, sizeof(data));
+        /* length field (little endian) is located in front of the last byte */
+        data[sizeof(data) - 5] = 0x00;
+        data[sizeof(data) - 4] = 0x00;
+        data[sizeof(data) - 3] = 0x10;
+        data[sizeof(data) - 2] = 0x00;
+
+        DcmFileFormat fileformat;
+        OFCHECK_EQUAL(fileformat.getIncrementalLoadThreshold(), 0);
+        fileformat.setIncrementalLoadThreshold(-1);
+        OFCHECK_EQUAL(fileformat.getIncrementalLoadThreshold(), -1);
+        OFCHECK_EQUAL(fileformat.getDataset()->getIncrementalLoadThreshold(), -1);
+
+        DcmInputBufferStream bufstream;
+        bufstream.setBuffer(data, sizeof(data));
+        bufstream.setEos();
+        fileformat.transferInit();
+        const OFCondition cond = fileformat.read(bufstream);
+        fileformat.transferEnd();
+        if (cond != EC_InvalidStream)
+            OFCHECK_FAIL("Expected EC_InvalidStream (truncated element in buffer stream), but got: " << cond.text());
+        DcmElement *elem = NULL;
+        if (fileformat.getDataset()->findAndGetElement(DCM_PatientName, elem).good() && (elem != NULL))
+            OFCHECK(elem->valueLoaded());
+        else
+            OFCHECK_FAIL("PatientName element not found after truncated read");
+    }
 }
 
 OFTEST(dcmdata_parser_incrementalBufferStreamRead)
@@ -726,12 +835,14 @@ OFTEST(dcmdata_parser_incrementalBufferStreamRead)
         OFCHECK_FAIL("PatientName value should be readable");
 }
 
-OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
+/** reads a 64 KiB element that arrives in many small fragments through a
+ *  DcmInputBufferStream and verifies that it round-trips unchanged.
+ *  @param threshold incremental load threshold to set on the stream
+ *    (0 = default, i.e. the value is allocated at once; small values force
+ *    the staging buffer to grow several times)
+ */
+static void readFragmentedElement(const Sint32 threshold)
 {
-    /* Verify that a large element that arrives in many small fragments is
-     *  staged correctly: the staging buffer has to grow several times, and
-     *  the data must be copied to the correct offsets each time. */
-
     /* Build an Implicit VR LE dataset: (0042,0011) EncapsulatedDocument (OB)
      * with 65536 bytes of patterned data. */
     static const Uint32 elemLen = 65536;
@@ -749,6 +860,7 @@ OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
     const size_t fragmentSize = 1024;
 
     DcmInputBufferStream bufstream;
+    bufstream.setIncrementalLoadThreshold(threshold);
     DcmDataset dset;
     dset.transferInit();
 
@@ -777,7 +889,7 @@ OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
 
     if (cond.bad())
     {
-        OFCHECK_FAIL("Reading the fragmented dataset should succeed, but got: " << cond.text());
+        OFCHECK_FAIL("Reading the fragmented dataset (threshold " << threshold << ") should succeed, but got: " << cond.text());
         return;
     }
 
@@ -788,6 +900,21 @@ OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
     OFCHECK_EQUAL(readLen, elemLen);
     if (readData != NULL && readLen == elemLen)
         OFCHECK(memcmp(readData, data + 8, elemLen) == 0);
+}
+
+OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
+{
+    /* Verify that a large element that arrives in many small fragments is
+     * staged correctly: with a small incremental load threshold the staging
+     * buffer has to grow several times, and the data must be copied to the
+     * correct offsets each time. */
+
+    /* default threshold (64 KiB): the complete value is allocated at once */
+    readFragmentedElement(0);
+    /* threshold 1 KiB: the staging buffer grows 1 KiB -> 4 KiB -> 16 KiB -> 64 KiB */
+    readFragmentedElement(1024);
+    /* minimum threshold: the first allocation is driven by the available data only */
+    readFragmentedElement(1);
 }
 
 #ifdef WITH_ZLIB

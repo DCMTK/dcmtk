@@ -78,6 +78,27 @@ class DcmSpecificCharacterSet;
 #error "DCMTK_MAX_ELEMENT_LENGTH must be <= 0xFFFFFFFE"
 #endif
 
+// Default threshold for the incremental loading of element values (can be
+// overridden at compile time).  When an element value is read from a stream
+// that cannot deliver all value bytes right away, the value is staged in a
+// buffer that grows with the data that actually arrives instead of
+// allocating the full announced value length up front (memory exhaustion
+// protection).  Values up to this number of bytes are read into a buffer of
+// their final size right away; the staging buffer for larger values starts
+// at this size.  The special value -1 disables incremental loading and
+// restores the historic behavior, i.e. a buffer of the full announced value
+// length is allocated before reading begins.
+// Must be -1 or in the range [1, 2147483647].
+#ifndef DCMTK_INCREMENTAL_LOAD_THRESHOLD
+#define DCMTK_INCREMENTAL_LOAD_THRESHOLD 65536
+#endif
+#if (DCMTK_INCREMENTAL_LOAD_THRESHOLD != -1) && (DCMTK_INCREMENTAL_LOAD_THRESHOLD < 1)
+#error "DCMTK_INCREMENTAL_LOAD_THRESHOLD must be -1 or >= 1"
+#endif
+#if DCMTK_INCREMENTAL_LOAD_THRESHOLD > 2147483647
+#error "DCMTK_INCREMENTAL_LOAD_THRESHOLD must be <= 2147483647"
+#endif
+
 // Maximum number of read bytes for a Value Element
 const Uint32 DCM_MaxReadLength = 4096;
 

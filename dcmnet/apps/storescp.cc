@@ -175,6 +175,7 @@ OFCmdUnsignedInt   opt_sleepAfter = 0;
 OFCmdUnsignedInt   opt_sleepDuring = 0;
 OFCmdUnsignedInt   opt_maxPDU = ASC_DEFAULTMAXPDU;
 OFCmdUnsignedInt   opt_maxElementLength = 0;
+OFCmdSignedInt     opt_incrementalLoadThreshold = 0;
 OFBool             opt_useMetaheader = OFTrue;
 OFBool             opt_acceptAllXfers = OFFalse;
 E_TransferSyntax   opt_networkTransferSyntax = EXS_Unknown;
@@ -349,6 +350,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--max-pdu",                "-pdu", 1, optString3.c_str(), optString4.c_str());
       cmd.addOption("--max-element-length",     "-mel", 1, "[n]umber of bytes: integer",
                                                            "restrict max element length of received data\nto n bytes (default: unrestricted)");
+      cmd.addOption("--incr-load-threshold",    "-ilt", 1, "[n]umber of bytes: integer",
+                                                           "read element values larger than n bytes\nin growing chunks (default: 65536)");
+      cmd.addOption("--no-incr-load",           "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
 
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
@@ -616,6 +620,10 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingAETitle));
     if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if (cmd.findOption("--max-element-length")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--incr-load-threshold")) app.checkValue(cmd.getValueAndCheckMinMax(opt_incrementalLoadThreshold, 1, 2147483647));
+    if (cmd.findOption("--no-incr-load")) opt_incrementalLoadThreshold = -1;
+    cmd.endOptionBlock();
     if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
     if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
     if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
@@ -1145,6 +1153,10 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   // (memory exhaustion protection for command and data sets)
   if (cond.good() && (opt_maxElementLength != 0))
     ASC_setMaxIncomingElementLength(assoc, OFstatic_cast(Uint32, opt_maxElementLength));
+
+  // configure the incremental loading of element values on this association if requested
+  if (cond.good() && (opt_incrementalLoadThreshold != 0))
+    ASC_setIncrementalLoadThreshold(assoc, OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
 
   // if some kind of error occurred, take care of it
   if (cond.bad())

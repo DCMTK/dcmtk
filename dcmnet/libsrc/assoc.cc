@@ -1743,6 +1743,21 @@ ASC_getMaxIncomingElementLength(const T_ASC_Association *assoc)
     return 0;
 }
 
+void
+ASC_setIncrementalLoadThreshold(T_ASC_Association *assoc, Sint32 threshold)
+{
+    if (assoc)
+        assoc->incrementalLoadThreshold = threshold;
+}
+
+Sint32
+ASC_getIncrementalLoadThreshold(const T_ASC_Association *assoc)
+{
+    if (assoc)
+        return assoc->incrementalLoadThreshold;
+    return 0;
+}
+
 OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association)
 {

@@ -76,6 +76,8 @@ OFTEST_REGISTER(dcmnet_scp_maxElementLength_getset);
 OFTEST_REGISTER(dcmnet_scu_maxElementLength_getset);
 OFTEST_REGISTER(dcmnet_scp_maxElementLength_rejects_large);
 OFTEST_REGISTER(dcmnet_scp_maxElementLength_accepts_within);
+OFTEST_REGISTER(dcmnet_scp_incrementalLoadThreshold_getset);
+OFTEST_REGISTER(dcmnet_scu_incrementalLoadThreshold_getset);
 
 OFTEST_REGISTER(dcmnet_scp_assocRQ_zeroTransferSyntax_no_leak);
 

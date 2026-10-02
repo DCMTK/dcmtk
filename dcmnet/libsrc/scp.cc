@@ -34,6 +34,7 @@ DcmSCP::DcmSCP()
 , m_cfg()
 , m_maxNestingDepth(0)
 , m_maxElementLength(0)
+, m_incrementalLoadThreshold(0)
 {
     OFStandard::initializeNetwork();
 }
@@ -442,6 +443,8 @@ OFCondition DcmSCP::processAssociationRQ()
      * (protects command and data set receive, 0 = compile-time default) */
     if (m_maxElementLength != 0)
         ASC_setMaxIncomingElementLength(m_assoc, m_maxElementLength);
+    if (m_incrementalLoadThreshold != 0)
+        ASC_setIncrementalLoadThreshold(m_assoc, m_incrementalLoadThreshold);
 
     // call notifier function
     notifyAssociationRequest(*m_assoc->params, desiredAction);
@@ -2045,6 +2048,13 @@ void DcmSCP::setMaxElementLength(const Uint32 maxLength)
 
 // ----------------------------------------------------------------------------
 
+void DcmSCP::setIncrementalLoadThreshold(const Sint32 threshold)
+{
+    m_incrementalLoadThreshold = threshold;
+}
+
+// ----------------------------------------------------------------------------
+
 /* Get methods for SCP settings and current association information */
 
 OFBool DcmSCP::getRefuseAssociation() const
@@ -2148,6 +2158,13 @@ Sint32 DcmSCP::getMaxNestingDepth() const
 Uint32 DcmSCP::getMaxElementLength() const
 {
     return m_maxElementLength;
+}
+
+// ----------------------------------------------------------------------------
+
+Sint32 DcmSCP::getIncrementalLoadThreshold() const
+{
+    return m_incrementalLoadThreshold;
 }
 
 // ----------------------------------------------------------------------------

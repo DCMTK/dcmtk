@@ -653,6 +653,9 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
             /* apply configured element length limit */
             if (getMaxElementLength() != 0)
                 inStream.setMaxElementLength(getMaxElementLength());
+            /* apply configured incremental load threshold */
+            if (getIncrementalLoadThreshold() != 0)
+                inStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
 
             /* clear this object */
             l_error = clear();
@@ -682,6 +685,9 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
             /* apply configured element length limit */
             if (getMaxElementLength() != 0)
                 fileStream.setMaxElementLength(getMaxElementLength());
+            /* apply configured incremental load threshold */
+            if (getIncrementalLoadThreshold() != 0)
+                fileStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
 
             /* check stream status */
             l_error = fileStream.status();

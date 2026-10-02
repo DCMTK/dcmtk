@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_acseTimeout = 30;
     OFCmdUnsignedInt opt_maxPDULength = ASC_DEFAULTMAXPDU;
     OFCmdUnsignedInt opt_maxElementLength = 0;
+    OFCmdSignedInt opt_incrementalLoadThreshold = 0;
     T_DIMSE_BlockingMode opt_blockingMode = DIMSE_BLOCKING;
 
     OFBool opt_showPresentationContexts = OFFalse;  // default: do not show presentation contexts in verbose mode
@@ -133,6 +134,9 @@ int main(int argc, char *argv[])
                                                           optString3.c_str());
         cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer",
                                                           "restrict max element length of received data\nto n bytes (default: unrestricted)");
+        cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer",
+                                                          "read element values larger than n bytes\nin growing chunks (default: 65536)");
+        cmd.addOption("--no-incr-load",        "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
     /* add TLS specific command line options if (and only if) we are compiling with OpenSSL */
@@ -238,6 +242,12 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
         if (cmd.findOption("--max-element-length"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--incr-load-threshold"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_incrementalLoadThreshold, 1, 2147483647));
+        if (cmd.findOption("--no-incr-load"))
+            opt_incrementalLoadThreshold = -1;
+        cmd.endOptionBlock();
         if (cmd.findOption("--disable-host-lookup"))
             opt_HostnameLookup = OFFalse;
 
@@ -308,6 +318,8 @@ int main(int argc, char *argv[])
     storageSCP.setMaxReceivePDULength(OFstatic_cast(Uint32, opt_maxPDULength));
     if (opt_maxElementLength != 0)
         storageSCP.setMaxElementLength(OFstatic_cast(Uint32, opt_maxElementLength));
+    if (opt_incrementalLoadThreshold != 0)
+        storageSCP.setIncrementalLoadThreshold(OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
     storageSCP.setACSETimeout(OFstatic_cast(Uint32, opt_acseTimeout));
     storageSCP.setDIMSETimeout(OFstatic_cast(Uint32, opt_dimseTimeout));
     storageSCP.setDIMSEBlockingMode(opt_blockingMode);

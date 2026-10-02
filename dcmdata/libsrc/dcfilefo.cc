@@ -56,7 +56,8 @@ DcmFileFormat::DcmFileFormat()
     ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
     ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME),
     MaxNestingDepth(0),
-    MaxElementLength(0)
+    MaxElementLength(0),
+    IncrementalLoadThreshold(0)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -75,7 +76,8 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset,
     ImplementationClassUID(OFFIS_IMPLEMENTATION_CLASS_UID),
     ImplementationVersionName(OFFIS_DTK_IMPLEMENTATION_VERSION_NAME),
     MaxNestingDepth(0),
-    MaxElementLength(0)
+    MaxElementLength(0),
+    IncrementalLoadThreshold(0)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     if (DcmSequenceOfItems::itemList->insert(MetaInfo))
@@ -111,7 +113,8 @@ DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
     ImplementationClassUID(old.ImplementationClassUID),
     ImplementationVersionName(old.ImplementationVersionName),
     MaxNestingDepth(old.MaxNestingDepth),
-    MaxElementLength(old.MaxElementLength)
+    MaxElementLength(old.MaxElementLength),
+    IncrementalLoadThreshold(old.IncrementalLoadThreshold)
 {
 }
 
@@ -142,6 +145,7 @@ DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
         ImplementationVersionName = obj.ImplementationVersionName;
         MaxNestingDepth = obj.MaxNestingDepth;
         MaxElementLength = obj.MaxElementLength;
+        IncrementalLoadThreshold = obj.IncrementalLoadThreshold;
     }
     return *this;
 }
@@ -976,6 +980,9 @@ OFCondition DcmFileFormat::loadFileUntilTag(
             /* apply configured element length limit */
             if (MaxElementLength != 0)
                 inStream.setMaxElementLength(MaxElementLength);
+            /* apply configured incremental load threshold */
+            if (IncrementalLoadThreshold != 0)
+                inStream.setIncrementalLoadThreshold(IncrementalLoadThreshold);
 
             /* clear this object */
             l_error = clear();
@@ -1012,6 +1019,9 @@ OFCondition DcmFileFormat::loadFileUntilTag(
             /* apply configured element length limit */
             if (MaxElementLength != 0)
                 fileStream.setMaxElementLength(MaxElementLength);
+            /* apply configured incremental load threshold */
+            if (IncrementalLoadThreshold != 0)
+                fileStream.setIncrementalLoadThreshold(IncrementalLoadThreshold);
 
             /* check stream status */
             l_error = fileStream.status();

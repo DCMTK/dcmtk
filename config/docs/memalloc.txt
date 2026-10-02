@@ -81,8 +81,9 @@ Otherwise, DcmElement::loadValueIncrementally() reads the value into an
 internal staging buffer that grows with the data that actually
 arrives:
 
-  - the first allocation is max(currently available bytes, 64 KiB),
-    but never more than the value needs;
+  - the first allocation is max(currently available bytes, threshold)
+    where the threshold is 64 KiB by default (see below), but never
+    more than the value needs;
   - when the staging buffer is full and more data is available, a new
     buffer of max(4 * current size, received + available bytes) is
     allocated, the received data is copied over, and the old buffer is
@@ -106,8 +107,9 @@ a buffer smaller than the announced length.
 Properties of this scheme:
 
   - The total allocation never exceeds 4 times the data actually
-    received (plus the 64 KiB minimum).  An attacker must really
-    transmit on the order of N bytes to make the parser hold N bytes.
+    received (plus the threshold, 64 KiB by default).  An attacker
+    must really transmit on the order of N bytes to make the parser
+    hold N bytes.
   - The bytes copied while growing amount to a fraction of the value
     length (between roughly 1/3 and 1.3 times, depending on how the
     length falls onto the growth steps).  In practice the overhead is
@@ -141,15 +143,48 @@ Behavioral differences compared to the historic up-front allocation
     waiting for more network data (historically OFTrue, with a
     partially filled buffer).
 
-Incremental loading can be disabled at compile time by defining
+The threshold from which values are loaded incrementally - and thus
+whether incremental loading is used at all - can be configured on
+several levels, analogous to the maximum element length limit
+described in the next section:
 
-    DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
+  - Compile-time default: the macro DCMTK_INCREMENTAL_LOAD_THRESHOLD
+    (dcmdata/include/dcmtk/dcmdata/dcobject.h) defines the built-in
+    default of 65536 bytes.
+  - Runtime, per parse operation:
+    DcmInputStream::setIncrementalLoadThreshold(),
+    DcmItem::setIncrementalLoadThreshold() and
+    DcmFileFormat::setIncrementalLoadThreshold() set the threshold for
+    a specific read operation (0 selects the compile-time default).
+  - Per network association (dcmnet):
+    ASC_setIncrementalLoadThreshold() configures the handling of
+    incoming DIMSE command and data sets of an association;
+    DcmSCP::setIncrementalLoadThreshold() and
+    DcmSCU::setIncrementalLoadThreshold() apply this to all
+    associations created by the respective object.
+  - Command line: the network receive tools storescp and dcmrecv
+    accept --incr-load-threshold <n> (-ilt) to set the threshold and
+    --no-incr-load (-nil) to disable incremental loading.
 
-which restores the historic behavior (full allocation of the announced
-length before reading) with a single, central switch in
-DcmElement::loadValue().  This is meant as an escape hatch for
-environments that depend on the historic error-case behavior described
-above; there is no reason to define it otherwise.
+The threshold value has the following meaning:
+
+  - Value > 0: element values up to this number of bytes are read into
+    a buffer of their final size right away, so that such values never
+    cause a buffer growth step; the staging buffer for larger values
+    starts at this size.  A larger threshold reduces the number of
+    growth steps and the amount of data copied for large values at the
+    price of allocating up to this amount of memory before the data has
+    actually arrived.  For example, with a threshold of 256 MiB the
+    parser allocates values up to that size at once (as it historically
+    did for all values), while anything larger is still loaded
+    incrementally.
+  - Value -1: incremental loading is disabled and the historic behavior
+    (allocation of the full announced length before reading, including
+    the error-case behavior described above) is restored.  This may be
+    chosen for trusted peers in performance-critical scenarios, e.g. an
+    archive that routinely receives multi-gigabyte elements and wants
+    to avoid the copying overhead of the growth steps, or by
+    applications that depend on the historic error-case behavior.
 
 
 MAXIMUM ELEMENT LENGTH LIMIT

@@ -85,7 +85,8 @@ DcmItem::DcmItem()
     fStartPosition(0),
     privateCreatorCache(),
     maxNestingDepth(0),
-    maxElementLength(0)
+    maxElementLength(0),
+    incrementalLoadThreshold(0)
 {
     elementList = new DcmList;
 }
@@ -99,7 +100,8 @@ DcmItem::DcmItem(const DcmTag &tag,
     fStartPosition(0),
     privateCreatorCache(),
     maxNestingDepth(0),
-    maxElementLength(0)
+    maxElementLength(0),
+    incrementalLoadThreshold(0)
 {
     elementList = new DcmList;
 }
@@ -112,7 +114,8 @@ DcmItem::DcmItem(const DcmItem &old)
     fStartPosition(old.fStartPosition),
     privateCreatorCache(),
     maxNestingDepth(old.maxNestingDepth),
-    maxElementLength(old.maxElementLength)
+    maxElementLength(old.maxElementLength),
+    incrementalLoadThreshold(old.incrementalLoadThreshold)
 {
     if (!old.elementList->empty())
     {
@@ -146,6 +149,7 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
         fStartPosition = obj.fStartPosition;
         maxNestingDepth = obj.maxNestingDepth;
         maxElementLength = obj.maxElementLength;
+        incrementalLoadThreshold = obj.incrementalLoadThreshold;
         if (!obj.elementList->empty())
         {
             elementList->seek(ELP_first);
@@ -1413,6 +1417,10 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
     /* apply configured element length limit to the input stream (0 = use default, skip override) */
     if (getMaxElementLength() != 0)
         inStream.setMaxElementLength(getMaxElementLength());
+
+    /* apply configured incremental load threshold to the input stream (0 = use default, skip override) */
+    if (getIncrementalLoadThreshold() != 0)
+        inStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
 
     /* figure out if the stream reported an error */
     errorFlag = inStream.status();

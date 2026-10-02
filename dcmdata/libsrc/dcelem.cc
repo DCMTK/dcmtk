@@ -597,6 +597,21 @@ static Uint32 effectiveMaxElementLength(const DcmInputStream &inStream)
 }
 
 
+/** returns the threshold for the incremental loading of element values
+ *  for the given input stream (memory exhaustion protection).
+ *  @param inStream the input stream the element is read from
+ *  @return the stream's setting, or the compile-time default
+ *    (DCMTK_INCREMENTAL_LOAD_THRESHOLD) if no custom threshold is set;
+ *    -1 means that incremental loading is disabled
+ */
+static Sint32 effectiveIncrementalLoadThreshold(const DcmInputStream &inStream)
+{
+    const Sint32 threshold = inStream.incrementalLoadThreshold();
+    /* 0 = use built-in default (DCMTK_INCREMENTAL_LOAD_THRESHOLD); -1 = disabled; > 0 = custom threshold */
+    return (threshold == 0) ? OFstatic_cast(Sint32, DCMTK_INCREMENTAL_LOAD_THRESHOLD) : threshold;
+}
+
+
 OFCondition DcmElement::loadValue(DcmInputStream *inStream)
 {
     /* initialize return value */
@@ -633,6 +648,9 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* if we did not encounter the end of the stream and no error occurred so far, go ahead */
             else if (errorFlag.good())
             {
+                /* threshold for the incremental loading of the value (-1 = disabled) */
+                const Sint32 incrementalLoadThreshold = effectiveIncrementalLoadThreshold(*readStream);
+
                 /* If the declared element length exceeds the maximum
                  * permitted element length (memory exhaustion protection,
                  * see DcmInputStream::setMaxElementLength()), reject
@@ -652,15 +670,17 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                  * actually arrives.  This avoids allocating a buffer of the full declared
                  * length in advance, which would allow a small crafted or truncated input
                  * (e.g. received over the network) to trigger a huge allocation.
-                 * Defining DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION restores the historic
-                 * behavior (full allocation of the declared length up front). */
-#ifndef DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION
-                else if (!fValue && ((fPartialValue != NULL) ||
-                    (OFstatic_cast(Uint64, readStream->avail()) < OFstatic_cast(Uint64, getLengthField()))))
+                 * An incremental load threshold of -1 (see
+                 * DcmInputStream::setIncrementalLoadThreshold()) disables this mechanism
+                 * and restores the historic behavior (full allocation of the declared
+                 * length up front). */
+                else if (!fValue && ((fPartialValue != NULL) || ((incrementalLoadThreshold >= 0) &&
+                    (OFstatic_cast(Uint64, readStream->avail()) < OFstatic_cast(Uint64, getLengthField())))))
                 {
-                    loadValueIncrementally(readStream); /* also sets errorFlag */
+                    /* also sets errorFlag */
+                    loadValueIncrementally(readStream,
+                        (incrementalLoadThreshold > 0) ? OFstatic_cast(Uint32, incrementalLoadThreshold) : 0);
                 }
-#endif
                 else
                 {
                     /* if the object which holds this element's value does not yet exist, create it */
@@ -719,7 +739,8 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
 // ********************************
 
 
-OFCondition DcmElement::loadValueIncrementally(DcmInputStream *readStream)
+OFCondition DcmElement::loadValueIncrementally(DcmInputStream *readStream,
+                                               Uint32 minAllocation)
 {
     /* This method is (possibly repeatedly) called from loadValue() while an
      * element value is read from a stream that does not (yet) have all value
@@ -730,12 +751,12 @@ OFCondition DcmElement::loadValueIncrementally(DcmInputStream *readStream)
      * trigger a huge allocation (see DCMTK issues #148 and #1192) - the value
      * is staged in fPartialValue, which grows with the data that actually
      * arrives.  Only when the value is complete it is transferred to fValue;
-     * until then the element behaves as if the value had not been loaded yet. */
-
-    /* minimum size of the staging buffer; small values are thus read into a
-     * buffer of their full (padded) length right away, exactly like in the
-     * non-incremental case */
-    static const Uint32 minAllocation = 65536;
+     * until then the element behaves as if the value had not been loaded yet.
+     *
+     * minAllocation is the minimum size of the staging buffer (the incremental
+     * load threshold of the input stream, default 64 KiB); values up to this
+     * size are thus read into a buffer of their full (padded) length right
+     * away, exactly like in the non-incremental case. */
 
     /* factor by which the staging buffer grows at least.  A larger factor
      * means fewer reallocations and less copying at the price of allocating

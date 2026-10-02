@@ -1080,15 +1080,19 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  or truncated input cannot trigger a huge allocation. Only when the
      *  value is complete it is transferred to fValue; until then the
      *  element behaves as if the value had not been loaded yet.
-     *  Compiling with DCMTK_DISABLE_INCREMENTAL_VALUE_ALLOCATION defined
-     *  disables this mechanism and restores the historic behavior, i.e.
-     *  loadValue() allocates the full declared value length up front.
+     *  Whether and from which value size this mechanism is used is
+     *  controlled by the incremental load threshold of the input stream,
+     *  see DcmInputStream::setIncrementalLoadThreshold().
      *  @param readStream The stream which contains the information.
+     *  @param minAllocation minimum size of the staging buffer in bytes.
+     *    Values up to this size are thus read into a buffer of their final
+     *    size right away.
      *  @return status, EC_Normal if the value was read completely,
      *    EC_StreamNotifyClient if more data is required, an error code
      *    otherwise
      */
-    OFCondition loadValueIncrementally(DcmInputStream *readStream);
+    OFCondition loadValueIncrementally(DcmInputStream *readStream,
+                                       Uint32 minAllocation);
 
     /// current byte order of attribute value in memory
     E_ByteOrder fByteOrder;

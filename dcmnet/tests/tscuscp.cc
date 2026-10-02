@@ -1674,6 +1674,36 @@ OFTEST(dcmnet_scu_maxElementLength_getset)
 }
 
 
+// Test that setIncrementalLoadThreshold/getIncrementalLoadThreshold work on DcmSCP
+OFTEST(dcmnet_scp_incrementalLoadThreshold_getset)
+{
+    DcmSCP scp;
+    // Default must be 0 (use compile-time default)
+    OFCHECK_EQUAL(scp.getIncrementalLoadThreshold(), 0);
+    scp.setIncrementalLoadThreshold(1048576);
+    OFCHECK_EQUAL(scp.getIncrementalLoadThreshold(), 1048576);
+    scp.setIncrementalLoadThreshold(-1);
+    OFCHECK_EQUAL(scp.getIncrementalLoadThreshold(), -1);
+    scp.setIncrementalLoadThreshold(0);
+    OFCHECK_EQUAL(scp.getIncrementalLoadThreshold(), 0);
+}
+
+
+// Test that setIncrementalLoadThreshold/getIncrementalLoadThreshold work on DcmSCU
+OFTEST(dcmnet_scu_incrementalLoadThreshold_getset)
+{
+    DcmSCU scu;
+    // Default must be 0 (use compile-time default)
+    OFCHECK_EQUAL(scu.getIncrementalLoadThreshold(), 0);
+    scu.setIncrementalLoadThreshold(1048576);
+    OFCHECK_EQUAL(scu.getIncrementalLoadThreshold(), 1048576);
+    scu.setIncrementalLoadThreshold(-1);
+    OFCHECK_EQUAL(scu.getIncrementalLoadThreshold(), -1);
+    scu.setIncrementalLoadThreshold(0);
+    OFCHECK_EQUAL(scu.getIncrementalLoadThreshold(), 0);
+}
+
+
 /** Helper: build a DcmDataset containing a single OB element of the
  *  given length (filled with 'A').
  *  @param length value length of the element in bytes
