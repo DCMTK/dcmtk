@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,7 @@
 #include "dcmtk/config/osconfig.h"
 
 #include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/ofstd/oflimits.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofchrenc.h"
@@ -899,6 +900,64 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMinMax(OFCmdUnsigned
                                                                    const OFCmdUnsignedInt high)
 {
     E_ValueStatus status = getValue(value);
+    if (status == VS_Normal)
+    {
+        if (value < low)
+            return VS_Underflow;
+        else if (value > high)
+            return VS_Overflow;
+    }
+    return status;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getSizeValue(OFCmdUnsignedInt &value)
+{
+    if (++ArgumentIterator != ArgumentList.end())
+    {
+        const OFString &strVal = *ArgumentIterator;
+        // skip leading spaces
+        const size_t strPos = strVal.find_first_not_of(' ');
+        // check for minus sign (negative number)
+        if ((strPos != OFString_npos) && (strVal.at(strPos) != '-'))
+        {
+            OFCmdUnsignedInt number = 0;
+            char suffix[2] = { '\0', '\0' };
+            char extra = '\0';
+            // read the number, an optional size suffix and (to detect garbage) one more character
+            const int count = sscanf(strVal.c_str(), "%lu%1[kKmMgG]%c", &number, suffix, &extra);
+            if (count == 1)
+            {
+                // plain integer value
+                value = number;
+                return VS_Normal;
+            }
+            else if (count == 2)
+            {
+                // integer value with size suffix
+                OFCmdUnsignedInt factor = 1024;
+                if ((suffix[0] == 'm') || (suffix[0] == 'M'))
+                    factor = 1048576;
+                else if ((suffix[0] == 'g') || (suffix[0] == 'G'))
+                    factor = 1073741824;
+                // check whether the scaled value fits into the unsigned integer type
+                if (number > OFnumeric_limits<OFCmdUnsignedInt>::max() / factor)
+                    return VS_Overflow;
+                value = number * factor;
+                return VS_Normal;
+            }
+        }
+        return VS_Invalid;
+    }
+    return VS_NoMore;
+}
+
+
+OFCommandLine::E_ValueStatus OFCommandLine::getSizeValueAndCheckMinMax(OFCmdUnsignedInt &value,
+                                                                       const OFCmdUnsignedInt low,
+                                                                       const OFCmdUnsignedInt high)
+{
+    E_ValueStatus status = getSizeValue(value);
     if (status == VS_Normal)
     {
         if (value < low)

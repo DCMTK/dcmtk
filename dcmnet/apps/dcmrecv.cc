@@ -132,9 +132,9 @@ int main(int argc, char *argv[])
         CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDULength << ")", optString3);
         cmd.addOption("--max-pdu",             "-pdu", 1, optString2.c_str(),
                                                           optString3.c_str());
-        cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer",
+        cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
                                                           "restrict max element length of received data\nto n bytes (default: unrestricted)");
-        cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer",
+        cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
                                                           "read element values larger than n bytes\nin growing chunks (default: 65536)");
         cmd.addOption("--no-incr-load",        "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
@@ -241,10 +241,14 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--max-pdu"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
         if (cmd.findOption("--max-element-length"))
-            app.checkValue(cmd.getValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+            app.checkValue(cmd.getSizeValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
         cmd.beginOptionBlock();
         if (cmd.findOption("--incr-load-threshold"))
-            app.checkValue(cmd.getValueAndCheckMinMax(opt_incrementalLoadThreshold, 1, 2147483647));
+        {
+            OFCmdUnsignedInt threshold = 0;
+            app.checkValue(cmd.getSizeValueAndCheckMinMax(threshold, 1, 2147483647));
+            opt_incrementalLoadThreshold = OFstatic_cast(OFCmdSignedInt, threshold);
+        }
         if (cmd.findOption("--no-incr-load"))
             opt_incrementalLoadThreshold = -1;
         cmd.endOptionBlock();

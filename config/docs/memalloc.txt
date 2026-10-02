@@ -218,6 +218,8 @@ The limit exists on several levels:
   - Command line: the network receive tools storescp and dcmrecv
     accept --max-element-length <n> (-mel) to restrict the maximum
     element length of received data sets (default: unrestricted).
+    The number of bytes may carry one of the suffixes k, M or G
+    (e.g. "512M" or "2G"); the same applies to --incr-load-threshold.
 
 Choosing a limit is a matter of application policy.  For example, a
 worklist server that never expects pixel data may safely restrict
