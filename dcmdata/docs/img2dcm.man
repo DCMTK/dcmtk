@@ -392,7 +392,9 @@ It should also be slightly faster than cutting off APPn information, because it
 is not necessary to scan the whole JPEG stream for such data.  As stated
 before, JFIF information is always removed by \b img2dcm. However, when using
 this option, the APP2 marker is retained, but \b img2dcm does not create an
-equivalent ICC Profile (0028,2000) attribute.
+equivalent ICC Profile (0028,2000) attribute. In particular, it does not embed
+an sRGB ICC Profile for untagged or unprofiled JFIF inputs, which may be
+necessary for a calibrated display.
 
 If you only want to retain specific APPn markers instead of all of them, the
 option \e --keep-app followed by the marker number (0 to 15) can be used, and it
