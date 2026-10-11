@@ -23,6 +23,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcfilter.cc
   dchashdi.cc
   dcistrma.cc
+  dcistrmh.cc
   dcistrmb.cc
   dcistrmf.cc
   dcistrms.cc

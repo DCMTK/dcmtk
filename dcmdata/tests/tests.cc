@@ -162,5 +162,8 @@ OFTEST_REGISTER(dcmdata_condition_AT);
 OFTEST_REGISTER(dcmdata_condition_VM);
 OFTEST_REGISTER(dcmdata_condition_sequence_wildcard);
 OFTEST_REGISTER(dcmdata_condition_tagname);
+OFTEST_REGISTER(dcmdata_fhstrm_single);
+OFTEST_REGISTER(dcmdata_fhstrm_lazy);
+OFTEST_REGISTER(dcmdata_fhstrm_multi);
 
 OFTEST_MAIN("dcmdata")
