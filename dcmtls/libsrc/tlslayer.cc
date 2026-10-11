@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -1078,7 +1078,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     BIO *certValidNotBeforeBIO = BIO_new(BIO_s_mem());
     if (certValidNotBeforeBIO)
     {
-      ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(peerCertificate));
+      ASN1_TIME_print(certValidNotBeforeBIO, X509_get_notBefore(peerCertificate));
       BIO_write(certValidNotBeforeBIO,"\0",1);
       BIO_get_mem_data(certValidNotBeforeBIO, OFreinterpret_cast(char *, &bufptr));
       if (bufptr) certValidNotBefore = bufptr;
@@ -1088,7 +1088,7 @@ OFString DcmTLSTransportLayer::dumpX509Certificate(X509 *peerCertificate)
     BIO *certValidNotAfterBIO  = BIO_new(BIO_s_mem());
     if (certValidNotAfterBIO)
     {
-      ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(peerCertificate));
+      ASN1_TIME_print(certValidNotAfterBIO, X509_get_notAfter(peerCertificate));
       BIO_write(certValidNotAfterBIO,"\0",1);
       BIO_get_mem_data(certValidNotAfterBIO, OFreinterpret_cast(char *, &bufptr));
       if (bufptr) certValidNotAfter = bufptr;
