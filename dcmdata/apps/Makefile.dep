@@ -1005,10 +1005,7 @@ img2dcm.o: img2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/libi2d/i2dplop.h \
  ../include/dcmtk/dcmdata/dcmxml/xml2dcm.h \
  ../include/dcmtk/dcmdata/dcmxml/dcxmldf.h \
- ../../ofstd/include/dcmtk/ofstd/diag/clangprg.def \
- /usr/include/libxml2/libxml/xmlstring.h \
- /usr/include/libxml2/libxml/xmlversion.h \
- /usr/include/libxml2/libxml/xmlexports.h
+ ../../ofstd/include/dcmtk/ofstd/diag/clangprg.def
 json2dcm.o: json2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
@@ -1331,7 +1328,4 @@ xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/dcmdata/dcostrmz.h \
  ../include/dcmtk/dcmdata/dcmxml/xml2dcm.h \
  ../include/dcmtk/dcmdata/dcmxml/dcxmldf.h \
- ../../ofstd/include/dcmtk/ofstd/diag/clangprg.def \
- /usr/include/libxml2/libxml/xmlstring.h \
- /usr/include/libxml2/libxml/xmlversion.h \
- /usr/include/libxml2/libxml/xmlexports.h
+ ../../ofstd/include/dcmtk/ofstd/diag/clangprg.def
