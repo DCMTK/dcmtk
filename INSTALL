@@ -1,13 +1,3 @@
--------------------------------------------------------------------------------
-IMPORTANT NOTE FOR CURRENT DEVELOPMENT VERSION 3.7.0+DEV
--------------------------------------------------------------------------------
- Please note that most sections of this document refer to the official release
- DCMTK 3.7.0, i.e. they have not yet been updated to reflect the changes in
- the latest development version.  This will be done for the next release at
- the latest.
--------------------------------------------------------------------------------
-
-
 ==================================
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
@@ -18,7 +8,7 @@ PRE-REQUISITES
 
 The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
 recommend using the GNU C++ compiler in versions higher than 9.5.0 (most of the
-development for this release was done using GNU gcc 12.2.0 on Debian Linux and
+development for this release was done using GNU gcc 14.2.0 on Debian Linux and
 GNU gcc 13.3.0 on Ubuntu Linux).  The software is also known to compile using
 Clang and Microsoft Visual Studio.
 
@@ -38,58 +28,63 @@ Microsoft Windows
 The DCMTK software can be compiled under a native Microsoft Windows environment
 (see section "Microsoft Windows with CMake" below for more information).
 
-The current DCMTK software release 3.7.0 successfully compiles on the following
+The current DCMTK software release 3.7.1 successfully compiles on the following
 operating system / hardware / compiler combinations:
 
    Windows 10      / Intel x86    / Microsoft Visual C++ 2017 Community (VS 15)
    Windows 10      / Intel x86    / Microsoft Visual C++ 2019 Community (VS 16)
    Windows 10      / Intel x86    / Microsoft Visual C++ 2022 Community (VS 17)
-   Windows 10      / Intel x86    / MinGW Clang 17.0.6 (i686-w64-windows-gnu)
-   Windows 10      / Intel x86    / MinGW gcc 13.2.0 (i686-w64-windows-gnu)
+   Windows 10      / Intel x86    / MinGW Clang 21.1.8 (i686-w64-windows-gnu)
+   Windows 10      / Intel x86    / MinGW gcc 15.2.0 (i686-w64-windows-gnu)
    Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2017 Community (VS 15)
    Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2019 Community (VS 16)
    Windows 10      / amd64|x86_64 / Microsoft Visual C++ 2022 Community (VS 17)
-   Windows 10      / amd64|x86_64 / MinGW Clang 17.0.6 (x86_64-w64-windows-gnu)
-   Windows 10      / amd64|x86_64 / MinGW gcc 13.2.0 (x86_64-w64-windows-gnu)
+   Windows 10      / amd64|x86_64 / MinGW Clang 21.1.8 (x86_64-w64-windows-gnu)
+   Windows 10      / amd64|x86_64 / MinGW gcc 15.2.0 (x86_64-w64-windows-gnu)
    Windows 11      / Intel x86    / Microsoft Visual C++ 2019 Community (VS 16)
    Windows 11      / Intel x86    / Microsoft Visual C++ 2022 Community (VS 17)
-   Windows 11      / Intel x86    / MinGW Clang 18.1.8 (i686-w64-windows-gnu)
-   Windows 11      / Intel x86    / MinGW gcc 14.2.0 (i686-w64-mingw32)
+   Windows 11      / Intel x86    / Microsoft Visual C++ 2026 Community (VS 18)
+   Windows 11      / Intel x86    / MinGW Clang 21.1.8 (i686-w64-windows-gnu)
+   Windows 11      / Intel x86    / MinGW gcc 15.2.0 (i686-w64-mingw32)
    Windows 11      / amd64|x86_64 / Microsoft Visual C++ 2019 Community (VS 16)
    Windows 11      / amd64|x86_64 / Microsoft Visual C++ 2022 Community (VS 17)
-   Windows 11      / amd64|x86_64 / MinGW Clang 18.1.8 (x86_64-w64-windows-gnu)
-   Windows 11      / amd64|x86_64 / MinGW gcc 14.2.0 (x86_64-w64-mingw32)
+   Windows 11      / amd64|x86_64 / Microsoft Visual C++ 2026 Community (VS 18)
+   Windows 11      / amd64|x86_64 / MinGW Clang 21.1.8 (x86_64-w64-windows-gnu)
+   Windows 11      / amd64|x86_64 / MinGW gcc 15.2.0 (x86_64-w64-mingw32)
 
 
 Unix (or lookalikes)
 --------------------
 
-The current DCMTK software release 3.7.0 successfully compiles on the following
+The current DCMTK software release 3.7.1 successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
-   FreeBSD 14.3    / amd64|x86_64 / Clang 19.1.7
-   Linux 5.14.0    / amd64|x86_64 / GNU gcc 11.5.0    (AlmaLinux 9.6)
-   Linux 6.1.0     / Intel x86    / Clang 14.0.6      (Debian 12)
-   Linux 6.1.0     / Intel x86    / GNU gcc 12.2.0    (Debian 12)
-   Linux 6.1.0     / amd64|x86_64 / Clang 14.0.6      (Debian 12)
-   Linux 6.1.0     / amd64|x86_64 / GNU gcc 12.2.0    (Debian 12)
-   Linux 6.1.0     / amd64|x86_64 / GNU gcc 13.2.1    (Alpine 3.20 musl libc)
-   Linux 6.8.0     / amd64|x86_64 / GNU gcc 11.5.0    (Ubuntu 24.04.3 LTS)
-   Linux 6.8.0     / amd64|x86_64 / GNU gcc 12.4.0    (Ubuntu 24.04.3 LTS)
-   Linux 6.8.0     / amd64|x86_64 / GNU gcc 13.3.0    (Ubuntu 24.04.3 LTS)
-   Linux 6.8.0     / amd64|x86_64 / GNU gcc 14.2.0    (Ubuntu 24.04.3 LTS)
-   Linux 6.8.0     / amd64|x86_64 / Clang 18.1.3      (Ubuntu 24.04.3 LTS)
-   Linux 6.8.0     / s390x        / GNU gcc 13.3.0    (Ubuntu 24.04.2 LTS)
-   Linux 6.8.0     / s390x        / Clang 18.1.3      (Ubuntu 24.04.2 LTS)
-   MacOS X 15.5    / amd64|x86_64 / Apple Clang 17.0.0
-   MacOS X 15.5    / amd64|x86_64 / GNU gcc 15.2.0
-   MacOS X 15.5    / arm64        / Apple Clang 17.0.0
-   MacOS X 15.5    / arm64        / GNU gcc 15.2.0
-   NetBSD 10.1     / amd64|x86_64 / Clang 18.1.8
-   NetBSD 10.1     / amd64|x86_64 / GNU gcc 10.5.0
-   OpenBSD 7.7     / amd64|x86_64 / Clang 16.0.6
-   OpenIndiana     / amd64|x86_64 / GNU gcc 14.3.0    (OpenIndiana 2025.06)
+   FreeBSD 15.1    / amd64|x86_64 / Clang 19.1.7
+   Linux 5.14      / amd64|x86_64 / GNU gcc 11.5.0    (AlmaLinux 9.8)
+   Linux 6.1       / Intel x86    / Clang 14.0.6      (Debian 12)
+   Linux 6.1       / Intel x86    / GNU gcc 12.2.0    (Debian 12)
+   Linux 6.12      / amd64|x86_64 / Clang 19.1.7      (Debian 13)
+   Linux 6.12      / amd64|x86_64 / GNU gcc 14.2.0    (Debian 13)
+   Linux 6.1       / amd64|x86_64 / GNU gcc 15.2.0    (Alpine 3.24 musl libc)
+   Linux 6.8.0     / amd64|x86_64 / Clang 18.1.3      (Ubuntu 24.04.5 LTS)
+   Linux 6.8.0     / amd64|x86_64 / GNU gcc 10.5.0    (Ubuntu 24.04.5 LTS)
+   Linux 6.8.0     / amd64|x86_64 / GNU gcc 11.5.0    (Ubuntu 24.04.5 LTS)
+   Linux 6.8.0     / amd64|x86_64 / GNU gcc 12.4.0    (Ubuntu 24.04.5 LTS)
+   Linux 6.8.0     / amd64|x86_64 / GNU gcc 13.3.0    (Ubuntu 24.04.5 LTS)
+   Linux 6.8.0     / amd64|x86_64 / GNU gcc 14.2.0    (Ubuntu 24.04.5 LTS)
+   Linux 6.8       / s390x        / Clang 18.1.3      (Ubuntu 24.04.2 LTS)
+   Linux 6.8       / s390x        / GNU gcc 13.3.0    (Ubuntu 24.04.2 LTS)
+   Linux 7.0.0     / amd64|x86_64 / Clang 21.1.8      (Ubuntu 26.04)
+   Linux 7.0.0     / amd64|x86_64 / GNU gcc 15.2.0    (Ubuntu 26.04)
+   MacOS X 26.3    / amd64|x86_64 / Apple Clang 17.0.0
+   MacOS X 26.3    / amd64|x86_64 / GNU gcc 15.2.0
+   MacOS X 26.3    / arm64        / Apple Clang 17.0.0
+   MacOS X 26.3    / arm64        / GNU gcc 15.2.0
+   NetBSD 11.0     / amd64|x86_64 / Clang 21.1.8
+   NetBSD 11.0     / amd64|x86_64 / GNU gcc 12.5.0
+   OpenBSD 7.9     / amd64|x86_64 / Clang 19.1.7
+   OpenIndiana     / amd64|x86_64 / GNU gcc 14.3.0    (OpenIndiana 2025.10)
 
 
 Cross Compiling
@@ -110,6 +105,31 @@ regularly tested.
 
 Other Platforms
 ---------------
+
+The previous release DCMTK 3.7.0 was also tested on the following platforms
+that may still work, but were not tested again for this release:
+
+   Windows 10      / Intel x86    / MinGW Clang 17.0.6 (i686-w64-windows-gnu)
+   Windows 10      / Intel x86    / MinGW gcc 13.2.0 (i686-w64-windows-gnu)
+   Windows 10      / amd64|x86_64 / MinGW Clang 17.0.6 (x86_64-w64-windows-gnu)
+   Windows 10      / amd64|x86_64 / MinGW gcc 13.2.0 (x86_64-w64-windows-gnu)
+   Windows 11      / Intel x86    / MinGW Clang 18.1.8 (i686-w64-windows-gnu)
+   Windows 11      / Intel x86    / MinGW gcc 14.2.0 (i686-w64-mingw32)
+   Windows 11      / amd64|x86_64 / MinGW Clang 18.1.8 (x86_64-w64-windows-gnu)
+   Windows 11      / amd64|x86_64 / MinGW gcc 14.2.0 (x86_64-w64-mingw32)
+   FreeBSD 14.3    / amd64|x86_64 / Clang 19.1.7
+   Linux 5.14.0    / amd64|x86_64 / GNU gcc 11.5.0    (AlmaLinux 9.6)
+   Linux 6.1.0     / amd64|x86_64 / Clang 14.0.6      (Debian 12)
+   Linux 6.1.0     / amd64|x86_64 / GNU gcc 12.2.0    (Debian 12)
+   Linux 6.1.0     / amd64|x86_64 / GNU gcc 13.2.1    (Alpine 3.20 musl libc)
+   MacOS X 15.5    / amd64|x86_64 / Apple Clang 17.0.0
+   MacOS X 15.5    / amd64|x86_64 / GNU gcc 15.2.0
+   MacOS X 15.5    / arm64        / Apple Clang 17.0.0
+   MacOS X 15.5    / arm64        / GNU gcc 15.2.0
+   NetBSD 10.1     / amd64|x86_64 / Clang 18.1.8
+   NetBSD 10.1     / amd64|x86_64 / GNU gcc 10.5.0
+   OpenBSD 7.7     / amd64|x86_64 / Clang 16.0.6
+   OpenIndiana     / amd64|x86_64 / GNU gcc 14.3.0    (OpenIndiana 2025.06)
 
 The previous release DCMTK 3.6.9 was also tested on the following platforms
 that may still work, but were not tested again for this release:
@@ -137,40 +157,6 @@ that may still work, but were not tested again for this release:
    NetBSD 10.0     / amd64|x86_64 / GNU gcc 10.5.0
    OpenBSD 7.5     / amd64|x86_64 / Clang 16.0.6
    OpenIndiana     / amd64|x86_64 / GNU gcc 13.2.0    (OpenIndiana 2023.10)
-
-The previous release DCMTK 3.6.8 was also tested on the following platforms
-that may still work, but were not tested again for this release:
-
-   FreeBSD 13.2    / amd64|x86_64 / Clang 14.0.5
-   Linux 3.10.0    / amd64|x86_64 / Clang 3.4.2       (CentOS 7.9)
-   Linux 3.10.0    / amd64|x86_64 / GNU gcc 4.8.5     (CentOS 7.9)
-   Linux 4.19.0    / amd64|x86_64 / GNU 12.2.1        (Alpine 3.15.0 musl libc)
-   Linux 5.10.0    / Intel x86    / Clang 11.0.1      (Debian 11)
-   Linux 5.10.0    / amd64|x86_64 / GNU gcc 10.2.1    (Debian 11)
-   Linux 5.15.0    / amd64|x86_64 / Clang 13.0.1      (Ubuntu 22.04.3 LTS)
-   Linux 5.15.0    / amd64|x86_64 / Clang 14.0.0      (Ubuntu 22.04.3 LTS)
-   Linux 5.15.0    / amd64|x86_64 / GNU gcc 9.5.0     (Ubuntu 22.04.3 LTS)
-   Linux 5.15.0    / amd64|x86_64 / GNU gcc 10.5.0    (Ubuntu 22.04.3 LTS)
-   Linux 5.15.0    / amd64|x86_64 / GNU gcc 11.4.0    (Ubuntu 22.04.3 LTS)
-   Linux 5.15.0    / amd64|x86_64 / GNU gcc 12.3.0    (Ubuntu 22.04.3 LTS)
-   Linux 6.2.0     / amd64|x86_64 / clang 15.07       (Ubuntu 23.04)
-   Linux 6.2.0     / amd64|x86_64 / gcc 12.3.0        (Ubuntu 23.04)
-   NetBSD 9.3      / amd64|x86_64 / Clang 13.0.1
-   NetBSD 9.3      / amd64|x86_64 / GNU gcc 7.5.0
-   OpenBSD 7.3     / amd64|x86_64 / Clang 13.0.0
-   OpenIndiana     / amd64|x86_64 / GNU gcc 10.3.0    (OpenIndiana 2021.10)
-   Windows 10      / Intel x86    / MinGW Clang 15.0.7 (i686-w64-windows-gnu)
-   Windows 10      / Intel x86    / MinGW gcc 12.2.0 (i686-w64-mingw32)
-   Windows 10      / amd64|x86_64 / MinGW Clang 15.0.7 (x86_64-w64-windows-gnu)
-   Windows 10      / amd64|x86_64 / MinGW gcc 12.2.0 (x86_64-w64-mingw32)
-   Windows 7       / Intel x86    / Microsoft Visual C++ 2015 Community (VS 14)
-   Windows 7       / Intel x86    / Microsoft Visual C++ 2017 Community (VS 15)
-   Windows 7       / Intel x86    / Microsoft Visual C++ 2019 Community (VS 16)
-   Windows 7       / Intel x86    / MinGW gcc 9.2.0 (i686-w64-mingw32)
-   Windows 7       / amd64|x86_64 / Microsoft Visual C++ 2015 Community (VS 14)
-   Windows 7       / amd64|x86_64 / Microsoft Visual C++ 2017 Community (VS 15)
-   Windows 7       / amd64|x86_64 / Microsoft Visual C++ 2019 Community (VS 16)
-   Windows 7       / amd64|x86_64 / MinGW gcc 9.2.0 (x86_64-w64-mingw32)
 
 
 Earlier releases of the DCMTK are known to also compile on further platforms,
@@ -210,7 +196,7 @@ underlying cryptographic routines and the TLS protocol implementation.
 
 This release of DCMTK requires OpenSSL release 1.1.1 or newer.  Users should
 make sure that the most recent OpenSSL patch level is applied.  This release of
-DCMTK is known to compile with OpenSSL releases 1.1.1 as well as 3.0.x to 3.6.x.
+DCMTK is known to compile with OpenSSL releases 1.1.1 as well as 3.0.0 to 4.0.x.
 
 When using CMake, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
@@ -243,7 +229,7 @@ Zlib Support
 DCMTK supports the "Deflated Explicit VR Little Endian" Transfer Syntax, i.e.
 ZIP-compressed network transmission and media storage.  DCMTK relies on the
 zlib toolkit (www.zlib.org) for the underlying compression routines.  This
-release of DCMTK is known to compile with zlib releases 1.2.13 to 1.3.1,
+release of DCMTK is known to compile with zlib releases 1.2.13 to 1.3.2,
 although other releases may work as well.
 
 When using CMake, a compiled version of the zlib libraries and include files
@@ -255,7 +241,7 @@ Libtiff Support
 
 DCMTK supports the conversion of DICOM images to TIFF.  DCMTK relies on the
 libtiff toolkit (www.libtiff.org) for this purpose.  This release of DCMTK is
-known to compile with libtiff releases 4.5.1 to 4.7.1, although other releases
+known to compile with libtiff releases 4.5.0 to 4.7.2, although other releases
 may work as well.
 
 When using CMake, a compiled version of the libtiff libraries and include files
@@ -267,7 +253,7 @@ Libpng Support
 
 DCMTK supports the conversion of DICOM images to PNG.  DCMTK relies on the
 libpng toolkit (www.libpng.org) for this purpose.  This release of DCMTK is
-known to compile with libpng releases 1.6.43 to 1.6.51, although other releases
+known to compile with libpng releases 1.6.39 to 1.6.58, although other releases
 may work as well.
 
 When using CMake, a compiled version of the libpng libraries and include files
@@ -279,7 +265,7 @@ Libxml2 Support
 
 DCMTK supports the conversion of XML documents to DICOM files.  DCMTK relies on
 the libxml2 toolkit (www.libxml.org) for this purpose.  This release of DCMTK
-is known to compile with libxml2 releases 2.9.14 to 2.15.1, although other
+is known to compile with libxml2 releases 2.9.14 to 2.15.3, although other
 releases may work as well.
 
 When using CMake, if support for XML import is desired, a compiled version of
@@ -335,7 +321,7 @@ LIBICONV SUPPORT
 
 The libiconv toolkit (www.gnu.org/software/libiconv/) may be used as DCMTK's
 underlying character set conversion implementation.  This release of DCMTK is
-known to compile with the libiconv releases 1.17 and 1.18, although other
+known to compile with the libiconv releases 1.17 to 1.19, although other
 releases may work as well.
 
 When using CMake, a compiled version of the libiconv and libcharset libraries
@@ -378,14 +364,14 @@ test for it.
 USING THE NATIVE STL
 ====================
 
-Starting with DCMTK 3.7.1, DCMTK will by default use the STL
-(Standard Template Library) features provided by the compiler / runtime
-environment instead of its own fallback implementations that are still
-available, but will be removed in a future release.
+Starting with DCMTK 3.7.1, DCMTK will by default use the STL (Standard Template
+Library) features provided by the compiler / runtime environment instead of its
+own fallback implementations that are still available, but will be removed in a
+future release.
 
-Building with the historic fallback implementations can be achieved
-with the "--disable-stl" argument (Autoconf) or by setting
-"DCMTK_ENABLE_STL" to "OFF" (CMake).
+Building with the historic fallback implementations can be achieved with the
+"--disable-stl" argument (Autoconf) or by setting "DCMTK_ENABLE_STL" to "OFF"
+(CMake).
 
 It is furthermore possible to enable or disable individual STL features
 independently of the setting provided by "--enable-stl" or "DCMTK_ENABLE_STL"
@@ -412,12 +398,12 @@ The user can choose to build with a newer C++ standard by setting
 - 20 (CXX20)
 
 Starting with DCMTK 3.7.1, compilation of DCMTK with C++98 is not supported
-anymore. C++11 is the oldest supported language version.
+anymore.  C++11 is the oldest supported language version.
 
-The choice of language version may affect some parts of DCMTK's API,
-making builds with different language versions potentially incompatible.
-This language setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h"
-and verified when compiling DCMTK itself or any program that includes it.
+The choice of language version may affect some parts of DCMTK's API, making
+builds with different language versions potentially incompatible.  This language
+setting is, therefore, stored in "config/include/dcmtk/config/osconfig.h" and
+verified when compiling DCMTK itself or any program that includes it.
 
 Please note that this setting does not require that the STL features are
 enabled, but not all combinations of language level and disabled STL feature
@@ -436,8 +422,8 @@ directories.  In detail, these "CMakeLists.txt" files will serve as an input to
 CMake which will generate suitable build files for all of DCMTK's projects from
 these files.
 
-DCMTK 3.7.0 requires CMake version 3.7.0 or later.  We recommend using the
-latest stable release of CMake (currently version 4.2.0) since newer versions
+DCMTK 3.7.1 requires CMake version 3.7.0 or later.  We recommend using the
+latest stable release of CMake (currently version 4.4.4) since newer versions
 of CMake often provide better output in case of errors and are generally easier
 to use (for example, by providing better support for detecting the availability
 of third-party libraries).  If possible, use the CMake version your operating
@@ -537,7 +523,7 @@ Through CMake, perform the following steps:
 1. Go to Start -> Programs -> CMake -> "CMake" or "CMake (cmake-gui)" to start
    the CMake utility through which the configuration can be done.
 2. In the entry field "Where is the source code:" enter the directory in which
-   the DCMTK source code resides, e.g. "C:\dcmtk-3.7.0".
+   the DCMTK source code resides, e.g. "C:\dcmtk-3.7.1".
 3. In the entry field "Where to build the binaries:" enter the directory in
    which the libraries and binaries are to be built, e.g. "C:\dcmtk-msvc16".
 4. In the combobox "Build for:" or "Specify the generator for this project:"
@@ -551,24 +537,24 @@ Through CMake, perform the following steps:
    example, in order to turn on libxml2 support, set the value of variable
    "DCMTK_WITH_XML" to "ON" and set the value of variable "WITH_LIBXMLINC" to
    the path where the include files and libraries of libxml2 can be found, e.g.
-   "C:\libxml2-2.15.1".  The support of all other external libraries can be
+   "C:\libxml2-2.15.3".  The support of all other external libraries can be
    turned on in a similar way:
 
      libpng support:
        set "DCMTK_WITH_PNG" to "ON" and
-       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.6.51"
+       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.6.58"
 
      libtiff support:
        set "DCMTK_WITH_TIFF" to "ON" and
-       set "WITH_LIBTIFFINC" e.g. to "C:\libtiff-4.7.1"
+       set "WITH_LIBTIFFINC" e.g. to "C:\libtiff-4.7.2"
 
      OpenSSL support:
        set "DCMTK_WITH_OPENSSL" to "ON" and
-       set "WITH_OPENSSLINC" e.g. to "C:\openssl-3.6.0"
+       set "WITH_OPENSSLINC" e.g. to "C:\openssl-4.0.2"
 
      zlib support:
        set "DCMTK_WITH_ZLIB" to "ON" and
-       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.3.1"
+       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.3.2"
 
    In order to turn the support of a certain external library off, set the
    value of the corresponding variable ("DCMTK_WITH_XML", "DCMTK_WITH_PNG",
@@ -693,28 +679,28 @@ see: https://cmake.org/cmake/help/latest/module/FindZLIB.html .
 The typical way to build DCMTK on Unix-like systems with CMake is as follows
 (if not using the GUI, in that case look at the description for Windows above):
 
-    mkdir dcmtk-3.7.0-build
-    cd dcmtk-3.7.0-build
-    cmake ../dcmtk-3.7.0
+    mkdir dcmtk-3.7.1-build
+    cd dcmtk-3.7.1-build
+    cmake ../dcmtk-3.7.1
     make -j8
-    make DESTDIR=../dcmtk-3.7.0-install install
+    make DESTDIR=../dcmtk-3.7.1-install install
 
 The above commands assume that the DCMTK source code was extracted to the
-current working directory into a folder named "dcmtk-3.7.0".  DCMTK will be
+current working directory into a folder named "dcmtk-3.7.1".  DCMTK will be
 configured using CMake with the default options, detecting and including all
 available support libraries and then compiled using eight CPU cores
 ("make -j8", adjust as needed).  The result will be installed to the directory
-"dcmtk-3.7.0-install" next to the source code directory.
+"dcmtk-3.7.1-install" next to the source code directory.
 
 If you want to modify your build configuration, like enabling or disabling some
 features of DCMTK (e.g. PNG support), or if you need to modify the predefined
 build variables, you can use the curses-based CMake configuration tool ccmake.
 First, create the initial build setup (system check) and then call "ccmake":
 
-    mkdir dcmtk-3.7.0-build
-    cd dcmtk-3.7.0-build
-    cmake ../dcmtk-3.7.0
-    ccmake ../dcmtk-3.7.0
+    mkdir dcmtk-3.7.1-build
+    cd dcmtk-3.7.1-build
+    cmake ../dcmtk-3.7.1
+    ccmake ../dcmtk-3.7.1
 
 Now you can modify the configuration values.  Please see the help on the bottom
 of the screen.  When finished, press "c" to generate a new build configuration,
@@ -724,9 +710,9 @@ If you already know the variable names, types and values to set, you can skip
 the ccmake step above and call "cmake" directly with the desired values set.
 Example for a build with TCP wrapper disabled:
 
-    mkdir dcmtk-3.7.0-build
-    cd dcmtk-3.7.0-build
-    cmake -DDCMTK_WITH_WRAP:BOOL=FALSE ../dcmtk-3.7.0
+    mkdir dcmtk-3.7.1-build
+    cd dcmtk-3.7.1-build
+    cmake -DDCMTK_WITH_WRAP:BOOL=FALSE ../dcmtk-3.7.1
     ...
 
 The format is "NAME:TYPE=VALUE".  Use ccmake to find out the variable names and
@@ -754,7 +740,7 @@ HTML DOCUMENTATION AND MAN PAGES
 Most DCMTK modules have been documented with Doxygen (www.doxygen.org), a free
 source code documentation system similar to Javadoc.  Unix users who have
 Doxygen installed can create a hypertext documentation with "make html" in the
-"dcmtk-3.7.0" or "doxygen" directory; Windows and other CMake users should
+"dcmtk-3.7.1" or "doxygen" directory; Windows and other CMake users should
 build the "DOXYGEN" target.  A project file for Microsoft's HTML Help Workshop
 can also be generated allowing to create a single CHM file (compressed HTML)
 from the documentation.  Other output formats (e.g. LaTeX) can be enabled by
@@ -957,7 +943,7 @@ removed in a future release.  In the current release, the "configure" script in
 DCMTK's top-level main directory has been removed as the final warning for users
 of the Autoconf toolchain.  If you prefer to build DCMTK with Autoconf, however,
 this is still possible.  Perform the following steps from the top-level
-("dcmtk-3.7.0") directory to compile and install the software:
+("dcmtk-3.7.1") directory to compile and install the software:
 
 Step 0:
     cd config
@@ -987,14 +973,14 @@ which OpenSSL is installed.  This is usually the directory that has been used as
 "--prefix" when compiling and installing OpenSSL.
 
 For example, if you wish to enable the security enhancements, and OpenSSL is
-installed in "/usr/local/apps/openssl-3.7.1", you should start configure as:
+installed in "/usr/local/apps/openssl-4.0.2", you should start configure as:
 
     ./configure --ignore-deprecation
-                --with-opensslinc=/usr/local/apps/openssl-3.7.1
+                --with-opensslinc=/usr/local/apps/openssl-4.0.2
 
 Configure will assume that the OpenSSL include files are installed in
-"/usr/local/apps/openssl-3.7.1/include" and will expect the library in
-"/usr/local/apps/openssl-3.7.1/lib".  Appropriate options will be passed to
+"/usr/local/apps/openssl-4.0.2/include" and will expect the library in
+"/usr/local/apps/openssl-4.0.2/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
 Support for zlib, libtiff, libpng, libxml2, libwrap, and/or libiconv can be
@@ -1002,12 +988,12 @@ enabled in a similar way (in case these libraries are not installed in the
 standard path), e.g.:
 
     ./configure --ignore-deprecation
-                --with-libzlibinc=/usr/local/apps/zlib-1.3.1
-                --with-libtiffinc=/usr/local/apps/libtiff-4.7.1
-                --with-libpnginc=/usr/local/apps/libpng-1.6.51
-                --with-libxmlinc=/usr/local/apps/libxml2-2.15.1
+                --with-libzlibinc=/usr/local/apps/zlib-1.3.2
+                --with-libtiffinc=/usr/local/apps/libtiff-4.7.2
+                --with-libpnginc=/usr/local/apps/libpng-1.6.58
+                --with-libxmlinc=/usr/local/apps/libxml2-2.15.3
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
-                --with-libiconvinc=/usr/local/apps/libiconv-1.18
+                --with-libiconvinc=/usr/local/apps/libiconv-1.19
 
 Different configure options can be combined in any order.  "configure --help"
 will print a list of all existing configure options.  "configure --help=short"
@@ -1031,8 +1017,6 @@ configure options are:
   --enable-charconv=TYPE  enable character set conversion support
                           (libiconv/stdlibc/oficonv=default)
   --disable-charconv      disable character set conversion support
-  --enable-cxx11          use C++11 (default)
-  --disable-cxx11         do not use C++11
   --enable-stl            use C++ STL
   --disable-stl           do not use C++ STL (default)
 
@@ -1107,4 +1091,4 @@ Have fun.
 M. Eichelberg, J. Riesmeier, M. Onken, T. Xu, H. Roesen
 DCMTK Development Team, Oldenburg, Germany.
 
-Last revised: 2026-05-12.
+Last revised: 2026-10-14.
