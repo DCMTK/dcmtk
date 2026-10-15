@@ -469,11 +469,11 @@ value (maximally the VM of the one with less values) and returns on the first
 difference.  If both strings are equal up to the length (VM) of the
 shorter one, the one with less values is considered less than other one.  For
 example:
-  - '10' is considered less than '2', because the first character (code for) '1'
+  - The string '10' is considered less than '2', because the first character (code for) '1'
      is less than the one for '2'.
-  - '1\2\2' is considered less than '1\2\3' (memcmp on all values, on the third
+  - The string '1\2\2' is considered less than '1\2\3' (memcmp on all values, on the third
      value the strings differ and char code of 2 is less than that of 3).
-  - '1\2\3' is considered less than '1\2\3\4' (memcmp on all values up to the
+  - The string '1\2\3' is considered less than '1\2\3\4' (memcmp on all values up to the
     third, and then, since equal until that point, the string with less values
     is considered less.
 
