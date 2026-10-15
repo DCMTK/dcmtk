@@ -1,4 +1,4 @@
-.TH "dcmcrle" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcrle" 1 "Thu Oct 15 2026" "Version 3.7.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcrle \- Encode DICOM file to RLE transfer syntax
@@ -17,9 +17,9 @@ The \fBdcmcrle\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP), 
 .PP
 .PP
 .nf
-dcmfile-in   DICOM input filename to be converted ("-" for stdin)
+dcmfile-in   DICOM input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename ("-" for stdout)
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -104,6 +104,14 @@ basic offset table encoding:
   -ot  --offset-table-empty
          leave offset table empty
 
+icon image encoding:
+
+  +ic  --icon-compressed
+         compress icon images (default)
+
+  +iu  --icon-uncompressed
+         keep icon images uncompressed
+
 SOP Class UID:
 
   +cd  --class-default
@@ -174,10 +182,10 @@ Please note that the DICOM standard does not allow for storing the pixel data wi
 .PP
 .PP
 .nf
-LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
-DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
-BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+LittleEndianImplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax             1\&.2\&.840\&.10008\&.1\&.2\&.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99 (*)
+BigEndianExplicitTransferSyntax                1\&.2\&.840\&.10008\&.1\&.2\&.2
 .fi
 .PP
 .PP
@@ -187,7 +195,7 @@ BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
 .PP
 .PP
 .nf
-RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+RLELosslessTransferSyntax                      1\&.2\&.840\&.10008\&.1\&.2\&.5
 .fi
 .PP
 .SH "LOGGING"
@@ -212,4 +220,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcmdrle\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2002-2026 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

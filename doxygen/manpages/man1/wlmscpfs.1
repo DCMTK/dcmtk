@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "Thu Oct 15 2026" "Version 3.7.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -66,7 +66,7 @@ port  tcp/ip port number to listen on
 .nf
 general:
 
-  -dfp  --data-files-path  [p]ath: string (default: .)
+  -dfp  --data-files-path  [p]ath: string (default: \&.)
           path to worklist data files
 
 handling of worklist files:
@@ -91,6 +91,15 @@ returned character set:
 
   -csk  --keep-char-set
           return character set provided in file
+
+handling of return key attributes:
+
+  +ear  --enable-all-return
+          accept any (non-sequence) attribute on main
+          dataset level as return key
+
+  -ear  --disable-all-return
+          accept supported return keys only (default)
 
 other processing options:
 
@@ -180,11 +189,136 @@ other network options:
         --sleep-during  [s]econds: integer
           sleep s seconds during find (default: 0)
 
-  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096\&.\&.131072)
           set max receive pdu to n bytes (default: 16384)
 
   -dhl  --disable-host-lookup
           disable hostname lookup
+.fi
+.PP
+.SS "transport layer security (TLS) options"
+.PP
+.nf
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [f]ilename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [d]irectory: string
+          add certificates in d to list of certificates
+
+  +crl  --add-crl-file  [f]ilename: string
+          add certificate revocation list file
+          (implies --enable-crl-vfy)
+
+  +crv  --enable-crl-vfy
+          enable leaf CRL verification
+
+  +cra  --enable-crl-all
+          enable full chain CRL verification
+
+security profile:
+
+  +ph   --list-profiles
+          list supported TLS profiles and exit
+
+  +pg   --profile-8996
+          BCP 195 RFC 8996 TLS Profile (default)
+
+  +pm   --profile-8996-mod
+          Modified BCP 195 RFC 8996 TLS Profile
+
+          # only available if underlying TLS library supports
+          # all TLS features required for this profile
+
+  +py   --profile-bcp195-nd
+          Non-downgrading BCP 195 TLS Profile (retired)
+
+  +px   --profile-bcp195
+          BCP 195 TLS Profile (retired)
+
+  +pz   --profile-bcp195-ex
+          Extended BCP 195 TLS Profile (retired)
+
+  +pb   --profile-basic
+          Basic TLS Secure Transport Connection Profile (retired)
+
+          # only available if underlying TLS library supports 3DES
+
+  +pa   --profile-aes
+          AES TLS Secure Transport Connection Profile (retired)
+
+  +pn   --profile-null
+          Authenticated unencrypted communication
+          (retired, was used in IHE ATNA)
+
+ciphersuite:
+
+  +cc   --list-ciphers
+          list supported TLS ciphersuites and exit
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+server name indication:
+
+        --no-sni
+          do not use SNI (default)
+
+        --expect-sni  [s]erver name: string
+          expect requests for server name s
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
 .fi
 .PP
 .SS "output options"
@@ -195,7 +329,7 @@ general:
   -rfp  --request-file-path  [p]ath: string
           path to store request files to
 
-  -rff  --request-file-format  [f]ormat: string (default: #t.dump)
+  -rff  --request-file-format  [f]ormat: string (default: #t\&.dump)
           request file name format
 .fi
 .PP
@@ -210,86 +344,117 @@ In general, the Specific Character Set attribute (0008,0005) will only be includ
 Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching\&. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started\&.
 .PP
 The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process\&. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-FIND response message\&. Table K\&.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type')\&.
-.SS "Writing Request Files"
-Providing option \fI--request-file-path\fP enables writing of the incoming C-FIND requests into text files\&. The option value provides the target directory where these files will be stored\&. All request files are stored in 'dump' format as provided by the \fBdcmdump\fP tool and are raw, i\&.e\&. they are written as they arrive at \fBwlmscpfs\fP, without any tag processing applied by \fBwlmscpfs\fP\&.
 .PP
-Writing request files allows users to 'interactively' prepare the worklist database (for \fBwlmscpfs\fP the worklist files served from the \fI--data-file-path\fP directory) by watching the request file directory\&. Once a request file appears, one needs some time to update worklist entries in the database\&. For that reason it makes sense to use \fI--request-file-path\fP in combination with option \fI--sleep-before\fP which lets users specify a certain amount of seconds that \fBwlmscpfs\fP should wait before actually starting to check the worklist database\&. Note that the request files written with \fI--data-file-path\fP are not automatically deleted by \fBwlmscpfs\fP\&.
-.PP
-If request files are enabled, \fBwlmscpfs\fP must automatically create file names within the given directory\&. By default, the format is <timestamp>\&.dump where <timestamp> is in the format YYYYMMDDhhmmssffffff where:
-.PP
-.IP "\(bu" 2
-YYYY is the current year
-.IP "\(bu" 2
-MM is the current month
-.IP "\(bu" 2
-DD is the current day
-.IP "\(bu" 2
-hh are the current hours (in 24 hour format)
-.IP "\(bu" 2
-mm are the current minutes
-.IP "\(bu" 2
-ss are the current seconds and
-.IP "\(bu" 2
-ffffff is the fraction of the current second
-.PP
-.PP
-This should work as a default for most applications that would like to use request files and want to ensure unique file names\&. If it is desired to change this naming scheme, the option \fI--request-file-format\fP can be used\&. It permits one to specify the file naming pattern used by \fI--request-file-path\fP\&.
-.PP
-For flexibility, the following placeholders can be used in the pattern provided for \fI--request-file-format\fP:
-.PP
-.IP "\(bu" 2
-#a: calling application entity title of the peer SCU
-.IP "\(bu" 2
-#c: called application entity title (AE title of worklist SCP application)
-.IP "\(bu" 2
-#i: process id of the worklist SCP application process handling the request
-.IP "\(bu" 2
-#p: patient ID if present, otherwise empty string
-.IP "\(bu" 2
-#t: timestamp in the format YYYYMMDDhhmmssffffff
-.PP
-.PP
-The default (i\&.e\&. the value if \fI--request-file-format\fP is not explicitly set) is #t\&.dump resulting in the timestamp format described above\&.
-.PP
-An example for such a user-defined format string would be 'request_#i_#a_#c\&.txt'\&. The #i makes most sense if \fBwlmscpfs\fP multi-process mode is enabled via \fI--fork\fP option in order to ensure that simultaneous request will not result in the same file name for both requests\&.
-.PP
-It should be noted that the #p placeholder uses the value of Patient ID (0010,0020) from the request as is, i\&.e\&. if the string contains non-ASCII characters, the file name computed by \fBwlmscpfs\fP might be broken and thus cannot be written successfully or will look broken once written\&. Also, an empty Patient ID is used as such, i\&.e\&. the #p will be replaced with an empty string\&.
-.SS "DICOM Conformance"
-The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
-.PP
-.PP
-.nf
-VerificationSOPClass                  1.2.840.10008.1.1
-FINDModalityWorklistInformationModel  1.2.840.10008.5.1.4.31
-.fi
-.PP
-.PP
-The \fBwlmscpfs\fP application will accept presentation contexts for all of the abovementioned supported SOP Classes using any of the transfer syntaxes:
-.PP
-.PP
-.nf
-LittleEndianImplicitTransferSyntax    1.2.840.10008.1.2
-LittleEndianExplicitTransferSyntax    1.2.840.10008.1.2.1
-BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
-.fi
-.PP
-.PP
-The default behavior of the \fBwlmscpfs\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax\&. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa)\&. This behavior can be changed with the \fI--prefer\fP options (see above)\&.
-.PP
-If compiled with zlib support enabled (see \fI--version\fP output) and if option \fI--prefer-deflated\fP is used, also the following transfer syntax is accepted\&.
-.PP
-.PP
-.nf
-DeflatedExplicitVRLittleEndianTransferSyntax  1.2.840.10008.1.2.1.99
-.fi
-.PP
-.PP
-The \fBwlmscpfs\fP application does not support extended negotiation\&.
-.PP
-Currently, the \fBwlmscpfs\fP application supports the following attributes as matching keys:
-.PP
-.PP
-.nf
+The called Application Entity Title from an incoming A-ASSOCIATE-RQ is used as a subdirectory name below the \fI--data-file-path\fP directory in order to look up the worklist files that this association may access\&. The DICOM VR AE (see DICOM PS3\&.5 Section 6\&.1\&.3) permits the characters '/' (forward slash) and '\&.' (full stop), so a conformant peer can send an AE title such as '\&.\&./OTHER' that would resolve to a sibling directory of the configured worklist root\&. To prevent this, \fBwlmscpfs\fP rejects any A-ASSOCIATE-RQ whose called AE title is not safe to use as a single filesystem path component\&. The set of accepted characters is letters, digits, space and the characters '-', ':', '@' and '_'; any other byte (path separators '/' and '\\\\', NUL, control bytes, bytes outside the printable ASCII range,
+shell metacharacters as well as the dot character) causes the association
+to be rejected\&.  Dots are rejected outright (rather than only the
+standalone components '\&.' and '\&.\&.') because real-world AE titles never
+contain dots and rejecting the entire character avoids any need to reason
+about platform-specific path normalization corner cases\&.
+
+@subsection wlmscpfs_request_files Writing Request Files
+
+Providing option \\e --request-file-path enables writing of the incoming C-FIND
+requests into text files\&.  The option value provides the target directory where
+these files will be stored\&.  All request files are stored in 'dump' format as
+provided by the \\b dcmdump tool and are raw, i\&.e\&. they are written as they
+arrive at \\b wlmscpfs, without any tag processing applied by \\b wlmscpfs\&.
+
+Writing request files allows users to 'interactively' prepare the worklist
+database (for \\b wlmscpfs the worklist files served from the \\e --data-file-path
+directory) by watching the request file directory\&.  Once a request file appears,
+one needs some time to update worklist entries in the database\&.  For that
+reason it makes sense to use \\e --request-file-path in combination with option
+\\e --sleep-before which lets users specify a certain amount of seconds that
+\\b wlmscpfs should wait before actually starting to check the worklist database\&.
+Note that the request files written with \\e --data-file-path are not
+automatically deleted by \\b wlmscpfs\&.
+
+If request files are enabled, \\b wlmscpfs must automatically create file names
+within the given directory\&.  By default, the format is \\<timestamp\\>\&.dump where
+\\<timestamp\\> is in the format YYYYMMDDhhmmssffffff where:
+
+- YYYY is the current year
+- MM is the current month
+- DD is the current day
+- hh are the current hours (in 24 hour format)
+- mm are the current minutes
+- ss are the current seconds and
+- ffffff is the fraction of the current second
+
+This should work as a default for most applications that would like to use
+request files and want to ensure unique file names\&.  If it is desired to change
+this naming scheme, the option \\e --request-file-format can be used\&.  It
+permits one to specify the file naming pattern used by \\e --request-file-path\&.
+
+For flexibility, the following placeholders can be used in the pattern provided
+for \\e --request-file-format:
+
+- \\#a: calling application entity title of the peer SCU
+- \\#c: called application entity title (AE title of worklist SCP application)
+- \\#i: process id of the worklist SCP application process handling the request
+- \\#p: patient ID if present, otherwise empty string
+- \\#t: timestamp in the format YYYYMMDDhhmmssffffff
+
+The default (i\&.e\&. the value if \\e --request-file-format is not explicitly set)
+is \\#t\&.dump resulting in the timestamp format described above\&.
+
+An example for such a user-defined format string would be
+'request_::i_::a_::c\&.txt'\&.  The \\#i makes most sense if \\b wlmscpfs multi-process
+mode is enabled via \\e --fork option in order to ensure that simultaneous
+request will not result in the same file name for both requests\&.
+
+It should be noted that the \\#p placeholder uses the value of Patient ID
+(0010,0020) from the request as is, i\&.e\&. if the string contains non-ASCII
+characters, the file name computed by \\b wlmscpfs might be broken and thus
+cannot be written successfully or will look broken once written\&.  Also, an empty
+Patient ID is used as such, i\&.e\&. the \\#p will be replaced with an empty string\&.
+
+For security reasons, the values substituted for the placeholders \\#a, \\#c and
+\\#p are sanitized before they are inserted into the resulting file name: path
+separators ('/', '\\') and other characters that are not safe in a file name
+component are replaced with the underscore character ('_')\&.  This prevents
+attacker-controlled values transmitted over the network (called/calling AE
+title, Patient ID) from escaping the configured request file directory\&.
+
+@subsection wlmscpfs_dicom_conformance DICOM Conformance
+
+The \\b wlmscpfs application supports the following SOP Classes as an SCP:
+
+@verbatim
+VerificationSOPClass                  1\&.2\&.840\&.10008\&.1\&.1
+FINDModalityWorklistInformationModel  1\&.2\&.840\&.10008\&.5\&.1\&.4\&.31
+\\endverbatim
+
+The \\b wlmscpfs application will accept presentation contexts for all of the
+abovementioned supported SOP Classes using any of the transfer syntaxes:
+
+@verbatim
+LittleEndianImplicitTransferSyntax    1\&.2\&.840\&.10008\&.1\&.2
+LittleEndianExplicitTransferSyntax    1\&.2\&.840\&.10008\&.1\&.2\&.1
+BigEndianExplicitTransferSyntax       1\&.2\&.840\&.10008\&.1\&.2\&.2
+\\endverbatim
+
+The default behavior of the \\b wlmscpfs application is to prefer transfer
+syntaxes having an explicit encoding over the default implicit transfer
+syntax\&.  If \\b wlmscpfs is running on big-endian hardware it will prefer
+BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa)\&.
+This behavior can be changed with the \\e --prefer options (see above)\&.
+
+If compiled with zlib support enabled (see \\e --version output) and if
+option \\e --prefer-deflated is used, also the following transfer syntax
+is accepted\&.
+
+@verbatim
+DeflatedExplicitVRLittleEndianTransferSyntax  1\&.2\&.840\&.10008\&.1\&.2\&.1\&.99
+\\endverbatim
+
+The \\b wlmscpfs application does not support extended negotiation\&.
+
+Currently, the \\b wlmscpfs application supports the following attributes as
+matching keys:
+
+@verbatim
 (0008,0020) StudyDate
 (0008,0030) StudyTime
 (0008,0050) AccessionNumber
@@ -299,8 +464,29 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
 (0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
 (0010,0040) PatientSex
-(0010,2297) Responsible Person
-(0010,2298) Responsible Person Role
+(0010,2201) PatientSpeciesDescription
+(0010,2202) PatientSpeciesCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2203) PatientSexNeutered
+(0010,2292) PatientBreedDescription
+(0010,2293) PatientBreedCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2294) BreedRegistrationSequence
+  (0010,2295) > BreedRegistrationNumber
+  (0010,2296) > BreedRegistryCodeSequence
+    (0008,0100) > > CodeValue
+    (0008,0102) > > CodingSchemeDesignator
+    (0008,0103) > > CodingSchemeVersion
+    (0008,0104) > > CodeMeaning
+(0010,2297) ResponsiblePerson
+(0010,2298) ResponsiblePersonRole
+(0010,2299) ResponsibleOrganization
 (0032,1032) RequestingPhysician
 (0038,0010) AdmissionID
 (0040,0100) ScheduledProcedureStepSequence
@@ -311,20 +497,30 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
   (0040,0006) > ScheduledPerformingPhysicianName
 (0040,1001) RequestedProcedureID
 (0040,1003) RequestedProcedurePriority
-.fi
-.PP
-.PP
-As return keys the following attributes are currently supported by \fBwlmscpfs:\fP
-.PP
-.PP
-.nf
+\\endverbatim
+
+As return keys the following attributes are currently supported by \\b wlmscpfs:
+
+@verbatim
 (0008,0020) StudyDate
 (0008,0030) StudyTime
+(0008,1030) StudyDescription
 (0008,0050) AccessionNumber
 (0008,0080) InstitutionName
 (0008,0081) InstitutionAddress
 (0008,1040) InstitutionalDepartmentName
 (0008,0090) ReferringPhysicianName
+(0008,0092) ReferringPhysicianAddress
+(0008,0082) InstitutionCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0008,1041) InstitutionalDepartmentTypeCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
 (0008,1080) AdmittingDiagnosesDescription
 (0008,1110) ReferencedStudySequence
   (0008,1150) > ReferencedSOPClassUID
@@ -336,11 +532,32 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0010,0020) PatientID
 (0010,0021) IssuerOfPatientID
 (0010,0030) PatientBirthDate
+(0010,1010) PatientAge
 (0010,0040) PatientSex
 (0010,1000) OtherPatientIDs (retired)
 (0010,1001) OtherPatientNames
 (0010,1020) PatientSize
 (0010,1030) PatientWeight
+(0010,2201) PatientSpeciesDescription
+(0010,2202) PatientSpeciesCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2203) PatientSexNeutered
+(0010,2292) PatientBreedDescription
+(0010,2293) PatientBreedCodeSequence
+  (0008,0100) > CodeValue
+  (0008,0102) > CodingSchemeDesignator
+  (0008,0103) > CodingSchemeVersion
+  (0008,0104) > CodeMeaning
+(0010,2294) BreedRegistrationSequence
+  (0010,2295) > BreedRegistrationNumber
+  (0010,2296) > BreedRegistryCodeSequence
+    (0008,0100) > > CodeValue
+    (0008,0102) > > CodingSchemeDesignator
+    (0008,0103) > > CodingSchemeVersion
+    (0008,0104) > > CodeMeaning
 (0010,1040) PatientAddress
 (0010,1080) MilitaryRank
 (0010,2000) MedicalAlerts
@@ -352,6 +569,7 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0010,21d0) LastMenstrualDate
 (0010,2297) ResponsiblePerson
 (0010,2298) ResponsiblePersonRole
+(0010,2299) ResponsibleOrganization
 (0010,4000) PatientComments
 (0020,000d) StudyInstanceUID
 (0032,1032) RequestingPhysician
@@ -407,29 +625,87 @@ As return keys the following attributes are currently supported by \fBwlmscpfs:\
 (0040,2017) FillerOrderNumberImagingServiceRequest
 (0040,2400) ImagingServiceRequestComments
 (0040,3001) ConfidentialityConstraintOnPatientDataDescription
-.fi
-.PP
-.PP
-The attribute (0008,0005) SpecificCharacterSet is a special case and its support by \fBwlmscpfs\fP is discussed in the NOTES section above\&.
-.SS "Access Control"
-When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option\&. In this case the access control rules defined in the system's host access control tables for \fBwlmscpfs\fP are enforced\&. The default locations of the host access control tables are \fI/etc/hosts\&.allow\fP and \fI/etc/hosts\&.deny\fP\&. Further details are described in \fBhosts_access\fP(5)\&.
-.SH "LOGGING"
-.PP
-The level of logging output of the various command line tools and underlying libraries can be specified by the user\&. By default, only errors and warnings are written to the standard error stream\&. Using option \fI--verbose\fP also informational messages like processing details are reported\&. Option \fI--debug\fP can be used to get more details on the internal activity, e\&.g\&. for debugging purposes\&. Other logging levels can be selected using option \fI--log-level\fP\&. In \fI--quiet\fP mode only fatal errors are reported\&. In such very severe error events, the application will usually terminate\&. For more details on the different logging levels, see documentation of module 'oflog'\&.
-.PP
-In case the logging output should be written to file (optionally with logfile rotation), to syslog (Unix) or the event log (Windows) option \fI--log-config\fP can be used\&. This configuration file also allows for directing only certain messages to a particular output stream and for filtering certain messages based on the module or application where they are generated\&. An example configuration file is provided in \fI<etcdir>/logger\&.cfg\fP\&.
-.SH "COMMAND LINE"
-.PP
-All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values\&.
-.PP
-Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively\&. Usually, order and position of command line options are arbitrary (i\&.e\&. they can appear anywhere)\&. However, if options are mutually exclusive the rightmost appearance is used\&. This behavior conforms to the standard evaluation rules of common Unix shells\&.
-.PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e\&.g\&. \fI@command\&.txt\fP)\&. Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation\&. Please note that a command file cannot contain another command file\&. This simple but effective approach allows one to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat\&.txt\fP)\&.
-.SH "ENVIRONMENT"
-.PP
-The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable\&. By default, i\&.e\&. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom\&.dic\fP will be loaded unless the dictionary is built into the application (default for Windows)\&.
-.PP
-The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
+\\endverbatim
+
+The attribute (0008,0005) SpecificCharacterSet is a special case and its
+support by \\b wlmscpfs is discussed in the NOTES section above\&.
+
+Note that if the return key attribute (0010,21c0) PregnancyStatus is
+requested but not contained in a worklist file, it is returned with value 4
+('unknown') instead of an empty value\&.
+
+The option \\e --enable-all-return can be used to lift the above restriction
+on the set of supported return key attributes: any other non-sequence
+attribute on the main level of the query is then also accepted as a return
+key attribute and filled with the value found in the matching worklist file,
+or returned with an empty value if the worklist file does not contain the
+attribute\&.  Such attributes consequently no longer cause the C-FIND response
+status 'Pending with warning' to be returned\&.  Sequence attributes as well
+as attributes within sequences are not affected by this option\&.
+
+@subsection wlmscpfs_access_control Access Control
+
+When compiled on Unix platforms with TCP wrapper support, host-based access
+control can be enabled with the \\e --access-control command line option\&.  In
+this case the access control rules defined in the system's host access control
+tables for \\b wlmscpfs are enforced\&.  The default locations of the host access
+control tables are <em>/etc/hosts\&.allow</em> and <em>/etc/hosts\&.deny</em>\&.
+Further details are described in <b>hosts_access</b>(5)\&.
+
+@section wlmscpfs_logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user\&.  By default, only errors and warnings
+are written to the standard error stream\&.  Using option \\e --verbose also
+informational messages like processing details are reported\&.  Option
+\\e --debug can be used to get more details on the internal activity, e\&.g\&. for
+debugging purposes\&.  Other logging levels can be selected using option
+\\e --log-level\&.  In \\e --quiet mode only fatal errors are reported\&.  In such
+very severe error events, the application will usually terminate\&.  For more
+details on the different logging levels, see documentation of module 'oflog'\&.
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \\e --log-config
+can be used\&.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated\&.  An example
+configuration file is provided in <em>\\<etcdir\\>/logger\&.cfg</em>\&.
+
+@section wlmscpfs_command_line COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values\&.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively\&.  Usually, order and position of command line options are
+arbitrary (i\&.e\&. they can appear anywhere)\&.  However, if options are mutually
+exclusive the rightmost appearance is used\&.  This behavior conforms to the
+standard evaluation rules of common Unix shells\&.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e\&.g\&. <em>\\@command\&.txt</em>)\&.  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation\&.  Please note that a command
+file cannot contain another command file\&.  This simple but effective approach
+allows one to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em>\\<datadir\\>/dumppat\&.txt</em>)\&.
+
+@section wlmscpfs_environment ENVIRONMENT
+
+The \\b wlmscpfs utility will attempt to load DICOM data dictionaries specified
+in the \\e DCMDICTPATH environment variable\&.  By default, i\&.e\&. if the
+\\e DCMDICTPATH environment variable is not set, the file
+<em>\\<datadir\\>/dicom\&.dic</em> will be loaded unless the dictionary is built
+into the application (default for Windows)\&.
+
+The default behavior should be preferred and the \\e DCMDICTPATH environment
+variable only used when alternative data dictionaries are required\&.  The
+\\e DCMDICTPATH environment variable has the same format as the Unix shell
+\\e PATH variable in that a colon (':') separates entries\&.  On Windows systems,
+a semicolon (';") is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 1996-2026 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

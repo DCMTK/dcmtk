@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "Thu Oct 15 2026" "Version 3.7.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -7,7 +7,7 @@ dcmodify \- Modify DICOM files
 .PP
 .PP
 .nf
-dcmodify [options] dcmfile-in...
+dcmodify [options] dcmfile-in\&.\&.\&.
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -22,13 +22,19 @@ If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is se
 .PP
 .PP
 .nf
-{sequence[item-no].}*element
+{sequence[item-no]\&.}*element
 .fi
 .PP
 .PP
 where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag\&. 'item-no' describes the item number to be accessed (counting from zero)\&. 'element' defines the target tag to work on\&. A tag can either be specified directly as (0010,0010) or through the corresponding dictionary name 'PatientName'\&. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section)\&. For 'item-no', also a wildcard character '*' can be used selecting all items in surrounding sequence (see section WILDCARDS below)\&.
 .PP
 When inserting tag paths consisting of multiple nodes (i\&.e\&. not a single element) using the \fI-i\fP option, any missing path elements (items, sequences, leaf elements) are inserted automatically when missing\&. That does not work for item wildcards: When no single item exists in the surrounding sequence \fBdcmodify\fP of course can't decide, how many items should be generated\&. However, if specifying an item number like '5', all 6 items (counted from zero) can be (and are) automatically generated in insert mode\&. If already 2 items would exist, the rest (4) would be inserted\&.
+.PP
+\fBdcmodify\fP can be instructed to execute the specified element modifications only under certain conditions that can be provided by specifying one or more \fI-iff\fP (\fI--process-if\fP) options\&. Each condition specifies a path to an element and a comparison operator plus value if needed\&. Available conditions are checking for the existence of an element tag (e\&.g\&. 'PatientName' and '!PatientName') but also comparisons against the value of an element are possible as in 'Rows<513', 'Rows<=512', '(0028,0010)>512' and '(0028,0010)>=513' (\fI-iff\fP omitted for brevity)\&. The tag syntax follows the same rules as for other dcmodify options (tag path)\&.
+.PP
+One extension is that for elements with multiple values, i\&.e\&. with a Value Multiplicity (VM) greater than 1, the tag of the target (leaf) element can be followed by an index in square brackets, similar to the item index syntax used for sequences, e\&.g\&. ImageType[2], in order to address the 3rd value of the ImageType element\&.
+.PP
+All conditions specified with the \fI--process-if\fP option are combined using a logical \fB'AND'\fP, i\&.e\&. if at least one condition is not true, dcmodify will not perform any modifications on the specified DICOM file(s)\&.
 .PP
 \fBdcmodify\fP does not work on directories, i\&.e\&. the parameter \fIdcmfile-in\fP\&.\&.\&. must not include directory names\&.
 .PP
@@ -37,7 +43,7 @@ Please note that there are some issues concerning the modification of private ta
 .PP
 .PP
 .nf
-dcmfile-in  DICOM input filename(s) to be modified ("-" for stdin/stdout)
+dcmfile-in  DICOM input filename(s) to be modified ('-' for stdin/stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -141,12 +147,18 @@ backup input files:
   -nb   --no-backup
           don't backup files (DANGEROUS)
 
+conditional execution:
+
+  -iff  --process-if  '[c]ondition'
+          only perform modification(s)
+          if condition c holds true
+
 insert mode:
 
-  -i    --insert  "[t]ag-path=[v]alue"
+  -i    --insert  '[t]ag-path=[v]alue'
           insert (or overwrite) path at position t with value v
 
-  -if   --insert-from-file  "[t]ag-path=[f]ilename"
+  -if   --insert-from-file  '[t]ag-path=[f]ilename'
           insert (or overwrite) path at position t with value from file f
 
   -nrc  --no-reserv-check
@@ -154,21 +166,21 @@ insert mode:
 
 modify mode:
 
-  -m    --modify  "[t]ag-path=[v]alue"
+  -m    --modify  '[t]ag-path=[v]alue'
           modify tag at position t to value v
 
-  -mf   --modify-from-file  "[t]ag-path=[f]ilename"
+  -mf   --modify-from-file  '[t]ag-path=[f]ilename'
           modify tag at position t to value from file f
 
-  -ma   --modify-all  "[t]ag=[v]alue"
+  -ma   --modify-all  '[t]ag=[v]alue'
           modify ALL matching tags t in file to value v
 
 erase mode:
 
-  -e    --erase  "[t]ag-path"
+  -e    --erase  '[t]ag-path'
           erase tag/item at position t
 
-  -ea   --erase-all  "[t]ag"
+  -ea   --erase-all  '[t]ag'
           erase ALL matching tags t in file
 
   -ep   --erase-private
@@ -305,117 +317,193 @@ In order to read the element value from a file instead of specifying it on the c
 .SH "WILDCARDS"
 .PP
 \fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e\&.g\&. 'ContentSequence[*]\&.CodeValue' selects all 'Code
-Value' attributes in all items of the ContentSequence\&. Using a wildcard is possible for all basic operations, i\&.e\&. modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets\&.
+Value' elements in all items of the ContentSequence\&. Using a wildcard is possible for all basic operations, i\&.e\&. modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets\&.
 .PP
 The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurrences of a DICOM element based on its tag do not accept any wildcards but only work on single elements (i\&.e\&. a single dictionary name or tag key)\&.
+.SH "PROCESSING CONDITIONS"
+.PP
+Simple conditions can be provided with the option \fI--process-if\fP\&. All conditions specified with the \fI--process-if\fP option are combined using the logical \fB'AND'\fP\&.
+.PP
+Available condition syntax and its meaning are as listed below:
+.IP "\(bu" 2
+Existence conditions: checks whether tag exists in DICOM file
+.IP "  \(bu" 4
+[t]ag: true if tag t exists
+.IP "  \(bu" 4
+![t]ag: true if tag t does not exist
+.PP
+
+.IP "\(bu" 2
+Comparison conditions: checks value of given tag
+.IP "  \(bu" 4
+[t]ag=[v]alue: true if v equals the given value
+.IP "  \(bu" 4
+[t]ag!=[v]alue: true if v does not equal the given value
+.IP "  \(bu" 4
+[t]ag<[v]alue: true if v is lesser than the given value
+.IP "  \(bu" 4
+[t]ag<=[v]alue: true if v is lesser or equals the given value
+.IP "  \(bu" 4
+[t]ag>[v]alue: true if v is greater the given value
+.IP "  \(bu" 4
+[t]ag>=[v]alue: true if v is greater or equals the given value
+.PP
+
+.PP
+.PP
+All tags are specified in the same way as for the other options, i\&.e\&. using the tag path syntax (including potential use of '*' for item indices)\&.
+.PP
+Tags not ending in a leaf (items, sequences) are possible for existence checks, but not for comparison checks\&. The comparison checks fail if the specified tag does not exist at the specified tag path in the file\&. Dedicated element values of elements with VM > 1 can be accessed as \fIelement\fP[index] in condition checks\&. If an element has VM > 1 but no index is specified, the full content (all values) of the element are handled as single string with values separated by backslash (\\)\&.
+.PP
+Comparisons on element values that use string-based VRs are only recommended for equality checks, since using them for conditions <,<=,> and >= must be considered well\&. As a basis for the comparison, the compare() method defined on the related VR class is used; it uses memcmp() to compare the strings value by value (maximally the VM of the one with less values) and returns on the first difference\&. If both strings are equal up to the length (VM) of the shorter one, the one with less values is considered less than other one\&. For example:
+.IP "\(bu" 2
+'10' is considered less than '2', because the first character (code for) '1' is less than the one for '2'\&.
+.IP "\(bu" 2
+'1\\2\\2' is considered less than '1\\2\\3' (memcmp on all values, on the third value the strings differ and char code of 2 is less than that of 3)\&.
+.IP "\(bu" 2
+'1\\2\\3' is considered less than '1\\2\\3\\4' (memcmp on all values up to the third, and then, since equal until that point, the string with less values is considered less\&.
+.PP
+.PP
+Note that currently also DS and IS values are compared as strings, i\&.e\&. '10' is considered less than '2' for DS and IS\&.
+.PP
+For UID fields like \fISOPClassUID\fP well-known UID names as specified in the standard (and DCMTK) can be used, e\&.g\&. \fISOPClassUID=CTImageStorage\fP \&.
 .SH "EXAMPLES"
 .PP
 .PP
 .nf
 -i   --insert:
-       dcmodify -i "(0010,0010)=A Name" file.dcm
-       Inserts the PatientName tag into 'file.dcm' at 1st level.
+       dcmodify -i '(0010,0010)=A Name' file\&.dcm
+       Inserts the PatientName tag into 'file\&.dcm' at 1st level\&.
        If tag already exists, -i will overwrite it!  If you want to
-       insert an element with value multiplicity > 1 (e.g. 4) you
-       can do this with: dcmodify -i "(0018,1310)=1\\2\\3\\4"
+       insert an element with value multiplicity > 1 (e\&.g\&. 4) you
+       can do this with: dcmodify -i '(0018,1310)=1\\\\2\\\\3\\\\4'
 
-       dcmodify -i "(0008,1111)[0].PatientName=Another Name" *.dcm
+       dcmodify -i '(0008,1111)[0]\&.PatientName=Another Name' *\&.dcm
        Inserts PatientName tag into the first item of sequence
-       (0008,1111).  Note that the use of wildcards for files is
-       possible.  You can specify longer tag paths, too (e.g.
-       "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
-       If any part of the path, e.g. the sequence or the item "0"
-       does not exist, it is automatically inserted by dcmodify.
+       (0008,1111)\&.  Note that the use of wildcards for files is
+       possible\&.  You can specify longer tag paths, too (e\&.g\&.
+       '(0008,1111)[0]\&.(0008,1111)[1]\&.(0010,0010)=A Third One')\&.
+       If any part of the path, e\&.g\&. the sequence or the item '0'
+       does not exist, it is automatically inserted by dcmodify\&.
 
-       dcmodify -i "(0008,1111)[*].PatientName=Another Name" *.dcm
+       dcmodify -i '(0008,1111)[*]\&.PatientName=Another Name' *\&.dcm
        Inserts PatientName tag into _every_ item of sequence
-       (0008,1111).  Note that the use of wildcards for files is
-       possible.  You can specify longer tag paths, too (e.g.
-       "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").
+       (0008,1111)\&.  Note that the use of wildcards for files is
+       possible\&.  You can specify longer tag paths, too (e\&.g\&.
+       '(0008,1111)[*]\&.(0008,1111)[*]\&.(0010,0010)=A Third One')\&.
 
 -if  --insert-from-file:
-       dcmodify -if "PixelData=pixel.raw" file.dcm
-       Inserts the content of file 'pixel.raw' into the PixelData element
-       of 'file.dcm'.  The contents of the file will be read as is.
+       dcmodify -if 'PixelData=pixel\&.raw' file\&.dcm
+       Inserts the content of file 'pixel\&.raw' into the PixelData element
+       of 'file\&.dcm'\&.  The contents of the file will be read as is\&.
        OW data is expected to be little endian ordered and will be
-       swapped if necessary.  No checks will be made to ensure that the
+       swapped if necessary\&.  No checks will be made to ensure that the
        amount of data is reasonable in terms of other attributes such as
-       Rows or Columns.
+       Rows or Columns\&.
 
 -m   --modify:
-       dcmodify -m "(0010,0010)=A Name" file.dcm
-       Changes tag (0010,0010) on 1st level to "A Name".
+       dcmodify -m '(0010,0010)=A Name' file\&.dcm
+       Changes tag (0010,0010) on 1st level to 'A Name'\&.
 
        This option also permits longer tag paths as demonstrated above
-       for -i. If the leaf element or any intermediate part of the path
+       for -i\&. If the leaf element or any intermediate part of the path
        does not exist, it is not inserted as it would be if using the
-       '-i' option.
+       '-i' option\&.
 
-       dcmodify -m "(0010,0010)=A Name" -imt file.dcm
-       Changes tag (0010,0010) on 1st level to "A Name". Due to the given
-       option '-imt', success is returned instead of "tag not found", if
+       dcmodify -m '(0010,0010)=A Name' -imt file\&.dcm
+       Changes tag (0010,0010) on 1st level to 'A Name'\&. Due to the given
+       option '-imt', success is returned instead of 'tag not found', if
        the element/item (or any intermediate node in a longer path) does
-       not exist.
+       not exist\&.
 
        Note that for the '-m' option the last node in the path must be a
-       leaf element, i.e. not a sequence or an item.
+       leaf element, i\&.e\&. not a sequence or an item\&.
 
 -mf  --modify-from-file:
-       dcmodify -mf "PixelData=pixel.raw" file.dcm
+       dcmodify -mf 'PixelData=pixel\&.raw' file\&.dcm
        Does the same as -if in case there was already a PixelData element
-       in 'file.dcm'.  Otherwise nothing is changed.
+       in 'file\&.dcm'\&.  Otherwise nothing is changed\&.
 
 -ma  --modify-all:
-       dcmodify -ma "(0010,0010)=New Name" file.dcm
+       dcmodify -ma '(0010,0010)=New Name' file\&.dcm
        Does the same as -m but works on all matching tags found in
-       'file.dcm'.  Therefore, it searches the whole dataset including
-       sequences for tag (0010,0010) and changes them to "New Name"
+       'file\&.dcm'\&.  Therefore, it searches the whole dataset including
+       sequences for tag (0010,0010) and changes them to 'New Name'
 
 -e   --erase:
-       dcmodify -e "(0010,0010)" *.dcm
-       Erases tag (0010,0010) in all *.dcm files at 1st level.
+       dcmodify -e '(0010,0010)' *\&.dcm
+       Erases tag (0010,0010) in all *\&.dcm files at 1st level\&.
 
        This option also allows longer tag paths as demonstrated
-       above for -i.
+       above for -i\&.
 
-       dcmodify -e "(0010,0010)" -imt *.dcm
-       Erases tag (0010,0010) in all *.dcm files at 1st level. Due to the
-       given option '-imt', success is returned instead of "tag not
-       found", if the element/item (or any intermediate node in a longer
-       path) does not exist.
+       dcmodify -e '(0010,0010)' -imt *\&.dcm
+       Erases tag (0010,0010) in all *\&.dcm files at 1st level\&. Due to the
+       given option '-imt', success is returned instead of 'tag not
+       found', if the element/item (or any intermediate node in a longer
+       path) does not exist\&.
 
 -ea  --erase-all:
-       dcmodify -ea "(0010,0010)" *.dcm
-       Same as -e, but also searches in sequences and items.
+       dcmodify -ea '(0010,0010)' *\&.dcm
+       Same as -e, but also searches in sequences and items\&.
 
 -ep  --erase-private:
-       dcmodify -ep *.dcm
-       Deletes all private tags (i.e. tags having an odd group number)
-       from all files matching *.dcm in the current directory.
+       dcmodify -ep *\&.dcm
+       Deletes all private tags (i\&.e\&. tags having an odd group number)
+       from all files matching *\&.dcm in the current directory\&.
 
 -gst --gen-stud-uid:
-       dcmodify -gst file.dcm
-       This generates a new value for the StudyInstanceUID (0020,000d).
+       dcmodify -gst file\&.dcm
+       This generates a new value for the StudyInstanceUID (0020,000d)\&.
        Other UIDs are not modified!
 
 -gse --gen-ser-uid:
-       dcmodify -gse file.dcm
-       This generates a new value for the SeriesInstanceUID (0020,000e).
+       dcmodify -gse file\&.dcm
+       This generates a new value for the SeriesInstanceUID (0020,000e)\&.
        Other UIDs are not modified!
 
 -gin --gen-inst-uid:
-       dcmodify -gin file.dcm
+       dcmodify -gin file\&.dcm
        This command generates a new value for the SOPInstanceUID
-       (0008,0018).  The corresponding MediaStorageSOPInstanceUID
-       (0002,0003) is adjusted to the new value automatically.
+       (0008,0018)\&.  The corresponding MediaStorageSOPInstanceUID
+       (0002,0003) is adjusted to the new value automatically\&.
        Please note that it's not possible to avoid this metaheader
-       update via the -nmu option.
+       update via the -nmu option\&.
 
 -nmu --no-meta-uid:
-       dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
+       dcmodify -m 'SOPInstanceUID=[UID]' -nmu *\&.dcm
        This will modify the SOPInstanceUID to the given [UID], but -nmu
        avoids, that dcmodify adjusts the MediaStorageSOPInstanceUID in
-       the metaheader, too.
+       the metaheader, too\&.
+
+-iff --process-if:
+       dcmodify -iff '(0010,0010)' -m '(0010,0010)=A Name' file\&.dcm
+       If the tag (0010,0010) exists in the file, make the modification\&.
+
+       dcmodify -iff '!(0010,0010)' -i '(0010,0010)=A Name' file\&.dcm
+       If the tag (0010,0010) does not already exist in the file,
+       make the insertion\&.
+
+       dcmodify -iff '(0010,0010)=Wrong Name' -m '(0010,0010)=A Name' file\&.dcm
+       If the tag (0010,0010) has the specific value 'Wrong Name', make the
+       modification\&.
+
+       dcmodify -iff '(0010,0010)' -iff '(0010,0010)!=A Name' -e '(0010,0010)'
+       file\&.dcm
+       Remove the tag (0010,0010) if the tag exists and does not contain the
+       value 'A Name'\&. Multiple conditions are combined with a logical AND\&.
+
+       dcmodify -iff '(0008,1111)[*]\&.PatientName=A Name'
+       -m '(0010,0010)=Another Name' file\&.dcm
+       If PatientName in all items of the sequence (0008,1111) are 'A Name',
+       make the modification\&.
+
+       dcmodify -iff 'SOPInstanceUID=[UID]' -m '(0010,0010)=A Name' file\&.dcm
+       If the SOPInstanceUID equals [UID], make the modification\&. [UID] can
+       also contain the UID keyword instead of the string of numbers\&.
+
+       This option also allows longer tag paths as demonstrated
+       above for -i\&.
 .fi
 .PP
 .SH "ERROR HANDLING"
@@ -442,4 +530,4 @@ The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2003-2026 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
