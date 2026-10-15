@@ -573,6 +573,4 @@ xml2dsr.o: xml2dsr.cc ../../config/include/dcmtk/config/osconfig.h \
  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
- ../../ofstd/include/dcmtk/ofstd/ofexit.h \
- ../../ofstd/include/dcmtk/ofstd/diag/clangprg.def \
- ../../ofstd/include/dcmtk/ofstd/diag/deprecat.def
+ ../../ofstd/include/dcmtk/ofstd/ofexit.h
