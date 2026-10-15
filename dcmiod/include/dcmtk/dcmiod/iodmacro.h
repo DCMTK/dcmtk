@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2024, Open Connections GmbH
+ *  Copyright (C) 2015-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -1295,6 +1295,10 @@ public:
      *  @param  parent The parent of the IOD component (NULL if none or unknown)
      */
     MandatoryViewAndSliceProgressionDirectionMacro(IODComponent* parent = NULL);
+
+    /** Virtual Destructor, frees memory
+     */
+    virtual ~MandatoryViewAndSliceProgressionDirectionMacro();
 
     /** Clear (removes) all attributes handled by the modules of this component.
      */

@@ -1879,6 +1879,11 @@ MandatoryViewAndSliceProgressionDirectionMacro::MandatoryViewAndSliceProgression
     resetRules();
 }
 
+MandatoryViewAndSliceProgressionDirectionMacro::~MandatoryViewAndSliceProgressionDirectionMacro()
+{
+    DcmIODUtil::freeContainer(m_ViewModifierCode);
+}
+
 OFString MandatoryViewAndSliceProgressionDirectionMacro::getName() const
 {
     return "MandatoryViewAndSliceProgressionDirectionMacro";
