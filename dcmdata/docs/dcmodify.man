@@ -77,7 +77,7 @@ for sequences, e.g. ImageType[2], in order to address the 3rd value of the
 ImageType element.
 
 All conditions specified with the \e --process-if option are combined using a
-logical \b "AND", i.e. if at least one condition is not true, dcmodify will not
+logical "AND", i.e. if at least one condition is not true, dcmodify will not
 perform any modifications on the specified DICOM file(s).
 
 \b dcmodify does not work on directories, i.e. the parameter \e dcmfile-in...
@@ -388,11 +388,10 @@ disadvantage of this flexibility, the user has to assure, that when creating
 by the user as necessary.
 
 When choosing the \e -gin option, the related metaheader tag ('Media Storage
-SOP Instance UID') is updated automatically.  This behavior cannot be
-disabled.
+SOP Instance UID') is updated automatically.  This behavior cannot be disabled.
 
-When working on multiple input files, \b dcmodify processes each file
-in isolated fashion, i.e. it will generate UIDs for each single file.  For
+When working on multiple input files, \b dcmodify processes each file in
+isolated fashion, i.e. it will generate UIDs for each single file.  For
 example, when using the \e -gst option, \b dcmodify will insert a different
 Study Instance UID into each file instead of generating a single one and
 writing it to each file that is being processed.
@@ -434,9 +433,9 @@ single elements (i.e. a single dictionary name or tag key).
 
 \section dcmodify_processing_conditions PROCESSING CONDITIONS
 
-Simple conditions can be provided with the option \e --process-if. All
+Simple conditions can be provided with the option \e --process-if.  All
 conditions specified with the \e --process-if option are combined using the
-logical \b "AND".
+logical "AND".
 
 Available condition syntax and its meaning are as listed below:
   - Existence conditions: checks whether tag exists in DICOM file
@@ -456,32 +455,33 @@ the tag path syntax (including potential use of "*" for item indices).
 Tags not ending in a leaf (items, sequences) are possible for existence checks,
 but not for comparison checks.  The comparison checks fail if the specified tag
 does not exist at the specified tag path in the file.  Dedicated element values
-of elements with VM > 1 can be accessed as \e element[index] in condition
+of elements with VM > 1 can be accessed as 'element[index]' in condition
 checks.  If an element has VM > 1 but no index is specified, the full content
 (all values) of the element are handled as single string with values separated
 by backslash (\\).
 
-Comparisons on element values that use string-based VRs are only recommended for
-equality checks, since using them for conditions <,<=,> and >= must be
-considered well.  As a basis for the comparison, the compare() method defined on
-the related VR class is used; it uses memcmp() to compare the strings value by
-value (maximally the VM of the one with less values) and returns on the first
-difference.  If both strings are equal up to the length (VM) of the
+Comparisons on element values that use string-based VRs are only recommended
+for equality checks, since using them for conditions <, <=, > and >= must be
+considered well.  As a basis for the comparison, the compare() method defined
+on the related VR class is used; it uses memcmp() to compare the strings value
+by value (maximally the VM of the one with less values) and returns on the
+first difference.  If both strings are equal up to the length (VM) of the
 shorter one, the one with less values is considered less than other one.  For
 example:
-  - The string '10' is considered less than '2', because the first character (code for) '1'
-     is less than the one for '2'.
-  - The string '1\2\2' is considered less than '1\2\3' (memcmp on all values, on the third
-     value the strings differ and char code of 2 is less than that of 3).
-  - The string '1\2\3' is considered less than '1\2\3\4' (memcmp on all values up to the
-    third, and then, since equal until that point, the string with less values
-    is considered less.
+  - The string '10' is considered less than '2', because the first character
+    (code for) '1' is less than the one for '2'.
+  - The string '1\2\2' is considered less than '1\2\3' (memcmp on all values,
+    on the third value the strings differ and char code of 2 is less than that
+    of 3).
+  - The string '1\2\3' is considered less than '1\2\3\4' (memcmp on all values
+    up to the third, and then, since equal until that point, the string with
+    less values is considered less.
 
 Note that currently also DS and IS values are compared as strings, i.e. '10' is
 considered less than '2' for DS and IS.
 
-For UID fields like \e SOPClassUID well-known UID names as specified in
-the standard (and DCMTK) can be used, e.g. \e SOPClassUID=CTImageStorage .
+For UID fields like 'SOP Class UID' well-known UID names as specified in the
+standard (and DCMTK) can be used, e.g. "SOPClassUID=CTImageStorage".
 
 \section dcmodify_examples EXAMPLES
 
@@ -626,9 +626,9 @@ the standard (and DCMTK) can be used, e.g. \e SOPClassUID=CTImageStorage .
 \b dcmodify tries executing each modify operation given on command line: If
 one returns an error, the others are being performed anyway.  However in case
 of any error, the modified file is not saved, unless the \e --ignore-errors
-option is specified.  If that option is selected, \b dcmodify also
-continues modifying further files specified on command line; otherwise
-\b dcmodify exits after the first file that had modification errors.
+option is specified.  If that option is selected, \b dcmodify also continues
+modifying further files specified on command line; otherwise \b dcmodify exits
+after the first file that had modification errors.
 
 If the \e --ignore-missing-tags option is enabled, any modify or erase
 operations (i.e. not \e --insert) that fails because of a non-existing tag is
