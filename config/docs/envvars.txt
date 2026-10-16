@@ -1,17 +1,16 @@
-
 ===========================
 DCMTK ENVIRONMENT VARIABLES
 ===========================
 
-The behavior of the DCMTK tools and libraries can be modified by a
-number of runtime environment variables which are explained below.
+The behavior of the DCMTK tools and libraries can be modified by a number of
+runtime environment variables which are explained below.
 
 
 DCMDICTPATH
   Affected: dcmdata
   Explanation: On Unix platforms, all DCMTK applications load a DICOM data
-    dictionary from file upon startup.  By default, the file /usr/local/share/
-    dcmtk-<VERSION>/dicom.dic will be loaded.  If the DCMDICTPATH environment
+    dictionary from file upon startup.  By default, the file
+    <DATADIR>/dicom.dic will be loaded.  If the DCMDICTPATH environment
     variable is set, the applications will attempt to load DICOM data
     dictionaries specified in the DCMDICTPATH environment variable instead.
     The DCMDICTPATH environment variable has the same format as the shell PATH
@@ -26,8 +25,8 @@ DCMDICTPATH
     entries.  The data dictionary code will attempt to load each file specified
     in the DCMDICTPATH environment variable.
 
-    See also: documentation in dcmdata/docs/datadict.txt or
-              /usr/local/share/doc/dcmtk-<VERSION>/datadict.txt.
+    See also: detailed documentation in dcmdata/docs/datadict.txt or
+              <DOCDIR>/datadict.txt.
 
 DCMICONVPATH
   Affected: oficonv
@@ -56,5 +55,4 @@ TCP_NODELAY
     be sent.  If it is set and contains the number "0", the Nagle algorithm
     will not be disabled.  If the environment variable TCP_NODELAY is not set,
     the default behavior applies (see compiler macro DISABLE_NAGLE_ALGORITHM
-    in config/docs/macros.txt or /usr/local/share/doc/dcmtk-<VERSION>/
-    macros.txt).
+    in config/docs/macros.txt or <DOCDIR>/macros.txt).
