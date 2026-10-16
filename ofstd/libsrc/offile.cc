@@ -99,7 +99,7 @@ OFFilename::OFFilename(const OFFilename &arg)
 #endif
 {
     if (arg.filename_ != NULL)
-        filename_ = strdup(arg.filename_);
+        filename_ = _strdup(arg.filename_);
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
     if (arg.wfilename_ != NULL)
         wfilename_ = _wcsdup(arg.wfilename_);
@@ -118,7 +118,7 @@ OFFilename &OFFilename::operator=(const OFFilename &arg)
     if (&arg != this)
     {
         free(filename_);
-        filename_ = (arg.filename_ != NULL) ? strdup(arg.filename_) : NULL;
+        filename_ = (arg.filename_ != NULL) ? _strdup(arg.filename_) : NULL;
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
         free(wfilename_);
         wfilename_ = (arg.wfilename_ != NULL) ? _wcsdup(arg.wfilename_) : NULL;
@@ -165,7 +165,7 @@ void OFFilename::set(const char *filename,
     clear();
     if (filename != NULL)
     {
-        filename_ = strdup(filename);
+        filename_ = _strdup(filename);
 #if (defined(WIDE_CHAR_FILE_IO_FUNCTIONS) || defined(WIDE_CHAR_MAIN_FUNCTION)) && defined(_WIN32)
 #ifdef HAVE_WINDOWS_H
         if (convert)
@@ -215,7 +215,7 @@ void OFFilename::set(const wchar_t *filename,
             /* convert wide character encoding to UTF-8 representation */
             OFCharacterEncoding::convertFromWideCharString(filename, wcslen(filename),
                 tmpString, OFCharacterEncoding::CPC_UTF8);
-            filename_ = strdup(tmpString.c_str());
+            filename_ = _strdup(tmpString.c_str());
         }
 #endif
         /* avoid compiler warning on unused variable */
