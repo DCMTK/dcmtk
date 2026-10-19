@@ -995,7 +995,9 @@ OFCondition DcmElement::changeValue(const void *value,
                 // value length limit; getLengthField() and num are both Uint32,
                 // so their sum can wrap and yield an undersized buffer that the
                 // memcpy of getLengthField() bytes below would then overrun.
-                if (num > DCM_UndefinedLength - getLengthField())
+                // The sum must also not reach DCM_UndefinedLength (0xFFFFFFFF),
+                // which is reserved as the marker for undefined length.
+                if (num >= DCM_UndefinedLength - getLengthField())
                 {
                     errorFlag = EC_ElemLengthExceeds32BitField;
                     return errorFlag;
