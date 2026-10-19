@@ -2275,7 +2275,7 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
         if (result.bad())
         {
             delete respDataset;
-            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
             return DIMSE_BADDATA;
         }
 
@@ -2412,7 +2412,7 @@ OFCondition DcmSCU::sendNSETRequest(const T_ASC_PresentationContextID presID,
         if (result.bad())
         {
             delete respDataset;
-            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
             return DIMSE_BADDATA;
         }
 
@@ -2572,7 +2572,7 @@ OFCondition DcmSCU::sendNGETRequest(const T_ASC_PresentationContextID presID,
         if (result.bad())
         {
             delete respDataset;
-            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
             return DIMSE_BADDATA;
         }
 
