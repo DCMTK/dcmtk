@@ -165,6 +165,18 @@ struct BufferGuard
     unsigned char* release() { unsigned char *tmp = buffer; buffer = NULL; return tmp; }
 };
 
+/** Delete the extended negotiation sub-items parsed by parseAssociate().
+ *  destroyUserInformationLists() only frees the list container, because on the
+ *  normal path the items are handed over to the service parameters via
+ *  appendList(). On error paths taken before that hand-over there is no other
+ *  owner, so the items must be deleted explicitly.
+ *  @param userInfo user information parsed from the A-ASSOCIATE PDU
+ */
+static void deleteParsedExtNegItems(DUL_USERINFO& userInfo)
+{
+    if (userInfo.extNegList) deleteListMembers(*userInfo.extNegList);
+}
+
 static OFCondition
 AE_1_TransportConnect(PRIVATE_NETWORKKEY ** network,
         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
@@ -970,6 +982,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
         if ((service->acceptedPresentationContext = LST_Create()) == NULL)
         {
             /* free memory allocated by parseAssociate() before returning */
+            deleteParsedExtNegItems(assoc.userInfo);
             destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
             destroyUserInformationLists(&assoc.userInfo);
             return EC_MemoryExhausted;
@@ -983,6 +996,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             if (userPresentationCtx == NULL)
             {
                 /* free memory allocated by parseAssociate() before returning */
+                deleteParsedExtNegItems(assoc.userInfo);
                 destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
                 destroyUserInformationLists(&assoc.userInfo);
                 return EC_MemoryExhausted;
@@ -1020,6 +1034,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
               OFStandard::snprintf(buf1, sizeof(buf1), "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
               free(userPresentationCtx);
               /* free memory allocated by parseAssociate() before returning */
+              deleteParsedExtNegItems(assoc.userInfo);
               destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
               destroyUserInformationLists(&assoc.userInfo);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
@@ -1031,6 +1046,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
               OFStandard::snprintf(buf2, sizeof(buf2), "DUL Peer supplied illegal number of transfer syntaxes (%ld)", LST_Count(&prvCtx->transferSyntaxList));
               free(userPresentationCtx);
               /* free memory allocated by parseAssociate() before returning */
+              deleteParsedExtNegItems(assoc.userInfo);
               destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
               destroyUserInformationLists(&assoc.userInfo);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf2);
@@ -1058,6 +1074,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             if (service->acceptedExtNegList == NULL)
             {
                 /* free memory allocated by parseAssociate() before returning */
+                deleteParsedExtNegItems(assoc.userInfo);
                 destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
                 destroyUserInformationLists(&assoc.userInfo);
                 return EC_MemoryExhausted;
@@ -1263,6 +1280,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
         if ((service->requestedPresentationContext = LST_Create()) == NULL)
         {
             /* free memory allocated by parseAssociate() before returning */
+            deleteParsedExtNegItems(assoc.userInfo);
             destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
             destroyUserInformationLists(&assoc.userInfo);
             return EC_MemoryExhausted;
@@ -1272,6 +1290,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
                                              &service->requestedPresentationContext).bad())
         {
             /* free memory allocated by parseAssociate() before returning */
+            deleteParsedExtNegItems(assoc.userInfo);
             destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
             destroyUserInformationLists(&assoc.userInfo);
             return DUL_PCTRANSLATIONFAILURE;
@@ -1290,6 +1309,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
             if (service->requestedExtNegList == NULL)
             {
                 /* free memory allocated by parseAssociate() before returning */
+                deleteParsedExtNegItems(assoc.userInfo);
                 destroyAssociatePDUPresentationContextList(&assoc.presentationContextList);
                 destroyUserInformationLists(&assoc.userInfo);
                 return EC_MemoryExhausted;
