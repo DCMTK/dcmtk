@@ -98,11 +98,11 @@ other network options:
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
-  -mel  --max-element-length  [n]umber of bytes: integer (suffix k/M/G allowed)
+  -mel  --max-element-length  [n]umber of bytes: integer (opt. K/M/G suffix)
           restrict max element length of received data
           to n bytes (default: unrestricted)
 
-  -ilt  --incr-load-threshold  [n]umber of bytes: integer (suffix k/M/G allowed)
+  -ilt  --incr-load-threshold  [n]umber of bytes: integer (opt. K/M/G suffix)
           read element values larger than n bytes
           in growing chunks (default: 65536)
 

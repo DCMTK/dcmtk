@@ -266,12 +266,20 @@ main(int argc, char *argv[])
       OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += ")";
+      OFString opt5 = "read element values larger than n bytes\nin growing chunks (default: ";
+#if DCMTK_INCREMENTAL_LOAD_THRESHOLD == -1
+      opt5 += "disabled";
+#else
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, DCMTK_INCREMENTAL_LOAD_THRESHOLD));
+      opt5 += tempstr;
+#endif
+      opt5 += ")";
       cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(),
                                                            "set max receive pdu to n bytes\n(default: use value from configuration file)");
-      cmd.addOption("--max-element-length",     "-mel", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
+      cmd.addOption("--max-element-length",     "-mel", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
                                                            "restrict max element length of received data\nto n bytes (default: unrestricted)");
-      cmd.addOption("--incr-load-threshold",    "-ilt", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
-                                                           "read element values larger than n bytes\nin growing chunks (default: 65536)");
+      cmd.addOption("--incr-load-threshold",    "-ilt", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                           opt5.c_str());
       cmd.addOption("--no-incr-load",           "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");

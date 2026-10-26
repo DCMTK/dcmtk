@@ -130,12 +130,17 @@ int main(int argc, char *argv[])
                                                           "timeout for DIMSE messages");
         CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
         CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDULength << ")", optString3);
+#if DCMTK_INCREMENTAL_LOAD_THRESHOLD == -1
+        CONVERT_TO_STRING("read element values larger than n bytes\nin growing chunks (default: disabled)", optString4);
+#else
+        CONVERT_TO_STRING("read element values larger than n bytes\nin growing chunks (default: " << DCMTK_INCREMENTAL_LOAD_THRESHOLD << ")", optString4);
+#endif
         cmd.addOption("--max-pdu",             "-pdu", 1, optString2.c_str(),
                                                           optString3.c_str());
-        cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
+        cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
                                                           "restrict max element length of received data\nto n bytes (default: unrestricted)");
-        cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer (suffix k/M/G allowed)",
-                                                          "read element values larger than n bytes\nin growing chunks (default: 65536)");
+        cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                          optString4.c_str());
         cmd.addOption("--no-incr-load",        "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
@@ -144,8 +149,8 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("general:");
-        CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString4);
-        cmd.addOption("--output-directory",    "-od",  1, optString4.c_str(),
+        CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString5);
+        cmd.addOption("--output-directory",    "-od",  1, optString5.c_str(),
                                                           "write received objects to existing directory d");
       cmd.addSubGroup("subdirectory generation:");
         cmd.addOption("--no-subdir",           "-s",      "do not generate any subdirectories (default)");
