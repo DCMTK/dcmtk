@@ -118,7 +118,7 @@ OFCondition IODUSFoRModule::getApexPosition(Float64& value, const unsigned long 
 
 OFCondition IODUSFoRModule::getVolumetoTransducerRelationship(OFString& value, const signed long pos)
 {
-    return DcmIODUtil::getStringValueFromItem(DCM_UltrasoundAcquisitionGeometry, *m_Item, value, pos);
+    return DcmIODUtil::getStringValueFromItem(DCM_VolumeToTransducerRelationship, *m_Item, value, pos);
 }
 
 OFCondition IODUSFoRModule::getVolumetoTransducerMappingMatrix(Float64& value, const unsigned long pos) const

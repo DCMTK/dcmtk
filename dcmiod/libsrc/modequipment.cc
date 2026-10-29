@@ -123,7 +123,7 @@ OFCondition IODGeneralEquipmentModule::getStationName(OFString& value, const lon
 
 OFCondition IODGeneralEquipmentModule::getInstitutionalDepartmentName(OFString& value, const long signed int pos) const
 {
-    return DcmIODUtil::getStringValueFromItem(DCM_StationName, *m_Item, value, pos);
+    return DcmIODUtil::getStringValueFromItem(DCM_InstitutionalDepartmentName, *m_Item, value, pos);
 }
 
 OFCondition IODGeneralEquipmentModule::getManufacturerModelName(OFString& value, const long signed int pos) const

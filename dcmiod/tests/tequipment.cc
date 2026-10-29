@@ -60,3 +60,25 @@ OFTEST(dcmiod_equipment_pixel_padding_value_vr)
     OFCHECK(vr == EVR_SS);
     OFCHECK(eq.isPixelPaddingValueSigned());
 }
+
+// getInstitutionalDepartmentName() must read Institutional Department Name
+// (0008,1040), not Station Name (0008,1010).
+OFTEST(dcmiod_equipment_institutional_department_name)
+{
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, set " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
+    IODGeneralEquipmentModule eq;
+    OFString value;
+
+    OFCHECK(eq.setStationName("STATION").good());
+    OFCHECK(eq.setInstutionalDepartmentName("RADIOLOGY").good());
+
+    OFCHECK(eq.getInstitutionalDepartmentName(value).good());
+    OFCHECK_EQUAL(value, "RADIOLOGY");
+    OFCHECK(eq.getStationName(value).good());
+    OFCHECK_EQUAL(value, "STATION");
+}

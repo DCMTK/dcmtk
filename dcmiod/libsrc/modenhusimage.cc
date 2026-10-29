@@ -294,7 +294,7 @@ OFCondition IODEnhUSImageModule::getRescaleSlope(Float64& value, const unsigned 
 
 OFCondition IODEnhUSImageModule::getRescaleIntercept(OFString& value, const signed long pos)
 {
-    return DcmIODUtil::getStringValueFromItem(DCM_RescaleSlope, *m_Item, value, pos);
+    return DcmIODUtil::getStringValueFromItem(DCM_RescaleIntercept, *m_Item, value, pos);
 }
 
 GeneralAnatomyMacro& IODEnhUSImageModule::getAnatomy()

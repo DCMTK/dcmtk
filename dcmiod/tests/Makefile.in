@@ -28,7 +28,8 @@ LOCALLIBS = -ldcmiod -ldcmimgle -ldcmdata -loflog -lofstd -loficonv \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
 test_objs = tests.o tchecks.o tcielabutil.o tcodes.o tequipment.o ticcprofile.o \
-	timagepixel.o tmacro.o tmultiframedim.o tpalette.o tstaticrules.o
+	timagepixel.o tmacro.o tmultiframedim.o tpalette.o tstaticrules.o \
+	tultrasound.o
 
 objs = tests.o $(test_objs)
 progs = tests
