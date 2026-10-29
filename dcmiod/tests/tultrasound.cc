@@ -68,3 +68,22 @@ OFTEST(dcmiod_enhus_rescale_intercept)
     OFCHECK(mod.getRescaleIntercept(value).good());
     OFCHECK_EQUAL(value, "0");
 }
+
+// setRecognizableVisualFeatures() and getRecognizableVisualFeatures() replace
+// the misnamed set/getRecognizableVisibleFeatures().
+OFTEST(dcmiod_enhus_recognizable_visual_features)
+{
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        OFCHECK_FAIL("no data dictionary loaded, set " DCM_DICT_ENVIRONMENT_VARIABLE);
+        return;
+    }
+
+    IODEnhUSImageModule mod;
+    OFString value;
+
+    OFCHECK(mod.setRecognizableVisualFeatures("MAYBE").bad());
+    OFCHECK(mod.setRecognizableVisualFeatures("YES").good());
+    OFCHECK(mod.getRecognizableVisualFeatures(value).good());
+    OFCHECK_EQUAL(value, "YES");
+}

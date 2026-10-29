@@ -312,9 +312,14 @@ OFCondition IODEnhUSImageModule::getBurnedInAnnotation(OFString& value, const si
     return DcmIODUtil::getStringValueFromItem(DCM_BurnedInAnnotation, *m_Item, value, pos);
 }
 
-OFCondition IODEnhUSImageModule::getRecognizableVisibleFeatures(OFString& value, const signed long pos)
+OFCondition IODEnhUSImageModule::getRecognizableVisualFeatures(OFString& value, const signed long pos)
 {
     return DcmIODUtil::getStringValueFromItem(DCM_RecognizableVisualFeatures, *m_Item, value, pos);
+}
+
+OFCondition IODEnhUSImageModule::getRecognizableVisibleFeatures(OFString& value, const signed long pos)
+{
+    return getRecognizableVisualFeatures(value, pos);
 }
 
 CodeSequenceMacro& IODEnhUSImageModule::getTransducerScanPattern()
@@ -524,7 +529,7 @@ OFCondition IODEnhUSImageModule::setLossyImageCompressionRatio(const OFString& v
     return result;
 }
 
-OFCondition IODEnhUSImageModule::setRecognizableVisibleFeatures(const OFString& value, const OFBool checkValue)
+OFCondition IODEnhUSImageModule::setRecognizableVisualFeatures(const OFString& value, const OFBool checkValue)
 {
     if (checkValue)
     {
@@ -532,6 +537,11 @@ OFCondition IODEnhUSImageModule::setRecognizableVisibleFeatures(const OFString& 
             return IOD_EC_InvalidElementValue;
     }
     return m_Item->putAndInsertOFStringArray(DCM_RecognizableVisualFeatures, value);
+}
+
+OFCondition IODEnhUSImageModule::setRecognizableVisibleFeatures(const OFString& value, const OFBool checkValue)
+{
+    return setRecognizableVisualFeatures(value, checkValue);
 }
 
 OFCondition IODEnhUSImageModule::setProcessingFunction(const OFString& value, const OFBool checkValue)
