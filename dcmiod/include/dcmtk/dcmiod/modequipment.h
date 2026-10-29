@@ -26,6 +26,7 @@
 #include "dcmtk/dcmiod/ioddef.h"
 #include "dcmtk/dcmiod/iodrules.h"
 #include "dcmtk/dcmiod/modbase.h"
+#include "dcmtk/ofstd/ofdeprec.h"
 
 /** Class representing the General Equipment Module:
  *
@@ -254,6 +255,17 @@ public:
      *          if enabled
      *  @return EC_Normal if successful, an error code otherwise
      */
+    virtual OFCondition setInstitutionalDepartmentName(const OFString& value, const OFBool checkValue = OFTrue);
+
+    /** Set Institutional Department Name
+     *  @deprecated This method is deprecated and will be removed in the future.
+     *    Please use setInstitutionalDepartmentName() instead.
+     *  @param  value Value to be set (single value only) or "" for no value
+     *  @param  checkValue Check 'value' for conformance with VR (LO) and VM (1)
+     *          if enabled
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    OFdeprecated_msg("use setInstitutionalDepartmentName() instead")
     virtual OFCondition setInstutionalDepartmentName(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Manufacturer's Model Name

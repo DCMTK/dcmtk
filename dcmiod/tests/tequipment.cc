@@ -75,7 +75,7 @@ OFTEST(dcmiod_equipment_institutional_department_name)
     OFString value;
 
     OFCHECK(eq.setStationName("STATION").good());
-    OFCHECK(eq.setInstutionalDepartmentName("RADIOLOGY").good());
+    OFCHECK(eq.setInstitutionalDepartmentName("RADIOLOGY").good());
 
     OFCHECK(eq.getInstitutionalDepartmentName(value).good());
     OFCHECK_EQUAL(value, "RADIOLOGY");
