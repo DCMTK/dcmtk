@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2025, Open Connections GmbH
+ *  Copyright (C) 2016-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -966,7 +966,7 @@ size_t DPMParametricMapIOD::getNumberOfFrames() const
 }
 
 
-OFCondition DPMParametricMapIOD::setRecognizableVisualFeatures(const DPMTypes::RecognizableVisibleFeatures yesOrNo)
+OFCondition DPMParametricMapIOD::setRecognizableVisualFeatures(const DPMTypes::RecognizableVisualFeatures yesOrNo)
 {
   return DPMTypes::rvfValid(yesOrNo)
   ?
@@ -1007,7 +1007,7 @@ DPMTypes::ContentQualification DPMParametricMapIOD::getContentQualification()
 }
 
 
-DPMTypes::RecognizableVisibleFeatures DPMParametricMapIOD::getRecognizableVisualFeatures()
+DPMTypes::RecognizableVisualFeatures DPMParametricMapIOD::getRecognizableVisualFeatures()
 {
   OFString val;
   DPMParametricMapIOD::m_DPMParametricMapImageModule.getRecognizableVisualFeatures(val);

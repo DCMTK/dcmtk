@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, Open Connections GmbH
+ *  Copyright (C) 2016-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/oflog/oflog.h"
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/ofdeprec.h"
 #include "dcmtk/dcmpmap/dpmdef.h"
 
 // ----------------------------------------------------------------------------
@@ -84,7 +85,7 @@ class DCMTK_DCMPMAP_EXPORT DPMTypes
 
 
     /// Enum for attribute Recognizable Visual Features
-    enum RecognizableVisibleFeatures
+    enum RecognizableVisualFeatures
     {
       /// Unknown (e.g. not set)
       RVF_UNKNOWN,
@@ -94,18 +95,25 @@ class DCMTK_DCMPMAP_EXPORT DPMTypes
       RVF_NO
     };
 
+    /** Old, misnamed type for attribute Recognizable Visual Features.
+     *  @deprecated This type is deprecated and will be removed in the future.
+     *    Please use RecognizableVisualFeatures instead.
+     */
+    OFdeprecated_msg("use RecognizableVisualFeatures instead")
+    typedef RecognizableVisualFeatures RecognizableVisibleFeatures;
+
     /** Convert Recognizable Visual Features enum to OFString
      *  @param  rvf The enum to convert
      *  @return String version of enum value
      */
-    static OFString rvf2Str(const RecognizableVisibleFeatures rvf);
+    static OFString rvf2Str(const RecognizableVisualFeatures rvf);
 
     /** Convert OFString version of Recognizable Visual Features attribute
      *  value to enum value
      *  @param  rvf The OFString value to convert
      *  @return The enum value of the string
      */
-    static RecognizableVisibleFeatures str2Rvf(const OFString& rvf);
+    static RecognizableVisualFeatures str2Rvf(const OFString& rvf);
 
     /** Convert Content Qualification enum to OFString
      *  @param  cq The enum to convert
@@ -124,7 +132,7 @@ class DCMTK_DCMPMAP_EXPORT DPMTypes
      *  @param  rvf Value to check
      *  @return OFTrue if valid, OFFalse otherwise
      */
-    static OFBool rvfValid(const RecognizableVisibleFeatures rvf);
+    static OFBool rvfValid(const RecognizableVisualFeatures rvf);
 
     /** Check whether Content Qualification enum value is valid
      *  @param  cq Value to check

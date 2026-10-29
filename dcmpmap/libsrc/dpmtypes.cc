@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016, Open Connections GmbH
+ *  Copyright (C) 2016-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -37,7 +37,7 @@ makeOFConditionConst(DPM_InvalidPixelData,       OFM_dcmpmap, 4, OF_error, "Inva
 makeOFConditionConst(DPM_NoPixelData,            OFM_dcmpmap, 5, OF_error, "No pixel data found");
 makeOFConditionConst(DPM_InvalidSOPClass,        OFM_dcmpmap, 6, OF_error, "SOP Class not supported");
 
-OFString DPMTypes::rvf2Str(const RecognizableVisibleFeatures rvf)
+OFString DPMTypes::rvf2Str(const RecognizableVisualFeatures rvf)
 {
   switch (rvf)
   {
@@ -47,7 +47,7 @@ OFString DPMTypes::rvf2Str(const RecognizableVisibleFeatures rvf)
   }
 }
 
-DPMTypes::RecognizableVisibleFeatures DPMTypes::str2Rvf(const OFString& rvf)
+DPMTypes::RecognizableVisualFeatures DPMTypes::str2Rvf(const OFString& rvf)
 {
   if (rvf == "NO")
     return RVF_NO;
@@ -98,7 +98,7 @@ OFBool DPMTypes::cqValid(const DPMTypes::ContentQualification cq)
 }
 
 
-OFBool DPMTypes::rvfValid(const DPMTypes::RecognizableVisibleFeatures rvf)
+OFBool DPMTypes::rvfValid(const DPMTypes::RecognizableVisualFeatures rvf)
 {
   switch (rvf)
   {
