@@ -1017,9 +1017,6 @@ DcmTransportConnection *DcmTLSTransportLayer::createConnection(DcmNativeSocketTy
 
 void DcmTLSTransportLayer::seedPRNG(const char *randFile)
 {
-#ifdef _WIN32
-  RAND_screen();
-#endif
   if (randFile)
   {
 #ifdef HAVE_OPENSSL_PROTOTYPE_RAND_EGD
