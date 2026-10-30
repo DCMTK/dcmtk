@@ -21,13 +21,13 @@
 
         - name: Install support libraries
           run: |
-            brew install ninja openssl@3 libpng libtiff libxml2
+            brew install ninja openssl@4 libpng libtiff libxml2
 
         - name: Prepare environment
           run: |
             echo "NOW=$(date +%Y%m%d)" >> "$GITHUB_ENV"
             echo "COMMIT_SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"
-            echo "OPENSSL_ROOT_DIR=$(brew --prefix openssl@3)" >> "$GITHUB_ENV"
+            echo "OPENSSL_ROOT_DIR=$(brew --prefix openssl@4)" >> "$GITHUB_ENV"
             echo "LIBXML2_ROOT=$(brew --prefix libxml2)" >> "$GITHUB_ENV"
             echo "BREW_PREFIX=$(brew --prefix)" >> "$GITHUB_ENV"
 
