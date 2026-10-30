@@ -12,6 +12,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmfg_tests
   t_fg_base.cc
   t_frame_content.cc
   t_irradiation_event_identification.cc
+  t_real_world_value_mapping.cc
   t_fginterface.cc
 )
 

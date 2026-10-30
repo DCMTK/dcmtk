@@ -37,6 +37,7 @@ OFTEST_REGISTER(dcmfg_derivation_image);
 OFTEST_REGISTER(dcmfg_fgbase_fgunknown);
 OFTEST_REGISTER(dcmfg_frame_content);
 OFTEST_REGISTER(dcmfg_irradiation_event_identification);
+OFTEST_REGISTER(dcmfg_real_world_value_mapping_first_last_value_mapped);
 
 OFTEST_REGISTER(dcmfg_fginterface_add_get);
 OFTEST_REGISTER(dcmfg_fginterface_shared);
