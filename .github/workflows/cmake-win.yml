@@ -26,7 +26,7 @@
       # Job name shown in the GitHub UI, e.g. "build-windows-win64"
       name: build-windows-${{ matrix.suffix }}
       runs-on: windows-2025-vs2026
-      timeout-minutes: 30
+      timeout-minutes: 60
 
       # Build matrix: every entry below results in a separate job instance
       # running on its own runner. The values are available as ${{ matrix.* }}.
