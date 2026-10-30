@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2025, OFFIS e.V.
+ *  Copyright (C) 2006-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofstd.h"      /* for class OFStandard */
+#include "dcmtk/ofstd/ofdiag.h"     /* for DCMTK_DIAGNOSTIC macros */
 
 #include <cstdio>
 #include <cstdlib>
@@ -304,6 +305,12 @@ inline void swap(OFFilename &lhs, OFFilename &rhs)
  */
 DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFFilename &filename);
 
+
+// Visual Studio declares many of the stdio functions wrapped by this class
+// (e.g. fopen() or fileno()) as deprecated, which would cause warning C4996
+// in every file that includes this header.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS
 
 /** this class provides a simple C++ encapsulation layer for stdio FILE pointers.
  *  All stdio functions on files are directly mapped into member functions.
@@ -1059,5 +1066,7 @@ private:
   }
 
 };
+
+#include DCMTK_DIAGNOSTIC_POP
 
 #endif

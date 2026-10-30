@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2025, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -168,6 +168,11 @@ extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_IPCEmptyMessage;
 #define makeOFConditionConst(name, module, code, status, text) \
   const OFConditionConst name = { (module), (code), (status), (text) }
 
+
+// Visual Studio declares strdup() as deprecated, which would cause warning
+// C4996 in every file that includes this header.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS
 
 /** General purpose class for condition codes. Objects of this class can be
  *  efficiently passed by value. To make this possible, the contained string is
@@ -372,6 +377,8 @@ private:
   OFBool ownsText;
 
 };
+
+#include DCMTK_DIAGNOSTIC_POP
 
 
 /** returns true if lhs refers to the same OFCondition as rhs

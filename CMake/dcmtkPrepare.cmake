@@ -501,6 +501,7 @@ if(WIN32)   # special handling for Windows systems
             -D_CRT_TIME_FUNCTIONS_NO_DEPRECATE
             -D_CRT_VCCLRIT_NO_DEPRECATE
             -D_SCL_SECURE_NO_DEPRECATE
+            -D_WINSOCK_DEPRECATED_NO_WARNINGS
             )
           # suppress linker warning LNK4099 about missing .pdb files when compiling in debug mode
           set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4099")
