@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -135,38 +135,15 @@ int dcmtk_flock(int fd, int operation)
 
   if (operation==LOCK_SH)
   {
-    if (GetVersion() < 0x80000000) // Windows NT
-    {
-      // LockFileEx is only supported on Windows NT
-      if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
-    } else {
-      // using LockFile on Win32s and Win95. LOCKS ARE ALWAYS EXCLUSIVE!
-      // make sure that we lock less than 2GB, to avoid errors on FAT16
-      if (LockFile(handle, 0,0,(DWORD)0x7FFFFFFF, 0) !=0) return 0; else return -1;
-    }
+    if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
   }
   else if (operation==LOCK_EX)
   {
-    if (GetVersion() < 0x80000000) // Windows NT
-    {
-      // LockFileEx is only supported on Windows NT
-      if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
-    } else {
-      // using LockFile on Win32s and Win95.
-      // make sure that we lock less than 2GB, to avoid errors on FAT16
-      if (LockFile(handle, 0,0,(DWORD)0x7FFFFFFF, 0) !=0) return 0; else return -1;
-    }
+    if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
   }
   else if (operation==LOCK_UN)
   {
-    if (GetVersion() < 0x80000000) // Windows NT
-    {
-      // UnlockFileEx is only supported on Windows NT
-      if (UnlockFileEx(handle,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
-    } else {
-      // using UnlockFile on Win32s and Win95.
-      if (UnlockFile(handle, 0, 0,(DWORD)0x7FFFFFFF, 0) !=0) return 0; else return -1;
-    }
+    if (UnlockFileEx(handle,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
   }
   else return -1; /* unknown lock operation */
 }
