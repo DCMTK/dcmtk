@@ -917,10 +917,11 @@ OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
     readFragmentedElement(1);
 }
 
-#ifdef WITH_ZLIB
 
 OFTEST(dcmdata_parser_deflatedBufferStreamRead)
 {
+#ifdef WITH_ZLIB
+
     /* Verify that a legitimate deflated dataset that is completely available
      * in a DcmInputBufferStream (setEos() has been called) is parsed
      * correctly even when it contains an element that is larger than the
@@ -984,6 +985,6 @@ OFTEST(dcmdata_parser_deflatedBufferStreamRead)
     OFCHECK_EQUAL(readLen, elemLen);
     if (readData != NULL && readLen == elemLen)
         OFCHECK(memcmp(readData, elemData, elemLen) == 0);
+#endif /* WITH_ZLIB */
 }
 
-#endif /* WITH_ZLIB */

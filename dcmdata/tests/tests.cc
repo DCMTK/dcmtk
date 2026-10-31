@@ -116,9 +116,7 @@ OFTEST_REGISTER(dcmdata_parser_implicitVR_hugeLengthInBufferStream);
 OFTEST_REGISTER(dcmdata_parser_incrementalBufferStreamRead);
 OFTEST_REGISTER(dcmdata_parser_manyFragmentsBufferStreamRead);
 OFTEST_REGISTER(dcmdata_parser_incrementalLoadThreshold_disabled);
-#ifdef WITH_ZLIB
 OFTEST_REGISTER(dcmdata_parser_deflatedBufferStreamRead);
-#endif
 OFTEST_REGISTER(dcmdata_readingDataDictionary);
 OFTEST_REGISTER(dcmdata_usingDataDictionary);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_1);
