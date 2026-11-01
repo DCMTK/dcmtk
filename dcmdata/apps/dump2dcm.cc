@@ -429,10 +429,18 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
     {
         /* NB: if size is odd file will be rejected */
         const size_t fileLen = OFStandard::getFileSize(filename);
-        /* read element value from binary file (requires even length) */
-        ec = elem->createValueFromTempFile(fileStream.newFactory(), fileLen, EBO_LittleEndian);
-        if (ec.bad())
-            OFLOG_ERROR(dump2dcmLogger, "cannot process binary data file: " << filename);
+        /* reject files that are too large to be stored in a DICOM element */
+        if (fileLen > 0xfffffffeUL)
+        {
+            OFLOG_ERROR(dump2dcmLogger, "binary data file too large (" << fileLen << " bytes) for element "
+                << elem->getTag() << ": " << filename);
+            ec = EC_ElemLengthExceeds32BitField;
+        } else {
+            /* read element value from binary file (requires even length) */
+            ec = elem->createValueFromTempFile(fileStream.newFactory(), OFstatic_cast(Uint32, fileLen), EBO_LittleEndian);
+            if (ec.bad())
+                OFLOG_ERROR(dump2dcmLogger, "cannot process binary data file: " << filename);
+        }
     } else {
         OFLOG_ERROR(dump2dcmLogger, "cannot open binary data file: " << filename);
         ec = EC_InvalidTag;
@@ -446,6 +454,19 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
     }
 
     const size_t len = OFStandard::getFileSize(filename);
+    /* reject files that are too large to be stored in a DICOM element:
+     * the buffer length is narrowed to a 32-bit value for the allocation
+     * below, whereas the full (size_t) file length is used for reading.
+     * The file length is checked before it is made even, since the
+     * increment could wrap around to 0 where size_t is only 32 bits wide.
+     */
+    if (len > 0xfffffffeUL)
+    {
+        OFLOG_ERROR(dump2dcmLogger, "binary data file too large (" << len << " bytes) for element "
+            << elem->getTag() << ": " << filename);
+        fclose(f);
+        return EC_ElemLengthExceeds32BitField;
+    }
     size_t buflen = len;
     if (buflen & 1)
         buflen++; /* if odd then make even (DICOM requires even length values) */
