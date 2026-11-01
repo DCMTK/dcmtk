@@ -635,6 +635,9 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                       break;
                     }
                 }
+                // element has not been inserted, so delete it
+                if (l_error != EC_Normal)
+                    delete newElement;
             }
         }
         else if (newElementError == EC_SequEnd)
