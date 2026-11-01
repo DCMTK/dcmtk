@@ -1497,33 +1497,27 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if (pixelData == NULL)
+  size_t pxPerFrame = OFstatic_cast(size_t, columns) * OFstatic_cast(size_t, rows);
+  size_t frameSize = pxPerFrame * samplesPerPixel;
+  size_t totalValues = frameSize * numberOfFrames;
+  if ((pixelData == NULL) || (numValues < totalValues))
     return EC_IllegalParameter;
   // allocate target buffer
-  Uint8* px8 = new Uint8[numValues];
+  Uint8* px8 = new Uint8[totalValues];
   if (!px8)
     return EC_MemoryExhausted;
-  size_t pxPerFrame = columns * rows;
-  size_t frameSize = pxPerFrame * samplesPerPixel;
   Uint8 *inPtr = pixelData;
   Uint8 *outPtr = px8;
-  size_t r_x_rows;
-  size_t off;
 
   for (size_t f=0; f<numberOfFrames; ++f)
   {
     if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
     {
-      for (size_t r=0; r < rows; ++r)
+      for (size_t i=0; i < pxPerFrame; ++i)
       {
-        r_x_rows = r * rows;
-        for (size_t c =0; c < columns; ++c)
+        for (size_t s=0; s < samplesPerPixel; ++s)
         {
-          off = (r_x_rows + c) * samplesPerPixel;
-          for (size_t s=0; s < samplesPerPixel; ++s)
-          {
-            outPtr[off + s] = inPtr[(s * pxPerFrame) + r_x_rows + c];
-          }
+          outPtr[i * samplesPerPixel + s] = inPtr[s * pxPerFrame + i];
         }
       }
     }
@@ -1531,14 +1525,9 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
     {
       for (size_t s=0; s < samplesPerPixel; ++s)
       {
-        for (size_t r=0; r < rows; ++r)
+        for (size_t i=0; i < pxPerFrame; ++i)
         {
-          r_x_rows = r * rows;
-          off = (s * pxPerFrame) + r_x_rows;
-          for (size_t c =0; c < columns; ++c)
-          {
-            outPtr[off + c] = inPtr[(r_x_rows + c) * samplesPerPixel + s];
-          }
+          outPtr[s * pxPerFrame + i] = inPtr[i * samplesPerPixel + s];
         }
       }
     }
@@ -1546,7 +1535,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
     outPtr += frameSize;
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px8, OFstatic_cast(size_t, numValues));
+  memcpy(pixelData, px8, totalValues);
   delete[] px8;
   return EC_Normal;
 }
@@ -1561,34 +1550,27 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if (pixelData == NULL)
+  size_t pxPerFrame = OFstatic_cast(size_t, columns) * OFstatic_cast(size_t, rows);
+  size_t frameSize = pxPerFrame * samplesPerPixel;
+  size_t totalValues = frameSize * numberOfFrames;
+  if ((pixelData == NULL) || (numValues < totalValues))
     return EC_IllegalParameter;
   // allocate target buffer
-  Uint16* px16 = new Uint16[numValues];
+  Uint16* px16 = new Uint16[totalValues];
   if (!px16)
     return EC_MemoryExhausted;
-
-  size_t pxPerFrame = columns * rows;
-  size_t frameSize = pxPerFrame * samplesPerPixel;
   Uint16 *inPtr = pixelData;
   Uint16 *outPtr = px16;
-  size_t r_x_rows;
-  size_t off;
 
   for (size_t f=0; f<numberOfFrames; ++f)
   {
     if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
     {
-      for (size_t r=0; r < rows; ++r)
+      for (size_t i=0; i < pxPerFrame; ++i)
       {
-        r_x_rows = r * rows;
-        for (size_t c =0; c < columns; ++c)
+        for (size_t s=0; s < samplesPerPixel; ++s)
         {
-          off = (r_x_rows + c) * samplesPerPixel;
-          for (size_t s=0; s < samplesPerPixel; ++s)
-          {
-            outPtr[off + s] = inPtr[(s * pxPerFrame) + r_x_rows + c];
-          }
+          outPtr[i * samplesPerPixel + s] = inPtr[s * pxPerFrame + i];
         }
       }
     }
@@ -1596,14 +1578,9 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
     {
       for (size_t s=0; s < samplesPerPixel; ++s)
       {
-        for (size_t r=0; r < rows; ++r)
+        for (size_t i=0; i < pxPerFrame; ++i)
         {
-          r_x_rows = r * rows;
-          off = (s * pxPerFrame) + r_x_rows;
-          for (size_t c =0; c < columns; ++c)
-          {
-            outPtr[off + c] = inPtr[(r_x_rows + c) * samplesPerPixel + s];
-          }
+          outPtr[s * pxPerFrame + i] = inPtr[i * samplesPerPixel + s];
         }
       }
     }
@@ -1611,7 +1588,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
     outPtr += frameSize;
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px16, OFstatic_cast(size_t, numValues*2));
+  memcpy(pixelData, px16, totalValues * sizeof(Uint16));
   delete[] px16;
   return EC_Normal;
 }
