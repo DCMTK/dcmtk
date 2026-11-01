@@ -328,9 +328,11 @@ OFCondition DcmXMLParseHelper::putElementContent(
                      * below, whereas the full (size_t) file size is used as the fread()
                      * length. For files larger than the 32-bit DICOM value length limit
                      * this would allocate a truncated buffer and then overflow it while
-                     * reading.
+                     * reading. The file size is checked rather than the buffer length,
+                     * since making the latter even could wrap around to 0 where size_t
+                     * is only 32 bits wide.
                      */
-                    if (buflen > 0xfffffffeUL)
+                    if (fileSize > 0xfffffffeUL)
                     {
                         DCMDATA_WARN("DcmXMLParseHelper: binary data file too large ("
                             << fileSize << " bytes) for element " << element->getTag() << ": " << filename);
