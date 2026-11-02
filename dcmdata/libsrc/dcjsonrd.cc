@@ -23,6 +23,7 @@
 #include "dcmtk/dcmdata/dcjsonrd.h"
 #include "dcmtk/ofstd/ofcond.h"         /* for class OFCondition */
 #include "dcmtk/ofstd/offile.h"         /* for class OFFile */
+#include "dcmtk/ofstd/oflimits.h"       /* for OFnumeric_limits */
 #include "dcmtk/dcmdata/dcerror.h"      /* for dcmdata logger macros */
 #include "dcmtk/dcmdata/dcfilefo.h"     /* for class DcmFileFormat */
 #include "dcmtk/dcmdata/dcmetinf.h"
@@ -97,6 +98,13 @@ OFCondition DcmJSONReader::readJSONFile(const char *ifname)
 
     // obtain file size
     const size_t len = OFStandard::getFileSize(ifname);
+    // make sure that adding the terminating null byte does not wrap around,
+    // which is possible where size_t is only 32 bits wide
+    if (len == OFnumeric_limits<size_t>::max())
+    {
+        DCMDATA_ERROR("JSON file too large: '" << ifname << "'");
+        return EC_MemoryExhausted;
+    }
     char *jsonString = new (std::nothrow) char[len + 1];
     if (jsonString == NULL)
     {
