@@ -1127,6 +1127,9 @@ int main(int argc, char *argv[])
             OFLOG_ERROR(dump2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName() << " possible!");
             status = 2;
         }
+    } else {
+        // the dump file is damaged and no output file has been written
+        status = 1;
     }
     fclose(dumpfile);
 
