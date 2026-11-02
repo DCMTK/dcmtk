@@ -42,8 +42,12 @@
 template<typename T>
 static void checkMinMax()
 {
+    // signed integer overflow is undefined behavior, so there is nothing to check
+    if (OFnumeric_limits<T>::is_integer && OFnumeric_limits<T>::is_signed)
+        return;
+
     // we need to declare some variables as volatile to prevent the
-    // Clang compiler from optimizing away everything, leading to a test failure:wq
+    // Clang compiler from optimizing away everything, leading to a test failure
 
     volatile T max_( OFnumeric_limits<T>::max() );
     volatile T lowest;
