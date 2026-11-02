@@ -52,7 +52,7 @@ public:
    *    Huffman table overflow
    *  @param pForceSingleFragmentPerFrame while decompressing a multiframe image,
    *    assume one fragment per frame even if the JPEG data for some frame is incomplete
-   *  @param setPreserveBitsStored preserve BitsStored when decompressing even if inconsistent with J2K bitstream
+   *  @param setPreserveBitsStored preserve BitsStored when decompressing even if inconsistent with JPEG bitstream
    *  @param planarConfigWorkaroundEnable enable workaround for buggy DCMTK lossless
    *  compressed color multiframe images where an incorrect conversion from color-by-plane
    *  to color-by-pixel had been applied prior to compression

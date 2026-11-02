@@ -71,7 +71,7 @@ public:
    *  @param pAcrNemaCompatibility accept old ACR-NEMA images without photometric interpretation
    *    (only "pseudo" lossless encoder)
    *  @param pTrueLosslessMode Enables true lossless compression (replaces old "pseudo lossless" encoder)
-   *  @param setPreserveBitsStored  preserve BitsStored when decompressing even if inconsistent with J2K bitstream
+   *  @param setPreserveBitsStored  preserve BitsStored when decompressing even if inconsistent with JPEG bitstream
    */
   DJCodecParameter(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
@@ -437,7 +437,7 @@ private:
   /// Compatibility with old ACR-NEMA images without photometric interpretation
   OFBool acrNemaCompatibility;
 
-  /// True losless mode, replaces old "pseudo" lossless encoders, when true (default)
+  /// True lossless mode, replaces old "pseudo" lossless encoders, when true (default)
   OFBool trueLosslessMode;
 
   /// flag indicating that the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
@@ -457,7 +457,7 @@ private:
    */
   OFBool forceSingleFragmentPerFrame;
 
-  /// flag indicating whether BitsStored should be preserved when decompressing even if inconsistent with the J2K bitstream
+  /// flag indicating whether BitsStored should be preserved when decompressing even if inconsistent with the JPEG bitstream
   OFBool setPreserveBitsStored_;
 
 };
