@@ -46,6 +46,7 @@ OFTEST_REGISTER(ofstd_OFList_splice);
 OFTEST_REGISTER(ofstd_OFMap);
 OFTEST_REGISTER(ofstd_OFStack);
 OFTEST_REGISTER(ofstd_OFStandard_isReadWriteable);
+OFTEST_REGISTER(ofstd_OFStandard_getFileSize);
 OFTEST_REGISTER(ofstd_OFStandard_appendFilenameExtension);
 OFTEST_REGISTER(ofstd_OFStandard_removeRootDirFromPathname);
 OFTEST_REGISTER(ofstd_OFStandard_sanitizeAETitle);
