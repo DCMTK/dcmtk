@@ -595,7 +595,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
 
     // check whether enough raw data is available for encoding
-    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(size_t,numberOfFrames) > length)
+    if (OFstatic_cast(Uint64, bytesAllocated) * samplesPerPixel * columns * rows * OFstatic_cast(Uint64, numberOfFrames) > length)
     {
       DCMJPEG_ERROR("True lossless encoder: Cannot change representation, not enough data");
       return EC_CannotChangeRepresentation;
@@ -644,7 +644,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
 
     // prepare some variables for encoding
     size_t frameCount = OFstatic_cast(size_t, numberOfFrames);
-    size_t frameSize = columns * rows * samplesPerPixel * bytesAllocated;
+    size_t frameSize = OFstatic_cast(size_t, columns) * rows * samplesPerPixel * bytesAllocated;
     const Uint8 *framePointer = OFreinterpret_cast(const Uint8 *, pixelData);
     size_t compressedSize = 0;
 
