@@ -313,6 +313,13 @@ OFCondition DcmJSONReader::storeInlineBinaryValue(
 {
     OFCondition result = EC_Normal;
     if (NULL == data) length = 0;
+    // the length is converted to 32 bits below, so reject larger values
+    // instead of silently truncating them
+    if (length > 0xfffffffeUL)
+    {
+        DCMDATA_ERROR("inline binary value too large for DICOM element " << element.getTag() << ": " << length << " bytes");
+        return EC_ElemLengthExceeds32BitField;
+    }
     DcmEVR evr = element.getVR();
     if (evr == EVR_OW)
     {
@@ -365,6 +372,13 @@ OFCondition DcmJSONReader::storeBulkValue(
 {
     OFCondition result = EC_Normal;
     if (NULL == data) length = 0;
+    // the length is converted to 32 bits below, so reject larger values
+    // instead of silently truncating them
+    if (length > 0xfffffffeUL)
+    {
+        DCMDATA_ERROR("bulk data value too large for DICOM element " << element.getTag() << ": " << length << " bytes");
+        return EC_ElemLengthExceeds32BitField;
+    }
     DcmEVR evr = element.getVR();
 
     if (evr == EVR_OB || evr == EVR_UN)
@@ -1634,13 +1648,22 @@ OFCondition DcmJSONReader::loadBulkdataFile(
         return makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
     }
 
-    // obtain file size and check if file is large enough
+    // obtain file size and check if file is large enough (without computing
+    // offset + length, which could wrap around for very large values)
     const size_t filelen = OFStandard::getFileSize(filepath);
     if (0 == length) length = filelen;
-    if (offset + length > filelen)
+    if ((offset > filelen) || (length > filelen - offset))
     {
-        DCMDATA_ERROR("bulk data file too short: '" << filepath << "', expected " << offset + length << " bytes but only found " << filelen);
+        DCMDATA_ERROR("bulk data file too short: '" << filepath << "', expected " << length << " bytes at offset "
+            << offset << " but file size is only " << filelen << " bytes");
         return EC_EndOfStream;
+    }
+
+    // check the length before reading the file into memory (see storeBulkValue())
+    if (length > 0xfffffffeUL)
+    {
+        DCMDATA_ERROR("bulk data value too large for DICOM element " << element.getTag() << ": " << length << " bytes");
+        return EC_ElemLengthExceeds32BitField;
     }
 
     // allocate buffer
