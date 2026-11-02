@@ -83,6 +83,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
@@ -512,7 +513,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
 
 static OFCondition
 insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tagkey,
-              const DcmEVR &vr, const char *value)
+              const DcmEVR &vr, const char *value, OFList<DcmElement *> &discardedElements)
 {
     // insert new element into dataset or metaheader
 
@@ -607,7 +608,20 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                       case EVR_metainfo:
                           {
                               DcmItem *item = OFstatic_cast(DcmItem *, topOfStack);
-                              item->insert(newElement);
+                              l_error = item->insert(newElement);
+                              if (l_error == EC_DoubledTag)
+                              {
+                                  // an element with the same tag already exists, so the new
+                                  // one is ignored. It is not deleted before the end of the
+                                  // dump, since a sequence is still pushed to the stack below,
+                                  // so that its content does not end up in the wrong place.
+                                  OFLOG_WARN(dump2dcmLogger, "element " << newElement->getTag()
+                                      << " found twice in one data set or item, ignoring second entry");
+                                  discardedElements.push_back(newElement);
+                                  l_error = EC_Normal;
+                              }
+                              else if (l_error.bad())
+                                  break;
                               // special handling for pixel sequence
                               if (newTagVR == EVR_pixelSQ)
                               {
@@ -626,7 +640,7 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                           if (newTagVR == EVR_pixelItem)
                           {
                               DcmPixelSequence *pixelSeq = OFstatic_cast(DcmPixelSequence *, topOfStack);
-                              pixelSeq->insert(OFstatic_cast(DcmPixelItem *, newElement));
+                              l_error = pixelSeq->insert(OFstatic_cast(DcmPixelItem *, newElement));
                           } else
                               l_error = EC_InvalidTag;
                           break;
@@ -712,6 +726,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
     DcmTagKey tagkey;
     DcmStack metaheaderStack;
     DcmStack datasetStack;
+    OFList<DcmElement *> discardedElements;
     xfer = EXS_Unknown;
 
     if (metaheader)
@@ -764,7 +779,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
             {
                 if (metaheader)
                 {
-                    l_error = insertIntoSet(metaheaderStack, xfer, tagkey, vr, value);
+                    l_error = insertIntoSet(metaheaderStack, xfer, tagkey, vr, value, discardedElements);
                     // check for transfer syntax in meta-header
                     if ((tagkey == DCM_TransferSyntaxUID) && (xfer == EXS_Unknown))
                     {
@@ -776,7 +791,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
                 }
             }
             else
-                l_error = insertIntoSet(datasetStack, xfer, tagkey, vr, value);
+                l_error = insertIntoSet(datasetStack, xfer, tagkey, vr, value, discardedElements);
 
             if (value)
             {
@@ -811,6 +826,14 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
     }
 
     delete[] lineBuf;
+
+    // delete elements that have not been inserted because of a duplicate tag
+    OFListIterator(DcmElement *) iter = discardedElements.begin();
+    while (iter != discardedElements.end())
+    {
+        delete *iter;
+        ++iter;
+    }
 
     if (errorsEncountered)
     {
