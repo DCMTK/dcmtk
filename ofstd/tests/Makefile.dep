@@ -254,11 +254,12 @@ tofstd.o: tofstd.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/diag/deprecat.def \
  ../include/dcmtk/ofstd/diag/useafree.def \
  ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/oflimits.h \
- ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/oftest.h \
+ ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/offile.h \
+ ../include/dcmtk/ofstd/oftempf.h ../include/dcmtk/ofstd/oftest.h \
  ../include/dcmtk/ofstd/ofconapp.h ../include/dcmtk/ofstd/ofcmdln.h \
  ../include/dcmtk/ofstd/ofexbl.h ../include/dcmtk/ofstd/ofconsol.h \
  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofthread.h \
- ../include/dcmtk/ofstd/offile.h ../include/dcmtk/ofstd/ofexit.h
+ ../include/dcmtk/ofstd/ofexit.h
 toption.o: toption.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
