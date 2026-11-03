@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2025, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -596,9 +596,17 @@ OFCondition DcmSpecificCharacterSet::convertStringWithoutCodeExtensions(const ch
             // check for 2-byte character or the first or second part of a 4-byte character
             if (isNonASCIIMultiByte && ((c0 & 0x80) != 0))
             {
-                // skip the next byte of the current character
-                ++currentChar;
-                ++pos;
+                // make sure that there is another byte in the input string
+                if (pos + 1 < fromLength)
+                {
+                    // skip the next byte of the current character
+                    ++currentChar;
+                    ++pos;
+                } else {
+                    // report an error
+                    status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error,
+                        "Cannot convert character set: Incomplete byte sequence at the end of the string to be converted");
+                }
             } else {
                 // check for characters HT, LF, FF, CR or any other specified delimiter
                 const OFBool isDelimiter =  ((c0 == '\011') || (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
