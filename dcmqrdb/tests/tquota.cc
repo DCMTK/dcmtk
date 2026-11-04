@@ -17,7 +17,7 @@
  *
  *  Purpose: test program for the quota mechanism of the index database
  *           handle (deletion of the oldest study or of the oldest images
- *           of a study).
+ *           of a study) and for the replacement of a duplicate instance.
  *
  */
 
@@ -176,6 +176,34 @@ OFTEST(dcmqrdb_quotaDeletesOldestImagesOfStudy)
     /* clean up */
     for (int i = 0; i < 4; ++i)
         if (OFStandard::fileExists(files[i])) OFStandard::deleteFile(files[i]);
+    OFString indexFile = storageDir;
+    indexFile += PATH_SEPARATOR;
+    indexFile += DBINDEXFILE;
+    OFStandard::deleteFile(indexFile);
+}
+
+OFTEST(dcmqrdb_duplicateInstanceReplacesFile)
+{
+    OFString storageDir = createStorageDir();
+    OFCHECK(!storageDir.empty());
+    if (storageDir.empty()) return;
+
+    OFCondition cond;
+    DcmQueryRetrieveIndexDatabaseHandle handle(storageDir.c_str(), 2, 1048576, cond);
+    OFCHECK(cond.good());
+    if (cond.bad()) return;
+
+    /* storing the same SOP Instance again removes the old record and file */
+    const OFString study = "1.2.276.0.7230010.3.1.2.1787205428.5";
+    OFString file1, file2;
+    OFCHECK(storeInstance(handle, study, study + ".1.1", file1));
+    OFCHECK(storeInstance(handle, study, study + ".1.1", file2));
+    OFCHECK(file1 != file2);
+    OFCHECK(!OFStandard::fileExists(file1));
+    OFCHECK(OFStandard::fileExists(file2));
+
+    /* clean up */
+    OFStandard::deleteFile(file2);
     OFString indexFile = storageDir;
     indexFile += PATH_SEPARATOR;
     indexFile += DBINDEXFILE;

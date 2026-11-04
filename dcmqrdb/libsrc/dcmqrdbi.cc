@@ -557,6 +557,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     OFCondition cond = EC_Normal;
 
     DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + OFstatic_cast(long, idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
+    /* clear the whole record, so that no uninitialized memory is written to the index file */
+    memset(OFstatic_cast(void *, &rec), 0, sizeof(rec));
     DB_IdxInitRecord (&rec, 0) ;
 
     rec. filename [0] = '\0' ;
@@ -2436,8 +2438,12 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
      * use an unpadded counter as their last component.
      */
     if ( 0 == strcmp(idxRec. StudyInstanceUID, pStudyDesc[oldestStudy].StudyInstanceUID) ) {
-        DB_IdxRemove (idx) ;
-        deleteImageFile(idxRec.filename);
+        /* keep the file if its index record cannot be removed */
+        if (DB_IdxRemove (idx).good())
+            deleteImageFile(idxRec.filename);
+        else
+            DCMQRDB_ERROR("deleteOldestStudy: cannot remove index record " << idx
+                << ", keeping file: " << idxRec.filename);
     }
     idx++ ;
     }
@@ -2702,17 +2708,21 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
 #ifdef DEBUG
         DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
 #endif
-        /* remove the idx record  */
-        DB_IdxRemove (idx);
-        /* only remove the image file if it is different than that
-         * being entered into the database.
-         */
-        if (strcmp(idxRec.filename, newImageFileName) != 0) {
-            deleteImageFile(idxRec.filename);
+        /* remove the idx record, keep file and study info if that fails */
+        if (DB_IdxRemove (idx).bad()) {
+            DCMQRDB_ERROR("removeDuplicateImage: cannot remove index record " << idx
+                << ", keeping file: " << idxRec.filename);
+        } else {
+            /* only remove the image file if it is different than that
+             * being entered into the database.
+             */
+            if (strcmp(idxRec.filename, newImageFileName) != 0) {
+                deleteImageFile(idxRec.filename);
+            }
+            /* update the study info */
+            pStudyDesc[studyIdx].NumberofRegistratedImages--;
+            pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
         }
-        /* update the study info */
-        pStudyDesc[studyIdx].NumberofRegistratedImages--;
-        pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
     }
     idx++;
     }
