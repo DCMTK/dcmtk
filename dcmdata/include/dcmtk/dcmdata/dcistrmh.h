@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2026, OFFIS e.V.
+ *  Copyright (C) 2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,7 +48,8 @@ enum EDFH_ThreadMode
 {
   /// DcmFileHandle is used on a single thread, no lock needed
   EDFH_Single,
-  /// DcmFileHandle may be used on multiple threads, but there is no concurrency during the initial load, so locking is only needed for subsequent access.
+  /// DcmFileHandle may be used on multiple threads, but there is no concurrency
+  /// during the initial load, so locking is only needed for subsequent access.
   EDFH_Lazy,
   /// DcmFileHandle may be used on multiple threads
   EDFH_Multi
@@ -58,31 +59,33 @@ class DcmFileFormat;
 class DcmFileHandleLoader;
 
 /** Reference-counted holder of a single open file handle.
- *  Every DcmFileHandleProducer created for the same input file shares
- *  the same instance, so the file is opened once and closed once, no
- *  matter how many deferred element loads read from it in between.
- *  Instances are always heap-allocated and managed exclusively through
- *  addRef()/release().
+ *  Every DcmFileHandleProducer created for the same input file shares the same
+ *  instance, so the file is opened once and closed once, no matter how many
+ *  deferred element loads read from it in between. Instances are always
+ *  heap-allocated and managed exclusively through addRef()/release().
  */
 class DCMTK_DCMDATA_EXPORT DcmFileHandle
 {
 public:
 
-  /** opens the given file and returns a new handle with a reference
-   *  count of 1, or NULL if the file could not be opened.
+  /** opens the given file
    *  @param filename name of the file to open
+   *  @param threadMode policy for multi-thread operation
+   *  @return a new handle with a reference count of 1, or NULL if the file
+   *    could not be opened
    */
   static DcmFileHandle *open(const OFFilename &filename, EDFH_ThreadMode threadMode = EDFH_Single);
 
-  /// increases the reference count by one
+  /** increases the reference count by one
+   */
   void addRef();
 
-  /** decreases the reference count by one; once it reaches zero the
-   *  file is closed and the object deletes itself.
+  /** decreases the reference count by one; once it reaches zero the file is
+   *  closed and the object deletes itself.
    */
   void release();
 
-  /** reads buflen bytes starting at the given absolute file offset.
+  /** reads buflen bytes starting at the given absolute file offset
    *  @param offset absolute position in file to read from
    *  @param buf destination buffer, must not be NULL
    *  @param buflen number of bytes to read
@@ -90,22 +93,26 @@ public:
    */
   offile_off_t readAt(offile_off_t offset, void *buf, offile_off_t buflen);
 
-  /// returns the total size of the file, in bytes
+  /** returns the total size of the file
+   *  @return total size of the file, in bytes
+   */
   offile_off_t size() const
   {
     return size_;
   }
 
-  /// returns the status of the handle, EC_Normal if the file was opened successfully
+  /** returns the status of the handle
+   *  @return status of the handle, EC_Normal if the file was opened successfully
+   */
   OFCondition status() const
   {
     return status_;
   }
 
 #ifdef WITH_THREADS
-  /** Prepares the handle for the initial load.
-   *  In Single or Lazy mode, no other thread is expected to
-   *  read from the file by a concurrent thread, no lock is needed.
+  /** prepares the handle for the initial load.
+   *  In single or lazy mode, no other thread is expected to read from the file
+   *  by a concurrent thread, no lock is needed.
    */
   void initLoad()
   {
@@ -118,7 +125,7 @@ public:
     }
   }
 
-  /** Prepares the handle for lazy-loading large values.
+  /** prepares the handle for lazy-loading large values.
    *  The initial load is expected to complete.
    *  Enables locking for Multi or Lazy modes, concurrent threads may
    *  read from the file concurrently after the initial load
@@ -177,11 +184,11 @@ private:
 };
 
 
-/** producer that reads from a DcmFileHandle shared with other
- *  producers/streams instead of opening its own file handle.
- *  Keeps track of its own logical read position and seeks the shared
- *  handle to that position before every operation, so several producers
- *  can safely take turns reading from the same open file.
+/** producer that reads from a DcmFileHandle shared with other producers/streams
+ *  instead of opening its own file handle.
+ *  Keeps track of its own logical read position and seeks the shared handle to
+ *  that position before every operation, so several producers can safely take
+ *  turns reading from the same open file.
  */
 class DCMTK_DCMDATA_EXPORT DcmFileHandleProducer: public DcmProducer
 {
@@ -193,11 +200,12 @@ public:
    */
   DcmFileHandleProducer(DcmFileHandle *handle, offile_off_t offset);
 
-  /// destructor, releases the shared file handle
+  /** destructor, releases the shared file handle
+   */
   virtual ~DcmFileHandleProducer();
 
-  /** returns the status of the producer. Unless the status is good,
-   *  the producer will not permit any operation.
+  /** returns the status of the producer. Unless the status is good, the
+   *  producer will not permit any operation.
    *  @return status, true if good
    */
   virtual OFBool good() const;
@@ -208,24 +216,23 @@ public:
    */
   virtual OFCondition status() const;
 
-  /** returns true if the producer is at the end of stream.
+  /** returns true if the producer is at the end of stream
    *  @return true if end of stream, false otherwise
    */
   virtual OFBool eos();
 
-  /** returns the minimum number of bytes that can be read with the
-   *  next call to read(). The DcmObject read methods rely on avail
-   *  to return a value > 0 if there is no I/O suspension since certain
-   *  data such as tag and length are only read "en bloc", i.e. all
-   *  or nothing.
+  /** returns the minimum number of bytes that can be read with the next call
+   *  to read(). The DcmObject read methods rely on avail to return a value > 0
+   *  if there is no I/O suspension since certain data such as tag and length
+   *  are only read "en bloc", i.e. all or nothing.
    *  @return minimum of data available in producer
    */
   virtual offile_off_t avail();
 
-  /** reads as many bytes as possible into the given block.
+  /** reads as many bytes as possible into the given block
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
-   *  @return number of bytes actually read.
+   *  @return number of bytes actually read
    */
   virtual offile_off_t read(void *buf, offile_off_t buflen);
 
@@ -235,13 +242,15 @@ public:
    */
   virtual offile_off_t skip(offile_off_t skiplen);
 
-  /** resets the stream to the position by the given number of bytes.
-   *  @param num number of bytes to putback. If the putback operation
-   *    fails, the producer status becomes bad.
+  /** resets the stream to the position by the given number of bytes
+   *  @param num number of bytes to putback. If the putback operation fails,
+   *    the producer status becomes bad.
    */
   virtual void putback(offile_off_t num);
 
-  /// returns the current logical (absolute) file position of this producer
+  /** returns the current logical (absolute) file position of this producer
+   *  @return the current logical (absolute) file position of this producer
+   */
   offile_off_t tell() const
   {
     return pos_;
@@ -321,10 +330,13 @@ public:
    */
   DcmInputFileHandleStreamFactory(DcmFileHandle *handle, offile_off_t offset);
 
-  /// copy constructor, increases the reference count of the shared file handle
+  /** copy constructor, increases the reference count of the shared file handle
+   *  @param arg object to be copied
+   */
   DcmInputFileHandleStreamFactory(const DcmInputFileHandleStreamFactory &arg);
 
-  /// destructor, releases the shared file handle
+  /** destructor, releases the shared file handle
+   */
   virtual ~DcmInputFileHandleStreamFactory();
 
   /** create a new input stream object
@@ -333,6 +345,7 @@ public:
   virtual DcmInputStream *create() const;
 
   /** returns a pointer to a copy of this object
+   *  @return pointer to a copy of this object
    */
   virtual DcmInputStreamFactory *clone() const
   {
