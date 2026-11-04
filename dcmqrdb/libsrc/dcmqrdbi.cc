@@ -2485,6 +2485,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
             if (nbimages == MAX_NUMBER_OF_IMAGES) {
                 // too many images in this study, bail out
                 DCMQRDB_ERROR("maximum number of images per study (" << MAX_NUMBER_OF_IMAGES << ") exceeded");
+                free(StudyArray);
                 return QR_EC_IndexDatabaseError;
             }
         }
