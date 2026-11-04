@@ -48,6 +48,19 @@ END_EXTERN_C
 #undef clearerr
 #endif
 
+/* Enable compile-time checking of arguments passed to the printf-style member
+ * functions of OFFile, and mark their format parameter as a valid forwarding
+ * target so -Wformat-nonliteral does not warn inside them. FMT is the 1-based
+ * position of the format string parameter and ARGS the position of the first
+ * variadic argument (0 for va_list functions); the implicit 'this' parameter
+ * of non-static member functions counts as parameter 1.
+ */
+#if defined(__GNUC__) || defined(__clang__)
+#define OFFILE_FORMAT_PRINTF(FMT, ARGS) __attribute__((format(printf, FMT, ARGS)))
+#else
+#define OFFILE_FORMAT_PRINTF(FMT, ARGS)
+#endif
+
 /* When using the ISO C++ include files such as <cstdio>, <cstdarg> etc.,
  * all ANSI C functions like fopen() are declared in namespace std,
  * (e.g. we have to use std::fopen()), but non-ANSI Posix functions remain
@@ -891,6 +904,7 @@ public:
    *  @param ... further parameters according to format string
    *  @return number of characters printed
    */
+  OFFILE_FORMAT_PRINTF(2, 3)
   int fprintf(const char *format, ...)
   {
     int result = 0;
@@ -906,6 +920,7 @@ public:
    *  @param arg list of further parameters according to format string
    *  @return number of characters printed
    */
+   OFFILE_FORMAT_PRINTF(2, 0)
    int vfprintf(const char *format, va_list arg)
    {
      return :: vfprintf(file_, format, arg);
