@@ -178,7 +178,10 @@ IODUSFoRModule::setApexPosition(const Float64& xValue, const Float64& yValue, co
         result = elem->putFloat64(yValue, 1);
     if (result.good())
         result = elem->putFloat64(zValue, 2);
-    m_Item->insert(elem);
+    if (result.good())
+        result = m_Item->insert(elem, OFTrue /* replaceOld */);
+    if (result.bad())
+        delete elem;
 
     return result;
 }
@@ -212,7 +215,7 @@ OFCondition IODUSFoRModule::setVolumetoTransducerMappingMatrix(const OFVector<Fl
     }
     if (result.good())
     {
-        result = m_Item->insert(elem);
+        result = m_Item->insert(elem, OFTrue /* replaceOld */);
         if (result.bad())
             delete elem;
     }
@@ -256,7 +259,7 @@ OFCondition IODUSFoRModule::setVolumeToTableMappingMatrix(const OFVector<Float64
     }
     if (result.good())
     {
-        result = m_Item->insert(elem);
+        result = m_Item->insert(elem, OFTrue /* replaceOld */);
         if (result.bad())
             delete elem;
     }
