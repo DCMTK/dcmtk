@@ -30,5 +30,6 @@ OFTEST_REGISTER(dcmqrdb_lowercaseQueryRetrieveLevel);
 OFTEST_REGISTER(dcmqrdb_commandAbstractSyntaxMatch);
 OFTEST_REGISTER(dcmqrdb_commandAbstractSyntaxMismatch);
 OFTEST_REGISTER(dcmqrdb_quotaDeletesOnlySelectedStudy);
+OFTEST_REGISTER(dcmqrdb_quotaDeletesOldestImagesOfStudy);
 
 OFTEST_MAIN("dcmqrdb")

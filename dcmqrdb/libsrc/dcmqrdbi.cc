@@ -2479,15 +2479,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     while ( DB_IdxGetNext(&(handle_ -> idxCounter), &idxRec) == EC_Normal ) {
         /* exact match, see the comment in deleteOldestStudy() */
         if ( 0 == strcmp(idxRec. StudyInstanceUID, StudyUID) ) {
-            StudyArray[nbimages]. idxCounter = handle_ -> idxCounter ;
-            StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
-            StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
             if (nbimages == MAX_NUMBER_OF_IMAGES) {
                 // too many images in this study, bail out
                 DCMQRDB_ERROR("maximum number of images per study (" << MAX_NUMBER_OF_IMAGES << ") exceeded");
                 free(StudyArray);
                 return QR_EC_IndexDatabaseError;
             }
+            StudyArray[nbimages]. idxCounter = handle_ -> idxCounter ;
+            StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
+            StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
         }
     }
 
@@ -2523,14 +2523,23 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
         break;
     }
 
+    // Remove the index record before the file, as deleteOldestStudy() does.
+    // If the record cannot be read, its file name is undefined; if it cannot
+    // be removed, deleting the file would leave a dangling record. In both
+    // cases stop here, which keeps index, files and study descriptor in sync.
     IdxRecord idxRemoveRec ;
-    DB_IdxRead (StudyArray[s]. idxCounter, &idxRemoveRec) ;
+    if ( DB_IdxRead (StudyArray[s]. idxCounter, &idxRemoveRec).bad() ||
+         DB_IdxRemove (StudyArray[s]. idxCounter).bad() ) {
+        DCMQRDB_ERROR("deleteOldestImages: cannot read or remove index record "
+            << StudyArray[s]. idxCounter << ", freed only " << DeletedSize
+            << " of " << RequiredSize << " required bytes");
+        break;
+    }
 #ifdef DEBUG
     DCMQRDB_DEBUG("Removing file : " << idxRemoveRec. filename);
 #endif
     deleteImageFile(idxRemoveRec.filename);
 
-    DB_IdxRemove (StudyArray[s]. idxCounter) ;
     pStudyDesc[StudyNum].NumberofRegistratedImages -= 1 ;
     pStudyDesc[StudyNum].StudySize -= StudyArray[s]. ImageSize ;
     DeletedSize += StudyArray[s++]. ImageSize ;

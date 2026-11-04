@@ -16,7 +16,8 @@
  *  Author:  Michael Onken
  *
  *  Purpose: test program for the quota mechanism of the index database
- *           handle (deletion of the oldest study).
+ *           handle (deletion of the oldest study or of the oldest images
+ *           of a study).
  *
  */
 
@@ -117,6 +118,64 @@ OFTEST(dcmqrdb_quotaDeletesOnlySelectedStudy)
     /* clean up */
     OFStandard::deleteFile(fileB);
     OFStandard::deleteFile(fileC);
+    OFString indexFile = storageDir;
+    indexFile += PATH_SEPARATOR;
+    indexFile += DBINDEXFILE;
+    OFStandard::deleteFile(indexFile);
+}
+
+OFTEST(dcmqrdb_quotaDeletesOldestImagesOfStudy)
+{
+    OFString storageDir = createStorageDir();
+    OFCHECK(!storageDir.empty());
+    if (storageDir.empty()) return;
+
+    /* all instance UIDs have the same length, so all files have the same size */
+    const OFString study = "1.2.276.0.7230010.3.1.2.1787205428.3";
+    OFString files[4];
+    size_t imageSize = 0;
+    OFCondition cond;
+
+    /* store the first image with a large per-study limit to learn its size */
+    {
+        DcmQueryRetrieveIndexDatabaseHandle handle(storageDir.c_str(), 2, 1048576, cond);
+        OFCHECK(cond.good());
+        if (cond.bad()) return;
+        OFCHECK(storeInstance(handle, study, study + ".1.1", files[0]));
+        imageSize = OFStandard::getFileSize(files[0]);
+    }
+    OFCHECK(imageSize > 0);
+    if (imageSize == 0) return;
+
+    /* room for two images of the study, but not for three */
+    DcmQueryRetrieveIndexDatabaseHandle handle(storageDir.c_str(), 2,
+        OFstatic_cast(long, imageSize * 5 / 2), cond);
+    OFCHECK(cond.good());
+    if (cond.bad()) return;
+    OFCHECK(storeInstance(handle, study, study + ".1.2", files[1]));
+    OFCHECK(OFStandard::fileExists(files[0]));
+    OFCHECK(OFStandard::fileExists(files[1]));
+
+    /* Each further image causes exactly one older image to be deleted. The
+     * order among images recorded within the same second is undefined, so
+     * only the number of remaining files is checked. The second round also
+     * checks that the study descriptor was kept in sync with the index.
+     */
+    for (int i = 2; i < 4; ++i)
+    {
+        char suffix[16];
+        OFStandard::snprintf(suffix, sizeof(suffix), ".1.%d", i + 1);
+        OFCHECK(storeInstance(handle, study, study + suffix, files[i]));
+        OFCHECK(OFStandard::fileExists(files[i]));
+        int remaining = 0;
+        for (int j = 0; j <= i; ++j)
+            if (OFStandard::fileExists(files[j])) ++remaining;
+        OFCHECK_EQUAL(remaining, 2);
+    }
+
+    /* clean up */
+    for (int i = 0; i < 4; ++i)
+        if (OFStandard::fileExists(files[i])) OFStandard::deleteFile(files[i]);
     OFString indexFile = storageDir;
     indexFile += PATH_SEPARATOR;
     indexFile += DBINDEXFILE;
