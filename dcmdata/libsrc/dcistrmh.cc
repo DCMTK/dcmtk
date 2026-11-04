@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2026, OFFIS e.V.
+ *  Copyright (C) 2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -77,13 +77,13 @@ DcmFileHandle *DcmFileHandle::open(const OFFilename &filename, EDFH_ThreadMode t
 void DcmFileHandle::addRef()
 {
 #ifdef WITH_THREADS
-	if (lock_)
-		mutex_.lock();
+  if (lock_)
+    mutex_.lock();
 #endif
   ++refCount_;
 #ifdef WITH_THREADS
   if (lock_)
-	  mutex_.unlock();
+    mutex_.unlock();
 #endif
 }
 
@@ -92,12 +92,12 @@ void DcmFileHandle::release()
   OFBool deleteSelf = OFFalse;
 #ifdef WITH_THREADS
   if (lock_)
-	  mutex_.lock();
+    mutex_.lock();
 #endif
   deleteSelf = (--refCount_ <= 0);
 #ifdef WITH_THREADS
   if (lock_)
-	  mutex_.unlock();
+    mutex_.unlock();
 #endif
   if (deleteSelf)
     delete this;
@@ -108,7 +108,7 @@ offile_off_t DcmFileHandle::readAt(offile_off_t offset, void *buf, offile_off_t 
   offile_off_t result = 0;
 #ifdef WITH_THREADS
   if (lock_)
-	  mutex_.lock();
+    mutex_.lock();
 #endif
   if (status_.good() && file_.open() && buf && buflen)
   {
@@ -119,7 +119,7 @@ offile_off_t DcmFileHandle::readAt(offile_off_t offset, void *buf, offile_off_t 
   }
 #ifdef WITH_THREADS
   if (lock_)
-	  mutex_.unlock();
+    mutex_.unlock();
 #endif
   return result;
 }
@@ -266,4 +266,3 @@ DcmInputStream *DcmInputFileHandleStreamFactory::create() const
 {
   return new DcmInputFileHandleStream(handle_, offset_);
 }
-
