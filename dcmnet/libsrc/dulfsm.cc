@@ -2522,8 +2522,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             // do not report the last network error code here: poll()/select()
             // returning 0 means timeout, i.e. no error code has been set, so we
             // would report a stale or bogus text such as "Success"/"No error"
-            OFString msg = "TCP Initialization Error: Timeout";
-            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, msg.c_str());
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, "TCP Initialization Error: Timeout");
   }
 #ifndef HAVE_WINSOCK_H
         else if (rc > 0)
