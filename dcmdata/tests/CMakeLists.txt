@@ -6,6 +6,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tdicdir.cc
   tdict.cc
   telemlen.cc
+  tfhstrm.cc
   tfrmsiz.cc
   tests.cc
   tfilter.cc

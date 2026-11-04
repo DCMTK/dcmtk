@@ -119,7 +119,10 @@ enum DcmInputStreamFactoryType
   DFT_DcmInputFileStreamFactory,
 
   /// class DcmInputTempFileStreamFactory
-  DFT_DcmInputTempFileStreamFactory
+  DFT_DcmInputTempFileStreamFactory,
+
+  /// class DcmInputFileHandleStreamFactory
+  DFT_DcmInputFileHandleStreamFactory
 };
 
 /** pure virtual abstract base class for input stream factories,

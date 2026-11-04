@@ -39,6 +39,7 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcistrmh.h"    /* for class DcmInputFileHandleStream */
 #include "dcmtk/dcmdata/dcistrms.h"    /* for class DcmStdinStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
@@ -1046,6 +1047,67 @@ OFCondition DcmFileFormat::loadFileUntilTag(
     }
     return l_error;
 }
+
+
+OFCondition DcmFileFormat::loadFile(DcmFileHandle &fileHandle,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength,
+                                    const E_FileReadMode readMode)
+{
+  return DcmFileFormat::loadFileUntilTag(fileHandle, readXfer, groupLength, maxReadLength, readMode, DCM_UndefinedTagKey);
+}
+
+
+OFCondition DcmFileFormat::loadFileUntilTag(
+                                    DcmFileHandle &fileHandle,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength,
+                                    const E_FileReadMode readMode,
+                                    const DcmTagKey &stopParsingAtElement)
+{
+    if (readMode == ERM_dataset)
+        return getDataset()->loadFileUntilTag(fileHandle, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+
+    OFCondition l_error = fileHandle.status();
+    if (l_error.bad()) return l_error;
+
+    /* open file handle stream */
+    DcmInputFileHandleStream fileStream(&fileHandle, 0);
+    /* apply configured nesting depth limit */
+    if (MaxNestingDepth > 0)
+        fileStream.setMaxNestingDepth(MaxNestingDepth);
+    /* apply configured element length limit */
+    if (MaxElementLength != 0)
+        fileStream.setMaxElementLength(MaxElementLength);
+    /* apply configured incremental load threshold */
+    if (IncrementalLoadThreshold != 0)
+        fileStream.setIncrementalLoadThreshold(IncrementalLoadThreshold);
+
+    /* check stream status */
+    l_error = fileStream.status();
+    if (l_error.good())
+    {
+        /* clear this object */
+        l_error = clear();
+        if (l_error.good())
+        {
+            /* save old value */
+            const E_FileReadMode oldMode = FileReadMode;
+            FileReadMode = readMode;
+            /* read data from file */
+            transferInit();
+            l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+            transferEnd();
+            /* restore old value */
+            FileReadMode = oldMode;
+        }
+    }
+
+    return l_error;
+}
+
 
 
 OFCondition DcmFileFormat::saveFile(const OFFilename &fileName,

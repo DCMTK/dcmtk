@@ -34,6 +34,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcistrmh.h"    /* for class DcmInputFileHandleStream */
 #include "dcmtk/dcmdata/dcistrms.h"    /* for class DcmStdinStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
@@ -707,6 +708,56 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
 
         }
     }
+    return l_error;
+}
+
+
+OFCondition DcmDataset::loadFile(DcmFileHandle &fileHandle,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength)
+{
+  return DcmDataset::loadFileUntilTag(fileHandle, readXfer, groupLength, maxReadLength, DCM_UndefinedTagKey);
+}
+
+
+OFCondition DcmDataset::loadFileUntilTag(
+                                    DcmFileHandle &fileHandle,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength,
+                                    const DcmTagKey &stopParsingAtElement)
+{
+    OFCondition l_error = fileHandle.status();
+    if (l_error.bad()) return l_error;
+
+    /* open file handle stream */
+    DcmInputFileHandleStream fileStream(&fileHandle, 0);
+    /* apply configured nesting depth limit */
+    if (getMaxNestingDepth() > 0)
+        fileStream.setMaxNestingDepth(getMaxNestingDepth());
+    /* apply configured element length limit */
+    if (getMaxElementLength() != 0)
+        fileStream.setMaxElementLength(getMaxElementLength());
+    /* apply configured incremental load threshold */
+    if (getIncrementalLoadThreshold() != 0)
+        fileStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
+
+    /* check stream status */
+    l_error = fileStream.status();
+    if (l_error.good())
+    {
+        /* clear this object */
+        l_error = clear();
+        if (l_error.good())
+        {
+            /* read data from file */
+            transferInit();
+            l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+            transferEnd();
+        }
+    }
+
     return l_error;
 }
 

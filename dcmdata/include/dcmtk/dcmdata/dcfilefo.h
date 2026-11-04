@@ -33,7 +33,7 @@ class DcmJsonFormat;
 class DcmInputStream;
 class DcmOutputStream;
 class DcmRepresentationParameter;
-
+class DcmFileHandle;
 
 /** a class handling the DICOM file format (with meta header)
  */
@@ -300,6 +300,60 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition loadFileUntilTag(const OFFilename &fileName,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength,
+                                 const E_FileReadMode readMode = ERM_autoDetect,
+                                 const DcmTagKey &stopParsingAtElement = DCM_UndefinedTagKey);
+
+    /** load object from a DICOM file using a file handle.
+     *  This method supports DICOM objects stored as a file (with meta header) or as a
+     *  dataset (without meta header).  By default, the presence of a meta header is
+     *  detected automatically.
+     *  @param fileHandle reference counted handle to an open file to be loaded.
+     *    whenever elements in the file are skipped, a reference to the same single
+     *    handle will be stored instead of the filename. It is the responsibility of
+     *    the caller to keep the file open as long as this object is in use.
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown).
+     *    Please note that the given transfer syntax is not used for DICOM files, as the meta
+     *    header already specifies the transfer syntax of the dataset (unless it is ignored).
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param maxReadLength maximum number of bytes to be read for an element value.
+     *    Element values with a larger size are not loaded until their value is retrieved
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
+     *  @param readMode read file with or without meta header, i.e. as a fileformat or a
+     *    dataset.  Use ERM_fileOnly in order to force the presence of a meta header.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition loadFile(DcmFileHandle &fileHandle,
+                                 const E_TransferSyntax readXfer = EXS_Unknown,
+                                 const E_GrpLenEncoding groupLength = EGL_noChange,
+                                 const Uint32 maxReadLength = DCM_MaxReadLength,
+                                 const E_FileReadMode readMode = ERM_autoDetect);
+
+    /** load object from a DICOM file, up to the attribute tag stopParsingAtElement,
+     *  using a file handle.
+     *  This method supports DICOM objects stored as a file (with meta header) or as a
+     *  dataset (without meta header).  By default, the presence of a meta header is
+     *  detected automatically.
+     *  @param fileHandle reference counted handle to an open file to be loaded.
+     *    whenever elements in the file are skipped, a reference to the same single
+     *    handle will be stored instead of the filename. It is the responsibility of
+     *    the caller to keep the file open as long as this object is in use.
+     *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown).
+     *    Please note that the given transfer syntax is not used for DICOM files, as the meta
+     *    header already specifies the transfer syntax of the dataset (unless it is ignored).
+     *  @param groupLength flag, specifying how to handle the group length tags
+     *  @param maxReadLength maximum number of bytes to be read for an element value.
+     *    Element values with a larger size are not loaded until their value is retrieved
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
+     *  @param readMode read file with or without meta header, i.e. as a fileformat or a
+     *    dataset.  Use ERM_fileOnly in order to force the presence of a meta header.
+     *  @param stopParsingAtElement parsing of the input stream is stopped when
+     *                       this tag key or any higher tag is encountered.
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition loadFileUntilTag(DcmFileHandle &fileHandle,
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength,
