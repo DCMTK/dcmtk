@@ -413,12 +413,23 @@ private:
   /** modifies all VOI window center/width settings in the image.
    *  Modifications are based on the pixel value mapping
    *  f(x) = (x+voiOffset)*voiFactor
+   *  If origSlope/origIntercept are non-identity, the existing Window
+   *  Center/Width values (which are expressed in the physical domain
+   *  defined by the dataset's original Modality Rescale Slope/Intercept)
+   *  are first converted back into the raw stored-pixel domain via
+   *  raw = (physical - origIntercept) / origSlope before voiOffset/voiFactor
+   *  (which operate in that raw domain) are applied. This is needed when
+   *  the encoder bypassed DicomImage's internal Modality Rescale (see
+   *  CIF_IgnoreModalityTransformation in encodeMonochromeImage()).
    *  @param dataset dataset to be updated
    *  @param voiOffset offset to be added to each pixel
    *  @param voiFactor factor to be multiplied
+   *  @param origSlope original Modality Rescale Slope of the input dataset (1.0 if none)
+   *  @param origIntercept original Modality Rescale Intercept of the input dataset (0.0 if none)
    *  @return EC_Normal if successful, an error code otherwise
    */
-  static OFCondition correctVOIWindows(DcmItem *dataset, double voiOffset, double voiFactor);
+  static OFCondition correctVOIWindows(DcmItem *dataset, double voiOffset, double voiFactor,
+    double origSlope = 1.0, double origIntercept = 0.0);
 
   OFCondition updatePlanarConfiguration(
     DcmItem *item,

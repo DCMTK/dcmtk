@@ -965,6 +965,42 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   if (cp->getAcrNemaCompatibility())
     flags |= CIF_AcrNemaCompatibility;
 
+  // VOI transformations should only be applied on the dataset level, not
+  // in nested items such as the Icon Image Sequence where we don't expect
+  // a VOI window or LUT to be present. Determined up front (it only depends
+  // on the dataset's item type and the codec parameters) because it also
+  // affects how the DicomImage object below is initialized.
+  size_t windowType = 0;
+  if (dataset->ident() == EVR_dataset)
+    windowType = cp->getWindowType();
+
+  // For windowType 0 (the "auto-fit" default), DicomImage's internal pixel
+  // representation is an INTEGER type sized to fit the *physical* (Modality
+  // Rescale-applied) value range. For images with a small RescaleSlope (e.g.
+  // ADC/perfusion maps, physical range ~0-4), this collapses the entire
+  // 12-bit dynamic range down to a handful of integers *before* any windowing
+  // logic below ever runs - no choice of window floor can recover precision
+  // already destroyed here. Avoid this by making DicomImage skip the
+  // Modality transform (keep raw stored values, full original bit depth) and
+  // instead compose the window-derived scale with the dataset's own original
+  // RescaleSlope/Intercept further down, so the final output tags still
+  // convert to the correct physical units. origRescaleSlope/origRescaleIntercept
+  // default to the identity transform (1.0/0.0), so all composition below is
+  // a no-op whenever this doesn't apply (windowType != 0, or no Rescale
+  // Slope/Intercept present, e.g. a Modality LUT Sequence is used instead).
+  // Per DICOM (and DiMonoModality::checkRescaling()), if a Modality LUT
+  // Sequence is also present it takes precedence over Rescale Slope/Intercept,
+  // so don't bypass the transformation in that (non-conformant but legal)
+  // case - we are only able to compose a linear Slope/Intercept, not a LUT.
+  double origRescaleSlope = 1.0;
+  double origRescaleIntercept = 0.0;
+  if ((windowType == 0) && !dataset->tagExists(DCM_ModalityLUTSequence) &&
+      dataset->findAndGetFloat64(DCM_RescaleSlope, origRescaleSlope).good() &&
+      dataset->findAndGetFloat64(DCM_RescaleIntercept, origRescaleIntercept).good())
+  {
+    flags |= CIF_IgnoreModalityTransformation;
+  }
+
   // Check if image is continuous-tone, bail out otherwise.
   // We check the value of BitsStored, which is not affected by any transformation such as MLUT.
   Uint16 bitsStored = 0;
@@ -1003,15 +1039,6 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
 
   // create overlay data for embedded overlays
   if (result.good()) result = adjustOverlays(dataset, dimage);
-
-  // VOI transformations should only be applied on the dataset level, not
-  // in nested items such as the Icon Image Sequence where we don't expect
-  // a VOI window or LUT to be present
-  size_t windowType = 0;
-  if (dataset->ident() == EVR_dataset)
-  {
-    windowType = cp->getWindowType();
-  }
 
   // set VOI transformation
   if (result.good())
@@ -1174,16 +1201,26 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         {
           // Use Rescale Slope/Intercept to map the decompressed image data
           // back to the original value range, keeping all VOI transformations valid.
+          // When we skipped DicomImage's own Modality transform, windowWidth/
+          // windowCenter/minRange/maxRange are expressed in the RAW stored-pixel
+          // domain, not the physical domain. Compose the window-derived
+          // raw->output scale with the dataset's original RescaleSlope/Intercept
+          // (identity 1.0/0.0 if there was none, making this a no-op) so the
+          // final tags still convert output pixel values to correct physical
+          // units: physical = origSlope * (newSlope * outputValue + newIntercept) + origIntercept
+          double newSlope, newIntercept;
           if (mode_usePixelValues)
           {
-            rescaleSlope = (windowWidth-1)/((1<<bitsPerSample)-1);
-            rescaleIntercept = windowCenter - (windowWidth * 0.5);
+            newSlope = (windowWidth-1)/((1<<bitsPerSample)-1);
+            newIntercept = windowCenter - (windowWidth * 0.5);
           }
           else
           {
-            rescaleSlope = (maxRange - minRange)/((1<<bitsPerSample)-1);
-            rescaleIntercept = minRange;
+            newSlope = (maxRange - minRange)/((1<<bitsPerSample)-1);
+            newIntercept = minRange;
           }
+          rescaleSlope = origRescaleSlope * newSlope;
+          rescaleIntercept = origRescaleSlope * newIntercept + origRescaleIntercept;
         }
         else
         {
@@ -1358,8 +1395,17 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     {
       if (deleteVOILUT) delete dataset->remove(DCM_VOILUTSequence);
 
-      // Adjust window center/width
-      if (result.good()) result = correctVOIWindows(dataset, voiOffset, voiFactor);
+      // Adjust window center/width. The physical->raw domain conversion is only
+      // needed when the output dataset no longer carries a Modality Rescale
+      // (deleteVOILUT branch): in that case Window Center/Width must be
+      // re-expressed in the new raw output pixel domain. When deleteVOILUT is
+      // false, the composed Rescale Slope/Intercept already maps output pixels
+      // back to the exact same physical domain as the original Window
+      // Center/Width, so those values remain valid unchanged (pass identity
+      // origSlope/origIntercept, which is also what origRescaleSlope/
+      // origRescaleIntercept already default to if there was no rescale).
+      if (result.good()) result = correctVOIWindows(dataset, voiOffset, voiFactor,
+        deleteVOILUT ? origRescaleSlope : 1.0, deleteVOILUT ? origRescaleIntercept : 0.0);
 
       // Don't modify Presentation LUT transformations (if any)
     }
@@ -1401,9 +1447,11 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
 OFCondition DJCodecEncoder::correctVOIWindows(
   DcmItem *dataset,
   double voiOffset,
-  double voiFactor)
+  double voiFactor,
+  double origSlope,
+  double origIntercept)
 {
-  if (voiOffset == 0.0 && voiFactor == 1.0) return EC_Normal;
+  if (voiOffset == 0.0 && voiFactor == 1.0 && origSlope == 1.0 && origIntercept == 0.0) return EC_Normal;
 
   OFCondition result = EC_Normal;
   DcmElement *center = NULL;
@@ -1444,6 +1492,14 @@ OFCondition DJCodecEncoder::correctVOIWindows(
     {
       if (((center->getFloat64(currentCenter,OFstatic_cast(Uint32, i))).good()) && ((width->getFloat64(currentWidth,OFstatic_cast(Uint32, i))).good()))
       {
+        // The dataset's existing Window Center/Width values are expressed in
+        // the physical domain established by the ORIGINAL Modality Rescale
+        // Slope/Intercept (origSlope/origIntercept). Convert them back into
+        // the raw stored-pixel domain before applying voiOffset/voiFactor,
+        // which operate on raw pixel values.
+        currentCenter = (currentCenter - origIntercept) / origSlope;
+        currentWidth = currentWidth / origSlope;
+
         // found one pair of values, adapt them to value range shifted pixel data
         tempCenter = (currentCenter+voiOffset)*voiFactor;
         tempWidth = currentWidth * voiFactor;
