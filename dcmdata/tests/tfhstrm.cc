@@ -90,7 +90,7 @@ public:
    */
   ~TestDataset()
   {
-//    unlink(fileName_.c_str());
+    unlink(fileName_.c_str());
   }
 
   /** Creates the DICOM file with the specified number of private groups and elements per group.
@@ -199,6 +199,7 @@ OFTEST(dcmdata_fhstrm_single) {
   cond = dcmff.loadFile(*fhandle, EXS_Unknown, EGL_noChange, 16);
   if (cond.bad()) {
     OFCHECK_FAIL("Failed to load test dataset: " << cond.text());
+    fhandle->release();
     return;
   }
 
@@ -206,11 +207,13 @@ OFTEST(dcmdata_fhstrm_single) {
   cond = dcmff.getDataset()->findAndGetSequence(sequenceTag, seq);
   if (cond.bad()) {
     OFCHECK_FAIL("Failed to find sequence: " << cond.text());
+    fhandle->release();
     return;
   }
 
   if (seq->card() != numGroups) {
     OFCHECK_FAIL("Number of groups in sequence does not match expected: " << seq->card() << " != " << (int)numGroups << OFendl);
+    fhandle->release();
     return;
   }
 
@@ -221,9 +224,11 @@ OFTEST(dcmdata_fhstrm_single) {
     OFPair<bool, OFString> checkItemResult = checkItem(ditem, group, numElements);
     if (!checkItemResult.first) {
       OFCHECK_FAIL("Error in group " << (int)g << ": " << checkItemResult.second << OFendl);
+      fhandle->release();
       return;
     }
   }
+  fhandle->release();
 }
 
 /// Thread for lazy loading elements from a DICOM sequence item.
@@ -295,6 +300,7 @@ OFTEST(dcmdata_fhstrm_lazy) {
   cond = dcmff.loadFile(*fhandle, EXS_Unknown, EGL_noChange, 16);
   if (cond.bad()) {
     OFCHECK_FAIL("Failed to load test dataset: " << cond.text());
+    fhandle->release();
     return;
   }
 
@@ -302,11 +308,13 @@ OFTEST(dcmdata_fhstrm_lazy) {
   cond = dcmff.getDataset()->findAndGetSequence(sequenceTag, seq);
   if (cond.bad()) {
     OFCHECK_FAIL("Failed to find sequence: " << cond.text());
+    fhandle->release();
     return;
   }
 
   if (seq->card() != numGroups) {
     OFCHECK_FAIL("Number of groups in sequence does not match expected: " << seq->card() << " != " << (int)numGroups << OFendl);
+    fhandle->release();
     return;
   }
 
@@ -324,6 +332,7 @@ OFTEST(dcmdata_fhstrm_lazy) {
     }
     delete readers[g];
   }
+  fhandle->release();
 }
 
 
@@ -437,4 +446,5 @@ OFTEST(dcmdata_fhstrm_multi) {
     }
     delete readers[g];
   }
+  fhandle->release();
 }
