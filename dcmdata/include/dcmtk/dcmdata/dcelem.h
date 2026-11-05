@@ -356,7 +356,7 @@ class DCMTK_DCMDATA_EXPORT DcmElement
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition getOFString(OFString &str,
-                                    const unsigned long pos,
+                                    const unsigned long pos = 0,
                                     OFBool normalize = OFTrue);
 
     /** get entire element value as a character string.
