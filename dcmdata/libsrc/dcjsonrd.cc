@@ -687,7 +687,11 @@ OFCondition DcmJSONReader::parseElement(
     result = createElement(newElem, dcmTag, vr);
     if (result.bad())
     {
-        if (stopOnErrorPolicy_) return result; else result = EC_Normal;
+        // no element was created, so there is nothing to fill or to insert. When
+        // errors are ignored, skip this attribute instead of working on a NULL
+        // pointer. This is safe because the loop above has already moved "current"
+        // past all tokens of this element.
+        if (stopOnErrorPolicy_) return result; else return EC_Normal;
     }
 
     if (valueToken == NULL)
@@ -1192,9 +1196,12 @@ OFCondition DcmJSONReader::createElement(
 
     DCMDATA_TRACE("parsing VR: " << vr);
 
-    // convert vr string
+    // convert vr string. Note that non-standard VR names such as "na", "pi", "ox",
+    // "xs", "lt" and "up" are internal to DCMTK and are not DICOM VRs, so they are
+    // rejected here as well: there is no element class for some of them, which would
+    // make the element creation below fail.
     const DcmVR jsonVR(vr.c_str());
-    if (jsonVR.isUnknown() || jsonVR.isInvalid())
+    if (jsonVR.isUnknown() || jsonVR.isInvalid() || !jsonVR.isStandard())
     {
         // check whether "vr" attribute exists
         if (vr.empty() || vr == "")
