@@ -203,7 +203,6 @@ public:
    *    representation, may be NULL
    *  @param fromPixSeq compressed pixel sequence
    *  @param cp codec parameters for this codec
-   *  @param dataset pointer to dataset in which pixel data element is contained
    *  @param dataset pointer to DICOM dataset in which this pixel data object
    *    is located. Used to access photometric interpretation.
    *  @param decompressedColorModel upon successful return, the color model
