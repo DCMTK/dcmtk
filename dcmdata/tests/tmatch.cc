@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2018, OFFIS e.V.
+ *  Copyright (C) 2017-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -23,6 +23,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/oftimer.h"
+#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcmatch.h"
 
@@ -162,4 +164,52 @@ OFTEST(dcmdata_attribute_matching)
     match = DcmAttributeMatching( EVR_TM );
     OFCHECK(match( "-12", 3, "11", 2 ));
     OFCHECK(!DcmAttributeMatching( EVR_PN )( "M?ller", 6, "^Martin", 7 ));
+}
+
+OFTEST(dcmdata_attribute_matching_manyWildcards)
+{
+    // A query consisting of many "*?" pairs followed by a character that cannot
+    // match used to make the wild card matcher run for minutes or hours, because
+    // it retried the remaining query at every remaining position of the value
+    // and never remembered what had already failed. A network peer sending a
+    // C-FIND request could use this to keep an SCP busy (denial of service).
+    const OFString value( "CT CHEST ABDOMEN PELVIS WITH IV CONTRAST" );
+    OFString query;
+    OFTimer timer;
+    // the matcher is expected to need a few microseconds per query; this generous
+    // limit is only ever reached if the exponential behaviour comes back
+    const double timeLimit = 10.0;
+    for( unsigned int pairs = 1; pairs <= 20; ++pairs )
+    {
+        query += "*?";
+        // cannot match: the value does not contain an 'X'
+        OFCHECK(!test_wildcards( ( query + "X" ).c_str(), value.c_str() ));
+        // matches: the value is long enough for all '?' wildcards
+        OFCHECK(test_wildcards( ( query + "*" ).c_str(), value.c_str() ));
+        // give up early, so that a regression fails in seconds instead of
+        // appearing to hang for hours
+        if( timer.getDiff() >= timeLimit )
+            break;
+    }
+    OFCHECK(timer.getDiff() < timeLimit);
+
+    // results must not change for queries with several wild cards
+    OFCHECK(test_wildcards( "*?*?*?*?*", "abcd" ));
+    OFCHECK(!test_wildcards( "*?*?*?*?*?", "abcd" ));
+    OFCHECK(test_wildcards( "*a*b*c*", "xaybzc" ));
+    OFCHECK(!test_wildcards( "*a*b*c*d*", "xaybzc" ));
+    OFCHECK(test_wildcards( "**", "" ));
+    OFCHECK(test_wildcards( "*", "" ));
+    OFCHECK(!test_wildcards( "?", "" ));
+    OFCHECK(!test_wildcards( "a", "" ));
+    OFCHECK(test_wildcards( "a*", "a" ));
+    OFCHECK(test_wildcards( "*a", "a" ));
+    OFCHECK(!test_wildcards( "*a", "ab" ));
+    OFCHECK(test_wildcards( "*b", "ab" ));
+    OFCHECK(test_wildcards( "a*b*", "ab" ));
+    OFCHECK(!test_wildcards( "a*b*c", "ab" ));
+    OFCHECK(test_wildcards( "*abab", "ababab" ));
+    // the query has to match the whole value, which does not end in "aba"
+    OFCHECK(!test_wildcards( "*aba", "ababab" ));
+    OFCHECK(!test_wildcards( "*abaX", "ababab" ));
 }

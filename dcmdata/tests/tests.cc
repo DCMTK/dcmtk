@@ -133,6 +133,7 @@ OFTEST_REGISTER(dcmdata_specificCharacterSet_3);
 OFTEST_REGISTER(dcmdata_specificCharacterSet_4);
 OFTEST_REGISTER(dcmdata_attribute_filter);
 OFTEST_REGISTER(dcmdata_attribute_matching);
+OFTEST_REGISTER(dcmdata_attribute_matching_manyWildcards);
 OFTEST_REGISTER(dcmdata_newDicomElementPrivate);
 OFTEST_REGISTER(dcmdata_generateUniqueIdentifier);
 OFTEST_REGISTER(dcmdata_xferLookup_1);

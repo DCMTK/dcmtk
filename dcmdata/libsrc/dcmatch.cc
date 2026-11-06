@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2017-2022, OFFIS e.V.
+ *  Copyright (C) 2017-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -48,50 +48,51 @@ public:
     // the query and the candidate string
     OFBool match( const char* queryData, const char* candidateData ) const
     {
-        // matches all regular chars and '?' wildcard with the candidate string
-        while( queryData != queryDataEnd && candidateData != candidateDataEnd && *queryData != '*' )
+        // Matching is performed iteratively, backtracking to the most recent
+        // '*' wildcard on a mismatch. A recursive implementation that retries
+        // the remaining query at every remaining candidate position would need
+        // exponential time for a query with several '*' wildcards, which a
+        // network peer sending a C-FIND request could exploit. The run time of
+        // the loop below is bounded by the product of both string lengths.
+        const char* lastStar = OFnullptr;
+        const char* lastStarCandidate = OFnullptr;
+        while( candidateData != candidateDataEnd )
         {
-            if( *queryData == '?' || *queryData == *candidateData )
+            if( queryData != queryDataEnd && *queryData == '*' )
             {
+                // remember the position of the '*' wildcard and first let it
+                // match the empty string. Since all following '*' wildcards
+                // are handled the same way, a string like "****" correctly
+                // equals the semantics of '*'.
+                lastStar = queryData++;
+                lastStarCandidate = candidateData;
+            }
+            else if( queryData != queryDataEnd &&
+                ( *queryData == '?' || *queryData == *candidateData ) )
+            {
+                // a regular character matches itself, the '?' wildcard
+                // matches any single character
                 ++queryData;
                 ++candidateData;
             }
+            else if( lastStar )
+            {
+                // mismatch: let the most recent '*' wildcard match one more
+                // character and continue with the query behind that wildcard
+                queryData = lastStar + 1;
+                candidateData = ++lastStarCandidate;
+            }
             else
             {
+                // mismatch and there is no '*' wildcard to fall back to
                 return OFFalse;
             }
         }
-        // if the end of the query is reached, there was no '*' wildcard
-        // therefore it is either a match (if the end of the candidate was
-        // also reached) or not
-        if( queryData == queryDataEnd )
-            return candidateData == candidateDataEnd;
-        // if the current char in the query is not the '*' wildcard, the
-        // values don't match, since all other chars would have been
-        // matched by the previous while loop
-        if( *queryData != '*' )
-            return OFFalse;
-        // skip all '*' wildcard characters, because even a string like "****"
-        // equals the semantics of '*'. If the end of the query is reached
-        // any remaining part of the candidate is a match, therefore return
-        // OFTrue
-        do if( ++queryData == queryDataEnd )
-            return OFTrue;
-        while( *queryData == '*' );
-        // If this part of the code is reached, at least one non wildcard
-        // character exists in the query after the previously skipped
-        // wildcards. Search for a match of the remaining query characters
-        // in the remaining candidate characters, by recursively calling
-        // match.
-        while( candidateData != candidateDataEnd )
-        {
-            if( !match( queryData, candidateData ) )
-                ++candidateData;
-            else
-                return OFTrue;
-        }
-        // if the end of the candidate is reached, both strings don't match.
-        return OFFalse;
+        // the candidate is used up, so both strings only match if nothing but
+        // '*' wildcards is left in the query
+        while( queryData != queryDataEnd && *queryData == '*' )
+            ++queryData;
+        return queryData == queryDataEnd;
     }
 
 private:
