@@ -41,11 +41,11 @@ class DcmTagKey;
 
 
 /** abstract codec class for JPEG encoders.
- *  This abstract class contains most of the application logic
- *  needed for a dcmdata codec object that implements a JPEG encoder
- *  using the DJEncoder interface to the underlying JPEG implementation.
- *  This class only supports compression, it neither implements
- *  decoding nor transcoding.
+ *  This abstract class contains most of the application logic needed for a
+ *  dcmdata codec object that implements a JPEG encoder using the DJEncoder
+ *  interface to the underlying JPEG implementation.
+ *  This class only supports compression, it neither implements decoding nor
+ *  transcoding.
  */
 class DCMTK_DCMJPEG_EXPORT DJCodecEncoder : public DcmCodec
 {
@@ -57,18 +57,19 @@ public:
   /// destructor
   virtual ~DJCodecEncoder();
 
-  /** decompresses the given pixel sequence and
-   *  stores the result in the given uncompressedPixelData element.
-   *  @param fromRepParam current representation parameter of compressed data, may be NULL
+  /** decompresses the given pixel sequence and the result in the given
+   *  uncompressedPixelData element.
+   *  @param fromRepParam current representation parameter of compressed data,
+   *    may be NULL
    *  @param pixSeq compressed pixel sequence
    *  @param uncompressedPixelData uncompressed pixel data stored in this element
    *  @param cp codec parameters for this codec
-   *  @param objStack stack pointing to the location of the pixel data
-   *    element in the current dataset.
-   *  @param removeOldRep boolean flag that should be set to false before this method call
-   *    and will be set to true if the codec modifies the DICOM dataset such
-   *    that the pixel data of the original representation may not be usable
-   *    anymore.
+   *  @param objStack stack pointing to the location of the pixel data element
+   *    in the current dataset.
+   *  @param removeOldRep boolean flag that should be set to false before this
+   *    method call and will be set to true if the codec modifies the DICOM
+   *    dataset such that the pixel data of the original representation may not
+   *    be usable anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition decode(
@@ -79,8 +80,8 @@ public:
     const DcmStack & objStack,
     OFBool& removeOldRep) const;
 
-  /** decompresses a single frame from the given pixel sequence and
-   *  stores the result in the given buffer.
+  /** decompresses a single frame from the given pixel sequence and stores the
+   *  result in the given buffer.
    *  @param fromParam representation parameter of current compressed
    *    representation, may be NULL.
    *  @param fromPixSeq compressed pixel sequence
@@ -94,18 +95,18 @@ public:
    *    When unknown, zero should be passed. In this case the decompression
    *    algorithm will try to determine the index by itself, which will always
    *    work if frames are decompressed in increasing order from first to last,
-   *    but may fail if frames are decompressed in random order, multiple fragments
-   *    per frame and multiple frames are present in the dataset, and the offset
-   *    table is empty.
+   *    but may fail if frames are decompressed in random order, multiple
+   *    fragments per frame and multiple frames are present in the dataset, and
+   *    the offset table is empty.
    *  @param buffer pointer to buffer where frame is to be stored.
    *    The frame will be stored in the same format that is also produced
    *    by decode(), i.e. pixel data arranged in 16-bit words (corresponding
    *    to the OW value representation for uncompressed pixel data),
    *    byte-swapped to the local endianness of the machine.
    *  @param bufSize size of buffer in bytes
-   *  @param decompressedColorModel upon successful return, the color model
-   *    of the decompressed image (which may be different from the one used
-   *    in the compressed images) is returned in this parameter.
+   *  @param decompressedColorModel upon successful return, the color model of
+   *    the decompressed image (which may be different from the one used in the
+   *    compressed images) is returned in this parameter.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition decodeFrame(
@@ -119,22 +120,22 @@ public:
     Uint32 bufSize,
     OFString& decompressedColorModel) const;
 
-  /** compresses the given uncompressed DICOM image and stores
-   *  the result in the given pixSeq element.
-   *  @param pixelData pointer to the uncompressed image data in OW format
-   *    and local byte order
+  /** compresses the given uncompressed DICOM image and stores the result in the
+   *  given pixSeq element.
+   *  @param pixelData pointer to the uncompressed image data in OW format and
+   *    local byte order
    *  @param length of the pixel data field in bytes
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
-   *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.
+   *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence
+   *    object allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
-   *  @param removeOldRep boolean flag that should be set to false before this method call
-   *    and will be set to true if the codec modifies the DICOM dataset such
-   *    that the pixel data of the original representation may not be usable
-   *    anymore.
+   *  @param removeOldRep boolean flag that should be set to false before this
+   *    method call and will be set to true if the codec modifies the DICOM
+   *    dataset such that the pixel data of the original representation may not
+   *    be usable anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encode(
@@ -146,22 +147,23 @@ public:
     DcmStack & objStack,
     OFBool& removeOldRep) const;
 
-  /** transcodes (re-compresses) the given compressed DICOM image and stores
-   *  the result in the given toPixSeq element.
+  /** transcodes (re-compresses) the given compressed DICOM image and stores the
+   *  result in the given toPixSeq element.
    *  @param fromRepType current transfer syntax of the compressed image
-   *  @param fromRepParam current representation parameter of compressed data, may be NULL
+   *  @param fromRepParam current representation parameter of compressed data,
+   *    may be NULL
    *  @param fromPixSeq compressed pixel sequence
    *  @param toRepParam representation parameter describing the desired
    *    new compressed representation (e.g. JPEG quality)
-   *  @param toPixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.
+   *  @param toPixSeq compressed pixel sequence (pointer to new DcmPixelSequence
+   *    object allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
    *  @param objStack stack pointing to the location of the pixel data
    *    element in the current dataset.
-   *  @param removeOldRep boolean flag that should be set to false before this method call
-   *    and will be set to true if the codec modifies the DICOM dataset such
-   *    that the pixel data of the original representation may not be usable
-   *    anymore.
+   *  @param removeOldRep boolean flag that should be set to false before this
+   *    method call and will be set to true if the codec modifies the DICOM
+   *    dataset such that the pixel data of the original representation may not
+   *    be usable anymore.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encode(
@@ -174,9 +176,8 @@ public:
     DcmStack & objStack,
     OFBool& removeOldRep) const;
 
-  /** checks if this codec is able to convert from the
-   *  given current transfer syntax to the given new
-   *  transfer syntax
+  /** checks if this codec is able to convert from the given current transfer
+   *  syntax to the given new transfer syntax
    *  @param oldRepType current transfer syntax
    *  @param newRepType desired new transfer syntax
    *  @return true if transformation is supported by this codec, false otherwise.
@@ -187,12 +188,13 @@ public:
 
   /** determines the effective value of BitsAllocated that a dataset will have
    *  after decompression of an image with the given values for bitsAllocated
-   *  and bitsStored. This may differ from the bitsAllocated parameter for example
-   *  if that value is not a multiple of 8. Returns zero if an image with the
-   *  given parameters cannot be decoded with this codec.
+   *  and bitsStored. This may differ from the bitsAllocated parameter for
+   *  example if that value is not a multiple of 8. Returns zero if an image
+   *  with the given parameters cannot be decoded with this codec.
    *  @param bitsAllocated current value of Bits Allocated
    *  @param bitsStored current value of Bits Stored
-   *  @return value of BitsAllocated after decompression, 0 if no decompression possible
+   *  @return value of BitsAllocated after decompression, 0 if no decompression
+   *    possible
    */
   virtual Uint16 decodedBitsAllocated(
     Uint16 bitsAllocated,
@@ -205,9 +207,9 @@ public:
    *  @param cp codec parameters for this codec
    *  @param dataset pointer to DICOM dataset in which this pixel data object
    *    is located. Used to access photometric interpretation.
-   *  @param decompressedColorModel upon successful return, the color model
-   *    of the decompressed image (which may be different from the one used
-   *    in the compressed images) is returned in this parameter
+   *  @param decompressedColorModel upon successful return, the color model of
+   *    the decompressed image (which may be different from the one used in the
+   *    compressed images) is returned in this parameter
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition determineDecompressedColorModel(
@@ -217,8 +219,8 @@ public:
     DcmItem *dataset,
     OFString &decompressedColorModel) const;
 
-  /** returns the transfer syntax that this particular codec
-   *  is able to encode and decode.
+  /** returns the transfer syntax that this particular codec is able to encode
+   *  and decode.
    *  @return supported transfer syntax
    */
   virtual E_TransferSyntax supportedTransferSyntax() const = 0;
@@ -231,11 +233,11 @@ protected:
    */
   static void appendCompressionRatio(OFString& arg, double ratio);
 
-  /** toggles Planar Configuration of 8-bit pixel data from "by pixel" to
-   *  "by plane" and vice versa.
-   *  @param pixelData - [in/out] Original pixel data (input), contains
-   *                     pixel data with toggled Planar configuration after
-   *                     returning (output).
+  /** toggles Planar Configuration of 8-bit pixel data from "by pixel" to "by
+   *  plane" and vice versa.
+   *  @param pixelData - [in/out] Original pixel data (input), contains pixel
+   *                     data with toggled Planar configuration after returning
+   *                     (output).
    *  @param numValues - [in] The number of 8 bit values in pixelData
    *  @param numberOfFrames - [in] The number of frames
    *  @param columns - [in] Number of columns per frame
@@ -254,11 +256,11 @@ protected:
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig);
 
-  /** toggles Planar Configuration of 16-bit pixel data from "by pixel" to
-   *  "by plane" and vice versa.
-   *  @param pixelData - [in/out] Original pixel data (input), contains
-   *                     pixel data with toggled Planar configuration after
-   *                     returning (output).
+  /** toggles Planar Configuration of 16-bit pixel data from "by pixel" to "by
+   *  plane" and vice versa.
+   *  @param pixelData - [in/out] Original pixel data (input), contains pixel
+   *                     data with toggled Planar configuration after returning
+   *                     (output).
    *  @param numValues - [in] The number of 16 bit values in pixelData
    *  @param numberOfFrames - [in] The number of frames
    *  @param columns - [in] Number of columns per frame
@@ -279,20 +281,20 @@ protected:
 
 private:
 
-  /** compresses the given uncompressed DICOM color image and stores
-   *  the result in the given pixSeq element.
+  /** compresses the given uncompressed DICOM color image and stores the result
+   *  in the given pixSeq element.
    *  @param YBRmode true if the source image has YBR_FULL or YBR_FULL_422
    *    photometric interpretation and can thus be compressed without color
    *    space conversion.
    *  @param dataset DICOM dataset containing the pixel data as well as
-   *    descriptive attributes
+   *    descriptive
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
-   *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.
+   *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence
+   *    object allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
-   *  @param compressionRatio compression ratio returned in this parameter
-   *    if successful.
+   *  @param compressionRatio compression ratio returned in this parameter if
+   *    successful.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encodeColorImage(
@@ -303,36 +305,37 @@ private:
     const DJCodecParameter *cp,
     double& compressionRatio) const;
 
-  /** compresses the given uncompressed monochrome DICOM image and stores
-   *  the result in the given pixSeq element.
+  /** compresses the given uncompressed monochrome DICOM image and stores the
+   *  result in the given pixSeq element.
    *  @param dataset DICOM dataset containing the pixel data as well as
    *    descriptive attributes
    *  @param toRepParam representation parameter describing the desired
    *    compressed representation (e.g. JPEG quality)
-   *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence object
-   *    allocated on heap) returned in this parameter upon success.
+   *  @param pixSeq compressed pixel sequence (pointer to new DcmPixelSequence
+   *    object allocated on heap) returned in this parameter upon success.
    *  @param cp codec parameters for this codec
-   *  @param compressionRatio compression ratio returned in this parameter
-   *    if successful.
+   *  @param compressionRatio compression ratio returned in this parameter if
+   *    successful.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encodeMonochromeImage(
-        DcmItem *dataset,
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DJCodecParameter *cp,
-        double& compressionRatio) const;
+    DcmItem *dataset,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & pixSeq,
+    const DJCodecParameter *cp,
+    double& compressionRatio) const;
 
-  /** compresses the given uncompressed DICOM image and stores
-   *  the result in the given pixSeq element. No colorspace
-   *  conversions, modality or windowing transformations are applied
-   *  to guarantee, that the quality of the source image is fully preserved.
+  /** compresses the given uncompressed DICOM image and stores the result in the
+   *  given pixSeq element. No colorspace conversions, modality or windowing
+   *  transformations are applied to guarantee, that the quality of the source
+   *  image is fully preserved.
    *  @param toRepParam - [in] representation parameter describing the desired
-   *  @param pixSeq - [out] compressed pixel sequence (pointer to new DcmPixelSequence
-   *    object allocated on heap) returned in this parameter upon success
+   *  @param pixSeq - [out] compressed pixel sequence (pointer to new
+   *    DcmPixelSequence object allocated on heap) returned in this parameter
+   *    upon success
    *  @param cp - [in] codec parameters for this codec
-   *  @param objStack - [in/out] stack pointing to the location of the pixel data
-   *    element in the current dataset.
+   *  @param objStack - [in/out] stack pointing to the location of the pixel
+   *    data element in the current dataset.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   virtual OFCondition encodeTrueLossless(
@@ -345,7 +348,7 @@ private:
    *  @param dataset dataset to be modified
    *  @param ratio image compression ratio > 1. This is not the "quality factor"
    *    but the real effective ratio between compressed and uncompressed image,
-   *    i. e. 30 means a 30:1 lossy compression.
+   *    i.e. 30 means a 30:1 lossy compression.
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition updateLossyCompressionRatio(DcmItem *dataset, double ratio) const;
@@ -354,10 +357,11 @@ private:
    *  @param dataset dataset to be modified
    *  @param toRepParam representation parameter passed to encode()
    *  @param cp codec parameter passed to encode()
-   *  @param bitsPerSample bits per sample of the original image data prior to compression
+   *  @param bitsPerSample bits per sample of the original image data prior to
+   *    compression
    *  @param ratio image compression ratio. This is not the "quality factor"
    *    but the real effective ratio between compressed and uncompressed image,
-   *    i. e. 30 means a 30:1 lossy compression.
+   *    i.e. 30 means a 30:1 lossy compression.
    *  @return EC_Normal if successful, an error code otherwise
    */
   virtual OFCondition updateDerivationDescription(
@@ -374,8 +378,7 @@ private:
    */
   virtual OFCondition adjustOverlays(DcmItem *dataset, DicomImage& image) const;
 
-  /** returns true if the transfer syntax supported by this
-   *  codec is lossless.
+  /** returns true if the transfer syntax supported by this codec is lossless.
    *  @return lossless flag
    */
   virtual OFBool isLosslessProcess() const = 0;
@@ -383,10 +386,11 @@ private:
   /** creates 'derivation description' string after encoding.
    *  @param toRepParam representation parameter passed to encode()
    *  @param cp codec parameter passed to encode()
-   *  @param bitsPerSample bits per sample of the original image data prior to compression
+   *  @param bitsPerSample bits per sample of the original image data prior to
+   *    compression
    *  @param ratio image compression ratio. This is not the "quality factor"
    *    but the real effective ratio between compressed and uncompressed image,
-   *    i. e. 30 means a 30:1 lossy compression.
+   *    i.e. 30 means a 30:1 lossy compression.
    *  @param derivationDescription derivation description returned in this
    *    parameter which is initially empty
    */
@@ -397,8 +401,8 @@ private:
     double ratio,
     OFString& derivationDescription) const = 0;
 
-  /** creates an instance of the compression library to be used
-   *  for encoding/decoding.
+  /** creates an instance of the compression library to be used for
+   *  encoding/decoding.
    *  @param toRepParam representation parameter passed to encode()
    *  @param cp codec parameter passed to encode()
    *  @param bitsPerSample bits per sample for the image data
@@ -411,7 +415,7 @@ private:
 
   /** modifies all VOI window center/width settings in the image.
    *  Modifications are based on the pixel value mapping
-   *  f(x) = (x+voiOffset)*voiFactor
+   *  f(x) = (x+voiOffset)*voiFactor.
    *  @param dataset dataset to be updated
    *  @param voiOffset offset to be added to each pixel
    *  @param voiFactor factor to be multiplied
