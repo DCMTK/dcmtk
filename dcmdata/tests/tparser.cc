@@ -40,6 +40,37 @@
 
 static OFLogger tparserLogger = OFLog::getLogger("dcmtk.test.tparser");
 
+/* Read a data set from two consecutive chunks of data, the way the DIMSE layer
+ * feeds the PDVs of a received message to the parser: one chunk at a time, with
+ * the end of the stream only announced together with the last chunk, which may
+ * itself be empty. Passing a NULL second chunk therefore models an empty last PDV.
+ */
+static OFCondition readDatasetInTwoChunks(DcmDataset &dset,
+                                          const Uint8 *chunk1, size_t length1,
+                                          const Uint8 *chunk2, size_t length2,
+                                          E_TransferSyntax ts)
+{
+    DcmInputBufferStream stream;
+    dset.clear();
+    dset.transferInit();
+
+    stream.releaseBuffer();
+    stream.setBuffer(chunk1, OFstatic_cast(offile_off_t, length1));
+    OFCondition cond = dset.read(stream, ts);
+
+    if ((cond == EC_Normal) || (cond == EC_StreamNotifyClient))
+    {
+        stream.releaseBuffer();
+        if ((chunk2 != NULL) && (length2 > 0))
+            stream.setBuffer(chunk2, OFstatic_cast(offile_off_t, length2));
+        stream.setEos();
+        cond = dset.read(stream, ts);
+    }
+
+    dset.transferEnd();
+    return cond;
+}
+
 OFTEST(dcmdata_parser_missingDelimitationItems)
 {
     const Uint8 data[] = {
@@ -988,3 +1019,200 @@ OFTEST(dcmdata_parser_deflatedBufferStreamRead)
 #endif /* WITH_ZLIB */
 }
 
+OFTEST(dcmdata_parser_zeroLengthElementAtEndOfStream)
+{
+    /* An element with a value length of zero at the very end of the stream is
+     * complete and must not be mistaken for a truncated value. C-FIND request
+     * identifiers regularly end in such an element (a universal matching key),
+     * so getting this wrong breaks every query.
+     */
+    const Uint8 data[] = {
+        TAG_AND_LENGTH_SHORT(DCM_QueryRetrieveLevel, 'C', 'S', 6),
+        'S', 'T', 'U', 'D', 'Y', ' ',
+        TAG_AND_LENGTH_SHORT(DCM_StudyDescription, 'L', 'O', 10),
+        'C', 'T', ' ', 'C', 'H', 'E', 'S', 'T', '*', ' ',
+        TAG_AND_LENGTH_SHORT(DCM_StudyInstanceUID, 'U', 'I', 0)
+    };
+    DcmDataset dset;
+    OFCondition cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
+    OFString value;
+    OFCHECK(dset.findAndGetOFString(DCM_StudyDescription, value).good());
+    OFCHECK_EQUAL(value, "CT CHEST*");
+    DcmElement *elem = NULL;
+    OFCHECK(dset.findAndGetElement(DCM_StudyInstanceUID, elem).good());
+    if (elem != NULL)
+        OFCHECK_EQUAL(elem->getLength(), 0);
+}
+
+OFTEST(dcmdata_parser_zeroLengthElementBeforeEmptyLastChunk)
+{
+    /* same as above, but the stream is fed in two chunks and the last one is
+     * empty, like an empty last PDV after a complete data set
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_QueryRetrieveLevel, 'C', 'S', 6),
+        'S', 'T', 'U', 'D', 'Y', ' ',
+        TAG_AND_LENGTH_SHORT(DCM_StudyInstanceUID, 'U', 'I', 0)
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        NULL /* empty last chunk */, 0, TRANSFER_SYNTAX);
+    if (cond.bad())
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+}
+
+OFTEST(dcmdata_parser_truncatedValueAtEndOfStream)
+{
+    /* the announced 64 bytes of Pixel Data are cut short after two bytes, and the
+     * stream then ends with an empty chunk (an empty last PDV on the network).
+     * This must be reported as an error: the element's value buffer was allocated
+     * with the full announced length, so accepting the data set would hand out the
+     * part of that buffer that was never received.
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 64),
+        VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        NULL /* empty last chunk */, 0, TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+    if (cond.good())
+        OFCHECK_FAIL("truncated data set was accepted as complete");
+}
+
+OFTEST(dcmdata_parser_truncatedValueAtEndOfStream_nonEmptyLastChunk)
+{
+    /* same as above, but the last chunk carries some of the missing value bytes
+     * (still not all of them)
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 64),
+        VALUE, VALUE
+    };
+    const Uint8 chunk2[] = { VALUE, VALUE, VALUE, VALUE };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+}
+
+OFTEST(dcmdata_parser_valueSplitAcrossChunks)
+{
+    /* a value that is split across two chunks has to be read correctly, i.e. the
+     * checks for a truncated data set must not reject a legitimate suspended read
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 8),
+        VALUE, VALUE, VALUE
+    };
+    const Uint8 chunk2[] = {
+        VALUE, VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
+    DcmElement *elem = NULL;
+    OFCHECK(dset.findAndGetElement(DCM_PixelData, elem).good());
+    if (elem != NULL)
+        OFCHECK_EQUAL(elem->getLength(), 8);
+    OFString value;
+    OFCHECK(dset.findAndGetOFString(DCM_PatientName, value).good());
+    OFCHECK_EQUAL(value, "ABCD");
+}
+
+OFTEST(dcmdata_parser_outOfOrderTagWithValueSplitAcrossChunks)
+{
+    /* (0009,1010) is sent after (0010,0010), i.e. not in ascending tag order, and
+     * its value is cut short at the chunk boundary. The parser used to continue
+     * with the wrong element here, because the order check in DcmItem::insert()
+     * moved the element list's cursor. It then parsed the remaining bytes as new
+     * elements and reported success, leaving (0009,1010) with a partly filled
+     * value buffer of its full announced length.
+     */
+    const DcmTag privateTag(0x0009, 0x1010);
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(privateTag, 'O', 'B', 64),
+        VALUE, VALUE
+    };
+    const Uint8 chunk2[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientID, 'L', 'O', 4),
+        '1', '2', '3', '4'
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+    if (cond.good())
+        OFCHECK_FAIL("data set with an incomplete out-of-order element was accepted");
+}
+
+OFTEST(dcmdata_parser_duplicateTagWithValueSplitAcrossChunks)
+{
+    /* The same tag is sent twice and the value of the second occurrence is cut
+     * short at the chunk boundary. The duplicate is dropped by DcmItem::insert()
+     * and deleted again, which used to leave the element list's cursor on the
+     * first, already complete element: the parser then continued there, parsed
+     * the remaining value bytes as new elements and reported success.
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 64),
+        'E', 'F'
+    };
+    const Uint8 chunk2[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientID, 'L', 'O', 4),
+        '1', '2', '3', '4'
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+    if (cond.good())
+        OFCHECK_FAIL("data set with an incomplete duplicate element was accepted");
+}
+
+OFTEST(dcmdata_parser_outOfOrderTagWithCompleteValue)
+{
+    /* an element that is not in ascending tag order but whose value is complete
+     * still has to be parsed (only a warning is logged)
+     */
+    const DcmTag privateTag(0x0009, 0x1010);
+    const Uint8 data[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(privateTag, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
+    OFString value;
+    OFCHECK(dset.findAndGetOFString(DCM_PatientName, value).good());
+    OFCHECK_EQUAL(value, "ABCD");
+    DcmElement *elem = NULL;
+    OFCHECK(dset.findAndGetElement(privateTag, elem).good());
+    if (elem != NULL)
+        OFCHECK_EQUAL(elem->getLength(), 4);
+}

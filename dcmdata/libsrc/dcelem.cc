@@ -708,6 +708,15 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                         /* else set the return value correspondingly */
                         else if (readStream->eos())
                         {
+                            /* The value buffer was allocated with the full announced
+                             * length, but only part of it was received. Zero the bytes
+                             * that never arrived, so that uninitialized heap memory
+                             * cannot end up in the value (and thus in a file written
+                             * from it): with incremental loading disabled the buffer
+                             * is kept, see DcmInputStream::setIncrementalLoadThreshold().
+                             */
+                            memset(fValue + getTransferredBytes(), 0,
+                                OFstatic_cast(size_t, getLengthField() - getTransferredBytes()));
                             errorFlag = EC_InvalidStream; // premature end of stream
                             DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
                                 << " larger (" << getLengthField() << ") than remaining bytes ("

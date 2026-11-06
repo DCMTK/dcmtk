@@ -1499,6 +1499,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                const E_GrpLenEncoding glenc,     // in
                                const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** This function checks whether the parser stopped in the middle of an
+     *  element's value, i.e. whether part of the value of the element that is
+     *  currently being read has not been received. Note that lastElementComplete
+     *  alone is not sufficient for this check: it is also OFFalse for an element
+     *  with a value length of zero that was read at the very end of the stream,
+     *  although the value of such an element is complete. An element whose value
+     *  was partially read is in state ERW_inWork, while the zero length element
+     *  above is still in state ERW_init.
+     *  @return OFTrue if the value of the current element is incomplete,
+     *    OFFalse otherwise
+     */
+    OFBool isLastElementIncomplete();
+
     /** This function reads the first 6 bytes from the input stream and determines
      *  the transfer syntax which was used to code the information in the stream.
      *  The decision is based on two questions: a) Did we encounter a valid tag?

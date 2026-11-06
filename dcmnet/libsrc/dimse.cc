@@ -1203,6 +1203,10 @@ DIMSE_receiveCommand(
         pdvCount++;
     }
 
+    /* after the last PDV the command set has to be complete. Remember this here,
+     * because transferEnd() below resets the transfer state. */
+    const OFBool cmdSetComplete = (cmdSet->transferState() == ERW_ready);
+
     /* indicate the end of the transfer */
     cmdSet->transferEnd();
 
@@ -1224,6 +1228,15 @@ DIMSE_receiveCommand(
         delete cmdSet;
         OFCondition subCond = makeDcmnetCondition(DIMSEC_UNEXPECTEDPDVTYPE, OF_error, "DIMSE: Command PDV Expected");
         return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+    }
+
+    /* if the command set is not complete, the peer announced more data than it */
+    /* sent, so the command must not be used. */
+    if (!cmdSetComplete)
+    {
+        delete cmdSet;
+        return makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error,
+            "DIMSE: receiveCommand: command set is incomplete after the last PDV");
     }
 
     /* if the global variable says so, we want to save the */
@@ -1690,6 +1703,17 @@ DIMSE_receiveDataSetInMemory(
                 callback(callbackData, bytesRead);
             }
         }
+    }
+
+    /* after the last PDV the data set has to be complete. If it is not, the peer */
+    /* announced more data than it sent, e.g. an element whose value is shorter   */
+    /* than its value length field claims. Such a data set must not be handed to  */
+    /* the caller as if it had been received completely. */
+    if (cond.good() && (dset->transferState() != ERW_ready))
+    {
+        DCMNET_WARN(DIMSE_warn_str(assoc) << "DIMSE receiveDataSetInMemory: "
+            << "data set is incomplete after the last PDV");
+        cond = DIMSE_RECEIVEFAILED;
     }
 
     /* indicate the end of the transfer */

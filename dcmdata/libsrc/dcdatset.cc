@@ -444,20 +444,36 @@ OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
     /* case, we need to do something for the current dataset object */
     if (errorFlag.good() || errorFlag == EC_EndOfStream)
     {
-        /* perform some final checks on dataset level */
-        errorFlag = doPostReadChecks();
-
-        if (errorFlag.good())
+        /* if the stream ended while an element was still waiting for value bytes, */
+        /* the data set is truncated and must not be reported as complete. This is */
+        /* the case when the last chunk of data (e.g. the last PDV of a DIMSE      */
+        /* message) is empty, because then DcmItem::readUntilTag() and in turn     */
+        /* DcmElement::loadValue(), which detect a premature end of stream, are    */
+        /* never reached. The incomplete element keeps its announced value length  */
+        /* although only part of its value was ever received.                      */
+        if ((getTransferState() == ERW_inWork) && isLastElementIncomplete())
         {
-            /* set the error flag to ok */
-            errorFlag = EC_Normal;
+            DCMDATA_ERROR("DcmDataset: Stream ended before the value of the last "
+                << "element was complete, data set is truncated");
+            errorFlag = EC_InvalidStream;
+        }
+        else
+        {
+            /* perform some final checks on dataset level */
+            errorFlag = doPostReadChecks();
 
-            /* take care of group length (according to what is specified */
-            /* in glenc) and padding elements (don't change anything) */
-            computeGroupLengthAndPadding(glenc, EPD_noChange, OriginalXfer);
+            if (errorFlag.good())
+            {
+                /* set the error flag to ok */
+                errorFlag = EC_Normal;
 
-            /* and set the transfer state to ERW_ready to indicate that the data set is complete */
-            setTransferState(ERW_ready);
+                /* take care of group length (according to what is specified */
+                /* in glenc) and padding elements (don't change anything) */
+                computeGroupLengthAndPadding(glenc, EPD_noChange, OriginalXfer);
+
+                /* and set the transfer state to ERW_ready to indicate that the data set is complete */
+                setTransferState(ERW_ready);
+            }
         }
     }
 
