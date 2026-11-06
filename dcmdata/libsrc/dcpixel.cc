@@ -1302,7 +1302,7 @@ OFBool DcmPixelData::writeUnencapsulated(const E_TransferSyntax xfer)
 
 
 OFCondition DcmPixelData::writeJson(STD_NAMESPACE ostream &out,
-                                             DcmJsonFormat &format)
+                                    DcmJsonFormat &format)
 {
 
     // check if we have an empty uncompressed value field.
