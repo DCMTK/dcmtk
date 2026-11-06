@@ -145,7 +145,8 @@ tlimits.o: tlimits.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
  ../include/dcmtk/ofstd/ofmath.h ../include/dcmtk/ofstd/diag/overflow.def \
  ../include/dcmtk/ofstd/diag/cnvrsn.def \
- ../include/dcmtk/ofstd/diag/unarymin.def
+ ../include/dcmtk/ofstd/diag/unarymin.def \
+ ../include/dcmtk/ofstd/diag/constexp.def
 tlist.o: tlist.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oflist.h ../include/dcmtk/ofstd/oftypes.h \
  ../include/dcmtk/ofstd/ofdefine.h ../include/dcmtk/ofstd/ofcast.h \
