@@ -423,8 +423,13 @@ private:
    */
   static OFCondition correctVOIWindows(DcmItem *dataset, double voiOffset, double voiFactor);
 
+  /** update value of Planar Configuration (0028,0006).
+   *  @param dataset dataset to be modified
+   *  @param newPlanConf new value to be set
+   *  @return EC_Normal if successful, an error code otherwise
+   */
   OFCondition updatePlanarConfiguration(
-    DcmItem *item,
+    DcmItem *dataset,
     const Uint16 newPlanConf) const;
 };
 

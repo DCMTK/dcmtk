@@ -182,7 +182,7 @@ OFCondition DJCodecEncoder::encode(
         result = encodeColorImage(OFTrue, OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_Missing:
-        // photometric interpretation missing. If ACR-NEMA compatibility is activated, we treat this as MONOCHOME2, otherwise we report an error
+        // photometric interpretation missing. If ACR-NEMA compatibility is activated, we treat this as MONOCHROME2, otherwise we report an error
         if (djcp->getAcrNemaCompatibility())
             result = encodeMonochromeImage(OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
             else result = EJ_UnsupportedPhotometricInterpretation;
@@ -559,7 +559,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       return EC_CannotChangeRepresentation;
     }
 
-    /* Set and check photometric interpretation (up to now: EPI_RGB)
+    /* Set and check photometric interpretation (up to now: EPI_RGB).
      * Only photometric interpretations, that are explicitly "supported" by the
      * IJG lib are set. For all others "unknown" is set. Some are even rejected here.
      */
@@ -1595,10 +1595,10 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
 
 
 OFCondition DJCodecEncoder::updatePlanarConfiguration(
-  DcmItem *item,
+  DcmItem *dataset,
   const Uint16 newPlanConf) const
 {
-  if ( (item == NULL) || (newPlanConf) > 1)
+  if ((dataset == NULL) || (newPlanConf > 1))
     return EC_IllegalParameter;
-  return item->putAndInsertUint16(DCM_PlanarConfiguration, newPlanConf);
+  return dataset->putAndInsertUint16(DCM_PlanarConfiguration, newPlanConf);
 }
