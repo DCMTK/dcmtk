@@ -1016,6 +1016,8 @@ OFTEST(dcmdata_parser_deflatedBufferStreamRead)
     OFCHECK_EQUAL(readLen, elemLen);
     if (readData != NULL && readLen == elemLen)
         OFCHECK(memcmp(readData, elemData, elemLen) == 0);
+#else
+    DCMDATA_WARN("DCMTK compiled without zlib support, unit test dcmdata_parser_deflatedBufferStreamRead skipped");
 #endif /* WITH_ZLIB */
 }
 
