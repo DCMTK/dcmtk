@@ -28,6 +28,7 @@
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for class DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpxitem.h"  /* for class DcmPixelItem */
 #include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
+#include "dcmtk/ofstd/ofvector.h"    /* for class OFVector */
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -114,6 +115,15 @@ OFCondition DcmRLECodecEncoder::encode(
 }
 
 
+// Unpacks native 1-bit samples, least significant bit first (PS3.5 8.2), into
+// one byte per sample with the value in bit 0.
+static void unpackBitSamples(const Uint8 *packed, size_t count, Uint8 *samples)
+{
+    for (size_t i = 0; i < count; ++i)
+        samples[i] = OFstatic_cast(Uint8, (packed[i / 8] >> (i % 8)) & 1);
+}
+
+
 OFCondition DcmRLECodecEncoder::encode(
     const Uint16 *pixelData,
     const Uint32 length,
@@ -171,9 +181,13 @@ OFCondition DcmRLECodecEncoder::encode(
 
     if (result.good())
     {
-      // check if bitsAllocated is a multiple of 8 - we don't handle anything else
-      bytesAllocated = OFstatic_cast(Uint16, bitsAllocated / 8);
-      if ((bitsAllocated < 8)||(bitsAllocated % 8 != 0)) result = EC_CannotChangeRepresentation;
+      // check if bitsAllocated is 1 or a multiple of 8 - we don't handle anything else
+      // (1-bit samples are unpacked to one byte per sample before encoding)
+      bytesAllocated = (bitsAllocated == 1) ? 1 : OFstatic_cast(Uint16, bitsAllocated / 8);
+      if ((bitsAllocated != 1) && ((bitsAllocated < 8)||(bitsAllocated % 8 != 0))) result = EC_CannotChangeRepresentation;
+
+      // 1-bit samples are only supported with a single sample per pixel
+      if ((bitsAllocated == 1) && (samplesPerPixel != 1)) result = EC_CannotChangeRepresentation;
 
       // make sure that all the descriptive attributes have sensible values
       if ((columns < 1)||(rows < 1)||(samplesPerPixel < 1)) result = EC_CannotChangeRepresentation;
@@ -185,11 +199,11 @@ OFCondition DcmRLECodecEncoder::encode(
       // make sure that we have at least as many bytes of pixel data as we expect;
       // compute the expected size in 64-bit arithmetic to avoid an integer overflow
       // that would let a too-small Pixel Data element pass this check and subsequently
-      // cause an out-of-bounds read in the stripe encoding loop below
-      const Uint64 expectedFrameSize = OFstatic_cast(Uint64, numberOfStripes) * columns * rows;
-      if ((expectedFrameSize > OFstatic_cast(Uint64, length)) ||
-          (expectedFrameSize * OFstatic_cast(Uint64, numberOfFrames) > OFstatic_cast(Uint64, length)))
-        result = EC_CannotChangeRepresentation;
+      // cause an out-of-bounds read in the stripe encoding loop below.
+      // 1-bit samples are packed, 8 per byte, across all frames.
+      const Uint64 expectedBytes = OFstatic_cast(Uint64, numberOfStripes) * columns * rows * OFstatic_cast(Uint64, numberOfFrames);
+      const Uint64 expectedSize = (bitsAllocated == 1) ? (expectedBytes + 7) / 8 : expectedBytes;
+      if (expectedSize > OFstatic_cast(Uint64, length)) result = EC_CannotChangeRepresentation;
     }
 
     DcmPixelSequence *pixelSequence = NULL;
@@ -213,6 +227,21 @@ OFCondition DcmRLECodecEncoder::encode(
     if (gLocalByteOrder == EBO_BigEndian)
     {
       swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
+    }
+
+    // 1-bit samples are unpacked to one byte per sample, the layout the stripe sets are built from
+    OFVector<Uint8> unpackedSamples;
+    if (result.good() && (bitsAllocated == 1))
+    {
+      // the unpacked buffer is 8 times the size of the packed data, which may exceed size_t on 32-bit systems
+      const Uint64 sampleCount = OFstatic_cast(Uint64, columns) * rows * OFstatic_cast(Uint64, numberOfFrames);
+      if (sampleCount > OFstatic_cast(Uint64, OFstatic_cast(size_t, -1))) result = EC_CannotChangeRepresentation;
+      else
+      {
+        unpackedSamples.resize(OFstatic_cast(size_t, sampleCount));
+        unpackBitSamples(pixelData8, OFstatic_cast(size_t, sampleCount), &unpackedSamples[0]);
+        pixelData8 = &unpackedSamples[0];
+      }
     }
 
     // create RLE stripe sets
