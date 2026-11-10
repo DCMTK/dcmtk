@@ -171,12 +171,11 @@ public:
 
   /** determines the effective value of BitsAllocated that a dataset will have
    *  after decompression of an image with the given values for bitsAllocated
-   *  and bitsStored. This may differ from the bitsAllocated parameter for example
-   *  if that value is not a multiple of 8. Returns zero if an image with the
-   *  given parameters cannot be decoded with this codec.
+   *  and bitsStored. The RLE encoder does not decompress images (this is done
+   *  by the RLE decoder), so this method always returns zero.
    *  @param bitsAllocated current value of Bits Allocated
    *  @param bitsStored current value of Bits Stored
-   *  @return value of BitsAllocated after decompression, 0 if no decompression possible
+   *  @return always 0, since this codec does not decompress images
    */
   virtual Uint16 decodedBitsAllocated(
     Uint16 bitsAllocated,
