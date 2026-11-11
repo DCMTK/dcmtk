@@ -259,6 +259,12 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      */
     const OFString &getRetrieveLocationUID(OFString &stringValue) const;
 
+    /** get the retrieve URL of the currently selected entry (optional)
+     ** @param  stringValue  reference to string variable in which the result is stored
+     ** @return reference to the resulting string (might be empty)
+     */
+    const OFString &getRetrieveURL(OFString &stringValue) const;
+
     /** get the storage media file set ID of the currently selected entry (optional)
      ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
@@ -292,6 +298,14 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
      */
     OFCondition setRetrieveLocationUID(const OFString &value,
                                        const OFBool check = OFTrue);
+
+    /** set the retrieve URL of the currently selected entry
+     ** @param  value  string value to be set (single value only) or "" for no value
+     *  @param  check  check 'value' for conformance with VR (UR) if enabled
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setRetrieveURL(const OFString &value,
+                               const OFBool check = OFTrue);
 
     /** set the storage media file set ID of the currently selected entry
      ** @param  value  string value to be set (single value only) or "" for no value
@@ -439,6 +453,8 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
         OFString RetrieveAETitle;
         /// Retrieve Location UID (VR=UI, VM=1, type 3)
         OFString RetrieveLocationUID;
+        /// Retrieve URL (VR=UR, VM=1, type 3)
+        OFString RetrieveURL;
         /// Storage Media File Set ID (VR=SH, VM=1, type 3)
         OFString StorageMediaFileSetID;
         /// Storage Media File Set UID (VR=UI, VM=1, type 3)

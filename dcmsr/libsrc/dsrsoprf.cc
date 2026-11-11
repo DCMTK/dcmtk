@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,6 +33,7 @@
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrsh.h"
 #include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcvrur.h"
 
 
 // --- DSRSOPInstanceReferenceList::InstanceStruct ---
@@ -59,6 +60,7 @@ DSRSOPInstanceReferenceList::SeriesStruct::SeriesStruct(const OFString &seriesUI
   : SeriesUID(seriesUID),
     RetrieveAETitle(),
     RetrieveLocationUID(),
+    RetrieveURL(),
     StorageMediaFileSetID(),
     StorageMediaFileSetUID(),
     InstanceList(),
@@ -94,6 +96,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset,
     /* first, read optional attributes on series level */
     getAndCheckStringValueFromDataset(dataset, DCM_RetrieveAETitle, RetrieveAETitle, "1-n", "3", "ReferencedSeriesSequence");
     getAndCheckStringValueFromDataset(dataset, DCM_RetrieveLocationUID, RetrieveLocationUID, "1", "3", "ReferencedSeriesSequence");
+    getAndCheckStringValueFromDataset(dataset, DCM_RetrieveURL, RetrieveURL, "1", "3", "ReferencedSeriesSequence");
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetID, StorageMediaFileSetID, "1", "3", "ReferencedSeriesSequence");
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetUID, StorageMediaFileSetUID, "1", "3", "ReferencedSeriesSequence");
     /* then, check whether sequence is present and non-empty */
@@ -151,6 +154,8 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::write(DcmItem &dataset) c
         dataset.putAndInsertOFStringArray(DCM_RetrieveAETitle, RetrieveAETitle);
     if (!RetrieveLocationUID.empty())
         dataset.putAndInsertOFStringArray(DCM_RetrieveLocationUID, RetrieveLocationUID);
+    if (!RetrieveURL.empty())
+        dataset.putAndInsertOFStringArray(DCM_RetrieveURL, RetrieveURL);
     if (!StorageMediaFileSetID.empty())
         dataset.putAndInsertOFStringArray(DCM_StorageMediaFileSetID, StorageMediaFileSetID);
     if (!StorageMediaFileSetUID.empty())
@@ -190,14 +195,19 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocum
     if (cursor.valid())
     {
         /* first, read optional elements on series level */
-        doc.getStringFromNodeContent(doc.getNamedNode(cursor, "aetitle", OFFalse /*required*/), RetrieveAETitle);
-        doc.getStringFromAttribute(doc.getNamedNode(cursor, "location", OFFalse /*required*/), RetrieveLocationUID, "uid",
-            OFFalse /*encoding*/, OFFalse /*required*/);
-        const DSRXMLCursor childCursor = doc.getNamedNode(cursor, "fileset", OFFalse /*required*/);
-        if (childCursor.valid())
+        const DSRXMLCursor retrieveCursor = doc.getNamedNode(cursor, "retrieve", OFFalse /*required*/);
+        if (retrieveCursor.valid())
         {
-            doc.getStringFromAttribute(childCursor, StorageMediaFileSetUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
-            doc.getStringFromNodeContent(childCursor, StorageMediaFileSetID);
+            doc.getStringFromNodeContent(doc.getNamedChildNode(retrieveCursor, "aetitle", OFFalse /*required*/), RetrieveAETitle);
+            doc.getStringFromAttribute(doc.getNamedChildNode(retrieveCursor, "location", OFFalse /*required*/), RetrieveLocationUID,
+                "uid", OFFalse /*encoding*/, OFFalse /*required*/);
+            doc.getStringFromNodeContent(doc.getNamedChildNode(retrieveCursor, "url", OFFalse /*required*/), RetrieveURL);
+        }
+        const DSRXMLCursor filesetCursor = doc.getNamedNode(cursor, "fileset", OFFalse /*required*/);
+        if (filesetCursor.valid())
+        {
+            doc.getStringFromAttribute(filesetCursor, StorageMediaFileSetUID, "uid", OFFalse /*encoding*/, OFFalse /*required*/);
+            doc.getStringFromNodeContent(filesetCursor, StorageMediaFileSetID);
         }
         /* then proceed with instance level elements */
         OFString sopClassUID, instanceUID;
@@ -259,13 +269,20 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE os
 {
     /* write the series level attributes */
     stream << "<series uid=\"" << SeriesUID << "\">" << OFendl;
-    writeStringValueToXML(stream, RetrieveAETitle, "aetitle", (flags & XF_writeEmptyTags) > 0);
-    if ((flags & XF_writeEmptyTags) || !RetrieveLocationUID.empty())
+    /* check whether "retrieve" information is available */
+    if ((flags & XF_writeEmptyTags) || !RetrieveAETitle.empty() || !RetrieveLocationUID.empty() || !RetrieveURL.empty())
     {
-        stream << "<location";
-        if (!RetrieveLocationUID.empty())
-            stream << " uid=\"" << RetrieveLocationUID << "\"";
-        stream << "/>" << OFendl;
+        stream << "<retrieve>" << OFendl;
+        writeStringValueToXML(stream, RetrieveAETitle, "aetitle", (flags & XF_writeEmptyTags) > 0);
+        if ((flags & XF_writeEmptyTags) || !RetrieveLocationUID.empty())
+        {
+            stream << "<location";
+            if (!RetrieveLocationUID.empty())
+                stream << " uid=\"" << RetrieveLocationUID << "\"";
+            stream << "/>" << OFendl;
+        }
+        writeStringValueToXML(stream, RetrieveURL, "url", (flags & XF_writeEmptyTags) > 0);
+        stream << "</retrieve>" << OFendl;
     }
     if ((flags & XF_writeEmptyTags) || !StorageMediaFileSetUID.empty() || !StorageMediaFileSetID.empty())
     {
@@ -1378,6 +1395,19 @@ const OFString &DSRSOPInstanceReferenceList::getRetrieveLocationUID(OFString &st
 }
 
 
+const OFString &DSRSOPInstanceReferenceList::getRetrieveURL(OFString &stringValue) const
+{
+    /* check whether current series is valid */
+    SeriesStruct *series = getCurrentSeries();
+    /* get retrieve URL or clear string if invalid */
+    if (series != NULL)
+        stringValue = series->RetrieveURL;
+    else
+        stringValue.clear();
+    return stringValue;
+}
+
+
 const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetID(OFString &stringValue) const
 {
     /* check whether current series is valid */
@@ -1448,6 +1478,23 @@ OFCondition DSRSOPInstanceReferenceList::setRetrieveLocationUID(const OFString &
         result = (check) ? DcmUniqueIdentifier::checkStringValue(value, "1") : EC_Normal;
         if (result.good())
             series->RetrieveLocationUID = value;
+    }
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::setRetrieveURL(const OFString &value,
+                                                        const OFBool check)
+{
+    OFCondition result = EC_IllegalCall;
+    /* check whether current series is valid */
+    SeriesStruct *series = getCurrentSeries();
+    if (series != NULL)
+    {
+        /* set the value (if valid) */
+        result = (check) ? DcmUniversalResourceIdentifierOrLocator::checkStringValue(value) : EC_Normal;
+        if (result.good())
+            series->RetrieveURL = value;
     }
     return result;
 }

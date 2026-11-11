@@ -332,10 +332,17 @@
             <xsd:element name="series" minOccurs="1" maxOccurs="unbounded">
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element name="aetitle" type="dsr:ApplicationEntity" minOccurs="0"/>
-                  <xsd:element name="location" minOccurs="0">
+                  <xsd:element name="retrieve" minOccurs="0">
                     <xsd:complexType>
-                      <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
+                      <xsd:sequence>
+                        <xsd:element name="aetitle" type="dsr:ApplicationEntity" minOccurs="0"/>
+                        <xsd:element name="location" minOccurs="0">
+                          <xsd:complexType>
+                            <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
+                          </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="url" type="dsr:URIorURL" minOccurs="0"/>
+                      </xsd:sequence>
                     </xsd:complexType>
                   </xsd:element>
                   <xsd:element name="fileset" minOccurs="0">
@@ -997,6 +1004,13 @@
       <xsd:element name="suffix" type="xsd:string" minOccurs="0"/>
     </xsd:sequence>
   </xsd:complexType>
+
+  <xsd:simpleType name="URIorURL">
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
+      <!-- a pattern would be nice to check for valid URIs or URLs -->
+    </xsd:restriction>
+  </xsd:simpleType>
 
   <!-- Other Data Types -->
 
