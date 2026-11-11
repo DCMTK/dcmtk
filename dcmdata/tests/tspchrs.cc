@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2025, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -162,6 +162,8 @@ OFTEST(dcmdata_specificCharacterSet_3)
         // 0x5c is the byte for a backslash in single-byte encodings, but here part of two Kanji characters.
         OFCHECK(converter.convertString("Noriwa=\x81\x5c\x82\x5c", resultStr, delimiters).good());
         OFCHECK_EQUAL(resultStr, "Noriwa=\xe4\xb9\x97\xe4\xbf\x93");
+        // check whether an error is reported if the last character is incomplete (1 byte is missing)
+        OFCHECK(converter.convertString("Noriwa=\x81\x5c\x82", resultStr, delimiters).bad());
         // check whether string conversion from Chinese language to UTF-8 works.
         // example taken from DICOM PS 3.5 Annex K.2
         OFCHECK(converter.selectCharacterSet("\\ISO 2022 IR 58").good());

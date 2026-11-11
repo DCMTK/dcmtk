@@ -268,7 +268,7 @@ OFCondition DJCodecDecoder::decode(
                         }
 
                         // convert planar configuration if necessary
-                        if ((imageSamplesPerPixel == 3) && createPlanarConfiguration)
+                        if ((imageSamplesPerPixel == 3) && createPlanarConfiguration && (imageFrames == 1 || (! djcp->planarConfigWorkaroundEnabled())))
                         {
                           if (precision > 8)
                             result = createPlanarConfigurationWord(OFreinterpret_cast(Uint16*, imageData8), imageColumns, imageRows);
@@ -278,6 +278,15 @@ OFCondition DJCodecDecoder::decode(
                         imageData8 += frameSize;
                       }
                     }
+                  }
+
+                  if (result.good() && (imageSamplesPerPixel == 3) && (imageFrames > 1) && djcp->planarConfigWorkaroundEnabled())
+                  {
+                    DCMJPEG_WARN("Detected color multiframe image; applying workaround for DCMTK planar configuration issue");
+                    if (precision > 8)
+                      result = planarConfigWorkaroundToggle16(imageData16, totalSize/2, imageSamplesPerPixel);
+                      else result = planarConfigWorkaroundToggle8(OFreinterpret_cast(Uint8*, imageData16), totalSize, imageSamplesPerPixel);
+                    createPlanarConfiguration = 1;
                   }
 
                   if (result.good())
@@ -957,4 +966,64 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 
   }
   return OFFalse;
+}
+
+
+OFCondition DJCodecDecoder::planarConfigWorkaroundToggle8(
+  Uint8 *pixelData,
+  const size_t numValues,
+  const Uint16 samplesPerPixel)
+{
+  if (pixelData == NULL)
+    return EC_IllegalParameter;
+
+  // allocate target buffer
+  Uint8* px8 = new Uint8[numValues];
+  if (!px8)
+    return EC_MemoryExhausted;
+
+  // copy pixel values from the incorrect sort order created by the JPEG encoder
+  // in DCMTK versions up to 3.7.0 back to the original sort order,
+  // which corresponds to PlanarConfiguration == 1.
+  size_t numPixels = numValues / samplesPerPixel;
+  for (size_t n=0; n < numPixels; n++)
+  {
+      for (Uint16 s=0; s < samplesPerPixel; s++)
+        px8[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
+  }
+
+  // copy filled buffer to pixel data and free memory
+  memcpy(pixelData, px8, OFstatic_cast(size_t, numValues));
+  delete[] px8;
+  return EC_Normal;
+}
+
+
+OFCondition DJCodecDecoder::planarConfigWorkaroundToggle16(
+  Uint16 *pixelData,
+  const size_t numValues, //number of 16-bit components
+  const Uint16 samplesPerPixel)
+{
+  if (pixelData == NULL)
+    return EC_IllegalParameter;
+
+  // allocate target buffer
+  Uint16* px16 = new Uint16[numValues];
+  if (!px16)
+    return EC_MemoryExhausted;
+
+  // copy pixel values from the incorrect sort order created by the JPEG encoder
+  // in DCMTK versions up to 3.7.0 back to the original sort order,
+  // which corresponds to PlanarConfiguration == 1.
+  size_t numPixels = numValues / samplesPerPixel;
+  for (size_t n=0; n < numPixels; n++)
+  {
+      for (Uint16 s=0; s < samplesPerPixel; s++)
+        px16[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
+  }
+
+  // copy filled buffer to pixel data and free memory
+  memcpy(pixelData, px16, OFstatic_cast(size_t, numValues*2));
+  delete[] px16;
+  return EC_Normal;
 }

@@ -1071,6 +1071,29 @@ class DCMTK_DCMDATA_EXPORT DcmElement
 
   private:
 
+    /** This function reads the data value of an attribute from a stream
+     *  that cannot (yet) deliver all value bytes, e.g. a buffered network
+     *  stream that is fed fragment by fragment, a stdin stream, a deflated
+     *  stream or a truncated file. The value is staged in a buffer that
+     *  grows with the data that actually arrives instead of allocating
+     *  the full declared value length in advance, so that a small crafted
+     *  or truncated input cannot trigger a huge allocation. Only when the
+     *  value is complete it is transferred to fValue; until then the
+     *  element behaves as if the value had not been loaded yet.
+     *  Whether and from which value size this mechanism is used is
+     *  controlled by the incremental load threshold of the input stream,
+     *  see DcmInputStream::setIncrementalLoadThreshold().
+     *  @param readStream The stream which contains the information.
+     *  @param minAllocation minimum size of the staging buffer in bytes.
+     *    Values up to this size are thus read into a buffer of their final
+     *    size right away.
+     *  @return status, EC_Normal if the value was read completely,
+     *    EC_StreamNotifyClient if more data is required, an error code
+     *    otherwise
+     */
+    OFCondition loadValueIncrementally(DcmInputStream *readStream,
+                                       Uint32 minAllocation);
+
     /// current byte order of attribute value in memory
     E_ByteOrder fByteOrder;
 
@@ -1079,6 +1102,14 @@ class DCMTK_DCMDATA_EXPORT DcmElement
 
     /// value of the element
     Uint8 *fValue;
+
+    /// staging buffer for a value that is currently being loaded
+    /// incrementally by loadValueIncrementally(); only non-NULL while
+    /// such a load is in progress
+    Uint8 *fPartialValue;
+
+    /// number of bytes allocated for fPartialValue
+    Uint32 fPartialValueSize;
 };
 
 /** Checks whether left hand side element is smaller than right hand side

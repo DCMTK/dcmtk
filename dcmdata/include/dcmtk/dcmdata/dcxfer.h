@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -415,7 +415,8 @@ public:
 
     /** check whether transfer syntax uses (0028,7FE0) Pixel Data Provider URL
      *  to reference pixel data
-     *  @return true if transfer syntax uses URL reference to pixel data
+     *  @return true if transfer syntax uses URL reference to pixel data, false
+     *    otherwise
      */
     inline OFBool usesReferencedPixelData() const
     {

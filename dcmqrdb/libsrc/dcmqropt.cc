@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2025, OFFIS e.V.
+ *  Copyright (C) 1993-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,8 +33,10 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 , filepad_(0)
 , groupLength_(EGL_recalcGL)
 , ignoreStoreData_(OFFalse)
+, incrementalLoadThreshold_(0)
 , itempad_(0)
 , maxAssociations_(20)
+, maxElementLength_(0)
 , maxPDU_(ASC_DEFAULTMAXPDU)
 , net_(NULL)
 , networkTransferSyntax_(EXS_Unknown)

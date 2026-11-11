@@ -123,7 +123,7 @@ OFCondition IODGeneralEquipmentModule::getStationName(OFString& value, const lon
 
 OFCondition IODGeneralEquipmentModule::getInstitutionalDepartmentName(OFString& value, const long signed int pos) const
 {
-    return DcmIODUtil::getStringValueFromItem(DCM_StationName, *m_Item, value, pos);
+    return DcmIODUtil::getStringValueFromItem(DCM_InstitutionalDepartmentName, *m_Item, value, pos);
 }
 
 OFCondition IODGeneralEquipmentModule::getManufacturerModelName(OFString& value, const long signed int pos) const
@@ -209,12 +209,17 @@ OFCondition IODGeneralEquipmentModule::setStationName(const OFString& value, con
     return result;
 }
 
-OFCondition IODGeneralEquipmentModule::setInstutionalDepartmentName(const OFString& value, const OFBool checkValue)
+OFCondition IODGeneralEquipmentModule::setInstitutionalDepartmentName(const OFString& value, const OFBool checkValue)
 {
     OFCondition result = (checkValue) ? DcmLongString::checkStringValue(value, "1") : EC_Normal;
     if (result.good())
         result = m_Item->putAndInsertOFStringArray(DCM_InstitutionalDepartmentName, value);
     return result;
+}
+
+OFCondition IODGeneralEquipmentModule::setInstutionalDepartmentName(const OFString& value, const OFBool checkValue)
+{
+    return setInstitutionalDepartmentName(value, checkValue);
 }
 
 OFCondition IODGeneralEquipmentModule::setManufacturerModelName(const OFString& value, const OFBool checkValue)

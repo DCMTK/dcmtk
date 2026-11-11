@@ -119,7 +119,10 @@ enum DcmInputStreamFactoryType
   DFT_DcmInputFileStreamFactory,
 
   /// class DcmInputTempFileStreamFactory
-  DFT_DcmInputTempFileStreamFactory
+  DFT_DcmInputTempFileStreamFactory,
+
+  /// class DcmInputFileHandleStreamFactory
+  DFT_DcmInputFileHandleStreamFactory
 };
 
 /** pure virtual abstract base class for input stream factories,
@@ -258,6 +261,55 @@ public:
    */
   void setMaxNestingDepth(Sint32 maxDepth);
 
+  /** returns the maximum permitted element value length for parsing.
+   *  A value of 0 means the compile-time default (DCMTK_MAX_ELEMENT_LENGTH)
+   *  applies.
+   *  @return maximum element value length setting
+   */
+  Uint32 maxElementLength() const;
+
+  /** sets the maximum permitted element value length for parsing.
+   *  An element whose value length field exceeds this limit is rejected
+   *  with EC_ElementLengthLimitExceeded before a value buffer of the
+   *  declared size is allocated (memory exhaustion protection).
+   *  Must be called before parsing begins.
+   *  - Value 0 (default): apply the compile-time default
+   *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+   *    defined value length permitted in DICOM, i.e. no additional
+   *    restriction)
+   *  - Value > 0: use this value as the maximum permitted element length
+   *  @param maxLength maximum element value length setting
+   */
+  void setMaxElementLength(Uint32 maxLength);
+
+  /** returns the threshold for the incremental loading of element values.
+   *  A value of 0 means the compile-time default
+   *  (DCMTK_INCREMENTAL_LOAD_THRESHOLD) applies.
+   *  @return incremental load threshold setting
+   */
+  Sint32 incrementalLoadThreshold() const;
+
+  /** sets the threshold for the incremental loading of element values.
+   *  When an element value is read from this stream and the stream cannot
+   *  deliver all value bytes right away (e.g. a network stream that is fed
+   *  fragment by fragment, stdin, a deflated stream or a truncated file),
+   *  the value is staged in a buffer that grows with the data that actually
+   *  arrives instead of allocating the full announced value length up front
+   *  (memory exhaustion protection).  Must be called before parsing begins.
+   *  - Value 0 (default): apply the compile-time default
+   *    (DCMTK_INCREMENTAL_LOAD_THRESHOLD, default is 65536)
+   *  - Value -1: disable incremental loading, i.e. always allocate a buffer
+   *    of the full announced value length before reading (historic behavior)
+   *  - Value > 0: values up to this number of bytes are read into a buffer
+   *    of their final size right away; the staging buffer for larger values
+   *    starts at this size.  A larger threshold reduces the number of buffer
+   *    growth steps (and thus the amount of data copied) for large values at
+   *    the price of allocating up to this amount of memory before the data
+   *    has actually arrived.
+   *  @param threshold incremental load threshold setting
+   */
+  void setIncrementalLoadThreshold(Sint32 threshold);
+
   /** marks the current stream position for a later putback operation,
    *  overwriting a possibly existing prior putback mark.
    *  The DcmObject read methods rely on the possibility to putback
@@ -312,6 +364,13 @@ private:
 
   /// maximum permitted sequence nesting depth (0 = default 64, -1 = unlimited)
   Sint32 maxNestingDepth_;
+
+  /// maximum permitted element value length (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+  Uint32 maxElementLength_;
+
+  /// threshold for the incremental loading of element values
+  /// (0 = compile-time default DCMTK_INCREMENTAL_LOAD_THRESHOLD, -1 = disabled)
+  Sint32 incrementalLoadThreshold_;
 };
 
 

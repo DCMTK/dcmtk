@@ -206,6 +206,18 @@ workaround options for incorrect JPEG encodings:
   # are compressed. This flag enables a workaround that permits such
   # images to be decoded correctly.
 
+  +wp   --workaround-planar
+          enable workaround for DCMTK color-by-plane bug
+
+  # DCMTK releases up to 3.7.0 incorrectly handled color multiframe
+  # images with color-by-plane planar configuration when encoding using
+  # the "true lossless" JPEG encoder. This workaround will decompress
+  # such images and correct the sort order of the color components,
+  # resulting in a correct uncompressed image. Unfortunately, it is not
+  # possible to automatically recognize affected images, so this option
+  # will also cause the color components in correctly encoded images
+  # to be mixed up. Use with care!
+
 \endverbatim
 
 \subsection dcmdjpeg_output_options output options
@@ -362,6 +374,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmdjpeg_copyright COPYRIGHT
 
-Copyright (C) 2001-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

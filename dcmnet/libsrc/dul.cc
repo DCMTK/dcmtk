@@ -1452,7 +1452,11 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
         /* and finally, after the association's currentPDV variable has been completely set to the next */
         /* (unprocessed) PDV, we need to update the association's pdvPointer, so that it again points */
         /* to the address of the PDV which is represented by the association's currentPDV variable. */
-        (*association)->pdvPointer += 4 + pdvLength;
+        /* This is exactly the address we already computed in p above. (Advancing pdvPointer by */
+        /* "4 + pdvLength" instead would be wrong: pdvLength is the length of the *next* PDV, not the */
+        /* one we just stepped over, so for a PDU whose PDVs have different lengths the pointer would */
+        /* drift and eventually run past the fragment buffer, causing an out-of-bounds read.) */
+        (*association)->pdvPointer = p;
     }
     return EC_Normal;
 }

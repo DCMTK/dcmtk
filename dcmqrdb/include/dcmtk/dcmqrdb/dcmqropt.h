@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2025, OFFIS e.V.
+ *  Copyright (C) 1993-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -78,11 +78,21 @@ public:
   /// ignore incoming data, receive but do not store (for debugging)
   OFBool            ignoreStoreData_;
 
+  /// threshold for the incremental loading of element values in received
+  /// DIMSE messages (0 = compile-time default DCMTK_INCREMENTAL_LOAD_THRESHOLD,
+  /// -1 = disabled), see ASC_setIncrementalLoadThreshold()
+  Sint32            incrementalLoadThreshold_;
+
   /// block size for item padding, pad DICOM files to multiple of this value
   OFCmdUnsignedInt  itempad_;
 
   /// maximum number of parallel associations accepted
   int               maxAssociations_;
+
+  /// maximum element value length accepted in received DIMSE messages
+  /// (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH),
+  /// see ASC_setMaxIncomingElementLength()
+  Uint32            maxElementLength_;
 
   /// maximum PDU size
   OFCmdUnsignedInt  maxPDU_;

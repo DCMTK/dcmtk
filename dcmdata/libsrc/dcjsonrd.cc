@@ -23,6 +23,7 @@
 #include "dcmtk/dcmdata/dcjsonrd.h"
 #include "dcmtk/ofstd/ofcond.h"         /* for class OFCondition */
 #include "dcmtk/ofstd/offile.h"         /* for class OFFile */
+#include "dcmtk/ofstd/oflimits.h"       /* for OFnumeric_limits */
 #include "dcmtk/dcmdata/dcerror.h"      /* for dcmdata logger macros */
 #include "dcmtk/dcmdata/dcfilefo.h"     /* for class DcmFileFormat */
 #include "dcmtk/dcmdata/dcmetinf.h"
@@ -97,6 +98,13 @@ OFCondition DcmJSONReader::readJSONFile(const char *ifname)
 
     // obtain file size
     const size_t len = OFStandard::getFileSize(ifname);
+    // make sure that adding the terminating null byte does not wrap around,
+    // which is possible where size_t is only 32 bits wide
+    if (len == OFnumeric_limits<size_t>::max())
+    {
+        DCMDATA_ERROR("JSON file too large: '" << ifname << "'");
+        return EC_MemoryExhausted;
+    }
     char *jsonString = new (std::nothrow) char[len + 1];
     if (jsonString == NULL)
     {
@@ -313,6 +321,13 @@ OFCondition DcmJSONReader::storeInlineBinaryValue(
 {
     OFCondition result = EC_Normal;
     if (NULL == data) length = 0;
+    // the length is converted to 32 bits below, so reject larger values
+    // instead of silently truncating them
+    if (length > 0xfffffffeUL)
+    {
+        DCMDATA_ERROR("inline binary value too large for DICOM element " << element.getTag() << ": " << length << " bytes");
+        return EC_ElemLengthExceeds32BitField;
+    }
     DcmEVR evr = element.getVR();
     if (evr == EVR_OW)
     {
@@ -365,6 +380,13 @@ OFCondition DcmJSONReader::storeBulkValue(
 {
     OFCondition result = EC_Normal;
     if (NULL == data) length = 0;
+    // the length is converted to 32 bits below, so reject larger values
+    // instead of silently truncating them
+    if (length > 0xfffffffeUL)
+    {
+        DCMDATA_ERROR("bulk data value too large for DICOM element " << element.getTag() << ": " << length << " bytes");
+        return EC_ElemLengthExceeds32BitField;
+    }
     DcmEVR evr = element.getVR();
 
     if (evr == EVR_OB || evr == EVR_UN)
@@ -665,7 +687,11 @@ OFCondition DcmJSONReader::parseElement(
     result = createElement(newElem, dcmTag, vr);
     if (result.bad())
     {
-        if (stopOnErrorPolicy_) return result; else result = EC_Normal;
+        // no element was created, so there is nothing to fill or to insert. When
+        // errors are ignored, skip this attribute instead of working on a NULL
+        // pointer. This is safe because the loop above has already moved "current"
+        // past all tokens of this element.
+        if (stopOnErrorPolicy_) return result; else return EC_Normal;
     }
 
     if (valueToken == NULL)
@@ -1170,9 +1196,12 @@ OFCondition DcmJSONReader::createElement(
 
     DCMDATA_TRACE("parsing VR: " << vr);
 
-    // convert vr string
+    // convert vr string. Note that non-standard VR names such as "na", "pi", "ox",
+    // "xs", "lt" and "up" are internal to DCMTK and are not DICOM VRs, so they are
+    // rejected here as well: there is no element class for some of them, which would
+    // make the element creation below fail.
     const DcmVR jsonVR(vr.c_str());
-    if (jsonVR.isUnknown() || jsonVR.isInvalid())
+    if (jsonVR.isUnknown() || jsonVR.isInvalid() || !jsonVR.isStandard())
     {
         // check whether "vr" attribute exists
         if (vr.empty() || vr == "")
@@ -1634,13 +1663,22 @@ OFCondition DcmJSONReader::loadBulkdataFile(
         return makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
     }
 
-    // obtain file size and check if file is large enough
+    // obtain file size and check if file is large enough (without computing
+    // offset + length, which could wrap around for very large values)
     const size_t filelen = OFStandard::getFileSize(filepath);
     if (0 == length) length = filelen;
-    if (offset + length > filelen)
+    if ((offset > filelen) || (length > filelen - offset))
     {
-        DCMDATA_ERROR("bulk data file too short: '" << filepath << "', expected " << offset + length << " bytes but only found " << filelen);
+        DCMDATA_ERROR("bulk data file too short: '" << filepath << "', expected " << length << " bytes at offset "
+            << offset << " but file size is only " << filelen << " bytes");
         return EC_EndOfStream;
+    }
+
+    // check the length before reading the file into memory (see storeBulkValue())
+    if (length > 0xfffffffeUL)
+    {
+        DCMDATA_ERROR("bulk data value too large for DICOM element " << element.getTag() << ": " << length << " bytes");
+        return EC_ElemLengthExceeds32BitField;
     }
 
     // allocate buffer

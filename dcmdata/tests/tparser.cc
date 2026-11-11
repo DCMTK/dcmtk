@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2024, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,6 +39,37 @@
 
 
 static OFLogger tparserLogger = OFLog::getLogger("dcmtk.test.tparser");
+
+/* Read a data set from two consecutive chunks of data, the way the DIMSE layer
+ * feeds the PDVs of a received message to the parser: one chunk at a time, with
+ * the end of the stream only announced together with the last chunk, which may
+ * itself be empty. Passing a NULL second chunk therefore models an empty last PDV.
+ */
+static OFCondition readDatasetInTwoChunks(DcmDataset &dset,
+                                          const Uint8 *chunk1, size_t length1,
+                                          const Uint8 *chunk2, size_t length2,
+                                          E_TransferSyntax ts)
+{
+    DcmInputBufferStream stream;
+    dset.clear();
+    dset.transferInit();
+
+    stream.releaseBuffer();
+    stream.setBuffer(chunk1, OFstatic_cast(offile_off_t, length1));
+    OFCondition cond = dset.read(stream, ts);
+
+    if ((cond == EC_Normal) || (cond == EC_StreamNotifyClient))
+    {
+        stream.releaseBuffer();
+        if ((chunk2 != NULL) && (length2 > 0))
+            stream.setBuffer(chunk2, OFstatic_cast(offile_off_t, length2));
+        stream.setEos();
+        cond = dset.read(stream, ts);
+    }
+
+    dset.transferEnd();
+    return cond;
+}
 
 OFTEST(dcmdata_parser_missingDelimitationItems)
 {
@@ -542,4 +573,646 @@ OFTEST(dcmdata_parser_handleAmbiguousVR_fromDictionary)
     /* check that the data can be accessed as a 16-bit array (regression test, used to fail with EC_IllegalCall) */
     OFCHECK(dset.findAndGetUint16Array(DCM_WaveformData, uintVals, &numUints).good());
     OFCHECK_EQUAL(numUints, 4);
+}
+
+/* Test data for the memory exhaustion issue reported in DCMTK issues #148
+ * and #1192: a 276-byte DICOM file whose meta-information header specifies
+ * Transfer Syntax 1.2.840.10008.1.2 (Implicit VR Little Endian).  The dataset
+ * contains a single PatientName element with declared length 0xFFFFFFFE
+ * (~4 GB) but only 1 byte of actual value data.  The last five bytes are the
+ * length field and the single value byte. */
+static const Uint8 hugeLengthPoC[] = {
+        /* 128-byte DICOM preamble */
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        /* "DICM" magic */
+        0x44, 0x49, 0x43, 0x4d,
+        /* (0002,0000) UL File Meta Information Group Length = 123 */
+        0x02, 0x00, 0x00, 0x00, 0x55, 0x4c, 0x04, 0x00, 0x7b, 0x00, 0x00, 0x00,
+        /* (0002,0001) OB File Meta Information Version */
+        0x02, 0x00, 0x01, 0x00, 0x4f, 0x42, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
+        0x00, 0x01,
+        /* (0002,0002) UI Media Storage SOP Class UID */
+        0x02, 0x00, 0x02, 0x00, 0x55, 0x49, 0x1a, 0x00, 0x31, 0x2e,
+        0x32, 0x2e, 0x38, 0x34, 0x30, 0x2e, 0x31, 0x30, 0x30, 0x30, 0x38, 0x2e,
+        0x35, 0x2e, 0x31, 0x2e, 0x34, 0x2e, 0x31, 0x2e, 0x31, 0x2e, 0x37, 0x00,
+        /* (0002,0003) UI Media Storage SOP Instance UID */
+        0x02, 0x00, 0x03, 0x00, 0x55, 0x49, 0x12, 0x00, 0x31, 0x2e, 0x32, 0x2e,
+        0x33, 0x2e, 0x34, 0x2e, 0x35, 0x2e, 0x36, 0x2e, 0x37, 0x2e, 0x38, 0x2e,
+        0x39, 0x00,
+        /* (0002,0010) UI Transfer Syntax UID = 1.2.840.10008.1.2 (Implicit VR LE) */
+        0x02, 0x00, 0x10, 0x00, 0x55, 0x49, 0x12, 0x00, 0x31, 0x2e,
+        0x32, 0x2e, 0x38, 0x34, 0x30, 0x2e, 0x31, 0x30, 0x30, 0x30, 0x38, 0x2e,
+        0x31, 0x2e, 0x32, 0x00,
+        /* (0002,0012) UI Implementation Class UID (odd length, triggers a warning) */
+        0x02, 0x00, 0x12, 0x00, 0x55, 0x49, 0x0f, 0x00,
+        0x31, 0x2e, 0x32, 0x2e, 0x33, 0x2e, 0x34, 0x2e, 0x35, 0x2e, 0x36, 0x2e,
+        0x37, 0x2e, 0x38,
+        /* Dataset (Implicit VR LE):
+         * (0010,0010) PatientName, declared length 0xFFFFFFFE (~4 GB), value 'A' */
+        0x10, 0x00, 0x10, 0x00, 0xfe, 0xff, 0xff, 0xff, 0x41
+};
+
+OFTEST(dcmdata_parser_implicitVR_hugeLengthInBufferStream)
+{
+    /* Regression test for the memory exhaustion issue reported in DCMTK
+     * issues #148 and #1192: an element that declares a huge length while
+     * the stream only contains a few bytes of data must not cause a huge
+     * memory allocation.
+     *
+     * When parsed via DcmInputBufferStream (as DCMTK network services do),
+     * DcmInputBufferStream::newFactory() returns NULL, so DcmElement::read()
+     * proceeds to loadValue().  Since the stream cannot deliver the declared
+     * number of value bytes right away, the value is loaded incrementally
+     * into a staging buffer that only grows with the data that actually
+     * arrives.  The parser therefore allocates no more than a few kilobytes
+     * before it detects the premature end of the stream and rejects the
+     * data with EC_InvalidStream. */
+    DcmInputBufferStream bufstream;
+    bufstream.setBuffer(hugeLengthPoC, sizeof(hugeLengthPoC));
+    bufstream.setEos();
+
+    DcmFileFormat fileformat;
+    fileformat.transferInit();
+    OFCondition cond = fileformat.read(bufstream);
+    fileformat.transferEnd();
+
+    /* The parser must return EC_InvalidStream because the declared element
+     * length far exceeds the available stream data. */
+    if (cond != EC_InvalidStream)
+    {
+        OFCHECK_FAIL("Expected EC_InvalidStream (huge element length in buffer stream), "
+                     "but got: " << cond.text());
+    }
+
+    /* The incompletely received value must have been discarded: the element
+     * must not expose a value buffer that is smaller than its declared length. */
+    DcmElement *elem = NULL;
+    if (fileformat.getDataset()->findAndGetElement(DCM_PatientName, elem).good() && (elem != NULL))
+        OFCHECK(!elem->valueLoaded());
+}
+
+/** reads a truncated PatientName element (declared length 1 MiB, 4 bytes of
+ *  data) from a DcmInputBufferStream into the given dataset and checks the
+ *  outcome.  Reading must fail with EC_InvalidStream in any case; whether the
+ *  element keeps a (full-length, partially filled) value buffer depends on
+ *  whether the value was loaded incrementally (value discarded) or allocated
+ *  up front (historic behavior, value buffer kept).
+ *  @param dset dataset to read into (may carry an incremental load threshold)
+ *  @param streamThreshold incremental load threshold to set on the stream
+ *  @param expectValueLoaded expected result of DcmElement::valueLoaded()
+ */
+static void readTruncatedElement(DcmDataset &dset,
+                                 const Sint32 streamThreshold,
+                                 const OFBool expectValueLoaded)
+{
+    /* Implicit VR LE: (0010,0010) PatientName, declared length 0x00100000 (1 MiB), 4 bytes of data */
+    static const Uint8 data[] = {
+        0x10, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x00, 0x41, 0x42, 0x43, 0x44
+    };
+    DcmInputBufferStream bufstream;
+    bufstream.setIncrementalLoadThreshold(streamThreshold);
+    bufstream.setBuffer(data, sizeof(data));
+    bufstream.setEos();
+    dset.transferInit();
+    const OFCondition cond = dset.read(bufstream, EXS_LittleEndianImplicit);
+    dset.transferEnd();
+    if (cond != EC_InvalidStream)
+    {
+        OFCHECK_FAIL("Expected EC_InvalidStream (truncated element in buffer stream), but got: " << cond.text());
+        return;
+    }
+    DcmElement *elem = NULL;
+    if (dset.findAndGetElement(DCM_PatientName, elem).bad() || (elem == NULL))
+    {
+        OFCHECK_FAIL("PatientName element not found after truncated read");
+        return;
+    }
+    OFCHECK_EQUAL(elem->getLengthField(), 0x00100000u);
+    OFCHECK_EQUAL(elem->valueLoaded(), expectValueLoaded);
+}
+
+OFTEST(dcmdata_parser_incrementalLoadThreshold_disabled)
+{
+    /* Verify the runtime configuration of the incremental value loading:
+     * with the default threshold (and with any threshold >= 0) a truncated
+     * value is discarded, with a threshold of -1 the historic behavior is
+     * selected, i.e. a buffer of the full declared length is allocated up
+     * front and kept.  The setting can be made on the stream, on the dataset
+     * (forwarded to the stream) and on the file format object (forwarded to
+     * the dataset). */
+
+    /* default threshold: value discarded */
+    {
+        DcmDataset dset;
+        readTruncatedElement(dset, 0, OFFalse);
+    }
+    /* explicit (small) threshold on the stream: value discarded */
+    {
+        DcmDataset dset;
+        readTruncatedElement(dset, 16, OFFalse);
+    }
+    /* incremental loading disabled on the stream: historic behavior */
+    {
+        DcmDataset dset;
+        readTruncatedElement(dset, -1, OFTrue);
+    }
+    /* incremental loading disabled on the dataset: forwarded to the stream */
+    {
+        DcmDataset dset;
+        dset.setIncrementalLoadThreshold(-1);
+        OFCHECK_EQUAL(dset.getIncrementalLoadThreshold(), -1);
+        readTruncatedElement(dset, 0, OFTrue);
+    }
+    /* dataset setting overrides the stream setting */
+    {
+        DcmDataset dset;
+        dset.setIncrementalLoadThreshold(-1);
+        readTruncatedElement(dset, 16, OFTrue);
+    }
+    /* file format object: setting is forwarded to the dataset.  Use the
+     * PoC file with the declared length patched down to 1 MiB, so that the
+     * up-front allocation of the historic behavior stays small. */
+    {
+        Uint8 data[sizeof(hugeLengthPoC)];
+        memcpy(data, hugeLengthPoC, sizeof(data));
+        /* length field (little endian) is located in front of the last byte */
+        data[sizeof(data) - 5] = 0x00;
+        data[sizeof(data) - 4] = 0x00;
+        data[sizeof(data) - 3] = 0x10;
+        data[sizeof(data) - 2] = 0x00;
+
+        DcmFileFormat fileformat;
+        OFCHECK_EQUAL(fileformat.getIncrementalLoadThreshold(), 0);
+        fileformat.setIncrementalLoadThreshold(-1);
+        OFCHECK_EQUAL(fileformat.getIncrementalLoadThreshold(), -1);
+        OFCHECK_EQUAL(fileformat.getDataset()->getIncrementalLoadThreshold(), -1);
+
+        DcmInputBufferStream bufstream;
+        bufstream.setBuffer(data, sizeof(data));
+        bufstream.setEos();
+        fileformat.transferInit();
+        const OFCondition cond = fileformat.read(bufstream);
+        fileformat.transferEnd();
+        if (cond != EC_InvalidStream)
+            OFCHECK_FAIL("Expected EC_InvalidStream (truncated element in buffer stream), but got: " << cond.text());
+        DcmElement *elem = NULL;
+        if (fileformat.getDataset()->findAndGetElement(DCM_PatientName, elem).good() && (elem != NULL))
+            OFCHECK(elem->valueLoaded());
+        else
+            OFCHECK_FAIL("PatientName element not found after truncated read");
+    }
+}
+
+OFTEST(dcmdata_parser_incrementalBufferStreamRead)
+{
+    /* Verify that a legitimate element whose declared length exceeds the
+     * bytes currently available in a DcmInputBufferStream can be read
+     * incrementally, as DCMTK network services (DIMSE) do when receiving
+     * data in multiple PDV fragments.
+     *
+     * The element's declared length (8191 bytes, odd on purpose to exercise
+     * the padding logic) is larger than the first PDV fragment (2048 bytes).
+     * The first read stages the data that is available and suspends with
+     * EC_StreamNotifyClient.  After releaseBuffer(), the remaining data is
+     * provided via setBuffer() + setEos(), and the second read completes
+     * successfully. */
+
+    /* Build an Implicit VR LE dataset: PatientName with 8191 bytes of data. */
+    static const Uint32 elemLen = 8191;
+    Uint8 data[8 + elemLen];
+    /* tag (0010,0010) little-endian */
+    data[0] = 0x10; data[1] = 0x00;
+    data[2] = 0x10; data[3] = 0x00;
+    /* length 8191 = 0x00001FFF little-endian */
+    data[4] = 0xff; data[5] = 0x1f; data[6] = 0x00; data[7] = 0x00;
+    /* value */
+    memset(data + 8, 'A', elemLen);
+
+    const size_t totalLen = sizeof(data);
+
+    /* First "PDV fragment": 2048 bytes.  After the 8-byte tag+length header is
+     * consumed by the parser, 2040 bytes of value data remain in the buffer.
+     * This exceeds the 1024-byte backup buffer inside DcmInputBufferStream. */
+    const size_t firstChunk = 2048;
+
+    DcmInputBufferStream bufstream;
+    bufstream.setBuffer(data, firstChunk);
+    /* NOT calling setEos() — more fragments will follow. */
+
+    DcmDataset dset;
+    dset.transferInit();
+    OFCondition cond = dset.read(bufstream, EXS_LittleEndianImplicit);
+
+    /* The first read delivers only a partial PDV, so the parser suspends
+     * with EC_StreamNotifyClient — more data is expected via setBuffer(). */
+    if (cond != EC_StreamNotifyClient)
+    {
+        OFCHECK_FAIL("First read should return EC_StreamNotifyClient, "
+                     "but got: " << cond.text());
+        dset.transferEnd();
+        return;
+    }
+
+    /* Simulate what the DIMSE loop does between PDV fragments:
+     * releaseBuffer() saves unconsumed bytes (up to 1024) into the backup
+     * buffer so the next setBuffer() can be called. */
+    bufstream.releaseBuffer();
+
+    /* Verify that releaseBuffer() succeeds, i.e. the first read consumed
+     * enough data that the unconsumed remainder fits in the 1024-byte backup
+     * buffer. */
+    if (bufstream.status().bad())
+    {
+        OFCHECK_FAIL("releaseBuffer() failed after first read: "
+                     << bufstream.status().text()
+                     << " (unconsumed data exceeded backup buffer)");
+        dset.transferEnd();
+        return;
+    }
+
+    /* Feed the remaining data and signal end-of-stream. */
+    bufstream.setBuffer(data + firstChunk, totalLen - firstChunk);
+    bufstream.setEos();
+
+    cond = dset.read(bufstream, EXS_LittleEndianImplicit);
+    dset.transferEnd();
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Second read should succeed, but got: " << cond.text());
+        return;
+    }
+
+    /* Verify that the value arrived intact: 8191 'A' characters, correctly
+     * terminated (the terminating zero byte is written when the incrementally
+     * staged value is completed). */
+    const char *str = NULL;
+    OFCHECK(dset.findAndGetString(DCM_PatientName, str).good());
+    if (str != NULL)
+    {
+        OFCHECK_EQUAL(strlen(str), 8191);
+        OFCHECK(str[0] == 'A' && str[8190] == 'A');
+    }
+    else
+        OFCHECK_FAIL("PatientName value should be readable");
+}
+
+/** reads a 64 KiB element that arrives in many small fragments through a
+ *  DcmInputBufferStream and verifies that it round-trips unchanged.
+ *  @param threshold incremental load threshold to set on the stream
+ *    (0 = default, i.e. the value is allocated at once; small values force
+ *    the staging buffer to grow several times)
+ */
+static void readFragmentedElement(const Sint32 threshold)
+{
+    /* Build an Implicit VR LE dataset: (0042,0011) EncapsulatedDocument (OB)
+     * with 65536 bytes of patterned data. */
+    static const Uint32 elemLen = 65536;
+    static Uint8 data[8 + elemLen];
+    /* tag (0042,0011) little-endian */
+    data[0] = 0x42; data[1] = 0x00;
+    data[2] = 0x11; data[3] = 0x00;
+    /* length 65536 = 0x00010000 little-endian */
+    data[4] = 0x00; data[5] = 0x00; data[6] = 0x01; data[7] = 0x00;
+    /* patterned value (detects any misplaced copy while the buffer grows) */
+    for (Uint32 i = 0; i < elemLen; ++i)
+        data[8 + i] = OFstatic_cast(Uint8, (i * 31 + 7) & 0xff);
+
+    const size_t totalLen = sizeof(data);
+    const size_t fragmentSize = 1024;
+
+    DcmInputBufferStream bufstream;
+    bufstream.setIncrementalLoadThreshold(threshold);
+    DcmDataset dset;
+    dset.transferInit();
+
+    /* feed the data fragment by fragment, as the DIMSE layer does */
+    OFCondition cond = EC_Normal;
+    size_t offset = 0;
+    while (offset < totalLen)
+    {
+        const size_t chunk = (totalLen - offset < fragmentSize) ? (totalLen - offset) : fragmentSize;
+        bufstream.setBuffer(data + offset, chunk);
+        offset += chunk;
+        if (offset >= totalLen)
+            bufstream.setEos();
+        cond = dset.read(bufstream, EXS_LittleEndianImplicit);
+        if (cond != EC_StreamNotifyClient)
+            break;
+        bufstream.releaseBuffer();
+        if (bufstream.status().bad())
+        {
+            OFCHECK_FAIL("releaseBuffer() failed: " << bufstream.status().text());
+            dset.transferEnd();
+            return;
+        }
+    }
+    dset.transferEnd();
+
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Reading the fragmented dataset (threshold " << threshold << ") should succeed, but got: " << cond.text());
+        return;
+    }
+
+    /* verify that the element round-tripped unchanged */
+    const Uint8 *readData = NULL;
+    unsigned long readLen = 0;
+    OFCHECK(dset.findAndGetUint8Array(DCM_EncapsulatedDocument, readData, &readLen).good());
+    OFCHECK_EQUAL(readLen, elemLen);
+    if (readData != NULL && readLen == elemLen)
+        OFCHECK(memcmp(readData, data + 8, elemLen) == 0);
+}
+
+OFTEST(dcmdata_parser_manyFragmentsBufferStreamRead)
+{
+    /* Verify that a large element that arrives in many small fragments is
+     * staged correctly: with a small incremental load threshold the staging
+     * buffer has to grow several times, and the data must be copied to the
+     * correct offsets each time. */
+
+    /* default threshold (64 KiB): the complete value is allocated at once */
+    readFragmentedElement(0);
+    /* threshold 1 KiB: the staging buffer grows 1 KiB -> 4 KiB -> 16 KiB -> 64 KiB */
+    readFragmentedElement(1024);
+    /* minimum threshold: the first allocation is driven by the available data only */
+    readFragmentedElement(1);
+}
+
+
+OFTEST(dcmdata_parser_deflatedBufferStreamRead)
+{
+#ifdef WITH_ZLIB
+
+    /* Verify that a legitimate deflated dataset that is completely available
+     * in a DcmInputBufferStream (setEos() has been called) is parsed
+     * correctly even when it contains an element that is larger than the
+     * decompressor's output buffer.
+     *
+     * With a compression filter installed, avail() only reports the bytes
+     * currently held in the decompressor's output buffer (at most 4 KB),
+     * not the total remaining data.  Elements larger than that are therefore
+     * read via the incremental staging buffer, which grows as the
+     * decompressor delivers more data. */
+
+    /* Build a dataset with an 8192-byte OB element and write it deflated. */
+    static const Uint32 elemLen = 8192;
+    Uint8 elemData[elemLen];
+    memset(elemData, 'A', elemLen);
+
+    DcmDataset dsetOut;
+    OFCHECK(dsetOut.putAndInsertUint8Array(DCM_EncapsulatedDocument, elemData, elemLen).good());
+
+    Uint8 outBuf[16384];
+    DcmOutputBufferStream outStream(outBuf, sizeof(outBuf));
+    dsetOut.transferInit();
+    OFCondition cond = dsetOut.write(outStream, EXS_DeflatedLittleEndianExplicit,
+        EET_ExplicitLength, NULL);
+    dsetOut.transferEnd();
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Writing the deflated dataset failed: " << cond.text());
+        return;
+    }
+    /* flush the stream including the embedded compression codec, then
+     * retrieve the compressed data (which empties the stream's buffer) */
+    outStream.flush();
+    void *compData = NULL;
+    offile_off_t compLen = 0;
+    outStream.flushBuffer(compData, compLen);
+    OFCHECK(outStream.isFlushed());
+    /* the deflated dataset must be complete and smaller than the original */
+    OFCHECK(compLen > 0 && compLen < OFstatic_cast(offile_off_t, elemLen));
+
+    /* Read it back from a buffer stream that has all data and EOS set,
+     * as a network service would do for a single-PDV deflated dataset. */
+    DcmInputBufferStream bufstream;
+    bufstream.setBuffer(compData, compLen);
+    bufstream.setEos();
+
+    DcmDataset dsetIn;
+    dsetIn.transferInit();
+    cond = dsetIn.read(bufstream, EXS_DeflatedLittleEndianExplicit);
+    dsetIn.transferEnd();
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Reading the deflated dataset should succeed, but got: " << cond.text());
+        return;
+    }
+
+    /* verify that the element round-tripped unchanged */
+    const Uint8 *readData = NULL;
+    unsigned long readLen = 0;
+    OFCHECK(dsetIn.findAndGetUint8Array(DCM_EncapsulatedDocument, readData, &readLen).good());
+    OFCHECK_EQUAL(readLen, elemLen);
+    if (readData != NULL && readLen == elemLen)
+        OFCHECK(memcmp(readData, elemData, elemLen) == 0);
+#endif /* WITH_ZLIB */
+}
+
+OFTEST(dcmdata_parser_zeroLengthElementAtEndOfStream)
+{
+    /* An element with a value length of zero at the very end of the stream is
+     * complete and must not be mistaken for a truncated value. C-FIND request
+     * identifiers regularly end in such an element (a universal matching key),
+     * so getting this wrong breaks every query.
+     */
+    const Uint8 data[] = {
+        TAG_AND_LENGTH_SHORT(DCM_QueryRetrieveLevel, 'C', 'S', 6),
+        'S', 'T', 'U', 'D', 'Y', ' ',
+        TAG_AND_LENGTH_SHORT(DCM_StudyDescription, 'L', 'O', 10),
+        'C', 'T', ' ', 'C', 'H', 'E', 'S', 'T', '*', ' ',
+        TAG_AND_LENGTH_SHORT(DCM_StudyInstanceUID, 'U', 'I', 0)
+    };
+    DcmDataset dset;
+    OFCondition cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
+    OFString value;
+    OFCHECK(dset.findAndGetOFString(DCM_StudyDescription, value).good());
+    OFCHECK_EQUAL(value, "CT CHEST*");
+    DcmElement *elem = NULL;
+    OFCHECK(dset.findAndGetElement(DCM_StudyInstanceUID, elem).good());
+    if (elem != NULL)
+        OFCHECK_EQUAL(elem->getLength(), 0);
+}
+
+OFTEST(dcmdata_parser_zeroLengthElementBeforeEmptyLastChunk)
+{
+    /* same as above, but the stream is fed in two chunks and the last one is
+     * empty, like an empty last PDV after a complete data set
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_QueryRetrieveLevel, 'C', 'S', 6),
+        'S', 'T', 'U', 'D', 'Y', ' ',
+        TAG_AND_LENGTH_SHORT(DCM_StudyInstanceUID, 'U', 'I', 0)
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        NULL /* empty last chunk */, 0, TRANSFER_SYNTAX);
+    if (cond.bad())
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+}
+
+OFTEST(dcmdata_parser_truncatedValueAtEndOfStream)
+{
+    /* the announced 64 bytes of Pixel Data are cut short after two bytes, and the
+     * stream then ends with an empty chunk (an empty last PDV on the network).
+     * This must be reported as an error: the element's value buffer was allocated
+     * with the full announced length, so accepting the data set would hand out the
+     * part of that buffer that was never received.
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 64),
+        VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        NULL /* empty last chunk */, 0, TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+    if (cond.good())
+        OFCHECK_FAIL("truncated data set was accepted as complete");
+}
+
+OFTEST(dcmdata_parser_truncatedValueAtEndOfStream_nonEmptyLastChunk)
+{
+    /* same as above, but the last chunk carries some of the missing value bytes
+     * (still not all of them)
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 64),
+        VALUE, VALUE
+    };
+    const Uint8 chunk2[] = { VALUE, VALUE, VALUE, VALUE };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+}
+
+OFTEST(dcmdata_parser_valueSplitAcrossChunks)
+{
+    /* a value that is split across two chunks has to be read correctly, i.e. the
+     * checks for a truncated data set must not reject a legitimate suspended read
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(DCM_PixelData, 'O', 'B', 8),
+        VALUE, VALUE, VALUE
+    };
+    const Uint8 chunk2[] = {
+        VALUE, VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
+    DcmElement *elem = NULL;
+    OFCHECK(dset.findAndGetElement(DCM_PixelData, elem).good());
+    if (elem != NULL)
+        OFCHECK_EQUAL(elem->getLength(), 8);
+    OFString value;
+    OFCHECK(dset.findAndGetOFString(DCM_PatientName, value).good());
+    OFCHECK_EQUAL(value, "ABCD");
+}
+
+OFTEST(dcmdata_parser_outOfOrderTagWithValueSplitAcrossChunks)
+{
+    /* (0009,1010) is sent after (0010,0010), i.e. not in ascending tag order, and
+     * its value is cut short at the chunk boundary. The parser used to continue
+     * with the wrong element here, because the order check in DcmItem::insert()
+     * moved the element list's cursor. It then parsed the remaining bytes as new
+     * elements and reported success, leaving (0009,1010) with a partly filled
+     * value buffer of its full announced length.
+     */
+    const DcmTag privateTag(0x0009, 0x1010);
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(privateTag, 'O', 'B', 64),
+        VALUE, VALUE
+    };
+    const Uint8 chunk2[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientID, 'L', 'O', 4),
+        '1', '2', '3', '4'
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+    if (cond.good())
+        OFCHECK_FAIL("data set with an incomplete out-of-order element was accepted");
+}
+
+OFTEST(dcmdata_parser_duplicateTagWithValueSplitAcrossChunks)
+{
+    /* The same tag is sent twice and the value of the second occurrence is cut
+     * short at the chunk boundary. The duplicate is dropped by DcmItem::insert()
+     * and deleted again, which used to leave the element list's cursor on the
+     * first, already complete element: the parser then continued there, parsed
+     * the remaining value bytes as new elements and reported success.
+     */
+    const Uint8 chunk1[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 64),
+        'E', 'F'
+    };
+    const Uint8 chunk2[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientID, 'L', 'O', 4),
+        '1', '2', '3', '4'
+    };
+    DcmDataset dset;
+    OFCondition cond = readDatasetInTwoChunks(dset, chunk1, sizeof(chunk1),
+        chunk2, sizeof(chunk2), TRANSFER_SYNTAX);
+    OFCHECK(cond.bad());
+    if (cond.good())
+        OFCHECK_FAIL("data set with an incomplete duplicate element was accepted");
+}
+
+OFTEST(dcmdata_parser_outOfOrderTagWithCompleteValue)
+{
+    /* an element that is not in ascending tag order but whose value is complete
+     * still has to be parsed (only a warning is logged)
+     */
+    const DcmTag privateTag(0x0009, 0x1010);
+    const Uint8 data[] = {
+        TAG_AND_LENGTH_SHORT(DCM_PatientName, 'P', 'N', 4),
+        'A', 'B', 'C', 'D',
+        TAG_AND_LENGTH(privateTag, 'O', 'B', 4),
+        VALUE, VALUE, VALUE, VALUE
+    };
+    DcmDataset dset;
+    OFCondition cond = readDataset(dset, data, sizeof(data), TRANSFER_SYNTAX);
+    if (cond.bad())
+    {
+        OFCHECK_FAIL("Parsing should have worked, but got error: " << cond.text());
+        return;
+    }
+    OFString value;
+    OFCHECK(dset.findAndGetOFString(DCM_PatientName, value).good());
+    OFCHECK_EQUAL(value, "ABCD");
+    DcmElement *elem = NULL;
+    OFCHECK(dset.findAndGetElement(privateTag, elem).good());
+    if (elem != NULL)
+        OFCHECK_EQUAL(elem->getLength(), 4);
 }

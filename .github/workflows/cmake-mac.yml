@@ -21,13 +21,13 @@
 
         - name: Install support libraries
           run: |
-            brew install ninja openssl@3 libpng libtiff libxml2
+            brew install ninja openssl@4 libpng libtiff libxml2
 
         - name: Prepare environment
           run: |
             echo "NOW=$(date +%Y%m%d)" >> "$GITHUB_ENV"
             echo "COMMIT_SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"
-            echo "OPENSSL_ROOT_DIR=$(brew --prefix openssl@3)" >> "$GITHUB_ENV"
+            echo "OPENSSL_ROOT_DIR=$(brew --prefix openssl@4)" >> "$GITHUB_ENV"
             echo "LIBXML2_ROOT=$(brew --prefix libxml2)" >> "$GITHUB_ENV"
             echo "BREW_PREFIX=$(brew --prefix)" >> "$GITHUB_ENV"
 
@@ -118,5 +118,21 @@
               --prerelease-packages "${{ github.workspace }}/dcmtk-install/dcmtk-*-macos-arm64.tar.gz" \
               --prerelease-packages-clear-pattern "dcmtk-*-macos-arm64.tar.gz" \
               --prerelease-packages-keep-pattern "*<COMMIT_SHORT_SHA>*" \
-              --prerelease-sha master \
               --token ${{ secrets.RELEASE_DCMTK_TOKEN }}
+
+        # Move the "latest" tag to the commit just built. ci_addons used to do
+        # this (--prerelease-sha) via a temporary tag "latest-tmp", which raced
+        # with the publish jobs of the other platforms: a job that fetched the
+        # tags while "latest-tmp" existed mistook it for a release tag and
+        # created a regular release named "latest-tmp". A forced update of the
+        # ref is a single atomic call and idempotent, so it is safe when several
+        # jobs do it for the same commit. Skipped if the commit carries a real
+        # release tag (e.g. DCMTK-3.7.1): ci_addons then created a release
+        # instead of updating the "latest" pre-release, which stays as it is.
+        - name: Point "latest" tag to this commit
+          env:
+            GH_TOKEN: ${{ secrets.RELEASE_DCMTK_TOKEN }}
+          run: |
+            if [ -z "$(git tag --points-at HEAD | grep -v '^latest$')" ]; then
+              gh api -X PATCH repos/DCMTK/dcmtk/git/refs/tags/latest -f sha=${{ github.sha }} -F force=true
+            fi

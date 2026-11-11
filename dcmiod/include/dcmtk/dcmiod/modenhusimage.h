@@ -25,6 +25,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmiod/iodmacro.h"
 #include "dcmtk/dcmiod/modbase.h"
+#include "dcmtk/ofstd/ofdeprec.h"
 
 /** Class representing the Enhanced US Image Module:
  *
@@ -256,6 +257,15 @@ public:
      *  @param  pos Index of the value to get (0..vm-1), -1 for all values
      *  @return EC_Normal if successful, an error code otherwise
      */
+    virtual OFCondition getRecognizableVisualFeatures(OFString& value, const signed long pos = 0);
+    /** Get Recognizable Visual Features
+     *  @deprecated This method is deprecated and will be removed in the future.
+     *    Please use getRecognizableVisualFeatures() instead.
+     *  @param  value Reference to variable in which the value should be stored
+     *  @param  pos Index of the value to get (0..vm-1), -1 for all values
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    OFdeprecated_msg("use getRecognizableVisualFeatures() instead")
     virtual OFCondition getRecognizableVisibleFeatures(OFString& value, const signed long pos = 0);
     /** Get Mandatory View And Slice Progression Direction
      *  @return Reference to Mandatory View And Slice Progression Direction
@@ -449,6 +459,16 @@ public:
      *  @param  checkValue Check 'value' for conformance if enabled, including VR (CS) and VM (1)
      *  @return EC_Normal if successful, an error code otherwise
      */
+    virtual OFCondition setRecognizableVisualFeatures(const OFString& value, const OFBool checkValue = OFTrue);
+
+    /** Set Recognizable Visual Features
+     *  @deprecated This method is deprecated and will be removed in the future.
+     *    Please use setRecognizableVisualFeatures() instead.
+     *  @param  value Value to be set, permitted values: "YES" or "NO"
+     *  @param  checkValue Check 'value' for conformance if enabled, including VR (CS) and VM (1)
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    OFdeprecated_msg("use setRecognizableVisualFeatures() instead")
     virtual OFCondition setRecognizableVisibleFeatures(const OFString& value, const OFBool checkValue = OFTrue);
 
     /** Set Processing Function

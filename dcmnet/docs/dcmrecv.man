@@ -98,6 +98,18 @@ other network options:
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
+  -mel  --max-element-length  [n]umber of bytes: integer (opt. K/M/G suffix)
+          restrict max element length of received data
+          to n bytes (default: unrestricted)
+
+  -ilt  --incr-load-threshold  [n]umber of bytes: integer (opt. K/M/G suffix)
+          read element values larger than n bytes
+          in growing chunks (default: 65536)
+
+  -nil  --no-incr-load
+          never read element values in chunks, always
+          allocate the full declared length up front
+
   -dhl  --disable-host-lookup  disable hostname lookup
 \endverbatim
 
@@ -491,6 +503,6 @@ It is an error if no data dictionary can be loaded.
 
 \section dcmrecv_copyright COPYRIGHT
 
-Copyright (C) 2013-2025 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2013-2026 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

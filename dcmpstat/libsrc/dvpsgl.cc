@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2024, OFFIS e.V.
+ *  Copyright (C) 1998-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,14 @@
 
 /* static helper functions */
 
+/* round a value to the nearest integer and clamp it to the range 0..65535 */
+static Uint16 roundToUint16(double d)
+{
+  if (d < 0.0) return 0;
+  if (d > 65535.0) return 65535;
+  return OFstatic_cast(Uint16, d + 0.5);
+}
+
 static void DICOM_RGB_to_Lab(Uint16& L, Uint16& a, Uint16& b, Uint16 R, Uint16 G, Uint16 B)
 {
   double dL, da, db;
@@ -37,18 +45,18 @@ static void DICOM_RGB_to_Lab(Uint16& L, Uint16& a, Uint16& b, Uint16 R, Uint16 G
 
   IODCIELabUtil::rgb2DicomLab(dL, da, db, dR, dG, dB);
 
-  L = OFstatic_cast(Uint16, dL);
-  a = OFstatic_cast(Uint16, da);
-  b = OFstatic_cast(Uint16, db);
+  L = roundToUint16(dL);
+  a = roundToUint16(da);
+  b = roundToUint16(db);
 }
 
 static void DICOM_Lab_to_RGB(Uint16& R, Uint16& G, Uint16& B, Uint16 L, Uint16 a, Uint16 b)
 {
   double dR, dG, dB;
   IODCIELabUtil::dicomLab2RGB(dR, dG, dB, L, a, b);
-  R = OFstatic_cast(Uint16, dR * 65535.0);
-  G = OFstatic_cast(Uint16, dG * 65535.0);
-  B = OFstatic_cast(Uint16, dB * 65535.0);
+  R = roundToUint16(dR * 65535.0);
+  G = roundToUint16(dG * 65535.0);
+  B = roundToUint16(dB * 65535.0);
 }
 
 /* --------------- class DVPSGraphicLayer --------------- */

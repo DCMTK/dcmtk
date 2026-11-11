@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2014-2024, OFFIS e.V.
+ *  Copyright (C) 2014-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -39,11 +39,16 @@
 #include DCMTK_DIAGNOSTIC_IGNORE_OVERFLOW
 #include DCMTK_DIAGNOSTIC_IGNORE_IMPLICIT_CONVERSION
 #include DCMTK_DIAGNOSTIC_IGNORE_UNSIGNED_UNARY_MINUS
+#include DCMTK_DIAGNOSTIC_IGNORE_CONST_EXPRESSION_WARNING
 template<typename T>
 static void checkMinMax()
 {
-    // we need to declare some variables as volatile to prevent the
-    // Clang compiler from optimizing away everything, leading to a test failure:wq
+    // signed integer overflow is undefined behavior, so there is nothing to check
+    if (OFnumeric_limits<T>::is_integer && OFnumeric_limits<T>::is_signed)
+        return;
+
+    // we need to declare some variables as volatile to prevent the Clang compiler
+    // from optimizing away everything, leading to a test failure
 
     volatile T max_( OFnumeric_limits<T>::max() );
     volatile T lowest;
@@ -95,8 +100,8 @@ static void checkLimits()
     checkMinMax<T>();
     checkNaN<T>();
     checkInfinity<T>();
-    // Only test overflow property if 'is_modulo' expands to OFTrue, since OFFalse may
-    // also mean 'undefined'.
+    // only test overflow property if 'is_modulo' expands to OFTrue, since OFFalse
+    // may also mean 'undefined'
     if( OFnumeric_limits<T>::is_modulo )
         OFCHECK( OFstatic_cast( T, OFnumeric_limits<T>::max() + 1 ) == OFnumeric_limits<T>::min() );
 }

@@ -1014,6 +1014,10 @@ OFCondition MdfDatasetManager::modifyOrInsertFromFile(OFString tag_path,
             if (result.good())
             {
                 const size_t fileLen = OFStandard::getFileSize(filename);
+                // the length is converted to 32 bits below, so reject larger files
+                // instead of silently truncating the value
+                if (fileLen > 0xfffffffeUL)
+                    return EC_ElemLengthExceeds32BitField;
                 if (fileLen & 1)
                     return makeOFCondition(
                         OFM_dcmdata, 22, OF_error, "Cannot insert/modify value with odd length from file!");

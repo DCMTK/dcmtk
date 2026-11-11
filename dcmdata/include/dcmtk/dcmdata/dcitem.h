@@ -1499,6 +1499,19 @@ class DCMTK_DCMDATA_EXPORT DcmItem
                                const E_GrpLenEncoding glenc,     // in
                                const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** This function checks whether the parser stopped in the middle of an
+     *  element's value, i.e. whether part of the value of the element that is
+     *  currently being read has not been received. Note that lastElementComplete
+     *  alone is not sufficient for this check: it is also OFFalse for an element
+     *  with a value length of zero that was read at the very end of the stream,
+     *  although the value of such an element is complete. An element whose value
+     *  was partially read is in state ERW_inWork, while the zero length element
+     *  above is still in state ERW_init.
+     *  @return OFTrue if the value of the current element is incomplete,
+     *    OFFalse otherwise
+     */
+    OFBool isLastElementIncomplete();
+
     /** This function reads the first 6 bytes from the input stream and determines
      *  the transfer syntax which was used to code the information in the stream.
      *  The decision is based on two questions: a) Did we encounter a valid tag?
@@ -1578,6 +1591,14 @@ class DCMTK_DCMDATA_EXPORT DcmItem
     /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
     Sint32 maxNestingDepth;
 
+    /// maximum element value length for parsing
+    /// (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+    Uint32 maxElementLength;
+
+    /// threshold for the incremental loading of element values
+    /// (0 = compile-time default DCMTK_INCREMENTAL_LOAD_THRESHOLD, -1 = disabled)
+    Sint32 incrementalLoadThreshold;
+
   public:
 
     /** set the maximum permitted sequence nesting depth for parsing.
@@ -1596,6 +1617,52 @@ class DCMTK_DCMDATA_EXPORT DcmItem
      *    (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING, -1 = unlimited)
      */
     Sint32 getMaxNestingDepth() const { return maxNestingDepth; }
+
+    /** set the maximum permitted element value length for parsing.
+     *  This limit is applied to the input stream before parsing in
+     *  loadFile() and read().  An element whose value length field exceeds
+     *  the limit is rejected with EC_ElementLengthLimitExceeded before a
+     *  value buffer of the declared size is allocated (memory exhaustion
+     *  protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+     *    defined value length permitted in DICOM, i.e. no additional
+     *    restriction)
+     *  - Value > 0: use this value as the maximum permitted element length
+     *  @param maxLength maximum element value length setting
+     */
+    void setMaxElementLength(Uint32 maxLength) { maxElementLength = maxLength; }
+
+    /** return the maximum permitted element value length for parsing.
+     *  @return maximum element value length setting
+     *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+     */
+    Uint32 getMaxElementLength() const { return maxElementLength; }
+
+    /** set the threshold for the incremental loading of element values.
+     *  This setting is applied to the input stream before parsing in
+     *  loadFile() and read().  When an element value is read from a stream
+     *  that cannot deliver all value bytes right away (e.g. a network stream,
+     *  stdin, a deflated stream or a truncated file), the value is staged in
+     *  a buffer that grows with the data that actually arrives instead of
+     *  allocating the full announced value length up front (memory
+     *  exhaustion protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_INCREMENTAL_LOAD_THRESHOLD, default is 65536)
+     *  - Value -1: disable incremental loading, i.e. always allocate a buffer
+     *    of the full announced value length before reading (historic behavior)
+     *  - Value > 0: values up to this number of bytes are read into a buffer
+     *    of their final size right away; the staging buffer for larger values
+     *    starts at this size
+     *  @param threshold incremental load threshold setting
+     */
+    void setIncrementalLoadThreshold(Sint32 threshold) { incrementalLoadThreshold = threshold; }
+
+    /** return the threshold for the incremental loading of element values.
+     *  @return incremental load threshold setting
+     *    (0 = compile-time default DCMTK_INCREMENTAL_LOAD_THRESHOLD, -1 = disabled)
+     */
+    Sint32 getIncrementalLoadThreshold() const { return incrementalLoadThreshold; }
 };
 
 /** Checks whether left hand side item is smaller than right hand side

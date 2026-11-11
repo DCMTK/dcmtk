@@ -52,7 +52,9 @@ DcmElement::DcmElement(const DcmTag &tag,
   : DcmObject(tag, len),
     fByteOrder(gLocalByteOrder),
     fLoadValue(NULL),
-    fValue(NULL)
+    fValue(NULL),
+    fPartialValue(NULL),
+    fPartialValueSize(0)
 {
 }
 
@@ -61,7 +63,9 @@ DcmElement::DcmElement(const DcmElement &elem)
   : DcmObject(elem),
     fByteOrder(elem.fByteOrder),
     fLoadValue(NULL),
-    fValue(NULL)
+    fValue(NULL),
+    fPartialValue(NULL),
+    fPartialValueSize(0)
 {
     if (elem.fValue)
     {
@@ -113,9 +117,12 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
     // if created with the nothrow version it must also be deleted with
     // the nothrow version else memory error.
     operator delete[] (fValue, std::nothrow);
+    operator delete[] (fPartialValue, std::nothrow);
     delete fLoadValue;
     fLoadValue = NULL;
     fValue = NULL;
+    fPartialValue = NULL;
+    fPartialValueSize = 0;
 
     DcmObject::operator=(obj);
     fByteOrder = obj.fByteOrder;
@@ -208,6 +215,7 @@ DcmElement::~DcmElement()
     // if created with the nothrow version it must also be deleted with
     // the nothrow version else memory error.
     operator delete[] (fValue, std::nothrow);
+    operator delete[] (fPartialValue, std::nothrow);
     delete fLoadValue;
 }
 
@@ -222,6 +230,9 @@ OFCondition DcmElement::clear()
     // the nothrow version else memory error.
     operator delete[] (fValue, std::nothrow);
     fValue = NULL;
+    operator delete[] (fPartialValue, std::nothrow);
+    fPartialValue = NULL;
+    fPartialValueSize = 0;
     delete fLoadValue;
     fLoadValue = NULL;
     setLengthField(0);
@@ -572,6 +583,35 @@ OFCondition DcmElement::loadAllDataIntoMemory()
 }
 
 
+/** returns the maximum permitted element value length for the given input
+ *  stream (memory exhaustion protection).
+ *  @param inStream the input stream the element is read from
+ *  @return the stream's setting, or the compile-time default
+ *    (DCMTK_MAX_ELEMENT_LENGTH) if no custom limit is set
+ */
+static Uint32 effectiveMaxElementLength(const DcmInputStream &inStream)
+{
+    const Uint32 maxLength = inStream.maxElementLength();
+    /* 0 = use built-in default (DCMTK_MAX_ELEMENT_LENGTH); > 0 = custom limit */
+    return (maxLength == 0) ? OFstatic_cast(Uint32, DCMTK_MAX_ELEMENT_LENGTH) : maxLength;
+}
+
+
+/** returns the threshold for the incremental loading of element values
+ *  for the given input stream (memory exhaustion protection).
+ *  @param inStream the input stream the element is read from
+ *  @return the stream's setting, or the compile-time default
+ *    (DCMTK_INCREMENTAL_LOAD_THRESHOLD) if no custom threshold is set;
+ *    -1 means that incremental loading is disabled
+ */
+static Sint32 effectiveIncrementalLoadThreshold(const DcmInputStream &inStream)
+{
+    const Sint32 threshold = inStream.incrementalLoadThreshold();
+    /* 0 = use built-in default (DCMTK_INCREMENTAL_LOAD_THRESHOLD); -1 = disabled; > 0 = custom threshold */
+    return (threshold == 0) ? OFstatic_cast(Sint32, DCMTK_INCREMENTAL_LOAD_THRESHOLD) : threshold;
+}
+
+
 OFCondition DcmElement::loadValue(DcmInputStream *inStream)
 {
     /* initialize return value */
@@ -608,38 +648,83 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             /* if we did not encounter the end of the stream and no error occurred so far, go ahead */
             else if (errorFlag.good())
             {
-                /* if the object which holds this element's value does not yet exist, create it */
-                if (!fValue)
-                    fValue = newValueField(); /* also set errorFlag in case of error */
+                /* threshold for the incremental loading of the value (-1 = disabled) */
+                const Sint32 incrementalLoadThreshold = effectiveIncrementalLoadThreshold(*readStream);
 
-                /* if object could be created  (i.e. we have an object which can be used to capture this element's */
-                /* value) we need to read a certain amount of bytes from the stream */
-                if (fValue)
+                /* If the declared element length exceeds the maximum
+                 * permitted element length (memory exhaustion protection,
+                 * see DcmInputStream::setMaxElementLength()), reject
+                 * before any value buffer is allocated. */
+                if (!fValue && getLengthField() != DCM_UndefinedLength
+                    && getLengthField() > effectiveMaxElementLength(*readStream))
                 {
-                    /* determine how many bytes shall be read from the stream */
-                    const Uint32 readLength = getLengthField() - getTransferredBytes();
+                    errorFlag = EC_ElementLengthLimitExceeded;
+                    DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                        << " length (" << getLengthField()
+                        << ") exceeds maximum permitted element length ("
+                        << effectiveMaxElementLength(*readStream) << ")");
+                }
+                /* if the value is not yet in memory and the stream cannot deliver all
+                 * value bytes right away - or an incremental load is already in progress -
+                 * read the value into a staging buffer that grows with the data that
+                 * actually arrives.  This avoids allocating a buffer of the full declared
+                 * length in advance, which would allow a small crafted or truncated input
+                 * (e.g. received over the network) to trigger a huge allocation.
+                 * An incremental load threshold of -1 (see
+                 * DcmInputStream::setIncrementalLoadThreshold()) disables this mechanism
+                 * and restores the historic behavior (full allocation of the declared
+                 * length up front). */
+                else if (!fValue && ((fPartialValue != NULL) || ((incrementalLoadThreshold >= 0) &&
+                    (OFstatic_cast(Uint64, readStream->avail()) < OFstatic_cast(Uint64, getLengthField())))))
+                {
+                    /* also sets errorFlag */
+                    loadValueIncrementally(readStream,
+                        (incrementalLoadThreshold > 0) ? OFstatic_cast(Uint32, incrementalLoadThreshold) : 0);
+                }
+                else
+                {
+                    /* if the object which holds this element's value does not yet exist, create it */
+                    if (!fValue)
+                        fValue = newValueField(); /* also set errorFlag in case of error */
 
-                    /* read a corresponding amount of bytes from the stream, store the information in fValue */
-                    /* increase the counter that counts how many bytes were actually read */
-                    incTransferredBytes(OFstatic_cast(Uint32, readStream->read(&fValue[getTransferredBytes()], readLength)));
+                    /* if object could be created  (i.e. we have an object which can be used to capture this element's */
+                    /* value) we need to read a certain amount of bytes from the stream */
+                    if (fValue)
+                    {
+                        /* determine how many bytes shall be read from the stream */
+                        const Uint32 readLength = getLengthField() - getTransferredBytes();
 
-                    /* if we have read all the bytes which make up this element's value */
-                    if (getLengthField() == getTransferredBytes())
-                    {
-                        /* call a function which performs certain operations on the information which was read */
-                        postLoadValue();
-                        errorFlag = EC_Normal;
+                        /* read a corresponding amount of bytes from the stream, store the information in fValue */
+                        /* increase the counter that counts how many bytes were actually read */
+                        incTransferredBytes(OFstatic_cast(Uint32, readStream->read(&fValue[getTransferredBytes()], readLength)));
+
+                        /* if we have read all the bytes which make up this element's value */
+                        if (getLengthField() == getTransferredBytes())
+                        {
+                            /* call a function which performs certain operations on the information which was read */
+                            postLoadValue();
+                            errorFlag = EC_Normal;
+                        }
+                        /* else set the return value correspondingly */
+                        else if (readStream->eos())
+                        {
+                            /* The value buffer was allocated with the full announced
+                             * length, but only part of it was received. Zero the bytes
+                             * that never arrived, so that uninitialized heap memory
+                             * cannot end up in the value (and thus in a file written
+                             * from it): with incremental loading disabled the buffer
+                             * is kept, see DcmInputStream::setIncrementalLoadThreshold().
+                             */
+                            memset(fValue + getTransferredBytes(), 0,
+                                OFstatic_cast(size_t, getLengthField() - getTransferredBytes()));
+                            errorFlag = EC_InvalidStream; // premature end of stream
+                            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                                << " larger (" << getLengthField() << ") than remaining bytes ("
+                                << getTransferredBytes() << ") in file, premature end of stream");
+                        }
+                        else
+                            errorFlag = EC_StreamNotifyClient;
                     }
-                    /* else set the return value correspondingly */
-                    else if (readStream->eos())
-                    {
-                        errorFlag = EC_InvalidStream; // premature end of stream
-                        DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
-                            << " larger (" << getLengthField() << ") than remaining bytes ("
-                            << getTransferredBytes() << ") in file, premature end of stream");
-                    }
-                    else
-                        errorFlag = EC_StreamNotifyClient;
                 }
             }
             /* if we created the stream from which information was read in this */
@@ -656,6 +741,164 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
         }
     }
     /* return result value */
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmElement::loadValueIncrementally(DcmInputStream *readStream,
+                                               Uint32 minAllocation)
+{
+    /* This method is (possibly repeatedly) called from loadValue() while an
+     * element value is read from a stream that does not (yet) have all value
+     * bytes available, e.g. a buffered network stream that is fed fragment by
+     * fragment, a stdin stream, a deflated stream or a truncated file.
+     * Instead of allocating a buffer of the full declared value length in
+     * advance - which would allow a small crafted or truncated input to
+     * trigger a huge allocation (see DCMTK issues #148 and #1192) - the value
+     * is staged in fPartialValue, which grows with the data that actually
+     * arrives.  Only when the value is complete it is transferred to fValue;
+     * until then the element behaves as if the value had not been loaded yet.
+     *
+     * minAllocation is the minimum size of the staging buffer (the incremental
+     * load threshold of the input stream, default 64 KiB); values up to this
+     * size are thus read into a buffer of their full (padded) length right
+     * away, exactly like in the non-incremental case. */
+
+    /* factor by which the staging buffer grows at least.  A larger factor
+     * means fewer reallocations and less copying at the price of allocating
+     * more memory than the actually received data: the total allocation is
+     * bounded by this factor times the received bytes. */
+    static const Uint32 growthFactor = 4;
+
+    errorFlag = EC_Normal;
+
+    /* on the first call for this value, perform the same odd length checks
+     * that newValueField() performs before allocating a value buffer */
+    if (!fPartialValue && (getLengthField() & 1))
+    {
+        if (getLengthField() == DCM_UndefinedLength)
+        {
+            /* Print an error message when private attribute states to have an odd length
+             * equal to the maximum length, because we are not able then to make this value even (+1)
+             * which would an overflow on some systems as well as being illegal in DICOM
+             */
+            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                << " has odd maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
+            errorFlag = EC_CorruptedData;
+            return errorFlag;
+        }
+        /* enforce old (pre DCMTK 3.5.2) behaviour ? */
+        if (!dcmAcceptOddAttributeLength.get())
+            setLengthField(getLengthField() + 1);       // make Length even
+    }
+
+    const Uint32 lengthField = getLengthField();
+
+    /* the total number of bytes to allocate for the complete value: the value
+     * length rounded up to an even number of bytes, plus two extra bytes that
+     * are zeroed once the value is complete.  This covers the padding and
+     * string termination bytes that all implementations of newValueField()
+     * guarantee.  Computed in 64-bit to avoid an integer overflow for values
+     * close to 4 GB; in the (theoretical) overflow case one slack byte is
+     * sacrificed, which still satisfies all implementations. */
+    Uint64 targetSize = ((OFstatic_cast(Uint64, lengthField) + 1) & ~OFstatic_cast(Uint64, 1)) + 2;
+    if (targetSize > 0xFFFFFFFF)
+        targetSize = 0xFFFFFFFF;
+
+    /* read as much data as the stream can currently deliver, enlarging the
+     * staging buffer as needed */
+    while (errorFlag.good() && (getTransferredBytes() < lengthField))
+    {
+        const Uint32 transferred = getTransferredBytes();
+        /* number of value bytes that fit into the current staging buffer */
+        const Uint32 usable = (fPartialValueSize < lengthField) ? fPartialValueSize : lengthField;
+        if (transferred >= usable)
+        {
+            /* the staging buffer is full (or not yet allocated): enlarge it
+             * based on the amount of data the stream can deliver right now */
+            const Uint64 avail = OFstatic_cast(Uint64, readStream->avail());
+            if (avail == 0)
+                break;
+            /* grow the buffer by at least the growth factor (so that the
+             * total number of bytes copied while growing stays a fraction of
+             * the value length), but do not grow beyond the total allocation
+             * for the complete value */
+            Uint64 newSize = OFstatic_cast(Uint64, fPartialValueSize) * growthFactor;
+            if (newSize < OFstatic_cast(Uint64, transferred) + avail)
+                newSize = OFstatic_cast(Uint64, transferred) + avail;
+            if (newSize < minAllocation)
+                newSize = minAllocation;
+            /* if the new buffer could hold the complete value, allocate the
+             * total size at once so that no further growth is required.
+             * Since the growth step is bounded by the growth factor, the
+             * allocation always stays proportional to the received data. */
+            if (newSize >= lengthField)
+                newSize = targetSize;
+            Uint8 *newBuffer = new (std::nothrow) Uint8[OFstatic_cast(size_t, newSize)];
+            if (!newBuffer)
+            {
+                errorFlag = EC_MemoryExhausted;
+                break;
+            }
+            if (transferred > 0)
+                memcpy(newBuffer, fPartialValue, size_t(transferred));
+            // if created with the nothrow version it must also be deleted with
+            // the nothrow version else memory error.
+            operator delete[] (fPartialValue, std::nothrow);
+            fPartialValue = newBuffer;
+            fPartialValueSize = OFstatic_cast(Uint32, newSize);
+        }
+        else
+        {
+            /* read as many bytes as the staging buffer can take, store the
+             * information in fPartialValue and increase the counter that
+             * counts how many bytes were actually read */
+            const offile_off_t bytesRead = readStream->read(&fPartialValue[transferred], usable - transferred);
+            if (bytesRead <= 0)
+                break;
+            incTransferredBytes(OFstatic_cast(Uint32, bytesRead));
+        }
+    }
+
+    if (errorFlag.good())
+    {
+        /* if we have read all the bytes which make up this element's value */
+        if (getTransferredBytes() == lengthField)
+        {
+            /* zero the padding and string termination bytes and expose the
+             * now complete value through fValue */
+            memset(fPartialValue + lengthField, 0, size_t(fPartialValueSize - lengthField));
+            fValue = fPartialValue;
+            fPartialValue = NULL;
+            fPartialValueSize = 0;
+            /* call a function which performs certain operations on the information which was read */
+            postLoadValue();
+            errorFlag = EC_Normal;
+        }
+        else if (readStream->eos())
+        {
+            errorFlag = EC_InvalidStream; // premature end of stream
+            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                << " larger (" << lengthField << ") than remaining bytes ("
+                << getTransferredBytes() << ") in stream, premature end of stream");
+        }
+        else
+            errorFlag = EC_StreamNotifyClient;
+    }
+
+    /* on a definitive error, discard the partial value so that the element
+     * consistently reports "value not available" instead of exposing a
+     * buffer that is smaller than the declared value length */
+    if (errorFlag.bad() && (errorFlag != EC_StreamNotifyClient))
+    {
+        operator delete[] (fPartialValue, std::nothrow);
+        fPartialValue = NULL;
+        fPartialValueSize = 0;
+    }
+
     return errorFlag;
 }
 
@@ -761,7 +1004,9 @@ OFCondition DcmElement::changeValue(const void *value,
                 // value length limit; getLengthField() and num are both Uint32,
                 // so their sum can wrap and yield an undersized buffer that the
                 // memcpy of getLengthField() bytes below would then overrun.
-                if (num > DCM_UndefinedLength - getLengthField())
+                // The sum must also not reach DCM_UndefinedLength (0xFFFFFFFF),
+                // which is reserved as the marker for undefined length.
+                if (num >= DCM_UndefinedLength - getLengthField())
                 {
                     errorFlag = EC_ElemLengthExceeds32BitField;
                     return errorFlag;
@@ -990,6 +1235,9 @@ OFCondition DcmElement::putValue(const void * newValue,
         operator delete[] (fValue, std::nothrow);
     }
     fValue = NULL;
+    operator delete[] (fPartialValue, std::nothrow);
+    fPartialValue = NULL;
+    fPartialValueSize = 0;
 
     if (fLoadValue)
         delete fLoadValue;
@@ -1049,6 +1297,9 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
         operator delete[] (fValue, std::nothrow);
     }
     fValue = NULL;
+    operator delete[] (fPartialValue, std::nothrow);
+    fPartialValue = NULL;
+    fPartialValueSize = 0;
     if (fLoadValue)
         delete fLoadValue;
     fLoadValue = NULL;
@@ -1129,12 +1380,27 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
             /* the reading of this element's value from the stream */
             if (getTransferState() == ERW_init)
             {
+                /* Reject an element whose declared value length exceeds the
+                 * maximum permitted element length before any allocation or
+                 * further processing takes place (memory exhaustion
+                 * protection, see DcmInputStream::setMaxElementLength()).
+                 * The default limit is the maximum defined value length
+                 * permitted in DICOM, i.e. no additional restriction. */
+                if (getLengthField() != DCM_UndefinedLength
+                    && getLengthField() > effectiveMaxElementLength(inStream))
+                {
+                    DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag()
+                        << " length (" << getLengthField()
+                        << ") exceeds maximum permitted element length ("
+                        << effectiveMaxElementLength(inStream) << ")");
+                    errorFlag = EC_ElementLengthLimitExceeded;
+                }
                 /* if the Length of this element's value is greater than the amount of bytes we */
                 /* can read from the stream and if the stream has random access, we want to create */
                 /* a DcmInputStreamFactory object that enables us to read this element's value later. */
                 /* This new object will be stored (together with the position where we have to start */
                 /* reading the value) in the member variable fLoadValue. */
-                if (getLengthField() > maxReadLength)
+                else if (getLengthField() > maxReadLength)
                 {
                     /* try to create a stream factory to read the value later */
                     delete fLoadValue;
@@ -1169,6 +1435,11 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                 // if created with the nothrow version it must also be deleted with
                 // the nothrow version else memory error.
                 operator delete[] (fValue, std::nothrow);
+                fValue = NULL;
+                /* also discard any staged value of a previous, aborted read */
+                operator delete[] (fPartialValue, std::nothrow);
+                fPartialValue = NULL;
+                fPartialValueSize = 0;
                 /* set the transfer state to ERW_inWork */
                 setTransferState(ERW_inWork);
             }
@@ -1923,6 +2194,9 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
         // the nothrow version else memory error.
         operator delete[] (fValue, std::nothrow);
         fValue = 0;
+        operator delete[] (fPartialValue, std::nothrow);
+        fPartialValue = NULL;
+        fPartialValueSize = 0;
         delete fLoadValue;
         fLoadValue = factory;
         fByteOrder = byteOrder;

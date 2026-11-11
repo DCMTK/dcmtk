@@ -589,7 +589,9 @@ class DCMTK_OFSTD_EXPORT OFStandard
      *    characters if support enabled. Since there are various constructors for the
      *    OFFilename class, a "char *", "OFString" or "wchar_t *" can also be passed
      *    directly to this parameter.
-     *  @return size of the file in bytes (0 in case of error)
+     *  @return size of the file in bytes (0 in case of error). If the size cannot be
+     *    represented as a size_t value, e.g. a size of 4 GiB or more on a system where
+     *    size_t is only 32 bits wide, the maximum value of size_t is returned.
      */
     static size_t getFileSize(const OFFilename &filename);
 

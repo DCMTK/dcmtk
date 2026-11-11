@@ -34,6 +34,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcistrmh.h"    /* for class DcmInputFileHandleStream */
 #include "dcmtk/dcmdata/dcistrms.h"    /* for class DcmStdinStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
@@ -443,20 +444,36 @@ OFCondition DcmDataset::readUntilTag(DcmInputStream &inStream,
     /* case, we need to do something for the current dataset object */
     if (errorFlag.good() || errorFlag == EC_EndOfStream)
     {
-        /* perform some final checks on dataset level */
-        errorFlag = doPostReadChecks();
-
-        if (errorFlag.good())
+        /* if the stream ended while an element was still waiting for value bytes, */
+        /* the data set is truncated and must not be reported as complete. This is */
+        /* the case when the last chunk of data (e.g. the last PDV of a DIMSE      */
+        /* message) is empty, because then DcmItem::readUntilTag() and in turn     */
+        /* DcmElement::loadValue(), which detect a premature end of stream, are    */
+        /* never reached. The incomplete element keeps its announced value length  */
+        /* although only part of its value was ever received.                      */
+        if ((getTransferState() == ERW_inWork) && isLastElementIncomplete())
         {
-            /* set the error flag to ok */
-            errorFlag = EC_Normal;
+            DCMDATA_ERROR("DcmDataset: Stream ended before the value of the last "
+                << "element was complete, data set is truncated");
+            errorFlag = EC_InvalidStream;
+        }
+        else
+        {
+            /* perform some final checks on dataset level */
+            errorFlag = doPostReadChecks();
 
-            /* take care of group length (according to what is specified */
-            /* in glenc) and padding elements (don't change anything) */
-            computeGroupLengthAndPadding(glenc, EPD_noChange, OriginalXfer);
+            if (errorFlag.good())
+            {
+                /* set the error flag to ok */
+                errorFlag = EC_Normal;
 
-            /* and set the transfer state to ERW_ready to indicate that the data set is complete */
-            setTransferState(ERW_ready);
+                /* take care of group length (according to what is specified */
+                /* in glenc) and padding elements (don't change anything) */
+                computeGroupLengthAndPadding(glenc, EPD_noChange, OriginalXfer);
+
+                /* and set the transfer state to ERW_ready to indicate that the data set is complete */
+                setTransferState(ERW_ready);
+            }
         }
     }
 
@@ -650,6 +667,12 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
             /* apply configured nesting depth limit */
             if (getMaxNestingDepth() > 0)
                 inStream.setMaxNestingDepth(getMaxNestingDepth());
+            /* apply configured element length limit */
+            if (getMaxElementLength() != 0)
+                inStream.setMaxElementLength(getMaxElementLength());
+            /* apply configured incremental load threshold */
+            if (getIncrementalLoadThreshold() != 0)
+                inStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
 
             /* clear this object */
             l_error = clear();
@@ -676,6 +699,12 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
             /* apply configured nesting depth limit */
             if (getMaxNestingDepth() > 0)
                 fileStream.setMaxNestingDepth(getMaxNestingDepth());
+            /* apply configured element length limit */
+            if (getMaxElementLength() != 0)
+                fileStream.setMaxElementLength(getMaxElementLength());
+            /* apply configured incremental load threshold */
+            if (getIncrementalLoadThreshold() != 0)
+                fileStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
 
             /* check stream status */
             l_error = fileStream.status();
@@ -695,6 +724,56 @@ OFCondition DcmDataset::loadFileUntilTag(const OFFilename &fileName,
 
         }
     }
+    return l_error;
+}
+
+
+OFCondition DcmDataset::loadFile(DcmFileHandle &fileHandle,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength)
+{
+  return DcmDataset::loadFileUntilTag(fileHandle, readXfer, groupLength, maxReadLength, DCM_UndefinedTagKey);
+}
+
+
+OFCondition DcmDataset::loadFileUntilTag(
+                                    DcmFileHandle &fileHandle,
+                                    const E_TransferSyntax readXfer,
+                                    const E_GrpLenEncoding groupLength,
+                                    const Uint32 maxReadLength,
+                                    const DcmTagKey &stopParsingAtElement)
+{
+    OFCondition l_error = fileHandle.status();
+    if (l_error.bad()) return l_error;
+
+    /* open file handle stream */
+    DcmInputFileHandleStream fileStream(&fileHandle, 0);
+    /* apply configured nesting depth limit */
+    if (getMaxNestingDepth() > 0)
+        fileStream.setMaxNestingDepth(getMaxNestingDepth());
+    /* apply configured element length limit */
+    if (getMaxElementLength() != 0)
+        fileStream.setMaxElementLength(getMaxElementLength());
+    /* apply configured incremental load threshold */
+    if (getIncrementalLoadThreshold() != 0)
+        fileStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
+
+    /* check stream status */
+    l_error = fileStream.status();
+    if (l_error.good())
+    {
+        /* clear this object */
+        l_error = clear();
+        if (l_error.good())
+        {
+            /* read data from file */
+            transferInit();
+            l_error = readUntilTag(fileStream, readXfer, groupLength, maxReadLength, stopParsingAtElement);
+            transferEnd();
+        }
+    }
+
     return l_error;
 }
 

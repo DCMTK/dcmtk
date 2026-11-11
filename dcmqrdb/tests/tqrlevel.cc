@@ -32,15 +32,15 @@
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmnet/dcmlayer.h"
 
-/* Create a unique, empty storage directory for the index database handle.
+/* Create a unique, empty storage directory for the index database handle,
+ * named after the given temporary file. The caller must keep that file until
+ * the directory is no longer used: the first name OFTempFile tries depends
+ * on the current time only, so tests running in parallel (e.g. "ctest -j")
+ * would get the same name and share the directory once the file is deleted.
  * Returns an empty string on failure.
  */
-static OFString createStorageDir()
+static OFString createStorageDir(const OFTempFile& temp)
 {
-    /* obtain a unique name from a temporary file, then turn it into a
-     * directory of its own (the temp file itself is removed again).
-     */
-    OFTempFile temp;
     if (temp.getStatus().bad())
         return OFString();
     OFString dir = temp.getFilename();
@@ -75,7 +75,8 @@ static void runFind(const char *levelValue)
 {
     dirtyStack();
 
-    OFString storageDir = createStorageDir();
+    OFTempFile temp;
+    OFString storageDir = createStorageDir(temp);
     OFCHECK(!storageDir.empty());
     if (storageDir.empty()) return;
 

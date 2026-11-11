@@ -174,6 +174,8 @@ OFBool             opt_rejectWithoutImplementationUID = OFFalse;
 OFCmdUnsignedInt   opt_sleepAfter = 0;
 OFCmdUnsignedInt   opt_sleepDuring = 0;
 OFCmdUnsignedInt   opt_maxPDU = ASC_DEFAULTMAXPDU;
+OFCmdUnsignedInt   opt_maxElementLength = 0;
+OFCmdSignedInt     opt_incrementalLoadThreshold = 0;
 OFBool             opt_useMetaheader = OFTrue;
 OFBool             opt_acceptAllXfers = OFFalse;
 E_TransferSyntax   opt_networkTransferSyntax = EXS_Unknown;
@@ -345,7 +347,17 @@ int main(int argc, char *argv[])
       cmd.addOption("--aetitle",                "-aet", 1, "[a]etitle: string", "set my AE title (default: " APPLICATIONTITLE ")");
       CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString3);
       CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDU << ")", optString4);
+#if DCMTK_INCREMENTAL_LOAD_THRESHOLD == -1
+      CONVERT_TO_STRING("read element values larger than n bytes\nin growing chunks (default: disabled)", optString5);
+#else
+      CONVERT_TO_STRING("read element values larger than n bytes\nin growing chunks (default: " << DCMTK_INCREMENTAL_LOAD_THRESHOLD << ")", optString5);
+#endif
       cmd.addOption("--max-pdu",                "-pdu", 1, optString3.c_str(), optString4.c_str());
+      cmd.addOption("--max-element-length",     "-mel", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                           "restrict max element length of received data\nto n bytes (default: unrestricted)");
+      cmd.addOption("--incr-load-threshold",    "-ilt", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                           optString5.c_str());
+      cmd.addOption("--no-incr-load",           "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
 
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
@@ -612,6 +624,16 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingAETitle));
     if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+    if (cmd.findOption("--max-element-length")) app.checkValue(cmd.getSizeValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--incr-load-threshold"))
+    {
+      OFCmdUnsignedInt threshold = 0;
+      app.checkValue(cmd.getSizeValueAndCheckMinMax(threshold, 1, 2147483647));
+      opt_incrementalLoadThreshold = OFstatic_cast(OFCmdSignedInt, threshold);
+    }
+    if (cmd.findOption("--no-incr-load")) opt_incrementalLoadThreshold = -1;
+    cmd.endOptionBlock();
     if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
     if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
     if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
@@ -1136,6 +1158,15 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     numChildren = n;
     goto cleanup;
   }
+
+  // restrict the maximum element length accepted on this association if requested
+  // (memory exhaustion protection for command and data sets)
+  if (cond.good() && (opt_maxElementLength != 0))
+    ASC_setMaxIncomingElementLength(assoc, OFstatic_cast(Uint32, opt_maxElementLength));
+
+  // configure the incremental loading of element values on this association if requested
+  if (cond.good() && (opt_incrementalLoadThreshold != 0))
+    ASC_setIncrementalLoadThreshold(assoc, OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
 
   // if some kind of error occurred, take care of it
   if (cond.bad())

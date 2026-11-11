@@ -900,6 +900,40 @@ public:
      */
     void setMaxNestingDepth(const Sint32 maxDepth);
 
+    /** Set the maximum permitted element value length for DIMSE messages
+     *  (command and data sets) received by this SCU.  The limit is applied
+     *  to each association once it has been established.  An element whose
+     *  value length field exceeds the limit is rejected with
+     *  EC_ElementLengthLimitExceeded before a value buffer of the declared
+     *  size is allocated (memory exhaustion protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+     *    defined value length permitted in DICOM, i.e. no additional
+     *    restriction)
+     *  - Value > 0: use this value as the maximum permitted element length
+     *  @param maxLength maximum element value length setting
+     */
+    void setMaxElementLength(const Uint32 maxLength);
+
+    /** Set the threshold for the incremental loading of element values in
+     *  DIMSE messages (command and data sets) received by this SCU.  The
+     *  setting is applied to each association once it has been established.
+     *  An element value that does not arrive completely within a single PDV
+     *  is staged in a buffer that grows with the data that actually arrives
+     *  instead of allocating the full announced value length up front
+     *  (memory exhaustion protection).
+     *  - Value 0 (default): apply the compile-time default
+     *    (DCMTK_INCREMENTAL_LOAD_THRESHOLD, default is 65536)
+     *  - Value -1: disable incremental loading, i.e. always allocate a
+     *    buffer of the full announced value length before reading
+     *    (historic behavior)
+     *  - Value > 0: values up to this number of bytes are read into a
+     *    buffer of their final size right away; the staging buffer for
+     *    larger values starts at this size
+     *  @param threshold incremental load threshold setting
+     */
+    void setIncrementalLoadThreshold(const Sint32 threshold);
+
     /* Get methods */
 
     /** Get current connection status
@@ -999,6 +1033,21 @@ public:
      *    -1 = unlimited)
      */
     Sint32 getMaxNestingDepth() const;
+
+    /** Return the maximum permitted element value length for DIMSE
+     *  messages received by this SCU.
+     *  @return maximum element value length setting
+     *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+     */
+    Uint32 getMaxElementLength() const;
+
+    /** Return the threshold for the incremental loading of element values
+     *  in DIMSE messages received by this SCU.
+     *  @return incremental load threshold setting
+     *    (0 = compile-time default DCMTK_INCREMENTAL_LOAD_THRESHOLD,
+     *    -1 = disabled)
+     */
+    Sint32 getIncrementalLoadThreshold() const;
 
     /** Returns whether SCU is configured to create a TLS connection with the SCP
      *  @return OFTrue if TLS mode has been enabled, OFFalse otherwise
@@ -1309,6 +1358,15 @@ private:
     /// (0 = compile-time default DCMTK_MAX_SEQUENCE_NESTING,
     /// -1 = unlimited)
     Sint32 m_maxNestingDepth;
+
+    /// Maximum element value length for received DIMSE messages
+    /// (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+    Uint32 m_maxElementLength;
+
+    /// Threshold for the incremental loading of element values in received
+    /// DIMSE messages (0 = compile-time default
+    /// DCMTK_INCREMENTAL_LOAD_THRESHOLD, -1 = disabled)
+    Sint32 m_incrementalLoadThreshold;
 
     /// Flag indicating whether secure mode has been enabled (default: disabled)
     OFBool m_secureConnectionEnabled;

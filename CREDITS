@@ -42,6 +42,16 @@ Medpace: Funded the development of the "dcm2img" tool introduced in DCMTK
   3.6.9, which combines the functionality of the the earlier "dcm2pnm",
   "dcmj2pnm" and "dcml2pnm" tools and offers JPEG-LS export.
 
+NCI: This software is maintained in part by the NCI Imaging Data Commons and
+  The Cancer Imaging Archive projects, funded in whole or in part with Federal
+  funds from the National Cancer Institute, National Institutes of Health,
+  Department of Health and Human Services, under Task Order Nos. HHSN26110071
+  and 75N91019F00131, under Contract No. HHSN261201500003I.  The content of
+  this publication does not necessarily reflect the views or policies of the
+  Department of Health and Human Services, nor does mention of trade names,
+  commercial products, or organizations imply endorsement by the U.S.
+  Government.
+
 Open Connections: The work on the DCMTK is supported by employees of the Open
   Connections GmbH (Oldenburg, Germany), a spin-off from the OFFIS institute.
 
@@ -76,4 +86,4 @@ YXLON: The work on the initial version of the DICONDE data dictionary was
 Please note that this list does not claim to be exhaustive.  Just send us an
 email if you think that you or your company/organization should also be listed.
 
-DCMTK Team, 2025-12-15
+DCMTK Team, 2026-10-15

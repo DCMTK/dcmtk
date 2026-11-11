@@ -110,7 +110,10 @@ OFCondition IODMultiframeDimensionModule::addDimensionIndex(const DcmTagKey& dim
         }
         result = item->setDimensionOrganizationUID(dimensionOrganizationUID);
         if (result.bad())
+        {
+            delete item;
             return result;
+        }
         m_DimensionOrganizationSequence.push_back(item);
     }
 
@@ -134,6 +137,7 @@ OFCondition IODMultiframeDimensionModule::addDimensionIndex(const DcmTagKey& dim
     {
         DCMIOD_ERROR("Could not add Dimension Index: Invalid data values");
         delete dim;
+        return result;
     }
     m_DimensionIndexSequence.push_back(dim);
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -247,7 +247,9 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
         OFStandard::strlcpy(fields[foundFields], line, len+1);
         fields[foundFields][len] = '\0';
         foundFields++;
-        line = p + 1;
+        /* the last field is not followed by a separator */
+        if (p != NULL)
+            line = p + 1;
     } while ((foundFields < maxFields) && (p != NULL));
 
     return foundFields;

@@ -85,7 +85,9 @@ DcmItem::DcmItem()
     lastElementComplete(OFTrue),
     fStartPosition(0),
     privateCreatorCache(),
-    maxNestingDepth(0)
+    maxNestingDepth(0),
+    maxElementLength(0),
+    incrementalLoadThreshold(0)
 {
     elementList = new DcmList;
 }
@@ -98,7 +100,9 @@ DcmItem::DcmItem(const DcmTag &tag,
     lastElementComplete(OFTrue),
     fStartPosition(0),
     privateCreatorCache(),
-    maxNestingDepth(0)
+    maxNestingDepth(0),
+    maxElementLength(0),
+    incrementalLoadThreshold(0)
 {
     elementList = new DcmList;
 }
@@ -110,7 +114,9 @@ DcmItem::DcmItem(const DcmItem &old)
     lastElementComplete(old.lastElementComplete),
     fStartPosition(old.fStartPosition),
     privateCreatorCache(),
-    maxNestingDepth(old.maxNestingDepth)
+    maxNestingDepth(old.maxNestingDepth),
+    maxElementLength(old.maxElementLength),
+    incrementalLoadThreshold(old.incrementalLoadThreshold)
 {
     if (!old.elementList->empty())
     {
@@ -143,6 +149,8 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
         lastElementComplete = obj.lastElementComplete;
         fStartPosition = obj.fStartPosition;
         maxNestingDepth = obj.maxNestingDepth;
+        maxElementLength = obj.maxElementLength;
+        incrementalLoadThreshold = obj.incrementalLoadThreshold;
         if (!obj.elementList->empty())
         {
             elementList->seek(ELP_first);
@@ -1284,6 +1292,24 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
 // ********************************
 
 
+OFBool DcmItem::isLastElementIncomplete()
+{
+    /* if the last element was read completely, nothing is pending */
+    if (lastElementComplete)
+        return OFFalse;
+    /* lastElementComplete is also OFFalse for an element with a value length of
+     * zero that was read at the very end of the stream, although the value of
+     * such an element is complete. Only an element whose value was partially
+     * read has reached state ERW_inWork.
+     */
+    DcmObject *dO = elementList->get();
+    return (dO != NULL) && (dO->transferState() == ERW_inWork);
+}
+
+
+// ********************************
+
+
 OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
                                     DcmTag &newTag,
                                     const Uint32 newLength,
@@ -1407,6 +1433,14 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
     if (getMaxNestingDepth() != 0)
         inStream.setMaxNestingDepth(getMaxNestingDepth());
 
+    /* apply configured element length limit to the input stream (0 = use default, skip override) */
+    if (getMaxElementLength() != 0)
+        inStream.setMaxElementLength(getMaxElementLength());
+
+    /* apply configured incremental load threshold to the input stream (0 = use default, skip override) */
+    if (getIncrementalLoadThreshold() != 0)
+        inStream.setIncrementalLoadThreshold(getIncrementalLoadThreshold());
+
     /* figure out if the stream reported an error */
     errorFlag = inStream.status();
     /* if the stream reported an error or if it is the end of the */
@@ -1507,10 +1541,22 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
                 /* data value information. We need to continue reading the data value */
                 /* information for this particular element. */
                 DcmObject *dO = elementList->get();
-                if (dO)
-                    errorFlag = dO->read(inStream, xfer, glenc, maxReadLength);
-                else
+                if (dO == NULL)
                     errorFlag = EC_InternalError; // should never happen
+                else if (dO->transferState() == ERW_ready)
+                {
+                    /* the list cursor points to an element that has already been   */
+                    /* read completely, e.g. because the element whose value is     */
+                    /* still missing was inserted out of ascending tag order or was */
+                    /* dropped as a duplicate. Reading on would parse the remaining */
+                    /* value bytes as new elements and leave the incomplete element */
+                    /* with a partly filled value, so report an error instead.      */
+                    DCMDATA_ERROR("DcmItem: Cannot continue reading the value of element "
+                        << dO->getTag() << ", data set is inconsistent");
+                    errorFlag = EC_InvalidStream;
+                }
+                else
+                    errorFlag = dO->read(inStream, xfer, glenc, maxReadLength);
 
                 /* if reading was successful, we read the entire information */
                 /* for this element; hence lastElementComplete is true */
@@ -1553,7 +1599,28 @@ OFCondition DcmItem::readUntilTag(DcmInputStream & inStream,
         }
     } // else errorFlag
     /* modify the result value: three kinds of special error codes do not count as an error */
-    if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
+    if (errorFlag == EC_EndOfStream)
+    {
+        /* ... with one exception: if the stream ended while an element was still */
+        /* waiting for value bytes, the data set is truncated. The element keeps  */
+        /* its announced value length although only part of its value was ever   */
+        /* received, so this must not be reported as a complete data set.        */
+        if ((getTransferState() == ERW_inWork) && isLastElementIncomplete())
+        {
+            DcmObject *dO = elementList->get();
+            if (dO != NULL)
+            {
+                DCMDATA_ERROR("DcmItem: Stream ended before the value of element "
+                    << dO->getTag() << " was complete, data set is truncated");
+            } else {
+                DCMDATA_ERROR("DcmItem: Stream ended before the value of the last "
+                    << "element was complete, data set is truncated");
+            }
+            errorFlag = EC_InvalidStream;
+        } else
+            errorFlag = EC_Normal;
+    }
+    else if (errorFlag == EC_ItemEnd)
         errorFlag = EC_Normal;
     else if (errorFlag == EC_SequEnd)
     {
@@ -1839,8 +1906,14 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 const OFBool inserted = (elementList->insert(elem, ELP_first) != NULL);
                 if (checkInsertOrder)
                 {
-                    // check if we have inserted at the end of the list
-                    if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
+                    // check if we have inserted at the end of the list. Note that
+                    // elementList->seek(ELP_last) must not be used for this check:
+                    // it would move the list cursor away from the new element, and
+                    // the parser relies on that cursor to find the element whose
+                    // value it has to continue reading when more data arrives.
+                    // Only in the first iteration (i.e. seekmode is still ELP_last)
+                    // the list was empty, so the new element is also the last one.
+                    if (seekmode != ELP_last)
                     {
                         // produce diagnostics
                         DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());
@@ -1871,8 +1944,14 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 const OFBool inserted = (elementList->insert(elem, ELP_next) != NULL);
                 if (checkInsertOrder)
                 {
-                    // check if we have inserted at the end of the list
-                    if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
+                    // check if we have inserted at the end of the list. Note that
+                    // elementList->seek(ELP_last) must not be used for this check:
+                    // it would move the list cursor away from the new element, and
+                    // the parser relies on that cursor to find the element whose
+                    // value it has to continue reading when more data arrives.
+                    // Only in the first iteration (i.e. seekmode is still ELP_last)
+                    // the new element was inserted after the last one.
+                    if (seekmode != ELP_last)
                     {
                         // produce diagnostics
                         DCMDATA_WARN("DcmItem: Dataset not in ascending tag order, at element " << elem->getTag());

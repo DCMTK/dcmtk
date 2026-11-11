@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2025, Open Connections GmbH
+ *  Copyright (C) 2015-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -996,13 +996,19 @@ public:
      *  However, their first bit is aligned to the first bit/byte in the Frame,
      *  and the unused bits in the last byte (if any) are zeroed out.
      *  @param  pixData The pixel data to read from
+     *  @param  pixDataLen The number of bytes available in \p pixData. Used to
+     *          make sure the buffer is large enough for the requested number of
+     *          frames before any data is copied (prevents reading past its end).
      *  @param  numFrames The number of frames to read
      *  @param  bitsPerFrame The number of bits per frame (usually rows * columns)
      *  @param  results The resulting frames. Memory for the frames is allocated
      *          by the method, so the Vector can/should be empty before calling.
-     *  @result Return EC_Normal on success, error otherwise
+     *  @result Return EC_Normal on success, error otherwise. Returns
+     *          IOD_EC_InvalidPixelData if \p pixData holds fewer bytes than the
+     *          requested \p numFrames of \p bitsPerFrame bits require.
      */
     static OFCondition extractBinaryFrames(Uint8* pixData,
+                                           const size_t pixDataLen,
                                            const size_t numFrames,
                                            const size_t bitsPerFrame,
                                            OFVector<DcmIODTypes::FrameBase*>& results);

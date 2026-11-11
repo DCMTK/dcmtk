@@ -49,6 +49,7 @@ docs-install:
 	$(INSTALL_DATA) docs/modules.txt $(DESTDIR)$(docdir)
 	$(INSTALL_DATA) docs/dirstruc.txt $(DESTDIR)$(docdir)
 	$(INSTALL_DATA) docs/macros.txt $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) docs/memalloc.txt $(DESTDIR)$(docdir)
 
 
 clean:

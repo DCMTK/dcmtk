@@ -265,7 +265,15 @@ foreach(FUNC "__FUNCTION__" "__PRETTY_FUNCTION__" "__func__")
 endforeach()
 
 # prepare include directories for 3rdparty libraries before performing
-# header searches
+# header searches. OpenSSL comes first, see 3rdparty.cmake.
+if(OPENSSL_INCDIR)
+  list(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCDIR}")
+endif()
+
+if(OPENSSL_INCLUDE_DIR)
+  list(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCLUDE_DIR}")
+endif()
+
 if(ZLIB_INCDIR)
   list(APPEND CMAKE_REQUIRED_INCLUDES "${ZLIB_INCDIR}")
 endif()
@@ -280,14 +288,6 @@ endif()
 
 if(PNG_INCLUDE_DIR)
   list(APPEND CMAKE_REQUIRED_INCLUDES "${PNG_INCLUDE_DIR}")
-endif()
-
-if(OPENSSL_INCDIR)
-  list(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCDIR}")
-endif()
-
-if(OPENSSL_INCLUDE_DIR)
-  list(APPEND CMAKE_REQUIRED_INCLUDES "${OPENSSL_INCLUDE_DIR}")
 endif()
 
 # For Windows, hardcode these values to avoid long search times

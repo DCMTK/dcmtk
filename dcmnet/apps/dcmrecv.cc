@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2013-2025, OFFIS e.V.
+ *  Copyright (C) 2013-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_dimseTimeout = 0;
     OFCmdUnsignedInt opt_acseTimeout = 30;
     OFCmdUnsignedInt opt_maxPDULength = ASC_DEFAULTMAXPDU;
+    OFCmdUnsignedInt opt_maxElementLength = 0;
+    OFCmdSignedInt opt_incrementalLoadThreshold = 0;
     T_DIMSE_BlockingMode opt_blockingMode = DIMSE_BLOCKING;
 
     OFBool opt_showPresentationContexts = OFFalse;  // default: do not show presentation contexts in verbose mode
@@ -128,8 +130,18 @@ int main(int argc, char *argv[])
                                                           "timeout for DIMSE messages");
         CONVERT_TO_STRING("[n]umber of bytes: integer (" << ASC_MINIMUMPDUSIZE << ".." << ASC_MAXIMUMPDUSIZE << ")", optString2);
         CONVERT_TO_STRING("set max receive pdu to n bytes (default: " << opt_maxPDULength << ")", optString3);
+#if DCMTK_INCREMENTAL_LOAD_THRESHOLD == -1
+        CONVERT_TO_STRING("read element values larger than n bytes\nin growing chunks (default: disabled)", optString4);
+#else
+        CONVERT_TO_STRING("read element values larger than n bytes\nin growing chunks (default: " << DCMTK_INCREMENTAL_LOAD_THRESHOLD << ")", optString4);
+#endif
         cmd.addOption("--max-pdu",             "-pdu", 1, optString2.c_str(),
                                                           optString3.c_str());
+        cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                          "restrict max element length of received data\nto n bytes (default: unrestricted)");
+        cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                          optString4.c_str());
+        cmd.addOption("--no-incr-load",        "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
         cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
     /* add TLS specific command line options if (and only if) we are compiling with OpenSSL */
@@ -137,8 +149,8 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("general:");
-        CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString4);
-        cmd.addOption("--output-directory",    "-od",  1, optString4.c_str(),
+        CONVERT_TO_STRING("[d]irectory: string (default: \"" << opt_outputDirectory << "\")", optString5);
+        cmd.addOption("--output-directory",    "-od",  1, optString5.c_str(),
                                                           "write received objects to existing directory d");
       cmd.addSubGroup("subdirectory generation:");
         cmd.addOption("--no-subdir",           "-s",      "do not generate any subdirectories (default)");
@@ -233,6 +245,18 @@ int main(int argc, char *argv[])
         }
         if (cmd.findOption("--max-pdu"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+        if (cmd.findOption("--max-element-length"))
+            app.checkValue(cmd.getSizeValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--incr-load-threshold"))
+        {
+            OFCmdUnsignedInt threshold = 0;
+            app.checkValue(cmd.getSizeValueAndCheckMinMax(threshold, 1, 2147483647));
+            opt_incrementalLoadThreshold = OFstatic_cast(OFCmdSignedInt, threshold);
+        }
+        if (cmd.findOption("--no-incr-load"))
+            opt_incrementalLoadThreshold = -1;
+        cmd.endOptionBlock();
         if (cmd.findOption("--disable-host-lookup"))
             opt_HostnameLookup = OFFalse;
 
@@ -301,6 +325,10 @@ int main(int argc, char *argv[])
     if (opt_aeTitle != NULL)
         storageSCP.setAETitle(opt_aeTitle);
     storageSCP.setMaxReceivePDULength(OFstatic_cast(Uint32, opt_maxPDULength));
+    if (opt_maxElementLength != 0)
+        storageSCP.setMaxElementLength(OFstatic_cast(Uint32, opt_maxElementLength));
+    if (opt_incrementalLoadThreshold != 0)
+        storageSCP.setIncrementalLoadThreshold(OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
     storageSCP.setACSETimeout(OFstatic_cast(Uint32, opt_acseTimeout));
     storageSCP.setDIMSETimeout(OFstatic_cast(Uint32, opt_dimseTimeout));
     storageSCP.setDIMSEBlockingMode(opt_blockingMode);

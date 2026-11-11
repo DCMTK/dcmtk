@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
   E_PlanarConfiguration opt_planarconfig = EPC_default;
   OFBool opt_predictor6WorkaroundEnable = OFFalse;
   OFBool opt_cornellWorkaroundEnable = OFFalse;
+  OFBool opt_planarConfigWorkaroundEnable = OFFalse;
   OFBool opt_forceSingleFragmentPerFrame = OFFalse;
   OFBool opt_preserveBitsStored = OFFalse;
 
@@ -115,6 +116,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
       cmd.addOption("--workaround-incpl",    "+wi",    "enable workaround for incomplete JPEG data");
       cmd.addOption("--workaround-cornell",  "+wc",    "enable workaround for 16-bit JPEG lossless\nCornell images with Huffman table overflow");
+      cmd.addOption("--workaround-planar",   "+wp",    "enable workaround for DCMTK color-by-plane bug");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -196,6 +198,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
       if (cmd.findOption("--workaround-incpl")) opt_forceSingleFragmentPerFrame = OFTrue;
       if (cmd.findOption("--workaround-cornell")) opt_cornellWorkaroundEnable = OFTrue;
+      if (cmd.findOption("--workaround-planar")) opt_planarConfigWorkaroundEnable = OFTrue;
+
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
@@ -277,7 +281,8 @@ int main(int argc, char *argv[])
       opt_predictor6WorkaroundEnable,
       opt_cornellWorkaroundEnable,
       opt_forceSingleFragmentPerFrame,
-      opt_preserveBitsStored);
+      opt_preserveBitsStored,
+      opt_planarConfigWorkaroundEnable);
 
     // RAII guard: deregister the codecs on every exit path, including the
     // error returns below that would otherwise skip the cleanup() call.

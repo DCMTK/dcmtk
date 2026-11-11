@@ -7,8 +7,10 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmiod_tests
   ticcprofile.cc
   timagepixel.cc
   tmacro.cc
+  tmultiframedim.cc
   tpalette.cc
   tstaticrules.cc
+  tultrasound.cc
   tests.cc
 )
 

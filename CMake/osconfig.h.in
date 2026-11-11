@@ -567,7 +567,6 @@
                                        /* http://alfps.wordpress.com/2010/06/22/cppx-is-c4099-really-a-sillywarning-disabling-msvc-sillywarnings */
     #pragma warning( disable : 4521 )  /* disable warnings about multiple copy constructors and assignment operators,*/
     #pragma warning( disable : 4522 )  /* since these are sometimes necessary for correct overload resolution*/
-    #pragma warning( disable : 4996 )  /* disable warnings about "deprecated" C runtime functions */
 #if _MSC_VER < 1900                    /* Warning only available before Visual Studio 2015 */
     #pragma warning( disable : 4351 )  /* disable warnings about "new behavior" when initializing the elements of an array */
 #endif /* _MSC_VER < 1900 */
@@ -721,7 +720,7 @@ DCMTK was configured to use C++20 features, but your compiler does not or was no
 #cmakedefine HAVE_STL_STRING @HAVE_STL_STRING@
 
 /* Define if we are supposed to use STL's system_error */
-#cmakedefine HAVE_STL_VECTOR @HAVE_STL_SYSTEM_ERROR@
+#cmakedefine HAVE_STL_SYSTEM_ERROR @HAVE_STL_SYSTEM_ERROR@
 
 /* Define if we are supposed to use STL's tuple */
 #cmakedefine HAVE_STL_TUPLE @HAVE_STL_TUPLE@

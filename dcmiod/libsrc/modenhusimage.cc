@@ -294,7 +294,7 @@ OFCondition IODEnhUSImageModule::getRescaleSlope(Float64& value, const unsigned 
 
 OFCondition IODEnhUSImageModule::getRescaleIntercept(OFString& value, const signed long pos)
 {
-    return DcmIODUtil::getStringValueFromItem(DCM_RescaleSlope, *m_Item, value, pos);
+    return DcmIODUtil::getStringValueFromItem(DCM_RescaleIntercept, *m_Item, value, pos);
 }
 
 GeneralAnatomyMacro& IODEnhUSImageModule::getAnatomy()
@@ -312,9 +312,14 @@ OFCondition IODEnhUSImageModule::getBurnedInAnnotation(OFString& value, const si
     return DcmIODUtil::getStringValueFromItem(DCM_BurnedInAnnotation, *m_Item, value, pos);
 }
 
-OFCondition IODEnhUSImageModule::getRecognizableVisibleFeatures(OFString& value, const signed long pos)
+OFCondition IODEnhUSImageModule::getRecognizableVisualFeatures(OFString& value, const signed long pos)
 {
     return DcmIODUtil::getStringValueFromItem(DCM_RecognizableVisualFeatures, *m_Item, value, pos);
+}
+
+OFCondition IODEnhUSImageModule::getRecognizableVisibleFeatures(OFString& value, const signed long pos)
+{
+    return getRecognizableVisualFeatures(value, pos);
 }
 
 CodeSequenceMacro& IODEnhUSImageModule::getTransducerScanPattern()
@@ -398,7 +403,7 @@ OFCondition IODEnhUSImageModule::setImageType(const DcmIODTypes::IOD_ENHUSIMAGET
     OFCondition result;
     if (checkValue)
     {
-        result = DcmCodeString::checkStringValue(value, "2");
+        result = DcmCodeString::checkStringValue(value, "4");
     }
     if (result.good())
     {
@@ -524,7 +529,7 @@ OFCondition IODEnhUSImageModule::setLossyImageCompressionRatio(const OFString& v
     return result;
 }
 
-OFCondition IODEnhUSImageModule::setRecognizableVisibleFeatures(const OFString& value, const OFBool checkValue)
+OFCondition IODEnhUSImageModule::setRecognizableVisualFeatures(const OFString& value, const OFBool checkValue)
 {
     if (checkValue)
     {
@@ -532,6 +537,11 @@ OFCondition IODEnhUSImageModule::setRecognizableVisibleFeatures(const OFString& 
             return IOD_EC_InvalidElementValue;
     }
     return m_Item->putAndInsertOFStringArray(DCM_RecognizableVisualFeatures, value);
+}
+
+OFCondition IODEnhUSImageModule::setRecognizableVisibleFeatures(const OFString& value, const OFBool checkValue)
+{
+    return setRecognizableVisualFeatures(value, checkValue);
 }
 
 OFCondition IODEnhUSImageModule::setProcessingFunction(const OFString& value, const OFBool checkValue)
@@ -589,11 +599,9 @@ OFCondition IODEnhUSImageModule::setDepthsOfFocus(const OFVector<Float64>& value
         return EC_MemoryExhausted;
 
     OFCondition result;
-    OFVector<Float64>::const_iterator it = values.begin();
-    while ((it != values.end()) && result.good())
+    for (size_t n = 0; result.good() && (n < values.size()); n++)
     {
-        result = elem->putFloat64(*it);
-        it++;
+        result = elem->putFloat64(values[n], OFstatic_cast(unsigned long, n));
     }
     if (result.bad())
     {
@@ -601,7 +609,9 @@ OFCondition IODEnhUSImageModule::setDepthsOfFocus(const OFVector<Float64>& value
     }
     else
     {
-        result = m_Item->insert(elem);
+        result = m_Item->insert(elem, OFTrue /* replaceOld */);
+        if (result.bad())
+            delete elem;
     }
     return result;
 }

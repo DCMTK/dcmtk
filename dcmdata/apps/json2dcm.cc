@@ -333,7 +333,7 @@ int updateCharacterSet(DcmItem *dataset, const char *ifname, OFBool useUTF8Chars
         // there are multiple character sets in use
         OFLOG_ERROR(json2dcmLogger, "The JSON file specifies multiple character sets (" << elemValue << "). "
             << "Conversion to multiple character sets not supported.\n"
-            << "Use option '--charset-replace' instead to keep UTF-8 ('" << allowedCharset << "')");
+            << "Use option '--charset-utf8' instead to keep UTF-8 ('" << allowedCharset << "')");
         return EXITCODE_CHARSET_CONVERSION_FAILED;
     }
 

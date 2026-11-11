@@ -204,6 +204,8 @@ extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_CommandLineFailed;
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_NestingDepthLimitExceeded;
 /// Path condition not met
 extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_PathConditionNotMet;
+/// Maximum element value length exceeded (memory exhaustion protection)
+extern DCMTK_DCMDATA_EXPORT const OFConditionConst EC_ElementLengthLimitExceeded;
 
 ///@}
 

@@ -23,21 +23,25 @@ dcmimagedir = $(top_srcdir)/../dcmimage
 dcmsigndir = $(top_srcdir)/../dcmsign
 dcmtlsdir = $(top_srcdir)/../dcmtls
 dcmsrdir = $(top_srcdir)/../dcmsr
+dcmioddir = $(top_srcdir)/../dcmiod
 
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(ofstddir)/include -I$(oflogdir)/include \
 	-I$(dcmdatadir)/include -I$(dcmsigndir)/include -I$(dcmtlsdir)/include \
 	-I$(dcmqrdbdir)/include -I$(dcmimgledir)/include -I$(dcmimagedir)/include \
-	-I$(dcmsrdir)/include
+	-I$(dcmsrdir)/include -I$(dcmioddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(oflogdir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmsigndir)/libsrc \
 	-L$(dcmtlsdir)/libsrc -L$(dcmqrdbdir)/libsrc -L$(dcmimgledir)/libsrc \
-	-L$(dcmimagedir)/libsrc -L$(dcmsrdir)/libsrc -L$(oficonvdir)/libsrc
+	-L$(dcmimagedir)/libsrc -L$(dcmsrdir)/libsrc -L$(dcmioddir)/libsrc \
+	-L$(oficonvdir)/libsrc
 LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmsr -ldcmimage -ldcmimgle -ldcmqrdb -ldcmnet \
-	-ldcmtls -ldcmdata -loflog -lofstd -loficonv $(TIFFLIBS) $(PNGLIBS) $(XMLLIBS) \
-	$(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS) $(CHARCONVLIBS) $(MATHLIBS)
+	-ldcmtls -ldcmiod -ldcmdata -loflog -lofstd -loficonv $(TIFFLIBS) $(PNGLIBS) \
+	$(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS) $(CHARCONVLIBS) $(MATHLIBS)
 
-objs = msgserv.o
-progs = msgserv
+test_objs = tests.o tgl.o
+
+objs = msgserv.o $(test_objs)
+progs = msgserv tests
 
 
 all: $(progs)
@@ -45,10 +49,15 @@ all: $(progs)
 msgserv: msgserv.o
 	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ msgserv.o $(LOCALLIBS) $(LIBS)
 
+tests: $(test_objs)
+	$(CXX) $(CXXFLAGS) $(LIBDIRS) $(LDFLAGS) -o $@ $(test_objs) $(LOCALLIBS) $(LIBS)
 
-check:
 
-check-exhaustive:
+check: tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests
+
+check-exhaustive: tests
+	DCMDICTPATH=../../dcmdata/data/dicom.dic ./tests -x
 
 
 install: all

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2018-2025, Open Connections GmbH
+ *  Copyright (C) 2018-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -134,7 +134,7 @@ public:
    *  @return EC_Normal if setting was successful, error otherwise
    */
 
-  virtual OFCondition setRecognizableVisualFeatures(const DPMTypes::RecognizableVisibleFeatures yesOrNo);
+  virtual OFCondition setRecognizableVisualFeatures(const DPMTypes::RecognizableVisualFeatures yesOrNo);
 
   /** Add a functional group for all frames
    *  @param  group The group to be added as shared functional group
@@ -211,7 +211,7 @@ public:
   /** Get Recognizable Visual Features
    *  @return Returns related YES or NO data type
    */
-  virtual DPMTypes::RecognizableVisibleFeatures getRecognizableVisualFeatures();
+  virtual DPMTypes::RecognizableVisualFeatures getRecognizableVisualFeatures();
 
   /** Get Content Qualification
    *  @return Returns either one of CQ_PRODUCT, CQ_RESEARCH, CQ_SERVICE or CQ_UNKNOWN

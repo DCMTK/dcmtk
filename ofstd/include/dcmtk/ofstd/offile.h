@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006-2025, OFFIS e.V.
+ *  Copyright (C) 2006-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -27,6 +27,7 @@
 #include "dcmtk/ofstd/oftypes.h"    /* for class OFBool */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/ofstd.h"      /* for class OFStandard */
+#include "dcmtk/ofstd/ofdiag.h"     /* for DCMTK_DIAGNOSTIC macros */
 
 #include <cstdio>
 #include <cstdlib>
@@ -45,6 +46,19 @@ END_EXTERN_C
  */
 #if defined(__hpux) && defined(clearerr)
 #undef clearerr
+#endif
+
+/* Enable compile-time checking of arguments passed to the printf-style member
+ * functions of OFFile, and mark their format parameter as a valid forwarding
+ * target so -Wformat-nonliteral does not warn inside them. FMT is the 1-based
+ * position of the format string parameter and ARGS the position of the first
+ * variadic argument (0 for va_list functions); the implicit 'this' parameter
+ * of non-static member functions counts as parameter 1.
+ */
+#if defined(__GNUC__) || defined(__clang__)
+#define OFFILE_FORMAT_PRINTF(FMT, ARGS) __attribute__((format(printf, FMT, ARGS)))
+#else
+#define OFFILE_FORMAT_PRINTF(FMT, ARGS)
 #endif
 
 /* When using the ISO C++ include files such as <cstdio>, <cstdarg> etc.,
@@ -304,6 +318,12 @@ inline void swap(OFFilename &lhs, OFFilename &rhs)
  */
 DCMTK_OFSTD_EXPORT STD_NAMESPACE ostream &operator<<(STD_NAMESPACE ostream &stream, const OFFilename &filename);
 
+
+// Visual Studio declares many of the stdio functions wrapped by this class
+// (e.g. fopen() or fileno()) as deprecated, which would cause warning C4996
+// in every file that includes this header.
+#include DCMTK_DIAGNOSTIC_PUSH
+#include DCMTK_DIAGNOSTIC_IGNORE_DEPRECATED_DECLARATIONS
 
 /** this class provides a simple C++ encapsulation layer for stdio FILE pointers.
  *  All stdio functions on files are directly mapped into member functions.
@@ -884,6 +904,7 @@ public:
    *  @param ... further parameters according to format string
    *  @return number of characters printed
    */
+  OFFILE_FORMAT_PRINTF(2, 3)
   int fprintf(const char *format, ...)
   {
     int result = 0;
@@ -899,6 +920,7 @@ public:
    *  @param arg list of further parameters according to format string
    *  @return number of characters printed
    */
+   OFFILE_FORMAT_PRINTF(2, 0)
    int vfprintf(const char *format, va_list arg)
    {
      return :: vfprintf(file_, format, arg);
@@ -1059,5 +1081,7 @@ private:
   }
 
 };
+
+#include DCMTK_DIAGNOSTIC_POP
 
 #endif

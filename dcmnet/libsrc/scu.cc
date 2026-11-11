@@ -70,6 +70,8 @@ DcmSCU::DcmSCU()
     , m_datasetConversionMode(OFFalse)
     , m_progressNotificationMode(OFTrue)
     , m_maxNestingDepth(0)
+    , m_maxElementLength(0)
+    , m_incrementalLoadThreshold(0)
     , m_secureConnectionEnabled(OFFalse)
     , m_protocolVersion(ASC_AF_Default)
 {
@@ -310,6 +312,13 @@ OFCondition DcmSCU::negotiateAssociation()
             return cond;
         }
     }
+
+    /* apply the configured element length limit to this association
+     * (protects command and data set receive, 0 = compile-time default) */
+    if (m_maxElementLength != 0)
+        ASC_setMaxIncomingElementLength(m_assoc, m_maxElementLength);
+    if (m_incrementalLoadThreshold != 0)
+        ASC_setIncrementalLoadThreshold(m_assoc, m_incrementalLoadThreshold);
 
     /* dump the presentation contexts which have been accepted/refused */
     if (m_verbosePCMode)
@@ -2266,7 +2275,7 @@ OFCondition DcmSCU::sendNCREATERequest(const T_ASC_PresentationContextID presID,
         if (result.bad())
         {
             delete respDataset;
-            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
             return DIMSE_BADDATA;
         }
 
@@ -2403,7 +2412,7 @@ OFCondition DcmSCU::sendNSETRequest(const T_ASC_PresentationContextID presID,
         if (result.bad())
         {
             delete respDataset;
-            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
             return DIMSE_BADDATA;
         }
 
@@ -2563,7 +2572,7 @@ OFCondition DcmSCU::sendNGETRequest(const T_ASC_PresentationContextID presID,
         if (result.bad())
         {
             delete respDataset;
-            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, request, DIMSE_INCOMING, OFnullptr, pcid));
+            DCMNET_ERROR(DIMSE_dumpMessage(tempStr, response, DIMSE_INCOMING, OFnullptr, pcid));
             return DIMSE_BADDATA;
         }
 
@@ -2860,6 +2869,16 @@ void DcmSCU::setMaxNestingDepth(const Sint32 maxDepth)
     m_maxNestingDepth = maxDepth;
 }
 
+void DcmSCU::setMaxElementLength(const Uint32 maxLength)
+{
+    m_maxElementLength = maxLength;
+}
+
+void DcmSCU::setIncrementalLoadThreshold(const Sint32 threshold)
+{
+    m_incrementalLoadThreshold = threshold;
+}
+
 void DcmSCU::setProtocolVersion(T_ASC_ProtocolFamily protocolVersion)
 {
     m_protocolVersion = protocolVersion;
@@ -2950,6 +2969,16 @@ OFBool DcmSCU::getProgressNotificationMode() const
 Sint32 DcmSCU::getMaxNestingDepth() const
 {
     return m_maxNestingDepth;
+}
+
+Uint32 DcmSCU::getMaxElementLength() const
+{
+    return m_maxElementLength;
+}
+
+Sint32 DcmSCU::getIncrementalLoadThreshold() const
+{
+    return m_incrementalLoadThreshold;
 }
 
 OFCondition DcmSCU::getDatasetInfo(DcmDataset* dataset,

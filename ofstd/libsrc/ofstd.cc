@@ -1501,25 +1501,52 @@ OFBool OFStandard::renameFile(const OFFilename &oldFilename,
 }
 
 
+/* convert a file size to size_t. If the size cannot be represented, e.g. a size
+ * of 4 GiB or more where size_t is only 32 bits wide, the maximum value of size_t
+ * is returned instead of the truncated size.
+ */
+static size_t convertFileSize(const Uint64 size)
+{
+    const size_t result = OFstatic_cast(size_t, size);
+    return (result == size) ? result : OFnumeric_limits<size_t>::max();
+}
+
+
 size_t OFStandard::getFileSize(const OFFilename &filename)
 {
     size_t fileSize = 0;
     /* avoid NULL or empty strings passed to stat() */
     if (!filename.isEmpty())
     {
-#if defined(WIDE_CHAR_FILE_IO_FUNCTIONS) && defined(_WIN32)
+#ifdef _WIN32
+        /* "struct stat" only has a 32-bit size field on Windows, so stat() fails
+         * for files larger than 2 GiB; use the 64-bit variants instead
+         */
+#ifdef WIDE_CHAR_FILE_IO_FUNCTIONS
         if (filename.usesWideChars())
         {
-            struct _stat64i32 fileStat;
-            if (_wstat(filename.getWideCharPointer(), &fileStat) == 0)
-                fileSize = OFstatic_cast(size_t, fileStat.st_size);
+            struct _stati64 fileStat;
+            if (_wstati64(filename.getWideCharPointer(), &fileStat) == 0)
+                fileSize = convertFileSize(OFstatic_cast(Uint64, fileStat.st_size));
         } else
 #endif
         {
-            struct stat fileStat;
-            if (stat(filename.getCharPointer(), &fileStat) == 0)
-                fileSize = OFstatic_cast(size_t, fileStat.st_size);
+            struct _stati64 fileStat;
+            if (_stati64(filename.getCharPointer(), &fileStat) == 0)
+                fileSize = convertFileSize(OFstatic_cast(Uint64, fileStat.st_size));
         }
+#elif defined(EXPLICIT_LFS_64)
+        /* stat() fails for files larger than 2 GiB on 32-bit systems unless
+         * large file support is enabled implicitly, so use stat64() instead
+         */
+        struct stat64 fileStat;
+        if (stat64(filename.getCharPointer(), &fileStat) == 0)
+            fileSize = convertFileSize(OFstatic_cast(Uint64, fileStat.st_size));
+#else
+        struct stat fileStat;
+        if (stat(filename.getCharPointer(), &fileStat) == 0)
+            fileSize = convertFileSize(OFstatic_cast(Uint64, fileStat.st_size));
+#endif
     }
     return fileSize;
 }

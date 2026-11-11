@@ -33,6 +33,7 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstring.h"
 
 // --- static helpers ---
@@ -713,6 +714,7 @@ Uint32 DcmIODUtil::limitMaxFrames(const size_t numFramesPresent, const OFString&
 }
 
 OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
+                                            const size_t pixDataLen,
                                             const size_t numFrames,
                                             const size_t bitsPerFrame,
                                             OFVector<DcmIODTypes::FrameBase*>& results)
@@ -731,6 +733,23 @@ OFCondition DcmIODUtil::extractBinaryFrames(Uint8* pixData,
     {
         DCMIOD_ERROR("Cannot extract frames with 0 bits per frame");
         return EC_IllegalParameter;
+    }
+    // Make sure the buffer is large enough for all requested frames before
+    // copying anything, otherwise the extraction below would read past its end.
+    // Frames are packed as a continuous bit stream, so the buffer must hold at
+    // least ceil(numFrames * bitsPerFrame / 8) bytes.
+    size_t bitsRequired = 0;
+    if (!OFStandard::safeMult(numFrames, bitsPerFrame, bitsRequired))
+    {
+        DCMIOD_ERROR("Cannot extract frames: number of frames times bits per frame exceeds the addressable range");
+        return IOD_EC_InvalidPixelData;
+    }
+    const size_t bytesRequired = bitsRequired / 8 + ((bitsRequired % 8 != 0) ? 1 : 0);
+    if (bytesRequired > pixDataLen)
+    {
+        DCMIOD_ERROR("Cannot extract " << numFrames << " frames of " << bitsPerFrame << " bits: Pixel Data holds "
+                                       << pixDataLen << " bytes but " << bytesRequired << " bytes are required");
+        return IOD_EC_InvalidPixelData;
     }
     // pixData contains all frames in a single buffer. Each frame is bitsPerFrame bits long.
     // We need to extract each frame into a separate buffer (results vector). Every frame

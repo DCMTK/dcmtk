@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2025, OFFIS e.V.
+ *  Copyright (C) 1998-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -790,6 +790,34 @@ class DCMTK_OFSTD_EXPORT OFCommandLine
     E_ValueStatus getValueAndCheckMinMax(OFCmdUnsignedInt &value,
                                          const OFCmdUnsignedInt low,
                                          const OFCmdUnsignedInt high);
+
+    /** returns next argument as an unsigned integer size value with an optional suffix.
+     *  In addition to a plain integer, the argument may consist of an integer immediately
+     *  followed by one of the suffixes 'k' or 'K' (kilo, factor 1024), 'm' or 'M' (mega,
+     *  factor 1048576) or 'g' or 'G' (giga, factor 1073741824), e.g. "512K" or "2G".
+     *  This is useful for options that take a number of bytes.
+     *
+     ** @param  value  reference to unsigned integer variable where the value should be stored
+     *
+     ** @return status of get/conversion, VS_Normal if successful
+     *          (use getStatusString() for error string).  VS_Overflow is returned if the
+     *          scaled value does not fit into the unsigned integer type.
+     */
+    E_ValueStatus getSizeValue(OFCmdUnsignedInt &value);
+
+    /** returns next argument as an unsigned integer size value with an optional suffix
+     *  and checks for given boundaries.  See getSizeValue() for the accepted suffixes.
+     *
+     ** @param  value  reference to unsigned integer variable where the value should be stored
+     *  @param  low    minimum boundary for value (used for range check, boundary included)
+     *  @param  high   maximum boundary for value (ditto)
+     *
+     ** @return status of get/conversion, VS_Normal if successful
+     *          (use getStatusString() for error string)
+     */
+    E_ValueStatus getSizeValueAndCheckMinMax(OFCmdUnsignedInt &value,
+                                             const OFCmdUnsignedInt low,
+                                             const OFCmdUnsignedInt high);
 
     /** returns next argument as a floating point value
      *

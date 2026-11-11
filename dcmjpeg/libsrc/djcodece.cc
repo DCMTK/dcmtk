@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2024, OFFIS e.V.
+ *  Copyright (C) 2001-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -182,7 +182,7 @@ OFCondition DJCodecEncoder::encode(
         result = encodeColorImage(OFTrue, OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
         break;
       case EPI_Missing:
-        // photometric interpretation missing. If ACR-NEMA compatibility is activated, we treat this as MONOCHOME2, otherwise we report an error
+        // photometric interpretation missing. If ACR-NEMA compatibility is activated, we treat this as MONOCHROME2, otherwise we report an error
         if (djcp->getAcrNemaCompatibility())
             result = encodeMonochromeImage(OFreinterpret_cast(DcmItem*, dataset), toRepParam, pixSeq, djcp, compressionRatio);
             else result = EJ_UnsupportedPhotometricInterpretation;
@@ -559,7 +559,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       return EC_CannotChangeRepresentation;
     }
 
-    /* Set and check photometric interpretation (up to now: EPI_RGB)
+    /* Set and check photometric interpretation (up to now: EPI_RGB).
      * Only photometric interpretations, that are explicitly "supported" by the
      * IJG lib are set. For all others "unknown" is set. Some are even rejected here.
      */
@@ -586,15 +586,8 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     if (result.good() && (samplesPerPixel > 1))
     {
       result = datsetItem->findAndGetUint16(DCM_PlanarConfiguration, planarConfiguration);
-      if (result.good() && (planarConfiguration == 1))
-      {
-        if (bytesAllocated == 1)
-          result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
-        else
-          result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
-        planConfSwitched = OFTrue;
-      }
     }
+
     if (result.bad())
     {
         DCMJPEG_ERROR("True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding");
@@ -602,7 +595,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
 
     // check whether enough raw data is available for encoding
-    if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(size_t,numberOfFrames) > length)
+    if (OFstatic_cast(Uint64, bytesAllocated) * samplesPerPixel * columns * rows * OFstatic_cast(Uint64, numberOfFrames) > length)
     {
       DCMJPEG_ERROR("True lossless encoder: Cannot change representation, not enough data");
       return EC_CannotChangeRepresentation;
@@ -618,6 +611,16 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         return EC_CannotChangeRepresentation;
       }
       byteSwapped = OFTrue;
+    }
+
+    // adjust planar configuration to color-by-pixel
+    if (result.good() && (planarConfiguration == 1))
+    {
+      if (bytesAllocated == 1)
+        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
+      else
+        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2 /*16 bit*/, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 1) /* switch to "by pixel"*/);
+      planConfSwitched = OFTrue;
     }
 
     // create initial pixel sequence with empty offset table
@@ -641,7 +644,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
 
     // prepare some variables for encoding
     size_t frameCount = OFstatic_cast(size_t, numberOfFrames);
-    size_t frameSize = columns * rows * samplesPerPixel * bytesAllocated;
+    size_t frameSize = OFstatic_cast(size_t, columns) * rows * samplesPerPixel * bytesAllocated;
     const Uint8 *framePointer = OFreinterpret_cast(const Uint8 *, pixelData);
     size_t compressedSize = 0;
 
@@ -730,9 +733,9 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     if (result.good() && planConfSwitched)
     {
       if (bytesAllocated == 1)
-        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
+        result = togglePlanarConfiguration8(OFreinterpret_cast(Uint8*, OFconst_cast(Uint16*, pixelData)), length, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 0) /* switch to "by plane" */);
       else
-        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
+        result = togglePlanarConfiguration16(OFconst_cast(Uint16*, pixelData), length/2, OFstatic_cast(size_t, numberOfFrames), columns, rows, samplesPerPixel, OFstatic_cast(Uint16, 0) /*switch to "by plane"*/);
       if (result.good())
       {
         // update Planar Configuration in dataset
@@ -1488,34 +1491,51 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 OFCondition DJCodecEncoder::togglePlanarConfiguration8(
   Uint8 *pixelData,
   const size_t numValues,
+  const size_t numberOfFrames,
+  const Uint16 columns,
+  const Uint16 rows,
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if (pixelData == NULL)
+  size_t pxPerFrame = OFstatic_cast(size_t, columns) * OFstatic_cast(size_t, rows);
+  size_t frameSize = pxPerFrame * samplesPerPixel;
+  size_t totalValues = frameSize * numberOfFrames;
+  if ((pixelData == NULL) || (numValues < totalValues))
     return EC_IllegalParameter;
   // allocate target buffer
-  Uint8* px8 = new Uint8[numValues];
+  Uint8* px8 = new Uint8[totalValues];
   if (!px8)
     return EC_MemoryExhausted;
-  size_t numPixels = numValues / samplesPerPixel;
-  if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
+  Uint8 *inPtr = pixelData;
+  Uint8 *outPtr = px8;
+
+  for (size_t f=0; f<numberOfFrames; ++f)
   {
-    for (size_t n=0; n < numPixels; n++)
+    if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px8[n*samplesPerPixel+s]   = pixelData[n+numPixels*s];
+      for (size_t i=0; i < pxPerFrame; ++i)
+      {
+        for (size_t s=0; s < samplesPerPixel; ++s)
+        {
+          outPtr[i * samplesPerPixel + s] = inPtr[s * pxPerFrame + i];
+        }
+      }
     }
-  }
-  else  //change from "by pixel" to "by plane"
-  {
-    for (size_t n=0; n < numPixels; n++)
+    else  //change from "by pixel" to "by plane"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px8[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
+      for (size_t s=0; s < samplesPerPixel; ++s)
+      {
+        for (size_t i=0; i < pxPerFrame; ++i)
+        {
+          outPtr[s * pxPerFrame + i] = inPtr[i * samplesPerPixel + s];
+        }
+      }
     }
+    inPtr += frameSize;
+    outPtr += frameSize;
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px8, OFstatic_cast(size_t, numValues));
+  memcpy(pixelData, px8, totalValues);
   delete[] px8;
   return EC_Normal;
 }
@@ -1524,44 +1544,61 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
 OFCondition DJCodecEncoder::togglePlanarConfiguration16(
   Uint16 *pixelData,
   const size_t numValues, //number of 16-bit components
+  const size_t numberOfFrames,
+  const Uint16 columns,
+  const Uint16 rows,
   const Uint16 samplesPerPixel,
   const Uint16 oldPlanarConfig)
 {
-  if (pixelData == NULL)
+  size_t pxPerFrame = OFstatic_cast(size_t, columns) * OFstatic_cast(size_t, rows);
+  size_t frameSize = pxPerFrame * samplesPerPixel;
+  size_t totalValues = frameSize * numberOfFrames;
+  if ((pixelData == NULL) || (numValues < totalValues))
     return EC_IllegalParameter;
   // allocate target buffer
-  Uint16* px16 = new Uint16[numValues];
+  Uint16* px16 = new Uint16[totalValues];
   if (!px16)
     return EC_MemoryExhausted;
-  size_t numPixels = numValues / samplesPerPixel;
-  if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
+  Uint16 *inPtr = pixelData;
+  Uint16 *outPtr = px16;
+
+  for (size_t f=0; f<numberOfFrames; ++f)
   {
-    for (size_t n=0; n < numPixels; n++)
+    if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px16[n*samplesPerPixel+s]   = pixelData[n+numPixels*s];
+      for (size_t i=0; i < pxPerFrame; ++i)
+      {
+        for (size_t s=0; s < samplesPerPixel; ++s)
+        {
+          outPtr[i * samplesPerPixel + s] = inPtr[s * pxPerFrame + i];
+        }
+      }
     }
-  }
-  else  //change from "by pixel" to "by plane"
-  {
-    for (size_t n=0; n < numPixels; n++)
+    else  //change from "by pixel" to "by plane"
     {
-        for (Uint16 s=0; s < samplesPerPixel; s++)
-          px16[n+numPixels*s]   = pixelData[n*samplesPerPixel+s];
+      for (size_t s=0; s < samplesPerPixel; ++s)
+      {
+        for (size_t i=0; i < pxPerFrame; ++i)
+        {
+          outPtr[s * pxPerFrame + i] = inPtr[i * samplesPerPixel + s];
+        }
+      }
     }
+    inPtr += frameSize;
+    outPtr += frameSize;
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px16, OFstatic_cast(size_t, numValues*2));
+  memcpy(pixelData, px16, totalValues * sizeof(Uint16));
   delete[] px16;
   return EC_Normal;
 }
 
 
 OFCondition DJCodecEncoder::updatePlanarConfiguration(
-  DcmItem *item,
+  DcmItem *dataset,
   const Uint16 newPlanConf) const
 {
-  if ( (item == NULL) || (newPlanConf) > 1)
+  if ((dataset == NULL) || (newPlanConf > 1))
     return EC_IllegalParameter;
-  return item->putAndInsertUint16(DCM_PlanarConfiguration, newPlanConf);
+  return dataset->putAndInsertUint16(DCM_PlanarConfiguration, newPlanConf);
 }

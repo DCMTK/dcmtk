@@ -1,4 +1,4 @@
-.TH "json2dcm" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "json2dcm" 1 "Thu Oct 15 2026" "Version 3.7.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 json2dcm \- Convert JSON document to DICOM file or data set
@@ -17,9 +17,9 @@ The \fBjson2dcm\fP utility converts the contents of a JSON (JavaScript Object No
 .PP
 .PP
 .nf
-jsonfile-in  JSON input filename to be converted ("-" for stdin)
+jsonfile-in  JSON input filename to be converted ('-' for stdin)
 
-dcmfile-out  DICOM output filename ("-" for stdout)
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -100,6 +100,14 @@ handling of arrays with multiple data sets:
 
   +ar  --array-sequence
          store all data sets in private sequence
+
+charset handling:
+
+  +c   --charset-convert
+         convert to the specific character set given in JSON (default)
+
+  -c   --charset-utf8
+         write DICOM file with UTF-8 (ISO_IR 192), no conversion
 .fi
 .PP
 .SS "output options"
@@ -157,14 +165,6 @@ length encoding in sequences and items:
   -e   --length-undefined
          write with undefined lengths
 
-charset handling:
-
-  +c   --charset-accept
-         write with the given charset in JSON (default)
-
-  -c   --charset-replace
-         replace the given charset in JSON with UTF-8
-
 deflate compression level (only with --write-xfer-deflated):
 
   +cl  --compression-level  [l]evel: integer (default: 6)
@@ -178,154 +178,154 @@ The basic structure of the JSON input expected looks like the following (see DIC
 .PP
 .nf
 {
-    "00080005": {
-        "vr": "CS",
-        "Value": [
-            "ISO_IR 192"
+    '00080005': {
+        'vr': 'CS',
+        'Value': [
+            'ISO_IR 192'
         ]
     },
-    "00080020": {
-        "vr": "DT",
-        "Value": [
-            "20130409"
+    '00080020': {
+        'vr': 'DT',
+        'Value': [
+            '20130409'
         ]
     },
-    "00080030": {
-        "vr": "TM",
-        "Value": [
-            "131600.0000"
+    '00080030': {
+        'vr': 'TM',
+        'Value': [
+            '131600\&.0000'
         ]
     },
-    "00080050": {
-        "vr": "SH",
-        "Value": [
-            "11235813"
+    '00080050': {
+        'vr': 'SH',
+        'Value': [
+            '11235813'
         ]
     },
-    "00080056": {
-        "vr": "CS",
-        "Value": [
-            "ONLINE"
+    '00080056': {
+        'vr': 'CS',
+        'Value': [
+            'ONLINE'
         ]
     },
-    "00080061": {
-        "vr": "CS",
-        "Value": [
-            "CT",
-            "PET"
+    '00080061': {
+        'vr': 'CS',
+        'Value': [
+            'CT',
+            'PET'
         ]
     },
-    "00080090": {
-        "vr": "PN",
-        "Value": [
+    '00080090': {
+        'vr': 'PN',
+        'Value': [
           {
-            "Alphabetic": "^Bob^^Dr."
+            'Alphabetic': '^Bob^^Dr\&.'
           }
         ]
     },
-    "00081190": {
-        "vr": "UR",
-        "Value": [
-            "http://wado.nema.org/studies/
-            1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
+    '00081190': {
+        'vr': 'UR',
+        'Value': [
+            'http://wado\&.nema\&.org/studies/
+            1\&.2\&.392\&.200036\&.9116\&.2\&.2\&.2\&.1762893313\&.1029997326\&.945873'
         ]
     },
-    "00090010": {
-        "vr": "LO",
-        "Value": [
-            "Vendor A"
+    '00090010': {
+        'vr': 'LO',
+        'Value': [
+            'Vendor A'
         ]
     },
-    "00091002": {
-        "vr": "UN",
-        "InlineBinary": "z0x9c8v7"
+    '00091002': {
+        'vr': 'UN',
+        'InlineBinary': 'z0x9c8v7'
     },
-    "00100010": {
-        "vr": "PN",
-        "Value": [
+    '00100010': {
+        'vr': 'PN',
+        'Value': [
           {
-            "Alphabetic": "Wang^XiaoDong"
+            'Alphabetic': 'Wang^XiaoDong'
           }
         ]
     },
-    "00100020": {
-        "vr": "LO",
-        "Value": [
-            "12345"
+    '00100020': {
+        'vr': 'LO',
+        'Value': [
+            '12345'
         ]
     },
-    "00100021": {
-        "vr": "LO",
-        "Value": [
-            "Hospital A"
+    '00100021': {
+        'vr': 'LO',
+        'Value': [
+            'Hospital A'
         ]
     },
-    "00100030": {
-        "vr": "DA",
-        "Value": [
-            "19670701"
+    '00100030': {
+        'vr': 'DA',
+        'Value': [
+            '19670701'
         ]
     },
-    "00100040": {
-        "vr": "CS",
-        "Value": [
-            "M"
+    '00100040': {
+        'vr': 'CS',
+        'Value': [
+            'M'
         ]
     },
-    "00101002": {
-        "vr": "SQ",
-        "Value": [
+    '00101002': {
+        'vr': 'SQ',
+        'Value': [
             {
-                "00100020": {
-                    "vr": "LO",
-                    "Value": [
-                        "54321"
+                '00100020': {
+                    'vr': 'LO',
+                    'Value': [
+                        '54321'
                     ]
                 },
-                "00100021": {
-                    "vr": "LO",
-                    "Value": [
-                        "Hospital B"
+                '00100021': {
+                    'vr': 'LO',
+                    'Value': [
+                        'Hospital B'
                     ]
                 }
             },
             {
-                "00100020": {
-                    "vr": "LO",
-                    "Value": [
-                        "24680"
+                '00100020': {
+                    'vr': 'LO',
+                    'Value': [
+                        '24680'
                     ]
                 },
-                "00100021": {
-                    "vr": "LO",
-                    "Value": [
-                        "Hospital C"
+                '00100021': {
+                    'vr': 'LO',
+                    'Value': [
+                        'Hospital C'
                     ]
                 }
             }
         ]
     },
-    "0020000D": {
-        "vr": "UI",
-        "Value": [
-            "1.2.392.200036.9116.2.2.2.1762893313.1029997326.945873"
+    '0020000D': {
+        'vr': 'UI',
+        'Value': [
+            '1\&.2\&.392\&.200036\&.9116\&.2\&.2\&.2\&.1762893313\&.1029997326\&.945873'
         ]
     },
-    "00200010": {
-        "vr": "SH",
-        "Value": [
-            "11235813"
+    '00200010': {
+        'vr': 'SH',
+        'Value': [
+            '11235813'
         ]
     },
-    "00201206": {
-        "vr": "IS",
-        "Value": [
+    '00201206': {
+        'vr': 'IS',
+        'Value': [
             4
         ]
     },
-    "00201208": {
-        "vr": "IS",
-        "Value": [
+    '00201208': {
+        'vr': 'IS',
+        'Value': [
             942
         ]
     }
@@ -333,11 +333,25 @@ The basic structure of the JSON input expected looks like the following (see DIC
 .fi
 .PP
 .SS "Character Encoding"
-The JSON format only supports UTF-8 encoding\&. Thus the generated DICOM file will also contain UTF-8 encoding\&. If the JSON file does not contain a specific character set, or a specific character set other than 'ISO_IR 192', a warning will be issued\&.
+The JSON format always uses UTF-8 encoding, but Specific Character Set (0008,0005) may specify the original encoding that was in use prior to conversion to JSON\&. By default, \fBjson2dcm\fP will convert the encoding back to the given specific character set\&. This will fail if multiple character sets were in use, e\&.g\&. for the Japanese language:
+.PP
+.PP
+.nf
+  '00080005': {
+    'vr': 'CS',
+    'Value': [
+      'ISO 2022 IR 13',
+      'ISO 2022 IR 87'
+    ]
+  },
+.fi
+.PP
+.PP
+In this case, use the \fI--charset-utf8\fP option, which will write the DICOM file with UTF-8 (ISO_IR 192) encoding and not attempt any conversion\&.
 .SS "Binary Data, Bulk Data, and Pixel Data"
 The DICOM JSON Model uses 'InlineBinary' to store attribute values of binary value representations such as 'OB', 'OW', 'OD', 'OF', 'OL', 'OV' etc\&. in Base64 encoded form\&. This is supported in \fBjson2dcm\fP for all binary attributes, including unencapsulated pixel data\&.
 .PP
-The DICOM JSON Model also permits attribute values to be stored separately from the JSON data set and to be referenced through a BulkDataURI\&. This is supported for file URIs that reference files in the local filesystem\&. \fBjson2dcm\fP tool also supports the inofficial extension to the file URI scheme generated by \fIDCM4CHE\fP, where parameters named 'offset' and 'length' are appended to the file URI in order to refer to a specific part of a file\&. HTTP URIs as well as URIs that identify another part in a MIME multipart/related structure are not yet supported in \fBjson2dcm\fP\&. If the command line option \fI--ignore-bulkdata-uri\fP is specified, then all bulk data URIs are ignored and attributes with bulk data will be written with empty value\&.
+The DICOM JSON Model also permits attribute values to be stored separately from the JSON data set and to be referenced through a 'BulkDataURI'\&. This is supported for file URIs that reference files in the local filesystem\&. \fBjson2dcm\fP tool also supports the unofficial extension to the file URI scheme generated by DCM4CHE, where parameters named 'offset' and 'length' are appended to the file URI in order to refer to a specific part of a file\&. HTTP URIs as well as URIs that identify another part in a MIME multipart/related structure are not yet supported in \fBjson2dcm\fP\&. If the command line option \fI--ignore-bulkdata-uri\fP is specified, then all bulk data URIs are ignored and attributes with bulk data will be written with empty value\&.
 .PP
 Finally, encapsulated (in particular, compressed) pixel data is not supported by \fBjson2dcm\fP because the syntax of the DICOM JSON Model for this specific case is not defined in the DICOM standard yet\&.
 .SS "Arrays of Data Sets"
@@ -383,7 +397,7 @@ EXITCODE_CANNOT_WRITE_OUTPUT_FILE               40
 .nf
 EXITCODE_INVALID_JSON_CONTENT                   65
 EXITCODE_BULKDATA_URI_NOT_SUPPORTED             66
-.fi
+EXITCODE_CHARSET_CONVERSION_FAILED              72.fi
 .PP
 .SH "ENVIRONMENT"
 .PP
@@ -392,7 +406,7 @@ The \fBjson2dcm\fP utility will attempt to load DICOM data dictionaries specifie
 The default behavior should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required\&. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries\&. On Windows systems, a semicolon (';') is used as a separator\&. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable\&. It is an error if no data dictionary can be loaded\&.
 .SH "SEE ALSO"
 .PP
-\fBdcm2json\fP(1) \fBdump2dcm\fP(2)
+\fBdcm2json\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2024-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2024-2026 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

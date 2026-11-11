@@ -557,6 +557,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     OFCondition cond = EC_Normal;
 
     DB_lseek (handle_ -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + OFstatic_cast(long, idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
+    /* clear the whole record, so that no uninitialized memory is written to the index file */
+    memset(OFstatic_cast(void *, &rec), 0, sizeof(rec));
     DB_IdxInitRecord (&rec, 0) ;
 
     rec. filename [0] = '\0' ;
@@ -2406,7 +2408,6 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     int oldestStudy ;
     double OldestDate ;
     int s ;
-    size_t n ;
     int idx = 0 ;
     IdxRecord idxRec ;
 
@@ -2429,12 +2430,20 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     DCMQRDB_DEBUG("deleteOldestStudy oldestStudy = " << oldestStudy);
 #endif
 
-    n = strlen(pStudyDesc[oldestStudy].StudyInstanceUID) ;
     while ( DB_IdxRead (idx, &idxRec) == EC_Normal ) {
 
-    if ( ! ( strncmp(idxRec. StudyInstanceUID, pStudyDesc[oldestStudy].StudyInstanceUID, n) ) ) {
-        DB_IdxRemove (idx) ;
-        deleteImageFile(idxRec.filename);
+    /* The Study Instance UID must match exactly. A prefix comparison would
+     * also remove all studies whose UID happens to start with the UID of the
+     * study selected for deletion, which is a common relation for UIDs that
+     * use an unpadded counter as their last component.
+     */
+    if ( 0 == strcmp(idxRec. StudyInstanceUID, pStudyDesc[oldestStudy].StudyInstanceUID) ) {
+        /* keep the file if its index record cannot be removed */
+        if (DB_IdxRemove (idx).good())
+            deleteImageFile(idxRec.filename);
+        else
+            DCMQRDB_ERROR("deleteOldestStudy: cannot remove index record " << idx
+                << ", keeping file: " << idxRec.filename);
     }
     idx++ ;
     }
@@ -2457,13 +2466,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     ImagesofStudyArray *StudyArray ;
     IdxRecord idxRec ;
     int nbimages = 0 , s = 0;
-    size_t n ;
     long DeletedSize ;
 
 #ifdef DEBUG
     DCMQRDB_DEBUG("deleteOldestImages RequiredSize = " << RequiredSize);
 #endif
-    n = strlen(StudyUID) ;
     StudyArray = (ImagesofStudyArray *)malloc(MAX_NUMBER_OF_IMAGES * sizeof(ImagesofStudyArray)) ;
 
     if (StudyArray == NULL) {
@@ -2476,15 +2483,17 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
 
     DB_IdxInitLoop (&(handle_ -> idxCounter)) ;
     while ( DB_IdxGetNext(&(handle_ -> idxCounter), &idxRec) == EC_Normal ) {
-        if ( ! ( strncmp(idxRec. StudyInstanceUID, StudyUID, n) ) ) {
-            StudyArray[nbimages]. idxCounter = handle_ -> idxCounter ;
-            StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
-            StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
+        /* exact match, see the comment in deleteOldestStudy() */
+        if ( 0 == strcmp(idxRec. StudyInstanceUID, StudyUID) ) {
             if (nbimages == MAX_NUMBER_OF_IMAGES) {
                 // too many images in this study, bail out
                 DCMQRDB_ERROR("maximum number of images per study (" << MAX_NUMBER_OF_IMAGES << ") exceeded");
+                free(StudyArray);
                 return QR_EC_IndexDatabaseError;
             }
+            StudyArray[nbimages]. idxCounter = handle_ -> idxCounter ;
+            StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
+            StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
         }
     }
 
@@ -2520,14 +2529,23 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
         break;
     }
 
+    // Remove the index record before the file, as deleteOldestStudy() does.
+    // If the record cannot be read, its file name is undefined; if it cannot
+    // be removed, deleting the file would leave a dangling record. In both
+    // cases stop here, which keeps index, files and study descriptor in sync.
     IdxRecord idxRemoveRec ;
-    DB_IdxRead (StudyArray[s]. idxCounter, &idxRemoveRec) ;
+    if ( DB_IdxRead (StudyArray[s]. idxCounter, &idxRemoveRec).bad() ||
+         DB_IdxRemove (StudyArray[s]. idxCounter).bad() ) {
+        DCMQRDB_ERROR("deleteOldestImages: cannot read or remove index record "
+            << StudyArray[s]. idxCounter << ", freed only " << DeletedSize
+            << " of " << RequiredSize << " required bytes");
+        break;
+    }
 #ifdef DEBUG
     DCMQRDB_DEBUG("Removing file : " << idxRemoveRec. filename);
 #endif
     deleteImageFile(idxRemoveRec.filename);
 
-    DB_IdxRemove (StudyArray[s]. idxCounter) ;
     pStudyDesc[StudyNum].NumberofRegistratedImages -= 1 ;
     pStudyDesc[StudyNum].StudySize -= StudyArray[s]. ImageSize ;
     DeletedSize += StudyArray[s++]. ImageSize ;
@@ -2690,17 +2708,21 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
 #ifdef DEBUG
         DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
 #endif
-        /* remove the idx record  */
-        DB_IdxRemove (idx);
-        /* only remove the image file if it is different than that
-         * being entered into the database.
-         */
-        if (strcmp(idxRec.filename, newImageFileName) != 0) {
-            deleteImageFile(idxRec.filename);
+        /* remove the idx record, keep file and study info if that fails */
+        if (DB_IdxRemove (idx).bad()) {
+            DCMQRDB_ERROR("removeDuplicateImage: cannot remove index record " << idx
+                << ", keeping file: " << idxRec.filename);
+        } else {
+            /* only remove the image file if it is different than that
+             * being entered into the database.
+             */
+            if (strcmp(idxRec.filename, newImageFileName) != 0) {
+                deleteImageFile(idxRec.filename);
+            }
+            /* update the study info */
+            pStudyDesc[studyIdx].NumberofRegistratedImages--;
+            pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
         }
-        /* update the study info */
-        pStudyDesc[studyIdx].NumberofRegistratedImages--;
-        pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
     }
     idx++;
     }

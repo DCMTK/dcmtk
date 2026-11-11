@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2025, OFFIS e.V.
+ *  Copyright (C) 1997-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -29,6 +29,7 @@ DJCodecParameter::DJCodecParameter(
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool predictor6WorkaroundEnable,
     OFBool cornellWorkaroundEnable,
+    OFBool planarConfigWorkaroundEnable,
     OFBool pForceSingleFragmentPerFrame,
     OFBool pOptimizeHuffman,
     int pSmoothingFactor,
@@ -80,6 +81,7 @@ DJCodecParameter::DJCodecParameter(
 , trueLosslessMode(pTrueLosslessMode)
 , predictor6WorkaroundEnabled_(predictor6WorkaroundEnable)
 , cornellWorkaroundEnabled_(cornellWorkaroundEnable)
+, planarConfigWorkaroundEnabled_(planarConfigWorkaroundEnable)
 , forceSingleFragmentPerFrame(pForceSingleFragmentPerFrame)
 , setPreserveBitsStored_(setPreserveBitsStored)
 {
@@ -115,6 +117,7 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , trueLosslessMode(arg.trueLosslessMode)
 , predictor6WorkaroundEnabled_(arg.predictor6WorkaroundEnabled_)
 , cornellWorkaroundEnabled_(arg.cornellWorkaroundEnabled_)
+, planarConfigWorkaroundEnabled_(arg.planarConfigWorkaroundEnabled_)
 , forceSingleFragmentPerFrame(arg.forceSingleFragmentPerFrame)
 , setPreserveBitsStored_(arg.setPreserveBitsStored_)
 {

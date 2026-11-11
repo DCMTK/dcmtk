@@ -6,6 +6,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tdicdir.cc
   tdict.cc
   telemlen.cc
+  tfhstrm.cc
   tfrmsiz.cc
   tests.cc
   tfilter.cc
@@ -13,6 +14,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   ti2dbmp.cc
   titem.cc
   tmatch.cc
+  tmaxlen.cc
   tnesting.cc
   tnewdcme.cc
   tparent.cc

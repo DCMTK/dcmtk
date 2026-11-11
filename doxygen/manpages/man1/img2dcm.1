@@ -1,4 +1,4 @@
-.TH "img2dcm" 1 "Mon Dec 15 2025" "Version 3.7.0" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "img2dcm" 1 "Thu Oct 15 2026" "Version 3.7.1" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 img2dcm \- Convert standard image formats into DICOM format
@@ -7,7 +7,7 @@ img2dcm \- Convert standard image formats into DICOM format
 .PP
 .PP
 .nf
-img2dcm [options] imgfile-in... dcmfile-out
+img2dcm [options] imgfile-in\&.\&.\&. dcmfile-out
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -19,7 +19,7 @@ The \fBimg2dcm\fP tool serves as a conversion tool from a standard image format 
 .nf
 imgfile-in   image input filename
 
-dcmfile-out  DICOM output filename ("-" for stdout)
+dcmfile-out  DICOM output filename ('-' for stdout)
 .fi
 .PP
 .SH "OPTIONS"
@@ -90,6 +90,9 @@ JPEG format:
   -ka   --keep-appn
           keep APPn sections (except JFIF)
 
+        --keep-app  [n]umber: integer (0\&.\&.15)
+          keep single APPn marker, e\&.g\&. 14 (Adobe)
+
   -rc   --remove-com
           remove COM segment
 
@@ -141,7 +144,7 @@ character set conversion of study/series file:
 
 other processing options:
 
-  -k    --key  [k]ey: gggg,eeee="str", path or dictionary name="str"
+  -k    --key  [k]ey: gggg,eeee='str', path or dictionary name='str'
           add further attribute
 .fi
 .PP
@@ -246,7 +249,7 @@ For supporting the conversion into DICOM, \fBimg2dcm\fP comes with some pre-defi
 .PP
 .PP
 .nf
-  dump2dcm SC.dump SC.dcm
+  dump2dcm SC\&.dump SC\&.dcm
 .fi
 .PP
 .PP
@@ -292,7 +295,9 @@ JPEG lossless encoding as well as any arithmetic or hierarchical JPEG encoding m
 .PP
 JFIF (JPEG File Interchange Format) information facilitates optional APPn markers in a JPEG file\&. Many digital cameras do not integrate such JFIF information into the JPEG output they create\&. For example, JFIF contains information about the pixel aspect ratio of the compressed image\&. If you want the \fBimg2dcm\fP application to insist on a JFIF header in the JPEG stream, you can use the option \fI--insist-on-jfif\fP which will abort if no JFIF information can be found\&. By default, missing JFIF information is ignored\&.
 .PP
-For DICOM it is kind of a 'gray zone', whether the integration of JFIF (or any other APPn) data into the DICOM object's internal JPEG stream is allowed or not\&. However, the most reliable approach is to cut those markers and their information off the JPEG stream\&. This approach is also taken by the \fBimg2dcm\fP application\&. By default, all APPn markers are cut off from the original JPEG stream\&. However, if you want to keep other APPn markers than JFIF (e\&.g\&. EXIF information) inside the DICOM stream, the option \fI--keep-appn\fP does the trick\&. It should also be slightly faster than cutting off APPn information, because it is not necessary to scan the whole JPEG stream for such data\&. As stated before, JFIF information is always removed by \fBimg2dcm\fP\&. However, when using this option, the APP2 marker is retained, but \fBimg2dcm\fP does not create an equivalent ICC Profile (0028,2000) attribute\&.
+For DICOM it is kind of a 'gray zone', whether the integration of JFIF (or any other APPn) data into the DICOM object's internal JPEG stream is allowed or not\&. However, the most reliable approach is to cut those markers and their information off the JPEG stream\&. This approach is also taken by the \fBimg2dcm\fP application\&. By default, all APPn markers are cut off from the original JPEG stream\&. However, if you want to keep other APPn markers than JFIF (e\&.g\&. EXIF information) inside the DICOM stream, the option \fI--keep-appn\fP does the trick\&. It should also be slightly faster than cutting off APPn information, because it is not necessary to scan the whole JPEG stream for such data\&. As stated before, JFIF information is always removed by \fBimg2dcm\fP\&. However, when using this option, the APP2 marker is retained, but \fBimg2dcm\fP does not create an equivalent ICC Profile (0028,2000) attribute\&. In particular, it does not embed an sRGB ICC Profile for untagged or unprofiled JFIF inputs, which may be necessary for a calibrated display\&.
+.PP
+If you only want to retain specific APPn markers instead of all of them, the option \fI--keep-app\fP followed by the marker number (0 to 15) can be used, and it may be repeated to keep several markers\&. The marker is kept by its number, irrespective of its actual application identifier\&. A typical use case is keeping APP14 (\fI--keep-app\fP 14), which usually holds the Adobe color transform marker whose transform flag some JPEG decoders and viewers rely on to decide whether a YCbCr to RGB conversion has to be applied during decoding\&. Without that marker such decoders may render the image with wrong colors, while keeping it is harmless otherwise\&. Note that the default behavior (removing all APPn markers) is unchanged\&.
 .SS "JPEG-LS Input Plugin"
 The JPEG-LS plugin has been integrated directly into the main JPEG plugin\&. There is no need for the user to explicitly state in advance if input is JPEG or JPEG-LS\&.
 .PP
@@ -387,4 +392,4 @@ The default behavior should be preferred and the \fIDCMDICTPATH\fP environment v
 \fBdcm2pnm\fP(1), \fBdcmj2pnm\fP(1), \fBdump2dcm\fP(1), \fBdcmconv\fP(1), \fBdcmodify\fP(1), \fBdcm2xml\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2025 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.
+Copyright (C) 2007-2026 by OFFIS e\&.V\&., Escherweg 2, 26121 Oldenburg, Germany\&.

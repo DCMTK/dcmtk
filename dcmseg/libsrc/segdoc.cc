@@ -1691,7 +1691,8 @@ OFCondition DcmSegmentation::readPixelData(DcmElement* pixelData, const size_t n
     switch (m_SegmentationType)
     {
         case DcmSegTypes::ST_BINARY:
-            result = DcmIODUtil::extractBinaryFrames(pixels8, numFrames, pixelsPerFrame, m_Frames);
+            result = DcmIODUtil::extractBinaryFrames(
+                pixels8, pixelData->getLengthField(), numFrames, pixelsPerFrame, m_Frames);
             break;
         case DcmSegTypes::ST_FRACTIONAL:
         case DcmSegTypes::ST_LABELMAP:

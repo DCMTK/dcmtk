@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -1727,6 +1727,36 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
 /*
  * Association creation and termination
  */
+
+void
+ASC_setMaxIncomingElementLength(T_ASC_Association *assoc, Uint32 maxLength)
+{
+    if (assoc)
+        assoc->maxIncomingElementLength = maxLength;
+}
+
+Uint32
+ASC_getMaxIncomingElementLength(const T_ASC_Association *assoc)
+{
+    if (assoc)
+        return assoc->maxIncomingElementLength;
+    return 0;
+}
+
+void
+ASC_setIncrementalLoadThreshold(T_ASC_Association *assoc, Sint32 threshold)
+{
+    if (assoc)
+        assoc->incrementalLoadThreshold = threshold;
+}
+
+Sint32
+ASC_getIncrementalLoadThreshold(const T_ASC_Association *assoc)
+{
+    if (assoc)
+        return assoc->incrementalLoadThreshold;
+    return 0;
+}
 
 OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association)

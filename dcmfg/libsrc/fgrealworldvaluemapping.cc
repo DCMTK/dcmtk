@@ -323,7 +323,7 @@ OFCondition
 FGRealWorldValueMapping::RWVMItem::getDoubleFloatRealWorldValueLastValueMapped(Float64& value,
                                                                                const unsigned long pos) const
 {
-    return (*m_Item).findAndGetFloat64(DCM_DoubleFloatRealWorldValueFirstValueMapped, value, pos);
+    return (*m_Item).findAndGetFloat64(DCM_DoubleFloatRealWorldValueLastValueMapped, value, pos);
 }
 
 OFCondition FGRealWorldValueMapping::RWVMItem::getRealWorldValueLUTData(OFVector<Float64>& values) const
@@ -373,7 +373,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMapped
                                                                                          const OFBool checkValue)
 {
     (void)checkValue;
-    DcmUnsignedShort* us = new DcmUnsignedShort(DCM_RealWorldValueFirstValueMapped);
+    DcmUnsignedShort* us = new DcmUnsignedShort(DcmTag(DCM_RealWorldValueFirstValueMapped, EVR_US));
     OFCondition result   = us->putUint16(value);
     if (result.good())
         result = m_Item->insert(us, OFTrue /* replace old */);
@@ -386,7 +386,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueFirstValueMapped
                                                                                        const OFBool checkValue)
 {
     (void)checkValue;
-    DcmSignedShort* ss = new DcmSignedShort(DCM_RealWorldValueFirstValueMapped);
+    DcmSignedShort* ss = new DcmSignedShort(DcmTag(DCM_RealWorldValueFirstValueMapped, EVR_SS));
     OFCondition result = ss->putSint16(value);
     if (result.good())
         result = m_Item->insert(ss, OFTrue /* replace old */);
@@ -399,7 +399,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedS
                                                                                       const OFBool checkValue)
 {
     (void)checkValue;
-    DcmSignedShort* ss = new DcmSignedShort(DCM_RealWorldValueLastValueMapped);
+    DcmSignedShort* ss = new DcmSignedShort(DcmTag(DCM_RealWorldValueLastValueMapped, EVR_SS));
     OFCondition result = ss->putSint16(value);
     if (result.good())
         result = m_Item->insert(ss, OFTrue /* replace old */);
@@ -412,7 +412,7 @@ OFCondition FGRealWorldValueMapping::RWVMItem::setRealWorldValueLastValueMappedU
                                                                                         const OFBool checkValue)
 {
     (void)checkValue;
-    DcmUnsignedShort* us = new DcmUnsignedShort(DCM_RealWorldValueLastValueMapped);
+    DcmUnsignedShort* us = new DcmUnsignedShort(DcmTag(DCM_RealWorldValueLastValueMapped, EVR_US));
     OFCondition result   = us->putUint16(value);
     if (result.good())
         result = m_Item->insert(us, OFTrue /* replace old */);
@@ -490,7 +490,8 @@ OFCondition FGRealWorldValueMapping::RWVMItem::getUSorSS(DcmItem& item,
     OFCondition result = item.findAndGetElement(key, elem);
     if (result.good() && elem)
     {
-        DcmEVR evr = elem->getVR();
+        // use the type of the element since the VR of its tag may still be "xs"
+        DcmEVR evr = elem->ident();
         if (evr == EVR_US)
         {
             Uint16 num;

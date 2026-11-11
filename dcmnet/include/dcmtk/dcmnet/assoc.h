@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2025, OFFIS e.V.
+ *  Copyright (C) 1994-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were partly developed by
@@ -256,6 +256,18 @@ struct DCMTK_DCMNET_EXPORT T_ASC_Association
     unsigned short nextMsgID;     /* should be incremented by user */
     unsigned long sendPDVLength;  /* max length of PDV to send out */
     unsigned char *sendPDVBuffer; /* buffer of size sendPDVLength */
+
+    Uint32 maxIncomingElementLength; /* maximum element value length accepted
+                                      * when receiving DIMSE messages on this
+                                      * association (0 = compile-time default
+                                      * DCMTK_MAX_ELEMENT_LENGTH) */
+
+    Sint32 incrementalLoadThreshold; /* threshold for the incremental loading
+                                      * of element values when receiving DIMSE
+                                      * messages on this association
+                                      * (0 = compile-time default
+                                      * DCMTK_INCREMENTAL_LOAD_THRESHOLD,
+                                      * -1 = disabled) */
 };
 
 /*
@@ -666,6 +678,59 @@ DCMTK_DCMNET_EXPORT OFString&
 ASC_dumpConnectionParameters(OFString& str, T_ASC_Association *association);
 
 DCMTK_DCMNET_EXPORT void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb);
+
+/** sets the maximum element value length accepted when receiving DIMSE
+ *  messages (command and data sets) on the given association.  An element
+ *  whose value length field exceeds the limit is rejected with
+ *  EC_ElementLengthLimitExceeded before a value buffer of the declared
+ *  size is allocated (memory exhaustion protection).
+ *  - Value 0 (default): apply the compile-time default
+ *    (DCMTK_MAX_ELEMENT_LENGTH, default is 0xFFFFFFFE, the maximum
+ *    defined value length permitted in DICOM, i.e. no additional
+ *    restriction)
+ *  - Value > 0: use this value as the maximum permitted element length
+ *  @param assoc the association to configure, must not be NULL
+ *  @param maxLength maximum element value length setting
+ */
+DCMTK_DCMNET_EXPORT void
+ASC_setMaxIncomingElementLength(T_ASC_Association *assoc, Uint32 maxLength);
+
+/** returns the maximum element value length accepted when receiving DIMSE
+ *  messages on the given association.
+ *  @param assoc the association, must not be NULL
+ *  @return maximum element value length setting
+ *    (0 = compile-time default DCMTK_MAX_ELEMENT_LENGTH)
+ */
+DCMTK_DCMNET_EXPORT Uint32
+ASC_getMaxIncomingElementLength(const T_ASC_Association *assoc);
+
+/** sets the threshold for the incremental loading of element values when
+ *  receiving DIMSE messages (command and data sets) on the given association.
+ *  An element value that does not arrive completely within a single PDV is
+ *  staged in a buffer that grows with the data that actually arrives instead
+ *  of allocating the full announced value length up front (memory exhaustion
+ *  protection).
+ *  - Value 0 (default): apply the compile-time default
+ *    (DCMTK_INCREMENTAL_LOAD_THRESHOLD, default is 65536)
+ *  - Value -1: disable incremental loading, i.e. always allocate a buffer of
+ *    the full announced value length before reading (historic behavior)
+ *  - Value > 0: values up to this number of bytes are read into a buffer of
+ *    their final size right away; the staging buffer for larger values starts
+ *    at this size
+ *  @param assoc the association to configure, must not be NULL
+ *  @param threshold incremental load threshold setting
+ */
+DCMTK_DCMNET_EXPORT void
+ASC_setIncrementalLoadThreshold(T_ASC_Association *assoc, Sint32 threshold);
+
+/** returns the threshold for the incremental loading of element values when
+ *  receiving DIMSE messages on the given association.
+ *  @param assoc the association, must not be NULL
+ *  @return incremental load threshold setting
+ *    (0 = compile-time default DCMTK_INCREMENTAL_LOAD_THRESHOLD, -1 = disabled)
+ */
+DCMTK_DCMNET_EXPORT Sint32
+ASC_getIncrementalLoadThreshold(const T_ASC_Association *assoc);
 
 /*
  * Association Inquiries

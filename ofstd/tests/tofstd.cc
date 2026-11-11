@@ -23,6 +23,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/offile.h"
+#include "dcmtk/ofstd/oftempf.h"
 
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/oftest.h"
@@ -326,6 +328,29 @@ OFTEST(ofstd_OFStandard_isReadWriteable)
 #endif
     OFCHECK_EQUAL(OFStandard::isReadable("does_not_exist"), OFFalse);
     OFCHECK_EQUAL(OFStandard::isWriteable("does_not_exist"), OFFalse);
+}
+
+OFTEST(ofstd_OFStandard_getFileSize)
+{
+    const char data[] = "0123456789";
+    const size_t dataLen = 10;
+    OFTempFile temp;
+    if (temp.getStatus().bad())
+    {
+        OFCHECK_FAIL("Could not create temporary file: " << temp.getStatus().text());
+        return;
+    }
+    OFCHECK_EQUAL(OFStandard::getFileSize(temp.getFilename()), 0u);
+
+    OFFile file;
+    OFCHECK(file.fopen(temp.getFilename(), "wb"));
+    OFCHECK_EQUAL(file.fwrite(data, 1, dataLen), dataLen);
+    file.fclose();
+    OFCHECK_EQUAL(OFStandard::getFileSize(temp.getFilename()), dataLen);
+
+    // a file that does not exist and an empty filename are reported as 0 bytes
+    OFCHECK_EQUAL(OFStandard::getFileSize("does_not_exist"), 0u);
+    OFCHECK_EQUAL(OFStandard::getFileSize(""), 0u);
 }
 
 OFTEST(ofstd_OFStandard_appendFilenameExtension)

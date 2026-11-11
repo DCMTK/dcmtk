@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2024, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -57,6 +57,8 @@ static const char* querySyntax[3] = {
 };
 
 OFCmdUnsignedInt        opt_maxPDU = ASC_DEFAULTMAXPDU;
+OFCmdUnsignedInt        opt_maxElementLength = 0;
+OFCmdSignedInt          opt_incrementalLoadThreshold = 0;
 E_TransferSyntax        opt_store_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax        opt_get_networkTransferSyntax = EXS_Unknown;
 DcmStorageMode          opt_storageMode = DCMSCU_STORAGE_DISK;
@@ -179,7 +181,20 @@ main(int argc, char *argv[])
       OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += ")";
+      OFString opt5 = "read element values larger than n bytes\nin growing chunks (default: ";
+#if DCMTK_INCREMENTAL_LOAD_THRESHOLD == -1
+      opt5 += "disabled";
+#else
+      OFStandard::snprintf(tempstr, sizeof(tempstr), "%ld", OFstatic_cast(long, DCMTK_INCREMENTAL_LOAD_THRESHOLD));
+      opt5 += tempstr;
+#endif
+      opt5 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-element-length",  "-mel", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                        "restrict max element length of received data\nto n bytes (default: unrestricted)");
+      cmd.addOption("--incr-load-threshold", "-ilt", 1, "[n]umber of bytes: integer (opt. K/M/G suffix)",
+                                                        opt5.c_str());
+      cmd.addOption("--no-incr-load",        "-nil",    "never read element values in chunks, always\nallocate the full declared length up front");
       cmd.addOption("--repeat",                      1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                          "abort association instead of releasing it");
 
@@ -320,6 +335,16 @@ main(int argc, char *argv[])
     }
 
     if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+    if (cmd.findOption("--max-element-length")) app.checkValue(cmd.getSizeValueAndCheckMinMax(opt_maxElementLength, 1, 4294967294u));
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--incr-load-threshold"))
+    {
+      OFCmdUnsignedInt threshold = 0;
+      app.checkValue(cmd.getSizeValueAndCheckMinMax(threshold, 1, 2147483647));
+      opt_incrementalLoadThreshold = OFstatic_cast(OFCmdSignedInt, threshold);
+    }
+    if (cmd.findOption("--no-incr-load")) opt_incrementalLoadThreshold = -1;
+    cmd.endOptionBlock();
     if (cmd.findOption("--repeat")) app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
     if (cmd.findOption("--abort")) opt_abortAssociation = OFTrue;
     if (cmd.findOption("--ignore")) opt_storageMode = DCMSCU_STORAGE_IGNORE;
@@ -409,6 +434,10 @@ main(int argc, char *argv[])
   prepareTS(opt_get_networkTransferSyntax, syntaxes);
   DcmSCU scu;
   scu.setMaxReceivePDULength(opt_maxPDU);
+  if (opt_maxElementLength != 0)
+    scu.setMaxElementLength(OFstatic_cast(Uint32, opt_maxElementLength));
+  if (opt_incrementalLoadThreshold != 0)
+    scu.setIncrementalLoadThreshold(OFstatic_cast(Sint32, opt_incrementalLoadThreshold));
   scu.setACSETimeout(opt_acse_timeout);
   scu.setDIMSEBlockingMode(opt_blockMode);
   scu.setDIMSETimeout(opt_dimse_timeout);

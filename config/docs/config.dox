@@ -12,6 +12,7 @@ The following files provide further documentation:
 \li \ref file_dirstruc
 \li \ref file_envvars
 \li \ref file_macros
+\li \ref file_memalloc
 \li \ref file_modules
 
 \section sec_modern_cxx_support Modern C++ Support
@@ -34,6 +35,10 @@ See \ref modern_cxx_support for details.
 /*!
     \page file_macros macros.txt file
     \verbinclude macros.txt
+*/
+/*!
+    \page file_memalloc memalloc.txt file
+    \verbinclude memalloc.txt
 */
 /*!
     \page file_modules modules.txt file

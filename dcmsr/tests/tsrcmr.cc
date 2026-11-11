@@ -359,6 +359,17 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     }
     OFCHECK(volMeasurements.setReferencedSegment(segment).good());
     OFCHECK(volMeasurements.setReferencedSegment(DSRImageReferenceValue(UID_SegmentationStorage, "1.0")).bad());
+    /* a label map segmentation is accepted, an image is not */
+    DSRImageReferenceValue labelMap(UID_LabelMapSegmentationStorage, "1.0.2.0.3.1");
+    labelMap.getSegmentList().addItem(1);
+    OFCHECK(volMeasurements.setReferencedSegment(labelMap).good());
+    DSRImageReferenceValue image(UID_CTImageStorage, "1.0.2.0.3.2");
+    image.getSegmentList().addItem(1);
+    OFCHECK(volMeasurements.setReferencedSegment(image) == CMR_EC_InvalidSegmentationObject);
+    /* the same for the dataset of a label map segmentation */
+    OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_LabelMapSegmentationStorage).good());
+    OFCHECK(volMeasurements.setReferencedSegment(dataset, 1).good());
+    OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_SurfaceSegmentationStorage).good());
     OFCHECK(volMeasurements.setReferencedSegment(dataset, 1).good());
     dataset.clear();
     OFCHECK(dataset.putAndInsertString(DCM_SOPClassUID, UID_RealWorldValueMappingStorage).good());

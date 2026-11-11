@@ -1115,6 +1115,13 @@ DIMSE_receiveCommand(
         return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE: receiveCommand: Failed to initialize cmdBuf");
     }
 
+    /* apply the association's element length limit (memory exhaustion
+     * protection, 0 = compile-time default) to the command set stream */
+    if (assoc->maxIncomingElementLength != 0)
+        cmdBuf.setMaxElementLength(assoc->maxIncomingElementLength);
+    if (assoc->incrementalLoadThreshold != 0)
+        cmdBuf.setIncrementalLoadThreshold(assoc->incrementalLoadThreshold);
+
     /* start a loop in which we want to read a DIMSE command from the incoming socket stream. */
     /* Since the command could stretch over more than one PDU, the use of a loop is mandatory. */
     for (last = OFFalse, bytesRead = 0, type = DUL_COMMANDPDV;
@@ -1196,6 +1203,10 @@ DIMSE_receiveCommand(
         pdvCount++;
     }
 
+    /* after the last PDV the command set has to be complete. Remember this here,
+     * because transferEnd() below resets the transfer state. */
+    const OFBool cmdSetComplete = (cmdSet->transferState() == ERW_ready);
+
     /* indicate the end of the transfer */
     cmdSet->transferEnd();
 
@@ -1217,6 +1228,15 @@ DIMSE_receiveCommand(
         delete cmdSet;
         OFCondition subCond = makeDcmnetCondition(DIMSEC_UNEXPECTEDPDVTYPE, OF_error, "DIMSE: Command PDV Expected");
         return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+    }
+
+    /* if the command set is not complete, the peer announced more data than it */
+    /* sent, so the command must not be used. */
+    if (!cmdSetComplete)
+    {
+        delete cmdSet;
+        return makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error,
+            "DIMSE: receiveCommand: command set is incomplete after the last PDV");
     }
 
     /* if the global variable says so, we want to save the */
@@ -1557,6 +1577,15 @@ DIMSE_receiveDataSetInMemory(
     /* create a buffer variable which can be used to store the received information */
     DcmInputBufferStream dataBuf;
 
+    /* apply the association's element length limit and incremental load
+     * threshold (memory exhaustion protection, 0 = compile-time default) to
+     * the data set stream.  Settings made on the dataset object itself take
+     * precedence. */
+    if (assoc->maxIncomingElementLength != 0)
+        dataBuf.setMaxElementLength(assoc->maxIncomingElementLength);
+    if (assoc->incrementalLoadThreshold != 0)
+        dataBuf.setIncrementalLoadThreshold(assoc->incrementalLoadThreshold);
+
     /* prepare the DcmDataset variable for transfer of data */
     dset->transferInit();
 
@@ -1674,6 +1703,17 @@ DIMSE_receiveDataSetInMemory(
                 callback(callbackData, bytesRead);
             }
         }
+    }
+
+    /* after the last PDV the data set has to be complete. If it is not, the peer */
+    /* announced more data than it sent, e.g. an element whose value is shorter   */
+    /* than its value length field claims. Such a data set must not be handed to  */
+    /* the caller as if it had been received completely. */
+    if (cond.good() && (dset->transferState() != ERW_ready))
+    {
+        DCMNET_WARN(DIMSE_warn_str(assoc) << "DIMSE receiveDataSetInMemory: "
+            << "data set is incomplete after the last PDV");
+        cond = DIMSE_RECEIVEFAILED;
     }
 
     /* indicate the end of the transfer */

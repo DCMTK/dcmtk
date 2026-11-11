@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2016-2024, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2016-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class TID1411_VolumetricROIMeasurements
@@ -290,7 +290,7 @@ OFCondition TID1411_VolumetricROIMeasurements<T1, T2, T3, T4>::setReferencedSegm
         const char *annotationText = "TID 1411 - Row 7";
         const DSRBasicCodedEntry conceptName(CODE_DCM_ReferencedSegment);
         /* check for supported segmentation SOP classes */
-        if ((segment.getSOPClassUID() != UID_SegmentationStorage) && (segment.getSOPClassUID() != UID_SurfaceSegmentationStorage))
+        if (!segment.isSegmentation())
         {
             DCMSR_CMR_WARN("Cannot set value of '" << conceptName.CodeMeaning << "' content item (" << annotationText << ") ... wrong SOP Class");
             DCMSR_CMR_DEBUG("SOP Class UID \"" << segment.getSOPClassUID() << "\" does not match one of the known Segmentation objects");

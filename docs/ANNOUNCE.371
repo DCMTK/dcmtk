@@ -1,0 +1,241 @@
+
+ANNOUNCEMENT
+
+Version 3.7.1 of the OFFIS DCMTK (DICOM ToolKit) software is now
+available for public release.  This release includes the following main
+changes over the previous version 3.7.0:
+
+- DCMTK 3.7.1 builds correctly on older and up-to-date versions of GNU
+  gcc (10.5.0 to 15.2.0), Clang (14.0.6 to 21.1.8), Apple Clang
+  (17.0.0), and Microsoft Visual Studio (2017 to 2026).
+
+- Tested with the following operating systems/environments:
+  - Android on arm64
+  - FreeBSD on x86_64
+  - Linux on x86_64, x86 and s390x
+  - MacOS X on x86_64 and arm64
+  - NetBSD on x86_64
+  - OpenBSD on x86_64
+  - OpenIndiana on x86_64
+  - Windows (including MinGW) on x86_64 and x86
+
+  For a complete list of tested systems and compilers, see INSTALL file.
+
+- Updated DICOM data dictionary, list of SOP classes, well-known frame
+  of references, transfer syntaxes, code definitions, supported context
+  group classes, and directory record types for DICOM standard release
+  2026d.
+
+- A large number of bugs and vulnerabilities have been fixed in this
+  release.  In particular, the following issues from DCMTK's issue
+  tracker have been addressed (see
+  https://support.dcmtk.org/redmine/issues/<number> for details):
+
+  #126,  #145,  #246,  #684,  #1127, #1128, #1146, #1163, #1181, #1187,
+  #1188, #1190, #1191, #1193, #1194, #1197, #1198, #1201, #1202, #1206,
+  #1207, #1208, #1211, #1212, #1213, #1214, #1215, #1217, #1218, #1219,
+  #1221, #1222, #1223, #1224, #1225, #1226, #1227, #1228, #1229, #1230,
+  #1231, #1232, #1233, #1234, #1235, #1236, #1237, #1238, #1239, #1240,
+  #1241, #1242, #1243, #1244, #1245, #1246, #1247, #1248, #1249, #1250,
+  #1252, #1253, #1254, #1255, #1256, #1257, #1259, #1260, #1261, #1262,
+  #1263, #1264, #1265, #1266, #1267, #1268, #1269, #1270, #1271, #1272,
+  #1276, #1277, #1278, #1280, #1281, #1282, #1283, #1284, #1285.
+
+- Added a limit for the nesting depth of sequences when parsing DICOM
+  data (default: 64 levels) in order to prevent stack overflows.  The
+  limit can be changed at compile time (DCMTK_MAX_SEQUENCE_NESTING) and
+  at runtime, e.g. for DcmFileFormat, DcmSCU and DcmSCP.
+
+- Added a new command line tool 'dcmtk' that maintains a list of all
+  command line tools available in DCMTK and acts as a proxy, allowing
+  the user to call a tool through 'dcmtk', e.g.
+  'dcmtk dcmdump file.dcm'.  Alternatively, 'dcmtk dump file.dcm' could
+  be used, so there's no need to remember the name of the dump tool.
+
+- Added command line options to the compression tools that enable the
+  caller to select how icon images should be handled: compress or leave
+  uncompressed.  By default, icon images are compressed.
+
+- Added wlmscpfs command line option that allows for accepting arbitrary
+  non-sequence attributes on the main level of the C-FIND request as
+  return key attributes and filled with the values found in the matching
+  worklist files.  In addition, explicit support for various optional
+  attributes has been added, e.g. for veterinary medicine.
+
+- dcmqrscp now consistently enforces the access mode of a storage area:
+  write-only areas ("W") refuse query/retrieve, and DIMSE commands that
+  do not match the abstract syntax of their presentation context are
+  rejected, so read-only areas ("R") can no longer be written to.
+
+- Added dcmodify command line option for the conditional execution of
+  modifications (--process-if).  Conditions support existence checks,
+  equality and ordering operators.  Multiple conditions are combined
+  with logical AND.
+
+- Added dcm2json command line options for handling missing Specific
+  Character Set, equivalent to the options available in dcm2xml.
+
+- The dcm2json and json2dcm tools now correctly handle Specific
+  Character Set when converting between DICOM and JSON.  When converting
+  to JSON, by default the value of Specific Character Set will be
+  retained even though the JSON dataset itself is expressed in UTF-8.
+  When converting from JSON to DICOM and encountering a Specific
+  Character Set other than ISO_IR 192, json2dcm will attempt to convert
+  the character set back to its original form.
+
+- Added support for N-GET to the networking classes DcmSCU and DcmSCP.
+  Furthermore, DcmSCU allows for overriding the Requested SOP Class UID
+  of N-ACTION, N-GET and N-SET requests, and N-ACTION requests without a
+  dataset are now handled correctly by DcmSCU and DcmSCP.
+
+- In the DcmSCU class, C-FIND-RQ, C-FIND-RSP, C-STORE-RQ, N-GET and
+  N-ACTION datasets are now logged to separate loggers, which can be
+  enabled or disabled individually for each DcmSCU instance.
+
+- Fixed several issues in the multi-threaded SCP pool (DcmSCPPool): once
+  a worker had been re-used, a single slow client blocked the whole
+  server; transient errors stopped the server; failed workers leaked
+  pool slots.  Also fixed a data race in the initialization of the
+  network state machine, which could cause sporadic association failures
+  (e.g. TLS handshake errors) with concurrent associations.
+
+- Added minimal support for DICOM CP-2595 "Extend KOS to support more
+  metadata for manifest use case" to DCMTK's SR implementation.  This
+  extension is needed for the new IHE-RAD Integration Profile MADO
+  (Manifest-Based Access to DICOM Objects), which is, e.g. used for the
+  European Health Data Space (EHDS).
+
+- The JPEG input plugin of img2dcm by default removes all APPn markers
+  from the encapsulated stream.  This also drops the Adobe APP14 marker
+  (0xFFEE), whose color transform flag some JPEG decoders and viewers
+  rely on to decide whether a YCbCr to RGB conversion has to be applied
+  during decoding.  The new --keep-app option keeps a single APPn marker
+  and may be given multiple times, e.g. use "--keep-app 14" to retain
+  the Adobe marker.
+
+- The CIELab color conversion in class IODCIELabUtil now computes CIELab
+  values relative to the D50 illuminant, as required for the ICC Profile
+  Connection Space encoding used by DICOM, instead of D65.  This affects
+  all attributes that are converted from or to RGB by DCMTK, in
+  particular Recommended Display CIELab Value in segmentation objects
+  (module "dcmseg") and Graphic Layer Recommended Display CIELab Value in
+  presentation states (module "dcmpstat").
+
+- Improved support for Label Map Segmentations: the background is now
+  handled via Pixel Padding Value as defined by the standard, and
+  check() verifies that every pixel value is described by a segment.
+  Furthermore, reading and writing large segmentations and other
+  enhanced multi-frame objects is now considerably faster.
+
+- Replaced the OFUUID implementation with a completely new one.  The old
+  implementation represented a UUID version 1, while the new one is a
+  UUID version 7.  It offers monotonicity, and improved unguessability.
+  In addition, it mitigates security issues because it does not use a
+  MAC address as is the case with version 1.
+
+- Improved handling of DICOM and ISO dates and times, including
+  timezone, in various DCMTK classes, e.g. a default time zone ("+0000")
+  is not added any more, if no value is specified.  Furthermore, the
+  fractional part of a second is now also supported when reading/writing
+  time and date/time values from/to XML input/output in an SR document.
+
+- Added MDC (Mapped Diagnostic Context) filter to oflog.  MDC allows for
+  attaching information to threads in the form of key/value pairs.
+  Logging can then be configured to match ("filter") on these key/value
+  pairs in order to decide whether the thread at hand should log, and
+  how.
+
+- Various TLS enhancements:
+
+  - Adapted DCMTK for use with OpenSSL 4.0.x.
+
+  - Added TLS support to the command line tool wlmscpfs.
+
+- Removed the deprecated support for the C++98 language standard.  Now,
+  at least C++11 is required.  Furthermore, enabled the use of the STL
+  (Standard Template Library) features by default, instead of DCMTK's
+  historic fallback implementations.  The fallback implementations are
+  still available, though (see INSTALL file for details).
+
+- CMake-related enhancements and other changes to the build system:
+
+  - Added CMake variable DCMTK_EXTERNAL_MODULES to allow adding external
+    modules to DCMTK without having to copy files into the DCMTK source
+    tree.
+
+  - Added DCMTK_WITH_SANITIZERS (CMake) and --enable-sanitizers
+    (Autoconf) to build with AddressSanitizer (plus LeakSanitizer on
+    Linux).
+
+- Pre-built binaries for Windows (x86_64 and x86), macOS (arm64) and
+  Linux (x86_64) are now created automatically on GitHub, for each
+  release as well as a "latest" development snapshot.  They can be
+  downloaded from https://github.com/DCMTK/dcmtk/releases.
+
+- Fixed various other issues that occurred after the official 3.7.0
+  release, and further improved the performance.  See CHANGES file for
+  details.
+
+
+Many people have contributed to this new release of DCMTK, appearing
+here in alphabetical order.  Thank you very much for your support!
+
+  'elp3pinill0'
+  Abhinav Agarwal
+  Andras Lasso
+  Andrey Fedorov
+  Arash Ale Ebrahim
+  Arjun Basnet, Securin
+  Bradley Lowekamp
+  Carlo Pastorino
+  Christian Wetzel
+  Cristhian Daniel Rivas Zúñiga (Instituto Tecnológico de Costa Rica)
+  Dan Wolff
+  Daniel Birtwhistle
+  Daniel M. Drucker
+  David Clunie
+  Dominik Blain
+  Eneshan Erdoğan Karaca
+  Evgeny Sabelskiy
+  IN-CYPHER OSS Security Team
+  Jiami (DMSAN)
+  Kaixuan
+  Kamal Sentassi (S9S Security Electronic Service)
+  Kyle Sunderland
+  Lei Meng
+  Machine Spirits UG (haftungsbeschränkt)
+  Mathieu Malaterre
+  Matthias Deeg (SySS GmbH)
+  Michael Halle
+  Naavin Ravinthran
+  Peter Klotz
+  Phil Martel
+  Pino Toscano
+  Piotr Batko
+  Samuel Paschuan (4nt1, xmartlab)
+  Sebastian Andres Muñoz Morera (Instituto Tecnológico de Costa Rica)
+  Sjors Gielen
+  Tristan Madani
+  Vladimir Poluchaevskiy
+  Yiyi Wang
+  glitchfox (Benjamin Ali)
+  quellsec.dev
+  Yuxiao Yan
+  Zhanglinghang
+
+  GitHub users "luk1337", "MarkLee131", "mrbean-bremen", "nutzlastfan"
+    and "Vogtinator"
+
+Members of the DCMTK Team who have worked on this release are:
+
+  Joerg Riesmeier <dicom@jriesmeier.com>
+  Harald Roesen <harald.roesen@offis.de>
+  Marco Eichelberg <eichelberg@offis.de>
+  Michael Onken <onken@open-connections.de>
+  Tingyan Xu <tingyan.xu@offis.de>
+
+The DCMTK software can be downloaded via:
+
+  https://dicom.offis.de/dcmtk or https://www.dcmtk.org/
+
+OFFIS e.V., Oldenburg, Germany, 2026-10-15
