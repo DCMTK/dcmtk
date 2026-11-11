@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2016, OFFIS e.V.
+ *  Copyright (C) 2002-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -450,10 +450,6 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
         OFListIterator(InstanceStruct *) Iterator;
     };
 
-    /** To make VC6 happy.
-     */
-    friend struct SeriesStruct;
-
     /** Internal structure defining the study list items
      */
     struct DCMTK_DCMSR_EXPORT StudyStruct
@@ -560,10 +556,6 @@ class DCMTK_DCMSR_EXPORT DSRSOPInstanceReferenceList
         /// currently selected series (cursor)
         OFListIterator(SeriesStruct *) Iterator;
     };
-
-    /** To make VC6 happy.
-     */
-    friend struct StudyStruct;
 
     /** set cursor to the specified study entry (if existent)
      ** @param  studyUID  study instance UID of the entry to be searched for
