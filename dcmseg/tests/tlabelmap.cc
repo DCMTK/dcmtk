@@ -128,7 +128,7 @@ OFTEST(dcmseg_labelmap_8bit_mono2)
     }
     if (keepTempFiles)
     {
-        std::cout << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_8bit_mono2" << std::endl;
+        COUT << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_8bit_mono2" << OFendl;
         tf.stealFile();
     }
     delete seg;
@@ -181,7 +181,7 @@ OFTEST_FLAGS(dcmseg_labelmap_16bit_mono2, EF_Slow)
     delete seg_object;
     if (keepTempFiles)
     {
-        std::cout << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_16bit_mono2" << std::endl;
+        COUT << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_16bit_mono2" << OFendl;
         tf.stealFile();
     }
 }
@@ -233,7 +233,7 @@ OFTEST(dcmseg_labelmap_8bit_palette)
     delete seg;
     if (keepTempFiles)
     {
-        std::cout << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_8bit_palette" << std::endl;
+        COUT << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_8bit_palette" << OFendl;
         tf.stealFile();
     }
 }
@@ -286,7 +286,7 @@ OFTEST_FLAGS(dcmseg_labelmap_16bit_palette, EF_Slow)
     delete seg_object;
     if (keepTempFiles)
     {
-        std::cout << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_16bit_palette" << std::endl;
+        COUT << "Keeping temporary file: " << temp_fn << " from test dcmseg_labelmap_16bit_palette" << OFendl;
         tf.stealFile();
     }
 }

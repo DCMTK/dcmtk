@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2019-2025, OFFIS e.V.
+ *  Copyright (C) 2019-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -36,7 +36,6 @@
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/oftempf.h"
 #include "dcmtk/ofstd/oftest.h"
-//#include <iostream>
 
 static const Uint8 NUM_ROWS             = 10;
 static const Uint8 NUM_COLS             = 10;

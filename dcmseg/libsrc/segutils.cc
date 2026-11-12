@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2015-2025, Open Connections GmbH
+ *  Copyright (C) 2015-2026, Open Connections GmbH
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation are maintained by
@@ -23,7 +23,6 @@
 
 #include "dcmtk/dcmiod/iodtypes.h"
 #include "dcmtk/dcmseg/segtypes.h"
-#include <iostream>
 #include "dcmtk/dcmseg/segutils.h"
 
 

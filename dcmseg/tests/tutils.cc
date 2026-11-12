@@ -27,7 +27,6 @@
 #include "dcmtk/ofstd/oftest.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/oftime.h" // For debugByte2Bin
-#include <iostream>
 
 #define bufLen 4
 
