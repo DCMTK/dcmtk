@@ -11,6 +11,7 @@ DCMTK_ADD_LIBRARY(cmr
   cid244.cc
   cid244e.cc
   cid247.cc
+  cid270.cc
   cid29.cc
   cid29e.cc
   cid4020.cc
@@ -21,6 +22,9 @@ DCMTK_ADD_LIBRARY(cmr
   cid5000.cc
   cid5001.cc
   cid6147.cc
+  cid7010.cc
+  cid7011.cc
+  cid7012.cc
   cid7021.cc
   cid7181.cc
   cid7445.cc
