@@ -210,7 +210,7 @@ int main (int argc, char* argv[])
   OFString inputFile;
   if (argc < 2)
   {
-    CERR << "Usage: dump_pmp <input-file>" << std::endl;
+    CERR << "Usage: dump_pmp <input-file>" << OFendl;
     return 1;
   }
   else
@@ -496,7 +496,7 @@ int main (int argc, char* argv[])
   OFString outputDir;
   if (argc < 2)
   {
-    CERR << "Usage: make_pmp <output-dir>" << std::endl;
+    CERR << "Usage: make_pmp <output-dir>" << OFendl;
     return 1;
   }
   else

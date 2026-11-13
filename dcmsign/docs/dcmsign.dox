@@ -49,9 +49,9 @@ if (fileformat.loadFile("test.dcm").good())
     certVerifier, ESVP_requireSignature, ETVP_verifyTSIfPresent);
 
   if (result == 0)
-    std::cerr << "signature(s) found and successfully verified" << endl;
+    cerr << "signature(s) found and successfully verified" << endl;
   else
-    std::cerr << "signature absent or verification failed"  << endl;
+    cerr << "signature absent or verification failed"  << endl;
 }
 \endcode
 
@@ -98,9 +98,9 @@ if (fileformat.loadFile("test.dcm").good())
     SiSignaturePurpose::ESP_none, NULL);
 
    if (result == 0)
-     std::cerr << "signature successfully created" << endl;
+     cerr << "signature successfully created" << endl;
    else
-     std::cerr << "signature creation failed"  << endl;
+     cerr << "signature creation failed"  << endl;
 }
 \endcode
 

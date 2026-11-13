@@ -28,7 +28,7 @@ if (id != OFreinterpret_cast(iconv_t, -1))
 
     // set up the parameters for OFiconv
     char *src_ptr = input; // Following the Posix spec, this pointer is not const
-    size_t src_len = std::strlen(src_ptr);
+    size_t src_len = strlen(src_ptr);
     char *dst_ptr = output;
     size_t dst_len = 20;
 
@@ -40,7 +40,7 @@ if (id != OFreinterpret_cast(iconv_t, -1))
 
     if (result != OFstatic_cast(size_t, -1))
     {
-        std::cout << "UTF-8 string: " << output << std::endl;
+        cout << "UTF-8 string: " << output << endl;
     }
 
     // close the conversion descriptor
