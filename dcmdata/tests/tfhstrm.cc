@@ -71,7 +71,7 @@ static OFString generateString(uint32_t seed)
   result.reserve(len);
 
   for (int i = 0; i < len; ++i)
-    result.push_back(alphabet[rnd.getRND16() % (sizeof(alphabet) - 1)]);
+    result += alphabet[rnd.getRND16() % (sizeof(alphabet) - 1)];
 
   return result;
 }
@@ -124,7 +124,8 @@ OFCondition TestDataset::create(Uint8 numGroups, Uint8 numElementsPerGroups)
 
     Uint16 group = getGroup(g);
     Uint16 privateCreatorElement = 0x10;
-    OFString privateCreatorString = "TEST_" + std::to_string(g);
+    char privateCreatorString[16];
+    OFStandard::snprintf(privateCreatorString, sizeof(privateCreatorString), "TEST_%u", OFstatic_cast(unsigned int, g));
 
     cond = item->putAndInsertOFStringArray(DcmTag(group, privateCreatorElement), privateCreatorString);
     CHECK(cond);
@@ -162,13 +163,13 @@ static OFPair<bool, OFString> checkItem(DcmItem* ditem, Uint16 group, Uint8 numE
 
     cond = ditem->findAndGetOFStringArray(DcmTag(DcmTagKey(group, elementTag), EVR_LO), value);
     if (cond.bad()) {
-      return OFMake_pair(false, "Failed to find element: " + std::to_string(group) + "," + std::to_string(elementTag) + ": " + cond.text());
+      return OFMake_pair(false, "Failed to find element " + DcmTagKey(group, elementTag).toString() + ": " + cond.text());
     }
     if (value != expectedValue) {
-      return OFMake_pair(false, "Value mismatch for element: " + std::to_string(group) + "," + std::to_string(elementTag) + ": expected '" + expectedValue + "', got '" + value + "'");
+      return OFMake_pair(false, "Value mismatch for element " + DcmTagKey(group, elementTag).toString() + ": expected '" + expectedValue + "', got '" + value + "'");
     }
   }
-  return OFMake_pair(true, "");
+  return OFMake_pair(true, OFString());
 }
 
 
@@ -386,7 +387,9 @@ public:
 
     if (seq->card() <= groupIndex_) {
       good_ = false;
-      errMsg_ = OFString("Group index is larger than the number of items in the sequence: ") + std::to_string(seq->card()) + " < " + std::to_string(groupIndex_);
+      char buf[64];
+      OFStandard::snprintf(buf, sizeof(buf), "%lu < %u", OFstatic_cast(unsigned long, seq->card()), OFstatic_cast(unsigned int, groupIndex_));
+      errMsg_ = OFString("Group index is larger than the number of items in the sequence: ") + buf;
       return;
     }
 
