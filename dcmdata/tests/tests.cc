@@ -185,5 +185,14 @@ OFTEST_REGISTER(dcmdata_condition_tagname);
 OFTEST_REGISTER(dcmdata_fhstrm_single);
 OFTEST_REGISTER(dcmdata_fhstrm_lazy);
 OFTEST_REGISTER(dcmdata_fhstrm_multi);
+OFTEST_REGISTER(dcmdata_dcprivateob_readExpected);
+OFTEST_REGISTER(dcmdata_dcprivateob_readInsfficientData);
+OFTEST_REGISTER(dcmdata_dcprivateob_readNoDelimiterInData);
+OFTEST_REGISTER(dcmdata_dcprivateob_writeInsufficientBufferLengthForTag);
+OFTEST_REGISTER(dcmdata_dcprivateob_writeInsufficientBufferLengthForData);
+OFTEST_REGISTER(dcmdata_dcprivateob_write);
+OFTEST_REGISTER(dcmdata_dcprivateob_printDefault);
+OFTEST_REGISTER(dcmdata_dcprivateob_printTreestructure);
+OFTEST_REGISTER(dcmdata_dcprivateob_printShortenOutput);
 
 OFTEST_MAIN("dcmdata")

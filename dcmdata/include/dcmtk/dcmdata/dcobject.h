@@ -255,6 +255,13 @@ extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmReplaceWrongDelimitationItem; /*
  */
 extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmConvertUndefinedLengthOBOWtoSQ; /* default OFFalse */
 
+/** This flag enables parsing of undefined length OB/OW elements with
+* as pixel data-like implicit length elements while reading.
+* dcmConvertUndefinedLengthOBOWtoSQ flag takes priority if both are enabled.
+ */
+extern DCMTK_DCMDATA_EXPORT OFGlobal<OFBool> dcmParseUndefinedLengthOBOW; /* default OFFalse */
+
+
 /** This flag enables the "silent" conversion of incorrectly encoded
  *  VOI LUT Sequence elements with VR=OW and explicit length into a sequence.
  *  This incorrect encoding was detected "in the wild" in 2016.

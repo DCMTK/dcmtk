@@ -52,6 +52,7 @@ OFGlobal<OFBool>    dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
 OFGlobal<OFBool>    dcmIgnoreFileMetaInformationGroupLength(OFFalse);
 OFGlobal<OFBool>    dcmReplaceWrongDelimitationItem(OFFalse);
 OFGlobal<OFBool>    dcmConvertUndefinedLengthOBOWtoSQ(OFFalse);
+OFGlobal<OFBool>    dcmParseUndefinedLengthOBOW(OFFalse);
 OFGlobal<OFBool>    dcmConvertVOILUTSequenceOWtoSQ(OFFalse);
 OFGlobal<OFBool>    dcmUseExplLengthPixDataForEncTS(OFFalse);
 

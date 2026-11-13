@@ -42,6 +42,7 @@ DCMTK_ADD_LIBRARY(dcmdata
   dcostrmz.cc
   dcpath.cc
   dcpcache.cc
+  dcprivateob.cc
   dcpixel.cc
   dcpixseq.cc
   dcpxitem.cc

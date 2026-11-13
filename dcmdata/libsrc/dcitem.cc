@@ -67,6 +67,7 @@
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcspchrs.h"   /* for class DcmSpecificCharacterSet */
 #include "dcmtk/dcmdata/dcjson.h"
+#include "dcmtk/dcmdata/dcprivateob.h"
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
@@ -5072,6 +5073,14 @@ OFCondition DcmItem::newDicomElement(DcmElement *&newElement,
                         DcmTag newTag(tag);
                         newTag.setVR(DcmVR(EVR_SQ)); // on writing we will handle this element as SQ, not OB/OW
                         newElement = new DcmSequenceOfItems(newTag, length);
+                        if (dcmParseUndefinedLengthOBOW.get())
+                        {
+                            DCMDATA_WARN("Both dcmConvertUndefinedLengthOBOWtoSQ and dcmParseUndefinedLengthOBOW are set, verify configuration. Undefined length OB tags will be treated as SQ");
+                        }
+                    }
+                    else if (dcmParseUndefinedLengthOBOW.get())
+                    {
+                        newElement = new DcmPrivateOBTag(tag);
                     } else {
                         if (dcmIgnoreParsingErrors.get())
                         {
