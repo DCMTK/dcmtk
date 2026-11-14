@@ -31,7 +31,7 @@
 #include "dcmtk/dcmdata/dcvrcs.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -298,50 +298,111 @@ void SiCertificate::getCertValidityNotAfter(OFString& str)
   }
 }
 
-OFBool SiCertificate::isCertExpiredAt(OFString& date)
+static Sint64 convert_struct_tm_to_seconds_at_utc(const struct tm &tm)
+{
+    // Adjust year (tm_year counts starting from 1900)
+    Sint64 year = OFstatic_cast(Sint64, tm.tm_year) + 1900;
+
+    // Adjust month (tm_mon is 0-11, algorithm needs 1-12)
+    int month = tm.tm_mon + 1;
+    int day = tm.tm_mday;
+
+    // Treat January and February as month 13 and 14 of the
+    // previous year, this simplifies leap year calculation
+    if (month <= 2) {
+        year -= 1;
+        month += 12;
+    }
+
+    // Compute days since 1970-01-01 using Howard Hinnant's algorithm
+    Sint64 era = (year >= 0 ? year : year - 399) / 400;
+    unsigned yoe = OFstatic_cast(unsigned, year - era * 400); // year of era [0, 399]
+    unsigned doy = (153 * (month - 3) + 2) / 5 + day - 1;   // day of year [0, 365]
+    unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;   // day of era [0, 146096]
+    Sint64 days = era * 146097 + OFstatic_cast(Sint64, doe) - 719468;
+
+    // Convert days to seconds and add time
+    return days * 86400 + tm.tm_hour * 3600 + tm.tm_min * 60 + tm.tm_sec;
+}
+
+static Sint64 convert_dcmdatetime_to_seconds(DcmDateTime& dt)
+{
+    OFDateTime odt;
+    if (dt.getOFDateTime(odt).bad()) return -1;
+
+    Sint64 year = odt.getDate().getYear();
+    int month = odt.getDate().getMonth();
+    int day =  odt.getDate().getDay();
+
+    // Treat January and February as month 13 and 14 of the
+    // previous year, this simplifies leap year calculation
+    if (month <= 2) {
+        year -= 1;
+        month += 12;
+    }
+
+    // Compute days since 1970-01-01 using Howard Hinnant's algorithm
+    Sint64 era = (year >= 0 ? year : year - 399) / 400;
+    unsigned yoe = OFstatic_cast(unsigned, year - era * 400); // year of era [0, 399]
+    unsigned doy = (153 * (month - 3) + 2) / 5 + day - 1;   // day of year [0, 365]
+    unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;   // day of era [0, 146096]
+    Sint64 days = era * 146097 + OFstatic_cast(Sint64, doe) - 719468;
+
+    // time in seconds since 00:00:00, adjusted for timezone, may be negative
+    double dtime = odt.getTime().getTimeInSeconds(OFTrue /* useTimeZone */, OFFalse /* normalize */);
+
+    // Convert days to seconds and add time
+    return days * 86400 + OFstatic_cast(Sint64, dtime);
+}
+
+
+OFBool SiCertificate::isCertExpiredAt(DcmDateTime& dt)
 {
   OFBool result = OFTrue;
-  if (x509)
+  OFDateTime odt;
+  if (x509 && dt.getOFDateTime(odt).good())
   {
     const ASN1_TIME *certexpiry = X509_get0_notAfter(x509);
-    OFDateTime dt_certexpiry;
-    if (certexpiry && convertASN1Time(certexpiry, dt_certexpiry).good())
+    if (certexpiry)
     {
-      ASN1_TIME *sigdate = ASN1_TIME_new(); // ASN1_TIME is a typedef for ASN1_STRING
-      if (sigdate)
+      struct tm certtm;
+      if (ASN1_TIME_to_tm(certexpiry, &certtm))
       {
-        OFDateTime dt_sigdate;
-        if (ASN1_TIME_set_string(sigdate, date.c_str()) && convertASN1Time(sigdate, dt_sigdate).good())
+        Sint64 certexpiry_secs = convert_struct_tm_to_seconds_at_utc(certtm);
+        Sint64 signature_secs = convert_dcmdatetime_to_seconds(dt);
+        if (certexpiry_secs >= 0 && signature_secs >= 0)
         {
-          // check if signature date is before certificate expiry
-          if (dt_sigdate < dt_certexpiry) result = OFFalse;
+          // both timestamps are valid and after 1970-01-01, do comparison
+          result = certexpiry_secs < signature_secs;
+          DCMSIGN_DEBUG("SiCertificate::isCertExpiredAt: certificate expires at " << certexpiry_secs << ", signature datetime is " << signature_secs);
         }
-        ASN1_TIME_free(sigdate);
       }
     }
   }
   return result;
 }
 
-OFBool SiCertificate::isCertNotYetValidAt(OFString& date)
+
+OFBool SiCertificate::isCertNotYetValidAt(DcmDateTime& dt)
 {
   OFBool result = OFTrue;
-  if (x509)
+  OFDateTime odt;
+  if (x509 && dt.getOFDateTime(odt).good())
   {
     const ASN1_TIME *certstart = X509_get0_notBefore(x509);
-    OFDateTime dt_certstart;
-    if (certstart && convertASN1Time(certstart, dt_certstart).good())
+    if (certstart)
     {
-      ASN1_TIME *sigdate = ASN1_TIME_new(); // ASN1_TIME is a typedef for ASN1_STRING
-      if (sigdate)
+      struct tm certtm;
+      if (ASN1_TIME_to_tm(certstart, &certtm))
       {
-        OFDateTime dt_sigdate;
-        if (ASN1_TIME_set_string(sigdate, date.c_str()) && convertASN1Time(sigdate, dt_sigdate).good())
+        Sint64 certstart_secs = convert_struct_tm_to_seconds_at_utc(certtm);
+        Sint64 signature_secs = convert_dcmdatetime_to_seconds(dt);
+        if (certstart_secs >= 0 && signature_secs >= 0)
         {
-          // check if signature date is after certificate validity start
-          if (dt_sigdate > dt_certstart) result = OFFalse;
+          // both timestamps are valid and after 1970-01-01, do comparison
+          result = certstart_secs > signature_secs;
+          DCMSIGN_DEBUG("SiCertificate::isCertNotYetValidAt: certificate is valid from " << certstart_secs << ", signature datetime is " << signature_secs);
         }
-        ASN1_TIME_free(sigdate);
       }
     }
   }

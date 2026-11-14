@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2021, OFFIS e.V.
+ *  Copyright (C) 1998-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -33,6 +33,7 @@
 class DcmItem;
 class SiAlgorithm;
 class OFDateTime;
+class DcmDateTime;
 struct x509_st;
 struct asn1_string_st;
 typedef struct x509_st X509;
@@ -158,12 +159,11 @@ public:
   X509 *getRawCertificate();
 
   /** returns true if the certificate expires before the given date.
-   *  @param date a string in the format YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
-   *    (where Z represents the letter 'Z', meaning time zone UTC+0)
+   *  @param dt a DICOM datetime string representing the signature datetime
    *  @return OFTrue if certificate expires before the given date,
    *    or if the given date is invalid; OFFalse otherwise.
    */
-  OFBool isCertExpiredAt(OFString& date);
+  OFBool isCertExpiredAt(DcmDateTime& dt);
 
   /** returns true if the certificate is expired.
    *  @return OFTrue if certificate is expired, OFFalse otherwise
@@ -171,12 +171,11 @@ public:
   OFBool isCertExpiredNow() const;
 
   /** returns true if the certificate is not yet valid at the given date.
-   *  @param date a string in the format YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ
-   *    (where Z represents the letter 'Z', meaning time zone UTC+0)
+   *  @param dt a DICOM datetime string representing the signature datetime
    *  @return OFTrue if certificate is not yet valid at the given date,
    *    or if the given date is invalid; OFFalse otherwise.
    */
-  OFBool isCertNotYetValidAt(OFString& date);
+  OFBool isCertNotYetValidAt(DcmDateTime& dt);
 
   /** returns true if the certificate is not yet valid.
    *  @return OFTrue if certificate is not yet valid, OFFalse otherwise

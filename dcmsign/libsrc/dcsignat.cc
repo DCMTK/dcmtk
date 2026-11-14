@@ -861,30 +861,16 @@ OFCondition DcmSignature::verifyCurrent()
     DcmDateTime *dt = getCurrentSignatureDateTime();
     if (dt)
     {
-      OFDateTime odt;
-      result = dt->getOFDateTime(odt);
-      if (result.good())
+      if (selectedCertificate->isCertExpiredAt(*dt))
       {
-        // convert DICOM datetime string to YYYYMMDDHHMMSSZ format.
-        // Note that we ignore the timezone here, which not correct
-        // (we should adjust the datetime for the timezone)
-        OFString asn1dt;
-        char buf[40];
-        OFStandard::snprintf(buf, 40, "%04u%02u%02u%02u%02u%02uZ",
-          odt.getDate().getYear(), odt.getDate().getMonth(), odt.getDate().getDay(),
-          odt.getTime().getHour(), odt.getTime().getMinute(), odt.getTime().getIntSecond());
-        asn1dt = buf;
-        if (selectedCertificate->isCertExpiredAt(asn1dt))
-        {
-          // certificate was already expired at signature date time
-          result = SI_EC_VerificationFailed_CertExpiredAtSignature;
-        }
-        else if (selectedCertificate->isCertNotYetValidAt(asn1dt))
-        {
-          // certificate was not yet valid at signature date time,
-          // so this is probably a backdated signature
-          result = SI_EC_VerificationFailed_CertNotYetValidAtSig;
-        }
+        // certificate was already expired at signature date time
+        result = SI_EC_VerificationFailed_CertExpiredAtSignature;
+      }
+      else if (selectedCertificate->isCertNotYetValidAt(*dt))
+      {
+        // certificate was not yet valid at signature date time,
+        // so this is probably a backdated signature
+        result = SI_EC_VerificationFailed_CertNotYetValidAtSig;
       }
     }
     else
