@@ -3070,6 +3070,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
     handle.DB_unlock();
 
+    free(pStudyDesc);
 }
 
 /************************
