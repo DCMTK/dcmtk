@@ -94,13 +94,14 @@ OFUUIDGenerator::getMillisecondsSinceEpoch() {
   uli.HighPart = ft.dwHighDateTime;
 
   // 'uli' is now the number of milliseconds since January 1, 1601 (UTC).
-  uli.QuadPart /= 10;
+  uli.QuadPart /= 10000;  // 10000 100ns ticks per millisecond
 
-  // Add the number of milliseconds from January 1, 1601 (UTC) until
-  // January 1, 1970. The number of days between these two days is 36524.
-  uli.QuadPart += (  OFstatic_cast(unsigned __int64, 36524)
+  // Subtract the number of milliseconds from January 1, 1601 (UTC) until
+  // January 1, 1970. The number of Gregorian Calendar days between these two
+  // dates is 134774.
+  uli.QuadPart -= (  OFstatic_cast(unsigned __int64, 134774)
                    * OFstatic_cast(unsigned __int64, 60 * 60 * 24)  // seconds per day
-                   * OFstatic_cast(unsigned __int64, 1000 * 1000)); // milliseconds per second
+                   * OFstatic_cast(unsigned __int64, 1000));        // milliseconds per second
   ms_since_unix_epoch.ladd(OFstatic_cast(Uint32, uli.LowPart));
   ms_since_unix_epoch.hadd(OFstatic_cast(Uint32, uli.HighPart));
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2021, OFFIS e.V.
+ *  Copyright (C) 2011-2026, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -28,6 +28,7 @@
 #include "dcmtk/ofstd/ofuuidgn.h"
 
 
+#include <ctime>
 #include <iostream>
 
 static void
@@ -237,3 +238,37 @@ OFTEST(ofstd_OFUUID_monotonicity)
     a = b;
   }
 }
+
+OFTEST(ofstd_OFUUID_timestamp)
+{
+  // Verify that the timestamp of an OFUUID holds the number of milliseconds
+  // since January 1, 1970 (cf. RFC 9562, section 5.7), i.e. the first twelve
+  // hex digits of the canonical notation. Allow for a tolerance of one minute.
+  Uint64 const before = OFstatic_cast(Uint64, time(NULL));
+  OFshared_ptr<OFUUID> const a = OFUUIDGenerator::create();
+  Uint64 const after = OFstatic_cast(Uint64, time(NULL));
+  OFCHECK_MSG(a, "a is NULL");
+  if (!a) {
+    return;
+  }
+
+  OFString const s = a->toString(OFUUID::NotationCanonical);
+  // The timestamp occupies the first 48 bits (6 bytes) of the UUID, i.e. the
+  // first 12 hex digits of the canonical notation "xxxxxxxx-xxxx-...". The
+  // hyphen at position 8, counting from 0, has to be ignored in the canonical
+  // notation.
+  Uint64 timestamp = 0;
+  for (size_t i = 0; i < 13; ++i) {
+    if (i == 8) { // s[8] == '-' -> ignore
+      continue;
+    }
+    char const c = s[i];
+    timestamp <<= 4;
+    timestamp |= OFstatic_cast(Uint64, (c >= 'a') ? (c - 'a' + 10) : (c - '0'));
+  }
+
+  Uint64 const seconds = timestamp / 1000;
+  OFCHECK(before - 60 <= seconds);
+  OFCHECK(seconds <= after + 60);
+}
+

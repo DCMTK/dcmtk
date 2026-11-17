@@ -72,6 +72,7 @@ OFTEST_REGISTER(ofstd_OFUUID_notation_urn);
 OFTEST_REGISTER(ofstd_OFUUID_variant);
 OFTEST_REGISTER(ofstd_OFUUID_version);
 OFTEST_REGISTER(ofstd_OFUUID_monotonicity);
+OFTEST_REGISTER(ofstd_OFUUID_timestamp);
 OFTEST_REGISTER(ofstd_OFVector);
 OFTEST_REGISTER(ofstd_atof);
 OFTEST_REGISTER(ofstd_base64_1);
