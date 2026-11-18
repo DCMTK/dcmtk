@@ -142,6 +142,7 @@ OFTEST_REGISTER(dcmdata_xferLookup_3);
 OFTEST_REGISTER(dcmdata_xferLookup_4);
 OFTEST_REGISTER(dcmdata_putOFStringAtPos);
 OFTEST_REGISTER(dcmdata_uncompressedFrameSize);
+OFTEST_REGISTER(dcmdata_rle1BitRoundTrip);
 OFTEST_REGISTER(dcmdata_nestingDepthLimit_exceeded);
 OFTEST_REGISTER(dcmdata_nestingDepthLimit_atLimit);
 OFTEST_REGISTER(dcmdata_nestingDepthLimit_wellBelow);

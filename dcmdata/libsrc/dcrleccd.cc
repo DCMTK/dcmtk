@@ -22,6 +22,7 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcrleccd.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofvector.h"    /* for class OFVector */
 
 // dcmdata includes
 #include "dcmtk/dcmdata/dcrlecp.h"   /* for class DcmRLECodecParameter */
@@ -64,13 +65,25 @@ Uint16 DcmRLECodecDecoder::decodedBitsAllocated(
     Uint16 bitsAllocated,
     Uint16 /* bitsStored */) const
 {
-    // The RLE decoder only supports images where BitsAllocated is a multiple of 8.
-    if ((bitsAllocated < 8)||(bitsAllocated % 8 != 0)) return 0;
+    // The RLE decoder only supports images where BitsAllocated is 1 or a multiple of 8.
+    if ((bitsAllocated != 1) && ((bitsAllocated < 8)||(bitsAllocated % 8 != 0))) return 0;
 
     // RLE cannot support more than 120 bits/sample (15 bands) in DICOM
     if (bitsAllocated > 120) return 0;
 
     return bitsAllocated;
+}
+
+
+// Packs one sample per byte (only bit 0 is significant) into the native 1-bit
+// layout, least significant bit first (PS3.5 8.2).
+static void packBitSamples(const Uint8 *samples, size_t count, Uint8 *packed)
+{
+    for (size_t i = 0; i < count; ++i)
+    {
+        if (i % 8 == 0) packed[i / 8] = 0;
+        packed[i / 8] |= OFstatic_cast(Uint8, (samples[i] & 1) << (i % 8));
+    }
 }
 
 
@@ -112,10 +125,16 @@ OFCondition DcmRLECodecDecoder::decode(
     if (result.good()) result = ditem->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
     if (result.good())
     {
-      imageBytesAllocated = OFstatic_cast(Uint16, imageBitsAllocated / 8);
-      if ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0))
+      // 1-bit samples are decoded one byte per sample and packed into bits afterwards
+      imageBytesAllocated = (imageBitsAllocated == 1) ? 1 : OFstatic_cast(Uint16, imageBitsAllocated / 8);
+      if ((imageBitsAllocated != 1) && ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0)))
       {
-        DCMDATA_ERROR("The RLE decoder only supports images where BitsAllocated is a multiple of 8.");
+        DCMDATA_ERROR("The RLE decoder only supports images where BitsAllocated is 1 or a multiple of 8.");
+        result = EC_CannotChangeRepresentation;
+      }
+      else if ((imageBitsAllocated == 1) && (imageSamplesPerPixel != 1))
+      {
+        DCMDATA_ERROR("The RLE decoder only supports images with BitsAllocated 1 if SamplesPerPixel is 1.");
         result = EC_CannotChangeRepresentation;
       }
     }
@@ -164,6 +183,11 @@ OFCondition DcmRLECodecDecoder::decode(
           return EC_ElemLengthExceeds32BitField;
         }
 
+        // 1-bit output is packed, 8 samples per byte; the samples are decoded one byte each first
+        const Uint32 sampleBytes = totalSize;
+        const OFBool oneBit = (imageBitsAllocated == 1);
+        if (oneBit) totalSize = sampleBytes / 8 + ((sampleBytes % 8) ? 1 : 0);
+
         if (totalSize & 1) totalSize++; // align on 16-bit word boundary
         Uint16 *imageData16 = NULL;
         Sint32 currentFrame = 0;
@@ -171,10 +195,17 @@ OFCondition DcmRLECodecDecoder::decode(
         Uint32 numberOfStripes = 0;
         Uint32 fragmentLength = 0;
 
+        // 1-bit samples are decoded one byte each into a temporary buffer and packed afterwards
+        OFVector<Uint8> samples;
         result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), imageData16);
         if (result.good())
         {
           Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, imageData16);
+          if (oneBit)
+          {
+            samples.resize(sampleBytes);
+            imageData8 = samples.empty() ? NULL : &samples[0];
+          }
 
           while ((currentFrame < imageFrames) && result.good())
           {
@@ -461,6 +492,13 @@ OFCondition DcmRLECodecDecoder::decode(
 
           } /* while still frames to process */
 
+          if (oneBit)
+          {
+            // pack the decoded samples, 8 per byte, least significant bit first (PS3.5 8.2)
+            memset(imageData16, 0, totalSize);
+            if (sampleBytes > 0) packBitSamples(&samples[0], sampleBytes, OFreinterpret_cast(Uint8 *, imageData16));
+          }
+
           // adjust byte order for uncompressed image to little endian
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, OFstatic_cast(Uint32, totalSize), sizeof(Uint16));
 
@@ -528,10 +566,15 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     if (result.good()) result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, photometricInterpretation);
     if (result.good())
     {
-        imageBytesAllocated = OFstatic_cast(Uint32, imageBitsAllocated / 8);
-        if ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0))
+        imageBytesAllocated = (imageBitsAllocated == 1) ? 1 : OFstatic_cast(Uint32, imageBitsAllocated / 8);
+        if ((imageBitsAllocated != 1) && ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0)))
         {
-          DCMDATA_ERROR("The RLE decoder only supports images where BitsAllocated is a multiple of 8.");
+          DCMDATA_ERROR("The RLE decoder only supports images where BitsAllocated is 1 or a multiple of 8.");
+          return EC_CannotChangeRepresentation;
+        }
+        if ((imageBitsAllocated == 1) && (imageSamplesPerPixel != 1))
+        {
+          DCMDATA_ERROR("The RLE decoder only supports images with BitsAllocated 1 if SamplesPerPixel is 1.");
           return EC_CannotChangeRepresentation;
         }
     }
@@ -562,7 +605,9 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
       return EC_ElemLengthExceeds32BitField;
     }
 
-    if (frameSize > bufSize) return EC_IllegalCall;
+    // 1-bit frames are returned packed, 8 samples per byte, starting at bit 0 of the buffer
+    const Uint32 outputSize = (imageBitsAllocated == 1) ? (frameSize / 8 + ((frameSize % 8) ? 1 : 0)) : frameSize;
+    if (outputSize > bufSize) return EC_IllegalCall;
 
     DcmRLEDecoder rledecoder(bytesPerStripe);
     if (rledecoder.fail()) return EC_MemoryExhausted;  // RLE decoder failed to initialize
@@ -623,7 +668,10 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
     Uint8 *outputBuffer = NULL;
     Uint8 *pixelPointer = NULL;
     Uint16 *imageData16 = OFreinterpret_cast(Uint16 *, buffer);
-    Uint8 *imageData8 = OFreinterpret_cast(Uint8 *, buffer);
+    // 1-bit samples are decoded one byte each into a temporary buffer and packed into buffer afterwards
+    OFVector<Uint8> samples;
+    if (imageBitsAllocated == 1) samples.resize(frameSize);
+    Uint8 *imageData8 = (imageBitsAllocated == 1) ? (samples.empty() ? NULL : &samples[0]) : OFreinterpret_cast(Uint8 *, buffer);
 
     // byte offset for first sample in frame
     Uint32 sampleOffset = 0;
@@ -770,12 +818,25 @@ OFCondition DcmRLECodecDecoder::decodeFrame(
       decompressedColorModel = photometricInterpretation;
     }
 
-    // adjust byte order for uncompressed image to little endian
-    if ((gLocalByteOrder == EBO_BigEndian) && (frameSize & 1))
+    if ((imageBitsAllocated == 1) && result.good() && (frameSize > 0))
+    {
+      // pack the decoded samples, 8 per byte, least significant bit first (PS3.5 8.2)
+      packBitSamples(&samples[0], frameSize, OFreinterpret_cast(Uint8 *, buffer));
+    }
+
+    // adjust byte order for uncompressed image to little endian. An odd frame size is swapped
+    // including the pad byte that getUncompressedFrame() reserves in the buffer for this purpose.
+    Uint32 swapSize = outputSize;
+    if ((gLocalByteOrder == EBO_BigEndian) && (swapSize & 1) && (swapSize < bufSize))
+    {
+      OFreinterpret_cast(Uint8 *, buffer)[swapSize] = 0;
+      ++swapSize;
+    }
+    if ((gLocalByteOrder == EBO_BigEndian) && (swapSize & 1))
     {
       DCMDATA_WARN("Size of frame buffer is odd, cannot correct byte order for last pixel value");
     }
-    swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, frameSize, sizeof(Uint16));
+    swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, swapSize, sizeof(Uint16));
 
     return result;
 }

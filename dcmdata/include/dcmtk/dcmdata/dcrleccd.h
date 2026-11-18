@@ -169,9 +169,10 @@ public:
 
   /** determines the effective value of BitsAllocated that a dataset will have
    *  after decompression of an image with the given values for bitsAllocated
-   *  and bitsStored. This may differ from the bitsAllocated parameter for example
-   *  if that value is not a multiple of 8. Returns zero if an image with the
-   *  given parameters cannot be decoded with this codec.
+   *  and bitsStored. The RLE decoder supports a value of 1 (samples are packed,
+   *  8 per byte, after decompression) and multiples of 8 up to 120, which are
+   *  returned unchanged. Returns zero if an image with the given parameters
+   *  cannot be decoded with this codec.
    *  @param bitsAllocated current value of Bits Allocated
    *  @param bitsStored current value of Bits Stored
    *  @return value of BitsAllocated after decompression, 0 if no decompression possible
