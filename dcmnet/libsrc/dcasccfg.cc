@@ -44,7 +44,8 @@ DcmAssociationConfiguration::DcmAssociationConfiguration(const DcmAssociationCon
   contexts_(arg.contexts_),
   roleselection_(arg.roleselection_),
   extneg_(arg.extneg_),
-  profiles_(arg.profiles_)
+  profiles_(arg.profiles_),
+  alwaysAcceptDefaultRole_(arg.alwaysAcceptDefaultRole_)
 {
 }
 
@@ -60,6 +61,7 @@ DcmAssociationConfiguration& DcmAssociationConfiguration::operator=(const DcmAss
     roleselection_ = arg.roleselection_;
     extneg_ = arg.extneg_;
     profiles_ = arg.profiles_;
+    alwaysAcceptDefaultRole_ = arg.alwaysAcceptDefaultRole_;
   }
   return *this;
 }

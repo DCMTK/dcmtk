@@ -25,6 +25,9 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmnet/dcasccfg.h"
 #include "dcmtk/dcmnet/dulstruc.h"
 #include "dcmtk/dcmnet/extneg.h"
 #include "dcmtk/dcmnet/dcuserid.h"
@@ -450,4 +453,69 @@ OFTEST(dcmnet_parseUserIdentity_secondaryField_bytesRead)
     OFCHECK_EQUAL(bytesRead, availData);
 
     delete[] buf;
+}
+
+
+/* Regression test for DcmAssociationConfiguration copy constructor and copy
+ * assignment operator copying alwaysAcceptDefaultRole_.
+ *
+ * Pre-fix, the copy constructor left alwaysAcceptDefaultRole_ uninitialized
+ * (triggering UBSan "load of value ..., which is not a valid value for type
+ * 'OFBool'" during evaluateAssociationParameters), and operator=() reset
+ * alwaysAcceptDefaultRole_ to OFFalse via clear() without copying arg's value.
+ */
+static void check_assoc_cfg_default_role_behavior(
+    const DcmAssociationConfiguration& cfg,
+    const OFBool expectAccepted)
+{
+    const char *tsList[] = { UID_LittleEndianImplicitTransferSyntax };
+    T_ASC_Association assoc;
+    std::memset(&assoc, 0, sizeof(assoc));
+
+    OFCHECK(ASC_createAssociationParameters(&assoc.params, ASC_DEFAULTMAXPDU, 10).good());
+    OFCHECK(ASC_addPresentationContext(
+        assoc.params, 1, UID_VerificationSOPClass, tsList, 1, ASC_SC_ROLE_DEFAULT).good());
+    OFCHECK(cfg.evaluateAssociationParameters("DEFAULT", assoc).good());
+
+    if (expectAccepted)
+    {
+        OFCHECK_EQUAL(ASC_countAcceptedPresentationContexts(assoc.params), 1);
+        OFCHECK_EQUAL(ASC_findAcceptedPresentationContextID(&assoc, UID_VerificationSOPClass), 1);
+    }
+    else
+    {
+        OFCHECK_EQUAL(ASC_countAcceptedPresentationContexts(assoc.params), 0);
+        OFCHECK_EQUAL(ASC_findAcceptedPresentationContextID(&assoc, UID_VerificationSOPClass), 0);
+    }
+
+    OFCHECK(ASC_destroyAssociationParameters(&assoc.params).good());
+}
+
+OFTEST(dcmnet_assoc_cfg_copy_alwaysAcceptDefaultRole)
+{
+    DcmAssociationConfiguration defaultCfg;
+    OFCHECK(defaultCfg.addTransferSyntax("TS_DEFAULT", UID_LittleEndianImplicitTransferSyntax).good());
+    OFCHECK(defaultCfg.addPresentationContext("CTX_DEFAULT", UID_VerificationSOPClass, "TS_DEFAULT", OFFalse).good());
+    OFCHECK(defaultCfg.addRole("ROLE_SCP", UID_VerificationSOPClass, ASC_SC_ROLE_SCP).good());
+    OFCHECK(defaultCfg.addProfile("DEFAULT", "CTX_DEFAULT", "ROLE_SCP").good());
+
+    // Default-constructed OFFalse must be initialized and preserved across copy/assign
+    DcmAssociationConfiguration defaultCopy(defaultCfg);
+    check_assoc_cfg_default_role_behavior(defaultCopy, OFFalse);
+
+    DcmAssociationConfiguration defaultAssign;
+    defaultAssign.setAlwaysAcceptDefaultRole(OFTrue);
+    defaultAssign = defaultCfg;
+    check_assoc_cfg_default_role_behavior(defaultAssign, OFFalse);
+
+    // Explicit OFTrue must be preserved across copy/assign
+    DcmAssociationConfiguration acceptCfg(defaultCfg);
+    acceptCfg.setAlwaysAcceptDefaultRole(OFTrue);
+
+    DcmAssociationConfiguration acceptCopy(acceptCfg);
+    check_assoc_cfg_default_role_behavior(acceptCopy, OFTrue);
+
+    DcmAssociationConfiguration acceptAssign;
+    acceptAssign = acceptCfg;
+    check_assoc_cfg_default_role_behavior(acceptAssign, OFTrue);
 }
