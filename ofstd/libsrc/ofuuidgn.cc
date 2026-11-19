@@ -38,7 +38,7 @@ END_EXTERN_C
 
 
 OFUUIDGenerator::Uint32_32 OFUUIDGenerator::last_ms_since_epoch_ = OFUUIDGenerator::Uint32_32();
-Uint16 OFUUIDGenerator::rand_b_field_ = 0;
+Uint16 OFUUIDGenerator::rand_a_base_ = 0;
 
 
 OFshared_ptr<OFUUID>
@@ -52,24 +52,27 @@ OFUUIDGenerator::create(rnd8 const & rnd) {
   Uint32_32 const ms_since_epoch = getMillisecondsSinceEpoch();
   if (ms_since_epoch > OFUUIDGenerator::last_ms_since_epoch_) {
     OFUUIDGenerator::last_ms_since_epoch_ = ms_since_epoch;
-    OFUUIDGenerator::rand_b_field_ = 1;
+    OFUUIDGenerator::rand_a_base_ = 1;
   }
   else {
-    ++OFUUIDGenerator::rand_b_field_;
+    ++OFUUIDGenerator::rand_a_base_;
 
-    // The field 'rand_b' in UUIDv7 uses 12 bits (0x0fff), so look out for
+    // The field 'rand_a' in UUIDv7 uses 12 bits (0x0fff), so look out for
     // possible overflow.
-    if (OFUUIDGenerator::rand_b_field_ > 0x0fff) {
+    if (OFUUIDGenerator::rand_a_base_ > 0x0fff) {
       OFUUIDGenerator::last_ms_since_epoch_.ladd(1);
-      OFUUIDGenerator::rand_b_field_ = 1;
+      OFUUIDGenerator::rand_a_base_ = 1;
     }
   }
+
+  Uint32_32 const last_ms_since_epoch_copy = OFUUIDGenerator::last_ms_since_epoch_;
+  Uint16 const rand_a_base_copy = OFUUIDGenerator::rand_a_base_;
 
   mutex.unlock();
 
   OFUUID * const ofuuid = new (std::nothrow) OFUUID();
   if (ofuuid != NULL) {
-    setupOFUUIDDataMember(ofuuid, rnd);
+    setupOFUUIDDataMember(ofuuid, last_ms_since_epoch_copy, rand_a_base_copy, rnd);
   }
 
   return OFshared_ptr<OFUUID>(ofuuid);
@@ -154,9 +157,15 @@ OFUUIDGenerator::getMillisecondsSinceEpoch() {
 
 Uint8
 OFUUIDGenerator::getRND8() {
+  static OFMutex mutex;
   static OFRandom rnd;
 
-  return rnd.getRND8();
+  // OFRandom is not thread-safe, so serialize access to the shared instance.
+  mutex.lock();
+  Uint8 const value = rnd.getRND8();
+  mutex.unlock();
+
+  return value;
 }
 
 OFBool
@@ -176,26 +185,28 @@ OFUUIDGenerator::OFUUIDGenerator() {
 
 void
 OFUUIDGenerator::setupOFUUIDDataMember(OFUUID * const ofuuid,
+                                       Uint32_32 const & ms_since_epoch,
+                                       Uint16 const rand_a_base,
                                        rnd8 const & rnd) {
-  // [ofuuid.data_[0], ofuuid.data_[1]] := last_ms_since_epoch_.high_ & 0x00ff
+  // [ofuuid.data_[0], ofuuid.data_[1]] := ms_since_epoch.high_ & 0x00ff
   // Only the lower 16 bits are used, so mask the upper ones.  (cf. RFC9562, section 5.7)
-  Uint32 value = OFUUIDGenerator::last_ms_since_epoch_.high_;
+  Uint32 value = ms_since_epoch.high_;
   for (int i = 1; i >=0 ; --i) {
     ofuuid->data_[OFstatic_cast(size_t, i)] = OFstatic_cast(Uint8, value);
     value >>= 8;
   }
 
-  // [ofuuid.data_[2], ofuuid.data_[5]] := last_ms_since_epoch_.low_
+  // [ofuuid.data_[2], ofuuid.data_[5]] := ms_since_epoch.low_
   // All 32 bits are used.  (cf. RFC9562, section 5.7)
-  value = OFUUIDGenerator::last_ms_since_epoch_.low_;
+  value = ms_since_epoch.low_;
   for (int i = 5; i >= 2; --i) {
     ofuuid->data_[OFstatic_cast(size_t, i)] = OFstatic_cast(Uint8, value);
     value >>= 8;
   }
 
-  // [ofuuid.data_[6], ofuuid.data_[7]] := OFUUIDGenerator::rand_b_field_,
+  // [ofuuid.data_[6], ofuuid.data_[7]] := rand_a_base,
   // except for the version bits - see below.
-  value = OFUUIDGenerator::rand_b_field_;
+  value = rand_a_base;
   for (int i = 7; i >= 6; --i) {
     ofuuid->data_[OFstatic_cast(size_t, i)] = OFstatic_cast(Uint8, value);
     value >>= 8;

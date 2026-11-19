@@ -43,16 +43,17 @@ public:
   /**
    *  Creates an OFUUID based on
    *  <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>, section 5.7.
-   *  @param rnd A random number generator (RNG) functor. Provide if special
+   *  @param rnd A random number generator (RNG) functor which must be thread-safe
+   *  if this method is called from multiple threads. Provide if special
    *  requirements with respect to unguessability of the to be created OFUUID
    *  exist. See <a href="https://www.rfc-editor.org/info/rfc9562">RFC 9562</a>,
    *  section 6.9 for details.
    *
    *  @return A OFshared_ptr encapsulating a newly created OFUUID instance.
    *  @warning The returned object may contain a null pointer (@ref
-   * OFnullptr_t).
+   *  OFnullptr_t).
    */
-  static OFshared_ptr<OFUUID> create(rnd8 const & = getRND8);
+  static OFshared_ptr<OFUUID> create(rnd8 const & rnd = getRND8);
 
 private:
   /**
@@ -180,7 +181,7 @@ private:
   static Uint32_32 getMillisecondsSinceEpoch();
 
   /**
-   *  Wrapper for @ref OFRandom::getRND8.
+   *  Thread-safe wrapper for @ref OFRandom::getRND8.
    *  @return A random Uint8 value.
    */
   static Uint8 getRND8();
@@ -194,15 +195,21 @@ private:
   /**
    *  Sets up the individual fields (@ref OFUUID::data_) of an OFUUID.
    *  @param[in,out] ofuuid The to be assembled OFUUID.
-   *  @param[in] rnd The random number genaratr functor to use.
+   *  @param[in] ms_since_epoch The number of milliseconds since January 1, 1970,
+   *  the UNIX epoch. Used to setup the 'unix_ts_ms' field of \p ofuuid.
+   *  @param[in] rand_a_base Pseudorandom number used to setup the 'rand_a' field
+   *  of \p ofuuid.
+   *  @param[in] rnd The random number generator functor to use. Used to setup
+   *  the 'rand_b' field of \p ofuuid.
    */
-  static void setupOFUUIDDataMember(OFUUID * const ofuuid, rnd8 const & rnd);
+  static void setupOFUUIDDataMember(OFUUID * const ofuuid, Uint32_32 const & ms_since_epoch,
+                                    Uint16 const rand_a_base, rnd8 const & rnd);
 
   static Uint8 const OFUUID_VARIANT_MASK = 0x80; // cf. RFC9562, section 4.1
   static Uint8 const OFUUID_VERSION_MASK = 0x70; // cf. RFC9562, section 4.2
 
   static Uint32_32 last_ms_since_epoch_;
-  static Uint16 rand_b_field_;
+  static Uint16 rand_a_base_;
 
   /**
    *  Default constructor.

@@ -25,11 +25,71 @@
 #define OFTEST_OFSTD_ONLY
 #include "dcmtk/ofstd/ofmem.h"
 #include "dcmtk/ofstd/oftest.h"
+#include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofuuidgn.h"
+#include "dcmtk/ofstd/ofvector.h"
 
-
+#include <cstdlib>
+#include <cstring>
 #include <ctime>
 #include <iostream>
+
+#ifdef WITH_THREADS
+
+static size_t const THREAD_COUNT = 4;
+static size_t const OFUUIDS_PER_THREAD = 25000;
+static size_t const CANONICAL_NOTATION_SIZE = 37; // incl. terminating NUL
+
+class OFUUIDThread : public OFThread
+{
+public:
+  OFUUIDThread() : OFThread(), buffer_(NULL) {}
+
+  virtual void run() {
+    for (size_t i = 0; i < OFUUIDS_PER_THREAD; ++i) {
+      OFshared_ptr<OFUUID> const a = OFUUIDGenerator::create();
+      if (a) {
+        OFStandard::strlcpy(buffer_ + i * CANONICAL_NOTATION_SIZE,
+          a->toString(OFUUID::NotationCanonical).c_str(), CANONICAL_NOTATION_SIZE);
+      }
+    }
+  }
+
+  // Where to store the canonical notations of the OFUUIDs created.
+  char * buffer_;
+};
+
+static int
+compare_strings(void const * a,
+                void const * b) {
+  return strcmp(OFstatic_cast(char const *, a), OFstatic_cast(char const *, b));
+}
+
+// Counts the strings in 'uuids' whose 'length' characters at 'offset' equal
+// those of another string.
+static size_t
+count_duplicates(OFVector<char> const & uuids,
+                 size_t const offset,
+                 size_t const length) {
+  size_t const count = uuids.size() / CANONICAL_NOTATION_SIZE;
+  OFVector<char> keys(count * (length + 1), '\0');
+  for (size_t i = 0; i < count; ++i) {
+    memcpy(&keys[i * (length + 1)], &uuids[i * CANONICAL_NOTATION_SIZE + offset], length);
+  }
+
+  qsort(&keys[0], count, length + 1, compare_strings);
+
+  size_t duplicates = 0;
+  for (size_t i = 1; i < count; ++i) {
+    if (strcmp(&keys[(i - 1) * (length + 1)], &keys[i * (length + 1)]) == 0) {
+      ++duplicates;
+    }
+  }
+
+  return duplicates;
+}
+
+#endif // WITH_THREADS
 
 static void
 verify_notation_canonical(OFString const & s) {
@@ -239,6 +299,37 @@ OFTEST(ofstd_OFUUID_monotonicity)
   }
 }
 
+#ifdef WITH_THREADS
+
+OFTEST(ofstd_OFUUID_threads)
+{
+  // Verify that OFUUIDs created concurrently by several threads are unique.
+  OFVector<char> uuids(THREAD_COUNT * OFUUIDS_PER_THREAD * CANONICAL_NOTATION_SIZE, '\0');
+  OFUUIDThread threads[THREAD_COUNT];
+  for (size_t i = 0; i < THREAD_COUNT; ++i) {
+    threads[i].buffer_ = &uuids[i * OFUUIDS_PER_THREAD * CANONICAL_NOTATION_SIZE];
+    OFCHECK(threads[i].start() == 0);
+  }
+
+  for (size_t i = 0; i < THREAD_COUNT; ++i) {
+    OFCHECK(threads[i].join() == 0);
+  }
+
+  // The timestamp and the counter, i.e. the first 18 characters of the
+  // canonical notation, must be unique within a process.
+  size_t const counterDuplicates = count_duplicates(uuids, 0, 18);
+  OFCHECK_EQUAL(counterDuplicates, 0U);
+
+  // The random part, i.e. the last 17 characters of the canonical notation
+  // (62 random bits), must not repeat either. The probability of a collision
+  // among 100000 OFUUIDs is about 1e-9.
+  size_t const randomDuplicates = count_duplicates(uuids, 19, 17);
+  OFCHECK_EQUAL(randomDuplicates, 0U);
+}
+
+#endif // WITH_THREADS
+
+
 OFTEST(ofstd_OFUUID_timestamp)
 {
   // Verify that the timestamp of an OFUUID holds the number of milliseconds
@@ -271,4 +362,5 @@ OFTEST(ofstd_OFUUID_timestamp)
   OFCHECK(before - 60 <= seconds);
   OFCHECK(seconds <= after + 60);
 }
+
 

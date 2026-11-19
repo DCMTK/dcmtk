@@ -73,6 +73,9 @@ OFTEST_REGISTER(ofstd_OFUUID_variant);
 OFTEST_REGISTER(ofstd_OFUUID_version);
 OFTEST_REGISTER(ofstd_OFUUID_monotonicity);
 OFTEST_REGISTER(ofstd_OFUUID_timestamp);
+#ifdef WITH_THREADS
+OFTEST_REGISTER(ofstd_OFUUID_threads);
+#endif // WITH_THREADS
 OFTEST_REGISTER(ofstd_OFVector);
 OFTEST_REGISTER(ofstd_atof);
 OFTEST_REGISTER(ofstd_base64_1);
