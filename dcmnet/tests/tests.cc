@@ -30,6 +30,7 @@ OFTEST_REGISTER(dcmnet_parseAssociate_extNeg_malformed_itemLength);
 OFTEST_REGISTER(dcmnet_parseAssociate_duplicate_userIdentity);
 OFTEST_REGISTER(dcmnet_parseUserIdentity_secondaryField_bytesRead);
 OFTEST_REGISTER(dcmnet_parseAssociate_presCtx_malformed_transferSyntax);
+OFTEST_REGISTER(dcmnet_assoc_cfg_copy_alwaysAcceptDefaultRole);
 
 #ifdef WITH_THREADS
 OFTEST_REGISTER(dcmnet_scp_pool);

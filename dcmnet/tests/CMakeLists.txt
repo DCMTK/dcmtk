@@ -1,5 +1,6 @@
 # declare executables
 DCMTK_ADD_TEST_EXECUTABLE(dcmnet_tests
+  tasccfg.cc
   tassocleak.cc
   tdimse.cc
   tdump.cc
