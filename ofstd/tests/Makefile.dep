@@ -396,7 +396,7 @@ tuuid.o: tuuid.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/diag/pop.def ../include/dcmtk/ofstd/oflimits.h \
  ../include/dcmtk/ofstd/oferror.h ../include/dcmtk/ofstd/ofexit.h \
  ../include/dcmtk/ofstd/ofuuidgn.h ../include/dcmtk/ofstd/ofuuid.h \
- ../include/dcmtk/ofstd/ofrand.h
+ ../include/dcmtk/ofstd/ofrand.h ../include/dcmtk/ofstd/ofvector.h
 tvariant.o: tvariant.cc ../../config/include/dcmtk/config/osconfig.h \
  ../include/dcmtk/ofstd/oftest.h ../include/dcmtk/ofstd/ofconapp.h \
  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofdefine.h \
