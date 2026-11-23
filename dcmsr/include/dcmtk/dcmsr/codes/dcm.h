@@ -5,8 +5,8 @@
  *
  *  Header file with DICOM Controlled Terminology Code Definitions (Coding Scheme "DCM", Version "01")
  *
- *  Generated automatically from DICOM PS 3.16-2026c
- *  File created on 2026-06-21 21:03:41 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 11:51:52 by J. Riesmeier
  *
  */
 
@@ -34,7 +34,7 @@
  *  code definitions  *
  *--------------------*/
 
-// total number of codes: 5164
+// total number of codes: 5170
 // - retired: 213
 // - no name: 27
 // - not unique: 17
@@ -5212,5 +5212,11 @@
 #define CODE_DCM_BasisImageDecomposition                                   DSRBasicCodedEntry("131567", "DCM", "Basis image decomposition")
 #define CODE_DCM_ComptonScattering                                         DSRBasicCodedEntry("131568", "DCM", "Compton Scattering")
 #define CODE_DCM_PhotoelectricEffect                                       DSRBasicCodedEntry("131569", "DCM", "Photoelectric Effect")
+#define CODE_DCM_AutomatedSegmentationDevice                               DSRBasicCodedEntry("131570", "DCM", "Automated Segmentation Device")
+#define CODE_DCM_AutomatedRegistrationDevice                               DSRBasicCodedEntry("131571", "DCM", "Automated Registration Device")
+#define CODE_DCM_ApprovedForContouring                                     DSRBasicCodedEntry("131572", "DCM", "Approved for Contouring")
+#define CODE_DCM_DisapprovedForContouring                                  DSRBasicCodedEntry("131573", "DCM", "Disapproved for Contouring")
+#define CODE_DCM_ApprovedForRadiotherapyTreatmentPlanning                  DSRBasicCodedEntry("131574", "DCM", "Approved for radiotherapy treatment planning")
+#define CODE_DCM_DisapprovedForRadiotherapyTreatmentPlanning               DSRBasicCodedEntry("131575", "DCM", "Disapproved for radiotherapy treatment planning")
 
 #endif
