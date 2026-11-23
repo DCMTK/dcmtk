@@ -185,5 +185,8 @@ OFTEST_REGISTER(dcmdata_condition_tagname);
 OFTEST_REGISTER(dcmdata_fhstrm_single);
 OFTEST_REGISTER(dcmdata_fhstrm_lazy);
 OFTEST_REGISTER(dcmdata_fhstrm_multi);
+OFTEST_REGISTER(dcmdata_json_malformed_token_oob);
+OFTEST_REGISTER(dcmdata_json_empty_vr_and_desync_bounds);
+OFTEST_REGISTER(dcmdata_json_urlDecode_truncated);
 
 OFTEST_MAIN("dcmdata")

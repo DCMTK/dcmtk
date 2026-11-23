@@ -239,8 +239,14 @@ private:
   /// private unimplemented copy assignment operator
   DcmJSONReader& operator=(const DcmJSONReader&);
 
+  /** check if the given token pointer refers to a valid token inside tokenArray_
+   *  @param t token pointer to validate
+   *  @return OFTrue if t points into [tokenArray_, tokenArray_ + tokenNumber_), OFFalse otherwise
+   */
+  OFBool isValidToken(OFJsmnTokenPtr t) const;
+
   /** helper function to retrieve the content of the token.
-   *  There is no check on boundaries!
+   *  Checks token pointer and dataset boundaries before accessing the token.
    *  @param value the result string
    *  @param t token pointer
    */

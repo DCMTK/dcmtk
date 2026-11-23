@@ -226,8 +226,23 @@ OFCondition DcmJSONReader::reserveTokens()
 }
 
 
+OFBool DcmJSONReader::isValidToken(OFJsmnTokenPtr t) const
+{
+    return (tokenArray_ != NULL)
+        && (tokenNumber_ > 0)
+        && (t >= tokenArray_)
+        && (t < tokenArray_ + tokenNumber_);
+}
+
+
 void DcmJSONReader::getTokenContent(OFString& value, OFJsmnTokenPtr t)
 {
+    if (!isValidToken(t))
+    {
+        value = "";
+        return;
+    }
+
     int size = t->end - t->start;
 
     // prevent out-of bounds access
@@ -607,6 +622,11 @@ OFCondition DcmJSONReader::parseElement(
     }
 
     OFCondition result = EC_Normal;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream while parsing element");
+        return EC_InvalidJSONContent;
+    }
     DCMDATA_TRACE("element at " << current->start);
 
     // the key for the element tag has to be a string
@@ -626,6 +646,11 @@ OFCondition DcmJSONReader::parseElement(
 
     // the next token contains the whole element encapsulated into a JSON object.
     current++;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream while parsing element content");
+        return EC_InvalidJSONContent;
+    }
     if (current->type != JSMN_OBJECT)
     {
         DCMDATA_ERROR("not a valid DICOM JSON dataset: element content must be a JSON object");
@@ -642,11 +667,21 @@ OFCondition DcmJSONReader::parseElement(
     OFString valueType;
     for (int count = 0; count < contentSize; count++)
     {
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing element attributes");
+            return EC_InvalidJSONContent;
+        }
         OFString attrName;
         getTokenContent(attrName, current);
         attrName = OFStandard::toLower(attrName);
         DCMDATA_TRACE("attribute '" << attrName << "' token at " << current->start << " - " << current->end);
         current++;
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing attribute '" << attrName << "'");
+            return EC_InvalidJSONContent;
+        }
 
         if (attrName == "vr")
         {
@@ -675,8 +710,10 @@ OFCondition DcmJSONReader::parseElement(
         }
         // find the next token in the current hierarchy
         OFJsmnTokenPtr tmpToken = current;
-        while (current->start < tmpToken->end)
+        do
+        {
             current++;
+        } while (isValidToken(current) && (current->start < tmpToken->end));
     }
 
     OFString vr = "";
@@ -936,6 +973,11 @@ OFCondition DcmJSONReader::parseSequence(
     OFJsmnTokenPtr& current)
 {
     OFCondition result = EC_Normal;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream while parsing sequence");
+        return EC_InvalidJSONContent;
+    }
     int sqSize = current->size;
     int sqStart = current->start;
 
@@ -945,6 +987,11 @@ OFCondition DcmJSONReader::parseSequence(
     // iterate over sequence items
     for (int i = 0; i < sqSize; i++)
     {
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing sequence item");
+            return EC_InvalidJSONContent;
+        }
         DCMDATA_TRACE("item " << sqStart << ":" << i << " -- " << current->start);
 
         // sequence items have to be an object
@@ -961,9 +1008,9 @@ OFCondition DcmJSONReader::parseSequence(
             result = parseDataSet(newItem, NULL, depth + 1, current);
             if (result.bad() && stopOnErrorPolicy_) return result;
         }
-        DCMDATA_TRACE("item " << sqStart << ":" << i << " end, next up : " << current->start);
+        DCMDATA_TRACE("item " << sqStart << ":" << i << " end, next up : " << (isValidToken(current) ? current->start : -1));
     }
-    DCMDATA_TRACE("sequence end: " << sqStart << "; next element: " << current->start);
+    DCMDATA_TRACE("sequence end: " << sqStart << "; next element: " << (isValidToken(current) ? current->start : -1));
     return result;
 }
 
@@ -981,6 +1028,11 @@ OFCondition DcmJSONReader::parseDataSet(
     }
 
     OFCondition result = EC_Normal;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream while parsing dataset");
+        return EC_InvalidJSONContent;
+    }
 
     // we expect a JSON object that encapsulates the DICOM dataset
     if (current->type != JSMN_OBJECT)
@@ -995,11 +1047,16 @@ OFCondition DcmJSONReader::parseDataSet(
     current++;
     for (int i = 0; i < dsSize; i++)
     {
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing dataset elements");
+            return EC_InvalidJSONContent;
+        }
         // read each entry in the content object as a DICOM element
         result = parseElement(dataset, metaheader, depth + 1, current);
         if (result.bad() && stopOnErrorPolicy_) return result;
     }
-    DCMDATA_TRACE("dataset end " << dsStart << "; next element: " << current->start);
+    DCMDATA_TRACE("dataset end " << dsStart << "; next element: " << (isValidToken(current) ? current->start : -1));
     return result;
 }
 
@@ -1013,6 +1070,11 @@ OFCondition DcmJSONReader::parsePersonName(
     static const char *PersonGroupNames[] = { "Alphabetic", "Ideographic", "Phonetic" };
 
     OFCondition result;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream while parsing person name");
+        return EC_InvalidJSONContent;
+    }
     int size = current->size;
     if (size > 3)
     {
@@ -1024,6 +1086,11 @@ OFCondition DcmJSONReader::parsePersonName(
     for (int i = 0; i < size; i++)
     {
         current++;
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing person name key");
+            return EC_InvalidJSONContent;
+        }
         if (current->type != JSMN_STRING)
         {
             DCMDATA_ERROR("not a valid DICOM JSON dataset: PN values must be JSON strings");
@@ -1050,6 +1117,11 @@ OFCondition DcmJSONReader::parsePersonName(
 
         // if pn[idx] is not empty, it will be overwritten.
         current++;
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing person name value");
+            return EC_InvalidJSONContent;
+        }
         if (current->type != JSMN_STRING)
         {
             DCMDATA_ERROR("not a valid DICOM JSON dataset: PN values must be JSON strings");
@@ -1083,6 +1155,11 @@ OFCondition DcmJSONReader::parseElementValueArray(
     OFJsmnTokenPtr& current)
 {
     OFCondition result;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream while parsing value array");
+        return EC_InvalidJSONContent;
+    }
     OFString vmString;
     OFString value;
     int vm = current->size;
@@ -1091,6 +1168,11 @@ OFCondition DcmJSONReader::parseElementValueArray(
     {
         value.clear();
         current++;
+        if (!isValidToken(current))
+        {
+            DCMDATA_ERROR("unexpected end of JSON token stream while parsing value array element");
+            return EC_InvalidJSONContent;
+        }
         if (newElem->ident() == EVR_PN)
         {
             // special handling for person names (PN)
@@ -1281,10 +1363,15 @@ OFCondition DcmJSONReader::readAndConvertJSONFile(
 
     // use the JSON library to parse the string and save it to the token array.
     result = parseJSON();
-    if (result.bad() && stopOnErrorPolicy_) return result;
+    if (result.bad()) return result;
 
     // check if the token array starts with a JSON array or a JSON object
     OFJsmnTokenPtr current = tokenArray_;
+    if (!isValidToken(current))
+    {
+        DCMDATA_ERROR("unexpected end of JSON token stream");
+        return EC_InvalidJSONContent;
+    }
     if (current->type == JSMN_ARRAY)
     {
         if (current->size < 1)
@@ -1298,6 +1385,11 @@ OFCondition DcmJSONReader::readAndConvertJSONFile(
             // Silently ignore the array structure and parse the dataset
             DCMDATA_DEBUG("DcmJSONReader: parsing JSON array containing a single dataset");
             current++;
+            if (!isValidToken(current))
+            {
+                DCMDATA_ERROR("unexpected end of JSON token stream");
+                return EC_InvalidJSONContent;
+            }
             result = parseDataSet(dataset, metaheader, 0, current);
         }
         else
@@ -1343,9 +1435,20 @@ OFCondition DcmJSONReader::readAndConvertJSONFile(
                     // recursively skip tokens including their sub-tokens until we are done
                     while (tokensToSkip > 0)
                     {
+                      if (!isValidToken(current))
+                      {
+                        DCMDATA_ERROR("unexpected end of JSON token stream");
+                        return EC_InvalidJSONContent;
+                      }
                       tokensToSkip += current->size;
                       current++;
                       tokensToSkip--;
+                    }
+
+                    if (!isValidToken(current))
+                    {
+                      DCMDATA_ERROR("unexpected end of JSON token stream");
+                      return EC_InvalidJSONContent;
                     }
 
                     // extract the single dataset at the target location
@@ -1383,12 +1486,12 @@ OFBool DcmJSONReader::isHttpURI(const OFString& uri) const
 
 OFCondition DcmJSONReader::urlDecode(OFString& uri) const
 {
-    size_t pos;
+    size_t pos = 0;
     unsigned int val = 0;
     char c;
-    while (OFString_npos != (pos = uri.find("%")))
+    while (OFString_npos != (pos = uri.find("%", pos)))
     {
-       if (uri.length() + 3 < pos)
+       if (uri.length() - pos < 3)
        {
             DCMDATA_ERROR("incomplete URL code: " << uri.substr(pos, 3));
             return EC_UnsupportedURIType;
@@ -1415,6 +1518,7 @@ OFCondition DcmJSONReader::urlDecode(OFString& uri) const
        }
        uri[pos] = OFstatic_cast(char, val);
        uri.erase(pos+1, 2);
+       ++pos;
     }
     return EC_Normal;
 }

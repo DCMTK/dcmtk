@@ -13,6 +13,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tgenuid.cc
   ti2dbmp.cc
   titem.cc
+  tjsonrd.cc
   tmatch.cc
   tmaxlen.cc
   tnesting.cc
