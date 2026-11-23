@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 12:16:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:32 by J. Riesmeier
  *
  */
 
@@ -495,13 +495,13 @@ class DCMTK_CMR_EXPORT CID218_QuantitativeImageFeature
         /// (126312,DCM,"Ktrans"), included from CID 4107
         Ktrans,
         /// (126313,DCM,"kep"), included from CID 4107
-        Kep,
+        kep,
         /// (126314,DCM,"ve"), included from CID 4107
-        Ve,
+        ve,
         /// (126330,DCM,"tau_m"), included from CID 4107
-        Tau_m,
+        tau_m,
         /// (126331,DCM,"vp"), included from CID 4107
-        Vp,
+        vp,
         /// (126390,DCM,"Absolute Regional Blood Flow"), included from CID 4108
         AbsoluteRegionalBloodFlow,
         /// (126391,DCM,"Absolute Regional Blood Volume"), included from CID 4108

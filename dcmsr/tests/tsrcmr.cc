@@ -247,7 +247,7 @@ OFTEST(dcmsr_TID1411_VolumetricROIMeasurements)
     OFCHECK(volumetric.addFindingSite(DSRBasicCodedEntry("EFGH", "99TEST", "Finding Site"), CMR_CID244::Bilateral).good());
     OFCHECK(!volumetric.hasMeasurements());
     OFCHECK(!measurement.hasMeasurement());
-    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1419_in_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::CubicMillimeter)).good());
+    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Volume, CMR_TID1419_in_TID1411_in_TID1500::MeasurementValue("15", CMR_CID7181::mm3)).good());
     OFCHECK(volumetric.hasMeasurements());
     OFCHECK(measurement.hasMeasurement());
     OFCHECK(measurement.setDerivation(CMR_CID7464::StandardDeviation).good());
@@ -398,7 +398,7 @@ OFTEST(dcmsr_TID1500_MeasurementReport)
     OFCHECK(linMeasurements.compareTemplateIdentication("1501", "DCMR"));
     OFCHECK(linMeasurements.setTrackingIdentifier("aorta reference region").good());
     OFCHECK(linMeasurements.setTrackingUniqueIdentifier("1.2.3.4.5").good());
-    const CMR_TID1501_in_TID1500::MeasurementValue numVal3("11", CMR_CID7181::Millimeter);
+    const CMR_TID1501_in_TID1500::MeasurementValue numVal3("11", CMR_CID7181::mm);
     OFCHECK(linMeasurements.addMeasurement(CMR_CID7469::Distance, numVal3).good());
     OFCHECK(linMeasurements.addMeasurement(CMR_CID7469::Diameter, numVal3).good());
 
@@ -523,7 +523,7 @@ OFTEST(dcmsr_TID1501_MeasurementGroup)
     CMR_TID300_in_TID1501_in_TID1500 &measurement = group.getMeasurement();
     OFCHECK(!group.hasMeasurements());
     OFCHECK(!measurement.hasMeasurement());
-    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Distance, CMR_TID1501_in_TID1500::MeasurementValue("5", CMR_CID7181::Centimeter)).good());
+    OFCHECK(measurement.createNewMeasurement(CMR_CID7469::Distance, CMR_TID1501_in_TID1500::MeasurementValue("5", CMR_CID7181::cm)).good());
     OFCHECK(group.hasMeasurements());
     OFCHECK(measurement.hasMeasurement());
     OFCHECK(group.isValid());
@@ -554,7 +554,7 @@ OFTEST(dcmsr_TID1501_MeasurementGroup)
     OFCHECK_EQUAL(group.countNodes(OFTrue /*searchIntoSubTemplates*/), 24);
     /* and, finally, change an existing template value and add a measurement */
     OFCHECK(group.setTrackingIdentifier("tracking #2").good());
-    OFCHECK(group.addMeasurement(CMR_CID7469::Diameter, CMR_TID1501_in_TID1500::MeasurementValue("10", CMR_CID7181::Millimeter)).good());
+    OFCHECK(group.addMeasurement(CMR_CID7469::Diameter, CMR_TID1501_in_TID1500::MeasurementValue("10", CMR_CID7181::mm)).good());
     OFCHECK_EQUAL(group.countNodes(OFTrue /*searchIntoSubTemplates*/), 26);
 
     /* output content of the tree (in debug mode only) */

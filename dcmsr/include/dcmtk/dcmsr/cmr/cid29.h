@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID29_AcquisitionModality
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 12:16:41 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:29 by J. Riesmeier
  *
  */
 

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID7181_AbstractMultiDimensionalImageModelComponentUnit
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 12:16:51 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:44 by J. Riesmeier
  *
  */
 
@@ -28,7 +28,7 @@
 
 /** Implementation of DCMR Context Group:
  *  CID 7181 - Abstract Multi-dimensional Image Model Component Unit.
- *  (type: extensible, version: 20180605)
+ *  (type: extensible, version: 20261115)
  */
 class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnit
   : public DSRContextGroup
@@ -41,41 +41,41 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnit
     enum EnumType
     {
         /// (mm[Hg],UCUM,"mmHg"), included from CID 3500
-        MmHg,
+        mmHg,
         /// (kPa,UCUM,"kPa"), included from CID 3500
-        KPa,
+        kPa,
         /// ([PRU],UCUM,"P.R.U."), included from CID 3502
         PRU,
         /// ([wood'U],UCUM,"Wood U"), included from CID 3502
         WoodU,
         /// (dyn.s.cm-5,UCUM,"dyn.s.cm-5"), included from CID 3502
-        Dynscm5,
+        dynscm5,
         /// ([PRU]/m2,UCUM,"P.R.U./m2"), included from CID 3503
         PRUPerM2,
         /// ([wood'U]/m2,UCUM,"Wood U/m2"), included from CID 3503
         WoodUPerM2,
         /// (dyn.s.cm-5/m2,UCUM,"dyn.s.cm-5/m2"), included from CID 3503
-        Dynscm5PerM2,
-        /// (cm,UCUM,"centimeter"), included from CID 7460
-        Centimeter,
-        /// (mm,UCUM,"millimeter"), included from CID 7460
-        Millimeter,
-        /// (um,UCUM,"micrometer"), included from CID 7460
-        Micrometer,
-        /// (cm2,UCUM,"square centimeter"), included from CID 7461
-        SquareCentimeter,
-        /// (mm2,UCUM,"square millimeter"), included from CID 7461
-        SquareMillimeter,
-        /// (um2,UCUM,"square micrometer"), included from CID 7461
-        SquareMicrometer,
-        /// (dm3,UCUM,"cubic decimeter"), included from CID 7462
-        CubicDecimeter,
-        /// (cm3,UCUM,"cubic centimeter"), included from CID 7462
-        CubicCentimeter,
-        /// (mm3,UCUM,"cubic millimeter"), included from CID 7462
-        CubicMillimeter,
-        /// (um3,UCUM,"cubic micrometer"), included from CID 7462
-        CubicMicrometer,
+        dynscm5PerM2,
+        /// (cm,UCUM,"cm"), included from CID 7460
+        cm,
+        /// (mm,UCUM,"mm"), included from CID 7460
+        mm,
+        /// (um,UCUM,"um"), included from CID 7460
+        um,
+        /// (cm2,UCUM,"cm2"), included from CID 7461
+        cm2,
+        /// (mm2,UCUM,"mm2"), included from CID 7461
+        mm2,
+        /// (um2,UCUM,"um2"), included from CID 7461
+        um2,
+        /// (dm3,UCUM,"dm3"), included from CID 7462
+        dm3,
+        /// (cm3,UCUM,"cm3"), included from CID 7462
+        cm3,
+        /// (mm3,UCUM,"mm3"), included from CID 7462
+        mm3,
+        /// (um3,UCUM,"um3"), included from CID 7462
+        um3,
         /// (g/ml{SUVbw},UCUM,"Standardized Uptake Value body weight"), included from CID 85
         StandardizedUptakeValueBodyWeight,
         /// (g/ml{SUVlbm},UCUM,"Standardized Uptake Value lean body mass (James)"), included from CID 85
@@ -88,38 +88,38 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnit
         StandardizedUptakeValueBodySurfaceArea,
         /// (g/ml{SUVibw},UCUM,"Standardized Uptake Value ideal body weight"), included from CID 85
         StandardizedUptakeValueIdealBodyWeight,
-        /// ({counts},UCUM,"Counts"), included from CID 84
-        Counts,
-        /// ({counts}/s,UCUM,"Counts per second"), included from CID 84
-        CountsPerSecond,
+        /// ({counts},UCUM,"counts"), included from CID 84
+        counts,
+        /// ({counts}/s,UCUM,"counts/s"), included from CID 84
+        countsPerS,
         /// ({propcounts},UCUM,"Proportional to counts"), included from CID 84
         ProportionalToCounts,
         /// ({propcounts}/s,UCUM,"Proportional to counts per second"), included from CID 84
         ProportionalToCountsPerSecond,
-        /// (cm2/ml,UCUM,"Centimeter**2/milliliter"), included from CID 84
-        SquareCentimeterPerMilliliter,
-        /// (%,UCUM,"Percent"), included from CID 84
+        /// (cm2/ml,UCUM,"cm2/ml"), included from CID 84
+        cm2PerMl,
+        /// (%,UCUM,"%"), included from CID 84
         Percent,
-        /// (Bq/ml,UCUM,"Becquerels/milliliter"), included from CID 84
-        BecquerelsPerMilliliter,
-        /// (mg/min/ml,UCUM,"Milligrams/minute/milliliter"), included from CID 84
-        MilligramsPerMinutePerMilliliter,
-        /// (umol/min/ml,UCUM,"Micromole/minute/milliliter"), included from CID 84
-        MicromolePerMinutePerMilliliter,
-        /// (ml/min/g,UCUM,"Milliliter/minute/gram"), included from CID 84
-        MilliliterPerMinutePerGram,
-        /// (ml/g,UCUM,"Milliliter/gram"), included from CID 84
-        MilliliterPerGram,
-        /// (/cm,UCUM,"/Centimeter"), included from CID 84
-        PerCentimeter,
-        /// (umol/ml,UCUM,"Micromole/milliliter"), included from CID 84
-        MicromolePerMilliliter,
+        /// (Bq/ml,UCUM,"Bq/ml"), included from CID 84
+        BqPerMl,
+        /// (mg/min/ml,UCUM,"mg/min/ml"), included from CID 84
+        mgPerMinPerMl,
+        /// (umol/min/ml,UCUM,"umol/min/ml"), included from CID 84
+        umolPerMinPerMl,
+        /// (ml/min/g,UCUM,"ml/min/g"), included from CID 84
+        mlPerMinPerG,
+        /// (ml/g,UCUM,"ml/g"), included from CID 84
+        mlPerG,
+        /// (/cm,UCUM,"/cm"), included from CID 84
+        PerCm,
+        /// (umol/ml,UCUM,"umol/ml"), included from CID 84
+        umolPerMl,
         /// (mm2/s,UCUM,"mm2/s"), included from CID 7277
-        Mm2PerS,
+        mm2PerS,
         /// (um2/ms,UCUM,"um2/ms"), included from CID 7277
-        Um2PerMs,
+        um2PerMs,
         /// (um2/s,UCUM,"um2/s"), included from CID 7277
-        Um2PerS,
+        um2PerS,
         /// (10-6.mm2/s,UCUM,"10-6.mm2/s"), included from CID 7277
         _106mm2PerS,
         /// (Gy,UCUM,"Gy"), included from CID 10071
@@ -127,45 +127,47 @@ class DCMTK_CMR_EXPORT CID7181_AbstractMultiDimensionalImageModelComponentUnit
         /// (Sv,UCUM,"Sv"), included from CID 10071
         Sv,
         /// (1,UCUM,"no units")
-        NoUnits,
+        noUnits,
         /// ({ratio},UCUM,"ratio")
-        Ratio,
-        /// ([hnsf'U],UCUM,"Hounsfield Unit")
+        ratio,
+        /// ([hnsf'U],UCUM,"Hounsfield unit")
         HounsfieldUnit,
+        /// ({counts},UCUM,"Counts")
+        Counts,
         /// ([arb'U],UCUM,"arbitrary unit")
-        ArbitraryUnit,
-        /// (ppm,UCUM,"ppm")
-        Ppm,
-        /// (cm/s,UCUM,"centimeter/second")
-        CentimeterPerSecond,
-        /// (mm/s,UCUM,"millimeter/second")
-        MillimeterPerSecond,
-        /// (dB,UCUM,"decibel")
-        Decibel,
-        /// (Cel,UCUM,"degrees Celsius")
-        DegreesCelsius,
-        /// (ml/min,UCUM,"milliliter per minute")
-        MilliliterPerMinute,
-        /// (ml/s,UCUM,"milliliter per second")
-        MilliliterPerSecond,
-        /// (ms,UCUM,"millisecond")
-        Millisecond,
-        /// (s,UCUM,"second")
-        Second,
-        /// (Hz,UCUM,"Hertz")
-        Hertz,
-        /// (mT,UCUM,"milliTesla")
-        MilliTesla,
-        /// ({Particles}/[100]g{Tissue},UCUM,"number particles per 100 gram of tissue")
-        NumberParticlesPer100GramOfTissue,
-        /// (s/mm2,UCUM,"second per square millimeter")
-        SecondPerSquareMillimeter,
-        /// (ml/[100]g/min,UCUM,"milliliter per 100 gram per minute")
-        MilliliterPer100GramPerMinute,
-        /// (ml/[100]ml,UCUM,"milliliter per 100 milliliter")
-        MilliliterPer100Milliliter,
-        /// (mmol/kg{WetWeight},UCUM,"millimoles per kg wet weight")
-        MillimolesPerKgWetWeight,
+        arbitraryUnit,
+        /// ([ppm],UCUM,"ppm")
+        ppm,
+        /// (cm/s,UCUM,"cm/s")
+        cmPerS,
+        /// (mm/s,UCUM,"mm/s")
+        mmPerS,
+        /// (dB,UCUM,"dB")
+        dB,
+        /// (Cel,UCUM,"Cel")
+        Cel,
+        /// (ml/min,UCUM,"ml/min")
+        mlPerMin,
+        /// (ml/s,UCUM,"ml/s")
+        mlPerS,
+        /// (ms,UCUM,"ms")
+        ms,
+        /// (s,UCUM,"s")
+        s,
+        /// (Hz,UCUM,"Hz")
+        Hz,
+        /// (mT,UCUM,"mT")
+        mT,
+        /// ({Particles}/(100)g{Tissue},UCUM,"Particles/100g tissue")
+        ParticlesPer100gTissue,
+        /// (s/mm2,UCUM,"s/mm2")
+        sPerMm2,
+        /// (ml/(100)g/min,UCUM,"ml/(100)g/min")
+        mlPer100gPerMin,
+        /// (ml/(100)ml,UCUM,"ml/(100)ml")
+        mlPer100ml,
+        /// (mmol/kg{WetWeight},UCUM,"mmol/kg wet weight")
+        mmolPerKgWetWeight,
         /// (/min,UCUM,"/min")
         PerMin,
         /// (/s,UCUM,"/s")

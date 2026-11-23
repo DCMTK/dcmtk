@@ -5,8 +5,8 @@
  *
  *  Source file for class CID7012_BestInSet
  *
- *  Generated automatically from DICOM PS 3.16-2026d
- *  File created on 2026-11-12 15:49:17 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:42 by J. Riesmeier
  *
  */
 

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID218_QuantitativeImageFeature
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 12:16:44 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:32 by J. Riesmeier
  *
  */
 
@@ -377,10 +377,10 @@ CID218_QuantitativeImageFeature::CodeList &CID218_QuantitativeImageFeature::getC
         Codes->insert(OFMake_pair(MagnetizationTransferRatio, DSRBasicCodedEntry("113098", "DCM", "Magnetization Transfer Ratio")));
         Codes->insert(OFMake_pair(MagneticSusceptibility, DSRBasicCodedEntry("126396", "DCM", "Magnetic Susceptibility")));
         Codes->insert(OFMake_pair(Ktrans, DSRBasicCodedEntry("126312", "DCM", "Ktrans")));
-        Codes->insert(OFMake_pair(Kep, DSRBasicCodedEntry("126313", "DCM", "kep")));
-        Codes->insert(OFMake_pair(Ve, DSRBasicCodedEntry("126314", "DCM", "ve")));
-        Codes->insert(OFMake_pair(Tau_m, DSRBasicCodedEntry("126330", "DCM", "tau_m")));
-        Codes->insert(OFMake_pair(Vp, DSRBasicCodedEntry("126331", "DCM", "vp")));
+        Codes->insert(OFMake_pair(kep, DSRBasicCodedEntry("126313", "DCM", "kep")));
+        Codes->insert(OFMake_pair(ve, DSRBasicCodedEntry("126314", "DCM", "ve")));
+        Codes->insert(OFMake_pair(tau_m, DSRBasicCodedEntry("126330", "DCM", "tau_m")));
+        Codes->insert(OFMake_pair(vp, DSRBasicCodedEntry("126331", "DCM", "vp")));
         Codes->insert(OFMake_pair(AbsoluteRegionalBloodFlow, DSRBasicCodedEntry("126390", "DCM", "Absolute Regional Blood Flow")));
         Codes->insert(OFMake_pair(AbsoluteRegionalBloodVolume, DSRBasicCodedEntry("126391", "DCM", "Absolute Regional Blood Volume")));
         Codes->insert(OFMake_pair(RelativeRegionalBloodFlow, DSRBasicCodedEntry("126397", "DCM", "Relative Regional Blood Flow")));

@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Source file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 12:16:47 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:37 by J. Riesmeier
  *
  */
 
@@ -174,12 +174,12 @@ CID4021_PETRadiopharmaceutical::CodeList &CID4021_PETRadiopharmaceutical::getCod
         Codes->insert(OFMake_pair(CarbonMonoxide_O15, DSRBasicCodedEntry("129506004", "SCT", "Carbon monoxide O^15^")));
         Codes->insert(OFMake_pair(Carfentanil_C11, DSRBasicCodedEntry("129511002", "SCT", "Carfentanil C^11^")));
         Codes->insert(OFMake_pair(Cetuximab_89Zr, DSRBasicCodedEntry("126513", "DCM", "Cetuximab ^89^Zr")));
-        Codes->insert(OFMake_pair(CG250Fab2_89Zr, DSRBasicCodedEntry("126517", "DCM", "cG250-F(ab')(2) ^89^Zr")));
+        Codes->insert(OFMake_pair(cG250Fab2_89Zr, DSRBasicCodedEntry("126517", "DCM", "cG250-F(ab')(2) ^89^Zr")));
         Codes->insert(OFMake_pair(Choline_C11, DSRBasicCodedEntry("126703", "DCM", "Choline C^11^")));
         Codes->insert(OFMake_pair(CLR1404_I124, DSRBasicCodedEntry("126715", "DCM", "CLR1404 I^124^")));
         Codes->insert(OFMake_pair(CLR1404_I131, DSRBasicCodedEntry("126716", "DCM", "CLR1404 I^131^")));
-        Codes->insert(OFMake_pair(CMAbU36_89Zr, DSRBasicCodedEntry("126746", "DCM", "cMAb U36 ^89^Zr")));
-        Codes->insert(OFMake_pair(CU36_89Zr, DSRBasicCodedEntry("126515", "DCM", "cU36 ^89^Zr")));
+        Codes->insert(OFMake_pair(cMAbU36_89Zr, DSRBasicCodedEntry("126746", "DCM", "cMAb U36 ^89^Zr")));
+        Codes->insert(OFMake_pair(cU36_89Zr, DSRBasicCodedEntry("126515", "DCM", "cU36 ^89^Zr")));
         Codes->insert(OFMake_pair(DASB_C11, DSRBasicCodedEntry("C412822", "MSH", "DASB C^11^")));
         Codes->insert(OFMake_pair(DCFBC_F18, DSRBasicCodedEntry("C96234", "NCIt", "DCFBC F^18^")));
         Codes->insert(OFMake_pair(DfFK2_89Zr, DSRBasicCodedEntry("126762", "DCM", "Df-[FK](2) ^89^Zr")));

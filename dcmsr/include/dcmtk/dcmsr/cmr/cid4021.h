@@ -1,12 +1,12 @@
 /*
  *
- *  Copyright (C) 2015-2025, J. Riesmeier, Oldenburg, Germany
+ *  Copyright (C) 2015-2026, J. Riesmeier, Oldenburg, Germany
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  Header file for class CID4021_PETRadiopharmaceutical
  *
- *  Generated automatically from DICOM PS 3.16-2025e
- *  File created on 2025-11-21 12:16:47 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:37 by J. Riesmeier
  *
  */
 
@@ -89,7 +89,7 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         /// (126513,DCM,"Cetuximab ^89^Zr")
         Cetuximab_89Zr,
         /// (126517,DCM,"cG250-F(ab')(2) ^89^Zr")
-        CG250Fab2_89Zr,
+        cG250Fab2_89Zr,
         /// (126703,DCM,"Choline C^11^")
         Choline_C11,
         /// (126715,DCM,"CLR1404 I^124^")
@@ -97,9 +97,9 @@ class DCMTK_CMR_EXPORT CID4021_PETRadiopharmaceutical
         /// (126716,DCM,"CLR1404 I^131^")
         CLR1404_I131,
         /// (126746,DCM,"cMAb U36 ^89^Zr")
-        CMAbU36_89Zr,
+        cMAbU36_89Zr,
         /// (126515,DCM,"cU36 ^89^Zr")
-        CU36_89Zr,
+        cU36_89Zr,
         /// (C412822,MSH,"DASB C^11^")
         DASB_C11,
         /// (C96234,NCIt,"DCFBC F^18^")

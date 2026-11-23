@@ -5,8 +5,8 @@
  *
  *  Header file for class CID7011_RejectedForQualityReason
  *
- *  Generated automatically from DICOM PS 3.16-2026d
- *  File created on 2026-11-12 15:49:16 by J. Riesmeier
+ *  Generated automatically from DICOM PS 3.16-2026e
+ *  File created on 2026-11-23 13:08:41 by J. Riesmeier
  *
  */
 
