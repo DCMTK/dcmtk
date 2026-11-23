@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2026-09-21 14:16:30
+**   Date: 2026-11-23 12:05:36
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -2411,7 +2411,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0047, 0x0010, 0x0047,
-      EVR_UR, "SexParametersForClinicalUseCategoryReference", 1, -1, "DICOM",
+      EVR_UR, "SexParametersForClinicalUseCategoryReference", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0010, 0x0050, 0x0010, 0x0050,
@@ -4047,7 +4047,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x4106, 0x0014, 0x4106,
-      EVR_SQ, "WaveDimensionValuesSequence", 1, -1, "DICOM/DICONDE",
+      EVR_SQ, "WaveDimensionValuesSequence", 1, 1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x4107, 0x0014, 0x4107,
@@ -4355,7 +4355,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x6025, 0x0014, 0x6025,
-      EVR_ST, "DataStreamingProtocol", 1, -1, "DICOM/DICONDE",
+      EVR_ST, "DataStreamingProtocol", 1, 1, "DICOM/DICONDE",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0014, 0x6026, 0x0014, 0x6026,
@@ -13206,6 +13206,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0020, 0x9167, 0x0020, 0x9167,
       EVR_AT, "FunctionalGroupPointer", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9168, 0x0020, 0x9168,
+      EVR_UL, "TotalNumberOfFramesInConcatenation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x9170, 0x0020, 0x9170,

@@ -21,8 +21,8 @@
 # DICONDE (Digital Imaging and Communication in Nondestructive Evaluation) and
 # DICOS (Digital Imaging and Communications in Security) standard.
 #
-# Generated automatically from DICOM PS 3.6-2026d and PS 3.7-2026d.
-# File created on 2026-09-21 14:02:36 by J. Riesmeier on thinkpad2.
+# Generated automatically from DICOM PS 3.6-2026e and PS 3.7-2026e.
+# File created on 2026-11-23 11:51:50 by J. Riesmeier on thinkpad2.
 #
 # In addition, the data dictionary entries from the following final text
 # supplements and correction items (CP) have been incorporated:
@@ -374,7 +374,7 @@
 (0010,0044)	SQ	GenderIdentityCodeSequence	1	DICOM
 (0010,0045)	UT	GenderIdentityComment	1	DICOM
 (0010,0046)	SQ	SexParametersForClinicalUseCategoryCodeSequence	1	DICOM
-(0010,0047)	UR	SexParametersForClinicalUseCategoryReference	1-n	DICOM
+(0010,0047)	UR	SexParametersForClinicalUseCategoryReference	1	DICOM
 (0010,0050)	SQ	PatientInsurancePlanCodeSequence	1	DICOM
 (0010,0101)	SQ	PatientPrimaryLanguageCodeSequence	1	DICOM
 (0010,0102)	SQ	PatientPrimaryLanguageModifierCodeSequence	1	DICOM
@@ -637,7 +637,7 @@
 (0014,4103)	LO	WaveDimensionDescription	1	DICOM/DICONDE
 (0014,4104)	US	WaveDimensionUnit	1	DICOM/DICONDE
 (0014,4105)	CS	WaveDimensionValueType	1	DICOM/DICONDE
-(0014,4106)	SQ	WaveDimensionValuesSequence	1-n	DICOM/DICONDE
+(0014,4106)	SQ	WaveDimensionValuesSequence	1	DICOM/DICONDE
 (0014,4107)	US	ReferencedWaveDimension	1	DICOM/DICONDE
 (0014,4108)	SL	IntegerNumericValue	1	DICOM/DICONDE
 (0014,4109)	OB	ByteNumericValue	1	DICOM/DICONDE
@@ -714,7 +714,7 @@
 (0014,6022)	DS	AirGapTemperature	1	DICOM/DICONDE
 (0014,6023)	DS	VerticalPixelSize	1	DICOM/DICONDE
 (0014,6024)	DS	HorizontalPixelSize	1	DICOM/DICONDE
-(0014,6025)	ST	DataStreamingProtocol	1-n	DICOM/DICONDE
+(0014,6025)	ST	DataStreamingProtocol	1	DICOM/DICONDE
 (0014,6026)	SQ	LensSequence	1	DICOM/DICONDE
 (0014,6027)	DS	FieldOfView	1	DICOM/DICONDE
 (0014,6028)	LO	LensFilterManufacturer	1	DICOM/DICONDE
@@ -1799,6 +1799,7 @@
 (0020,9164)	UI	DimensionOrganizationUID	1	DICOM
 (0020,9165)	AT	DimensionIndexPointer	1	DICOM
 (0020,9167)	AT	FunctionalGroupPointer	1	DICOM
+(0020,9168)	UL	TotalNumberOfFramesInConcatenation	1	DICOM
 (0020,9170)	SQ	UnassignedSharedConvertedAttributesSequence	1	DICOM
 (0020,9171)	SQ	UnassignedPerFrameConvertedAttributesSequence	1	DICOM
 (0020,9172)	SQ	ConversionSourceAttributesSequence	1	DICOM

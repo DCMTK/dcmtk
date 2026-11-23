@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad2
-**   Date: 2026-09-21 14:16:30
+**   Date: 2026-11-23 12:05:35
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2026-09-21 14:16:30"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2026-11-23 12:05:35"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 5277
+** Number of entries: 5278
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1900,6 +1900,7 @@
 #define DCM_DimensionOrganizationUID             DcmTagKey(0x0020, 0x9164)
 #define DCM_DimensionIndexPointer                DcmTagKey(0x0020, 0x9165)
 #define DCM_FunctionalGroupPointer               DcmTagKey(0x0020, 0x9167)
+#define DCM_TotalNumberOfFramesInConcatenation   DcmTagKey(0x0020, 0x9168)
 #define DCM_UnassignedSharedConvertedAttributesSequence DcmTagKey(0x0020, 0x9170)
 #define DCM_UnassignedPerFrameConvertedAttributesSequence DcmTagKey(0x0020, 0x9171)
 #define DCM_ConversionSourceAttributesSequence   DcmTagKey(0x0020, 0x9172)
