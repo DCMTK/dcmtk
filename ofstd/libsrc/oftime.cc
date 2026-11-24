@@ -746,14 +746,24 @@ OFTime OFTime::getLocalTime() const
 {
     /* create a new time object */
     OFTime timeVal;
-    const double localTimeZone = getLocalTimeZone();
-    /* convert time to local time */
-    if (TimeZone != localTimeZone)
-        timeVal.setTimeInHours(getTimeInHours(OFTrue /*useTimeZone*/) + localTimeZone, localTimeZone);
-    else
+    if (isValid())
     {
-        /* same time zone, return currently stored time */
-        timeVal = *this;
+        const double localTimeZone = getLocalTimeZone();
+        /* convert time to local time (if time zone differs or is unspecified) */
+        if (!hasTimeZone() || !isTimeZoneSpecified(localTimeZone) || (TimeZone != localTimeZone))
+        {
+            /* use seconds to avoid double-conversion */
+            const double timeZoneOffset = isTimeZoneSpecified(localTimeZone) ? localTimeZone * 3600.0 : 0.0;
+            if (timeVal.setTimeInSeconds(getTimeInSeconds(OFTrue /*useTimeZone*/) + timeZoneOffset, localTimeZone))
+            {
+                /* preserve the presence or absence of seconds */
+                if (!hasSecond())
+                    timeVal.clearSecond();
+            }
+        } else {
+            /* same time zone, return currently stored time */
+            timeVal = *this;
+        }
     }
     /* return by-value */
     return timeVal;

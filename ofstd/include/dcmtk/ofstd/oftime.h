@@ -369,8 +369,11 @@ class DCMTK_OFSTD_EXPORT OFTime
      */
     OFTime getCoordinatedUniversalTime() const;
 
-    /** get the currently stored time in local time.
-     *  The resulting time object always has the local time zone.
+    /** get the currently stored time in local time, i.e.\ using the local time zone
+     *  of the system.
+     *  If the current time is invalid, a default time object (00:00) is returned.
+     *  If no time zone is specified for the current time, it is assumed to be UTC.
+     *  The state of whether seconds are specified (see hasSecond()) is preserved.
      *  @return time object with the corrected time set
      */
     OFTime getLocalTime() const;
