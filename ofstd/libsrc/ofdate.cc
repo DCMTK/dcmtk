@@ -184,26 +184,24 @@ OFBool OFDate::setDay(const unsigned int day)
 }
 
 
-
 OFBool OFDate::setCurrentDate(const time_t &tt)
 {
     OFBool status = OFFalse;
 #ifdef HAVE_LOCALTIME_R
     // use localtime_r instead of localtime
     struct tm ltBuf;
-    struct tm *lt = &ltBuf;
-    localtime_r(&tt, lt);
+    struct tm *lt = localtime_r(&tt, &ltBuf);
 #else
     struct tm *lt = localtime(&tt);
 #endif
     if (lt != NULL)
     {
         /* store retrieved date */
-        Year = 1900 + lt->tm_year;
-        Month = lt->tm_mon + 1;
-        Day = lt->tm_mday;
-        /* report that current system date has been set */
-        status = OFTrue;
+        const unsigned int year = 1900 + lt->tm_year;
+        const unsigned int month = lt->tm_mon + 1;
+        const unsigned int day = lt->tm_mday;
+        /* set the determined date information (if valid) */
+        status = setDate(year, month, day);
     }
     return status;
 }

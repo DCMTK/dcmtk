@@ -162,9 +162,9 @@ class DCMTK_OFSTD_EXPORT OFDate
     OFBool setDay(const unsigned int day);
 
     /** set the date value to the current system date.
-     *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason, the current value is not modified.
-     *  @return OFTrue if the current system date has been set, OFFalse otherwise
+     *  This function uses the operating system's local time to determine the current date.
+     *  @return OFTrue if the current system date has been set (and is valid), OFFalse
+     *    otherwise
      */
     OFBool setCurrentDate();
 
@@ -225,11 +225,10 @@ class DCMTK_OFSTD_EXPORT OFDate
 
  protected:
 
-    /** set the date value to the current system date.
-     *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason, the current value is not modified.
-     *  @param tt current system time (as returned by the time() function)
-     *  @return OFTrue if the current system date has been set, OFFalse otherwise
+    /** set the date value to the specified system date.
+     *  This function uses the operating system's local time for the given 'tt' value.
+     *  @param tt system time (in seconds since 1970-01-01 00:00:00 UTC) to be set
+     *  @return OFTrue if the given date is valid and has been set, OFFalse otherwise
      */
     OFBool setCurrentDate(const time_t &tt);
 
