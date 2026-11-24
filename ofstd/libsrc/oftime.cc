@@ -367,32 +367,32 @@ OFBool OFTime::setTimeInHours(const double hours,
 OFBool OFTime::setCurrentTime()
 {
     /* get the current system time and call the "real" function */
-    return setCurrentTime(time(NULL));
+    return setCurrentTime(time(NULL), OFTrue /*includeFraction*/);
 }
 
 
-OFBool OFTime::setCurrentTime(const time_t &tt)
+OFBool OFTime::setCurrentTime(const time_t &tt,
+                              const OFBool includeFraction)
 {
     OFBool status = OFFalse;
 #ifdef HAVE_LOCALTIME_R
     /* use localtime_r instead of localtime */
     struct tm ltBuf;
-    struct tm *lt = &ltBuf;
-    localtime_r(&tt, lt);
+    struct tm *lt = localtime_r(&tt, &ltBuf);
 #else
     struct tm *lt = localtime(&tt);
 #endif
     if (lt != NULL)
     {
         /* store retrieved time */
-        Hour = lt->tm_hour;
-        Minute = lt->tm_min;
-        Second = lt->tm_sec;
+        const unsigned int hours = lt->tm_hour;
+        const unsigned int minutes = lt->tm_min;
+        double seconds = lt->tm_sec;
+        double timeZone = unspecifiedTimeZone;
 #ifdef HAVE_GMTIME_R
         /* use gmtime_r instead of gmtime */
         struct tm gtBuf;
-        struct tm *gt = &gtBuf;
-        gmtime_r(&tt, gt);
+        struct tm *gt = gmtime_r(&tt, &gtBuf);
 #else
         /* avoid overwriting of local time structure by calling gmtime() */
         struct tm ltBuf = *lt;
@@ -401,29 +401,38 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
 #endif
         if (gt != NULL)
         {
-            /* retrieve and store the time zone */
-            TimeZone = (lt->tm_hour - gt->tm_hour) + OFstatic_cast(double, lt->tm_min - gt->tm_min) / 60;
-            /* correct for "day overflow" */
-            if (TimeZone < -12)
-                TimeZone += 24;
-            else if (TimeZone > 12)   // cannot detect time zones in the range ]+12.0,+14.0]
-                TimeZone -= 24;
-        } else {
-            /* could not retrieve the time zone */
-            TimeZone = unspecifiedTimeZone;
+            /* determine day difference between local time and UTC */
+            int dayDiff = 0;
+            if (lt->tm_year > gt->tm_year)
+                dayDiff = 1;
+            else if (lt->tm_year < gt->tm_year)
+                dayDiff = -1;
+            else if (lt->tm_yday > gt->tm_yday)
+                dayDiff = 1;
+            else if (lt->tm_yday < gt->tm_yday)
+                dayDiff = -1;
+            /* retrieve and store the time zone (supports range [-12.0, +14.0]) */
+            timeZone = (lt->tm_hour - gt->tm_hour + dayDiff * 24) + OFstatic_cast(double, lt->tm_min - gt->tm_min) / 60.0;
         }
+        /* add fractional part of a second (if requested) */
+        if (includeFraction)
+        {
 #ifdef HAVE_WINDOWS_H
-        /* Windows: no microseconds available, use milliseconds instead */
-        SYSTEMTIME timebuf;
-        GetSystemTime(&timebuf);
-        Second += OFstatic_cast(double, timebuf.wMilliseconds) / 1000;
+            /* Windows: no microseconds available, use milliseconds instead */
+            SYSTEMTIME timebuf;
+            GetSystemTime(&timebuf);
+            seconds += OFstatic_cast(double, timebuf.wMilliseconds) / 1000;
 #else /* Unix */
-        struct timeval tv;
-        if (gettimeofday(&tv, NULL) == 0)
-            Second += OFstatic_cast(double, tv.tv_usec) / 1000000;
+            struct timeval tv;
+            if (gettimeofday(&tv, NULL) == 0)
+                seconds += OFstatic_cast(double, tv.tv_usec) / 1000000;
 #endif
-        /* report that current system time has been set */
-        status = OFTrue;
+        }
+        /* avoid invalid second value in case of leap second (tm_sec == 60) */
+        if (seconds > 60.0)
+            seconds = 60.0;
+        /* set the determined time information (if valid) */
+        status = setTime(hours, minutes, seconds, timeZone);
     }
     return status;
 }

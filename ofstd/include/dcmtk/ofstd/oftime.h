@@ -261,9 +261,10 @@ class DCMTK_OFSTD_EXPORT OFTime
                           const OFBool normalize = OFTrue);
 
     /** set the time value to the current system time, including the local time zone.
-     *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason the current value is not modified.
-     *  @return OFTrue if the current system time has been set, OFFalse otherwise
+     *  This function uses the operating system's local time and also tries to determine
+     *  the local time zone offset (in the range [-12.0,+14.0]).
+     *  @return OFTrue if the current system time has been set (and is valid), OFFalse
+     *    otherwise
      */
     OFBool setCurrentTime();
 
@@ -472,13 +473,18 @@ class DCMTK_OFSTD_EXPORT OFTime
 
  protected:
 
-    /** set the time value to the current system time.
-     *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason the current value is not modified.
-     *  @param tt current system time (as returned by the time() function)
-     *  @return OFTrue if the current system time has been set, OFFalse otherwise
+    /** set the time to the specified system time.
+     *  This function uses the operating system's local time for the given 'tt' value and
+     *  also tries to determine the local time zone offset (in the range [-12.0, +14.0]).
+     *  Please note that the fractional part of a second (milli-/microseconds), if
+     *  requested, is retrieved from the current system time, not from 'tt'.
+     *  @param tt system time (in seconds since 1970-01-01 00:00:00 UTC) to be set
+     *  @param includeFraction if OFTrue, the fractional part of a second is also
+     *    retrieved. Otherwise, only integral seconds are set.
+     *  @return OFTrue if the given time is valid and has been set, OFFalse otherwise
      */
-    OFBool setCurrentTime(const time_t &tt);
+    OFBool setCurrentTime(const time_t &tt,
+                          const OFBool includeFraction = OFTrue);
 
     /* --- static helper functions --- */
 

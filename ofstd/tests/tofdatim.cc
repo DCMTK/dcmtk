@@ -176,6 +176,14 @@ OFTEST(ofstd_OFTime)
     time2.clearSecond();
     OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
     OFCHECK_EQUAL(tmpString, "12:15");
+
+    /* check UTC and local time roundtrip (independent of local system time zone) */
+    OFCHECK(time1.setTime(1, 0, 0));
+    if (time1.setLocalTimeZone())
+    {
+        OFCHECK_EQUAL(time1.getCoordinatedUniversalTime().getLocalTime(), time1);
+        OFCHECK_EQUAL(time1.getLocalTime(), time1);
+    }
 }
 
 
