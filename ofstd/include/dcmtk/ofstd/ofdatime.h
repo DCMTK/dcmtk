@@ -201,9 +201,10 @@ class DCMTK_OFSTD_EXPORT OFDateTime
                        const OFTime &timeVal);
 
     /** set the date and time value to the current system date and time.
-     *  This function uses operating system dependent routines. If the date or time function
-     *  (or both) are unavailable for some reason, the corresponding value is not modified.
-     *  @return OFTrue if the current system date and time has been set, OFFalse otherwise
+     *  This function uses the operating system's local time to determine the current date
+     *  and time.
+     *  @return OFTrue if the current system date and time have been set (and are valid),
+     *    OFFalse otherwise
      */
     OFBool setCurrentDateTime();
 
