@@ -91,51 +91,51 @@ class DCMTK_OFSTD_EXPORT OFTime
     virtual OFTime &operator=(const OFTime &timeVal);
 
     /** comparison operator (equal).
-     *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared.
-     *  @param timeVal time value compared with the current value
+     *  The time zone offset is taken into account if specified. Otherwise, UTC is
+     *  assumed. Both values are normalized before being compared.
+     *  @param timeVal time value to compare with
      *  @return OFTrue if given time is equal, OFFalse otherwise
      */
     virtual OFBool operator==(const OFTime &timeVal) const;
 
     /** comparison operator (unequal)
-     *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared.
-     *  @param timeVal time value compared with the current value
+     *  The time zone offset is taken into account if specified. Otherwise, UTC is
+     *  assumed. Both values are normalized before being compared.
+     *  @param timeVal time value to compare with
      *  @return OFTrue if given time is unequal, OFFalse otherwise
      */
     virtual OFBool operator!=(const OFTime &timeVal) const;
 
     /** comparison operator (less than)
-     *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared.
-     *  @param timeVal time value compared with the current value
+     *  The time zone offset is taken into account if specified. Otherwise, UTC is
+     *  assumed. Both values are normalized before being compared.
+     *  @param timeVal time value to compare with
      *  @return OFTrue if current time is earlier than the given value, OFFalse otherwise
      */
     virtual OFBool operator<(const OFTime &timeVal) const;
 
     /** comparison operator (less than or equal)
-     *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared.
-     *  @param timeVal time value compared with the current value
+     *  The time zone offset is taken into account if specified. Otherwise, UTC is
+     *  assumed. Both values are normalized before being compared.
+     *  @param timeVal time value to compare with
      *  @return OFTrue if current time is earlier than or identical to the given value,
      *    OFFalse otherwise
      */
     virtual OFBool operator<=(const OFTime &timeVal) const;
 
     /** comparison operator (greater than or equal)
-     *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared.
-     *  @param timeVal time value compared with the current value
+     *  The time zone offset is taken into account if specified. Otherwise, UTC is
+     *  assumed. Both values are normalized before being compared.
+     *  @param timeVal time value to compare with
      *  @return OFTrue if current time is later than or identical to the given value,
      *    OFFalse otherwise
      */
     virtual OFBool operator>=(const OFTime &timeVal) const;
 
     /** comparison operator (greater than)
-     *  Please note that the time values are first transformed to the Coordinated Universal
-     *  Time (UTC) before they are compared.
-     *  @param timeVal time value compared with the current value
+     *  The time zone offset is taken into account if specified. Otherwise, UTC is
+     *  assumed. Both values are normalized before being compared.
+     *  @param timeVal time value to compare with
      *  @return OFTrue if current time is later than the given value, OFFalse otherwise
      */
     virtual OFBool operator>(const OFTime &timeVal) const;
