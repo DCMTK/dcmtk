@@ -60,7 +60,8 @@ class DCMTK_OFSTD_EXPORT OFTime
     static const double unspecifiedTimeZone;
 
     /** default constructor.
-     *  Initializes hour, minute and second to 0, and time zone to "unspecified".
+     *  Initializes 'Hour' and 'Minute' to 0, and 'Second' as well as 'TimeZone' to
+     *  "unspecified".
      */
     OFTime();
 

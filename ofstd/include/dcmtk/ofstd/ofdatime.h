@@ -45,7 +45,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
  public:
 
     /** default constructor.
-     *  Initializes Date and Time to 0.
+     *  Initializes 'Date' and 'Time' to their respective default values.
      */
     OFDateTime();
 

@@ -48,7 +48,7 @@ class DCMTK_OFSTD_EXPORT OFDate
  public:
 
     /** default constructor.
-     *  Initializes Year, Month and Day to 0.
+     *  Initializes 'Year', 'Month' and 'Day' to 0.
      */
     OFDate();
 
