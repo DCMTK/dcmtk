@@ -360,9 +360,11 @@ class DCMTK_OFSTD_EXPORT OFTime
     double getTimeInHours(const OFBool useTimeZone = OFFalse,
                           const OFBool normalize = OFTrue) const;
 
-    /** get the currently stored time as Coordinated Universal Time.
-     *  The resulting time object always has a time zone of "+00:00" since the
-     *  time is corrected regarding the Coordinated Universal Time (UTC).
+    /** get the current time in Coordinated Universal Time (UTC), i.e. with time zone
+     *  "+00:00".
+     *  If the current time is invalid, a default time object (00:00) is returned. If
+     *  no time zone is specified for the current time, it is assumed to be UTC. The
+     *  state of whether seconds are specified (see hasSecond()) is preserved.
      *  @return time object with the UTC corrected time set
      */
     OFTime getCoordinatedUniversalTime() const;

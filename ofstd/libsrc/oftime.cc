@@ -727,8 +727,16 @@ OFTime OFTime::getCoordinatedUniversalTime() const
 {
     /* create a new time object */
     OFTime timeVal;
-    /* convert time to UTC */
-    timeVal.setTimeInHours(getTimeInHours(OFTrue /*useTimeZone*/), 0 /*timeZone*/);
+    if (isValid())
+    {
+        /* convert time to UTC (use seconds to avoid double-conversion) */
+        if (timeVal.setTimeInSeconds(getTimeInSeconds(OFTrue /*useTimeZone*/), 0 /*timeZone*/))
+        {
+            /* preserve the presence or absence of seconds */
+            if (!hasSecond())
+                timeVal.clearSecond();
+        }
+    }
     /* return by-value */
     return timeVal;
 }
