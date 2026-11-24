@@ -888,7 +888,7 @@ double OFTime::getLocalTimeZone()
     double result = unspecifiedTimeZone;
     /* determine local time zone */
     OFTime timeVal;
-    if (timeVal.setCurrentTime())
+    if (timeVal.setCurrentTime(time(NULL), OFFalse /*includeFraction*/))
         result = timeVal.getTimeZone();
     return result;
 }

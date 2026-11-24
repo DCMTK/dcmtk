@@ -435,10 +435,9 @@ class DCMTK_OFSTD_EXPORT OFTime
     static OFTime getCurrentTime();
 
     /** get the local time zone.
-     *  This function uses operating system dependent routines. If they are unavailable
-     *  for some reason, the time zone is set to "unspecified". Also please note that
-     *  time zones in the range ]+12.0,+14.0] cannot be detected due to the internally
-     *  used algorithm.
+     *  This function uses operating system dependent routines to determine the local
+     *  time zone. The returned value is the offset (in hours) to the Coordinated
+     *  Universal Time (UTC) in the range [-12.0,+14.0].
      *  @return local time zone if available, "unspecified" otherwise
      */
     static double getLocalTimeZone();
