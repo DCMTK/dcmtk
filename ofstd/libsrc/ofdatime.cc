@@ -191,7 +191,7 @@ OFBool OFDateTime::setDateTime(const OFDate &dateVal,
 OFBool OFDateTime::setCurrentDateTime()
 {
     /* set current system date and time, use the same "time_t" struct to avoid inconsistencies */
-    time_t tt = time(NULL);
+    const time_t tt = time(NULL);
     return Date.setCurrentDate(tt) && Time.setCurrentTime(tt);
 }
 
