@@ -67,7 +67,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      *  @param day new value to be set
      *  @param hour hour value to be set
      *  @param minute minute value to be set
-     *  @param second second value to be set (incl. fraction of seconds)
+     *  @param second optional second value to be set (including fraction of seconds)
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      */
     OFDateTime(const unsigned int year,
@@ -75,7 +75,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
                const unsigned int day,
                const unsigned int hour,
                const unsigned int minute,
-               const double second,
+               const double second = OFTime::unspecifiedSecond,
                const double timeZone = OFTime::unspecifiedTimeZone);
 
     /** destructor
@@ -165,7 +165,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
      *  @param day new day value to be set
      *  @param hour new hour value to be set
      *  @param minute new minute value to be set
-     *  @param second new second value to be set (incl. fraction of seconds)
+     *  @param second optional second value to be set (including fraction of seconds)
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
@@ -174,7 +174,7 @@ class DCMTK_OFSTD_EXPORT OFDateTime
                        const unsigned int day,
                        const unsigned int hour,
                        const unsigned int minute,
-                       const double second,
+                       const double second = OFTime::unspecifiedSecond,
                        const double timeZone = OFTime::unspecifiedTimeZone);
 
     /** set the date component to the specified date.
