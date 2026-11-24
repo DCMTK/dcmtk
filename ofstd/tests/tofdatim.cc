@@ -177,6 +177,15 @@ OFTEST(ofstd_OFTime)
     OFCHECK(time2.getISOFormattedTime(tmpString, OFTrue /*showSeconds*/, OFTrue /*showFraction*/, OFTrue /*showTimeZone*/, OFTrue /*showDelimiter*/));
     OFCHECK_EQUAL(tmpString, "12:15");
 
+    /* check setting normalized time values and invalid values */
+    OFCHECK(time1.setTimeInSeconds(-3600, 0, OFTrue /*normalize*/));
+    OFCHECK_EQUAL(time1, OFTime(23, 0, 0, 0));
+    OFCHECK(!time1.setTimeInSeconds(-3600, 0, OFFalse /*normalize*/));
+    OFCHECK(time1.setTimeInHours(-1.5, 0, OFTrue /*normalize*/));
+    OFCHECK_EQUAL(time1, OFTime(22, 30, 0, 0));
+    OFCHECK(!time1.setTimeInHours(-1.5, 0, OFFalse /*normalize*/));
+    OFCHECK(!time1.setTimeInSeconds(OFTime::unspecifiedSecond, 0, OFTrue /*normalize*/));
+
     /* check UTC and local time roundtrip (independent of local system time zone) */
     OFCHECK(time1.setTime(1, 0, 0));
     if (time1.setLocalTimeZone())

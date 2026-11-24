@@ -239,10 +239,11 @@ class DCMTK_OFSTD_EXPORT OFTime
     OFBool setLocalTimeZone();
 
     /** set the time to the specified number of seconds
-     *  @param seconds number of seconds since "00:00:00" specifying time to set
+     *  @param seconds number of seconds since "00:00:00" to be set
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @param normalize if OFTrue, the 'seconds' value is normalized to the valid range
-     *    [0.0,86400.0[ otherwise the value is checked as is
+     *    [0.0,86400.0[ before setting the time. Otherwise, values outside this range are
+     *    rejected.
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setTimeInSeconds(const double seconds,
@@ -250,10 +251,11 @@ class DCMTK_OFSTD_EXPORT OFTime
                             const OFBool normalize = OFTrue);
 
     /** set the time to the specified number of hours
-     *  @param hours number of hours since "00:00:00" specifying time to set
+     *  @param hours number of hours since "00:00:00" to be set
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
      *  @param normalize if OFTrue, the 'hours' value is normalized to the valid range
-     *    [0.0,24.0[ otherwise the value is checked as is
+     *    [0.0,24.0[ before setting the time. Otherwise, values outside this range are
+     *    rejected.
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setTimeInHours(const double hours,
@@ -340,17 +342,19 @@ class DCMTK_OFSTD_EXPORT OFTime
 
     /** get the currently stored time in seconds
      *  @param useTimeZone use the currently set time zone to correct the result
-     *  @param normalize if OFTrue, results larger than or equal 86400.0 (seconds)
-     *    are normalized to a valid range
+     *  @param normalize if OFTrue, the resulting value is normalized to the valid
+     *    range [0.0,86400.0[. Otherwise, values outside this range might be returned
+     *    (e.g. when applying the time zone offset).
      *  @return number of seconds since "00:00:00"
      */
     double getTimeInSeconds(const OFBool useTimeZone = OFFalse,
                             const OFBool normalize = OFTrue) const;
 
-    /** get the currently stored time in hours.
+    /** get the currently stored time in hours
      *  @param useTimeZone use the currently set time zone to correct the result
-     *  @param normalize if OFTrue, results larger than or equal 24.0 (hours) are
-     *     normalized to a valid range
+     *  @param normalize if OFTrue, the resulting value is normalized to the valid
+     *    range [0.0,24.0[. Otherwise, values outside this range might be returned
+     *    (e.g. when applying the time zone offset).
      *  @return number of hours since "00:00:00" (including fraction of hours)
      */
     double getTimeInHours(const OFBool useTimeZone = OFFalse,
@@ -489,12 +493,12 @@ class DCMTK_OFSTD_EXPORT OFTime
     /* --- static helper functions --- */
 
     /** get the given time in seconds
-     *  @param hour hour value of the given time
-     *  @param minute minute value of the given time
-     *  @param second second value of the given time
+     *  @param hour hour value of the given time [0,23]
+     *  @param minute minute value of the given time [0,59]
+     *  @param second second value of the given time [0.0,60.0[ or "unspecified"
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
-     *  @param normalize if OFTrue, results larger than or equal 86400.0 (seconds)
-     *    are normalized to a valid range
+     *  @param normalize if OFTrue, the resulting value is normalized to the valid
+     *    range [0.0,86400.0[. Otherwise, values outside this range might be returned.
      *  @return number of seconds since "00:00:00"
      */
     static double getTimeInSeconds(const unsigned int hour,
@@ -504,12 +508,12 @@ class DCMTK_OFSTD_EXPORT OFTime
                                    const OFBool normalize = OFTrue);
 
     /** get the given time in hours
-     *  @param hour hour value of the given time
-     *  @param minute minute value of the given time
-     *  @param second second value of the given time
+     *  @param hour hour value of the given time [0,23]
+     *  @param minute minute value of the given time [0,59]
+     *  @param second second value of the given time [0.0,60.0[ or "unspecified"
      *  @param timeZone optional offset to Coordinated Universal Time (UTC) in hours
-     *  @param normalize if OFTrue, results larger than or equal 24.0 (hours)
-     *    are normalized to a valid range
+     *  @param normalize if OFTrue, the resulting value is normalized to the valid
+     *    range [0.0,24.0[. Otherwise, values outside this range might be returned.
      *  @return number of hours since "00:00:00" (including fraction of hours)
      */
     static double getTimeInHours(const unsigned int hour,

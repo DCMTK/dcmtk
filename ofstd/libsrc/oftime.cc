@@ -329,15 +329,34 @@ OFBool OFTime::setTimeInSeconds(const double seconds,
                                 const OFBool normalize)
 {
     OFBool status = OFFalse;
-    /* only change if the new time is valid (leap second is not supported!) */
-    if (normalize || ((seconds >= 0) && (seconds < 86400)))
+    /* first, normalize the value to the valid range of [0.0,86400.0[ */
+    double normalizedSeconds = seconds;
+    if (normalize)
     {
-        /* first normalize the value first to the valid range of [0.0,86400.0[ */
-        const double normalSeconds = (normalize) ? seconds - OFstatic_cast(double, OFstatic_cast(signed long, seconds / 86400) * 86400) : seconds;
+        normalizedSeconds = fmod(normalizedSeconds, 86400.0);
+        if (normalizedSeconds < 0.0)
+            normalizedSeconds += 86400.0;
+        /* avoid floating-point rounding issues (e.g. normalizedSeconds == 86400.0) */
+        if (normalizedSeconds >= 86400.0)
+            normalizedSeconds = 0.0;
+    }
+    /* only change if the new time is valid (leap second is not supported!) */
+    if ((normalizedSeconds >= 0) && (normalizedSeconds < 86400.0))
+    {
         /* compute time from given number of seconds since "00:00:00" */
-        const unsigned int newHour = OFstatic_cast(unsigned int, normalSeconds / 3600);
-        const unsigned int newMinute = OFstatic_cast(unsigned int, (normalSeconds - OFstatic_cast(double, newHour) * 3600) / 60);
-        const double newSecond = normalSeconds - OFstatic_cast(double, newHour) * 3600 - OFstatic_cast(double, newMinute) * 60;
+        unsigned int newHour = OFstatic_cast(unsigned int, normalizedSeconds / 3600.0);
+        unsigned int newMinute = OFstatic_cast(unsigned int, (normalizedSeconds - OFstatic_cast(double, newHour) * 3600.0) / 60);
+        double newSecond = normalizedSeconds - OFstatic_cast(double, newHour) * 3600.0 - OFstatic_cast(double, newMinute) * 60;
+        /* avoid floating-point rounding issues (e.g. newSecond == 60.0) */
+        if (newSecond >= 60.0)
+        {
+            newSecond = 0.0;
+            if (++newMinute >= 60)
+            {
+                newMinute = 0;
+                newHour = (newHour + 1) % 24;
+            }
+        }
         status = setTime(newHour, newMinute, newSecond, timeZone);
     }
     return status;
@@ -348,19 +367,8 @@ OFBool OFTime::setTimeInHours(const double hours,
                               const double timeZone,
                               const OFBool normalize)
 {
-    OFBool status = OFFalse;
-    /* only change if the new time is valid */
-    if (normalize || ((hours >= 0) && (hours < 24)))
-    {
-        /* first normalize the value to the valid range of [0.0,24.0[ */
-        const double normalHours = (normalize) ? hours - OFstatic_cast(double, OFstatic_cast(signed long, hours / 24) * 24) : hours;
-        /* compute time from given number of hours since "00:00:00" */
-        const unsigned int newHour = OFstatic_cast(unsigned int, normalHours);
-        const unsigned int newMinute = OFstatic_cast(unsigned int, (normalHours - OFstatic_cast(double, newHour)) * 60);
-        const double newSecond = (normalHours - OFstatic_cast(double, newHour)) * 3600 - OFstatic_cast(double, newMinute) * 60;
-        status = setTime(newHour, newMinute, newSecond, timeZone);
-    }
-    return status;
+    /* convert hours to seconds and delegate to setTimeInSeconds() */
+    return setTimeInSeconds(hours * 3600.0, timeZone, normalize);
 }
 
 
@@ -666,6 +674,7 @@ double OFTime::getTimeZone() const
 double OFTime::getTimeInSeconds(const OFBool useTimeZone,
                                 const OFBool normalize) const
 {
+    /* delegate to static helper function */
     return getTimeInSeconds(Hour, Minute, Second, (useTimeZone) ? TimeZone : unspecifiedTimeZone, normalize);
 }
 
@@ -673,6 +682,7 @@ double OFTime::getTimeInSeconds(const OFBool useTimeZone,
 double OFTime::getTimeInHours(const OFBool useTimeZone,
                               const OFBool normalize) const
 {
+    /* delegate to static helper function */
     return getTimeInHours(Hour, Minute, Second, (useTimeZone) ? TimeZone : unspecifiedTimeZone, normalize);
 }
 
@@ -687,9 +697,16 @@ double OFTime::getTimeInSeconds(const unsigned int hour,
     const double timeZoneOffset = isTimeZoneSpecified(timeZone) ? timeZone : 0;
     /* compute number of seconds since 00:00:00 */
     double result = ((OFstatic_cast(double, hour) - timeZoneOffset) * 60 + OFstatic_cast(double, minute)) * 60 + secondValue;
-    /* normalize the result to the range [0.0,86400.0[ */
+    /* normalize the value to the valid range of [0.0,86400.0[ if requested */
     if (normalize)
-        result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 86400) * 86400);
+    {
+        result = fmod(result, 86400.0);
+        if (result < 0.0)
+            result += 86400.0;
+        /* avoid floating-point rounding issues (e.g. result == 86400.0) */
+        if (result >= 86400.0)
+            result = 0.0;
+    }
     return result;
 }
 
@@ -700,14 +717,9 @@ double OFTime::getTimeInHours(const unsigned int hour,
                               const double timeZone,
                               const OFBool normalize)
 {
-    const double secondValue = isSecondSpecified(second) ? second : 0;
-    const double timeZoneOffset = isTimeZoneSpecified(timeZone) ? timeZone : 0;
-    /* compute number of hours since 00:00:00 (incl. fraction of hours) */
-    double result = OFstatic_cast(double, hour) - timeZoneOffset + (OFstatic_cast(double, minute) + secondValue / 60) / 60;
-    /* normalize the result to the range [0.0,24.0[ */
-    if (normalize)
-        result -= OFstatic_cast(double, OFstatic_cast(unsigned long, result / 24) * 24);
-    return result;
+    /* compute seconds and convert to hours */
+    return getTimeInSeconds(hour, minute, second, timeZone, normalize) / 3600.0;
+
 }
 
 
