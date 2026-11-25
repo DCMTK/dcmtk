@@ -21,6 +21,7 @@ DCMTK_ADD_TEST_EXECUTABLE(dcmdata_tests
   tparser.cc
   tpath.cc
   tpread.cc
+  tprivateob.cc
   tsequen.cc
   tspchrs.cc
   tstrval.cc
