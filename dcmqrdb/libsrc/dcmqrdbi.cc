@@ -1377,6 +1377,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
             if (elem.ValueLength == 0) {
                 elem.PValueField = NULL ;
             } else if ((elem.PValueField = OFstatic_cast(char*, malloc(OFstatic_cast(size_t, elem.ValueLength+1)))) == NULL) {
+                DB_FreeElementList(handle_->findRequestList);
+                handle_->findRequestList = NULL;
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return (QR_EC_IndexDatabaseError) ;
             } else {
@@ -1419,6 +1421,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                 else {
                     if (elem. PValueField)
                         free (elem. PValueField) ;
+                    DB_FreeElementList(handle_->findRequestList);
+                    handle_->findRequestList = NULL;
 #ifdef DEBUG
                     DCMQRDB_DEBUG("DB_startFindRequest () : Illegal query level (" << level << ")");
 #endif
@@ -1434,6 +1438,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
                     plist = new DB_ElementList ;
                     if (plist == NULL) {
+                        free(elem.PValueField);
+                        DB_FreeElementList(handle_->findRequestList);
+                        handle_->findRequestList = NULL;
                         status->setStatus(STATUS_FIND_Refused_OutOfResources);
                         return (QR_EC_IndexDatabaseError) ;
                     }
@@ -2064,6 +2071,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             if (elem.ValueLength == 0) {
                 elem.PValueField = NULL ;
             } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
+                DB_FreeElementList(handle_->findRequestList);
+                handle_->findRequestList = NULL;
                 status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
                 return (QR_EC_IndexDatabaseError) ;
             } else {
@@ -2105,6 +2114,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                                   strlen (IMAGE_LEVEL_STRING)) == 0)
                     handle_->queryLevel = IMAGE_LEVEL ;
                 else {
+                    free(elem.PValueField);
+                    DB_FreeElementList(handle_->findRequestList);
+                    handle_->findRequestList = NULL;
 #ifdef DEBUG
                     DCMQRDB_DEBUG("DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess");
 #endif
@@ -2121,6 +2133,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
                 plist = new DB_ElementList ;
                 if (plist == NULL) {
+                    free(elem.PValueField);
+                    DB_FreeElementList(handle_->findRequestList);
+                    handle_->findRequestList = NULL;
                     status->setStatus(STATUS_FIND_Refused_OutOfResources);
                     return (QR_EC_IndexDatabaseError) ;
                 }
@@ -2214,6 +2229,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         if (MatchFound) {
             pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
             if (pidxlist == NULL) {
+                {
+                    DB_CounterList *tmplist;
+                    while (handle_->moveCounterList) {
+                        tmplist = handle_->moveCounterList;
+                        handle_->moveCounterList = handle_->moveCounterList->next;
+                        free(tmplist);
+                    }
+                }
+                DB_unlock();
                 status->setStatus(STATUS_FIND_Refused_OutOfResources);
                 return (QR_EC_IndexDatabaseError) ;
             }
